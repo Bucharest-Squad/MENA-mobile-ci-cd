@@ -21,7 +21,7 @@ val MenaRadius = Radius(
     md = 12.dp,
     lg = 16.dp,
     xl = 24.dp,
-    full = 32.dp
+    full = 100.dp
 )
 
 val LocalRadius = staticCompositionLocalOf { MenaRadius }
