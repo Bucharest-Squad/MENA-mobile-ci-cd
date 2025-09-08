@@ -9,9 +9,17 @@ class ContactsRepositoryImpl(
     private val contactsRemoteDataSource: ContactsRemoteDataSource
 ) : ContactsRepository {
 
-    override suspend fun getUserContacts(userId: String): List<Contact> {
+    override suspend fun getUserContacts(
+        userId: String,
+        pageNumber: Int,
+        pageSize: Int
+    ): List<Contact> {
         return runCatching {
-            contactsRemoteDataSource.getUserContacts(userId).mapToDomain()
+            contactsRemoteDataSource.getUserContacts(
+                userId = userId,
+                pageNumber = pageNumber,
+                pageSize = pageSize
+            ).mapToDomain()
         }.getOrElse {
             throw FailException("Couldn't get user $userId contacts", it)
         }
