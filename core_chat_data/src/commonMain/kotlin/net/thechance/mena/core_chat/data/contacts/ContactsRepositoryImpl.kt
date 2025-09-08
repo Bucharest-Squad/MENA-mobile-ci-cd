@@ -27,8 +27,10 @@ class ContactsRepositoryImpl(
 
     override suspend fun syncContacts(userId: String, contacts: List<Contact>): List<Contact> {
         return runCatching {
-            contactsRemoteDataSource.syncContacts(userId, contacts.toListOfContactToAddDto())
-                .toListOfContact()
+            contactsRemoteDataSource.syncContacts(
+                userId = userId,
+                contacts = contacts.toListOfContactToAddDto()
+            ).toListOfContact()
         }.getOrElse {
             throw FailException("Couldn't sync user $userId contacts", it)
         }
