@@ -3,8 +3,6 @@ package net.thechance.mena.designsystem.presentation.theme.color.scheme
 import net.thechance.mena.designsystem.presentation.theme.color.palette.Black
 import net.thechance.mena.designsystem.presentation.theme.color.palette.Coffee600
 import net.thechance.mena.designsystem.presentation.theme.color.palette.Coffee900
-import net.thechance.mena.designsystem.presentation.theme.color.palette.Red400
-import net.thechance.mena.designsystem.presentation.theme.color.palette.Red500
 import net.thechance.mena.designsystem.presentation.theme.color.palette.Gray100
 import net.thechance.mena.designsystem.presentation.theme.color.palette.Gray300
 import net.thechance.mena.designsystem.presentation.theme.color.palette.Gray400
@@ -12,9 +10,11 @@ import net.thechance.mena.designsystem.presentation.theme.color.palette.Gray500
 import net.thechance.mena.designsystem.presentation.theme.color.palette.Gray700
 import net.thechance.mena.designsystem.presentation.theme.color.palette.Gray800
 import net.thechance.mena.designsystem.presentation.theme.color.palette.Gray900
-import net.thechance.mena.designsystem.presentation.theme.color.palette.Navy900
 import net.thechance.mena.designsystem.presentation.theme.color.palette.Green400
 import net.thechance.mena.designsystem.presentation.theme.color.palette.Green500
+import net.thechance.mena.designsystem.presentation.theme.color.palette.Navy900
+import net.thechance.mena.designsystem.presentation.theme.color.palette.Red400
+import net.thechance.mena.designsystem.presentation.theme.color.palette.Red500
 import net.thechance.mena.designsystem.presentation.theme.color.palette.Yellow400
 import net.thechance.mena.designsystem.presentation.theme.color.palette.Yellow500
 
@@ -48,6 +48,14 @@ internal val DarkColorScheme = ColorScheme(
         bgError = Red500,
         bgWarning = Yellow500,
         bgSuccess = Green500
+    ),
+    defaultCheckboxColors = ColorScheme.CheckboxColors(
+        containerColor = Black,
+        contentColor = Black,
+        disabledContainerColor = Gray500,
+        disabledContentColor = Gray500,
+        uncheckedBorderColor = Gray500,
+        uncheckedContainerColor = Gray800,
     ),
     shadePrimary = Gray100,
     shadeSecondary = Gray300,

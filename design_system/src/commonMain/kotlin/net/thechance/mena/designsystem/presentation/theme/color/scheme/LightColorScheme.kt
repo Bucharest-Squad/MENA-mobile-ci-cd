@@ -4,8 +4,6 @@ import net.thechance.mena.designsystem.presentation.theme.color.palette.Black
 import net.thechance.mena.designsystem.presentation.theme.color.palette.Coffee200
 import net.thechance.mena.designsystem.presentation.theme.color.palette.Coffee600
 import net.thechance.mena.designsystem.presentation.theme.color.palette.Coffee800
-import net.thechance.mena.designsystem.presentation.theme.color.palette.Red50
-import net.thechance.mena.designsystem.presentation.theme.color.palette.Red700
 import net.thechance.mena.designsystem.presentation.theme.color.palette.Gray200
 import net.thechance.mena.designsystem.presentation.theme.color.palette.Gray300
 import net.thechance.mena.designsystem.presentation.theme.color.palette.Gray400
@@ -13,16 +11,18 @@ import net.thechance.mena.designsystem.presentation.theme.color.palette.Gray50
 import net.thechance.mena.designsystem.presentation.theme.color.palette.Gray500
 import net.thechance.mena.designsystem.presentation.theme.color.palette.Gray600
 import net.thechance.mena.designsystem.presentation.theme.color.palette.Gray800
-import net.thechance.mena.designsystem.presentation.theme.color.palette.Navy50
-import net.thechance.mena.designsystem.presentation.theme.color.palette.Navy900
 import net.thechance.mena.designsystem.presentation.theme.color.palette.Green50
 import net.thechance.mena.designsystem.presentation.theme.color.palette.Green600
 import net.thechance.mena.designsystem.presentation.theme.color.palette.Green700
-import net.thechance.mena.designsystem.presentation.theme.color.palette.Yellow50
-import net.thechance.mena.designsystem.presentation.theme.color.palette.Yellow600
+import net.thechance.mena.designsystem.presentation.theme.color.palette.Navy50
+import net.thechance.mena.designsystem.presentation.theme.color.palette.Navy900
+import net.thechance.mena.designsystem.presentation.theme.color.palette.Red50
+import net.thechance.mena.designsystem.presentation.theme.color.palette.Red700
 import net.thechance.mena.designsystem.presentation.theme.color.palette.White
 import net.thechance.mena.designsystem.presentation.theme.color.palette.White38
 import net.thechance.mena.designsystem.presentation.theme.color.palette.White60
+import net.thechance.mena.designsystem.presentation.theme.color.palette.Yellow50
+import net.thechance.mena.designsystem.presentation.theme.color.palette.Yellow600
 
 internal val LightColorScheme = ColorScheme(
     brand = ColorScheme.Brand(
@@ -54,6 +54,14 @@ internal val LightColorScheme = ColorScheme(
         bgError = Red50,
         bgWarning = Yellow50,
         bgSuccess = Green50
+    ),
+    defaultCheckboxColors = ColorScheme.CheckboxColors(
+        containerColor = Black,
+        contentColor = White,
+        disabledContainerColor = Gray300,
+        disabledContentColor = Gray400,
+        uncheckedBorderColor = Gray300,
+        uncheckedContainerColor = Gray200,
     ),
     shadePrimary = Gray800,
     shadeSecondary = Gray600,

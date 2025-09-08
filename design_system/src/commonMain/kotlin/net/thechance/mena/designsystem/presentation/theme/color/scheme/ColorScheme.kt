@@ -19,7 +19,8 @@ data class ColorScheme(
     val disabled: Color,
     val error: Color,
     val warning: Color,
-    val success: Color
+    val success: Color,
+    val defaultCheckboxColors: CheckboxColors
 ) {
     data class Brand(
         val brand: Color,
@@ -54,6 +55,15 @@ data class ColorScheme(
         val bgError: Color,
         val bgWarning: Color,
         val bgSuccess: Color
+    )
+
+    data class CheckboxColors(
+        val containerColor: Color,
+        val contentColor: Color,
+        val disabledContainerColor: Color,
+        val disabledContentColor: Color,
+        val uncheckedBorderColor: Color,
+        val uncheckedContainerColor: Color
     )
 }
 
