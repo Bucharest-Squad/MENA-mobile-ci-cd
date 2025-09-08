@@ -19,7 +19,7 @@ class ContactsRepositoryImpl(
                 userId = userId,
                 pageNumber = pageNumber,
                 pageSize = pageSize
-            ).mapToDomain()
+            ).toListOfContact()
         }.getOrElse {
             throw FailException("Couldn't get user $userId contacts", it)
         }
@@ -27,8 +27,8 @@ class ContactsRepositoryImpl(
 
     override suspend fun syncContacts(userId: String, contacts: List<Contact>): List<Contact> {
         return runCatching {
-            contactsRemoteDataSource.syncContacts(userId, contacts.toContactToAddDto())
-                .mapToDomain()
+            contactsRemoteDataSource.syncContacts(userId, contacts.toListOfContactToAddDto())
+                .toListOfContact()
         }.getOrElse {
             throw FailException("Couldn't sync user $userId contacts", it)
         }

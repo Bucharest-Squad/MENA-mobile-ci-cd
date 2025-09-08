@@ -4,7 +4,7 @@ import net.thechance.mena.core_chat.data.contacts.source.remote.dto.ContactToAdd
 import net.thechance.mena.core_chat.data.contacts.source.remote.dto.ContactToGetDto
 import net.thechance.mena.core_chat.domain.entity.Contact
 
-fun List<ContactToGetDto>.mapToDomain(): List<Contact> {
+fun List<ContactToGetDto>.toListOfContact(): List<Contact> {
     return map { it.toDomain() }
 }
 
@@ -17,7 +17,7 @@ private fun ContactToGetDto.toDomain(): Contact {
     )
 }
 
-fun List<Contact>.toContactToAddDto(): List<ContactToAddDto> {
+fun List<Contact>.toListOfContactToAddDto(): List<ContactToAddDto> {
     return map { it.toContactToAddDto() }
 }
 
