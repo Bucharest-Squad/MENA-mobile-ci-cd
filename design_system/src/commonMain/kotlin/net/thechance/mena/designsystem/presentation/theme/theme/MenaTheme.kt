@@ -12,10 +12,9 @@ import net.thechance.mena.designsystem.presentation.theme.radius.Radius
 import net.thechance.mena.designsystem.presentation.theme.spacing.LocalSpacing
 import net.thechance.mena.designsystem.presentation.theme.spacing.MenaSpacing
 import net.thechance.mena.designsystem.presentation.theme.spacing.Spacing
-import net.thechance.mena.designsystem.presentation.theme.typography.createThemeTypography
 import net.thechance.mena.designsystem.presentation.theme.typography.LocalTypography
-import net.thechance.mena.designsystem.presentation.theme.typography.MenaTypography
 import net.thechance.mena.designsystem.presentation.theme.typography.Typography
+import net.thechance.mena.designsystem.presentation.theme.typography.createThemeTypography
 
 @Composable
 fun MenaTheme(content: @Composable () -> Unit) {
@@ -24,7 +23,6 @@ fun MenaTheme(content: @Composable () -> Unit) {
 
     CompositionLocalProvider(
         LocalColorScheme provides colorScheme,
-        LocalTypography provides MenaTypography,
         LocalSpacing provides MenaSpacing,
         LocalRadius provides MenaRadius,
         LocalTypography provides typography

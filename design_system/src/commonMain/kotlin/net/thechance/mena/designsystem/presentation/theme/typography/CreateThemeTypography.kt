@@ -12,7 +12,7 @@ import mena.design_system.generated.resources.poppins_semi_bold
 import org.jetbrains.compose.resources.Font
 
 @Composable
-fun CreateThemeTypography(): Typography {
+fun createThemeTypography(): Typography {
     val poppinsFontFamily = FontFamily(
         Font(resource = Res.font.poppins_regular, FontWeight.Normal),
         Font(resource = Res.font.poppins_medium, FontWeight.Medium),
@@ -20,223 +20,91 @@ fun CreateThemeTypography(): Typography {
     )
 
     return Typography(
-        display = Typography.Display(
-            large = TextStyle(
-                fontFamily = poppinsFontFamily,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 40.sp,
-                lineHeight = 48.sp,
-                letterSpacing = 0.25.sp
-            ),
-            medium = TextStyle(
-                fontFamily = poppinsFontFamily,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 32.sp,
-                lineHeight = 40.sp,
-                letterSpacing = 0.sp
-            ),
-            small = TextStyle(
-                fontFamily = poppinsFontFamily,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 28.sp,
-                lineHeight = 32.sp,
-                letterSpacing = 0.sp
-            )
-        ),
         headline = Typography.Headline(
             large = TextStyle(
                 fontFamily = poppinsFontFamily,
                 fontWeight = FontWeight.SemiBold,
-                fontSize = 24.sp,
-                lineHeight = 32.sp,
-                letterSpacing = 0.sp
+                fontSize = 28.sp,
+                lineHeight = 42.sp
             ),
             medium = TextStyle(
                 fontFamily = poppinsFontFamily,
                 fontWeight = FontWeight.SemiBold,
-                fontSize = 22.sp,
-                lineHeight = 30.sp,
-                letterSpacing = 0.sp
+                fontSize = 24.sp,
+                lineHeight = 36.sp
             ),
             small = TextStyle(
                 fontFamily = poppinsFontFamily,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 20.sp,
-                lineHeight = 28.sp,
-                letterSpacing = 0.sp
+                fontWeight = FontWeight.Medium,
+                fontSize = 16.sp,
+                lineHeight = 24.sp
             )
         ),
         title = Typography.Title(
             large = TextStyle(
                 fontFamily = poppinsFontFamily,
                 fontWeight = FontWeight.SemiBold,
-                fontSize = 18.sp,
-                lineHeight = 24.sp,
-                letterSpacing = 0.sp
+                fontSize = 20.sp,
+                lineHeight = 30.sp
             ),
             medium = TextStyle(
                 fontFamily = poppinsFontFamily,
-                fontWeight = FontWeight.Medium,
-                fontSize = 16.sp,
-                lineHeight = 20.sp,
-                letterSpacing = 0.15.sp
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 18.sp,
+                lineHeight = 28.sp
             ),
             small = TextStyle(
                 fontFamily = poppinsFontFamily,
                 fontWeight = FontWeight.Medium,
-                fontSize = 14.sp,
-                lineHeight = 18.sp,
-                letterSpacing = 0.1.sp
+                fontSize = 16.sp,
+                lineHeight = 24.sp
             )
         ),
         body = Typography.Body(
             large = TextStyle(
                 fontFamily = poppinsFontFamily,
                 fontWeight = FontWeight.Normal,
-                fontSize = 16.sp,
-                lineHeight = 20.sp,
-                letterSpacing = 0.5.sp
+                fontSize = 18.sp,
+                lineHeight = 28.sp
             ),
             medium = TextStyle(
                 fontFamily = poppinsFontFamily,
                 fontWeight = FontWeight.Normal,
-                fontSize = 14.sp,
-                lineHeight = 18.sp,
-                letterSpacing = 0.25.sp
+                fontSize = 16.sp,
+                lineHeight = 24.sp
             ),
             small = TextStyle(
                 fontFamily = poppinsFontFamily,
                 fontWeight = FontWeight.Normal,
-                fontSize = 12.sp,
-                lineHeight = 14.sp,
-                letterSpacing = 0.4.sp
+                fontSize = 14.sp,
+                lineHeight = 22.sp
             )
         ),
         label = Typography.Label(
             large = TextStyle(
                 fontFamily = poppinsFontFamily,
                 fontWeight = FontWeight.Medium,
-                fontSize = 14.sp,
-                lineHeight = 18.sp,
-                letterSpacing = 0.1.sp
+                fontSize = 16.sp,
+                lineHeight = 24.sp
             ),
             medium = TextStyle(
                 fontFamily = poppinsFontFamily,
                 fontWeight = FontWeight.Medium,
-                fontSize = 12.sp,
-                lineHeight = 14.sp,
-                letterSpacing = 0.5.sp
+                fontSize = 14.sp,
+                lineHeight = 22.sp
             ),
             small = TextStyle(
                 fontFamily = poppinsFontFamily,
                 fontWeight = FontWeight.Medium,
+                fontSize = 10.sp,
+                lineHeight = 16.sp
+            ),
+            extraSmall = TextStyle(
+                fontFamily = poppinsFontFamily,
+                fontWeight = FontWeight.Medium,
                 fontSize = 11.sp,
-                lineHeight = 14.sp,
-                letterSpacing = 0.5.sp
+                lineHeight = 14.sp
             )
         )
     )
 }
-
-val MenaTypography = Typography(
-    display = Typography.Display(
-        large = TextStyle(
-            fontWeight = FontWeight.SemiBold,
-            fontSize = 40.sp,
-            lineHeight = 48.sp,
-            letterSpacing = 0.25.sp
-        ),
-        medium = TextStyle(
-            fontWeight = FontWeight.SemiBold,
-            fontSize = 32.sp,
-            lineHeight = 40.sp,
-            letterSpacing = 0.sp
-        ),
-        small = TextStyle(
-            fontWeight = FontWeight.SemiBold,
-            fontSize = 28.sp,
-            lineHeight = 32.sp,
-            letterSpacing = 0.sp
-        )
-    ),
-    headline = Typography.Headline(
-        large = TextStyle(
-            fontWeight = FontWeight.SemiBold,
-            fontSize = 24.sp,
-            lineHeight = 32.sp,
-            letterSpacing = 0.sp
-        ),
-        medium = TextStyle(
-            fontWeight = FontWeight.SemiBold,
-            fontSize = 22.sp,
-            lineHeight = 30.sp,
-            letterSpacing = 0.sp
-        ),
-        small = TextStyle(
-            fontWeight = FontWeight.SemiBold,
-            fontSize = 20.sp,
-            lineHeight = 28.sp,
-            letterSpacing = 0.sp
-        )
-    ),
-    title = Typography.Title(
-        large = TextStyle(
-            fontWeight = FontWeight.SemiBold,
-            fontSize = 18.sp,
-            lineHeight = 24.sp,
-            letterSpacing = 0.sp
-        ),
-        medium = TextStyle(
-            fontWeight = FontWeight.Medium,
-            fontSize = 16.sp,
-            lineHeight = 20.sp,
-            letterSpacing = 0.15.sp
-        ),
-        small = TextStyle(
-            fontWeight = FontWeight.Medium,
-            fontSize = 14.sp,
-            lineHeight = 18.sp,
-            letterSpacing = 0.1.sp
-        )
-    ),
-    body = Typography.Body(
-        large = TextStyle(
-            fontWeight = FontWeight.Normal,
-            fontSize = 16.sp,
-            lineHeight = 20.sp,
-            letterSpacing = 0.5.sp
-        ),
-        medium = TextStyle(
-            fontWeight = FontWeight.Normal,
-            fontSize = 14.sp,
-            lineHeight = 18.sp,
-            letterSpacing = 0.25.sp
-        ),
-        small = TextStyle(
-            fontWeight = FontWeight.Normal,
-            fontSize = 12.sp,
-            lineHeight = 14.sp,
-            letterSpacing = 0.4.sp
-        )
-    ),
-    label = Typography.Label(
-        large = TextStyle(
-            fontWeight = FontWeight.Medium,
-            fontSize = 14.sp,
-            lineHeight = 18.sp,
-            letterSpacing = 0.1.sp
-        ),
-        medium = TextStyle(
-            fontWeight = FontWeight.Medium,
-            fontSize = 12.sp,
-            lineHeight = 14.sp,
-            letterSpacing = 0.5.sp
-        ),
-        small = TextStyle(
-            fontWeight = FontWeight.Medium,
-            fontSize = 11.sp,
-            lineHeight = 14.sp,
-            letterSpacing = 0.5.sp
-        )
-    )
-)
