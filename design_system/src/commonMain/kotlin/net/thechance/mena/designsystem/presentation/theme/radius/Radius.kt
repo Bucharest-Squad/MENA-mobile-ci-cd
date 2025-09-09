@@ -7,20 +7,20 @@ import androidx.compose.ui.unit.dp
 data class Radius(
     val xxs: Dp,
     val xs: Dp,
-    val sm: Dp,
     val md: Dp,
-    val lg: Dp,
     val xl: Dp,
+    val _2xl: Dp,
+    val _4xl: Dp,
     val full: Dp
 )
 
 val MenaRadius = Radius(
     xxs = 2.dp,
     xs = 4.dp,
-    sm = 8.dp,
-    md = 12.dp,
-    lg = 16.dp,
-    xl = 24.dp,
+    md = 8.dp,
+    xl = 12.dp,
+    _2xl = 16.dp,
+    _4xl = 24.dp,
     full = 100.dp
 )
 
