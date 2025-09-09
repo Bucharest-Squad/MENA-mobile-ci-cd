@@ -2,7 +2,7 @@ package net.thechance.mena.core_chat.data.contacts
 
 import net.thechance.mena.core_chat.data.contacts.source.remote.ContactsRemoteDataSource
 import net.thechance.mena.core_chat.domain.entity.Contact
-import net.thechance.mena.core_chat.domain.exception.FailException
+import net.thechance.mena.core_chat.domain.exception.ContactsException
 import net.thechance.mena.core_chat.domain.repository.ContactsRepository
 
 class ContactsRepositoryImpl(
@@ -19,7 +19,7 @@ class ContactsRepositoryImpl(
                 pageSize = pageSize
             ).toListOfContact()
         }.getOrElse {
-            throw FailException("Couldn't get user contacts", it)
+            throw ContactsException("Couldn't get user contacts", it)
         }
     }
 
@@ -29,7 +29,7 @@ class ContactsRepositoryImpl(
                 contacts = contacts.toListOfContactToAddDto()
             ).toListOfContact()
         }.getOrElse {
-            throw FailException("Couldn't sync user contacts", it)
+            throw ContactsException("Couldn't sync user contacts", it)
         }
     }
 }
