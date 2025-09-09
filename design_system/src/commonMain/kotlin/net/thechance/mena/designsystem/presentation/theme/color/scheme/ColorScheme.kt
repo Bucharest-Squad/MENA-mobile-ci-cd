@@ -63,7 +63,10 @@ data class ColorScheme(
         val disabledContainerColor: Color,
         val disabledContentColor: Color,
         val uncheckedBorderColor: Color,
-        val uncheckedContainerColor: Color
+        val uncheckedContainerColor: Color,
+        val labelColor: Color,
+        val uncheckLabelColor: Color,
+        val disabledLabelColor: Color
     )
 }
 

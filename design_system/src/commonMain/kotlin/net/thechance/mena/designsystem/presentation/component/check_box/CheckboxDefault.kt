@@ -30,13 +30,17 @@ object CheckboxDefaults {
         disabledContainerColor: Color = Color.Unspecified,
         disabledContentColor: Color = Color.Unspecified,
         uncheckedBorderColor: Color = Color.Unspecified,
-        uncheckedContainerColor: Color = Color.Unspecified
+        uncheckedContainerColor: Color = Color.Unspecified,
+        uncheckedLabelColor: Color = Color.Unspecified,
+        disabledLabelColor: Color = Color.Unspecified
     ): ColorScheme.CheckboxColors = Theme.colorScheme.defaultCheckboxColors.copy(
         containerColor = containerColor,
         contentColor = contentColor,
         disabledContainerColor = disabledContainerColor,
         disabledContentColor = disabledContentColor,
         uncheckedBorderColor = uncheckedBorderColor,
-        uncheckedContainerColor = uncheckedContainerColor
+        uncheckedContainerColor = uncheckedContainerColor,
+        uncheckLabelColor = uncheckedLabelColor,
+        disabledLabelColor = disabledLabelColor,
     )
 }

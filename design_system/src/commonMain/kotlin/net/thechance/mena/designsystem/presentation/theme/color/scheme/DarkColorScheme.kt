@@ -56,6 +56,9 @@ internal val DarkColorScheme = ColorScheme(
         disabledContentColor = Gray500,
         uncheckedBorderColor = Gray500,
         uncheckedContainerColor = Gray800,
+        labelColor = Gray100,
+        uncheckLabelColor = Gray400,
+        disabledLabelColor = Gray500
     ),
     shadePrimary = Gray100,
     shadeSecondary = Gray300,
