@@ -1,35 +1,35 @@
 package net.thechance.mena.core_chat.data.contacts.source.remote
 
-import net.thechance.mena.core_chat.data.contacts.source.remote.dto.ContactToAddDto
-import net.thechance.mena.core_chat.data.contacts.source.remote.dto.ContactToGetDto
+import net.thechance.mena.core_chat.data.contacts.source.remote.dto.ContactCreationRequestDto
+import net.thechance.mena.core_chat.data.contacts.source.remote.dto.ContactDto
 
 class ContactsRemoteDataSource {
     val fakeContactsList = mutableListOf(
-        ContactToGetDto(
+        ContactDto(
             name = "Ahmed",
             phone = "+201234567890",
             isMenaUser = true,
             imageUrl = "https://picsum.photos/200"
         ),
-        ContactToGetDto(
+        ContactDto(
             name = "Mohamed",
             phone = "+201098765432",
             isMenaUser = false,
             imageUrl = "https://picsum.photos/200"
         ),
-        ContactToGetDto(
+        ContactDto(
             name = "Sara",
             phone = "+201112223334",
             isMenaUser = true,
             imageUrl = "https://picsum.photos/200"
         ),
-        ContactToGetDto(
+        ContactDto(
             name = "Laila",
             phone = "+201223344556",
             isMenaUser = false,
             imageUrl = "https://picsum.photos/200"
         ),
-        ContactToGetDto(
+        ContactDto(
             name = "Omar",
             phone = "+201334455667",
             isMenaUser = true,
@@ -39,7 +39,7 @@ class ContactsRemoteDataSource {
         // Add 95 more fake contacts to make the list size 100
         for (i in 6..100) {
             add(
-                ContactToGetDto(
+                ContactDto(
                     name = "User$i",
                     phone = "+201${100000000 + i}",
                     isMenaUser = i % 2 == 0,
@@ -50,10 +50,9 @@ class ContactsRemoteDataSource {
     }
 
     suspend fun getUserContacts(
-        userId: String,
         pageNumber: Int,
         pageSize: Int
-    ): List<ContactToGetDto> {
+    ): List<ContactDto> {
         val fromIndex = (pageNumber - 1) * pageSize
         val toIndex = (fromIndex + pageSize).coerceAtMost(fakeContactsList.size)
         if (fromIndex >= fakeContactsList.size) return emptyList()
@@ -61,12 +60,11 @@ class ContactsRemoteDataSource {
     }
 
     suspend fun syncContacts(
-        userId: String,
-        contacts: List<ContactToAddDto>
-    ): List<ContactToGetDto> {
+        contacts: List<ContactCreationRequestDto>
+    ): List<ContactDto> {
         fakeContactsList.addAll(
             contacts.map {
-                ContactToGetDto(
+                ContactDto(
                     name = it.name,
                     phone = it.phone,
                     isMenaUser = false,

@@ -10,29 +10,26 @@ class ContactsRepositoryImpl(
 ) : ContactsRepository {
 
     override suspend fun getUserContacts(
-        userId: String,
         pageNumber: Int,
         pageSize: Int
     ): List<Contact> {
         return runCatching {
             contactsRemoteDataSource.getUserContacts(
-                userId = userId,
                 pageNumber = pageNumber,
                 pageSize = pageSize
             ).toListOfContact()
         }.getOrElse {
-            throw FailException("Couldn't get user $userId contacts", it)
+            throw FailException("Couldn't get user contacts", it)
         }
     }
 
-    override suspend fun syncContacts(userId: String, contacts: List<Contact>): List<Contact> {
+    override suspend fun syncContacts(contacts: List<Contact>): List<Contact> {
         return runCatching {
             contactsRemoteDataSource.syncContacts(
-                userId = userId,
                 contacts = contacts.toListOfContactToAddDto()
             ).toListOfContact()
         }.getOrElse {
-            throw FailException("Couldn't sync user $userId contacts", it)
+            throw FailException("Couldn't sync user contacts", it)
         }
     }
 }
