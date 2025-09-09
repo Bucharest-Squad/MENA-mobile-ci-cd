@@ -1,33 +1,15 @@
 package net.thechance.mena.designsystem.presentation.theme.color.scheme
 
-import net.thechance.mena.designsystem.presentation.theme.color.palette.Black
-import net.thechance.mena.designsystem.presentation.theme.color.palette.Coffee200
-import net.thechance.mena.designsystem.presentation.theme.color.palette.Coffee600
-import net.thechance.mena.designsystem.presentation.theme.color.palette.Coffee800
-import net.thechance.mena.designsystem.presentation.theme.color.palette.Red50
-import net.thechance.mena.designsystem.presentation.theme.color.palette.Red700
-import net.thechance.mena.designsystem.presentation.theme.color.palette.Gray200
-import net.thechance.mena.designsystem.presentation.theme.color.palette.Gray300
-import net.thechance.mena.designsystem.presentation.theme.color.palette.Gray400
-import net.thechance.mena.designsystem.presentation.theme.color.palette.Gray50
-import net.thechance.mena.designsystem.presentation.theme.color.palette.Gray500
-import net.thechance.mena.designsystem.presentation.theme.color.palette.Gray600
-import net.thechance.mena.designsystem.presentation.theme.color.palette.Gray800
-import net.thechance.mena.designsystem.presentation.theme.color.palette.Navy50
-import net.thechance.mena.designsystem.presentation.theme.color.palette.Navy900
-import net.thechance.mena.designsystem.presentation.theme.color.palette.Green50
-import net.thechance.mena.designsystem.presentation.theme.color.palette.Green600
-import net.thechance.mena.designsystem.presentation.theme.color.palette.Green700
-import net.thechance.mena.designsystem.presentation.theme.color.palette.Yellow50
-import net.thechance.mena.designsystem.presentation.theme.color.palette.Yellow600
-import net.thechance.mena.designsystem.presentation.theme.color.palette.White
-import net.thechance.mena.designsystem.presentation.theme.color.palette.White38
-import net.thechance.mena.designsystem.presentation.theme.color.palette.White60
+import net.thechance.mena.designsystem.presentation.theme.color.Black
+import net.thechance.mena.designsystem.presentation.theme.color.White
+import net.thechance.mena.designsystem.presentation.theme.color.White38
+import net.thechance.mena.designsystem.presentation.theme.color.White60
+import net.thechance.mena.designsystem.presentation.theme.color.colorPalette
 
 internal val LightColorScheme = ColorScheme(
     brand = ColorScheme.Brand(
-        brand = Navy900,
-        brandVariant = Navy50,
+        brand = colorPalette.navy._900,
+        brandVariant = colorPalette.navy._50,
         onBrand = White
     ),
     primary = ColorScheme.Primary(
@@ -37,31 +19,31 @@ internal val LightColorScheme = ColorScheme(
         onPrimaryHint = White38
     ),
     secondary = ColorScheme.Secondary(
-        secondary = Coffee800,
-        secondaryText = Coffee600,
-        secondaryVariant = Coffee200
+        secondary = colorPalette.coffee._800,
+        secondaryText = colorPalette.coffee._600,
+        secondaryVariant = colorPalette.coffee._200
     ),
     border = ColorScheme.Border(
-        disabled = Gray300,
-        brand = Navy900,
-        error = Red700,
-        success = Green700
+        disabled = colorPalette.gray._300,
+        brand = colorPalette.navy._900,
+        error = colorPalette.red._700,
+        success = colorPalette.green._700
     ),
     background = ColorScheme.Background(
-        surfaceLow = Gray50,
-        surface = Gray200,
-        surfaceHigh = Gray300,
-        bgError = Red50,
-        bgWarning = Yellow50,
-        bgSuccess = Green50
+        surfaceLow = colorPalette.gray._50,
+        surface = colorPalette.gray._200,
+        surfaceHigh = colorPalette.gray._300,
+        bgError = colorPalette.red._50,
+        bgWarning = colorPalette.yellow._50,
+        bgSuccess = colorPalette.green._50
     ),
-    shadePrimary = Gray800,
-    shadeSecondary = Gray600,
-    shadeTertiary = Gray500,
-    stroke = Gray300,
-    textDisabled = Gray400,
-    disabled = Gray300,
-    error = Red700,
-    warning = Yellow600,
-    success = Green600
+    shadePrimary = colorPalette.gray._800,
+    shadeSecondary = colorPalette.gray._600,
+    shadeTertiary = colorPalette.gray._500,
+    stroke = colorPalette.gray._300,
+    textDisabled = colorPalette.gray._400,
+    disabled = colorPalette.gray._300,
+    error = colorPalette.red._700,
+    warning = colorPalette.yellow._600,
+    success = colorPalette.green._600
 )
