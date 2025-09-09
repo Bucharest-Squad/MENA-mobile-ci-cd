@@ -42,7 +42,7 @@ internal val LightColorScheme = ColorScheme(
         secondaryVariant = Coffee200
     ),
     border = ColorScheme.Border(
-        disabled = Gray300,
+        disabled = Gray400,
         brand = Navy900,
         error = Red700,
         success = Green700
@@ -64,6 +64,16 @@ internal val LightColorScheme = ColorScheme(
         uncheckedContainerColor = Gray200,
         labelColor = Gray800,
         uncheckLabelColor = Gray500,
+        disabledLabelColor = Gray400
+    ),
+    defaultRadioButtonColors = ColorScheme.RadioButtonColors(
+        selectedColor = Black,
+        unselectedColor = Gray300,
+        unselectedContentColor = Gray50,
+        disabledColor = Gray300,
+        disabledBorderColor = Gray400,
+        selectedLabelColor = Gray800,
+        unselectedLabelColor = Gray500,
         disabledLabelColor = Gray400
     ),
     shadePrimary = Gray800,

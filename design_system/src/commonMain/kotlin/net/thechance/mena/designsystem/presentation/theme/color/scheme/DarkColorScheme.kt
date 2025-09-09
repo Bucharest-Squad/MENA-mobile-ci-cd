@@ -60,6 +60,16 @@ internal val DarkColorScheme = ColorScheme(
         uncheckLabelColor = Gray400,
         disabledLabelColor = Gray500
     ),
+    defaultRadioButtonColors = ColorScheme.RadioButtonColors(
+        selectedColor = Black,
+        unselectedColor = Gray400,
+        unselectedContentColor = Gray900,
+        disabledColor = Gray500,
+        disabledBorderColor = Gray700,
+        selectedLabelColor = Gray100,
+        unselectedLabelColor = Gray400,
+        disabledLabelColor = Gray500
+    ),
     shadePrimary = Gray100,
     shadeSecondary = Gray300,
     shadeTertiary = Gray400,
