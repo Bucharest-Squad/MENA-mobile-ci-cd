@@ -15,19 +15,20 @@ class ContactsRepositoryImpl(
         pageNumber: Int,
         pageSize: Int
     ): PagedData<Contact> {
-        return safeCall {
+        return safeNetworkCall {
             contactsRemoteDataSource.getUserContacts(
                 pageNumber = pageNumber,
                 pageSize = pageSize
-            ).toPagedListOfContacts()
-        }.getOrElse { throw ContactsException("Couldn't get user contacts", it) }
+            )
+        }.fold(
+            onSuccess = { responseBody -> responseBody.toPagedListOfContacts() },
+            onFailure = { error -> throw ContactsException("Couldn't get user contacts", error) }
+        )
     }
 
     override suspend fun syncContacts(contacts: List<Contact>) {
-        return safeCall {
-            contactsRemoteDataSource.syncContacts(
-                contacts = contacts.toListOfContactCreationRequestDto()
-            ).successOrThrow("Couldn't sync user contacts")
-        }.getOrElse { throw ContactsException("Couldn't sync user contacts", it) }
+        safeNetworkCall {
+            contactsRemoteDataSource.syncContacts(contacts.toListOfContactCreationRequestDto())
+        }.onFailure { error -> throw ContactsException("Couldn't sync user contacts", error) }
     }
 }

@@ -1,6 +1,5 @@
 package net.thechance.mena.core_chat.data.contacts
 
-import net.thechance.mena.core_chat.data.contacts.source.remote.BaseResponseDto
 import net.thechance.mena.core_chat.data.contacts.source.remote.dto.ContactCreationRequestDto
 import net.thechance.mena.core_chat.data.contacts.source.remote.dto.ContactDto
 import net.thechance.mena.core_chat.data.contacts.source.remote.dto.PagedDataDto
@@ -8,24 +7,13 @@ import net.thechance.mena.core_chat.domain.entity.Contact
 import net.thechance.mena.core_chat.domain.exception.ContactsException
 import net.thechance.mena.core_chat.domain.model.PagedData
 
-fun BaseResponseDto<PagedDataDto<ContactDto>>.toPagedListOfContacts(): PagedData<Contact> {
-    if (!success) {
-        throw ContactsException(message ?: "Couldn't get user contacts")
-    }
-    val body = this.body ?: throw ContactsException("Response body is null")
-    val pagedData = body
+fun PagedDataDto<ContactDto>?.toPagedListOfContacts(): PagedData<Contact> {
+    val pagedData = this ?: throw ContactsException("Response body is null")
     return PagedData(
         data = pagedData.data.toListOfContact(),
         totalItems = pagedData.totalItems,
         isLastPage = pagedData.pageNumber >= pagedData.totalPages
     )
-}
-
-
-fun BaseResponseDto<Unit>.successOrThrow(message: String) {
-    if (!success) {
-        throw ContactsException(this.message ?: message)
-    }
 }
 
 private fun List<ContactDto>.toListOfContact(): List<Contact> {
