@@ -54,7 +54,7 @@ fun FabButton(
 @Preview
 @Composable
 private fun PreviewFabButton() {
-    MenaTheme(isDarkTheme = false) {
+    MenaTheme {
         FabButton(
             painter = painterResource(resource = Res.drawable.ic_cheese_cake),
             onClick = {},

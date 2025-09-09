@@ -166,7 +166,7 @@ fun OutlinedButton(
 @Preview
 @Composable
 private fun PreviewOutlineButton() {
-    MenaTheme(isDarkTheme = false) {
+    MenaTheme {
         OutlinedButton(
             text = "Button",
             trailingIcon = painterResource(resource = Res.drawable.ic_cheese_cake),

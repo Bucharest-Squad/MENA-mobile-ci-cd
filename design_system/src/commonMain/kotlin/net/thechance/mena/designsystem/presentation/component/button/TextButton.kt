@@ -149,7 +149,7 @@ fun TextButton(
 @Preview
 @Composable
 private fun PreviewPrimaryButton() {
-    MenaTheme(isDarkTheme = false) {
+    MenaTheme {
         TextButton(
             text = "Button",
             trailingIcon = painterResource(resource = Res.drawable.ic_cheese_cake),
