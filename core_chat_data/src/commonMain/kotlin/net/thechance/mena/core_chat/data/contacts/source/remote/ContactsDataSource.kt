@@ -4,7 +4,7 @@ import net.thechance.mena.core_chat.data.contacts.source.remote.dto.ContactCreat
 import net.thechance.mena.core_chat.data.contacts.source.remote.dto.ContactDto
 import net.thechance.mena.core_chat.data.contacts.source.remote.dto.PagedDataDto
 
-class ContactsRemoteDataSource {
+class FakeContactsDataSource {
     val fakeContactsList = mutableListOf(
         ContactDto(
             name = "Ahmed",
