@@ -19,7 +19,7 @@ on:
         required: true
       FIREBASE_APP_ID:
         required: true
-      CREDENTIAL_FILE_CONTENT_BASE64:
+      CREDENTIAL_FILE_CONTENT:
         required: true
 
 concurrency:
@@ -89,14 +89,10 @@ jobs:
       - name: Create Release Notes
         run: echo "${{ inputs.release_notes }}" > release_notes.txt
 
-      - name: Decode Firebase credentials
-        run: |
-          echo "${{ secrets.CREDENTIAL_FILE_CONTENT_BASE64 }}" | base64 --decode > credentials.json
-
       - name: Upload signed APK to Firebase
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: ${{ secrets.FIREBASE_APP_ID }}
-          serviceCredentialsFileContent: credentials.json
+          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
           file: ${{ steps.sign_app.outputs.signedReleaseFile }}
           releaseNotesFile: release_notes.txt
