@@ -30,8 +30,8 @@ fun FabButton(
         containerColor = containerColor,
         contentColor = contentColor,
         shape = shape,
-        modifier = modifier,
-        contentPadding = contentPadding
+        contentPadding = contentPadding,
+        modifier = modifier
     ) {
         Icon(
             painter = painter,

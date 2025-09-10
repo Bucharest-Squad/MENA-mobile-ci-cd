@@ -16,11 +16,11 @@ import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 internal fun BaseButtonContent(
     text: String?,
     trailingIcon: Painter?,
-    contentDescription: String? = null,
+    contentColor: Color,
     iconSize: Dp,
     iconStartPadding: Dp,
+    contentDescription: String? = null,
     overflow: TextOverflow = TextOverflow.Ellipsis,
-    contentColor: Color
 ) {
     text?.let {
         MenaText(
