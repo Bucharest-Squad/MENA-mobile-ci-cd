@@ -5,6 +5,7 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -86,7 +87,12 @@ fun Checkbox(
     )
 
     val clickableModifier = onCheckedChange?.let {
-        Modifier.clickable(enabled = isEnabled, role = Role.Checkbox) {
+        Modifier.clickable(
+            enabled = isEnabled,
+            indication = null,
+            interactionSource = remember { MutableInteractionSource() },
+            role = Role.Checkbox
+        ) {
             onCheckedChange(checkedState)
         }
     } ?: Modifier
@@ -119,7 +125,7 @@ fun Checkbox(
 
                 ToggleableState.Indeterminate -> HorizontalDivider(
                     thickness = 2.dp,
-                    color = colors.contentColor,
+                    color = animatedContentColor,
                     modifier = Modifier
                         .size(10.dp, 2.dp)
                         .clip(intermediateLineShape)
@@ -143,15 +149,23 @@ fun Checkbox(
 @Preview
 @Composable
 private fun CheckboxPreview() {
-    MenaTheme(false) {
+    MenaTheme {
         var checkboxState by remember { mutableStateOf(ToggleableState.Off) }
 
-        Checkbox(
-            checkedState = checkboxState,
-            label = "Label",
-            onCheckedChange = { currentState ->
-                checkboxState = currentState.getNextCheckboxState()
-            }
-        )
+        Box(
+            modifier = Modifier
+                .size(180.dp)
+                .background(Theme.colorScheme.background.surface),
+            contentAlignment = Alignment.Center
+        ) {
+            Checkbox(
+                checkedState = checkboxState,
+                label = "Label",
+                isEnabled = false,
+                onCheckedChange = { currentState ->
+                    checkboxState = currentState.getNextCheckboxState()
+                }
+            )
+        }
     }
 }
