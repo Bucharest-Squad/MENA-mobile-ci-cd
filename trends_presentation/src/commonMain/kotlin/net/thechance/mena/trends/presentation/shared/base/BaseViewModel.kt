@@ -31,10 +31,9 @@ abstract class BaseViewModel<State, Effect>(
     protected fun sendEffect(
         event: Effect,
         onStart: suspend () -> Unit = {},
-        onEnd: suspend () -> Unit = {},
-        dispatcher: CoroutineDispatcher = Dispatchers.Main
+        onEnd: suspend () -> Unit = {}
     ) {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch(Dispatchers.IO) {
             onStart()
             _effect.emit(event)
             onEnd()
@@ -52,8 +51,8 @@ abstract class BaseViewModel<State, Effect>(
         return viewModelScope.launch(dispatcher) {
             onStart()
             runCatching { block() }
-                .onSuccess({ onSuccess(it) })
-                .onFailure({ onError(it) })
+                .onSuccess { onSuccess(it) }
+                .onFailure { onError(it) }
             onEnd()
         }
     }
