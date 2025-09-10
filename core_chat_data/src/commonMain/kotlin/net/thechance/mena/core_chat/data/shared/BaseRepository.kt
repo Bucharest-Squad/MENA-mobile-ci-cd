@@ -2,35 +2,41 @@ package net.thechance.mena.core_chat.data.shared
 
 import net.thechance.mena.core_chat.data.contacts.source.remote.BaseResponseDto
 import net.thechance.mena.core_chat.domain.exception.ChatException
-import net.thechance.mena.core_chat.domain.exception.UnAuthorizedException
 
 interface BaseRepository {
 
-    suspend fun <T> safeNetworkCall(
+    suspend fun <T> tryNetworkCall(
         maxAttempts: Int = 1,
         call: suspend () -> BaseResponseDto<T>,
-    ): Result<T?> {
+    ): T? {
         //TODO: handle network connection
         var attempt = 0
         while (attempt < maxAttempts) {
             try {
                 val response = call()
-                return if (response.success) {
-                    Result.success(response.body)
-                } else if (response.status == 401) {
-                    Result.failure(UnAuthorizedException(response.message))
-                } else {
-                    Result.failure(ChatException(response.message ?: "Unknown error"))
-                }
+                return response.getSuccessBodyOrThrow()
             } catch (e: ChatException) {
-                return Result.failure(e)
+                throw e
             } catch (e: Exception) {
                 attempt++
                 if (attempt >= maxAttempts) {
-                    return Result.failure(e)
+                    throw e
                 }
             }
         }
-        return Result.failure(ChatException("Unknown error"))
+        throw ChatException("Unknown error") // This line should never be reached
+    }
+
+    suspend fun <T> runCatchingWithException(
+        exceptionBuilder: (Throwable) -> Exception,
+        block: suspend () -> T
+    ): T {
+        try {
+            return block()
+        } catch (e: ChatException) {
+            throw e
+        } catch (e: Exception) {
+            throw exceptionBuilder(e)
+        }
     }
 }
