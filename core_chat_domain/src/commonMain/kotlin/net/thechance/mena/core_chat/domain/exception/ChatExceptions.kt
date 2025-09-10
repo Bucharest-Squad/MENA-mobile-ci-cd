@@ -6,7 +6,7 @@ abstract class ChatException(logMessage: String, cause: Throwable? = null) :
 class ContactSyncFailedException(logMessage: String, cause: Throwable? = null) :
     ChatException(logMessage, cause)
 
-class GetUserContactsException(logMessage: String, cause: Throwable? = null) :
+class ContactsFetchFailedException(logMessage: String, cause: Throwable? = null) :
     ChatException(logMessage, cause)
 
 class UnAuthorizedException(logMessage: String? = null) :
