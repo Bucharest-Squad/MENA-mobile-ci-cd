@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.androidLibrary)
+    kotlin("plugin.serialization") version libs.versions.kotlin
 }
 
 kotlin {
@@ -30,6 +31,7 @@ kotlin {
             implementation(libs.androidx.activity.compose)
         }
         commonMain.dependencies {
+            implementation(projects.coreChatApi)
             implementation(projects.coreChatDomain)
             implementation(projects.designSystem)
             implementation(compose.runtime)
@@ -38,6 +40,11 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+
+            implementation(libs.kotlinx.serialization.json)
+
+            // navigation
+            implementation(libs.navigation.compose)
         }
         iosMain.dependencies {
 
