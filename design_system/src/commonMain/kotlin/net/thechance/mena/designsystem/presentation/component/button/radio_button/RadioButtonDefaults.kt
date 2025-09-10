@@ -31,8 +31,8 @@ object RadioButtonDefaults {
         selectedColor = selectedColor,
         unselectedColor = unselectedColor,
         unselectedContentColor = unselectedContentColor,
-        disabledColor = disabledColor,
-        disabledBorderColor = disabledBorderColor,
+        disabledSelectedBorderColor = disabledColor,
+        disabledUnselectedBorderColor = disabledBorderColor,
         selectedLabelColor = selectedLabelColor,
         unselectedLabelColor = unselectedLabelColor,
         disabledLabelColor = disabledLabelColor

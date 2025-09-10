@@ -5,6 +5,7 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -40,21 +41,24 @@ fun RadioButton(
     isEnabled: Boolean = true
 ) {
 
+    val animatedBorderDp by animateDpAsState(
+        targetValue = if (isSelected) 6.dp else 1.dp
+    )
 
     val animatedSelectionBorderColor by animateColorAsState(
         targetValue = if (isSelected) colors.selectedColor else colors.unselectedColor
     )
 
-    val animatedBorderDp by animateDpAsState(
-        targetValue = if (isSelected) 6.dp else 1.dp
+    val animatedDisabledBorderColor by animateColorAsState(
+        targetValue = if (isSelected) colors.disabledSelectedBorderColor else colors.disabledUnselectedBorderColor
+    )
+
+    val animatedBorderColor by animateColorAsState(
+        targetValue = if (isEnabled) animatedSelectionBorderColor else animatedDisabledBorderColor
     )
 
     val animatedUnselectedContentColor by animateColorAsState(
         targetValue = if (isSelected || !isEnabled) Color.Unspecified else colors.unselectedContentColor
-    )
-
-    val animatedBorderColor by animateColorAsState(
-        targetValue = if (isEnabled) animatedSelectionBorderColor else colors.disabledBorderColor
     )
 
     val animatedUnselectedLabelColor by animateColorAsState(
@@ -68,7 +72,12 @@ fun RadioButton(
     )
 
     val clickableModifier = onClick?.let {
-        Modifier.clickable(enabled = isEnabled, role = Role.RadioButton) {
+        Modifier.clickable(
+            enabled = isEnabled,
+            indication = null,
+            interactionSource = remember { MutableInteractionSource() },
+            role = Role.RadioButton
+        ) {
             onClick()
         }
     } ?: Modifier
@@ -105,15 +114,22 @@ fun RadioButton(
 @Preview
 @Composable
 private fun RadioButtonPreview() {
-    MenaTheme(false) {
-        var selected by remember { mutableStateOf(false) }
+    MenaTheme {
+        var selected by remember { mutableStateOf(true) }
 
-        RadioButton(
-            isSelected = selected,
-            label = "Label",
-            onClick = {
-                selected = !selected
-            }
-        )
+        Box(
+            modifier = Modifier
+                .size(180.dp)
+                .background(Theme.colorScheme.background.surface),
+            contentAlignment = Alignment.Center
+        ) {
+            RadioButton(
+                isSelected = selected,
+                label = "Label",
+                onClick = {
+                    selected = !selected
+                }
+            )
+        }
     }
 }

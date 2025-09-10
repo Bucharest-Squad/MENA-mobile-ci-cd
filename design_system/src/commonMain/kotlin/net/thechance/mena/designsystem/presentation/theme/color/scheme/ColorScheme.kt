@@ -74,8 +74,8 @@ data class ColorScheme(
         val selectedColor: Color,
         val unselectedColor: Color,
         val unselectedContentColor: Color,
-        val disabledColor: Color,
-        val disabledBorderColor: Color,
+        val disabledSelectedBorderColor: Color,
+        val disabledUnselectedBorderColor: Color,
         val selectedLabelColor: Color,
         val unselectedLabelColor: Color,
         val disabledLabelColor: Color
