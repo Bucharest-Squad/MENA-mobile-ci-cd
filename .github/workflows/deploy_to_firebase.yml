@@ -83,8 +83,8 @@ jobs:
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
           alias: ${{ secrets.ANDROID_KEY_ALIAS }}
           keyPassword: ${{ secrets.ANDROID_KEY_ALIAS_PASSWORD }}
-          env:
-            BUILD_TOOLS_VERSION: "35.0.0"
+        env:
+          BUILD_TOOLS_VERSION: "35.0.0"
 
       - name: Create Release Notes
         run: echo "${{ inputs.release_notes }}" > release_notes.txt
