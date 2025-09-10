@@ -19,7 +19,7 @@ on:
         required: true
       FIREBASE_APP_ID:
         required: true
-      CREDENTIAL_FILE_CONTENT:
+      CREDENTIAL_FILE_CONTENT_BASE64:
         required: true
 
 concurrency:
