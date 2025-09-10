@@ -67,6 +67,7 @@ jobs:
         with:
           gradlePath: composeApp/build.gradle.kts
           versionCode: ${{ github.run_number }}
+          versionName: 1.0.${{ github.run_number }}
 
       - name: Generate unsigned APK
         run: ./gradlew assembleRelease --build-cache -x test -x lint
