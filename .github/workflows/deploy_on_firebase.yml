@@ -9,13 +9,13 @@ on:
     secrets:
       GOOGLE_SERVICES_JSON_BASE64:
         required: true
-      KEYSTORE:
+      ANDROID_KEYSTORE_BASE64:
         required: true
       KEYSTORE_PASSWORD:
         required: true
-      KEY_ALIAS:
+      ANDROID_KEY_ALIAS:
         required: true
-      KEY_PASSWORD:
+      ANDROID_KEY_ALIAS_PASSWORD:
         required: true
       FIREBASE_APP_ID:
         required: true
