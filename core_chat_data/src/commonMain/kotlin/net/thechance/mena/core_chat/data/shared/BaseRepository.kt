@@ -1,7 +1,7 @@
 package net.thechance.mena.core_chat.data.shared
 
 import net.thechance.mena.core_chat.data.contacts.source.remote.BaseResponseDto
-import net.thechance.mena.core_chat.domain.exception.ChatExceptions
+import net.thechance.mena.core_chat.domain.exception.ChatException
 import net.thechance.mena.core_chat.domain.exception.UnAuthorizedException
 
 interface BaseRepository {
@@ -20,9 +20,9 @@ interface BaseRepository {
                 } else if (response.status == 401) {
                     Result.failure(UnAuthorizedException(response.message))
                 } else {
-                    Result.failure(ChatExceptions(response.message ?: "Unknown error"))
+                    Result.failure(ChatException(response.message ?: "Unknown error"))
                 }
-            } catch (e: ChatExceptions) {
+            } catch (e: ChatException) {
                 return Result.failure(e)
             } catch (e: Exception) {
                 attempt++
@@ -31,6 +31,6 @@ interface BaseRepository {
                 }
             }
         }
-        return Result.failure(ChatExceptions("Unknown error"))
+        return Result.failure(ChatException("Unknown error"))
     }
 }
