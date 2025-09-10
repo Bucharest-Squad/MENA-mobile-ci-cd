@@ -65,6 +65,9 @@ jobs:
       - name: Generate unsigned APK
         run: ./gradlew assembleRelease --build-cache -x test -x lint
 
+      - name: Show available build-tools
+        run: ls /usr/local/lib/android/sdk/build-tools/
+
       - name: Version Bump
         uses: chkfung/android-version-actions@v1.2.3
         with:
