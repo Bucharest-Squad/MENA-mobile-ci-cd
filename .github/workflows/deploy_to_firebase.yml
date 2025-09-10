@@ -62,25 +62,22 @@ jobs:
           mkdir -p composeApp/
           echo "$GOOGLE_SERVICES_JSON_BASE64" | base64 --decode > composeApp/google-services.json
 
-      - name: Build signed APK
-        run: ./gradlew assembleRelease --no-daemon
+      - name: Decode Keystore and Create local.properties
+        run: |
+          rm -f composeApp/JKS.jks local.properties release_notes.txt
+          echo "ANDROID_KEYSTORE_BASE64" | base64 -d > composeApp/JKS.jks
+          echo "KEYSTORE_PASSWORD = $KEYSTORE_PASSWORD" >> local.properties
+          echo "ANDROID_KEY_ALIAS = $KEY_ALIAS" >> local.properties
+          echo "ANDROID_KEY_ALIAS_PASSWORD = ANDROID_KEY_ALIAS_PASSWORD" >> local.properties
 
-      - name: Sign Release
-        uses: r0adkll/sign-android-release@v1
-        id: sign_app
-        with:
-          releaseDirectory: composeApp/build/outputs/apk/release
-          signingKeyBase64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
-          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
-          alias: ${{ secrets.ANDROID_KEY_ALIAS }}
-          keyPassword: ${{ secrets.ANDROID_KEY_ALIAS_PASSWORD }}
-        env:
-          BUILD_TOOLS_VERSION: "34.0.0"
+      - name: Generate Signed APK
+        run: |
+          ./gradlew assembleRelease --build-cache -x test -x lint
 
       - name: Version Bump
         uses: chkfung/android-version-actions@v1.2.3
         with:
-          gradlePath: app/build.gradle.kts
+          gradlePath: composeApp/build.gradle.kts
           versionCode: ${{ github.run_number }}
 
       - name: Create Release Notes
