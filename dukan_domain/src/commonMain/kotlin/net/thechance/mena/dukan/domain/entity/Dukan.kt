@@ -1,7 +1,5 @@
 package net.thechance.mena.dukan.domain.entity
 
-import platform.darwin.Style
-
 data class Dukan(
     val id: String,
     val name: String,
@@ -18,7 +16,7 @@ data class Dukan(
         val address: String
     )
 
-    enum class ImageStyle {
+    enum class Style {
         WIDE_IMAGE,
         SMALL_IMAGE,
         NO_IMAGE
