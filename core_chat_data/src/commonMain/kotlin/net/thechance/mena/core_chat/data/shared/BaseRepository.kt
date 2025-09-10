@@ -24,7 +24,7 @@ interface BaseRepository {
                 }
             }
         }
-        throw ChatException("Unknown error") // This line should never be reached
+        throw ChatException("This line should never be reached")
     }
 
     suspend fun <T> runCatchingWithException(
