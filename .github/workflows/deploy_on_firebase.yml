@@ -70,7 +70,7 @@ jobs:
         id: sign_app
         with:
           releaseDirectory: composeApp/build/outputs/apk/release
-          signingKeyBase64: ${{ secrets.ANDROID_KEYSTORE }}
+          signingKeyBase64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
           alias: ${{ secrets.ANDROID_KEY_ALIAS }}
           keyPassword: ${{ secrets.ANDROID_KEY_ALIAS_PASSWORD }}
