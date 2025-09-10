@@ -62,21 +62,20 @@ jobs:
           mkdir -p composeApp/
           echo "$GOOGLE_SERVICES_JSON_BASE64" | base64 --decode > composeApp/google-services.json
 
+      - name: Build signed APK
+        run: ./gradlew assembleRelease --no-daemon
+
       - name: Sign Release
         uses: r0adkll/sign-android-release@v1
         id: sign_app
         with:
-          releaseDirectory: app/build/outputs/apk/release
+          releaseDirectory: composeApp/build/outputs/apk/release
           signingKeyBase64: ${{ secrets.ANDROID_KEYSTORE }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
           alias: ${{ secrets.ANDROID_KEY_ALIAS }}
           keyPassword: ${{ secrets.ANDROID_KEY_ALIAS_PASSWORD }}
         env:
           BUILD_TOOLS_VERSION: "34.0.0"
-
-      - name: Generate Signed APK
-        run: |
-          ./gradlew assembleRelease --build-cache -x test -x lint
 
       - name: Version Bump
         uses: chkfung/android-version-actions@v1.2.3
