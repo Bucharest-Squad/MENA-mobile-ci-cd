@@ -10,7 +10,7 @@ import net.thechance.mena.core_chat.domain.model.PagedData
 fun PagedDataDto<ContactDto>?.toPagedListOfContacts(): PagedData<Contact> {
     val pagedData = this ?: throw GetUserContactsException("Response body is null")
     return PagedData(
-        data = pagedData.data.toListOfContact(),
+        data = pagedData.data.orEmpty().toListOfContact(),
         totalItems = pagedData.totalItems ?: 0,
         isLastPage = (pagedData.pageNumber ?: 0) >= (pagedData.totalPages ?: 0)
     )

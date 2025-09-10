@@ -29,7 +29,7 @@ interface BaseRepository {
     }
 
     suspend fun <T> runCatchingWithException(
-        exceptionBuilder: (Throwable) -> Exception,
+        exceptionBuilder: (Throwable) -> ChatException,
         block: suspend () -> T
     ): T {
         try {

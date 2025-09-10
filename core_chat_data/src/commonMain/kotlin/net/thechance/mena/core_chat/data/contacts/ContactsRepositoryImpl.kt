@@ -12,10 +12,7 @@ class ContactsRepositoryImpl(
     private val contactsDataSource: FakeContactsDataSource
 ) : ContactsRepository, BaseRepository {
 
-    override suspend fun getUserContacts(
-        pageNumber: Int,
-        pageSize: Int
-    ): PagedData<Contact> {
+    override suspend fun getUserContacts(pageNumber: Int, pageSize: Int): PagedData<Contact> {
         return runCatchingWithException(
             exceptionBuilder = { GetUserContactsException("Couldn't get user contacts", it) }) {
             tryNetworkCall {
