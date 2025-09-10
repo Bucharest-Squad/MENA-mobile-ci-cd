@@ -72,9 +72,6 @@ jobs:
       - name: Generate unsigned APK
         run: ./gradlew :composeApp:assembleRelease  --build-cache -x test -x lint
 
-      - name: Show available build-tools
-        run: ls /usr/local/lib/android/sdk/build-tools/
-
       - name: Sign APK
         uses: r0adkll/sign-android-release@v1
         id: sign_app
