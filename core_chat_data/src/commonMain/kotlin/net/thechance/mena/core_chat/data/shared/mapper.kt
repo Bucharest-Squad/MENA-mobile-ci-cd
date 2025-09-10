@@ -1,6 +1,6 @@
 package net.thechance.mena.core_chat.data.shared
 
-import net.thechance.mena.core_chat.data.contacts.source.remote.BaseResponseDto
+import net.thechance.mena.core_chat.data.shared.dto.BaseResponseDto
 import net.thechance.mena.core_chat.domain.exception.UnAuthorizedException
 import net.thechance.mena.core_chat.domain.exception.UnknownException
 
