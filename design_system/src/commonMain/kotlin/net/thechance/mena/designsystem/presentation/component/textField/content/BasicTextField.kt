@@ -31,7 +31,6 @@ import mena.design_system.generated.resources.silver_tc
 import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
 import net.thechance.mena.designsystem.presentation.component.image.MenaImage
 import net.thechance.mena.designsystem.presentation.component.text.MenaText
-import net.thechance.mena.designsystem.presentation.component.textField.TextField
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
@@ -217,7 +216,7 @@ private fun PreviewTextField() {
         val (value, onValueChanged) = remember {
             mutableStateOf("")
         }
-        TextField(
+        BasicTextField(
             value = value,
             placeholder = "Placeholder",
             onValueChanged = onValueChanged,
