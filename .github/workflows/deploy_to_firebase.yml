@@ -63,12 +63,18 @@ jobs:
           echo "$GOOGLE_SERVICES_JSON_BASE64" | base64 --decode > composeApp/google-services.json
 
       - name: Decode Keystore and Create local.properties
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_ALIAS_PASSWORD: ${{ secrets.ANDROID_KEY_ALIAS_PASSWORD }}
         run: |
           rm -f composeApp/JKS.jks local.properties release_notes.txt
-          echo "ANDROID_KEYSTORE_BASE64" | base64 -d > composeApp/JKS.jks
-          echo "KEYSTORE_PASSWORD = $KEYSTORE_PASSWORD" >> local.properties
-          echo "ANDROID_KEY_ALIAS = $KEY_ALIAS" >> local.properties
-          echo "ANDROID_KEY_ALIAS_PASSWORD = ANDROID_KEY_ALIAS_PASSWORD" >> local.properties
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > composeApp/JKS.jks
+          echo "KEYSTORE_PASSWORD=$KEYSTORE_PASSWORD" >> local.properties
+          echo "ANDROID_KEY_ALIAS=$ANDROID_KEY_ALIAS" >> local.properties
+          echo "ANDROID_KEY_ALIAS_PASSWORD=$ANDROID_KEY_ALIAS_PASSWORD" >> local.properties
+
 
       - name: Generate Signed APK
         run: |
@@ -89,5 +95,5 @@ jobs:
         with:
           appId: ${{ secrets.FIREBASE_APP_ID }}
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
-          file: composeApp/build/outputs/apk/release/composeApp-release.apk
+          file: composeApp/build/outputs/apk/release/app-release.apk
           releaseNotesFile: release_notes.txt
