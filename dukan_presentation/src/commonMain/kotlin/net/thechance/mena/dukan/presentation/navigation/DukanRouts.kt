@@ -8,7 +8,7 @@ interface DukanRoute
 object MainScreenRoute : DukanRoute
 
 @Serializable
-object RegisterScreenRoute : DukanRoute
+object CreateDukanRoute : DukanRoute
 
 @Serializable
 object MyDukanScreenRoute : DukanRoute
