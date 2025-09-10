@@ -14,13 +14,13 @@ interface BaseRepository {
         maxAttempts: Int = 1,
         call: suspend () -> BaseResponseDto<T>,
     ): T? {
-        try {
+        runCatchingWithException(defaultException) {
             //TODO: handle network connection
             var attempt = 0
             while (attempt < maxAttempts) {
                 try {
                     val response = call()
-                    return response.getSuccessBodyOrThrow()
+                    return@runCatchingWithException response.getSuccessBodyOrThrow()
                 } catch (e: ChatException) {
                     throw e
                 } catch (e: Exception) {
@@ -30,19 +30,33 @@ interface BaseRepository {
                     }
                 }
             }
+        }
+        throw UnknownException("This line should never be reached")
+    }
+
+    private suspend fun <T> runCatchingWithException(
+        defaultException: (Throwable) -> ChatException,
+        block: suspend () -> T
+    ): T {
+        try {
+            return block()
         } catch (e: ChatException) {
             throw e
         } catch (e: Exception) {
             throw defaultException(e)
         }
-        throw UnknownException("This line should never be reached")
     }
 
     private fun <T> BaseResponseDto<T>.getSuccessBodyOrThrow(): T? {
         return when {
             this.success -> this.body
-            this.status == 401 -> throw UnAuthorizedException(this.message)
+            this.status == STATUS_UNAUTHORIZED -> throw UnAuthorizedException(this.message)
+            //TODO: handle more cases like 500, 404
             else -> throw UnknownException(this.message)
         }
+    }
+
+    companion object {
+        private const val STATUS_UNAUTHORIZED = 401
     }
 }
