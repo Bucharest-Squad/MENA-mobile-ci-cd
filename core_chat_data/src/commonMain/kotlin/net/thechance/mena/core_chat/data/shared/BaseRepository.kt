@@ -2,6 +2,7 @@ package net.thechance.mena.core_chat.data.shared
 
 import net.thechance.mena.core_chat.data.contacts.source.remote.BaseResponseDto
 import net.thechance.mena.core_chat.domain.exception.ChatException
+import net.thechance.mena.core_chat.domain.exception.UnknownException
 
 interface BaseRepository {
 
@@ -24,7 +25,7 @@ interface BaseRepository {
                 }
             }
         }
-        throw ChatException("This line should never be reached")
+        throw UnknownException("This line should never be reached")
     }
 
     suspend fun <T> runCatchingWithException(
