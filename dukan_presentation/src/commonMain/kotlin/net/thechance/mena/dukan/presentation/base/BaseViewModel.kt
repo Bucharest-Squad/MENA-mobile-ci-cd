@@ -22,8 +22,8 @@ abstract class BaseViewModel<S, E>(
     protected val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : ViewModel() {
 
-    private val _state: MutableStateFlow<S> by lazy { MutableStateFlow(initialState) }
-    val state: StateFlow<S> by lazy { _state.asStateFlow() }
+    private val _state = MutableStateFlow<S>(initialState)
+    val state: StateFlow<S> = _state.asStateFlow()
     private val _effect = MutableSharedFlow<E>()
     val effect: SharedFlow<E> = _effect.asSharedFlow()
 
