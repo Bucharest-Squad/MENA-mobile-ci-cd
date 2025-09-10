@@ -62,17 +62,17 @@ jobs:
           mkdir -p composeApp/
           echo "$GOOGLE_SERVICES_JSON_BASE64" | base64 --decode > composeApp/google-services.json
 
-      - name: Generate unsigned APK
-        run: ./gradlew assembleRelease --build-cache -x test -x lint
-
-      - name: Show available build-tools
-        run: ls /usr/local/lib/android/sdk/build-tools/
-
       - name: Version Bump
         uses: chkfung/android-version-actions@v1.2.3
         with:
           gradlePath: composeApp/build.gradle.kts
           versionCode: ${{ github.run_number }}
+
+      - name: Generate unsigned APK
+        run: ./gradlew assembleRelease --build-cache -x test -x lint
+
+      - name: Show available build-tools
+        run: ls /usr/local/lib/android/sdk/build-tools/
 
       - name: Sign APK
         uses: r0adkll/sign-android-release@v1
@@ -96,3 +96,4 @@ jobs:
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
           file: ${{ steps.sign_app.outputs.signedReleaseFile }}
           releaseNotesFile: release_notes.txt
+          debug: true
