@@ -105,7 +105,7 @@ fun OtpInputField(
 @Preview
 @Composable
 private fun OtpInputFieldPreview() {
-    MenaTheme(false) {
+    MenaTheme {
         OtpInputField(
             number = null,
             onFocusChanged = {},

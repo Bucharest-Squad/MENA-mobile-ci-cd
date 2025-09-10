@@ -19,7 +19,9 @@ data class ColorScheme(
     val disabled: Color,
     val error: Color,
     val warning: Color,
-    val success: Color
+    val success: Color,
+    val defaultCheckboxColors: CheckboxColors,
+    val defaultRadioButtonColors: RadioButtonColors
 ) {
     data class Brand(
         val brand: Color,
@@ -54,6 +56,29 @@ data class ColorScheme(
         val bgError: Color,
         val bgWarning: Color,
         val bgSuccess: Color
+    )
+
+    data class CheckboxColors(
+        val containerColor: Color,
+        val contentColor: Color,
+        val disabledContainerColor: Color,
+        val disabledContentColor: Color,
+        val uncheckedBorderColor: Color,
+        val uncheckedContainerColor: Color,
+        val labelColor: Color,
+        val uncheckLabelColor: Color,
+        val disabledLabelColor: Color
+    )
+
+    data class RadioButtonColors(
+        val selectedColor: Color,
+        val unselectedColor: Color,
+        val unselectedContentColor: Color,
+        val disabledSelectedBorderColor: Color,
+        val disabledUnselectedBorderColor: Color,
+        val selectedLabelColor: Color,
+        val unselectedLabelColor: Color,
+        val disabledLabelColor: Color
     )
 }
 
