@@ -1,4 +1,4 @@
-package net.thechance.mena.designsystem.presentation.component.check_box
+package net.thechance.mena.designsystem.presentation.component.checkBox
 
 import androidx.compose.ui.state.ToggleableState
 
