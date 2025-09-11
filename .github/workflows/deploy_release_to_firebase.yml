@@ -28,8 +28,6 @@ jobs:
       KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
       ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
       ANDROID_KEY_ALIAS_PASSWORD: ${{ secrets.ANDROID_KEY_ALIAS_PASSWORD }}
-    outputs:
-      signed-apk-path: ${{ steps.sign_app.outputs.signedReleaseFile }}
 
   deploy-to-firebase:
     runs-on: ubuntu-latest
@@ -40,6 +38,6 @@ jobs:
         with:
           appId: ${{ secrets.FIREBASE_APP_ID }}
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
-          file: ${{ needs.build-release-apk.outputs.signed-apk-path }}
+          file: ${{ needs.build-release-apk.sign_app.signed-apk-path }}
           debug: true
           group: tester
