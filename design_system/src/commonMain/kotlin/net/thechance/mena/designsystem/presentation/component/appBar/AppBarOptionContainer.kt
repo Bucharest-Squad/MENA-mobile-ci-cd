@@ -31,7 +31,7 @@ fun AppBarOptionContainer(
     isBadgeVisible: Boolean = false,
     badgeColor: Color = Theme.colorScheme.primary.primary,
     containerColor: Color = Theme.colorScheme.background.surfaceLow,
-    shape: Shape = RoundedCornerShape(Theme.radius.xl),
+    shape: Shape = RoundedCornerShape(Theme.radius.md),
     badgeShape: Shape = RoundedCornerShape(Theme.radius.full),
     iconContentPadding: PaddingValues = PaddingValues(10.dp),
     containerContentPadding: PaddingValues = PaddingValues(horizontal = 4.dp),
