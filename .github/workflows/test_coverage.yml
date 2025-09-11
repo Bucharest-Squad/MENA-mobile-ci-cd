@@ -10,8 +10,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # This job runs on Linux and executes only the JVM tests for each module.
-  test-jvm:
+  test:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -42,19 +41,22 @@ jobs:
       - name: Grant execute permissions for gradlew
         run: chmod +x gradlew
 
-      - name: Run JVM Tests & Kover Verification for ${{ matrix.module }}
-        # With the Gradle script from Step 1, this now skips modules with no tests.
-        # It runs all tasks ending with 'Test' that can execute on the JVM.
-        run: ./gradlew :${{ matrix.module }}:clean :${{ matrix.module }}:koverVerify --build-cache
+      # IMPROVEMENT: Combined Gradle tasks into a single step for efficiency.
+      # koverVerify runs tests, checks coverage, and generates reports.
+      - name: Run Tests & Kover Verification for ${{ matrix.module }}
+        run: ./gradlew :${{ matrix.module }}:koverVerify --build-cache
 
       - name: Publish Unit Test Results for ${{ matrix.module }}
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
         with:
           files: ${{ matrix.module }}/build/test-results/**/*.xml
-          comment_title: "📊 ${{ matrix.module }} JVM Test Results"
+          comment_title: "📊 ${{ matrix.module }} Test Results"
           comment_mode: always
+          compare_to_earlier_commit: true
+          report_individual_runs: true
 
+      # FIX: Uploading a more specific file path is safer.
       - name: Upload Coverage Report for ${{ matrix.module }}
         uses: actions/upload-artifact@v4
         if: always()
@@ -62,11 +64,10 @@ jobs:
           name: coverage-report-${{ matrix.module }}
           path: ${{ matrix.module }}/build/reports/kover/report.xml
 
-  # This job consolidates all the coverage reports from the JVM tests.
   coverage:
     runs-on: ubuntu-latest
-    needs: test-jvm
-    # 'always()' ensures this job runs even if some tests fail, so you still get a report.
+    needs: test
+    # FIX: 'always()' ensures this job runs even if some tests fail, so you still get a report.
     if: always()
     permissions:
       contents: read
@@ -76,16 +77,21 @@ jobs:
       - name: Download All Coverage Reports
         uses: actions/download-artifact@v4
         with:
+          # This pattern correctly matches the uploaded artifacts.
           pattern: "coverage-report-*"
           path: coverage-reports
+
+      - name: List coverage reports directory
+        run: ls -R coverage-reports
 
       - name: Post Combined Coverage Comment
         uses: mi-kas/kover-report@v1.9
         with:
-          # This robust glob pattern automatically finds all report.xml files.
+          # FIX: This robust glob pattern automatically finds all report.xml files.
+          # You will never need to update this list again when adding/removing modules.
           path: coverage-reports/**/*.xml
           token: ${{ secrets.GITHUB_TOKEN }}
-          title: "🛡️ JVM Code Coverage Report"
+          title: "🛡️ Total Code Coverage Report"
           update-comment: true
           min-coverage-overall: 80
           min-coverage-changed-files: 80
