@@ -1,4 +1,4 @@
-package net.thechance.mena.designsystem.presentation.component.dialogue
+package net.thechance.mena.designsystem.presentation.component.dialog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

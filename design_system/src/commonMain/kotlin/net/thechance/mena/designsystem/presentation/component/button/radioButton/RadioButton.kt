@@ -1,4 +1,4 @@
-package net.thechance.mena.designsystem.presentation.component.button.radio_button
+package net.thechance.mena.designsystem.presentation.component.button.radioButton
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
