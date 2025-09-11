@@ -49,22 +49,22 @@ internal val LightColorScheme = ColorScheme(
     defaultCheckboxColors = ColorScheme.CheckboxColors(
         containerColor = Black,
         contentColor = White,
-        disabledContainerColor = colorPalette.gray._300,
-        disabledContentColor = colorPalette.gray._400,
-        uncheckedBorderColor = colorPalette.gray._400,
-        uncheckedContainerColor = colorPalette.gray._50,
-        labelColor = colorPalette.gray._800,
-        uncheckLabelColor = colorPalette.gray._500,
-        disabledLabelColor = colorPalette.gray._400
+        disabledContainerColor = colorPalette.gray.shade300,
+        disabledContentColor = colorPalette.gray.shade400,
+        uncheckedBorderColor = colorPalette.gray.shade400,
+        uncheckedContainerColor = colorPalette.gray.shade50,
+        labelColor = colorPalette.gray.shade800,
+        uncheckLabelColor = colorPalette.gray.shade500,
+        disabledLabelColor = colorPalette.gray.shade400
     ),
     defaultRadioButtonColors = ColorScheme.RadioButtonColors(
         selectedColor = Black,
-        unselectedColor = colorPalette.gray._400,
-        unselectedContentColor = colorPalette.gray._50,
-        disabledSelectedBorderColor = colorPalette.gray._300,
-        disabledUnselectedBorderColor = colorPalette.gray._400,
-        selectedLabelColor = colorPalette.gray._800,
-        unselectedLabelColor = colorPalette.gray._500,
-        disabledLabelColor = colorPalette.gray._400
+        unselectedColor = colorPalette.gray.shade400,
+        unselectedContentColor = colorPalette.gray.shade50,
+        disabledSelectedBorderColor = colorPalette.gray.shade300,
+        disabledUnselectedBorderColor = colorPalette.gray.shade400,
+        selectedLabelColor = colorPalette.gray.shade800,
+        unselectedLabelColor = colorPalette.gray.shade500,
+        disabledLabelColor = colorPalette.gray.shade400
     )
 )
