@@ -8,8 +8,8 @@ import net.thechance.mena.designsystem.presentation.theme.color.colorPalette
 
 internal val LightColorScheme = ColorScheme(
     brand = ColorScheme.Brand(
-        brand = colorPalette.navy._900,
-        brandVariant = colorPalette.navy._50,
+        brand = colorPalette.navy.shade900,
+        brandVariant = colorPalette.navy.shade50,
         onBrand = White
     ),
     primary = ColorScheme.Primary(
@@ -19,31 +19,31 @@ internal val LightColorScheme = ColorScheme(
         onPrimaryHint = White38
     ),
     secondary = ColorScheme.Secondary(
-        secondary = colorPalette.coffee._800,
-        secondaryText = colorPalette.coffee._600,
-        secondaryVariant = colorPalette.coffee._200
+        secondary = colorPalette.coffee.shade800,
+        secondaryText = colorPalette.coffee.shade600,
+        secondaryVariant = colorPalette.coffee.shade200
     ),
     border = ColorScheme.Border(
-        disabled = colorPalette.gray._300,
-        brand = colorPalette.navy._900,
-        error = colorPalette.red._700,
-        success = colorPalette.green._700
+        disabled = colorPalette.gray.shade300,
+        brand = colorPalette.navy.shade900,
+        error = colorPalette.red.shade700,
+        success = colorPalette.green.shade700
     ),
     background = ColorScheme.Background(
-        surfaceLow = colorPalette.gray._50,
-        surface = colorPalette.gray._200,
-        surfaceHigh = colorPalette.gray._300,
-        bgError = colorPalette.red._50,
-        bgWarning = colorPalette.yellow._50,
-        bgSuccess = colorPalette.green._50
+        surfaceLow = colorPalette.gray.shade50,
+        surface = colorPalette.gray.shade200,
+        surfaceHigh = colorPalette.gray.shade300,
+        bgError = colorPalette.red.shade50,
+        bgWarning = colorPalette.yellow.shade50,
+        bgSuccess = colorPalette.green.shade50
     ),
-    shadePrimary = colorPalette.gray._800,
-    shadeSecondary = colorPalette.gray._600,
-    shadeTertiary = colorPalette.gray._500,
-    stroke = colorPalette.gray._300,
-    textDisabled = colorPalette.gray._300,
-    disabled = colorPalette.gray._400,
-    error = colorPalette.red._700,
-    warning = colorPalette.yellow._600,
-    success = colorPalette.green._600
+    shadePrimary = colorPalette.gray.shade800,
+    shadeSecondary = colorPalette.gray.shade600,
+    shadeTertiary = colorPalette.gray.shade500,
+    stroke = colorPalette.gray.shade300,
+    textDisabled = colorPalette.gray.shade300,
+    disabled = colorPalette.gray.shade400,
+    error = colorPalette.red.shade700,
+    warning = colorPalette.yellow.shade600,
+    success = colorPalette.green.shade600
 )
