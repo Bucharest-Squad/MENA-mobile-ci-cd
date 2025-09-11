@@ -1,68 +1,63 @@
 name: Build Release APK
 
-on:
-  workflow_call:
-    secrets:
-      ANDROID_KEYSTORE_BASE64:
-        required: true
-      KEYSTORE_PASSWORD:
-        required: true
-      ANDROID_KEY_ALIAS:
-        required: true
-      ANDROID_KEY_ALIAS_PASSWORD:
-        required: true
-jobs:
-  build-release-apk:
-    runs-on: ubuntu-latest
-    outputs:
-      signed-apk-path: ${{ steps.sign_app.outputs.signedReleaseFile }}
+inputs:
+  android-keystore-base64:
+    required: true
+  keystore-password:
+    required: true
+  android-key-alias:
+    required: true
+  android-key-alias-password:
+    required: true
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+outputs:
+  signed-apk-path:
 
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: '21'
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
-      - name: Cache Gradle
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            gradle-${{ runner.os }}-
+    - name: Set up JDK
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'zulu'
+        java-version: '21'
 
-      - name: Make gradlew executable
-        run: chmod +x ./gradlew
+    - name: Cache Gradle
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          gradle-${{ runner.os }}-
 
-      - name: Version Bump
-        uses: chkfung/android-version-actions@v1.2.3
-        with:
-          gradlePath: composeApp/build.gradle.kts
-          versionCode: ${{ github.run_number }}
-          versionName: 1.0.${{ github.run_number }}
+    - name: Make gradlew executable
+      run: chmod +x ./gradlew
 
-      - name: Generate unsigned APK
-        run: ./gradlew :composeApp:assembleRelease --build-cache -x test -x lint
+    - name: Version Bump
+      uses: chkfung/android-version-actions@v1.2.3
+      with:
+        gradlePath: composeApp/build.gradle.kts
+        versionCode: ${{ github.run_number }}
+        versionName: 1.0.${{ github.run_number }}
 
-      - name: Sign APK
-        uses: r0adkll/sign-android-release@v1
-        id: sign_app
-        with:
-          releaseDirectory: composeApp/build/outputs/apk/release
-          signingKeyBase64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
-          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
-          alias: ${{ secrets.ANDROID_KEY_ALIAS }}
-          keyPassword: ${{ secrets.ANDROID_KEY_ALIAS_PASSWORD }}
-        env:
-          BUILD_TOOLS_VERSION: "35.0.0"
+    - name: Generate unsigned APK
+      run: ./gradlew :composeApp:assembleRelease --build-cache -x test -x lint
 
-      - name: Echo the APK path
-        run: echo "APK path is ${{ steps.sign_app.outputs.signedReleaseFile }}"
+    - name: Sign APK
+      id: sign_app
+      uses: r0adkll/sign-android-release@v1
+      with:
+        releaseDirectory: composeApp/build/outputs/apk/release
+        signingKeyBase64: ${{ inputs.android-keystore-base64 }}
+        keyStorePassword: ${{ inputs.keystore-password }}
+        alias: ${{ inputs.android-key-alias }}
+        keyPassword: ${{ inputs.android-key-alias-password }}
+      env:
+        BUILD_TOOLS_VERSION: "35.0.0"
