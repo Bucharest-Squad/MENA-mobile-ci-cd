@@ -3,6 +3,7 @@ package net.thechance.mena.designsystem.presentation.component.preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -44,6 +45,7 @@ import net.thechance.mena.designsystem.presentation.component.button.TextButton
 import net.thechance.mena.designsystem.presentation.component.checkBox.Checkbox
 import net.thechance.mena.designsystem.presentation.component.chip.Chip
 import net.thechance.mena.designsystem.presentation.component.section.Section
+import net.thechance.mena.designsystem.presentation.component.segmentButton.SegmentButton
 import net.thechance.mena.designsystem.presentation.component.snackbar.SnackBar
 import net.thechance.mena.designsystem.presentation.component.switches.Switch
 import net.thechance.mena.designsystem.presentation.component.text.MenaText
@@ -279,10 +281,23 @@ private fun PreviewComponentsLight() {
                 )
             }
 
-            //todo segment buttons
+            PreviewComponent(
+                title = "Segment buttons"
+            ) {
+                val list = listOf(
+                    "Option1",
+                    "Option2",
+                    "Option3",
+                )
+
+                val selectedOption = list[0]
+                Box(modifier = Modifier.padding(16.dp)) {
+                    SegmentButton(options = list, selectedOption = selectedOption)
+                }
+            }
 
             PreviewComponent(
-                "OTP"
+                title = "OTP"
             ) {
                 OtpInputField(
                     number = null,

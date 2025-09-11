@@ -56,12 +56,12 @@ fun BasicTextField(
     readOnly: Boolean = false,
     isError: Boolean = false,
     errorMessage: String? = null,
-    shape: Shape = RoundedCornerShape(Theme.radius.xl),
+    shape: Shape = RoundedCornerShape(Theme.radius.md),
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
-    Column {
+    Column(modifier) {
         title?.let {
             MenaText(
                 text = title,

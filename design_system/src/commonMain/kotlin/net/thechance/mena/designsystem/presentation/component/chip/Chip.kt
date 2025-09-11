@@ -43,8 +43,8 @@ fun Chip(
     )
     val contentColor by transition.animateColor(
         targetValueByState = { isCurrentSelected ->
-            if (isCurrentSelected) Theme.colorScheme.shadeSecondary
-            else Theme.colorScheme.primary.onPrimary
+            if (isCurrentSelected) Theme.colorScheme.primary.onPrimary
+            else Theme.colorScheme.shadeSecondary
         }
     )
 
