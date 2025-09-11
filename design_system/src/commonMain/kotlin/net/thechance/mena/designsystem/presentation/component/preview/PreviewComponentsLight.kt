@@ -3,15 +3,21 @@ package net.thechance.mena.designsystem.presentation.component.preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -20,9 +26,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -49,7 +57,8 @@ import net.thechance.mena.designsystem.presentation.component.button.TextButton
 import net.thechance.mena.designsystem.presentation.component.checkBox.Checkbox
 import net.thechance.mena.designsystem.presentation.component.chip.Chip
 import net.thechance.mena.designsystem.presentation.component.section.Section
-import net.thechance.mena.designsystem.presentation.component.segmentButton.SegmentButton
+import net.thechance.mena.designsystem.presentation.component.segment.Segment
+import net.thechance.mena.designsystem.presentation.component.segment.SegmentButton
 import net.thechance.mena.designsystem.presentation.component.snackbar.SnackBar
 import net.thechance.mena.designsystem.presentation.component.switches.Switch
 import net.thechance.mena.designsystem.presentation.component.text.MenaText
@@ -288,14 +297,32 @@ private fun PreviewComponentsLight() {
             PreviewComponent(
                 title = "Segment buttons"
             ) {
-                val list = listOf(
-                    "Option1",
-                    "Option2",
-                    "Option3",
-                )
-
-                val selectedOption = list[0]
-                SegmentButton(options = list, selectedOption = selectedOption)
+                Segment(contentPadding = PaddingValues(top = 8.dp)) {
+                    item("Option1") {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(200.dp)
+                                .clip(RoundedCornerShape(Theme.radius.md))
+                                .background(Theme.colorScheme.background.surfaceHigh),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("Option1")
+                        }
+                    }
+                    item("Option2") {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(200.dp)
+                                .clip(RoundedCornerShape(Theme.radius.md))
+                                .background(Theme.colorScheme.background.surfaceLow),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("Option2")
+                        }
+                    }
+                }
             }
 
             PreviewComponent(
