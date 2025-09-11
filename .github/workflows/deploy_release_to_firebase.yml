@@ -34,7 +34,6 @@ jobs:
     needs: build-release-apk
     runs:
       echo "APK path: ${{ steps.sign_app.outputs.signedReleaseFile }}"
-    run: ls -R
     steps:
       - name: Upload signed APK to Firebase
         uses: wzieba/Firebase-Distribution-Github-Action@v1
