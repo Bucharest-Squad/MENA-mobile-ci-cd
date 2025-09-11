@@ -21,6 +21,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  runs-on: ubuntu-latest
   build-release-apk:
     uses: ./.github/workflows/build_release.yml
     secrets:
@@ -30,7 +31,6 @@ jobs:
       ANDROID_KEY_ALIAS_PASSWORD: ${{ secrets.ANDROID_KEY_ALIAS_PASSWORD }}
 
   deploy-to-firebase:
-    runs-on: ubuntu-latest
     needs: build-release-apk
     steps:
       - name: Upload signed APK to Firebase
