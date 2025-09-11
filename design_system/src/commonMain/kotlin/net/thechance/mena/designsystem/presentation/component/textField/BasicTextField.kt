@@ -19,6 +19,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
@@ -59,6 +62,8 @@ fun BasicTextField(
     shape: Shape = RoundedCornerShape(Theme.radius.md),
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
+    focusRequester: FocusRequester = FocusRequester(),
+    onFocusChanged: (Boolean) -> Unit = {},
     visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
     Column(modifier) {
@@ -109,6 +114,10 @@ fun BasicTextField(
                     .weight(1f)
                     .clip(shape)
                     .background(color = Theme.colorScheme.background.surfaceLow)
+                    .focusRequester(focusRequester)
+                    .onFocusChanged {
+                        onFocusChanged(it.isFocused)
+                    }
             )
         }
 

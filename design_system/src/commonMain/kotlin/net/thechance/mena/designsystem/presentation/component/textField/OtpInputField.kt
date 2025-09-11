@@ -37,7 +37,7 @@ fun OtpInputField(
     number: Int?,
     onNumberChanged: (Int?) -> Unit,
     modifier: Modifier = Modifier,
-    shape: Shape = RoundedCornerShape(Theme.radius.xl),
+    shape: Shape = RoundedCornerShape(Theme.radius.md),
     containerColor: Color = Theme.colorScheme.background.surfaceLow,
     onFocusChanged: (Boolean) -> Unit = {},
     onPressDeleteWhenEmpty: () -> Unit = {},
