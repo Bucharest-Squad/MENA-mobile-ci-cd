@@ -4,6 +4,7 @@ import kotlinx.datetime.LocalDateTime
 
 data class Trend(
     val id: Int,
+    val authorId: Int,
     val thumbnailUrl: String,
     val videoUrl: String,
     val description: String,
