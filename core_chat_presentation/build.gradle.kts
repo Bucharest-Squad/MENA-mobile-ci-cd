@@ -34,6 +34,8 @@ kotlin {
             implementation(projects.coreChatApi)
             implementation(projects.coreChatDomain)
             implementation(projects.designSystem)
+
+            // Compose
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
@@ -41,10 +43,14 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
 
-            implementation(libs.kotlinx.serialization.json)
+            // Serialization
+            implementation(libs.kotlin.serialization)
 
-            // navigation
+            // Navigation
             implementation(libs.navigation.compose)
+
+            // Paging 3
+            implementation(libs.bundles.paging)
         }
         iosMain.dependencies {
 
