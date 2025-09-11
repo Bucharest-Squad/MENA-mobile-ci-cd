@@ -15,8 +15,8 @@ import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 @Composable
 fun TextButton(
     text: String,
-    trailingIcon: Painter,
     onClick: () -> Unit,
+    trailingIcon: Painter? = null,
     modifier: Modifier = Modifier,
     isEnabled: Boolean = true,
     isLoading: Boolean = false,
