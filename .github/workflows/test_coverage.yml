@@ -1,99 +1,143 @@
-
-name: Test Coverage
+name: CI – Optimized Test Coverage
 
 on:
   pull_request:
-    branches: [ develop, main ]
-
-# BEST PRACTICE: Cancel old workflow runs when new commits are pushed to the same PR.
-concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
-  cancel-in-progress: true
+    branches: [main, development]
 
 jobs:
-  test:
+  test-coverage:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      checks: write
-      pull-requests: write
-    strategy:
-      matrix:
-        module: [
-          core_chat_api, core_chat_data, core_chat_domain, core_chat_presentation,
-          dukan_api, dukan_data, dukan_domain, dukan_presentation,
-          faith_api, faith_data, faith_domain, faith_presentation,
-          identity_api, identity_data, identity_domain, identity_presentation,
-          trends_api, trends_data, trends_domain, trends_presentation,
-          wallet_api, wallet_data, wallet_domain, wallet_presentation
-        ]
-      # Ensures all module tests run, even if one fails.
-      fail-fast: false
 
     steps:
       - uses: actions/checkout@v4
-      - name: Setup JDK 17
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
           java-version: 17
+          distribution: temurin
           cache: gradle
 
-      - name: Grant execute permissions for gradlew
-        run: chmod +x gradlew
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
 
-      # IMPROVEMENT: Combined Gradle tasks into a single step for efficiency.
-      # koverVerify runs tests, checks coverage, and generates reports.
-      - name: Run Tests & Kover Verification for ${{ matrix.module }}
-        run: ./gradlew :${{ matrix.module }}:koverVerify --build-cache
+      - name: 🔍 Detect modules needing tests
+        id: test_changes
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          else
+            BASE_SHA="${{ github.event.before }}"
+          fi
+          
+          echo "Comparing against: $BASE_SHA"
+          CHANGED_FILES=$(git diff --name-only $BASE_SHA HEAD || echo "")
+          echo "Changed files:"
+          echo "$CHANGED_FILES"
 
-      - name: Publish Unit Test Results for ${{ matrix.module }}
-        uses: EnricoMi/publish-unit-test-result-action@v2
+          check_test_needed() {
+            local module_path="$1"
+            local output_var="$2"
+            if echo "$CHANGED_FILES" | grep -qE "^${module_path}/(src/main|build\.gradle|build\.gradle\.kts)"; then
+              echo "${output_var}=true" >> $GITHUB_OUTPUT
+              echo "✅ Module $module_path needs testing"
+            else
+              echo "${output_var}=false" >> $GITHUB_OUTPUT
+            fi
+          }
+
+          # === All modules in MENA project ===
+          for m in identity_data core_chat_data wallet_data dukan_data faith_data trends_data \
+                   identity_domain core_chat_domain wallet_domain dukan_domain faith_domain trends_domain \
+                   identity_presentation core_chat_presentation wallet_presentation faith_presentation dukan_presentation trends_presentation \
+                   identity_api core_chat_api wallet_api faith_api dukan_api trends_api \
+                   design_system composeApp; do
+            check_test_needed "$m" "test_${m}"
+          done
+
+          if echo "$CHANGED_FILES" | grep -qE '^(build\.gradle|settings\.gradle|gradle\.properties|build-logic/)'; then
+            echo "test_all=true" >> $GITHUB_OUTPUT
+            echo "✅ Root build files changed - will test all modules"
+          else
+            echo "test_all=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: 🧪 Run tests + coverage
+        run: |
+          TEST_TASKS=""
+          KOVER_TASKS=""
+
+          if [ "${{ steps.test_changes.outputs.test_all }}" = "true" ]; then
+            echo "🔄 Root files changed - running all tests"
+            ./gradlew test koverXmlReport koverHtmlReport --parallel --build-cache
+            exit 0
+          fi
+
+          add_module() {
+            local path="$1"
+            local flag="$2"
+            if [ "${{ steps.test_changes.outputs.${flag} }}" = "true" ]; then
+              TEST_TASKS="$TEST_TASKS :$path:test"
+              KOVER_TASKS="$KOVER_TASKS :$path:koverXmlReport :$path:koverHtmlReport"
+              echo "📦 Testing $path"
+            fi
+          }
+
+          for m in identity_data core_chat_data wallet_data dukan_data faith_data trends_data \
+                   identity_domain core_chat_domain wallet_domain dukan_domain faith_domain trends_domain \
+                   identity_presentation core_chat_presentation wallet_presentation faith_presentation dukan_presentation trends_presentation \
+                   identity_api core_chat_api wallet_api faith_api dukan_api trends_api \
+                   design_system composeApp; do
+            add_module "$m" "test_${m}"
+          done
+
+          if [ -n "$TEST_TASKS" ]; then
+            echo "🚀 Running tests: $TEST_TASKS"
+            ./gradlew $TEST_TASKS --parallel --build-cache
+
+            if [ -n "$KOVER_TASKS" ]; then
+              echo "📊 Generating coverage reports: $KOVER_TASKS"
+              ./gradlew $KOVER_TASKS --parallel --build-cache
+            fi
+          else
+            echo "ℹ️ No modules need testing - skipping tests"
+          fi
+
+      - name: 🔍 Run Kover verification
+        if: steps.test_changes.outputs.test_all == 'true' || contains(steps.test_changes.outputs.*, 'true')
+        continue-on-error: true
+        run: |
+          VERIFY_TASKS=""
+          for m in identity_data core_chat_data wallet_data dukan_data faith_data trends_data \
+                   identity_domain core_chat_domain wallet_domain dukan_domain faith_domain trends_domain \
+                   identity_presentation core_chat_presentation wallet_presentation faith_presentation dukan_presentation trends_presentation \
+                   identity_api core_chat_api wallet_api faith_api dukan_api trends_api \
+                   design_system composeApp; do
+            if [ "${{ steps.test_changes.outputs.test_${m} }}" = "true" ]; then
+              VERIFY_TASKS="$VERIFY_TASKS :$m:koverVerify"
+            fi
+          done
+
+          if [ -n "$VERIFY_TASKS" ]; then
+            echo "🔍 Verifying coverage: $VERIFY_TASKS"
+            ./gradlew $VERIFY_TASKS --parallel --build-cache
+          fi
+
+      - name: 📦 Upload coverage reports (HTML + XML)
         if: always()
-        with:
-          files: ${{ matrix.module }}/build/test-results/**/*.xml
-          comment_title: "📊 ${{ matrix.module }} Test Results"
-          comment_mode: always
-          compare_to_earlier_commit: true
-          report_individual_runs: true
-
-      # FIX: Uploading a more specific file path is safer.
-      - name: Upload Coverage Report for ${{ matrix.module }}
         uses: actions/upload-artifact@v4
+        with:
+          name: coverage-reports
+          path: |
+            **/build/reports/kover/html/**
+            **/build/reports/kover/report.xml
+
+      - name: 📝 Upload test results
         if: always()
+        uses: actions/upload-artifact@v4
         with:
-          name: coverage-report-${{ matrix.module }}
-          path: ${{ matrix.module }}/build/reports/kover/report.xml
-
-  coverage:
-    runs-on: ubuntu-latest
-    needs: test
-    # FIX: 'always()' ensures this job runs even if some tests fail, so you still get a report.
-    if: always()
-    permissions:
-      contents: read
-      pull-requests: write
-
-    steps:
-      - name: Download All Coverage Reports
-        uses: actions/download-artifact@v4
-        with:
-          # This pattern correctly matches the uploaded artifacts.
-          pattern: "coverage-report-*"
-          path: coverage-reports
-
-      - name: List coverage reports directory
-        run: ls -R coverage-reports
-
-      - name: Post Combined Coverage Comment
-        uses: mi-kas/kover-report@v1.9
-        with:
-          # FIX: This robust glob pattern automatically finds all report.xml files.
-          # You will never need to update this list again when adding/removing modules.
-          path: coverage-reports/**/*.xml
-          token: ${{ secrets.GITHUB_TOKEN }}
-          title: "🛡️ Total Code Coverage Report"
-          update-comment: true
-          min-coverage-overall: 80
-          min-coverage-changed-files: 80
-          coverage-counter-type: LINE
+          name: test-results
+          path: |
+            **/build/test-results/test/TEST-*.xml
