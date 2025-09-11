@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 kotlin {
@@ -12,6 +13,7 @@ kotlin {
         }
         commonMain.dependencies {
             implementation(projects.coreChatDomain)
+            implementation(libs.kotlinx.serialization.json)
         }
         iosMain.dependencies {
 
