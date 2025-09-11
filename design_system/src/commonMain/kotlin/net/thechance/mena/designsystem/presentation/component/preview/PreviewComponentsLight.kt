@@ -3,7 +3,6 @@ package net.thechance.mena.designsystem.presentation.component.preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -291,9 +290,7 @@ private fun PreviewComponentsLight() {
                 )
 
                 val selectedOption = list[0]
-                Box(modifier = Modifier.padding(16.dp)) {
-                    SegmentButton(options = list, selectedOption = selectedOption)
-                }
+                SegmentButton(options = list, selectedOption = selectedOption)
             }
 
             PreviewComponent(

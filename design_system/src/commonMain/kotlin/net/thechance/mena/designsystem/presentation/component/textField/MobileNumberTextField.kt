@@ -37,7 +37,7 @@ fun MobileNumberTextField(
     isError: Boolean = false,
     errorMessage: String? = null,
     leadingIconTint: Color = Theme.colorScheme.shadePrimary,
-    shape: Shape = RoundedCornerShape(Theme.radius.xl),
+    shape: Shape = RoundedCornerShape(Theme.radius.md),
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     visualTransformation: VisualTransformation = VisualTransformation.None
