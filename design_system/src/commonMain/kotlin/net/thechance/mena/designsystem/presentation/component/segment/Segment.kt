@@ -91,7 +91,7 @@ private fun SegmentPreview() {
                         modifier = Modifier
                             .fillMaxSize()
                             .clip(RoundedCornerShape(Theme.radius.md))
-                            .background(Theme.colorScheme.background.surfaceLow),
+                            .background(Theme.colorScheme.background.surfaceHigh),
                         contentAlignment = Alignment.Center
                     ) {
                         Text("Option2")

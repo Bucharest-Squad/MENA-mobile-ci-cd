@@ -316,7 +316,7 @@ private fun PreviewComponentsLight() {
                                 .fillMaxWidth()
                                 .height(200.dp)
                                 .clip(RoundedCornerShape(Theme.radius.md))
-                                .background(Theme.colorScheme.background.surfaceLow),
+                                .background(Theme.colorScheme.background.surfaceHigh),
                             contentAlignment = Alignment.Center
                         ) {
                             Text("Option2")
