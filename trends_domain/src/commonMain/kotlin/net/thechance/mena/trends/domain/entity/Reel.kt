@@ -2,9 +2,8 @@ package net.thechance.mena.trends.domain.entity
 
 import kotlinx.datetime.LocalDateTime
 
-data class Trend(
+data class Reel(
     val id: Int,
-    val authorId: Int,
     val thumbnailUrl: String,
     val videoUrl: String,
     val description: String,
