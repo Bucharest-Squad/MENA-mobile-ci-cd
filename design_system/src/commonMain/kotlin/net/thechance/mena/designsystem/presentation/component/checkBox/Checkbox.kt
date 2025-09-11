@@ -161,7 +161,6 @@ private fun CheckboxPreview() {
             Checkbox(
                 checkedState = checkboxState,
                 label = "Label",
-                isEnabled = false,
                 onCheckedChange = { currentState ->
                     checkboxState = currentState.getNextCheckboxState()
                 }

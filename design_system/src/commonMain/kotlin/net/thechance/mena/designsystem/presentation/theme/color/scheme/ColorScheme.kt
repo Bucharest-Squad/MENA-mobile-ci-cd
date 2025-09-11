@@ -72,7 +72,7 @@ data class ColorScheme(
 
     data class RadioButtonColors(
         val selectedColor: Color,
-        val unselectedColor: Color,
+        val unselectedBorderColor: Color,
         val unselectedContentColor: Color,
         val disabledSelectedBorderColor: Color,
         val disabledUnselectedBorderColor: Color,

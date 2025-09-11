@@ -29,7 +29,7 @@ object RadioButtonDefaults {
         disabledLabelColor: Color = Color.Unspecified
     ): ColorScheme.RadioButtonColors = Theme.colorScheme.defaultRadioButtonColors.copy(
         selectedColor = selectedColor,
-        unselectedColor = unselectedColor,
+        unselectedBorderColor = unselectedColor,
         unselectedContentColor = unselectedContentColor,
         disabledSelectedBorderColor = disabledColor,
         disabledUnselectedBorderColor = disabledBorderColor,

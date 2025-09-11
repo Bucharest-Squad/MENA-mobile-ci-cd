@@ -46,7 +46,7 @@ fun RadioButton(
     )
 
     val animatedSelectionBorderColor by animateColorAsState(
-        targetValue = if (isSelected) colors.selectedColor else colors.unselectedColor
+        targetValue = if (isSelected) colors.selectedColor else colors.unselectedBorderColor
     )
 
     val animatedDisabledBorderColor by animateColorAsState(
