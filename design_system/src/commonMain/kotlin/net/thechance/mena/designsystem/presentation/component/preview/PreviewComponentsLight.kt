@@ -492,7 +492,8 @@ private fun PreviewTextFieldComponent() {
                 leadingContent = {
                     MobileNumberLeadingContent(
                         countryCode = "+964",
-                        countryPainter = painterResource(Res.drawable.ic_iraq)
+                        countryPainter = painterResource(Res.drawable.ic_iraq),
+                        onClick = {}
                     )
                 },
                 modifier = Modifier.fillMaxWidth()

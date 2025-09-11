@@ -1,6 +1,7 @@
 package net.thechance.mena.designsystem.presentation.component.textField
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -71,11 +72,14 @@ fun MobileNumberTextField(
 @Composable
 fun MobileNumberLeadingContent(
     countryCode: String,
-    countryPainter: Painter
+    countryPainter: Painter,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .clip(RoundedCornerShape(Theme.radius.md))
+            .clickable(onClick = onClick)
             .background(Theme.colorScheme.background.surfaceLow)
             .padding(
                 vertical = 13.dp,
