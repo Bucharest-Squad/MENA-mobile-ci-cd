@@ -13,14 +13,10 @@ composeMultiplatform = "1.8.2"
 junit = "4.13.2"
 mockk = "1.14.5"
 kotlin = "2.2.10"
-kotlinxDatetime = "0.7.1"
-junitJupiter = "5.13.4"
-truth = "1.4.5"
-composeUi = "1.9.1"
-turbine = "1.2.1"
-kotlinxDatetime = "0.7.1"
+navigationCompose = "2.9.4"
 
 [libraries]
+androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 
