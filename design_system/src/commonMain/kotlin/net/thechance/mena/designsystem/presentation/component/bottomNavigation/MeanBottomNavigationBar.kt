@@ -22,7 +22,7 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun MeanBottomNavigationBar(
     onItemClick: (BottomNavigationBarItem) -> Unit,
-    modifier: Modifier
+    modifier: Modifier = Modifier
 ) {
     val items = listOf(
         BottomNavigationBarItem(
