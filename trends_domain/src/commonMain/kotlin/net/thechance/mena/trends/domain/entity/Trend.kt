@@ -1,5 +1,7 @@
 package net.thechance.mena.trends.domain.entity
 
+import kotlinx.datetime.LocalDateTime
+
 data class Trend(
     val id: Int,
     val thumbnailUrl: String,
@@ -7,6 +9,6 @@ data class Trend(
     val description: String,
     val likesCount: Int,
     val viewsCount: Int,
-    val createdAt: Long,
+    val createdAt: LocalDateTime,
     val categories: List<Category>
 )
