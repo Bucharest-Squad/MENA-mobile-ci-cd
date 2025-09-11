@@ -1,16 +1,10 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.kover)
 }
 
 kotlin {
-    androidTarget {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
-        }
-    }
+    jvm()
     iosArm64()
     iosSimulatorArm64()
 
@@ -18,13 +12,16 @@ kotlin {
         commonMain.dependencies {
 
         }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+        }
     }
 }
-android {
-    namespace = "net.thechance.mena.wallet.domain"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
 
-    defaultConfig {
-        minSdk = libs.versions.android.minSdk.get().toInt()
+kover.reports {
+    verify {
+        rule {
+            minBound(80)
+        }
     }
 }
