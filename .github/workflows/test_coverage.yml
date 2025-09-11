@@ -1,0 +1,109 @@
+name: Test and Code Coverage
+
+on:
+  pull_request:
+    branches: [ develop, main ]
+
+# This ensures that if you push new commits to a PR, the old run is cancelled.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  # This job runs in parallel for every module to test it and generate reports.
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
+    strategy:
+      # Run a separate job for each module in this list.
+      matrix:
+        module: [
+          core_chat_api, core_chat_data, core_chat_domain, core_chat_presentation,
+          dukan_api, dukan_data, dukan_domain, dukan_presentation,
+          faith_api, faith_data, faith_domain, faith_presentation,
+          identity_api, identity_data, identity_domain, identity_presentation,
+          trends_api, trends_data, trends_domain, trends_presentation,
+          wallet_api, wallet_data, wallet_domain, wallet_presentation
+        ]
+      # Ensures all tests complete even if one module fails.
+      fail-fast: false
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: 17
+          cache: gradle
+
+      - name: Grant execute permissions for gradlew
+        run: chmod +x gradlew
+
+      - name: Run Tests & Kover Verification for ${{ matrix.module }}
+        # This step will now fail if the module's coverage is below 80%,
+        # because of the rule you added in build.gradle.kts.
+        run: ./gradlew :${{ matrix.module }}:koverVerify --build-cache
+
+      - name: Upload HTML Coverage Report for ${{ matrix.module }}
+        # Uploads the browsable HTML report as a build artifact.
+        uses: actions/upload-artifact@v4
+        if: always() # Run this even if the previous step fails
+        with:
+          name: html-coverage-report-${{ matrix.module }}
+          path: ${{ matrix.module }}/build/reports/kover/html/
+
+      - name: Upload XML Coverage Report for ${{ matrix.module }}
+        # Uploads the XML report needed for Codecov.
+        uses: actions/upload-artifact@v4
+        if: always() # Run this even if the previous step fails
+        with:
+          name: xml-coverage-report-${{ matrix.module }}
+          path: ${{ matrix.module }}/build/reports/kover/report.xml
+
+  # This job runs after all tests are done to consolidate reports and upload to Codecov.
+  coverage-report:
+    runs-on: ubuntu-latest
+    # This job now runs even if the test job fails, so you still get a Codecov report.
+    if: always() && github.event_name == 'pull_request'
+    needs: test
+    permissions:
+      contents: read
+      pull-requests: write # Required for Codecov to post a comment
+      checks: write      # Required for Codecov to post a status check
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Download all Kover XML reports
+        uses: actions/download-artifact@v4
+        with:
+          # This pattern matches all the XML artifacts uploaded by the 'test' jobs.
+          pattern: "xml-coverage-report-*"
+          path: coverage-reports # Download them into a single directory
+
+      - name: List downloaded reports
+        run: ls -R coverage-reports
+
+      - name: Upload reports to Codecov
+        # This step will only run if the CODECOV_TOKEN secret is available.
+        if: secrets.CODECOV_TOKEN != ''
+        uses: codecov/codecov-action@v4
+        with:
+          # Use the secret you created in the repository settings.
+          token: ${{ secrets.CODECOV_TOKEN }}
+          # The action will automatically find all XML files in this directory.
+          directory: ./coverage-reports/
+          # This will cause the workflow step to fail if the Codecov upload fails.
+          fail_ci_if_error: true
+
+      - name: Notify that Codecov step is skipped
+        # This step runs only if the secret is MISSING, making logs easier to understand.
+        if: secrets.CODECOV_TOKEN == ''
+        run: echo "CODECOV_TOKEN secret not found. Skipping Codecov upload."
