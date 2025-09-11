@@ -14,7 +14,7 @@ data class Radius(
     val full: Dp
 )
 
-val MenaRadius = Radius(
+internal val MenaRadius = Radius(
     xxs = 2.dp,
     xs = 4.dp,
     sm = 8.dp,

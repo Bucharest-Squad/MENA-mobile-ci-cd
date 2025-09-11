@@ -13,15 +13,15 @@ data class ColorPalette(
     val green: ColorScale
 ) {
     data class ColorScale(
-        val _50: Color,
-        val _100: Color,
-        val _200: Color,
-        val _300: Color,
-        val _400: Color,
-        val _500: Color,
-        val _600: Color,
-        val _700: Color,
-        val _800: Color,
-        val _900: Color
+        val shade50: Color,
+        val shade100: Color,
+        val shade200: Color,
+        val shade300: Color,
+        val shade400: Color,
+        val shade500: Color,
+        val shade600: Color,
+        val shade700: Color,
+        val shade800: Color,
+        val shade900: Color
     )
 }
