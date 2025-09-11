@@ -63,11 +63,12 @@ fun Button(
                 else Modifier
             )
             .background(color = buttonBackgroundColor)
-            .padding(contentPadding)
             .then(
                 if (borderStroke != null) Modifier.border(border = borderStroke, shape = shape)
                 else Modifier
-            ).animateContentSize(
+            )
+            .padding(contentPadding)
+            .animateContentSize(
                 animationSpec = spring(stiffness = Spring.StiffnessMedium),
                 alignment = Alignment.Center
             )

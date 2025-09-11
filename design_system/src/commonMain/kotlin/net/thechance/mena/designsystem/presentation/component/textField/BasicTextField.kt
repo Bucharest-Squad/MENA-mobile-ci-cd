@@ -1,12 +1,14 @@
-package net.thechance.mena.designsystem.presentation.component.textField.content
+package net.thechance.mena.designsystem.presentation.component.textField
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -17,6 +19,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
@@ -39,11 +44,12 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun BasicTextField(
     value: String,
-    onValueChanged: (String) -> Unit,
     placeholder: String,
-    leadingIcon: Painter?,
-    trailingIcon: Painter?,
+    onValueChanged: (String) -> Unit,
     modifier: Modifier = Modifier,
+    leadingContent: @Composable (() -> Unit)? = null,
+    leadingIcon: Painter? = null,
+    trailingIcon: Painter? = null,
     title: String? = null,
     leadingIconTint: Color = Theme.colorScheme.shadePrimary,
     singleLine: Boolean = true,
@@ -53,12 +59,14 @@ fun BasicTextField(
     readOnly: Boolean = false,
     isError: Boolean = false,
     errorMessage: String? = null,
-    shape: Shape = RoundedCornerShape(Theme.radius.xl),
+    shape: Shape = RoundedCornerShape(Theme.radius.md),
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
+    focusRequester: FocusRequester = FocusRequester(),
+    onFocusChanged: (Boolean) -> Unit = {},
     visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
-    Column {
+    Column(modifier) {
         title?.let {
             MenaText(
                 text = title,
@@ -71,39 +79,47 @@ fun BasicTextField(
             )
         }
 
-        BasicTextField(
-            value = value,
-            onValueChange = onValueChanged,
-            enabled = enabled,
-            readOnly = readOnly,
-            minLines = minLines,
-            maxLines = if (singleLine) 1 else maxLines,
-            textStyle = Theme.typography.body.small.copy(
-                fontSize = 14.sp,
-                lineHeight = 22.sp,
-                letterSpacing = 0.sp
-            ),
-            keyboardOptions = keyboardOptions,
-            keyboardActions = keyboardActions,
-            singleLine = singleLine,
-            cursorBrush = SolidColor(Theme.colorScheme.primary.primary),
-            decorationBox = { innerTextField ->
-                TextFieldContent(
-                    innerTextField = innerTextField,
-                    text = value,
-                    isError = isError,
-                    singleLine = singleLine,
-                    placeholder = placeholder,
-                    leadingIcon = leadingIcon,
-                    trailingIcon = trailingIcon,
-                    leadingIconTint = leadingIconTint
-                )
-            },
-            visualTransformation = visualTransformation,
-            modifier = modifier
-                .clip(shape)
-                .background(color = Theme.colorScheme.background.surfaceLow)
-        )
+        Row(Modifier.fillMaxWidth()) {
+            leadingContent?.let {
+                leadingContent()
+                Spacer(Modifier.width(Theme.spacing._4))
+            }
+
+            BasicTextField(
+                value = value,
+                onValueChange = onValueChanged,
+                enabled = enabled,
+                readOnly = readOnly,
+                minLines = minLines,
+                maxLines = if (singleLine) 1 else maxLines,
+                textStyle = Theme.typography.body.small,
+                keyboardOptions = keyboardOptions,
+                keyboardActions = keyboardActions,
+                singleLine = singleLine,
+                cursorBrush = SolidColor(Theme.colorScheme.primary.primary),
+                decorationBox = { innerTextField ->
+                    TextFieldContent(
+                        innerTextField = innerTextField,
+                        text = value,
+                        isError = isError,
+                        singleLine = singleLine,
+                        placeholder = placeholder,
+                        leadingIcon = leadingIcon,
+                        trailingIcon = trailingIcon,
+                        leadingIconTint = leadingIconTint
+                    )
+                },
+                visualTransformation = visualTransformation,
+                modifier = Modifier
+                    .weight(1f)
+                    .clip(shape)
+                    .background(color = Theme.colorScheme.background.surfaceLow)
+                    .focusRequester(focusRequester)
+                    .onFocusChanged {
+                        onFocusChanged(it.isFocused)
+                    }
+            )
+        }
 
         errorMessage?.let {
             MenaText(
@@ -190,9 +206,6 @@ private fun InnerTextFieldWithPlaceHolder(
             MenaText(
                 text = placeholder,
                 color = Theme.colorScheme.shadeTertiary,
-                fontSize = 14.sp,
-                lineHeight = 22.sp,
-                letterSpacing = 0.sp,
                 style = Theme.typography.label.medium
             )
         }

@@ -1,4 +1,4 @@
-package net.thechance.mena.designsystem.presentation.component.text_field.otp_input_field
+package net.thechance.mena.designsystem.presentation.component.textField
 
 
 import androidx.compose.foundation.background

@@ -1,8 +1,6 @@
 package net.thechance.mena.designsystem.presentation.theme.typography
 
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.text.TextStyle
 
@@ -39,4 +37,5 @@ data class Typography(
     )
 }
 
-val LocalTypography = staticCompositionLocalOf<Typography> { error("No Typography provided") }
+internal val LocalTypography =
+    staticCompositionLocalOf<Typography> { error("No Typography provided") }
