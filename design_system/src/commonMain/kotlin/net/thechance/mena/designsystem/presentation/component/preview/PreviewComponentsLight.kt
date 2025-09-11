@@ -38,6 +38,7 @@ import net.thechance.mena.designsystem.presentation.component.bottomNavigation.M
 import net.thechance.mena.designsystem.presentation.component.button.FabButton
 import net.thechance.mena.designsystem.presentation.component.button.NegativeButton
 import net.thechance.mena.designsystem.presentation.component.button.NegativeTextButton
+import net.thechance.mena.designsystem.presentation.component.button.OutlinedButton
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
 import net.thechance.mena.designsystem.presentation.component.button.TextButton
 import net.thechance.mena.designsystem.presentation.component.checkBox.Checkbox
@@ -123,6 +124,32 @@ private fun PreviewComponentsLight() {
                     modifier = Modifier
                 )
                 NegativeButton(
+                    text = "Button",
+                    trailingIcon = painterResource(resource = Res.drawable.ic_cheese_cake),
+                    onClick = {},
+                    isEnabled = false,
+                    modifier = Modifier
+                )
+            }
+
+            PreviewComponent(
+                isScrollable = true,
+                title = "Outlined button"
+            ) {
+                OutlinedButton(
+                    text = "Button",
+                    trailingIcon = painterResource(resource = Res.drawable.ic_cheese_cake),
+                    onClick = {},
+                    modifier = Modifier
+                )
+                OutlinedButton(
+                    text = "Button",
+                    isLoading = true,
+                    trailingIcon = painterResource(resource = Res.drawable.ic_cheese_cake),
+                    onClick = {},
+                    modifier = Modifier
+                )
+                OutlinedButton(
                     text = "Button",
                     trailingIcon = painterResource(resource = Res.drawable.ic_cheese_cake),
                     onClick = {},

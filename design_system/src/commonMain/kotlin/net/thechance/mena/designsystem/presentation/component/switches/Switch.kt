@@ -55,7 +55,7 @@ fun Switch(
 
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(Theme.radius._2xl))
+            .clip(RoundedCornerShape(Theme.radius.lg))
             .background(if (isEnabled) containerColor else disabledContainerColor)
             .width(48.dp)
             .then(
