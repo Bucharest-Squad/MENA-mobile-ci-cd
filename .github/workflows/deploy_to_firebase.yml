@@ -1,4 +1,4 @@
-name: Deploy to Firebase
+name: Deploy apk to Firebase
 
 on:
   deploy-to-firebase:
