@@ -1,7 +1,7 @@
 name: Deploy apk to Firebase
 
 on:
-  deploy-to-firebase:
+  workflow_call:
     inputs:
       release_notes:
         required: false
@@ -27,7 +27,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  deploy:
+  deploy-to-firebase:
     runs-on: ubuntu-latest
 
     steps:
