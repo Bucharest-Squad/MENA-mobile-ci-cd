@@ -24,7 +24,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import net.thechance.mena.designsystem.presentation.theme.color.scheme.ColorScheme
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -36,7 +35,6 @@ fun RadioButton(
     onClick: (() -> Unit)?,
     label: String? = null,
     modifier: Modifier = Modifier,
-    colors: ColorScheme.RadioButtonColors = RadioButtonDefaults.radioButtonColors(),
     shape: Shape = RoundedCornerShape(Theme.radius.full),
     isEnabled: Boolean = true
 ) {
@@ -46,11 +44,11 @@ fun RadioButton(
     )
 
     val animatedSelectionBorderColor by animateColorAsState(
-        targetValue = if (isSelected) colors.selectedColor else colors.unselectedBorderColor
+        targetValue = if (isSelected) Theme.colorScheme.primary.primary else Theme.colorScheme.stroke
     )
 
     val animatedDisabledBorderColor by animateColorAsState(
-        targetValue = if (isSelected) colors.disabledSelectedBorderColor else colors.disabledUnselectedBorderColor
+        targetValue = if (isSelected) Theme.colorScheme.disabled else Theme.colorScheme.border.disabled
     )
 
     val animatedBorderColor by animateColorAsState(
@@ -58,17 +56,17 @@ fun RadioButton(
     )
 
     val animatedUnselectedContentColor by animateColorAsState(
-        targetValue = if (isSelected || !isEnabled) Color.Unspecified else colors.unselectedContentColor
+        targetValue = if (isSelected || !isEnabled) Color.Unspecified else Theme.colorScheme.background.surfaceLow
     )
 
     val animatedUnselectedLabelColor by animateColorAsState(
         targetValue = if (isSelected)
-            colors.selectedLabelColor else colors.unselectedLabelColor
+            Theme.colorScheme.shadePrimary else Theme.colorScheme.shadeTertiary
     )
 
     val animatedLabelColor by animateColorAsState(
         targetValue = if (isEnabled)
-            animatedUnselectedLabelColor else colors.disabledLabelColor
+            animatedUnselectedLabelColor else Theme.colorScheme.stroke
     )
 
     val clickableModifier = onClick?.let {
@@ -126,6 +124,7 @@ private fun RadioButtonPreview() {
             RadioButton(
                 isSelected = selected,
                 label = "Label",
+                isEnabled = false,
                 onClick = {
                     selected = !selected
                 }

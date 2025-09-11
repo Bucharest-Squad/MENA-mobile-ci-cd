@@ -45,15 +45,5 @@ internal val LightColorScheme = ColorScheme(
     disabled = colorPalette.gray.shade400,
     error = colorPalette.red.shade700,
     warning = colorPalette.yellow.shade600,
-    success = colorPalette.green.shade600,
-    defaultRadioButtonColors = ColorScheme.RadioButtonColors(
-        selectedColor = Black,
-        unselectedBorderColor = colorPalette.gray.shade300,
-        unselectedContentColor = colorPalette.gray.shade50,
-        disabledSelectedBorderColor = colorPalette.gray.shade400,
-        disabledUnselectedBorderColor = colorPalette.gray.shade300,
-        selectedLabelColor = colorPalette.gray.shade800,
-        unselectedLabelColor = colorPalette.gray.shade500,
-        disabledLabelColor = colorPalette.gray.shade300
-    )
+    success = colorPalette.green.shade600
 )
