@@ -36,9 +36,6 @@ jobs:
       - name: Grant execute permissions for gradlew
         run: chmod +x gradlew
 
-      - name: Clean Project
-        run: ./gradlew clean
-
       - name: Run Test And Kover Verification for ${{ matrix.module }}
         run: ./gradlew :${{ matrix.module }}:koverVerify --build-cache
         continue-on-error: false
@@ -116,3 +113,18 @@ jobs:
           min-coverage-overall: 80
           min-coverage-changed-files: 80
           coverage-counter-type: LINE
+          
+  status-check:
+    runs-on: ubuntu-latest
+    needs: [test, coverage]
+    if: always() # This is important so it runs even if a previous job fails
+
+    steps:
+      - name: Check status of previous jobs
+        run: |
+          if [[ "${{ needs.test.result }}" == "failure" || "${{ needs.coverage.result }}" == "failure" ]]; then
+            echo "One or more required jobs failed. Failing the status check."
+            exit 1
+          else
+            echo "All checks passed successfully."
+          fi
