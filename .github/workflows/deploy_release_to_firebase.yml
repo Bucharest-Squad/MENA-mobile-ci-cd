@@ -34,12 +34,12 @@ jobs:
     needs: build-release-apk
     steps:
       - name: Echo the APK path
-        run: echo "APK path is ${{ needs.build-release-apk.outputs.signed-apk-path }}"
+        run: echo "APK path is ${{ composeApp/build/outputs/apk/release/composeApp-release-unsigned-signed.apk }}"
       - name: Upload signed APK to Firebase
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: ${{ secrets.FIREBASE_APP_ID }}
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
-          file: "composeApp/build/outputs/apk/release/composeApp-release-unsigned-signed.apk"
+          file: composeApp/build/outputs/apk/release/composeApp-release-unsigned-signed.apk
           debug: true
           group: tester
