@@ -1,8 +1,14 @@
+
 name: Test Coverage
 
 on:
   pull_request:
     branches: [ develop, main ]
+
+# BEST PRACTICE: Cancel old workflow runs when new commits are pushed to the same PR.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
 
 jobs:
   test:
@@ -21,7 +27,7 @@ jobs:
           trends_api, trends_data, trends_domain, trends_presentation,
           wallet_api, wallet_data, wallet_domain, wallet_presentation
         ]
-
+      # Ensures all module tests run, even if one fails.
       fail-fast: false
 
     steps:
@@ -36,13 +42,10 @@ jobs:
       - name: Grant execute permissions for gradlew
         run: chmod +x gradlew
 
-      - name: Run Test And Kover Verification for ${{ matrix.module }}
-        run: ./gradlew :${{ matrix.module }}:koverVerify --build-cache
-        continue-on-error: false
-
-      - name: Generate coverage report for ${{ matrix.module }}
-        run: ./gradlew :${{ matrix.module }}:koverXmlReport
-        continue-on-error: true
+      # IMPROVEMENT: Combined Gradle tasks into a single step for efficiency.
+      # koverVerify runs tests, checks coverage, and generates reports.
+      - name: Run Tests & Kover Verification for ${{ matrix.module }}
+        run: ./gradlew :${{ matrix.module }}:clean :${{ matrix.module }}:koverVerify --build-cache
 
       - name: Publish Unit Test Results for ${{ matrix.module }}
         uses: EnricoMi/publish-unit-test-result-action@v2
@@ -54,17 +57,19 @@ jobs:
           compare_to_earlier_commit: true
           report_individual_runs: true
 
+      # FIX: Uploading a more specific file path is safer.
       - name: Upload Coverage Report for ${{ matrix.module }}
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: ${{ matrix.module }}-coverage-report
-          path: ${{ matrix.module }}/build/reports/kover/**/*.xml
+          name: coverage-report-${{ matrix.module }}
+          path: ${{ matrix.module }}/build/reports/kover/report.xml
 
   coverage:
     runs-on: ubuntu-latest
     needs: test
-    if: github.event_name == 'pull_request'
+    # FIX: 'always()' ensures this job runs even if some tests fail, so you still get a report.
+    if: always()
     permissions:
       contents: read
       pull-requests: write
@@ -73,7 +78,8 @@ jobs:
       - name: Download All Coverage Reports
         uses: actions/download-artifact@v4
         with:
-          pattern: "*-coverage-report"
+          # This pattern correctly matches the uploaded artifacts.
+          pattern: "coverage-report-*"
           path: coverage-reports
 
       - name: List coverage reports directory
@@ -82,31 +88,9 @@ jobs:
       - name: Post Combined Coverage Comment
         uses: mi-kas/kover-report@v1.9
         with:
-          path: |
-            coverage-reports/core_chat_api-coverage-report/report.xml
-            coverage-reports/core_chat_data-coverage-report/report.xml
-            coverage-reports/core_chat_domain-coverage-report/report.xml
-            coverage-reports/core_chat_presentation-coverage-report/report.xml
-            coverage-reports/dukan_api-coverage-report/report.xml
-            coverage-reports/dukan_data-coverage-report/report.xml
-            coverage-reports/dukan_domain-coverage-report/report.xml
-            coverage-reports/dukan_presentation-coverage-report/report.xml
-            coverage-reports/faith_api-coverage-report/report.xml
-            coverage-reports/faith_data-coverage-report/report.xml
-            coverage-reports/faith_domain-coverage-report/report.xml
-            coverage-reports/faith_presentation-coverage-report/report.xml
-            coverage-reports/identity_api-coverage-report/report.xml
-            coverage-reports/identity_data-coverage-report/report.xml
-            coverage-reports/identity_domain-coverage-report/report.xml
-            coverage-reports/identity_presentation-coverage-report/report.xml
-            coverage-reports/trends_api-coverage-report/report.xml
-            coverage-reports/trends_data-coverage-report/report.xml
-            coverage-reports/trends_domain-coverage-report/report.xml
-            coverage-reports/trends_presentation-coverage-report/report.xml
-            coverage-reports/wallet_api-coverage-report/report.xml
-            coverage-reports/wallet_data-coverage-report/report.xml
-            coverage-reports/wallet_domain-coverage-report/report.xml
-            coverage-reports/wallet_presentation-coverage-report/report.xml
+          # FIX: This robust glob pattern automatically finds all report.xml files.
+          # You will never need to update this list again when adding/removing modules.
+          path: coverage-reports/**/*.xml
           token: ${{ secrets.GITHUB_TOKEN }}
           title: "🛡️ Total Code Coverage Report"
           update-comment: true
@@ -117,14 +101,16 @@ jobs:
   status-check:
     runs-on: ubuntu-latest
     needs: [test, coverage]
-    if: always() # This is important so it runs even if a previous job fails
+    if: always() # This ensures the final status is always reported to GitHub.
 
     steps:
       - name: Check status of previous jobs
         run: |
+          # This logic correctly checks the final outcome of the 'test' and 'coverage' jobs.
           if [[ "${{ needs.test.result }}" == "failure" || "${{ needs.coverage.result }}" == "failure" ]]; then
             echo "One or more required jobs failed. Failing the status check."
             exit 1
           else
             echo "All checks passed successfully."
+            exit 0
           fi
