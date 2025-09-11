@@ -1,12 +1,14 @@
-package net.thechance.mena.designsystem.presentation.component.textField.content
+package net.thechance.mena.designsystem.presentation.component.textField
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -39,11 +41,12 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun BasicTextField(
     value: String,
-    onValueChanged: (String) -> Unit,
     placeholder: String,
-    leadingIcon: Painter?,
-    trailingIcon: Painter?,
+    onValueChanged: (String) -> Unit,
     modifier: Modifier = Modifier,
+    leadingContent: @Composable (() -> Unit)? = null,
+    leadingIcon: Painter? = null,
+    trailingIcon: Painter? = null,
     title: String? = null,
     leadingIconTint: Color = Theme.colorScheme.shadePrimary,
     singleLine: Boolean = true,
@@ -71,39 +74,43 @@ fun BasicTextField(
             )
         }
 
-        BasicTextField(
-            value = value,
-            onValueChange = onValueChanged,
-            enabled = enabled,
-            readOnly = readOnly,
-            minLines = minLines,
-            maxLines = if (singleLine) 1 else maxLines,
-            textStyle = Theme.typography.body.small.copy(
-                fontSize = 14.sp,
-                lineHeight = 22.sp,
-                letterSpacing = 0.sp
-            ),
-            keyboardOptions = keyboardOptions,
-            keyboardActions = keyboardActions,
-            singleLine = singleLine,
-            cursorBrush = SolidColor(Theme.colorScheme.primary.primary),
-            decorationBox = { innerTextField ->
-                TextFieldContent(
-                    innerTextField = innerTextField,
-                    text = value,
-                    isError = isError,
-                    singleLine = singleLine,
-                    placeholder = placeholder,
-                    leadingIcon = leadingIcon,
-                    trailingIcon = trailingIcon,
-                    leadingIconTint = leadingIconTint
-                )
-            },
-            visualTransformation = visualTransformation,
-            modifier = modifier
-                .clip(shape)
-                .background(color = Theme.colorScheme.background.surfaceLow)
-        )
+        Row(Modifier.fillMaxWidth()) {
+            leadingContent?.let {
+                leadingContent()
+                Spacer(Modifier.width(Theme.spacing._4))
+            }
+
+            BasicTextField(
+                value = value,
+                onValueChange = onValueChanged,
+                enabled = enabled,
+                readOnly = readOnly,
+                minLines = minLines,
+                maxLines = if (singleLine) 1 else maxLines,
+                textStyle = Theme.typography.body.small,
+                keyboardOptions = keyboardOptions,
+                keyboardActions = keyboardActions,
+                singleLine = singleLine,
+                cursorBrush = SolidColor(Theme.colorScheme.primary.primary),
+                decorationBox = { innerTextField ->
+                    TextFieldContent(
+                        innerTextField = innerTextField,
+                        text = value,
+                        isError = isError,
+                        singleLine = singleLine,
+                        placeholder = placeholder,
+                        leadingIcon = leadingIcon,
+                        trailingIcon = trailingIcon,
+                        leadingIconTint = leadingIconTint
+                    )
+                },
+                visualTransformation = visualTransformation,
+                modifier = Modifier
+                    .weight(1f)
+                    .clip(shape)
+                    .background(color = Theme.colorScheme.background.surfaceLow)
+            )
+        }
 
         errorMessage?.let {
             MenaText(
@@ -190,9 +197,6 @@ private fun InnerTextFieldWithPlaceHolder(
             MenaText(
                 text = placeholder,
                 color = Theme.colorScheme.shadeTertiary,
-                fontSize = 14.sp,
-                lineHeight = 22.sp,
-                letterSpacing = 0.sp,
                 style = Theme.typography.label.medium
             )
         }

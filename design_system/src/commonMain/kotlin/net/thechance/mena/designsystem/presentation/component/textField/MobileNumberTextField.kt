@@ -1,0 +1,101 @@
+package net.thechance.mena.designsystem.presentation.component.textField
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.dp
+import mena.design_system.generated.resources.Res
+import mena.design_system.generated.resources.ic_arrow_down
+import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
+import net.thechance.mena.designsystem.presentation.component.image.MenaImage
+import net.thechance.mena.designsystem.presentation.component.text.MenaText
+import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import org.jetbrains.compose.resources.painterResource
+
+@Composable
+fun MobileNumberTextField(
+    value: String,
+    onValueChanged: (String) -> Unit,
+    placeholder: String,
+    leadingIcon: Painter,
+    modifier: Modifier = Modifier,
+    leadingContent: (@Composable () -> Unit)? = null,
+    title: String? = null,
+    enabled: Boolean = true,
+    readOnly: Boolean = false,
+    isError: Boolean = false,
+    errorMessage: String? = null,
+    leadingIconTint: Color = Theme.colorScheme.shadePrimary,
+    shape: Shape = RoundedCornerShape(Theme.radius.xl),
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    visualTransformation: VisualTransformation = VisualTransformation.None
+) {
+    BasicTextField(
+        value = value,
+        onValueChanged = onValueChanged,
+        placeholder = placeholder,
+        leadingIcon = leadingIcon,
+        trailingIcon = null,
+        title = title,
+        leadingContent = leadingContent,
+        leadingIconTint = leadingIconTint,
+        enabled = enabled,
+        readOnly = readOnly,
+        isError = isError,
+        errorMessage = errorMessage,
+        shape = shape,
+        keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
+        visualTransformation = visualTransformation,
+        modifier = modifier
+    )
+}
+
+@Composable
+fun MobileNumberLeadingContent(
+    countryCode: String,
+    countryPainter: Painter
+) {
+    Row(
+        modifier = Modifier
+            .clip(RoundedCornerShape(Theme.radius.md))
+            .background(Theme.colorScheme.background.surfaceLow)
+            .padding(
+                vertical = 13.dp,
+                horizontal = 8.dp
+            )
+    ) {
+        MenaImage(
+            painter = countryPainter,
+            contentDescription = "country image",
+            modifier = Modifier
+                .clip(RoundedCornerShape(Theme.radius.full))
+                .size(20.dp)
+        )
+
+        MenaText(
+            text = countryCode,
+            style = Theme.typography.label.medium,
+            color = Theme.colorScheme.shadePrimary,
+            modifier = Modifier.padding(start = 4.dp, end = 2.dp)
+        )
+
+        MenaIcon(
+            painter = painterResource(Res.drawable.ic_arrow_down),
+            contentDescription = "arrow down",
+            modifier = Modifier.size(16.dp)
+        )
+    }
+}

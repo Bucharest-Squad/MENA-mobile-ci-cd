@@ -1,4 +1,4 @@
-package net.thechance.mena.designsystem.presentation.component.text_field.otp_input_field
+package net.thechance.mena.designsystem.presentation.component.textField
 
 
 import androidx.compose.foundation.background
@@ -37,7 +37,7 @@ fun OtpInputField(
     number: Int?,
     onNumberChanged: (Int?) -> Unit,
     modifier: Modifier = Modifier,
-    shape: Shape = RoundedCornerShape(Theme.radius.md),
+    shape: Shape = RoundedCornerShape(Theme.radius.xl),
     containerColor: Color = Theme.colorScheme.background.surfaceLow,
     onFocusChanged: (Boolean) -> Unit = {},
     onPressDeleteWhenEmpty: () -> Unit = {},
