@@ -97,20 +97,3 @@ jobs:
           min-coverage-overall: 80
           min-coverage-changed-files: 80
           coverage-counter-type: LINE
-          
-  status-check:
-    runs-on: ubuntu-latest
-    needs: [test, coverage]
-    if: always() # This ensures the final status is always reported to GitHub.
-
-    steps:
-      - name: Check status of previous jobs
-        run: |
-          # This logic correctly checks the final outcome of the 'test' and 'coverage' jobs.
-          if [[ "${{ needs.test.result }}" == "failure" || "${{ needs.coverage.result }}" == "failure" ]]; then
-            echo "One or more required jobs failed. Failing the status check."
-            exit 1
-          else
-            echo "All checks passed successfully."
-            exit 0
-          fi
