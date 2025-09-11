@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -26,14 +27,18 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import mena.design_system.generated.resources.Res
+import mena.design_system.generated.resources.checkmark
+import mena.design_system.generated.resources.ic_arrow_left
 import mena.design_system.generated.resources.ic_check_circle
 import mena.design_system.generated.resources.ic_cheese_cake
 import mena.design_system.generated.resources.ic_chip
 import mena.design_system.generated.resources.ic_close_circle
 import mena.design_system.generated.resources.ic_iraq
 import mena.design_system.generated.resources.ic_profile
+import mena.design_system.generated.resources.ic_user
 import mena.design_system.generated.resources.silver_tc
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
+import net.thechance.mena.designsystem.presentation.component.appBar.AppBarOptionContainer
 import net.thechance.mena.designsystem.presentation.component.bottomNavigation.MeanBottomNavigationBar
 import net.thechance.mena.designsystem.presentation.component.button.FabButton
 import net.thechance.mena.designsystem.presentation.component.button.NegativeButton
@@ -336,14 +341,38 @@ private fun PreviewComponentsLight() {
                 )
             }
 
-            //todo appbar preview
             PreviewComponent(
                 title = "App bar",
                 isScrollable = false
             ) {
                 AppBar(
-                    title = "Title",
-                    modifier = Modifier.fillMaxWidth()
+                    leadingContent = {
+                        Icon(
+                            painter = painterResource(Res.drawable.ic_arrow_left),
+                            contentDescription = null
+                        )
+                    },
+                    title = "Screen title",
+                    trailingContent = {
+                        AppBarOptionContainer(
+                            isBadgeVisible = true,
+                            badgeColor = Theme.colorScheme.error
+                        ) {
+                            Icon(
+                                painter = painterResource(Res.drawable.ic_user),
+                                contentDescription = null
+                            )
+                        }
+                        AppBarOptionContainer(
+                            isBadgeVisible = true,
+                            badgeColor = Theme.colorScheme.primary.primary
+                        ) {
+                            Icon(
+                                painter = painterResource(Res.drawable.checkmark),
+                                contentDescription = null
+                            )
+                        }
+                    }
                 )
             }
 
