@@ -6,7 +6,7 @@ on:
       - develop
 
 jobs:
-  call-deploy:
+  deploy-develop-release-to-firebase:
     uses: ./.github/workflows/deploy_to_firebase.yml
     secrets:
       GOOGLE_SERVICES_JSON_BASE64: ${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}
