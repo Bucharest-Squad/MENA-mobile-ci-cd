@@ -1,0 +1,17 @@
+name: Deploy release apk from develop to firebase
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  deploy-release-to-firebase:
+    uses: ./.github/workflows/deploy_release_to_firebase.yml
+    secrets:
+      ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+      KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+      ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+      ANDROID_KEY_ALIAS_PASSWORD: ${{ secrets.ANDROID_KEY_ALIAS_PASSWORD }}
+      FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+      CREDENTIAL_FILE_CONTENT: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
