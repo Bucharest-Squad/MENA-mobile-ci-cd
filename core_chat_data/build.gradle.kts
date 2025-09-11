@@ -13,7 +13,7 @@ kotlin {
         }
         commonMain.dependencies {
             implementation(projects.coreChatDomain)
-            implementation(libs.kotlinx.serialization.json)
+            implementation(libs.kotlin.serialization)
         }
         iosMain.dependencies {
 

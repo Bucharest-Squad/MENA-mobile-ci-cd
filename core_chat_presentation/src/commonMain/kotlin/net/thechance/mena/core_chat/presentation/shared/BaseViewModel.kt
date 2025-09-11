@@ -2,6 +2,12 @@ package net.thechance.mena.core_chat.presentation.shared
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.PagingSource
+import androidx.paging.cachedIn
+import androidx.paging.map
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -13,7 +19,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEmpty
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
@@ -45,7 +51,7 @@ open class BaseViewModel<S>(initialState: S) : ViewModel() {
     protected fun <T> tryToCollect(
         onStart: () -> Unit = {},
         collect: () -> Flow<T>,
-        onCollect : suspend (T?) -> Unit,
+        onCollect: suspend (T?) -> Unit,
         onError: (Throwable) -> Unit = {},
         coroutineScope: CoroutineScope = viewModelScope,
         dispatcher: CoroutineDispatcher = Dispatchers.IO,
@@ -55,8 +61,27 @@ open class BaseViewModel<S>(initialState: S) : ViewModel() {
             collect()
                 .onStart { onStart() }
                 .catch { onError(it) }
-                .onEmpty { onCollect (null) }
-                .collectLatest { onCollect (it) }
+                .onEmpty { onCollect(null) }
+                .collectLatest { onCollect(it) }
         }
+    }
+
+    protected fun <T : Any, R : Any> createPagingFlow(
+        pagingSourceFactory: () -> PagingSource<Int, T>, mapper: (T) -> R, pageSize: Int = PAGE_SIZE
+    ): Flow<PagingData<R>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = pageSize,
+                enablePlaceholders = false,
+                prefetchDistance = 4
+            ),
+            pagingSourceFactory = pagingSourceFactory
+        ).flow.map { pagingData ->
+            pagingData.map(mapper)
+        }.cachedIn(viewModelScope)
+    }
+
+    private companion object {
+        private const val PAGE_SIZE = 20
     }
 }
