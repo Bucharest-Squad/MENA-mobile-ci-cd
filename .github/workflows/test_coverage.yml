@@ -77,8 +77,9 @@ jobs:
 
           add_module() {
             local path="$1"
-            local flag="$2"
-            if [ "${{ steps.test_changes.outputs.${flag} }}" = "true" ]; then
+            local flag="test_${path}"
+            local value=$(jq -r ".${flag}" <<< '${{ toJson(steps.test_changes.outputs) }}')
+            if [ "$value" = "true" ]; then
               TEST_TASKS="$TEST_TASKS :$path:test"
               KOVER_TASKS="$KOVER_TASKS :$path:koverXmlReport :$path:koverHtmlReport"
               echo "📦 Testing $path"
@@ -90,7 +91,7 @@ jobs:
                    identity_presentation core_chat_presentation wallet_presentation faith_presentation dukan_presentation trends_presentation \
                    identity_api core_chat_api wallet_api faith_api dukan_api trends_api \
                    design_system composeApp; do
-            add_module "$m" "test_${m}"
+            add_module "$m"
           done
 
           if [ -n "$TEST_TASKS" ]; then
@@ -115,7 +116,8 @@ jobs:
                    identity_presentation core_chat_presentation wallet_presentation faith_presentation dukan_presentation trends_presentation \
                    identity_api core_chat_api wallet_api faith_api dukan_api trends_api \
                    design_system composeApp; do
-            if [ "${{ steps.test_changes.outputs.test_${m} }}" = "true" ]; then
+            value=$(jq -r ".test_${m}" <<< '${{ toJson(steps.test_changes.outputs) }}')
+            if [ "$value" = "true" ]; then
               VERIFY_TASKS="$VERIFY_TASKS :$m:koverVerify"
             fi
           done
