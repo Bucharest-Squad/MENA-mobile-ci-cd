@@ -10,8 +10,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -86,6 +86,7 @@ fun Dialog(
                 enabled = false,
                 onClick = {},
             )
+            .padding(horizontal = 16.dp)
     )
 
     if (dismissOnBackPress) {
@@ -108,54 +109,56 @@ private fun DialogContent(
     onCancelClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
-    Box(
+    Column(
         modifier = modifier
-            .size(328.dp, 148.dp)
             .background(contentColor, dialogCornerShape)
             .padding(contentPadding)
     ) {
-        Icon(
-            painter = painterResource(Res.drawable.ic_cancel),
-            contentDescription = stringResource(Res.string.cancel_dialog_icon),
-            modifier = Modifier
-                .clip(cancelBackgroundShape)
-                .clickable(
-                    onClick = onCancelClick,
-                    indication = ripple(),
-                    interactionSource = remember { MutableInteractionSource() }
-                )
-                .background(
-                    Theme.colorScheme.background.surface,
-                    cancelBackgroundShape
-                )
-                .padding(PaddingValues(8.dp))
-                .align(Alignment.TopStart)
-        )
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier
-                .padding(top = 12.dp)
-                .align(Alignment.TopCenter)
+        Box(
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Text(
-                text = title,
-                style = Theme.typography.title.medium,
-                color = Theme.colorScheme.primary.primary,
+            Icon(
+                painter = painterResource(Res.drawable.ic_cancel),
+                contentDescription = stringResource(Res.string.cancel_dialog_icon),
+                modifier = Modifier
+                    .clip(cancelBackgroundShape)
+                    .clickable(
+                        onClick = onCancelClick,
+                        indication = ripple(),
+                        interactionSource = remember { MutableInteractionSource() }
+                    )
+                    .background(
+                        Theme.colorScheme.background.surface,
+                        cancelBackgroundShape
+                    )
+                    .padding(PaddingValues(8.dp))
             )
-            Text(
-                text = message,
-                style = Theme.typography.body.small,
-                color = Theme.colorScheme.shadeSecondary,
-            )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .padding(top = 12.dp)
+            ) {
+                Text(
+                    text = title,
+                    style = Theme.typography.title.medium,
+                    color = Theme.colorScheme.primary.primary,
+                )
+                Text(
+                    text = message,
+                    style = Theme.typography.body.small,
+                    color = Theme.colorScheme.shadeSecondary,
+                )
+            }
         }
         Text(
             text = buttonText,
             color = Theme.colorScheme.error,
             style = Theme.typography.label.medium,
             modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(bottom = 12.dp, end = 8.dp)
+                .align(Alignment.End)
+                .padding(top = 24.dp, bottom = 12.dp, end = 8.dp)
                 .clickable(
                     onClick = onActionClick,
                     role = Role.Button,
