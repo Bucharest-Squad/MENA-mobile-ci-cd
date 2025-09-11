@@ -29,11 +29,13 @@ jobs:
       ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
       ANDROID_KEY_ALIAS_PASSWORD: ${{ secrets.ANDROID_KEY_ALIAS_PASSWORD }}
 
+  name: show logs
+  run:
+    echo "${{ needs.build-release-apk.outputs.signed-apk-path }}"
+
   deploy-to-firebase:
     runs-on: ubuntu-latest
     needs: build-release-apk
-    runs:
-      echo "APK path: ${{ steps.sign_app.outputs.signedReleaseFile }}"
     steps:
       - name: Upload signed APK to Firebase
         uses: wzieba/Firebase-Distribution-Github-Action@v1
