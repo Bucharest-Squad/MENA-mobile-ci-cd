@@ -14,5 +14,4 @@ data class Spacing(
     val _32: Dp = 32.dp
 )
 
-val MenaSpacing = Spacing()
-val LocalSpacing = staticCompositionLocalOf { MenaSpacing }
+internal val LocalSpacing = staticCompositionLocalOf { Spacing() }
