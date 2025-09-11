@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy-develop-release-to-firebase:
-    uses: ./.github/workflows/deploy_to_firebase.yml
+    uses: ./.github/workflows/deploy_release_to_firebase.yml
     secrets:
       ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
       KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
