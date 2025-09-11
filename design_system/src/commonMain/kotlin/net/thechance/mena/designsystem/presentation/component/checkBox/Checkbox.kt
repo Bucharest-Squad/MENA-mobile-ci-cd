@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -30,7 +31,6 @@ import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.unit.dp
 import mena.design_system.generated.resources.Res
 import mena.design_system.generated.resources.checkmark
-import net.thechance.mena.designsystem.presentation.theme.color.scheme.ColorScheme
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
@@ -43,31 +43,30 @@ fun Checkbox(
     modifier: Modifier = Modifier,
     label: String? = null,
     isEnabled: Boolean = true,
-    shape: Shape = CheckboxDefaults.shape,
-    intermediateLineShape: Shape = CheckboxDefaults.intermediateLineShape,
-    colors: ColorScheme.CheckboxColors = CheckboxDefaults.checkboxColors(),
-    contentPadding: PaddingValues = CheckboxDefaults.ContentPadding
+    shape: Shape = RoundedCornerShape(Theme.radius.xs),
+    intermediateLineShape: Shape = RoundedCornerShape(Theme.radius.xxs),
+    contentPadding: PaddingValues = PaddingValues(3.dp)
 ) {
 
     val animatedContainerColor by animateColorAsState(
         targetValue = if (isEnabled)
-            colors.containerColor else colors.disabledContainerColor
+            Theme.colorScheme.primary.primary else Theme.colorScheme.disabled
     )
 
     val animatedContentColor by animateColorAsState(
         targetValue = if (isEnabled)
-            colors.contentColor else colors.disabledContentColor
+            Theme.colorScheme.primary.onPrimary else Theme.colorScheme.textDisabled
     )
 
     val animatedUncheckedBorderColor by animateColorAsState(
         targetValue = if (checkedState == ToggleableState.Off)
-            colors.uncheckedBorderColor else Color.Unspecified
+            Theme.colorScheme.border.disabled else Color.Unspecified
     )
 
 
     val animatedUncheckedContainerColor by animateColorAsState(
         targetValue = if (checkedState == ToggleableState.Off)
-            colors.uncheckedContainerColor else animatedContainerColor
+            Theme.colorScheme.background.surfaceLow else animatedContainerColor
     )
 
     val animatedUncheckedBorderDp by animateDpAsState(
@@ -78,12 +77,12 @@ fun Checkbox(
 
     val animatedUncheckedLabelColor by animateColorAsState(
         targetValue = if (checkedState == ToggleableState.Off)
-            colors.uncheckLabelColor else colors.labelColor
+            Theme.colorScheme.shadeTertiary else Theme.colorScheme.shadePrimary
     )
 
     val animatedLabelColor by animateColorAsState(
         targetValue = if (isEnabled)
-            animatedUncheckedLabelColor else colors.disabledLabelColor
+            animatedUncheckedLabelColor else Theme.colorScheme.stroke
     )
 
     val clickableModifier = onCheckedChange?.let {
@@ -161,6 +160,7 @@ private fun CheckboxPreview() {
             Checkbox(
                 checkedState = checkboxState,
                 label = "Label",
+                isEnabled = true,
                 onCheckedChange = { currentState ->
                     checkboxState = currentState.getNextCheckboxState()
                 }
