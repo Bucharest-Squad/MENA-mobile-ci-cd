@@ -1,4 +1,3 @@
-
 name: Test Coverage
 
 on:
@@ -45,7 +44,7 @@ jobs:
       # IMPROVEMENT: Combined Gradle tasks into a single step for efficiency.
       # koverVerify runs tests, checks coverage, and generates reports.
       - name: Run Tests & Kover Verification for ${{ matrix.module }}
-        run: ./gradlew :${{ matrix.module }}:clean :${{ matrix.module }}:test :${{ matrix.module }}:koverXmlReport --build-cache
+        run: ./gradlew :${{ matrix.module }}:koverVerify --build-cache
 
       - name: Publish Unit Test Results for ${{ matrix.module }}
         uses: EnricoMi/publish-unit-test-result-action@v2
