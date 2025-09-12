@@ -121,7 +121,7 @@ jobs:
           # If root files changed, build everything
           if [ "${{ steps.changes.outputs.root_changed }}" = "true" ]; then
             echo "🔄 Root files changed - building all modules"
-            ./gradlew assemble -x lintVitalRelease -x lint --parallel --build-cache
+            ./gradlew assembleDebug --parallel --build-cache
             exit 0
           fi
           
@@ -293,40 +293,108 @@ jobs:
             fi
           
             # Domain modules
-            for module in identity core_chat wallet faith dukan trends; do
-              var_name="${module}_domain_changed"
-              if [ "${!var_name:-false}" = "true" ] 2>/dev/null || [ "${{ steps.changes.outputs.${module}_domain_changed }}" = "true" ]; then
-                echo "- 🏗️ ${module}_domain" >> $GITHUB_STEP_SUMMARY
-                modules_changed=true
-              fi
-            done
+            if [ "${{ steps.changes.outputs.identity_domain_changed }}" = "true" ]; then
+              echo "- 🏗️ identity_domain" >> $GITHUB_STEP_SUMMARY
+              modules_changed=true
+            fi
+            if [ "${{ steps.changes.outputs.core_chat_domain_changed }}" = "true" ]; then
+              echo "- 🏗️ core_chat_domain" >> $GITHUB_STEP_SUMMARY
+              modules_changed=true
+            fi
+            if [ "${{ steps.changes.outputs.wallet_domain_changed }}" = "true" ]; then
+              echo "- 🏗️ wallet_domain" >> $GITHUB_STEP_SUMMARY
+              modules_changed=true
+            fi
+            if [ "${{ steps.changes.outputs.faith_domain_changed }}" = "true" ]; then
+              echo "- 🏗️ faith_domain" >> $GITHUB_STEP_SUMMARY
+              modules_changed=true
+            fi
+            if [ "${{ steps.changes.outputs.dukan_domain_changed }}" = "true" ]; then
+              echo "- 🏗️ dukan_domain" >> $GITHUB_STEP_SUMMARY
+              modules_changed=true
+            fi
+            if [ "${{ steps.changes.outputs.trends_domain_changed }}" = "true" ]; then
+              echo "- 🏗️ trends_domain" >> $GITHUB_STEP_SUMMARY
+              modules_changed=true
+            fi
           
             # Data modules
-            for module in identity core_chat wallet dukan faith trends; do
-              var_name="${module}_data_changed"
-              if [ "${!var_name:-false}" = "true" ] 2>/dev/null || [ "${{ steps.changes.outputs.${module}_data_changed }}" = "true" ]; then
-                echo "- 📊 ${module}_data" >> $GITHUB_STEP_SUMMARY
-                modules_changed=true
-              fi
-            done
+            if [ "${{ steps.changes.outputs.identity_data_changed }}" = "true" ]; then
+              echo "- 📊 identity_data" >> $GITHUB_STEP_SUMMARY
+              modules_changed=true
+            fi
+            if [ "${{ steps.changes.outputs.core_chat_data_changed }}" = "true" ]; then
+              echo "- 📊 core_chat_data" >> $GITHUB_STEP_SUMMARY
+              modules_changed=true
+            fi
+            if [ "${{ steps.changes.outputs.wallet_data_changed }}" = "true" ]; then
+              echo "- 📊 wallet_data" >> $GITHUB_STEP_SUMMARY
+              modules_changed=true
+            fi
+            if [ "${{ steps.changes.outputs.dukan_data_changed }}" = "true" ]; then
+              echo "- 📊 dukan_data" >> $GITHUB_STEP_SUMMARY
+              modules_changed=true
+            fi
+            if [ "${{ steps.changes.outputs.faith_data_changed }}" = "true" ]; then
+              echo "- 📊 faith_data" >> $GITHUB_STEP_SUMMARY
+              modules_changed=true
+            fi
+            if [ "${{ steps.changes.outputs.trends_data_changed }}" = "true" ]; then
+              echo "- 📊 trends_data" >> $GITHUB_STEP_SUMMARY
+              modules_changed=true
+            fi
           
             # API modules
-            for module in identity core_chat wallet faith dukan trends; do
-              var_name="${module}_api_changed"
-              if [ "${!var_name:-false}" = "true" ] 2>/dev/null || [ "${{ steps.changes.outputs.${module}_api_changed }}" = "true" ]; then
-                echo "- 🔗 ${module}_api" >> $GITHUB_STEP_SUMMARY
-                modules_changed=true
-              fi
-            done
+            if [ "${{ steps.changes.outputs.identity_api_changed }}" = "true" ]; then
+              echo "- 🔗 identity_api" >> $GITHUB_STEP_SUMMARY
+              modules_changed=true
+            fi
+            if [ "${{ steps.changes.outputs.core_chat_api_changed }}" = "true" ]; then
+              echo "- 🔗 core_chat_api" >> $GITHUB_STEP_SUMMARY
+              modules_changed=true
+            fi
+            if [ "${{ steps.changes.outputs.wallet_api_changed }}" = "true" ]; then
+              echo "- 🔗 wallet_api" >> $GITHUB_STEP_SUMMARY
+              modules_changed=true
+            fi
+            if [ "${{ steps.changes.outputs.faith_api_changed }}" = "true" ]; then
+              echo "- 🔗 faith_api" >> $GITHUB_STEP_SUMMARY
+              modules_changed=true
+            fi
+            if [ "${{ steps.changes.outputs.dukan_api_changed }}" = "true" ]; then
+              echo "- 🔗 dukan_api" >> $GITHUB_STEP_SUMMARY
+              modules_changed=true
+            fi
+            if [ "${{ steps.changes.outputs.trends_api_changed }}" = "true" ]; then
+              echo "- 🔗 trends_api" >> $GITHUB_STEP_SUMMARY
+              modules_changed=true
+            fi
           
             # Presentation modules
-            for module in identity core_chat wallet faith dukan trends; do
-              var_name="${module}_presentation_changed"
-              if [ "${!var_name:-false}" = "true" ] 2>/dev/null || [ "${{ steps.changes.outputs.${module}_presentation_changed }}" = "true" ]; then
-                echo "- 📱 ${module}_presentation" >> $GITHUB_STEP_SUMMARY
-                modules_changed=true
-              fi
-            done
+            if [ "${{ steps.changes.outputs.identity_presentation_changed }}" = "true" ]; then
+              echo "- 📱 identity_presentation" >> $GITHUB_STEP_SUMMARY
+              modules_changed=true
+            fi
+            if [ "${{ steps.changes.outputs.core_chat_presentation_changed }}" = "true" ]; then
+              echo "- 📱 core_chat_presentation" >> $GITHUB_STEP_SUMMARY
+              modules_changed=true
+            fi
+            if [ "${{ steps.changes.outputs.wallet_presentation_changed }}" = "true" ]; then
+              echo "- 📱 wallet_presentation" >> $GITHUB_STEP_SUMMARY
+              modules_changed=true
+            fi
+            if [ "${{ steps.changes.outputs.faith_presentation_changed }}" = "true" ]; then
+              echo "- 📱 faith_presentation" >> $GITHUB_STEP_SUMMARY
+              modules_changed=true
+            fi
+            if [ "${{ steps.changes.outputs.dukan_presentation_changed }}" = "true" ]; then
+              echo "- 📱 dukan_presentation" >> $GITHUB_STEP_SUMMARY
+              modules_changed=true
+            fi
+            if [ "${{ steps.changes.outputs.trends_presentation_changed }}" = "true" ]; then
+              echo "- 📱 trends_presentation" >> $GITHUB_STEP_SUMMARY
+              modules_changed=true
+            fi
           
             if [ "$modules_changed" = false ]; then
               echo "- ℹ️ No modules changed" >> $GITHUB_STEP_SUMMARY
