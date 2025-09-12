@@ -20,9 +20,11 @@ jobs:
           android-key-alias: ${{ secrets.ANDROID_KEY_ALIAS }}
           android-key-alias-password: ${{ secrets.ANDROID_KEY_ALIAS_PASSWORD }}
 
-      - name: Deploy to Firebase
-        uses: ./.github/actions/deploy-to-firebase
+      - name:  Deploy to Firebase
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
-          firebase-app-id: ${{ secrets.FIREBASE_APP_ID }}
-          credential-file-content: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
-          signed-apk-path: ${{ env.SIGNED_APK_PATH }}
+          appId: ${{ secrets.FIREBASE_APP_ID }}
+          serviceCredentialsFileContent:  ${{ secrets.CREDENTIAL_FILE_CONTENT }}
+          file: ${{ env.SIGNED_APK_PATH }}
+          debug: true
+          groups: tester
