@@ -10,22 +10,75 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # This job runs first to determine which modules were affected by the changes.
+  changed-modules:
+    runs-on: ubuntu-latest
+    outputs:
+      changed_modules: ${{ steps.changes.outputs.modules }}
+      has_changes: ${{ steps.changes.outputs.has_changes }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          # Required for the changed-files action to compare against the base branch.
+          fetch-depth: 0
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v44
+        with:
+          files: |
+            **/*
+
+      - name: Determine changed modules
+        id: changes
+        run: |
+          # The complete list of all possible modules in your project.
+          ALL_MODULES='core_chat_api core_chat_data core_chat_domain core_chat_presentation dukan_api dukan_data dukan_domain dukan_presentation faith_api faith_data faith_domain faith_presentation identity_api identity_data identity_domain identity_presentation trends_api trends_data trends_domain trends_presentation wallet_api wallet_data wallet_domain wallet_presentation'
+          
+          CHANGED_FILES="${{ steps.changed-files.outputs.all_changed_files }}"
+
+          # If core configuration files change, run tests for all modules as a safeguard.
+          if grep -qE '^build.gradle.kts|^settings.gradle.kts|^gradle/|^\.github/' <<< "$CHANGED_FILES"; then
+            echo "Core project file changed. Testing all modules."
+            JSON_ARRAY=$(echo $ALL_MODULES | jq -R 'split(" ")' | jq -c '.')
+          else
+            # Otherwise, determine modules from changed file paths.
+            CHANGED_MODULE_DIRS=$(echo "$CHANGED_FILES" | awk -F/ '{print $1}' | sort -u | uniq)
+            FINAL_MODULES=""
+            for module in $CHANGED_MODULE_DIRS; do
+              if [[ " $ALL_MODULES " =~ " $module " ]]; then
+                FINAL_MODULES="$FINAL_MODULES $module"
+              fi
+            done
+            JSON_ARRAY=$(echo "$FINAL_MODULES" | sed 's/^ *//g' | jq -R 'split(" ")' | jq -c '.')
+          fi
+
+          # Set the final outputs for subsequent jobs.
+          if [ "$(echo $JSON_ARRAY | jq 'length')" -gt 0 ]; then
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "modules=$(echo $JSON_ARRAY | jq -c .)" >> $GITHUB_OUTPUT
+            echo "Detected changes in modules: $(echo $JSON_ARRAY)"
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "modules=[]" >> $GITHUB_OUTPUT
+            echo "No relevant module changes detected."
+          fi
+
   test:
+    needs: changed-modules
+    # This job will only run if the 'changed-modules' job found relevant changes.
+    if: needs.changed-modules.outputs.has_changes == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: read
       checks: write
       pull-requests: write
     strategy:
+      # The matrix is now dynamically populated from the output of the previous job.
       matrix:
-        module: [
-          core_chat_api, core_chat_data, core_chat_domain, core_chat_presentation,
-          dukan_api, dukan_data, dukan_domain, dukan_presentation,
-          faith_api, faith_data, faith_domain, faith_presentation,
-          identity_api, identity_data, identity_domain, identity_presentation,
-          trends_api, trends_data, trends_domain, trends_presentation,
-          wallet_api, wallet_data, wallet_domain, wallet_presentation
-        ]
+        module: ${{ fromJSON(needs.changed-modules.outputs.changed_modules) }}
       # Ensures all module tests run, even if one fails.
       fail-fast: false
 
@@ -41,8 +94,6 @@ jobs:
       - name: Grant execute permissions for gradlew
         run: chmod +x gradlew
 
-      # IMPROVEMENT: Combined Gradle tasks into a single step for efficiency.
-      # koverVerify runs tests, checks coverage, and generates reports.
       - name: Run Tests & Kover Verification for ${{ matrix.module }}
         run: ./gradlew :${{ matrix.module }}:koverVerify --build-cache
 
@@ -56,7 +107,6 @@ jobs:
           compare_to_earlier_commit: true
           report_individual_runs: true
 
-      # FIX: Uploading a more specific file path is safer.
       - name: Upload Coverage Report for ${{ matrix.module }}
         uses: actions/upload-artifact@v4
         if: always()
@@ -65,10 +115,10 @@ jobs:
           path: ${{ matrix.module }}/build/reports/kover/report.xml
 
   coverage:
+    needs: [changed-modules, test]
+    # This job also only runs if there were changes, and it runs even if tests fail.
+    if: always() && needs.changed-modules.outputs.has_changes == 'true'
     runs-on: ubuntu-latest
-    needs: test
-    # FIX: 'always()' ensures this job runs even if some tests fail, so you still get a report.
-    if: always()
     permissions:
       contents: read
       pull-requests: write
@@ -77,7 +127,6 @@ jobs:
       - name: Download All Coverage Reports
         uses: actions/download-artifact@v4
         with:
-          # This pattern correctly matches the uploaded artifacts.
           pattern: "coverage-report-*"
           path: coverage-reports
 
@@ -87,12 +136,10 @@ jobs:
       - name: Post Combined Coverage Comment
         uses: mi-kas/kover-report@v1.9
         with:
-          # FIX: This robust glob pattern automatically finds all report.xml files.
-          # You will never need to update this list again when adding/removing modules.
           path: coverage-reports/**/*.xml
           token: ${{ secrets.GITHUB_TOKEN }}
           title: "🛡️ Total Code Coverage Report"
           update-comment: true
           min-coverage-overall: 80
           min-coverage-changed-files: 80
-          coverage-counter-type: LINE
+          coverage-counter-type: LINE```
