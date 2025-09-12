@@ -63,82 +63,125 @@ jobs:
             if echo "$CHANGED_FILES" | grep -q "^${module_path}/"; then
               echo "${output_var}=true" >> $GITHUB_OUTPUT
               echo "✅ Module $module_path changed"
+              return 0
             else
               echo "${output_var}=false" >> $GITHUB_OUTPUT
+              return 1
             fi
           }
           
+          # Initialize should_build as false
+          should_build=false
+          
           # Check iOS-specific files
-          check_module_changed "iosApp" "ios_app_changed"
-          check_module_changed "composeApp" "compose_app_changed"
+          if check_module_changed "iosApp" "ios_app_changed"; then
+            should_build=true
+          fi
+          
+          if check_module_changed "composeApp" "compose_app_changed"; then
+            should_build=true
+          fi
           
           # Check shared modules that affect iOS
-          check_module_changed "design_system" "design_system_changed"
+          if check_module_changed "design_system" "design_system_changed"; then
+            should_build=true
+          fi
           
           # Check domain modules (shared business logic)
-          check_module_changed "identity_domain" "identity_domain_changed"
-          check_module_changed "core_chat_domain" "core_chat_domain_changed"
-          check_module_changed "wallet_domain" "wallet_domain_changed"
-          check_module_changed "faith_domain" "faith_domain_changed"
-          check_module_changed "dukan_domain" "dukan_domain_changed"
-          check_module_changed "trends_domain" "trends_domain_changed"
+          if check_module_changed "identity_domain" "identity_domain_changed"; then
+            should_build=true
+          fi
+          
+          if check_module_changed "core_chat_domain" "core_chat_domain_changed"; then
+            should_build=true
+          fi
+          
+          if check_module_changed "wallet_domain" "wallet_domain_changed"; then
+            should_build=true
+          fi
+          
+          if check_module_changed "faith_domain" "faith_domain_changed"; then
+            should_build=true
+          fi
+          
+          if check_module_changed "dukan_domain" "dukan_domain_changed"; then
+            should_build=true
+          fi
+          
+          if check_module_changed "trends_domain" "trends_domain_changed"; then
+            should_build=true
+          fi
           
           # Check data modules (shared data layer)
-          check_module_changed "identity_data" "identity_data_changed"
-          check_module_changed "core_chat_data" "core_chat_data_changed"
-          check_module_changed "wallet_data" "wallet_data_changed"
-          check_module_changed "dukan_data" "dukan_data_changed"
-          check_module_changed "faith_data" "faith_data_changed"
-          check_module_changed "trends_data" "trends_data_changed"
+          if check_module_changed "identity_data" "identity_data_changed"; then
+            should_build=true
+          fi
+          
+          if check_module_changed "core_chat_data" "core_chat_data_changed"; then
+            should_build=true
+          fi
+          
+          if check_module_changed "wallet_data" "wallet_data_changed"; then
+            should_build=true
+          fi
+          
+          if check_module_changed "dukan_data" "dukan_data_changed"; then
+            should_build=true
+          fi
+          
+          if check_module_changed "faith_data" "faith_data_changed"; then
+            should_build=true
+          fi
+          
+          if check_module_changed "trends_data" "trends_data_changed"; then
+            should_build=true
+          fi
           
           # Check API modules (interfaces that iOS might depend on)
-          check_module_changed "identity_api" "identity_api_changed"
-          check_module_changed "core_chat_api" "core_chat_api_changed"
-          check_module_changed "wallet_api" "wallet_api_changed"
-          check_module_changed "faith_api" "faith_api_changed"
-          check_module_changed "dukan_api" "dukan_api_changed"
-          check_module_changed "trends_api" "trends_api_changed"
+          if check_module_changed "identity_api" "identity_api_changed"; then
+            should_build=true
+          fi
+          
+          if check_module_changed "core_chat_api" "core_chat_api_changed"; then
+            should_build=true
+          fi
+          
+          if check_module_changed "wallet_api" "wallet_api_changed"; then
+            should_build=true
+          fi
+          
+          if check_module_changed "faith_api" "faith_api_changed"; then
+            should_build=true
+          fi
+          
+          if check_module_changed "dukan_api" "dukan_api_changed"; then
+            should_build=true
+          fi
+          
+          if check_module_changed "trends_api" "trends_api_changed"; then
+            should_build=true
+          fi
           
           # Check for root-level changes affecting KMP setup
           if echo "$CHANGED_FILES" | grep -qE '^(build\.gradle\.kts|build\.gradle|settings\.gradle\.kts|settings\.gradle|gradle\.properties|gradle/|gradle/libs\.versions\.toml)'; then
             echo "gradle_config_changed=true" >> $GITHUB_OUTPUT
             echo "✅ Gradle configuration changed - affects shared code"
+            should_build=true
           else
             echo "gradle_config_changed=false" >> $GITHUB_OUTPUT
           fi
           
           # Check for iOS-specific configuration changes
-          if echo "$CHANGED_FILES" | grep -qE '^iosApp/.*\.(xcodeproj|xcworkspace|plist|swift|h|m|mm)/'; then
+          if echo "$CHANGED_FILES" | grep -qE '^iosApp/.*\.(xcodeproj|xcworkspace|plist|swift|h|m|mm)'; then
             echo "ios_config_changed=true" >> $GITHUB_OUTPUT
             echo "✅ iOS configuration files changed"
+            should_build=true
           else
             echo "ios_config_changed=false" >> $GITHUB_OUTPUT
           fi
           
-          # Determine if we need to build
-          if [ "${{ steps.changes.outputs.ios_app_changed }}" = "true" ] || \
-             [ "${{ steps.changes.outputs.compose_app_changed }}" = "true" ] || \
-             [ "${{ steps.changes.outputs.design_system_changed }}" = "true" ] || \
-             [ "${{ steps.changes.outputs.identity_domain_changed }}" = "true" ] || \
-             [ "${{ steps.changes.outputs.core_chat_domain_changed }}" = "true" ] || \
-             [ "${{ steps.changes.outputs.wallet_domain_changed }}" = "true" ] || \
-             [ "${{ steps.changes.outputs.faith_domain_changed }}" = "true" ] || \
-             [ "${{ steps.changes.outputs.dukan_domain_changed }}" = "true" ] || \
-             [ "${{ steps.changes.outputs.trends_domain_changed }}" = "true" ] || \
-             [ "${{ steps.changes.outputs.identity_data_changed }}" = "true" ] || \
-             [ "${{ steps.changes.outputs.core_chat_data_changed }}" = "true" ] || \
-             [ "${{ steps.changes.outputs.wallet_data_changed }}" = "true" ] || \
-             [ "${{ steps.changes.outputs.dukan_data_changed }}" = "true" ] || \
-             [ "${{ steps.changes.outputs.faith_data_changed }}" = "true" ] || \
-             [ "${{ steps.changes.outputs.trends_data_changed }}" = "true" ] || \
-             [ "${{ steps.changes.outputs.identity_api_changed }}" = "true" ] || \
-             [ "${{ steps.changes.outputs.core_chat_api_changed }}" = "true" ] || \
-             [ "${{ steps.changes.outputs.wallet_api_changed }}" = "true" ] || \
-             [ "${{ steps.changes.outputs.faith_api_changed }}" = "true" ] || \
-             [ "${{ steps.changes.outputs.dukan_api_changed }}" = "true" ] || \
-             [ "${{ steps.changes.outputs.trends_api_changed }}" = "true" ] || \
-             [ "${{ steps.changes.outputs.gradle_config_changed }}" = "true" ] || \
-             [ "${{ steps.changes.outputs.ios_config_changed }}" = "true" ]; then
+          # Set the final should_build output
+          if [ "$should_build" = true ]; then
             echo "should_build=true" >> $GITHUB_OUTPUT
             echo "✅ Changes detected that affect iOS - build required"
           else
@@ -146,8 +189,12 @@ jobs:
             echo "ℹ️ No changes affecting iOS - skipping build"
           fi
 
+      - name: Make gradlew executable
+        if: steps.changes.outputs.should_build == 'true'
+        run: chmod +x ./gradlew
+
       - name: 🏗️ Build Kotlin Multiplatform Shared Code
-        if: steps.changes.outputs.should_build == 'true' && (steps.changes.outputs.gradle_config_changed == 'true' || steps.changes.outputs.compose_app_changed == 'true' || steps.changes.outputs.design_system_changed == 'true' || steps.changes.outputs.identity_domain_changed == 'true' || steps.changes.outputs.core_chat_domain_changed == 'true' || steps.changes.outputs.wallet_domain_changed == 'true' || steps.changes.outputs.faith_domain_changed == 'true' || steps.changes.outputs.dukan_domain_changed == 'true' || steps.changes.outputs.trends_domain_changed == 'true' || steps.changes.outputs.identity_data_changed == 'true' || steps.changes.outputs.core_chat_data_changed == 'true' || steps.changes.outputs.wallet_data_changed == 'true' || steps.changes.outputs.dukan_data_changed == 'true' || steps.changes.outputs.faith_data_changed == 'true' || steps.changes.outputs.trends_data_changed == 'true' || steps.changes.outputs.identity_api_changed == 'true' || steps.changes.outputs.core_chat_api_changed == 'true' || steps.changes.outputs.wallet_api_changed == 'true' || steps.changes.outputs.faith_api_changed == 'true' || steps.changes.outputs.dukan_api_changed == 'true' || steps.changes.outputs.trends_api_changed == 'true')
+        if: steps.changes.outputs.should_build == 'true'
         run: |
           echo "🔄 Building shared KMP code for iOS..."
           ./gradlew :composeApp:embedAndSignAppleFrameworkForXcode --parallel --build-cache
