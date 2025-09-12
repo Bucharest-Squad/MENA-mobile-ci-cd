@@ -322,9 +322,9 @@ jobs:
           
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "**Build Steps Executed:**" >> $GITHUB_STEP_SUMMARY
-            echo "1. 🔄 Built KMP shared frameworks" >> $GITHUB_STEP_SUMMARY
-            echo "2. 📦 Resolved Swift package dependencies" >> $GITHUB_STEP_SUMMARY
-            echo "3. 🍎 Built iOS app for iPhone 15 simulator" >> $GITHUB_STEP_SUMMARY
+            echo "1. Built KMP shared code with mocked Xcode environment" >> $GITHUB_STEP_SUMMARY
+            echo "2. Resolved Swift package dependencies" >> $GITHUB_STEP_SUMMARY
+            echo "3. Built iOS app for iPhone 15 simulator" >> $GITHUB_STEP_SUMMARY
           else
             echo "⏭️ **iOS build skipped** - No relevant changes detected" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
