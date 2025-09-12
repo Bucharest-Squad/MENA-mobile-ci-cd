@@ -64,4 +64,10 @@ kover.reports {
             minBound(80)
         }
     }
+
+    filters {
+        excludes {
+            packages("mena.trends_presentation.generated.resources*")
+        }
+    }
 }
