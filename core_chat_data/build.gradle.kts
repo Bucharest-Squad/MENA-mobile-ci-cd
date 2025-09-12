@@ -9,9 +9,6 @@ kotlin {
     iosSimulatorArm64()
 
     sourceSets {
-        androidMain.dependencies {
-
-        }
         commonMain.dependencies {
             implementation(projects.coreChatDomain)
         }
