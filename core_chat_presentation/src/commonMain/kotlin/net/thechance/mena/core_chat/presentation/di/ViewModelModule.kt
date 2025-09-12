@@ -5,7 +5,7 @@ import net.thechance.mena.core_chat.presentation.screen.syncContacts.SyncContact
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
-internal val ViewModelModule = module {
+internal val viewModelModule = module {
     viewModelOf(::ContactsViewModel)
     viewModelOf(::SyncContactsViewModel)
 }
