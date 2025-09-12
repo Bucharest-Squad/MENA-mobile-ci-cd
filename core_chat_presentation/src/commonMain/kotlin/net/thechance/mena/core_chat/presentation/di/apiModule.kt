@@ -6,6 +6,6 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-internal val ApiModule = module {
+internal val apiModule = module {
     singleOf(::CoreChatApiImp) bind CoreChatApi::class
 }
