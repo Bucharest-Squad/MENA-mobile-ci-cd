@@ -21,14 +21,19 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Get changed files
-        id: changed-files
-        uses: tj-actions/changed-files@v44
-        with:
-          base: ${{ github.event.pull_request.base.sha }}
-          head: ${{ github.event.pull_request.head.sha }}
-          files: |
-            **/*
+      - name: Get all changed files in the pull request
+        id: changed-files-git
+        run: |
+          # This git command directly compares the PR's head with its base,
+          # capturing all changes in the PR, regardless of the number of commits.
+          # This is the most reliable way to get the list of changed files.
+          CHANGED_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }})
+          
+          # To use the output in the next step, we need to format it and set it as an output.
+          # The 'EOF' syntax is a robust way to handle multi-line strings.
+          echo "changed_files<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGED_FILES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Determine changed modules
         id: changes
@@ -36,38 +41,32 @@ jobs:
           # The complete list of all possible modules in your project.
           ALL_MODULES='core_chat_api core_chat_data core_chat_domain core_chat_presentation dukan_api dukan_data dukan_domain dukan_presentation faith_api faith_data faith_domain faith_presentation identity_api identity_data identity_domain identity_presentation trends_api trends_data trends_domain trends_presentation wallet_api wallet_data wallet_domain wallet_presentation'
           
-          # Add a debug step to see the raw output from the previous step.
-          echo "--- Changed Files ---"
-          echo "${{ steps.changed-files.outputs.all_changed_files }}"
-          echo "---------------------"
+          CHANGED_FILES="${{ steps.changed-files-git.outputs.changed_files }}"
+          
+          echo "--- Files Changed in this PR ---"
+          echo "$CHANGED_FILES"
+          echo "--------------------------------"
 
-          # Use a temporary array to store unique module names found.
           declare -a UNIQUE_MODULES
-          
-          # This is the robust way to process a multi-line string.
-          # It reads every single line from the changed files output.
-          echo "${{ steps.changed-files.outputs.all_changed_files }}" | while IFS= read -r line; do
-            # For each changed file, get the module name (the first part of the path).
-            module=$(echo "$line" | awk -F/ '{print $1}')
-          
-            # Check if it's a valid module AND if we haven't already added it to our list.
-            if [[ " $ALL_MODULES " =~ " $module " && ! " ${UNIQUE_MODULES[@]} " =~ " $module " ]]; then
-              UNIQUE_MODULES+=("$module")
+          echo "$CHANGED_FILES" | while IFS= read -r line; do
+            if [ -n "$line" ]; then # Ensure the line is not empty
+              module=$(echo "$line" | awk -F/ '{print $1}')
+              if [[ " $ALL_MODULES " =~ " $module " && ! " ${UNIQUE_MODULES[@]} " =~ " $module " ]]; then
+                UNIQUE_MODULES+=("$module")
+              fi
             fi
           done
 
-          # Join the array of unique modules into a single, space-separated string.
           FINAL_MODULES=$(echo "${UNIQUE_MODULES[*]}")
           
           # Safeguard: If core files change, override and test all modules.
-          if grep -qE '^build.gradle.kts|^settings.gradle.kts|^gradle/|^\.github/' <<< "${{ steps.changed-files.outputs.all_changed_files }}"; then
+          if grep -qE '^build.gradle.kts|^settings.gradle.kts|^gradle/|^\.github/' <<< "$CHANGED_FILES"; then
             echo "Core project file changed. Testing all modules."
             FINAL_MODULES="$ALL_MODULES"
           fi
           
           JSON_ARRAY=$(echo "$FINAL_MODULES" | jq -R 'split(" ") | map(select(length > 0))' | jq -c '.')
           
-          # Set the final outputs for subsequent jobs.
           if [ "$(echo $JSON_ARRAY | jq 'length')" -gt 0 ]; then
             echo "has_changes=true" >> $GITHUB_OUTPUT
             echo "modules=$(echo $JSON_ARRAY)" >> $GITHUB_OUTPUT
