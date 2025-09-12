@@ -8,7 +8,7 @@ class CategoryRepositoryFakeImpl : CategoryRepository {
         return FakeCategoriesSource.categories
     }
 
-    override suspend fun isInterestedCategoriesSelected(): Boolean {
+    override suspend fun isCategoriesAlreadySelectedByUser(): Boolean {
         return FakeCategoriesSource.userCategories.isNotEmpty()
     }
 
@@ -57,7 +57,7 @@ private object FakeCategoriesSource {
         Category(id = 31, name = "Gardening", emoji = "🌱"),
         Category(id = 32, name = "Cooking", emoji = "🍳"),
         Category(id = 33, name = "Baking", emoji = "🥐"),
-        Category(id = 34, name = "Wine", emoji = "🍷"),
+        Category(id = 34, name = "Astronomy", emoji = "🌌"),
         Category(id = 35, name = "Coffee", emoji = "☕"),
         Category(id = 36, name = "Tea", emoji = "🍵"),
         Category(id = 37, name = "Podcasts", emoji = "🎙️"),
