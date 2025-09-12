@@ -28,7 +28,6 @@ kotlin {
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.ui)
-            implementation(libs.koin.core)
         }
     }
 }
