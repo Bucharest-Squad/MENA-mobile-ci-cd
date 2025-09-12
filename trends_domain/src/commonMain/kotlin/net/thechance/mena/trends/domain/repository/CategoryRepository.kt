@@ -4,6 +4,6 @@ import net.thechance.mena.trends.domain.entity.Category
 
 interface CategoryRepository {
     suspend fun getAllCategories(): List<Category>
-    suspend fun isInterestedCategoriesSelected(): Boolean
+    suspend fun isCategoriesAlreadySelectedByUser(): Boolean
     suspend fun updateUserInterestedCategories(categoriesIds: List<Int>)
 }
