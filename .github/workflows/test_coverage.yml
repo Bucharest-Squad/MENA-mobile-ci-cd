@@ -24,11 +24,11 @@ jobs:
       - name: Get all changed files in the pull request
         id: changed-files-git
         run: |
-          # This git command directly compares the PR's base with its head,
-          # capturing all changes in the PR reliably on every push.
+          # This git command is the most reliable way to get all changed files in a PR.
+          # It directly compares the PR's base commit with its head commit on every run.
           CHANGED_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }})
           
-          # Use a heredoc to safely pass the multi-line output to the next step.
+          # Use a heredoc to safely pass the potentially multi-line output to the next step.
           echo "changed_files<<EOF" >> $GITHUB_OUTPUT
           echo "$CHANGED_FILES" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
@@ -36,7 +36,7 @@ jobs:
       - name: Determine changed modules from file list
         id: changes
         run: |
-          # The complete list of all possible modules in your project.
+          # The complete list of all possible modules. This is the only place you need to edit.
           ALL_MODULES='core_chat_api core_chat_data core_chat_domain core_chat_presentation dukan_api dukan_data dukan_domain dukan_presentation faith_api faith_data faith_domain faith_presentation identity_api identity_data identity_domain identity_presentation trends_api trends_data trends_domain trends_presentation wallet_api wallet_data wallet_domain wallet_presentation'
           
           CHANGED_FILES="${{ steps.changed-files-git.outputs.changed_files }}"
@@ -45,30 +45,35 @@ jobs:
           echo "$CHANGED_FILES"
           echo "--------------------------------"
 
-          declare -a UNIQUE_MODULES
-          echo "$CHANGED_FILES" | while IFS= read -r line; do
-            if [ -n "$line" ]; then # Ensure the line is not empty
-              module=$(echo "$line" | awk -F/ '{print $1}')
-              if [[ " $ALL_MODULES " =~ " $module " && ! " ${UNIQUE_MODULES[@]} " =~ " $module " ]]; then
-                UNIQUE_MODULES+=("$module")
-              fi
+          # 1. Get a list of all module directories from the changed files.
+          # 2. Use a standard 'sort -u' pipeline to get a unique, sorted list. This is very robust.
+          UNIQUE_MODULE_LIST=$(echo "$CHANGED_FILES" | awk -F/ '{print $1}' | sort -u)
+          
+          echo "--- Unique Module Directories Detected ---"
+          echo "$UNIQUE_MODULE_LIST"
+          echo "----------------------------------------"
+
+          # 3. Filter this unique list against your master list to ensure they are valid modules.
+          FINAL_MODULES=""
+          for module in $UNIQUE_MODULE_LIST; do
+            if [[ " $ALL_MODULES " =~ " $module " ]]; then
+              FINAL_MODULES="$FINAL_MODULES $module"
             fi
           done
 
-          FINAL_MODULES=$(echo "${UNIQUE_MODULES[*]}")
-          
-          # Safeguard: If core build files change, test all modules.
+          # Safeguard: If core build files change, force a test of all modules.
           if grep -qE '^build.gradle.kts|^settings.gradle.kts|^gradle/|^\.github/' <<< "$CHANGED_FILES"; then
-            echo "Core project file changed. Testing all modules."
+            echo "Core project file changed. Overriding to test all modules."
             FINAL_MODULES="$ALL_MODULES"
           fi
           
+          # Convert the final list to a JSON array for the matrix.
           JSON_ARRAY=$(echo "$FINAL_MODULES" | jq -R 'split(" ") | map(select(length > 0))' | jq -c '.')
           
           if [ "$(echo $JSON_ARRAY | jq 'length')" -gt 0 ]; then
             echo "has_changes=true" >> $GITHUB_OUTPUT
             echo "modules=$(echo $JSON_ARRAY)" >> $GITHUB_OUTPUT
-            echo "Detected changes in modules: $(echo $JSON_ARRAY)"
+            echo "Final modules to test: $(echo $JSON_ARRAY)"
           else
             echo "has_changes=false" >> $GITHUB_OUTPUT
             echo "modules=[]" >> $GITHUB_OUTPUT
@@ -102,6 +107,16 @@ jobs:
       - name: Run Tests & Kover Verification for ${{ matrix.module }}
         run: ./gradlew :${{ matrix.module }}:koverVerify --build-cache
 
+      - name: Publish Unit Test Results for ${{ matrix.module }}
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          files: ${{ matrix.module }}/build/test-results/**/*.xml
+          comment_title: "📊 ${{ matrix.module }} Test Results"
+          comment_mode: always
+          compare_to_earlier_commit: true
+          report_individual_runs: true
+
       - name: Upload Coverage Report for ${{ matrix.module }}
         uses: actions/upload-artifact@v4
         if: always()
@@ -124,6 +139,9 @@ jobs:
           pattern: "coverage-report-*"
           path: coverage-reports
 
+      - name: List coverage reports directory
+        run: ls -R coverage-reports
+
       - name: Post Combined Coverage Comment
         uses: mi-kas/kover-report@v1.9
         with:
@@ -133,4 +151,4 @@ jobs:
           update-comment: true
           min-coverage-overall: 80
           min-coverage-changed-files: 80
-          coverage-counter-type: LINE```
+          coverage-counter-type: LINE
