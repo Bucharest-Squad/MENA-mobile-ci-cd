@@ -4,13 +4,11 @@ on:
   pull_request:
     branches: [ develop, main ]
 
-# BEST PRACTICE: Cancel old workflow runs when new commits are pushed to the same PR.
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
 jobs:
-  # This job runs first to determine which modules were affected by the changes.
   changed-modules:
     runs-on: ubuntu-latest
     outputs:
@@ -21,13 +19,14 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
         with:
-          # Required for the changed-files action to compare against the base branch.
           fetch-depth: 0
 
       - name: Get changed files
         id: changed-files
         uses: tj-actions/changed-files@v44
         with:
+          base: ${{ github.event.pull_request.base.sha }}
+          head: ${{ github.event.pull_request.head.sha }}
           files: |
             **/*
 
@@ -68,7 +67,6 @@ jobs:
 
   test:
     needs: changed-modules
-    # This job will only run if the 'changed-modules' job found relevant changes.
     if: needs.changed-modules.outputs.has_changes == 'true'
     runs-on: ubuntu-latest
     permissions:
@@ -76,10 +74,8 @@ jobs:
       checks: write
       pull-requests: write
     strategy:
-      # The matrix is now dynamically populated from the output of the previous job.
       matrix:
         module: ${{ fromJSON(needs.changed-modules.outputs.changed_modules) }}
-      # Ensures all module tests run, even if one fails.
       fail-fast: false
 
     steps:
@@ -116,7 +112,6 @@ jobs:
 
   coverage:
     needs: [changed-modules, test]
-    # This job also only runs if there were changes, and it runs even if tests fail.
     if: always() && needs.changed-modules.outputs.has_changes == 'true'
     runs-on: ubuntu-latest
     permissions:
@@ -142,4 +137,4 @@ jobs:
           update-comment: true
           min-coverage-overall: 80
           min-coverage-changed-files: 80
-          coverage-counter-type: LINE```
+          coverage-counter-type: LINE
