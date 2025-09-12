@@ -45,7 +45,6 @@ runs:
       shell: bash
 
     - name: Sign APK
-      id: sign_app
       uses: r0adkll/sign-android-release@v1
       with:
         releaseDirectory: composeApp/build/outputs/apk/release
