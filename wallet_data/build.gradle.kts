@@ -9,14 +9,8 @@ kotlin {
     iosSimulatorArm64()
 
     sourceSets {
-        androidMain.dependencies {
-
-        }
         commonMain.dependencies {
             implementation(projects.walletDomain)
-        }
-        iosMain.dependencies {
-
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
