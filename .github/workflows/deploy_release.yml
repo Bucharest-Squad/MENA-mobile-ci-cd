@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build and Sign APK
-        uses: ./.github/actions/build-release
+        uses: ./.github/actions/build-release-apk
         with:
           android-keystore-base64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
           keystore-password: ${{ secrets.KEYSTORE_PASSWORD }}
