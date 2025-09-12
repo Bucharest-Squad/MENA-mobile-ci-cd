@@ -61,10 +61,6 @@ runs:
       env:
         BUILD_TOOLS_VERSION: "35.0.0"
 
-    - name: List APK files
-      run: ls -la composeApp/build/outputs/apk/release
-      shell: bash
-
-    - name: Save signed APK path to env
-      run: echo "SIGNED_APK_PATH=composeApp/build/outputs/apk/release/app-release-unsigned-signed.apk" >> $GITHUB_ENV
+    - name: Set signed APK path to env
+      run: echo "SIGNED_APK_PATH=composeApp/build/outputs/apk/release/composeApp-release-unsigned-signed.apk" >> $GITHUB_ENV
       shell: bash
