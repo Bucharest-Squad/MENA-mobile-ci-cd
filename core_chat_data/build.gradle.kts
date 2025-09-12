@@ -1,9 +1,11 @@
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.androidLibrary)
 }
 
 kotlin {
+    androidTarget()
     iosArm64()
     iosSimulatorArm64()
 
