@@ -1,4 +1,4 @@
-name: iOS CI
+name: iOS CI - Optimized Build
 
 on:
   push:
@@ -23,29 +23,222 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch full history for proper diff
 
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: ${{ env.JAVA_VERSION }}
+          cache: gradle
 
       - name: Select Xcode version
         run: xcodebuild -version
 
-      - name: Resolve Swift Package Dependencies
+      - name: 🔍 Detect changes affecting iOS build
+        id: changes
         run: |
+          # Get the base branch for comparison
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          elif [ "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]; then
+            BASE_SHA="${{ github.event.before }}"
+          else
+            # Fallback for first push or when before is not available
+            BASE_SHA="HEAD~1"
+          fi
+          
+          echo "Comparing against: $BASE_SHA"
+          
+          # Get changed files
+          CHANGED_FILES=$(git diff --name-only $BASE_SHA HEAD 2>/dev/null || echo "")
+          echo "Changed files:"
+          echo "$CHANGED_FILES"
+          
+          # Function to check if module changed
+          check_module_changed() {
+            local module_path="$1"
+            local output_var="$2"
+            if echo "$CHANGED_FILES" | grep -q "^${module_path}/"; then
+              echo "${output_var}=true" >> $GITHUB_OUTPUT
+              echo "✅ Module $module_path changed"
+            else
+              echo "${output_var}=false" >> $GITHUB_OUTPUT
+            fi
+          }
+          
+          # Check iOS-specific files
+          check_module_changed "iosApp" "ios_app_changed"
+          check_module_changed "composeApp" "compose_app_changed"
+          
+          # Check shared modules that affect iOS
+          check_module_changed "design_system" "design_system_changed"
+          
+          # Check domain modules (shared business logic)
+          check_module_changed "identity_domain" "identity_domain_changed"
+          check_module_changed "core_chat_domain" "core_chat_domain_changed"
+          check_module_changed "wallet_domain" "wallet_domain_changed"
+          check_module_changed "faith_domain" "faith_domain_changed"
+          check_module_changed "dukan_domain" "dukan_domain_changed"
+          check_module_changed "trends_domain" "trends_domain_changed"
+          
+          # Check data modules (shared data layer)
+          check_module_changed "identity_data" "identity_data_changed"
+          check_module_changed "core_chat_data" "core_chat_data_changed"
+          check_module_changed "wallet_data" "wallet_data_changed"
+          check_module_changed "dukan_data" "dukan_data_changed"
+          check_module_changed "faith_data" "faith_data_changed"
+          check_module_changed "trends_data" "trends_data_changed"
+          
+          # Check API modules (interfaces that iOS might depend on)
+          check_module_changed "identity_api" "identity_api_changed"
+          check_module_changed "core_chat_api" "core_chat_api_changed"
+          check_module_changed "wallet_api" "wallet_api_changed"
+          check_module_changed "faith_api" "faith_api_changed"
+          check_module_changed "dukan_api" "dukan_api_changed"
+          check_module_changed "trends_api" "trends_api_changed"
+          
+          # Check for root-level changes affecting KMP setup
+          if echo "$CHANGED_FILES" | grep -qE '^(build\.gradle\.kts|build\.gradle|settings\.gradle\.kts|settings\.gradle|gradle\.properties|gradle/|gradle/libs\.versions\.toml)'; then
+            echo "gradle_config_changed=true" >> $GITHUB_OUTPUT
+            echo "✅ Gradle configuration changed - affects shared code"
+          else
+            echo "gradle_config_changed=false" >> $GITHUB_OUTPUT
+          fi
+          
+          # Check for iOS-specific configuration changes
+          if echo "$CHANGED_FILES" | grep -qE '^iosApp/.*\.(xcodeproj|xcworkspace|plist|swift|h|m|mm)/'; then
+            echo "ios_config_changed=true" >> $GITHUB_OUTPUT
+            echo "✅ iOS configuration files changed"
+          else
+            echo "ios_config_changed=false" >> $GITHUB_OUTPUT
+          fi
+          
+          # Determine if we need to build
+          if [ "${{ steps.changes.outputs.ios_app_changed }}" = "true" ] || \
+             [ "${{ steps.changes.outputs.compose_app_changed }}" = "true" ] || \
+             [ "${{ steps.changes.outputs.design_system_changed }}" = "true" ] || \
+             [ "${{ steps.changes.outputs.identity_domain_changed }}" = "true" ] || \
+             [ "${{ steps.changes.outputs.core_chat_domain_changed }}" = "true" ] || \
+             [ "${{ steps.changes.outputs.wallet_domain_changed }}" = "true" ] || \
+             [ "${{ steps.changes.outputs.faith_domain_changed }}" = "true" ] || \
+             [ "${{ steps.changes.outputs.dukan_domain_changed }}" = "true" ] || \
+             [ "${{ steps.changes.outputs.trends_domain_changed }}" = "true" ] || \
+             [ "${{ steps.changes.outputs.identity_data_changed }}" = "true" ] || \
+             [ "${{ steps.changes.outputs.core_chat_data_changed }}" = "true" ] || \
+             [ "${{ steps.changes.outputs.wallet_data_changed }}" = "true" ] || \
+             [ "${{ steps.changes.outputs.dukan_data_changed }}" = "true" ] || \
+             [ "${{ steps.changes.outputs.faith_data_changed }}" = "true" ] || \
+             [ "${{ steps.changes.outputs.trends_data_changed }}" = "true" ] || \
+             [ "${{ steps.changes.outputs.identity_api_changed }}" = "true" ] || \
+             [ "${{ steps.changes.outputs.core_chat_api_changed }}" = "true" ] || \
+             [ "${{ steps.changes.outputs.wallet_api_changed }}" = "true" ] || \
+             [ "${{ steps.changes.outputs.faith_api_changed }}" = "true" ] || \
+             [ "${{ steps.changes.outputs.dukan_api_changed }}" = "true" ] || \
+             [ "${{ steps.changes.outputs.trends_api_changed }}" = "true" ] || \
+             [ "${{ steps.changes.outputs.gradle_config_changed }}" = "true" ] || \
+             [ "${{ steps.changes.outputs.ios_config_changed }}" = "true" ]; then
+            echo "should_build=true" >> $GITHUB_OUTPUT
+            echo "✅ Changes detected that affect iOS - build required"
+          else
+            echo "should_build=false" >> $GITHUB_OUTPUT
+            echo "ℹ️ No changes affecting iOS - skipping build"
+          fi
+
+      - name: 🏗️ Build Kotlin Multiplatform Shared Code
+        if: steps.changes.outputs.should_build == 'true' && (steps.changes.outputs.gradle_config_changed == 'true' || steps.changes.outputs.compose_app_changed == 'true' || steps.changes.outputs.design_system_changed == 'true' || steps.changes.outputs.identity_domain_changed == 'true' || steps.changes.outputs.core_chat_domain_changed == 'true' || steps.changes.outputs.wallet_domain_changed == 'true' || steps.changes.outputs.faith_domain_changed == 'true' || steps.changes.outputs.dukan_domain_changed == 'true' || steps.changes.outputs.trends_domain_changed == 'true' || steps.changes.outputs.identity_data_changed == 'true' || steps.changes.outputs.core_chat_data_changed == 'true' || steps.changes.outputs.wallet_data_changed == 'true' || steps.changes.outputs.dukan_data_changed == 'true' || steps.changes.outputs.faith_data_changed == 'true' || steps.changes.outputs.trends_data_changed == 'true' || steps.changes.outputs.identity_api_changed == 'true' || steps.changes.outputs.core_chat_api_changed == 'true' || steps.changes.outputs.wallet_api_changed == 'true' || steps.changes.outputs.faith_api_changed == 'true' || steps.changes.outputs.dukan_api_changed == 'true' || steps.changes.outputs.trends_api_changed == 'true')
+        run: |
+          echo "🔄 Building shared KMP code for iOS..."
+          ./gradlew :composeApp:embedAndSignAppleFrameworkForXcode --parallel --build-cache
+
+      - name: 📱 Resolve Swift Package Dependencies
+        if: steps.changes.outputs.should_build == 'true'
+        run: |
+          echo "📦 Resolving Swift Package Dependencies..."
           xcodebuild \
             -project iosApp/iosApp.xcodeproj \
             -resolvePackageDependencies
 
-      - name: Build iOS App for Simulator
+      - name: 🍎 Build iOS App for Simulator
+        if: steps.changes.outputs.should_build == 'true'
         run: |
+          echo "🚀 Building iOS app for simulator..."
           xcodebuild \
             -project iosApp/iosApp.xcodeproj \
             -scheme "iosApp" \
             -configuration Debug \
-            -destination 'platform=iOS Simulator,name=iPhone 14' \
+            -destination 'platform=iOS Simulator,name=iPhone 15' \
             build \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO
+
+      - name: ⏭️ Skip Build
+        if: steps.changes.outputs.should_build == 'false'
+        run: |
+          echo "ℹ️ Skipping iOS build - no relevant changes detected"
+          echo "The following types of changes would trigger an iOS build:"
+          echo "  • iOS app code (iosApp/)"
+          echo "  • Shared Compose app code (composeApp/)"
+          echo "  • Design system changes (design_system/)"
+          echo "  • Any domain, data, or API module changes"
+          echo "  • Gradle configuration changes"
+          echo "  • iOS-specific configuration files"
+
+      - name: 📊 iOS Build Summary
+        if: always()
+        run: |
+          echo "## 📱 iOS Build Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ steps.changes.outputs.should_build }}" = "true" ]; then
+            echo "✅ **iOS build executed** - Relevant changes detected" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### Changed Modules Affecting iOS:" >> $GITHUB_STEP_SUMMARY
+          
+            # List specific changes that triggered the build
+            if [ "${{ steps.changes.outputs.ios_app_changed }}" = "true" ]; then
+              echo "- 📱 iosApp (native iOS code)" >> $GITHUB_STEP_SUMMARY
+            fi
+            if [ "${{ steps.changes.outputs.compose_app_changed }}" = "true" ]; then
+              echo "- 🔄 composeApp (shared UI code)" >> $GITHUB_STEP_SUMMARY
+            fi
+            if [ "${{ steps.changes.outputs.design_system_changed }}" = "true" ]; then
+              echo "- 🎨 design_system (shared design)" >> $GITHUB_STEP_SUMMARY
+            fi
+            if [ "${{ steps.changes.outputs.gradle_config_changed }}" = "true" ]; then
+              echo "- ⚙️ Gradle configuration (KMP setup)" >> $GITHUB_STEP_SUMMARY
+            fi
+            if [ "${{ steps.changes.outputs.ios_config_changed }}" = "true" ]; then
+              echo "- 🍎 iOS configuration files" >> $GITHUB_STEP_SUMMARY
+            fi
+          
+            # Domain modules
+            for module in identity core_chat wallet faith dukan trends; do
+              if [ "${{ steps.changes.outputs.${module}_domain_changed }}" = "true" ]; then
+                echo "- 🏗️ ${module}_domain (shared business logic)" >> $GITHUB_STEP_SUMMARY
+              fi
+              if [ "${{ steps.changes.outputs.${module}_data_changed }}" = "true" ]; then
+                echo "- 📊 ${module}_data (shared data layer)" >> $GITHUB_STEP_SUMMARY
+              fi
+              if [ "${{ steps.changes.outputs.${module}_api_changed }}" = "true" ]; then
+                echo "- 🔗 ${module}_api (shared interfaces)" >> $GITHUB_STEP_SUMMARY
+              fi
+            done
+          
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Build Steps Executed:**" >> $GITHUB_STEP_SUMMARY
+            echo "1. 🔄 Built KMP shared frameworks" >> $GITHUB_STEP_SUMMARY
+            echo "2. 📦 Resolved Swift package dependencies" >> $GITHUB_STEP_SUMMARY
+            echo "3. 🍎 Built iOS app for iPhone 15 simulator" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⏭️ **iOS build skipped** - No relevant changes detected" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Changes that would trigger an iOS build:**" >> $GITHUB_STEP_SUMMARY
+            echo "- iOS native code changes (iosApp/)" >> $GITHUB_STEP_SUMMARY
+            echo "- Shared Compose code changes (composeApp/)" >> $GITHUB_STEP_SUMMARY
+            echo "- Design system changes (design_system/)" >> $GITHUB_STEP_SUMMARY
+            echo "- Any domain, data, or API module changes" >> $GITHUB_STEP_SUMMARY
+            echo "- Gradle/KMP configuration changes" >> $GITHUB_STEP_SUMMARY
+            echo "- iOS project configuration changes" >> $GITHUB_STEP_SUMMARY
+          fi
