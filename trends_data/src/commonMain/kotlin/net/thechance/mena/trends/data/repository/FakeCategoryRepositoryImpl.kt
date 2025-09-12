@@ -3,7 +3,7 @@ package net.thechance.mena.trends.data.repository
 import net.thechance.mena.trends.domain.entity.Category
 import net.thechance.mena.trends.domain.repository.CategoryRepository
 
-class CategoryRepositoryFakeImpl : CategoryRepository {
+class FakeCategoryRepositoryImpl : CategoryRepository {
     override suspend fun getAllCategories(): List<Category> {
         return FakeCategoriesSource.categories
     }
