@@ -30,27 +30,16 @@ private fun ContactDto.toDomain(): Contact {
     )
 }
 
-fun List<Contact>.toListOfContactCreationRequestDto(): List<ContactCreationRequestDto> {
-    return map { it.toContactCreationRequestDto() }
-}
-
-private fun Contact.toContactCreationRequestDto(): ContactCreationRequestDto {
-    return ContactCreationRequestDto(
-        name = name,
-        phone = phone
-    )
-}
-
-fun List<DeviceContact>.toListOfContacts(): List<Contact> {
-    return flatMap { deviceContact ->
-        deviceContact.phoneNumbers.map { phone ->
-            Contact(
-                name = listOfNotNull(deviceContact.firstName, deviceContact.lastName)
-                    .joinToString(" "),
-                phone = phone,
-                isMenaUser = false,
-                imageUrl = null
-            )
-        }
+private fun DeviceContact.toListOfContactCreationRequestDto(): List<ContactCreationRequestDto> {
+    return phoneNumbers.map { phone ->
+        ContactCreationRequestDto(
+            name = listOfNotNull(firstName, lastName)
+                .joinToString(" "),
+            phone = phone
+        )
     }
+}
+
+fun List<DeviceContact>.toListOfContactCreationRequestDto(): List<ContactCreationRequestDto> {
+    return flatMap ( DeviceContact::toListOfContactCreationRequestDto )
 }

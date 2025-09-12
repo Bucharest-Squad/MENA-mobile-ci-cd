@@ -25,9 +25,9 @@ class ContactsRepositoryImpl(
     }
 
     override suspend fun syncContacts() {
-        val contacts = deviceContactsDataSource.getDeviceContacts().toListOfContacts()
         tryNetworkCall(
             defaultException = { ContactSyncFailedException("Couldn't sync user contacts", it) }) {
+            val contacts = deviceContactsDataSource.getDeviceContacts()
             contactsDataSource.syncContacts(contacts.toListOfContactCreationRequestDto())
         }
     }
