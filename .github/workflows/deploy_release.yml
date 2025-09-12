@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build and Sign APK
-        uses: ./.github/actions/action.yml
+        uses: ./.github/actions/build-release/action.yml
         with:
           android-keystore-base64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
           keystore-password: ${{ secrets.KEYSTORE_PASSWORD }}
@@ -18,7 +18,7 @@ jobs:
           android-key-alias-password: ${{ secrets.ANDROID_KEY_ALIAS_PASSWORD }}
 
       - name: Deploy to Firebase
-        uses: ./.github/actions/action.yml
+        uses: ./.github/actions/deploy-to-firebase/action.yml
         with:
           firebase-app-id: ${{ secrets.FIREBASE_APP_ID }}
           credential-file-content: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
