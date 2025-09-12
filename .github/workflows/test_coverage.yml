@@ -36,28 +36,41 @@ jobs:
           # The complete list of all possible modules in your project.
           ALL_MODULES='core_chat_api core_chat_data core_chat_domain core_chat_presentation dukan_api dukan_data dukan_domain dukan_presentation faith_api faith_data faith_domain faith_presentation identity_api identity_data identity_domain identity_presentation trends_api trends_data trends_domain trends_presentation wallet_api wallet_data wallet_domain wallet_presentation'
           
-          CHANGED_FILES="${{ steps.changed-files.outputs.all_changed_files }}"
+          # Add a debug step to see the raw output from the previous step.
+          echo "--- Changed Files ---"
+          echo "${{ steps.changed-files.outputs.all_changed_files }}"
+          echo "---------------------"
 
-          # If core configuration files change, run tests for all modules as a safeguard.
-          if grep -qE '^build.gradle.kts|^settings.gradle.kts|^gradle/|^\.github/' <<< "$CHANGED_FILES"; then
+          # Use a temporary array to store unique module names found.
+          declare -a UNIQUE_MODULES
+          
+          # This is the robust way to process a multi-line string.
+          # It reads every single line from the changed files output.
+          echo "${{ steps.changed-files.outputs.all_changed_files }}" | while IFS= read -r line; do
+            # For each changed file, get the module name (the first part of the path).
+            module=$(echo "$line" | awk -F/ '{print $1}')
+          
+            # Check if it's a valid module AND if we haven't already added it to our list.
+            if [[ " $ALL_MODULES " =~ " $module " && ! " ${UNIQUE_MODULES[@]} " =~ " $module " ]]; then
+              UNIQUE_MODULES+=("$module")
+            fi
+          done
+
+          # Join the array of unique modules into a single, space-separated string.
+          FINAL_MODULES=$(echo "${UNIQUE_MODULES[*]}")
+          
+          # Safeguard: If core files change, override and test all modules.
+          if grep -qE '^build.gradle.kts|^settings.gradle.kts|^gradle/|^\.github/' <<< "${{ steps.changed-files.outputs.all_changed_files }}"; then
             echo "Core project file changed. Testing all modules."
-            JSON_ARRAY=$(echo $ALL_MODULES | jq -R 'split(" ")' | jq -c '.')
-          else
-            # Otherwise, determine modules from changed file paths.
-            CHANGED_MODULE_DIRS=$(echo "$CHANGED_FILES" | awk -F/ '{print $1}' | sort -u | uniq)
-            FINAL_MODULES=""
-            for module in $CHANGED_MODULE_DIRS; do
-              if [[ " $ALL_MODULES " =~ " $module " ]]; then
-                FINAL_MODULES="$FINAL_MODULES $module"
-              fi
-            done
-            JSON_ARRAY=$(echo "$FINAL_MODULES" | sed 's/^ *//g' | jq -R 'split(" ")' | jq -c '.')
+            FINAL_MODULES="$ALL_MODULES"
           fi
-
+          
+          JSON_ARRAY=$(echo "$FINAL_MODULES" | jq -R 'split(" ") | map(select(length > 0))' | jq -c '.')
+          
           # Set the final outputs for subsequent jobs.
           if [ "$(echo $JSON_ARRAY | jq 'length')" -gt 0 ]; then
             echo "has_changes=true" >> $GITHUB_OUTPUT
-            echo "modules=$(echo $JSON_ARRAY | jq -c .)" >> $GITHUB_OUTPUT
+            echo "modules=$(echo $JSON_ARRAY)" >> $GITHUB_OUTPUT
             echo "Detected changes in modules: $(echo $JSON_ARRAY)"
           else
             echo "has_changes=false" >> $GITHUB_OUTPUT
@@ -77,7 +90,6 @@ jobs:
       matrix:
         module: ${{ fromJSON(needs.changed-modules.outputs.changed_modules) }}
       fail-fast: false
-
     steps:
       - uses: actions/checkout@v4
       - name: Setup JDK 17
