@@ -15,6 +15,7 @@ kotlin {
             implementation(projects.coreChatDomain)
             implementation(libs.kotlin.serialization)
             implementation(libs.contacts.provider)
+            implementation(libs.koin.core)
         }
         iosMain.dependencies {
 

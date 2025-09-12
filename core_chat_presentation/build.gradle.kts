@@ -51,6 +51,9 @@ kotlin {
 
             // Paging 3
             implementation(libs.bundles.paging)
+            
+            // Koin
+            implementation(libs.bundles.koin.compose)
         }
         iosMain.dependencies {
 
