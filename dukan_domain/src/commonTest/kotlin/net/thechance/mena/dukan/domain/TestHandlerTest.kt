@@ -7,6 +7,6 @@ class TestHandlerTest {
 
     @Test
     fun test() {
-        assertSame("Test Handle", TestHandler().test())
+        assertSame("Test Handler", TestHandler().test())
     }
 }
