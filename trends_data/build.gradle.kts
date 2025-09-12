@@ -14,9 +14,6 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.trendsDomain)
         }
-        iosMain.dependencies {
-
-        }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }

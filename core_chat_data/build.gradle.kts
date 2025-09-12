@@ -12,9 +12,6 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.coreChatDomain)
         }
-        iosMain.dependencies {
-
-        }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }

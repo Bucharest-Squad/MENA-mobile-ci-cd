@@ -12,9 +12,6 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.identityDomain)
         }
-        iosMain.dependencies {
-
-        }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }

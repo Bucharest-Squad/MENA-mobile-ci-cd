@@ -12,9 +12,6 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.walletDomain)
         }
-        iosMain.dependencies {
-
-        }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
