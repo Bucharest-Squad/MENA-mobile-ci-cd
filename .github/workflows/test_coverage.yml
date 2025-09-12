@@ -82,7 +82,9 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run Tests & Kover Verification for ${{ matrix.module }}
+        id: verify_step
         run: ./gradlew :${{ matrix.module }}:koverVerify --build-cache
+        continue-on-error: true
 
       - name: Generate Kover HTML and XML reports for ${{ matrix.module }}
         run: ./gradlew :${{ matrix.module }}:koverXmlReport :${{ matrix.module }}:koverHtmlReport
@@ -102,6 +104,12 @@ jobs:
           name: xml-coverage-report-${{ matrix.module }}
           path: ${{ matrix.module }}/build/reports/kover/report.xml
 
+      - name: Check verification status
+        if: steps.verify_step.outcome == 'failure'
+        run: |
+          echo "Kover verification or tests failed for ${{ matrix.module }}. Failing the job."
+          exit 1
+
   codecov-report:
     needs: [changed-modules, test]
     if: always() && needs.changed-modules.outputs.has_changes == 'true'
@@ -120,9 +128,6 @@ jobs:
         with:
           pattern: "xml-coverage-report-*"
           path: coverage-reports
-
-      - name: List downloaded reports (for debugging)
-        run: ls -R coverage-reports
 
       - name: Upload reports to Codecov
         uses: codecov/codecov-action@v4
