@@ -5,8 +5,3 @@ class TestHandler {
         return "Test Handler"
     }
 }
-
-
-val testHandler: TestHandler by lazy {
-    TestHandler()
-}
