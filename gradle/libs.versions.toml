@@ -20,6 +20,9 @@ kotlin-serialization-json = "1.9.0"
 #paging
 paging = "3.4.0-alpha04"
 
+#contacts-provider
+contacts-provider = "1.1.9"
+
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
@@ -40,6 +43,9 @@ androidx-paging-runtime = { module = "androidx.paging:paging-runtime", version.r
 androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "paging" }
 
 navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+
+# Contacts-Provider
+contacts-provider = { module = "io.github.dev-bilal-azzam:contacts-provider", version.ref = "contacts-provider"}
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

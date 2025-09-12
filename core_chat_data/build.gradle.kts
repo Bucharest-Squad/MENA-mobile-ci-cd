@@ -14,6 +14,7 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.coreChatDomain)
             implementation(libs.kotlin.serialization)
+            implementation(libs.contacts.provider)
         }
         iosMain.dependencies {
 
