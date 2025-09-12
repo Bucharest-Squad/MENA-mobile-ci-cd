@@ -1,4 +1,4 @@
-package net.thechance.mena.dukan.presentation
+package net.thechance.mena.faith.presentation
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
