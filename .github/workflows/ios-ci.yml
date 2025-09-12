@@ -214,17 +214,64 @@ jobs:
             fi
           
             # Domain modules
-            for module in identity core_chat wallet faith dukan trends; do
-              if [ "${{ steps.changes.outputs.${module}_domain_changed }}" = "true" ]; then
-                echo "- 🏗️ ${module}_domain (shared business logic)" >> $GITHUB_STEP_SUMMARY
-              fi
-              if [ "${{ steps.changes.outputs.${module}_data_changed }}" = "true" ]; then
-                echo "- 📊 ${module}_data (shared data layer)" >> $GITHUB_STEP_SUMMARY
-              fi
-              if [ "${{ steps.changes.outputs.${module}_api_changed }}" = "true" ]; then
-                echo "- 🔗 ${module}_api (shared interfaces)" >> $GITHUB_STEP_SUMMARY
-              fi
-            done
+            if [ "${{ steps.changes.outputs.identity_domain_changed }}" = "true" ]; then
+              echo "- 🏗️ identity_domain (shared business logic)" >> $GITHUB_STEP_SUMMARY
+            fi
+            if [ "${{ steps.changes.outputs.core_chat_domain_changed }}" = "true" ]; then
+              echo "- 🏗️ core_chat_domain (shared business logic)" >> $GITHUB_STEP_SUMMARY
+            fi
+            if [ "${{ steps.changes.outputs.wallet_domain_changed }}" = "true" ]; then
+              echo "- 🏗️ wallet_domain (shared business logic)" >> $GITHUB_STEP_SUMMARY
+            fi
+            if [ "${{ steps.changes.outputs.faith_domain_changed }}" = "true" ]; then
+              echo "- 🏗️ faith_domain (shared business logic)" >> $GITHUB_STEP_SUMMARY
+            fi
+            if [ "${{ steps.changes.outputs.dukan_domain_changed }}" = "true" ]; then
+              echo "- 🏗️ dukan_domain (shared business logic)" >> $GITHUB_STEP_SUMMARY
+            fi
+            if [ "${{ steps.changes.outputs.trends_domain_changed }}" = "true" ]; then
+              echo "- 🏗️ trends_domain (shared business logic)" >> $GITHUB_STEP_SUMMARY
+            fi
+          
+            # Data modules
+            if [ "${{ steps.changes.outputs.identity_data_changed }}" = "true" ]; then
+              echo "- 📊 identity_data (shared data layer)" >> $GITHUB_STEP_SUMMARY
+            fi
+            if [ "${{ steps.changes.outputs.core_chat_data_changed }}" = "true" ]; then
+              echo "- 📊 core_chat_data (shared data layer)" >> $GITHUB_STEP_SUMMARY
+            fi
+            if [ "${{ steps.changes.outputs.wallet_data_changed }}" = "true" ]; then
+              echo "- 📊 wallet_data (shared data layer)" >> $GITHUB_STEP_SUMMARY
+            fi
+            if [ "${{ steps.changes.outputs.dukan_data_changed }}" = "true" ]; then
+              echo "- 📊 dukan_data (shared data layer)" >> $GITHUB_STEP_SUMMARY
+            fi
+            if [ "${{ steps.changes.outputs.faith_data_changed }}" = "true" ]; then
+              echo "- 📊 faith_data (shared data layer)" >> $GITHUB_STEP_SUMMARY
+            fi
+            if [ "${{ steps.changes.outputs.trends_data_changed }}" = "true" ]; then
+              echo "- 📊 trends_data (shared data layer)" >> $GITHUB_STEP_SUMMARY
+            fi
+          
+            # API modules
+            if [ "${{ steps.changes.outputs.identity_api_changed }}" = "true" ]; then
+              echo "- 🔗 identity_api (shared interfaces)" >> $GITHUB_STEP_SUMMARY
+            fi
+            if [ "${{ steps.changes.outputs.core_chat_api_changed }}" = "true" ]; then
+              echo "- 🔗 core_chat_api (shared interfaces)" >> $GITHUB_STEP_SUMMARY
+            fi
+            if [ "${{ steps.changes.outputs.wallet_api_changed }}" = "true" ]; then
+              echo "- 🔗 wallet_api (shared interfaces)" >> $GITHUB_STEP_SUMMARY
+            fi
+            if [ "${{ steps.changes.outputs.faith_api_changed }}" = "true" ]; then
+              echo "- 🔗 faith_api (shared interfaces)" >> $GITHUB_STEP_SUMMARY
+            fi
+            if [ "${{ steps.changes.outputs.dukan_api_changed }}" = "true" ]; then
+              echo "- 🔗 dukan_api (shared interfaces)" >> $GITHUB_STEP_SUMMARY
+            fi
+            if [ "${{ steps.changes.outputs.trends_api_changed }}" = "true" ]; then
+              echo "- 🔗 trends_api (shared interfaces)" >> $GITHUB_STEP_SUMMARY
+            fi
           
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "**Build Steps Executed:**" >> $GITHUB_STEP_SUMMARY
