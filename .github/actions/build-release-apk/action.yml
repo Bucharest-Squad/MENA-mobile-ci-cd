@@ -1,0 +1,60 @@
+name: Build Release APK
+
+inputs:
+  android-keystore-base64:
+    required: true
+  keystore-password:
+    required: true
+  android-key-alias:
+    required: true
+  android-key-alias-password:
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up JDK
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'zulu'
+        java-version: '21'
+
+    - name: Cache Gradle
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          gradle-${{ runner.os }}-
+
+    - name: Make gradlew executable
+      run: chmod +x ./gradlew
+      shell: bash
+
+    - name: Version Bump
+      uses: chkfung/android-version-actions@v1.2.3
+      with:
+        gradlePath: composeApp/build.gradle.kts
+        versionCode: ${{ github.run_number }}
+        versionName: 1.0.${{ github.run_number }}
+
+    - name: Generate unsigned APK
+      run: ./gradlew :composeApp:assembleRelease --build-cache -x test -x lint
+      shell: bash
+
+    - name: Sign APK
+      uses: r0adkll/sign-android-release@v1
+      with:
+        releaseDirectory: composeApp/build/outputs/apk/release
+        signingKeyBase64: ${{ inputs.android-keystore-base64 }}
+        keyStorePassword: ${{ inputs.keystore-password }}
+        alias: ${{ inputs.android-key-alias }}
+        keyPassword: ${{ inputs.android-key-alias-password }}
+      env:
+        BUILD_TOOLS_VERSION: "35.0.0"
+
+    - name: Set signed APK path to env
+      run: echo "SIGNED_APK_PATH=composeApp/build/outputs/apk/release/composeApp-release-unsigned-signed.apk" >> $GITHUB_ENV
+      shell: bash
