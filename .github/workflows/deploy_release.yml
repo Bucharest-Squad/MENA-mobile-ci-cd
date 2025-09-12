@@ -1,4 +1,4 @@
-name: Deploy release apk from develop to firebase
+name: Deploy release APK from develop to Firebase
 
 on:
   push:
@@ -6,12 +6,20 @@ on:
       - develop
 
 jobs:
-  deploy-release-to-firebase:
-    uses: ./.github/workflows/deploy_release_to_firebase.yml
-    secrets:
-      ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
-      KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-      ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-      ANDROID_KEY_ALIAS_PASSWORD: ${{ secrets.ANDROID_KEY_ALIAS_PASSWORD }}
-      FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
-      CREDENTIAL_FILE_CONTENT: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
+  deploy-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build and Sign APK
+        uses: ./.github/actions/build_release.yml
+        with:
+          android-keystore-base64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          keystore-password: ${{ secrets.KEYSTORE_PASSWORD }}
+          android-key-alias: ${{ secrets.ANDROID_KEY_ALIAS }}
+          android-key-alias-password: ${{ secrets.ANDROID_KEY_ALIAS_PASSWORD }}
+
+      - name: Deploy to Firebase
+        uses: ./.github/actions/deploy_release_to_firebase.yml
+        with:
+          firebase-app-id: ${{ secrets.FIREBASE_APP_ID }}
+          credential-file-content: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
+          signed-apk-path: ${{ env.SIGNED_APK_PATH }}

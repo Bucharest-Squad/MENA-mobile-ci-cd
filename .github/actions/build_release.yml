@@ -10,9 +10,6 @@ inputs:
   android-key-alias-password:
     required: true
 
-outputs:
-  signed-apk-path:
-
 runs:
   using: "composite"
   steps:
@@ -39,6 +36,7 @@ runs:
 
     - name: Make gradlew executable
       run: chmod +x ./gradlew
+      shell: bash
 
     - name: Version Bump
       uses: chkfung/android-version-actions@v1.2.3
@@ -49,6 +47,7 @@ runs:
 
     - name: Generate unsigned APK
       run: ./gradlew :composeApp:assembleRelease --build-cache -x test -x lint
+      shell: bash
 
     - name: Sign APK
       id: sign_app
@@ -61,3 +60,11 @@ runs:
         keyPassword: ${{ inputs.android-key-alias-password }}
       env:
         BUILD_TOOLS_VERSION: "35.0.0"
+
+    - name: List APK files
+      run: ls -la composeApp/build/outputs/apk/release
+      shell: bash
+
+    - name: Save signed APK path to env
+      run: echo "SIGNED_APK_PATH=composeApp/build/outputs/apk/release/app-release-unsigned-signed.apk" >> $GITHUB_ENV
+      shell: bash

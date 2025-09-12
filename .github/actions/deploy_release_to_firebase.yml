@@ -1,0 +1,23 @@
+name: Deploy APK to Firebase
+
+description: Uploads APK to Firebase App Distribution
+
+inputs:
+  firebase-app-id:
+    required: true
+  credential-file-content:
+    required: true
+  signed-apk-path:
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Upload signed APK to Firebase
+      uses: wzieba/Firebase-Distribution-Github-Action@v1
+      with:
+        appId: ${{ inputs.firebase-app-id }}
+        serviceCredentialsFileContent: ${{ inputs.credential-file-content }}
+        file: ${{ inputs.signed-apk-path }}
+        debug: true
+        groups: tester
