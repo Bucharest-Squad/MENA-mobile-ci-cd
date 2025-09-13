@@ -21,8 +21,8 @@ jobs:
       
           messages=$(curl -s -X GET "https://slack.com/api/conversations.history" \
             -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
-            -H "Content-type: application/x-www-form-urlencoded" \
-            --data-urlencode "channel=$SLACK_CHANNEL_ID")
+            -H "Content-type: application/json; charset=utf-8" \
+            --data "channel=$SLACK_CHANNEL_ID")
 
           REGIONS=("IDN" "DKN" "CHT" "FTH" "TRN" "WLT")
           echo "${messages}"
