@@ -39,7 +39,7 @@ private fun DisplayingMyTrendContent() {
 
         //TODO pass listener and ui state to replace this dummy data
         PublisherDetails(
-            profileName = "Hawraa Mahmood",
+            userName = "Hawraa Mahmood",
             timeOfPublish = "2 hour ago",
             description = "Latest AI -trends that are changing everything!",
             modifier =  Modifier.align(Alignment.BottomCenter)
@@ -66,7 +66,7 @@ private fun DisplayingMyTrendContent() {
 
 @Composable
 private fun PublisherDetails(
-    profileName: String,
+    userName: String,
     timeOfPublish: String,
     description: String,
     modifier: Modifier = Modifier
@@ -81,7 +81,7 @@ private fun PublisherDetails(
             ProfilePlaceHolder()
             Column(Modifier.padding(bottom = Theme.spacing._16)) {
                 MenaText(
-                    text = profileName,
+                    text = userName,
                     color = Theme.colorScheme.primary.onPrimary,
                     style = Theme.typography.label.medium,
                     modifier = Modifier.padding(vertical = Theme.spacing._2)
