@@ -1,4 +1,4 @@
-package net.thechance.mena.mange_my_trends
+package net.thechance.mena.trends.presentation.screen.mange_my_trends
 
 
 import androidx.compose.foundation.background
@@ -6,10 +6,16 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import mena.trends_presentation.generated.resources.Res
@@ -17,8 +23,10 @@ import mena.trends_presentation.generated.resources.ic_arrow_left
 import mena.trends_presentation.generated.resources.ic_delete
 import mena.trends_presentation.generated.resources.ic_eye
 import mena.trends_presentation.generated.resources.ic_like
+import mena.trends_presentation.generated.resources.test
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
+import net.thechance.mena.designsystem.presentation.component.image.MenaImage
 import net.thechance.mena.designsystem.presentation.component.text.MenaText
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.trends.presentation.shared.util.gradientShadow
@@ -34,25 +42,37 @@ fun DisplayingMyTrend() {
 @Composable
 private fun DisplayingMyTrendContent() {
     Box(modifier = Modifier.fillMaxSize()) {
+
         RunningVideoPlaceHolder()
-        UsersReAct(modifier = Modifier.align(Alignment.CenterEnd).padding(end = 16.dp))
 
         //TODO pass listener and ui state to replace this dummy data
+        UsersReAct(
+            viewCount = "11",
+            likeCount = "4",
+            modifier = Modifier.align(Alignment.BottomEnd)
+                .padding(end = Theme.spacing._16, bottom = 130.dp)
+        )
+
         PublisherDetails(
             userName = "Hawraa Mahmood",
             timeOfPublish = "2 hour ago",
             description = "Latest AI -trends that are changing everything!",
-            modifier =  Modifier.align(Alignment.BottomCenter)
+            modifier = Modifier.align(Alignment.BottomCenter)
         )
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(height = 118.dp)
+                .height(height = 96.dp)
                 .gradientShadow(startColor = Color(0x33FFFFFF), endColor = Color(0x00FFFFFF))
                 .align(Alignment.TopCenter)
         ) {
             AppBar(
-                title = "", modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 8.dp),
+                title = "",
+                contentPadding = PaddingValues(
+                    top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding() + Theme.spacing._16,
+                    start = Theme.spacing._16
+                ),
                 leadingContent = {
                     MenaIcon(painter = painterResource(resource = Res.drawable.ic_arrow_left))
                 },
@@ -60,7 +80,10 @@ private fun DisplayingMyTrendContent() {
             )
         }
 
-        Box(modifier = Modifier.fillMaxWidth().height(height = 118.dp).gradientShadow().align(Alignment.BottomCenter))
+        Box(
+            modifier = Modifier.fillMaxWidth().height(height = 118.dp).gradientShadow()
+                .align(Alignment.BottomCenter)
+        )
     }
 }
 
@@ -71,14 +94,22 @@ private fun PublisherDetails(
     description: String,
     modifier: Modifier = Modifier
 ) {
+    var isExpanded by remember { mutableStateOf(false) }
+
     Column(
-        modifier = modifier.fillMaxWidth().navigationBarsPadding()
+        modifier = modifier
+            .fillMaxWidth()
+            .navigationBarsPadding()
+            .clickable { isExpanded = !isExpanded }
     ) {
+
         Row(
             horizontalArrangement = Arrangement.spacedBy(space = Theme.spacing._8),
-            modifier = Modifier.padding(horizontal = Theme.spacing._16).padding(top = Theme.spacing._8)
+            modifier = Modifier
+                .padding(horizontal = Theme.spacing._16)
+                .padding(top = Theme.spacing._8)
         ) {
-            ProfilePlaceHolder()
+            AvatarPlaceHolder()
             Column(Modifier.padding(bottom = Theme.spacing._16)) {
                 MenaText(
                     text = userName,
@@ -86,34 +117,47 @@ private fun PublisherDetails(
                     style = Theme.typography.label.medium,
                     modifier = Modifier.padding(vertical = Theme.spacing._2)
                 )
+
                 MenaText(
-                    text = timeOfPublish, color = Theme.colorScheme.shadeTertiary,
+                    text = timeOfPublish,
+                    color = Theme.colorScheme.shadeTertiary,
                     style = Theme.typography.label.small
                 )
             }
         }
+
         MenaText(
             text = description,
-            modifier = Modifier.padding(bottom = Theme.spacing._32).padding(horizontal = Theme.spacing._16),
+            modifier = Modifier
+                .padding(bottom = Theme.spacing._32)
+                .padding(horizontal = Theme.spacing._16),
             color = Theme.colorScheme.primary.onPrimary,
-            maxLines = 1,
-            style = Theme.typography.label.medium
+            style = Theme.typography.label.medium,
+            maxLines = if (isExpanded) Int.MAX_VALUE else 1,
         )
     }
 }
 
 @Composable
-private fun UsersReAct(modifier: Modifier= Modifier) {
-    Column(modifier) {
-        ReActIcon(iconRes = painterResource(resource = Res.drawable.ic_like),reactCount ="1",modifier = Modifier.padding(bottom = 24.dp))
-        ReActIcon(iconRes = painterResource(resource = Res.drawable.ic_eye),reactCount ="11",modifier = Modifier.padding(bottom = 24.dp) )
-        ReActIcon(iconRes = painterResource(resource = Res.drawable.ic_delete),reactCount ="Delete",modifier = Modifier.padding(bottom = 24.dp), onClick = {TODO()})
-    }
-}
+private fun UsersReAct(likeCount: String, viewCount: String, modifier: Modifier = Modifier) {
+    Column(modifier = modifier.padding(bottom = Theme.spacing._24)) {
+        ReActIcon(
+            icon = painterResource(resource = Res.drawable.ic_like),
+            reactCount = likeCount,
+            modifier = Modifier.padding(bottom = Theme.spacing._24)
+        )
 
-@Composable
-private fun ProfilePlaceHolder(){
-    Box(Modifier.background(shape = CircleShape, color = Color.Cyan).size(size = 40.dp))
+        ReActIcon(
+            icon = painterResource(resource = Res.drawable.ic_eye),
+            reactCount = viewCount,
+            modifier = Modifier.padding(bottom = Theme.spacing._24)
+        )
+
+        ReActIcon(
+            icon = painterResource(resource = Res.drawable.ic_delete),
+            reactCount = "Delete",
+            onClick = { TODO() })
+    }
 }
 
 @Composable
@@ -122,14 +166,23 @@ private fun RunningVideoPlaceHolder() {
 }
 
 @Composable
+private fun AvatarPlaceHolder() {
+    MenaImage(
+        painter = painterResource(resource = Res.drawable.test),
+        modifier = Modifier.size(size = 40.dp).clip(shape = CircleShape),
+        contentScale = ContentScale.Crop
+    )
+}
+
+@Composable
 private fun ReActIcon(
-    iconRes: Painter,
+    icon: Painter,
     reactCount: String,
-    onClick: () -> Unit = {},
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {}
 ) {
     Column(modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-        MenaIcon(painter = iconRes,modifier = Modifier.padding(bottom = 8.dp).clickable{onClick()})
+        MenaIcon(painter = icon, modifier = Modifier.padding(bottom = 8.dp).clickable { onClick() })
         MenaText(
             text = reactCount,
             style = Theme.typography.label.small,
@@ -141,6 +194,6 @@ private fun ReActIcon(
 
 @Preview
 @Composable
-private fun DisplayingMyTrendPreview(){
+private fun DisplayingMyTrendPreview() {
     DisplayingMyTrend()
 }
