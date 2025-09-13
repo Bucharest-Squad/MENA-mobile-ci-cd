@@ -10,7 +10,7 @@ jobs:
     env:
       SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
       SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
-      BRANCH_NAME: ${{ github.head_ref }}
+      BRANCH_NAME: "feature/IDN-test"
     steps:
       - name: Install jq
         run: sudo apt-get update && sudo apt-get install -y jq
@@ -18,7 +18,7 @@ jobs:
       - name: Send messages to Slack
         run: |
           #!/bin/bash
-
+      
           messages=$(curl -s -X GET "https://slack.com/api/conversations.history" \
             -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
             -H "Content-type: application/x-www-form-urlencoded" \
