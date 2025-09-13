@@ -31,7 +31,9 @@ kotlin {
         }
         commonMain.dependencies {
             implementation(projects.trendsDomain)
+            implementation(projects.trendsApi)
             implementation(projects.designSystem)
+            implementation(libs.androidx.navigation.compose)
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
