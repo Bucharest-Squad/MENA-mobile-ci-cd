@@ -124,6 +124,18 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO
 
+      - name: Notify Slack on failure
+        if: failure()
+        uses: ./.github/actions/send-pr-notification-to-slack
+        with:
+          slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          slack-channel-id: ${{ secrets.SLACK_NOTIFICATION_CHANNEL_ID }}
+          branch-name: ${{ github.head_ref }}
+          message: |
+            🚨 *Build Failed!*
+            PR: ${{ github.event.pull_request.html_url }}
+            Commit: ${{ github.sha }}
+
   ios-build-summary:
     needs: [changed-modules, ios-build]
     runs-on: ubuntu-latest
