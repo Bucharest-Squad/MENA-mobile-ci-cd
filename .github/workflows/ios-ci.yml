@@ -123,24 +123,19 @@ jobs:
           echo "Available tasks in composeApp:"
           ./gradlew :composeApp:tasks --group="build" --quiet || true
           
-          echo "Searching for iOS-related tasks:"
-          ./gradlew tasks --all | grep -i ios || echo "No iOS-specific tasks found"
+          echo "Searching for KMP iOS tasks:"
+          ./gradlew tasks --all | grep -E "(ios|framework)" | head -10 || echo "No iOS-specific tasks found"
           
-          echo "Searching for framework/library tasks:"
-          ./gradlew tasks --all | grep -E "(framework|library|assemble)" | head -10 || echo "No framework tasks found"
-          
-          # Try to find iOS/KMP build tasks
+          # Try to find appropriate iOS build tasks (not Xcode-dependent ones)
           BUILD_TASK=""
-          if ./gradlew tasks --all | grep -q "embedAndSignAppleFrameworkForXcode"; then
-            BUILD_TASK="embedAndSignAppleFrameworkForXcode"
-          elif ./gradlew tasks --all | grep -q "assembleDebugAppleFrameworkForXcode"; then
-            BUILD_TASK="assembleDebugAppleFrameworkForXcode"
+          if ./gradlew tasks --all | grep -q "linkDebugFrameworkIosSimulatorArm64"; then
+            BUILD_TASK="linkDebugFrameworkIosSimulatorArm64"
           elif ./gradlew tasks --all | grep -q "iosSimulatorArm64MainBinaries"; then
             BUILD_TASK="iosSimulatorArm64MainBinaries"
-          elif ./gradlew tasks --all | grep -q "linkDebugFrameworkIosSimulatorArm64"; then
-            BUILD_TASK="linkDebugFrameworkIosSimulatorArm64"
-          elif ./gradlew tasks --all | grep -q ":composeApp:build"; then
-            BUILD_TASK="build"
+          elif ./gradlew tasks --all | grep -q "compileKotlinIosSimulatorArm64"; then
+            BUILD_TASK="compileKotlinIosSimulatorArm64"
+          elif ./gradlew tasks --all | grep -q "assembleDebugIosSimulatorArm64"; then
+            BUILD_TASK="assembleDebugIosSimulatorArm64"
           else
             BUILD_TASK="build"
           fi
@@ -155,10 +150,12 @@ jobs:
           echo "Building with task: $BUILD_TASK"
           
           if [ "$BUILD_TASK" = "build" ]; then
-            # Standard build - should work for most KMP projects
+            # Standard build - this should compile all targets including iOS
+            echo "Using standard build task"
             ./gradlew :composeApp:build
           else
-            # iOS-specific task
+            # Use specific iOS task
+            echo "Using iOS-specific task: $BUILD_TASK"
             ./gradlew :composeApp:$BUILD_TASK
           fi
 
@@ -171,20 +168,16 @@ jobs:
           echo "Building with task: $BUILD_TASK"
           echo "Changed modules: $MODULES"
           
-          if [ "$MODULES" != "[]" ]; then
-            echo "Building composeApp due to changes in modules: $MODULES"
+          if [ "$MODULES" != "[]" ] || [ "$BUILD_TASK" = "build" ]; then
+            echo "Building composeApp due to module changes or using standard build"
             if [ "$BUILD_TASK" = "build" ]; then
               ./gradlew :composeApp:build
             else
               ./gradlew :composeApp:$BUILD_TASK
             fi
           else
-            echo "Building composeApp for iOS compatibility"
-            if [ "$BUILD_TASK" = "build" ]; then
-              ./gradlew :composeApp:build
-            else
-              ./gradlew :composeApp:$BUILD_TASK
-            fi
+            echo "No module changes, building iOS framework only"
+            ./gradlew :composeApp:$BUILD_TASK
           fi
 
       - name: Resolve Swift Package Dependencies
@@ -193,14 +186,18 @@ jobs:
             -project iosApp/iosApp.xcodeproj \
             -resolvePackageDependencies
 
-      - name: List Available Simulators
+      - name: Build iOS App for Simulator (Direct Xcode)
         run: |
-          echo "Available iOS Simulators:"
-          xcrun simctl list devices iOS --json | jq -r '.devices | to_entries[] | .key as $os | .value[] | select(.isAvailable == true) | "\(.name) (\($os))"' | head -10
-
-      - name: Build iOS App for Simulator
-        run: |
-          # Use the latest available iPhone 16 simulator
+          # Set environment variables that Xcode expects for KMP
+          export CONFIGURATION=Debug
+          export SDK_NAME=iphonesimulator
+          export ARCHS=arm64
+          export VALID_ARCHS=arm64
+          export CURRENT_ARCH=arm64
+          export PLATFORM_NAME=iphonesimulator
+          export EFFECTIVE_PLATFORM_NAME=-iphonesimulator
+          
+          # Build using xcodebuild which will properly call the KMP tasks
           xcodebuild \
             -project iosApp/iosApp.xcodeproj \
             -scheme "iosApp" \
