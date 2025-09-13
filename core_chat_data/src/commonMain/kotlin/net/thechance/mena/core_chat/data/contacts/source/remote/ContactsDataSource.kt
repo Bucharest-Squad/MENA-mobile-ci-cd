@@ -18,26 +18,6 @@ class ContactsDataSource(
     private val baseUrl: String,
 ) {
 
-//    suspend fun getPagedContact(pageNumber: Int, pageSize: Int) {
-//        val response: BaseResponseDto<PagedDataDto<ContactDto>> =
-//            client.get("http://localhost/contacts") {
-//                url {
-//                    parameters.append("pageNumber", pageNumber)
-//                    parameters.append("pageSize", pageSize)
-//                }
-//            }
-//        println(response.status)
-//    }
-
-//    suspend fun syncContacts(body: List<ContactRequest>) {
-//        val response: HttpResponse =
-//            client.post("http://localhost/contacts/sync") {
-//                contentType(ContentType.Application.Json)
-//                setBody(body)
-//            }
-//        println(response.status)
-//    }
-
     suspend fun getUserContacts(
         pageNumber: Int,
         pageSize: Int
@@ -45,7 +25,7 @@ class ContactsDataSource(
         return client.get("$baseUrl/contacts") {
             parameter("pageNumber", pageNumber)
             parameter("pageSize", pageSize)
-        }.body()
+        }.body<BaseResponseDto<PagedDataDto<ContactDto>>>()
     }
 
     suspend fun syncContacts(

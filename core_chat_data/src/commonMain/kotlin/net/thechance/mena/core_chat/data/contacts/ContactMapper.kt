@@ -24,8 +24,8 @@ private fun List<ContactDto>.toListOfContact(): List<Contact> {
 private fun ContactDto.toDomain(): Contact {
     return Contact(
         name = name.orEmpty(),
-        phone = phone.orEmpty(),
-        isMenaUser = isMenaUser == true,
+        phone = phoneNumber.orEmpty(),
+        isMenaUser = isMenaMember == true,
         imageUrl = imageUrl
     )
 }
