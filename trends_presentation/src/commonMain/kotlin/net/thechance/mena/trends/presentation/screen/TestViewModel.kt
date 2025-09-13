@@ -1,5 +1,6 @@
 package net.thechance.mena.trends.presentation.screen
 
+import androidx.lifecycle.ViewModel
 import net.thechance.mena.trends.domain.repository.ReelRepository
 import org.koin.android.annotation.KoinViewModel
 import org.koin.core.annotation.Provided
@@ -13,5 +14,5 @@ import org.koin.core.annotation.Provided
 @KoinViewModel
 class TestViewModel(
     @Provided private val fakeRepo: ReelRepository
-) {
+): ViewModel() {
 }
