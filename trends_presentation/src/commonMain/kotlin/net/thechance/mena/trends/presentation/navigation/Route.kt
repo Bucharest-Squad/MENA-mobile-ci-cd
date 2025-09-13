@@ -1,5 +1,7 @@
 package net.thechance.mena.trends.presentation.navigation
 
+import kotlinx.serialization.Serializable
+
 sealed interface Route {
     /* example of writing Routes , delete this when write the first route in your user story  :
 
@@ -14,4 +16,7 @@ sealed interface Route {
      data class Trends (val id : Int) : Route
 
      */
+
+    @Serializable
+    data object Test: Route
 }
