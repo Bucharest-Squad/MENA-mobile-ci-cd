@@ -5,7 +5,9 @@ import kotlinx.datetime.LocalDateTime
 import net.thechance.mena.trends.domain.entity.Category
 import net.thechance.mena.trends.domain.entity.Reel
 import net.thechance.mena.trends.domain.repository.ReelRepository
+import org.koin.core.annotation.Single
 
+@Single(binds = [ReelRepository::class])
 class FakeReelsRepositoryImpl : ReelRepository {
 
     private val categories = listOf(

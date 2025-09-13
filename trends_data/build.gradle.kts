@@ -24,8 +24,6 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.trendsDomain)
             implementation(libs.koin.core)
-            implementation(libs.koin.compose)
-            implementation(libs.koin.compose.viewmodel)
             api(libs.koin.annotations)
             implementation(libs.kotlinx.datetime)
         }
