@@ -21,11 +21,17 @@ jobs:
 
 
           echo "Sending Slack notification..."
-          curl -X POST https://slack.com/api/chat.postMessage \
-            -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
-            -H 'Content-type: application/json' \
-            --data '{
-              \"channel\": \"$SLACK_CHANNEL_ID\",
-              \"blocks\": $MESSAGE
+          curl -X POST https://slack.com/api/chat.postMessage   -H "Authorization:
+            Bearer $SLACK_BOT_TOKEN" -H "Content-type: application/json; charset=utf-8"   --data '{
+              "channel": "$SLACK_CHANNEL_ID",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "$MESSAGE"
+                  }
+                }
+              ]
             }'
           done
