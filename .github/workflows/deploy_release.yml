@@ -22,6 +22,7 @@ jobs:
 
       - name: Deploy APK to Firebase
         uses: wzieba/Firebase-Distribution-Github-Action@v1
+        continue-on-error: true
         with:
           appId: ${{ secrets.FIREBASE_APP_ID }}
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
