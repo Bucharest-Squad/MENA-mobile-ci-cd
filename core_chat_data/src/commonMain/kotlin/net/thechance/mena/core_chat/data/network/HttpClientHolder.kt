@@ -11,26 +11,28 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
-expect val platformHttpClientEngineFactory: HttpClientEngineFactory<HttpClientEngineConfig>
+fun createHttpClient(
+    baseUrl: String,
+    httpClientEngineFactory: HttpClientEngineFactory<HttpClientEngineConfig>
+): HttpClient {
+    val timeOutIntervalMilliSeconds = 30_000L
+    return HttpClient(httpClientEngineFactory) {
+        defaultRequest { url(baseUrl) }
+        install(ContentNegotiation) {
+            json(
+                Json {
+                    ignoreUnknownKeys = true
+                    prettyPrint = true
+                    isLenient = true
+                }
+            )
+        }
+        install(Logging) { level = LogLevel.ALL }
 
-fun createHttpClient(baseUrl: String) = HttpClient(platformHttpClientEngineFactory) {
-    defaultRequest { url(baseUrl) }
-    install(ContentNegotiation) {
-        json(
-            Json {
-                ignoreUnknownKeys = true
-                prettyPrint = true
-                isLenient = true
-            }
-        )
-    }
-    install(Logging) { level = LogLevel.ALL }
-
-    install(HttpTimeout) {
-        requestTimeoutMillis = TIME_OUT_INTERVAL_MILLI
-        connectTimeoutMillis = TIME_OUT_INTERVAL_MILLI
-        socketTimeoutMillis = TIME_OUT_INTERVAL_MILLI
+        install(HttpTimeout) {
+            requestTimeoutMillis = timeOutIntervalMilliSeconds
+            connectTimeoutMillis = timeOutIntervalMilliSeconds
+            socketTimeoutMillis = timeOutIntervalMilliSeconds
+        }
     }
 }
-
-private const val TIME_OUT_INTERVAL_MILLI = 30_000L

@@ -10,7 +10,7 @@ import org.koin.dsl.module
 internal val networkModule = module {
     single(named("baseUrl")) { "http://10.0.2.2:8080" } // TODO change to real url in production
     single { createHttpClientEngine() }
-    single { createHttpClient(get(named("baseUrl"))) }
+    single { createHttpClient(get(named("baseUrl")), get()) }
 }
 
 expect fun Scope.createHttpClientEngine(): HttpClientEngineFactory<HttpClientEngineConfig>
