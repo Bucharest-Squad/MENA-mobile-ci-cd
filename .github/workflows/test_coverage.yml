@@ -135,3 +135,4 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./coverage-reports/
           fail_ci_if_error: true
+          comment: true
