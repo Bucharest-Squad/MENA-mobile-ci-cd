@@ -1,0 +1,31 @@
+name: Send Slack Messages
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  slack-loop:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send messages to Slack
+        run: |
+          #!/bin/bash
+
+
+          REGIONS=("IDN" "DKN" "CHT" "FTH" "TRN" "WLT")
+
+          for REGION in "${REGIONS[@]}"; do
+            MESSAGE="${REGION} prs info"
+
+
+          echo "Sending Slack notification..."
+          curl -X POST https://slack.com/api/chat.postMessage \
+            -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
+            -H 'Content-type: application/json' \
+            --data "{
+              \"channel\": \"$SLACK_CHANNEL_ID\",
+              \"blocks\": $MESSAGE
+            }"
+          done
