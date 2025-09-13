@@ -16,7 +16,9 @@ kotlin {
         }
         commonMain.dependencies {
             implementation(projects.coreChatDomain)
-            implementation(libs.kotlinx.serialization.json)
+            implementation(libs.kotlin.serialization)
+            implementation(libs.contacts.provider)
+            implementation(libs.koin.core)
 
             // ktor
             implementation(libs.bundles.ktor)

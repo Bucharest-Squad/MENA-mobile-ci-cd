@@ -6,6 +6,7 @@ import net.thechance.mena.core_chat.data.shared.dto.PagedDataDto
 import net.thechance.mena.core_chat.domain.entity.Contact
 import net.thechance.mena.core_chat.domain.exception.ContactsFetchFailedException
 import net.thechance.mena.core_chat.domain.model.PagedData
+import com.bilalazzam.contacts_provider.Contact as DeviceContact
 
 fun PagedDataDto<ContactDto>?.toPagedListOfContacts(): PagedData<Contact> {
     val pagedData = this ?: throw ContactsFetchFailedException("Response body is null")
@@ -29,13 +30,16 @@ private fun ContactDto.toDomain(): Contact {
     )
 }
 
-fun List<Contact>.toListOfContactCreationRequestDto(): List<ContactCreationRequestDto> {
-    return map { it.toContactCreationRequestDto() }
+private fun DeviceContact.toListOfContactCreationRequestDto(): List<ContactCreationRequestDto> {
+    return phoneNumbers.map { phone ->
+        ContactCreationRequestDto(
+            name = listOfNotNull(firstName, lastName)
+                .joinToString(" "),
+            phone = phone
+        )
+    }
 }
 
-private fun Contact.toContactCreationRequestDto(): ContactCreationRequestDto {
-    return ContactCreationRequestDto(
-        name = name,
-        phone = phone
-    )
+fun List<DeviceContact>.toListOfContactCreationRequestDto(): List<ContactCreationRequestDto> {
+    return flatMap ( DeviceContact::toListOfContactCreationRequestDto )
 }
