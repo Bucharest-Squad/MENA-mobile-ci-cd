@@ -10,7 +10,7 @@ import net.thechance.mena.core_chat.domain.model.PagedData
 import net.thechance.mena.core_chat.domain.repository.ContactsRepository
 
 class ContactsRepositoryImpl(
-    private val contactsDataSource: ContactsDataSource
+    private val contactsDataSource: ContactsDataSource,
     private val deviceContactsDataSource: DeviceContactsDataSource
 ) : ContactsRepository, BaseRepository {
 
