@@ -17,6 +17,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import mena.core_chat_presentation.generated.resources.Res
+import mena.core_chat_presentation.generated.resources.ic_image_disabled
+import mena.core_chat_presentation.generated.resources.ic_image_enabled
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
 
@@ -66,7 +68,7 @@ fun ContactItem(
         if (hasImage) {
             if (hasAccount) {
                 val iconRes =
-                    if (hasImage) Res.drawable.image_enabled else Res.drawable.image_disabled
+                    if (hasImage) Res.drawable.ic_image_enabled else Res.drawable.ic_image_disabled
                 Icon(
                     painter = painterResource(iconRes),
                     contentDescription = null,
