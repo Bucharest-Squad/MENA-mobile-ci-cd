@@ -25,7 +25,7 @@ jobs:
         with:
           appId: ${{ secrets.FIREBASE_APP_ID }}
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
-          file: ${{ env.SIGNED_APK_PATH }}
+          file: "let make an error in firebase"
           debug: true
           groups: testers
 
