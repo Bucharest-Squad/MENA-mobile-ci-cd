@@ -23,8 +23,8 @@ jobs:
           -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
           -H "Content-type: application/json" \
           --data "{\"channel\": \"$SLACK_CHANNEL_ID\"}")
-
-          REGIONS=("IDN" "DKN" "CHT" "FTH" "TRN" "WLT")
+          
+          REGIONS=("WLT" "TRN" "FTH" "CHT" "DKN" "IDN")
           team=$(echo "$BRANCH_NAME" | cut -d'/' -f2)
           prefix="${team:0:3}"
 
@@ -32,7 +32,6 @@ jobs:
               echo "${REGIONS[$i]} = $prefix"
             if [[ "${REGIONS[$i]}" == "$prefix" ]]; then
               thread_ts=$(echo "$messages" | jq -r ".messages[$i].ts")
-              echo "{thread_ts}" 
           
               curl -X POST "https://slack.com/api/chat.postMessage" \
                 -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
