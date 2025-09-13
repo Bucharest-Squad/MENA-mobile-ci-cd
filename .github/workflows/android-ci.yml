@@ -105,7 +105,7 @@ jobs:
           slack-notification-channel-id: ${{ secrets.SLACK_NOTIFICATION_CHANNEL_ID }}
           branch-name: ${{ github.head_ref }}
           message: |
-            🚨 *Build Failed!*
+            🚨 *Build Failed on Android!*
             PR: ${{ github.event.pull_request.html_url }}
             Commit: ${{ github.sha }}
 

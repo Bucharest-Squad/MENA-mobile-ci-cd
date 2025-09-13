@@ -30,7 +30,7 @@ runs:
         message_count=$(echo "$response" | jq '.messages | length')
         echo "Found $message_count messages"
 
-        if [ "$message_count" -eq 0 ]; then
+        if [ "$message_count" -eq 1 ]; then
           echo "is_empty=true" >> $GITHUB_OUTPUT
         else
           echo "is_empty=false" >> $GITHUB_OUTPUT
