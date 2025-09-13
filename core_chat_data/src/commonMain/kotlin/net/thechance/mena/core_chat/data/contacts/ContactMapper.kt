@@ -24,7 +24,7 @@ private fun ContactDto.toDomain(): Contact {
     return Contact(
         name = name.orEmpty(),
         phone = phone.orEmpty(),
-        isMenaUser = isMenaUser ?: false,
+        isMenaUser = isMenaUser == true,
         imageUrl = imageUrl
     )
 }
