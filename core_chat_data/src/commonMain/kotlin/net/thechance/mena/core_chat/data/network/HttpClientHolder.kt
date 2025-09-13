@@ -13,8 +13,8 @@ import kotlinx.serialization.json.Json
 
 expect val platformHttpClientEngineFactory: HttpClientEngineFactory<HttpClientEngineConfig>
 
-val httpClient = HttpClient(platformHttpClientEngineFactory) {
-    defaultRequest { url(BASE_URL) }
+fun createHttpClient(baseUrl: String) = HttpClient(platformHttpClientEngineFactory) {
+    defaultRequest { url(baseUrl) }
     install(ContentNegotiation) {
         json(
             Json {
@@ -33,5 +33,4 @@ val httpClient = HttpClient(platformHttpClientEngineFactory) {
     }
 }
 
-private const val BASE_URL = "localhost:8080/"
 private const val TIME_OUT_INTERVAL_MILLI = 30_000L
