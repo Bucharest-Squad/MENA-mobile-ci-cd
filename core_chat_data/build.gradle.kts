@@ -24,3 +24,8 @@ kotlin {
         }
     }
 }
+
+android {
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
+    namespace = "net.thechance.mena.core_chat_data"
+}
