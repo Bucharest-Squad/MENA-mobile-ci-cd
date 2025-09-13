@@ -2,10 +2,9 @@ name: Android CI
 
 on:
   push:
-    branches:
-      - main
-      - develop
+    branches: [ main, develop ]
   pull_request:
+    branches: [ main, develop ]
   workflow_dispatch:
 
 concurrency:
@@ -16,121 +15,79 @@ env:
   JAVA_VERSION: 21
 
 jobs:
-  detect-changes:
+  changed-modules:
     runs-on: ubuntu-latest
     outputs:
       changed_modules: ${{ steps.changes.outputs.modules }}
       has_changes: ${{ steps.changes.outputs.has_changes }}
-      app_changed: ${{ steps.changes.outputs.app_changed }}
+      build_all: ${{ steps.changes.outputs.build_all }}
 
     steps:
-      - name: Checkout code
+      - name: Check out repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Get changed files
+      - name: Get all changed files
         id: changed-files-git
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             CHANGED_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }})
           else
-            CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD)
+            # For push events, compare with previous commit
+            CHANGED_FILES=$(git diff --name-only HEAD~1..HEAD)
           fi
           echo "changed_files<<EOF" >> $GITHUB_OUTPUT
           echo "$CHANGED_FILES" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
-      - name: Determine changed modules
+      - name: Determine changed modules from file list
         id: changes
         run: |
-          # Define all your modules based on your settings.gradle
-          ALL_MODULES='
-          data:repositories:vod
-          data:remote_data_source:vod
-          data:local_data_source:vod
-          feature:authentication:presentation
-          feature:authentication:api
-          feature:home:api
-          feature:home:presentation
-          feature:user_profile:api
-          feature:user_profile:presentation
-          feature:playlists:api
-          feature:playlists:presentation
-          feature:search:api
-          feature:search:presentation
-          feature:media_details:api
-          feature:media_details:presentation
-          feature:onboarding:api
-          feature:onboarding:presentation
-          feature:category:api
-          feature:category:presentation
-          domain:vod
-          domain:identity
-          data:local_data_source:identity
-          data:remote_data_source:identity
-          data:repositories:identity
-          image_viewer
-          design_system
-          tvapp
-          '
-          
+          ALL_MODULES='core_chat_api core_chat_data core_chat_domain core_chat_presentation dukan_api dukan_data dukan_domain dukan_presentation faith_api faith_data faith_domain faith_presentation identity_api identity_data identity_domain identity_presentation trends_api trends_data trends_domain trends_presentation wallet_api wallet_data wallet_domain wallet_presentation'
           CHANGED_FILES="${{ steps.changed-files-git.outputs.changed_files }}"
-          echo "Changed files:"
-          echo "$CHANGED_FILES"
           
-          # Check if app module changed
-          APP_CHANGED=false
-          if echo "$CHANGED_FILES" | grep -qE '^app/'; then
-            APP_CHANGED=true
-            echo "App module changed"
-          fi
-          
-          # Extract unique module paths from changed files
-          UNIQUE_MODULE_PATHS=$(echo "$CHANGED_FILES" | grep -v '^app/' | sed 's|/[^/]*$||' | sort -u)
-          
+          UNIQUE_MODULE_LIST=$(echo "$CHANGED_FILES" | awk -F/ '{print $1}' | sort -u)
           FINAL_MODULES=""
-          for changed_path in $UNIQUE_MODULE_PATHS; do
-            # Convert file path to module format (e.g., feature/home/api -> feature:home:api)
-            MODULE_PATH=$(echo "$changed_path" | tr '/' ':')
           
-            # Check if this module exists in our ALL_MODULES list
-            if echo "$ALL_MODULES" | grep -qw "$MODULE_PATH"; then
-              FINAL_MODULES="$FINAL_MODULES $MODULE_PATH"
-              echo "Found changed module: $MODULE_PATH"
+          for module in $UNIQUE_MODULE_LIST; do
+            if [[ " $ALL_MODULES " =~ " $module " ]]; then
+              FINAL_MODULES="$FINAL_MODULES $module"
             fi
           done
           
-          # If core project files changed, build all modules
-          if echo "$CHANGED_FILES" | grep -qE '^build.gradle.kts|^settings.gradle.kts|^gradle/|^\.github/|^build-logic/'; then
-            echo "Core project files changed. Building all modules."
-            FINAL_MODULES="$ALL_MODULES"
-            APP_CHANGED=true
-          fi
-          
-          # Remove duplicates and convert to JSON array
-          UNIQUE_MODULES=$(echo "$FINAL_MODULES" | tr ' ' '\n' | sort -u | tr '\n' ' ')
-          JSON_ARRAY=$(echo "$UNIQUE_MODULES" | jq -R 'split(" ") | map(select(length > 0))' | jq -c '.')
-          
-          echo "Final modules to build: $JSON_ARRAY"
-          
-          if [ "$(echo "$JSON_ARRAY" | jq 'length')" -gt 0 ] || [ "$APP_CHANGED" = "true" ]; then
+          # Check if core project files changed - if so, build everything
+          if grep -qE '^build.gradle.kts|^settings.gradle.kts|^gradle/|^\.github/|^app/' <<< "$CHANGED_FILES"; then
+            echo "Core project file or app module changed. Building all modules."
+            echo "build_all=true" >> $GITHUB_OUTPUT
             echo "has_changes=true" >> $GITHUB_OUTPUT
-            echo "modules=$JSON_ARRAY" >> $GITHUB_OUTPUT
-          else
-            echo "has_changes=false" >> $GITHUB_OUTPUT
             echo "modules=[]" >> $GITHUB_OUTPUT
-          fi
+          else
+            JSON_ARRAY=$(echo "$FINAL_MODULES" | jq -R 'split(" ") | map(select(length > 0))' | jq -c '.')
           
-          echo "app_changed=$APP_CHANGED" >> $GITHUB_OUTPUT
+            if [ "$(echo $JSON_ARRAY | jq 'length')" -gt 0 ]; then
+              echo "build_all=false" >> $GITHUB_OUTPUT
+              echo "has_changes=true" >> $GITHUB_OUTPUT
+              echo "modules=$(echo $JSON_ARRAY)" >> $GITHUB_OUTPUT
+            else
+              echo "build_all=false" >> $GITHUB_OUTPUT
+              echo "has_changes=false" >> $GITHUB_OUTPUT
+              echo "modules=[]" >> $GITHUB_OUTPUT
+            fi
+          fi
 
-  build-affected-modules:
-    needs: detect-changes
-    if: needs.detect-changes.outputs.has_changes == 'true'
+  android-build:
+    name: Android Build
+    needs: changed-modules
     runs-on: ubuntu-latest
+    if: needs.changed-modules.outputs.has_changes == 'true'
     strategy:
       matrix:
-        module: ${{ fromJSON(needs.detect-changes.outputs.changed_modules) }}
+        include:
+          - build_type: "full"
+            condition: ${{ needs.changed-modules.outputs.build_all == 'true' }}
+          - build_type: "selective"
+            condition: ${{ needs.changed-modules.outputs.build_all == 'false' }}
       fail-fast: false
 
     steps:
@@ -143,33 +100,45 @@ jobs:
           distribution: 'zulu'
           java-version: ${{ env.JAVA_VERSION }}
 
-      - name: Make gradlew executable
+      - name: Grant execute permissions for gradlew
         run: chmod +x gradlew
 
-      - name: Build Module ${{ matrix.module }}
-        run: ./gradlew :${{ matrix.module }}:build --build-cache
+      - name: Build All Modules (Full Build)
+        if: matrix.build_type == 'full' && needs.changed-modules.outputs.build_all == 'true'
+        run: ./gradlew assembleDebug
 
-  build-app:
-    needs: [detect-changes, build-affected-modules]
-    if: always() && needs.detect-changes.outputs.app_changed == 'true'
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: ${{ env.JAVA_VERSION }}
-
-      - name: Build Android App
-        run: ./gradlew assembleDebug --build-cache
+      - name: Build Changed Modules Only
+        if: matrix.build_type == 'selective' && needs.changed-modules.outputs.build_all == 'false'
+        run: |
+          MODULES='${{ needs.changed-modules.outputs.changed_modules }}'
+          if [ "$MODULES" != "[]" ]; then
+            # Convert JSON array to gradle module tasks
+            MODULE_TASKS=$(echo $MODULES | jq -r '.[] | ":"+.+":assemble"' | tr '\n' ' ')
+            echo "Building modules: $MODULE_TASKS"
+            ./gradlew $MODULE_TASKS
+            # Also build the main app
+            ./gradlew :app:assembleDebug
+          fi
 
       - name: Upload Android APK
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' && always()
         uses: actions/upload-artifact@v4
         with:
           name: android-apk-debug
           path: app/build/outputs/apk/debug/*.apk
+
+  android-build-summary:
+    name: Android Build Summary
+    needs: [changed-modules, android-build]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Summary
+        run: |
+          if [ "${{ needs.changed-modules.outputs.has_changes }}" = "false" ]; then
+            echo "✅ No changes detected in Android modules. Skipping build."
+          elif [ "${{ needs.changed-modules.outputs.build_all }}" = "true" ]; then
+            echo "🔨 Built all modules due to core file changes."
+          else
+            echo "🎯 Built only changed modules: ${{ needs.changed-modules.outputs.changed_modules }}"
+          fi
