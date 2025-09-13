@@ -17,6 +17,7 @@ interface BaseRepository {
         call: suspend () -> BaseResponseDto<T>,
     ): T? {
         return runCatchingWithException(defaultException) {
+            //TODO: handle network connection
             retry(maxAttempts) {
                 val response = call()
                 response.getSuccessBodyOrThrow()
@@ -26,7 +27,7 @@ interface BaseRepository {
 
     suspend fun <T> retry(
         maxAttempts: Int = 3,
-        block: suspend () -> T
+        block: suspend () -> T?
     ): T? {
         return try {
             block()
@@ -45,13 +46,13 @@ interface BaseRepository {
         defaultException: (Throwable) -> ChatException,
         block: suspend () -> T?
     ): T? {
-        try {
-            return block()
+        return try {
+            block()
         } catch (e: ContactsProviderPermissionDeniedException) {
             throw ContactsPermissionDeniedException("Contacts Permission Denied!", e)
         } catch (e: ChatException) {
             throw e
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             throw defaultException(e)
         }
     }
