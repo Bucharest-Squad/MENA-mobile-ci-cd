@@ -2,8 +2,10 @@ package net.thechance.mena.core_chat.data.shared
 
 import net.thechance.mena.core_chat.data.shared.dto.BaseResponseDto
 import net.thechance.mena.core_chat.domain.exception.ChatException
+import net.thechance.mena.core_chat.domain.exception.ContactsPermissionDeniedException
 import net.thechance.mena.core_chat.domain.exception.UnAuthorizedException
 import net.thechance.mena.core_chat.domain.exception.UnknownException
+import com.bilalazzam.contacts_provider.ContactsPermissionDeniedException as ContactsProviderPermissionDeniedException
 
 interface BaseRepository {
 
@@ -40,6 +42,8 @@ interface BaseRepository {
     ): T {
         try {
             return block()
+        } catch (e: ContactsProviderPermissionDeniedException) {
+            throw ContactsPermissionDeniedException("Contacts Permission Denied!", e)
         } catch (e: ChatException) {
             throw e
         } catch (e: Exception) {
