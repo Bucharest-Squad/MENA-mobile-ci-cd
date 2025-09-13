@@ -14,13 +14,14 @@ interface BaseRepository {
         maxAttempts: Int = 1,
         call: suspend () -> BaseResponseDto<T>,
     ): T? {
+        var response: T? = null
         runCatchingWithException(defaultException) {
             //TODO: handle network connection
             var attempt = 0
             while (attempt < maxAttempts) {
                 try {
-                    val response = call()
-                    return@runCatchingWithException response.getSuccessBodyOrThrow()
+                    response = call().getSuccessBodyOrThrow()
+                    return@runCatchingWithException
                 } catch (e: ChatException) {
                     throw e
                 } catch (e: Exception) {
@@ -31,7 +32,7 @@ interface BaseRepository {
                 }
             }
         }
-        throw UnknownException("This line should never be reached")
+        return response
     }
 
     private suspend fun <T> runCatchingWithException(
