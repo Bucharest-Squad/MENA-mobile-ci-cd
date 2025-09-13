@@ -1,16 +1,16 @@
 name: Send Slack Messages
 
 on:
-  push:
-    branches:
-      - 'feature/*'
+  pull_request:
+    types: [opened, synchronize, reopened]
+
 jobs:
   slack-loop:
     runs-on: ubuntu-latest
     env:
       SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
       SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
-      BRANCH_NAME: "feature/IDN-test"
+      BRANCH_NAME: ${{ github.head_ref }}
     steps:
       - name: Install jq
         run: sudo apt-get update && sudo apt-get install -y jq
