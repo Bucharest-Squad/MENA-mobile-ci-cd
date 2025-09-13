@@ -124,8 +124,12 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO
 
+  notify-slack-on-failure:
+    if: failure()
+    needs: ios-build
+    runs-on: ubuntu-latest
+    steps:
       - name: Notify Slack on failure
-        if: failure()
         uses: ./.github/actions/send-pr-notification-to-slack
         with:
           slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
@@ -133,6 +137,7 @@ jobs:
           branch-name: ${{ github.head_ref }}
           message: |
             🚨 *Build Failed on IOS!*
+            One or more matrix jobs failed.
             PR: ${{ github.event.pull_request.html_url }}
             Commit: ${{ github.sha }}
 
