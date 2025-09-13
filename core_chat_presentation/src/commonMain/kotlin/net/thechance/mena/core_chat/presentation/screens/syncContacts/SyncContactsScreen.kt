@@ -26,7 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import mena.core_chat_presentation.generated.resources.Res
-import mena.core_chat_presentation.generated.resources.`ic_arrow-left`
+import mena.core_chat_presentation.generated.resources.ic_arrow_left
 import mena.core_chat_presentation.generated.resources.phone_icon
 import mena.core_chat_presentation.generated.resources.sync_contacts
 import mena.core_chat_presentation.generated.resources.sync_contacts_desc
@@ -64,7 +64,7 @@ private fun SyncContactsContent(
             title = stringResource(Res.string.sync_contacts),
             leadingContent = {
                 Icon(
-                    painter = painterResource(resource = Res.drawable.`ic_arrow-left`),
+                    painter = painterResource(resource = Res.drawable.ic_arrow_left),
                     contentDescription = null,
                     modifier = Modifier.size(20.dp)
                         .clickable {},
