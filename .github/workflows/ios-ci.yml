@@ -20,7 +20,6 @@ jobs:
     outputs:
       changed_modules: ${{ steps.changes.outputs.modules }}
       has_changes: ${{ steps.changes.outputs.has_changes }}
-      build_all: ${{ steps.changes.outputs.build_all }}
       has_ios_changes: ${{ steps.changes.outputs.has_ios_changes }}
 
     steps:
@@ -35,7 +34,6 @@ jobs:
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             CHANGED_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }})
           else
-            # For push events, compare with previous commit
             CHANGED_FILES=$(git diff --name-only HEAD~1..HEAD)
           fi
           echo "changed_files<<EOF" >> $GITHUB_OUTPUT
@@ -47,55 +45,44 @@ jobs:
         run: |
           ALL_MODULES='core_chat_api core_chat_data core_chat_domain core_chat_presentation dukan_api dukan_data dukan_domain dukan_presentation faith_api faith_data faith_domain faith_presentation identity_api identity_data identity_domain identity_presentation trends_api trends_data trends_domain trends_presentation wallet_api wallet_data wallet_domain wallet_presentation'
           CHANGED_FILES="${{ steps.changed-files-git.outputs.changed_files }}"
-          
-          # Check if iOS-specific files changed
+
           if grep -qE '^iosApp/' <<< "$CHANGED_FILES"; then
             echo "has_ios_changes=true" >> $GITHUB_OUTPUT
           else
             echo "has_ios_changes=false" >> $GITHUB_OUTPUT
           fi
-          
+
           UNIQUE_MODULE_LIST=$(echo "$CHANGED_FILES" | awk -F/ '{print $1}' | sort -u)
           FINAL_MODULES=""
-          
+
           for module in $UNIQUE_MODULE_LIST; do
             if [[ " $ALL_MODULES " =~ " $module " ]]; then
               FINAL_MODULES="$FINAL_MODULES $module"
             fi
           done
-          
-          # Check if core project files changed - if so, build everything
+
           if grep -qE '^build.gradle.kts|^settings.gradle.kts|^gradle/|^\.github/|^iosApp/' <<< "$CHANGED_FILES"; then
-            echo "Core project file or iOS app changed. Building all modules."
-            echo "build_all=true" >> $GITHUB_OUTPUT
+            echo "Core project/iOS files changed. Overriding to build all modules."
+            FINAL_MODULES="$ALL_MODULES"
+          fi
+
+          JSON_ARRAY=$(echo "$FINAL_MODULES" | jq -R 'split(" ") | map(select(length > 0))' | jq -c '.')
+
+          if [ "$(echo $JSON_ARRAY | jq 'length')" -gt 0 ]; then
             echo "has_changes=true" >> $GITHUB_OUTPUT
-            echo "modules=[]" >> $GITHUB_OUTPUT
+            echo "modules=$(echo $JSON_ARRAY)" >> $GITHUB_OUTPUT
           else
-            JSON_ARRAY=$(echo "$FINAL_MODULES" | jq -R 'split(" ") | map(select(length > 0))' | jq -c '.')
-          
-            if [ "$(echo $JSON_ARRAY | jq 'length')" -gt 0 ]; then
-              echo "build_all=false" >> $GITHUB_OUTPUT
-              echo "has_changes=true" >> $GITHUB_OUTPUT
-              echo "modules=$(echo $JSON_ARRAY)" >> $GITHUB_OUTPUT
-            else
-              echo "build_all=false" >> $GITHUB_OUTPUT
-              echo "has_changes=false" >> $GITHUB_OUTPUT
-              echo "modules=[]" >> $GITHUB_OUTPUT
-            fi
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "modules=[]" >> $GITHUB_OUTPUT
           fi
 
   ios-build:
-    name: iOS Build Check
     needs: changed-modules
-    runs-on: macos-latest
     if: needs.changed-modules.outputs.has_changes == 'true'
+    runs-on: macos-latest
     strategy:
       matrix:
-        include:
-          - build_type: "full"
-            condition: ${{ needs.changed-modules.outputs.build_all == 'true' }}
-          - build_type: "selective"
-            condition: ${{ needs.changed-modules.outputs.build_all == 'false' }}
+        module: ${{ fromJSON(needs.changed-modules.outputs.changed_modules) }}
       fail-fast: false
 
     steps:
@@ -114,71 +101,11 @@ jobs:
       - name: Grant execute permissions for gradlew
         run: chmod +x gradlew
 
-      - name: Discover Project Structure
-        id: discover
-        run: |
-          echo "Available projects:"
-          ./gradlew projects --quiet
-          
-          echo "Available tasks in composeApp:"
-          ./gradlew :composeApp:tasks --group="build" --quiet || true
-          
-          echo "Searching for KMP iOS tasks:"
-          ./gradlew tasks --all | grep -E "(ios|framework)" | head -10 || echo "No iOS-specific tasks found"
-          
-          # Try to find appropriate iOS build tasks (not Xcode-dependent ones)
-          BUILD_TASK=""
-          if ./gradlew tasks --all | grep -q "linkDebugFrameworkIosSimulatorArm64"; then
-            BUILD_TASK="linkDebugFrameworkIosSimulatorArm64"
-          elif ./gradlew tasks --all | grep -q "iosSimulatorArm64MainBinaries"; then
-            BUILD_TASK="iosSimulatorArm64MainBinaries"
-          elif ./gradlew tasks --all | grep -q "compileKotlinIosSimulatorArm64"; then
-            BUILD_TASK="compileKotlinIosSimulatorArm64"
-          elif ./gradlew tasks --all | grep -q "assembleDebugIosSimulatorArm64"; then
-            BUILD_TASK="assembleDebugIosSimulatorArm64"
-          else
-            BUILD_TASK="build"
-          fi
-          
-          echo "build_task=$BUILD_TASK" >> $GITHUB_OUTPUT
-          echo "Detected build task: $BUILD_TASK"
+      - name: Build Changed KMP Module ${{ matrix.module }}
+        run: ./gradlew :${{ matrix.module }}:build
 
-      - name: Build All KMP Modules (Full Build)
-        if: matrix.build_type == 'full' && needs.changed-modules.outputs.build_all == 'true'
-        run: |
-          BUILD_TASK="${{ steps.discover.outputs.build_task }}"
-          echo "Building with task: $BUILD_TASK"
-          
-          if [ "$BUILD_TASK" = "build" ]; then
-            # Standard build - this should compile all targets including iOS
-            echo "Using standard build task"
-            ./gradlew :composeApp:build
-          else
-            # Use specific iOS task
-            echo "Using iOS-specific task: $BUILD_TASK"
-            ./gradlew :composeApp:$BUILD_TASK
-          fi
-
-      - name: Build Changed KMP Modules Only
-        if: matrix.build_type == 'selective' && needs.changed-modules.outputs.build_all == 'false'
-        run: |
-          BUILD_TASK="${{ steps.discover.outputs.build_task }}"
-          MODULES='${{ needs.changed-modules.outputs.changed_modules }}'
-          
-          echo "Building with task: $BUILD_TASK"
-          echo "Changed modules: $MODULES"
-          
-          if [ "$MODULES" != "[]" ] || [ "$BUILD_TASK" = "build" ]; then
-            echo "Building composeApp due to module changes or using standard build"
-            if [ "$BUILD_TASK" = "build" ]; then
-              ./gradlew :composeApp:build
-            else
-              ./gradlew :composeApp:$BUILD_TASK
-            fi
-          else
-            echo "No module changes, building iOS framework only"
-            ./gradlew :composeApp:$BUILD_TASK
-          fi
+      - name: Build iOS Shared Code (KMP)
+        run: ./gradlew :composeApp:build
 
       - name: Resolve Swift Package Dependencies
         run: |
@@ -186,18 +113,8 @@ jobs:
             -project iosApp/iosApp.xcodeproj \
             -resolvePackageDependencies
 
-      - name: Build iOS App for Simulator (Direct Xcode)
+      - name: Build iOS App for Simulator
         run: |
-          # Set environment variables that Xcode expects for KMP
-          export CONFIGURATION=Debug
-          export SDK_NAME=iphonesimulator
-          export ARCHS=arm64
-          export VALID_ARCHS=arm64
-          export CURRENT_ARCH=arm64
-          export PLATFORM_NAME=iphonesimulator
-          export EFFECTIVE_PLATFORM_NAME=-iphonesimulator
-          
-          # Build using xcodebuild which will properly call the KMP tasks
           xcodebuild \
             -project iosApp/iosApp.xcodeproj \
             -scheme "iosApp" \
@@ -208,7 +125,6 @@ jobs:
             CODE_SIGNING_REQUIRED=NO
 
   ios-build-summary:
-    name: iOS Build Summary
     needs: [changed-modules, ios-build]
     runs-on: ubuntu-latest
     if: always()
@@ -218,9 +134,7 @@ jobs:
           if [ "${{ needs.changed-modules.outputs.has_changes }}" = "false" ]; then
             echo "✅ No changes detected in modules that affect iOS. Skipping build."
           elif [ "${{ needs.changed-modules.outputs.has_ios_changes }}" = "true" ]; then
-            echo "📱 iOS app files changed - full rebuild required."
-          elif [ "${{ needs.changed-modules.outputs.build_all }}" = "true" ]; then
-            echo "🔨 Built all modules due to core file changes."
+            echo "📱 iOS app files changed - full rebuild triggered."
           else
-            echo "🎯 Built shared module due to changes in: ${{ needs.changed-modules.outputs.changed_modules }}"
+            echo "🎯 Built shared module(s): ${{ needs.changed-modules.outputs.changed_modules }}"
           fi
