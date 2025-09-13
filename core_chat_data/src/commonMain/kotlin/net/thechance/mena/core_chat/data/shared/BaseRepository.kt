@@ -16,31 +16,35 @@ interface BaseRepository {
         maxAttempts: Int = 1,
         call: suspend () -> BaseResponseDto<T>,
     ): T? {
-        var response: T? = null
-        runCatchingWithException(defaultException) {
-            //TODO: handle network connection
-            var attempt = 0
-            while (attempt < maxAttempts) {
-                try {
-                    response = call().getSuccessBodyOrThrow()
-                    return@runCatchingWithException
-                } catch (e: ChatException) {
-                    throw e
-                } catch (e: Exception) {
-                    attempt++
-                    if (attempt >= maxAttempts) {
-                        throw e
-                    }
-                }
+        return runCatchingWithException(defaultException) {
+            retry(maxAttempts) {
+                val response = call()
+                response.getSuccessBodyOrThrow()
             }
         }
-        return response
+    }
+
+    suspend fun <T> retry(
+        maxAttempts: Int = 3,
+        block: suspend () -> T
+    ): T? {
+        return try {
+            block()
+        } catch (e: ChatException) {
+            throw e
+        }  catch (e: Throwable) {
+            if (maxAttempts <= 1) throw e
+            retry(
+                maxAttempts = maxAttempts - 1,
+                block = block
+            )
+        }
     }
 
     private suspend fun <T> runCatchingWithException(
         defaultException: (Throwable) -> ChatException,
-        block: suspend () -> T
-    ): T {
+        block: suspend () -> T?
+    ): T? {
         try {
             return block()
         } catch (e: ContactsProviderPermissionDeniedException) {
