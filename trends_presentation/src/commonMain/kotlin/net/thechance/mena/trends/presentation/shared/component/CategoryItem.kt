@@ -16,22 +16,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import net.thechance.mena.designsystem.presentation.component.button.radioButton.RadioButton
 import net.thechance.mena.designsystem.presentation.component.text.MenaText
+import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.trends.presentation.shared.component.modifier.noRippleClickable
+import net.thechance.mena.trends.presentation.shared.model.CategoryUiState
+import net.thechance.mena.trends.presentation.shared.model.Selectable
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun CategoryItem(
-    text: String,
-    emoji: String,
-    isSelected: Boolean,
+    category: Selectable<CategoryUiState>,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit
+    onClick: (Int) -> Unit
 ) {
     val textColor by animateColorAsState(
-        targetValue = if (isSelected) Theme.colorScheme.shadePrimary else Theme.colorScheme.shadeSecondary
+        targetValue = if (category.isSelected) Theme.colorScheme.shadePrimary else Theme.colorScheme.shadeSecondary
     )
     Row(
         horizontalArrangement = Arrangement.spacedBy(Theme.spacing._8),
@@ -39,17 +41,17 @@ fun CategoryItem(
         modifier = modifier
             .clip(RoundedCornerShape(Theme.radius.full))
             .background(color = Theme.colorScheme.primary.onPrimary)
-            .noRippleClickable { onClick() }
+            .noRippleClickable { onClick(category.value.id) }
             .padding(10.dp)
     ) {
         CategoryNameAndEmoji(
-            emoji = emoji,
-            text = text,
+            emoji = category.value.emoji,
+            text = category.value.name,
             textColor = textColor
         )
         RadioButton(
-            isSelected = isSelected,
-            onClick = onClick,
+            isSelected = category.isSelected,
+            onClick = { onClick(category.value.id) },
         )
     }
 }
@@ -66,7 +68,8 @@ private fun CategoryNameAndEmoji(
     ) {
         MenaText(
             text = emoji,
-            style = Theme.typography.label.extraSmall
+            style = Theme.typography.label.extraSmall,
+            fontSize = 14.sp
         )
         MenaText(
             text = text,
@@ -80,12 +83,18 @@ private fun CategoryNameAndEmoji(
 @Composable
 private fun CategoryItemPreview() {
     var isSelected by remember { mutableStateOf(false) }
-    CategoryItem(
-        text = "Hello",
-        emoji = "\uD83D\uDE00",
-        isSelected = isSelected,
-        onClick = {
-            isSelected = isSelected.not()
-        }
+    val category = CategoryUiState(
+        id = 1,
+        name = "Hello",
+        emoji = "\uD83D\uDE00"
     )
+    val selectableCategory = Selectable(category, isSelected)
+    MenaTheme {
+        CategoryItem(
+            category = selectableCategory,
+            onClick = {
+                isSelected = isSelected.not()
+            }
+        )
+    }
 }
