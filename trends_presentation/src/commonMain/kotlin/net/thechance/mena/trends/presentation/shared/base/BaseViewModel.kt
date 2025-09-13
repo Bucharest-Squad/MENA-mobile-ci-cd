@@ -3,6 +3,8 @@ package net.thechance.mena.trends.presentation.shared.base
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.Job
@@ -42,9 +44,17 @@ abstract class BaseViewModel<State, Effect>(
         onError: suspend (Throwable) -> Unit,
         onStart: suspend () -> Unit = {},
         onEnd: suspend () -> Unit = {},
-        dispatcher: CoroutineDispatcher = Dispatchers.IO
+        dispatcher: CoroutineDispatcher = Dispatchers.IO,
+        scope: CoroutineScope = viewModelScope
     ): Job {
-        return viewModelScope.launch(dispatcher) {
+        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            scope.launch {
+                onError(exception)
+                onEnd()
+            }
+        }
+
+        return scope.launch(dispatcher + exceptionHandler) {
             onStart()
             runCatching { block() }
                 .onSuccess { onSuccess(it) }
