@@ -8,5 +8,5 @@ data class ContactCreationRequestDto(
     @SerialName("name")
     val name: String,
     @SerialName("phoneNumber")
-    val phone: String?
+    val phone: String
 )
