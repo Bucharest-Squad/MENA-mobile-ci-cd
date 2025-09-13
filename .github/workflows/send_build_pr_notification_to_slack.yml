@@ -25,7 +25,7 @@ jobs:
           --data "{\"channel\": \"$SLACK_CHANNEL_ID\"}")
 
           REGIONS=("IDN" "DKN" "CHT" "FTH" "TRN" "WLT")
-          team=$(echo "$BRANCH_NAME" | cut -d'\' -f2)
+          team=$(echo "$BRANCH_NAME" | cut -d'/' -f2)
           prefix="${team:0:3}"
 
           for i in "${!REGIONS[@]}"; do
