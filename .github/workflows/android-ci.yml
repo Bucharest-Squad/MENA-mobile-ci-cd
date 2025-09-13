@@ -97,6 +97,18 @@ jobs:
       - name: Build Main App
         run: ./gradlew :app:assembleDebug
 
+      - name: Notify Slack on failure
+        if: failure()
+        uses: ./.github/actions/send-pr-notification-to-slack
+        with:
+          slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          slack-channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
+          branch-name: ${{ github.head_ref }}
+          message: |
+            🚨 *Build Failed!*
+            PR: ${{ github.event.pull_request.html_url }}
+            Commit: ${{ github.sha }}
+
       - name: Upload Android APK
         if: github.event_name == 'push' && always()
         uses: actions/upload-artifact@v4
