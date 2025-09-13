@@ -3,18 +3,20 @@ package net.thechance.mena.trends.presentation.navigation
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import net.thechance.mena.trends.presentation.screen.TestScreen
 
 @Composable
 fun TrendsNavGraph(
    navController : NavHostController,
 ){
-   val startDestination = "" //TODO start destination will determined by pick interests story
 
    NavHost(
       navController = navController,
-      startDestination = startDestination
+      startDestination = Route.Test
    ){
-      //TODO add screens routes
-
+      composable<Route.Test> {
+         TestScreen()
+      }
    }
 }
