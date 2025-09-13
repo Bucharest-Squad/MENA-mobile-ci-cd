@@ -24,16 +24,14 @@ jobs:
             -H "Content-type: application/x-www-form-urlencoded" \
             --data-urlencode "channel=$SLACK_CHANNEL_ID")
 
-          ts_array=($(echo "$messages" | jq -r '.messages[].ts'))
-
           REGIONS=("IDN" "DKN" "CHT" "FTH" "TRN" "WLT")
-
+          echo "${messages}"
           team=$(echo "$BRANCH_NAME" | cut -d'\' -f2)
           prefix="${team:0:3}"
 
           for i in "${!REGIONS[@]}"; do
             if [[ "${REGIONS[$i]}" == "$prefix" ]]; then
-              thread_ts=${ts_array[$i]}
+              thread_ts=${$messages[$i].ts}
           
               curl -X POST "https://slack.com/api/chat.postMessage" \
                 -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
