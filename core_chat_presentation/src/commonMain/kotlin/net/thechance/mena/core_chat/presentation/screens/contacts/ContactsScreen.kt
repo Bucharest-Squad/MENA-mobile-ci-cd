@@ -21,9 +21,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import mena.core_chat_presentation.generated.resources.Res
-import mena.core_chat_presentation.generated.resources.arrow_left
+import mena.core_chat_presentation.generated.resources.`ic_arrow-left`
 import mena.core_chat_presentation.generated.resources.contacts_title
-import mena.core_chat_presentation.generated.resources.resync
+import mena.core_chat_presentation.generated.resources.ic_resync
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
@@ -55,7 +55,7 @@ private fun ContactsContent(
             title = stringResource(Res.string.contacts_title),
             leadingContent = {
                 Icon(
-                    painter = painterResource(Res.drawable.arrow_left),
+                    painter = painterResource(Res.drawable.`ic_arrow-left`),
                     contentDescription = null,
                     modifier = Modifier.size(20.dp)
                         .clickable {
@@ -79,7 +79,7 @@ private fun ContactsContent(
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        painter = painterResource(Res.drawable.resync),
+                        painter = painterResource(Res.drawable.ic_resync),
                         contentDescription = null,
                         modifier = Modifier.size(20.dp),
                         tint = Theme.colorScheme.shadePrimary,
