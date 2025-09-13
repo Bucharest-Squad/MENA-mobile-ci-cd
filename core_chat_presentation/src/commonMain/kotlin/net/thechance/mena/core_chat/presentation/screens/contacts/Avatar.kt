@@ -15,8 +15,8 @@ import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 
 @Composable
 fun Avatar(
-    imageUri: String?,
-    initials: String,
+    contactImageUri: String?,
+    contactInitials: String,
     size: Int,
     modifier: Modifier = Modifier
 ) {
@@ -29,15 +29,15 @@ fun Avatar(
             ) ,
         contentAlignment = Alignment.Center
     ) {
-        if (imageUri != null) {
+        if (contactImageUri != null) {
             AsyncImage(
-                model = imageUri,
+                model = contactImageUri,
                 contentDescription = "Contact photo",
                 modifier = modifier
             )
         } else {
             Text(
-                text = initials,
+                text = contactInitials,
                 color = Theme.colorScheme.shadePrimary,
                 style = Theme.typography.label.large,
             )
