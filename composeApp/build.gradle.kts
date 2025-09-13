@@ -83,13 +83,11 @@ android {
             dimension = "environment"
             applicationIdSuffix = ".dev"
             versionNameSuffix = "-dev"
-            resValue("string", "app_name", "MENA Dev")
         }
         create("staging") {
             dimension = "environment"
             applicationIdSuffix = ".staging"
             versionNameSuffix = "-staging"
-            resValue("string", "app_name", "MENA Staging")
         }
         create("production") {
             dimension = "environment"

@@ -1,4 +1,3 @@
 #include "Config.xcconfig"
 
 PRODUCT_BUNDLE_IDENTIFIER = net.thechance.mena.MENA$(TEAM_ID)
-PRODUCT_NAME = MENA
