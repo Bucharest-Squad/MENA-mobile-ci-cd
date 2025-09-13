@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 kotlin {
@@ -30,8 +31,11 @@ kotlin {
             implementation(libs.androidx.activity.compose)
         }
         commonMain.dependencies {
+            implementation(projects.coreChatApi)
             implementation(projects.coreChatDomain)
             implementation(projects.designSystem)
+
+            // Compose
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
@@ -40,6 +44,18 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.coil.compose)
 
+
+            // Serialization
+            implementation(libs.kotlin.serialization)
+
+            // Navigation
+            implementation(libs.navigation.compose)
+
+            // Paging 3
+            implementation(libs.bundles.paging)
+
+            // Koin
+            implementation(libs.bundles.koin.compose)
         }
         iosMain.dependencies {
 
