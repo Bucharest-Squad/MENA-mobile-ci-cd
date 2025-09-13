@@ -31,7 +31,7 @@ jobs:
           for i in "${!REGIONS[@]}"; do
               echo "${REGIONS[$i]} = $prefix"
             if [[ "${REGIONS[$i]}" == "$prefix" ]]; then
-              thread_ts=${$messages.messages[$i].ts}
+              thread_ts=$(echo "$messages" | jq -r ".messages[$i].ts")
               echo "{thread_ts}" 
           
               curl -X POST "https://slack.com/api/chat.postMessage" \
