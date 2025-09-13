@@ -14,7 +14,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import net.thechance.mena.designsystem.presentation.component.button.radioButton.RadioButton
@@ -41,40 +40,27 @@ fun CategoryItem(
         modifier = modifier
             .clip(RoundedCornerShape(Theme.radius.full))
             .background(color = Theme.colorScheme.primary.onPrimary)
-            .noRippleClickable { onClick(category.value.id) }
+            .noRippleClickable { category.value.id?.let { onClick(it) } }
             .padding(10.dp)
     ) {
-        CategoryNameAndEmoji(
-            emoji = category.value.emoji,
-            text = category.value.name,
-            textColor = textColor
-        )
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(Theme.spacing._4),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            MenaText(
+                text = category.value.emoji,
+                style = Theme.typography.label.extraSmall,
+                fontSize = 14.sp
+            )
+            MenaText(
+                text = category.value.name,
+                color = textColor,
+                style = Theme.typography.label.extraSmall // TODO: Should be Label/XSmall
+            )
+        }
         RadioButton(
             isSelected = category.isSelected,
-            onClick = { onClick(category.value.id) },
-        )
-    }
-}
-
-@Composable
-private fun CategoryNameAndEmoji(
-    emoji: String,
-    text: String,
-    textColor: Color
-) {
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(Theme.spacing._4),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        MenaText(
-            text = emoji,
-            style = Theme.typography.label.extraSmall,
-            fontSize = 14.sp
-        )
-        MenaText(
-            text = text,
-            color = textColor,
-            style = Theme.typography.label.extraSmall // TODO: Should be Label/XSmall
+            onClick = { category.value.id?.let { onClick(it) } },
         )
     }
 }
