@@ -2,7 +2,7 @@ name: Send Slack Messages
 
 on:
   pull_request:
-    types: [ opened, synchronize, reopened ]
+    types: [opened, synchronize, reopened]
 
 jobs:
   slack-loop:
@@ -18,7 +18,7 @@ jobs:
       - name: Send messages to Slack
         run: |
           #!/bin/bash
-          
+      
             messages=$(curl -s -X POST "https://slack.com/api/conversations.history" \
           -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
           -H "Content-type: application/json" \
@@ -31,7 +31,7 @@ jobs:
           for i in "${!REGIONS[@]}"; do
               echo "${REGIONS[$i]} = $prefix"
             if [[ "${REGIONS[$i]}" == "$prefix" ]]; then
-              thread_ts=${$messages[$i].timestamp / 1000000}
+              thread_ts=${$messages.messages[$i].ts}
               echo "{thread_ts}" 
           
               curl -X POST "https://slack.com/api/chat.postMessage" \
