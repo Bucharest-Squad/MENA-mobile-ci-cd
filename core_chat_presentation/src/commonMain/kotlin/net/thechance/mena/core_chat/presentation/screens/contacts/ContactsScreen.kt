@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -16,19 +15,14 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.arrow_left
 import mena.core_chat_presentation.generated.resources.contacts_title
-import mena.core_chat_presentation.generated.resources.image_disabled
-import mena.core_chat_presentation.generated.resources.image_enabled
 import mena.core_chat_presentation.generated.resources.resync
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
@@ -39,16 +33,17 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun ContactsScreen() {
-    ContactsContent (
-        onResyncClick = {}
+    ContactsContent(
+        onResyncClick = {},
+        contacts = emptyList()
     )
-
 }
 
 @Composable
-fun ContactsContent(
+private fun ContactsContent(
     modifier: Modifier = Modifier,
-    onResyncClick: () -> Unit
+    onResyncClick: () -> Unit,
+    contacts: List<ContactUi>
 ) {
 
     Column(
@@ -97,15 +92,9 @@ fun ContactsContent(
             verticalArrangement = Arrangement.spacedBy(Theme.spacing._16),
             contentPadding = PaddingValues(vertical = Theme.spacing._8)
         ) {
-            items(20) {
+            items(contacts.size) { contact ->
                 ContactItem(
-                    contact = Contact(
-                        id = "",
-                        firstName = "Mona",
-                        lastName = "Ayman Elsayed Ahhmed",
-                        phoneNumbers = listOf("01224479626"),
-                        imageUri = null,
-                    ),
+                    contact = contacts[contact],
                     hasAccount = true,
                     hasImage = true,
                     onContactClick = {},
@@ -115,66 +104,6 @@ fun ContactsContent(
     }
 }
 
-@Composable
-private fun ContactItem(
-    contact: Contact,
-    hasAccount: Boolean,
-    hasImage: Boolean,
-    onContactClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Row(
-        modifier = modifier.fillMaxWidth()
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null
-            ) { onContactClick() },
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Avatar(
-            imageUri = contact.imageUri,
-            initials = contact.initials,
-            size = 48
-        )
-        Column(
-            modifier = Modifier.padding(start = Theme.spacing._8).weight(1f)
-        ) {
-            Text(
-                text = contact.displayName,
-                style = Theme.typography.label.large,
-                color = Theme.colorScheme.shadePrimary,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            Text(
-                text = contact.phoneNumbers.firstOrNull() ?: "",
-                style = Theme.typography.label.medium,
-                color = Theme.colorScheme.shadeTertiary,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.padding(top = Theme.spacing._2)
-            )
-
-        }
-        if (hasAccount) {
-            if (hasImage) {
-                Icon(
-                    painter = painterResource(Res.drawable.image_enabled),
-                    contentDescription = null,
-                    modifier = Modifier.padding(start = Theme.spacing._8).size(24.dp),
-                    tint = Color.Unspecified
-                )
-            } else {
-                Icon(
-                    painter = painterResource(Res.drawable.image_disabled),
-                    contentDescription = null,
-                    modifier = Modifier.padding(start = Theme.spacing._8).size(24.dp),
-                    tint = Color.Unspecified
-                )
-            }
-        }
-    }
-}
 
 @Composable
 @Preview()

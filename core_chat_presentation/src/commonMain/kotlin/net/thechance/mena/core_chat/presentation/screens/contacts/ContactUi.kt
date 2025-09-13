@@ -1,11 +1,11 @@
 package net.thechance.mena.core_chat.presentation.screens.contacts
 
 
-data class Contact(
+data class ContactUi(
     val id: String?,
     val firstName: String?,
     val lastName: String?,
-    val phoneNumbers: List<String>,
+    val phoneNumbers: String,
     val imageUri: String? = null
 ) {
     val displayName: String
