@@ -31,7 +31,6 @@ kotlin {
             implementation(compose.runtime)
             implementation(compose.ui)
             implementation(libs.koin.core)
-            implementation(libs.koin.compose)
             api(libs.koin.annotations)
         }
     }
