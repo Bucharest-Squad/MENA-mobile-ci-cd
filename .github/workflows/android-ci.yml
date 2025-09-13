@@ -1,4 +1,4 @@
-name: Android CI - Optimized Build
+name: Android CI
 
 on:
   push:
@@ -16,387 +16,157 @@ env:
   JAVA_VERSION: 21
 
 jobs:
-  android-build:
-    name: Android Build
+  detect-changes:
     runs-on: ubuntu-latest
+    outputs:
+      changed_modules: ${{ steps.changes.outputs.modules }}
+      has_changes: ${{ steps.changes.outputs.has_changes }}
+      app_changed: ${{ steps.changes.outputs.app_changed }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Fetch full history for proper diff
+          fetch-depth: 0
+
+      - name: Get changed files
+        id: changed-files-git
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            CHANGED_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }})
+          else
+            CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD)
+          fi
+          echo "changed_files<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGED_FILES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Determine changed modules
+        id: changes
+        run: |
+          # Define all your modules based on your settings.gradle
+          ALL_MODULES='
+          data:repositories:vod
+          data:remote_data_source:vod
+          data:local_data_source:vod
+          feature:authentication:presentation
+          feature:authentication:api
+          feature:home:api
+          feature:home:presentation
+          feature:user_profile:api
+          feature:user_profile:presentation
+          feature:playlists:api
+          feature:playlists:presentation
+          feature:search:api
+          feature:search:presentation
+          feature:media_details:api
+          feature:media_details:presentation
+          feature:onboarding:api
+          feature:onboarding:presentation
+          feature:category:api
+          feature:category:presentation
+          domain:vod
+          domain:identity
+          data:local_data_source:identity
+          data:remote_data_source:identity
+          data:repositories:identity
+          image_viewer
+          design_system
+          tvapp
+          '
+          
+          CHANGED_FILES="${{ steps.changed-files-git.outputs.changed_files }}"
+          echo "Changed files:"
+          echo "$CHANGED_FILES"
+          
+          # Check if app module changed
+          APP_CHANGED=false
+          if echo "$CHANGED_FILES" | grep -qE '^app/'; then
+            APP_CHANGED=true
+            echo "App module changed"
+          fi
+          
+          # Extract unique module paths from changed files
+          UNIQUE_MODULE_PATHS=$(echo "$CHANGED_FILES" | grep -v '^app/' | sed 's|/[^/]*$||' | sort -u)
+          
+          FINAL_MODULES=""
+          for changed_path in $UNIQUE_MODULE_PATHS; do
+            # Convert file path to module format (e.g., feature/home/api -> feature:home:api)
+            MODULE_PATH=$(echo "$changed_path" | tr '/' ':')
+          
+            # Check if this module exists in our ALL_MODULES list
+            if echo "$ALL_MODULES" | grep -qw "$MODULE_PATH"; then
+              FINAL_MODULES="$FINAL_MODULES $MODULE_PATH"
+              echo "Found changed module: $MODULE_PATH"
+            fi
+          done
+          
+          # If core project files changed, build all modules
+          if echo "$CHANGED_FILES" | grep -qE '^build.gradle.kts|^settings.gradle.kts|^gradle/|^\.github/|^build-logic/'; then
+            echo "Core project files changed. Building all modules."
+            FINAL_MODULES="$ALL_MODULES"
+            APP_CHANGED=true
+          fi
+          
+          # Remove duplicates and convert to JSON array
+          UNIQUE_MODULES=$(echo "$FINAL_MODULES" | tr ' ' '\n' | sort -u | tr '\n' ' ')
+          JSON_ARRAY=$(echo "$UNIQUE_MODULES" | jq -R 'split(" ") | map(select(length > 0))' | jq -c '.')
+          
+          echo "Final modules to build: $JSON_ARRAY"
+          
+          if [ "$(echo "$JSON_ARRAY" | jq 'length')" -gt 0 ] || [ "$APP_CHANGED" = "true" ]; then
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "modules=$JSON_ARRAY" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "modules=[]" >> $GITHUB_OUTPUT
+          fi
+          
+          echo "app_changed=$APP_CHANGED" >> $GITHUB_OUTPUT
+
+  build-affected-modules:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.has_changes == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        module: ${{ fromJSON(needs.detect-changes.outputs.changed_modules) }}
+      fail-fast: false
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: ${{ env.JAVA_VERSION }}
-          cache: gradle
 
-      - name: Make gradlew executable
-        run: chmod +x ./gradlew
+      - name: Build Module ${{ matrix.module }}
+        run: ./gradlew :${{ matrix.module }}:build --build-cache
 
-      - name: 🔍 Detect changed modules
-        id: changes
-        run: |
-          # Get the base branch for comparison
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            BASE_SHA="${{ github.event.pull_request.base.sha }}"
-          elif [ "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]; then
-            BASE_SHA="${{ github.event.before }}"
-          else
-            # Fallback for first push or when before is not available
-            BASE_SHA="HEAD~1"
-          fi
-          
-          echo "Comparing against: $BASE_SHA"
-          
-          # Get changed files
-          CHANGED_FILES=$(git diff --name-only $BASE_SHA HEAD 2>/dev/null || echo "")
-          echo "Changed files:"
-          echo "$CHANGED_FILES"
-          
-          # Function to check if module changed
-          check_module_changed() {
-            local module_path="$1"
-            local output_var="$2"
-            if echo "$CHANGED_FILES" | grep -q "^${module_path}/"; then
-              echo "${output_var}=true" >> $GITHUB_OUTPUT
-              echo "✅ Module $module_path changed"
-            else
-              echo "${output_var}=false" >> $GITHUB_OUTPUT
-            fi
-          }
-          
-          # Check main app module
-          check_module_changed "composeApp" "compose_app_changed"
-          
-          # Check design system
-          check_module_changed "design_system" "design_system_changed"
-          
-          # Check presentation modules
-          check_module_changed "identity_presentation" "identity_presentation_changed"
-          check_module_changed "core_chat_presentation" "core_chat_presentation_changed"
-          check_module_changed "wallet_presentation" "wallet_presentation_changed"
-          check_module_changed "faith_presentation" "faith_presentation_changed"
-          check_module_changed "dukan_presentation" "dukan_presentation_changed"
-          check_module_changed "trends_presentation" "trends_presentation_changed"
-          
-          # Check API modules
-          check_module_changed "identity_api" "identity_api_changed"
-          check_module_changed "core_chat_api" "core_chat_api_changed"
-          check_module_changed "wallet_api" "wallet_api_changed"
-          check_module_changed "faith_api" "faith_api_changed"
-          check_module_changed "dukan_api" "dukan_api_changed"
-          check_module_changed "trends_api" "trends_api_changed"
-          
-          # Check domain modules
-          check_module_changed "identity_domain" "identity_domain_changed"
-          check_module_changed "core_chat_domain" "core_chat_domain_changed"
-          check_module_changed "wallet_domain" "wallet_domain_changed"
-          check_module_changed "faith_domain" "faith_domain_changed"
-          check_module_changed "dukan_domain" "dukan_domain_changed"
-          check_module_changed "trends_domain" "trends_domain_changed"
-          
-          # Check data modules
-          check_module_changed "identity_data" "identity_data_changed"
-          check_module_changed "core_chat_data" "core_chat_data_changed"
-          check_module_changed "wallet_data" "wallet_data_changed"
-          check_module_changed "dukan_data" "dukan_data_changed"
-          check_module_changed "faith_data" "faith_data_changed"
-          check_module_changed "trends_data" "trends_data_changed"
-          
-          # Check for root-level changes (build scripts, etc.)
-          if echo "$CHANGED_FILES" | grep -qE '^(build\.gradle\.kts|build\.gradle|settings\.gradle\.kts|settings\.gradle|gradle\.properties|gradle/)'; then
-            echo "root_changed=true" >> $GITHUB_OUTPUT
-            echo "✅ Root build files changed - will build all modules"
-          else
-            echo "root_changed=false" >> $GITHUB_OUTPUT
-          fi
+  build-app:
+    needs: [detect-changes, build-affected-modules]
+    if: always() && needs.detect-changes.outputs.app_changed == 'true'
+    runs-on: ubuntu-latest
 
-      - name: 🏗️ Build changed modules and dependents
-        run: |
-          BUILD_TASKS=""
-          
-          # If root files changed, build everything
-          if [ "${{ steps.changes.outputs.root_changed }}" = "true" ]; then
-            echo "🔄 Root files changed - building all modules"
-            ./gradlew assembleDebug --parallel --build-cache
-            exit 0
-          fi
-          
-          # Design system (foundational module - affects many others)
-          if [ "${{ steps.changes.outputs.design_system_changed }}" = "true" ]; then
-            BUILD_TASKS="$BUILD_TASKS :design_system:assemble"
-            echo "🎨 Building design_system"
-          fi
-          
-          # Domain modules (core business logic)
-          if [ "${{ steps.changes.outputs.identity_domain_changed }}" = "true" ]; then
-            BUILD_TASKS="$BUILD_TASKS :identity_domain:assemble"
-            echo "👤 Building identity_domain"
-          fi
-          
-          if [ "${{ steps.changes.outputs.core_chat_domain_changed }}" = "true" ]; then
-            BUILD_TASKS="$BUILD_TASKS :core_chat_domain:assemble"
-            echo "💬 Building core_chat_domain"
-          fi
-          
-          if [ "${{ steps.changes.outputs.wallet_domain_changed }}" = "true" ]; then
-            BUILD_TASKS="$BUILD_TASKS :wallet_domain:assemble"
-            echo "💰 Building wallet_domain"
-          fi
-          
-          if [ "${{ steps.changes.outputs.faith_domain_changed }}" = "true" ]; then
-            BUILD_TASKS="$BUILD_TASKS :faith_domain:assemble"
-            echo "🕌 Building faith_domain"
-          fi
-          
-          if [ "${{ steps.changes.outputs.dukan_domain_changed }}" = "true" ]; then
-            BUILD_TASKS="$BUILD_TASKS :dukan_domain:assemble"
-            echo "🛒 Building dukan_domain"
-          fi
-          
-          if [ "${{ steps.changes.outputs.trends_domain_changed }}" = "true" ]; then
-            BUILD_TASKS="$BUILD_TASKS :trends_domain:assemble"
-            echo "📈 Building trends_domain"
-          fi
-          
-          # Data modules
-          if [ "${{ steps.changes.outputs.identity_data_changed }}" = "true" ]; then
-            BUILD_TASKS="$BUILD_TASKS :identity_data:assemble"
-            echo "👤📊 Building identity_data"
-          fi
-          
-          if [ "${{ steps.changes.outputs.core_chat_data_changed }}" = "true" ]; then
-            BUILD_TASKS="$BUILD_TASKS :core_chat_data:assemble"
-            echo "💬📊 Building core_chat_data"
-          fi
-          
-          if [ "${{ steps.changes.outputs.wallet_data_changed }}" = "true" ]; then
-            BUILD_TASKS="$BUILD_TASKS :wallet_data:assemble"
-            echo "💰📊 Building wallet_data"
-          fi
-          
-          if [ "${{ steps.changes.outputs.dukan_data_changed }}" = "true" ]; then
-            BUILD_TASKS="$BUILD_TASKS :dukan_data:assemble"
-            echo "🛒📊 Building dukan_data"
-          fi
-          
-          if [ "${{ steps.changes.outputs.faith_data_changed }}" = "true" ]; then
-            BUILD_TASKS="$BUILD_TASKS :faith_data:assemble"
-            echo "🕌📊 Building faith_data"
-          fi
-          
-          if [ "${{ steps.changes.outputs.trends_data_changed }}" = "true" ]; then
-            BUILD_TASKS="$BUILD_TASKS :trends_data:assemble"
-            echo "📈📊 Building trends_data"
-          fi
-          
-          # API modules
-          if [ "${{ steps.changes.outputs.identity_api_changed }}" = "true" ]; then
-            BUILD_TASKS="$BUILD_TASKS :identity_api:assemble"
-            echo "👤🔗 Building identity_api"
-          fi
-          
-          if [ "${{ steps.changes.outputs.core_chat_api_changed }}" = "true" ]; then
-            BUILD_TASKS="$BUILD_TASKS :core_chat_api:assemble"
-            echo "💬🔗 Building core_chat_api"
-          fi
-          
-          if [ "${{ steps.changes.outputs.wallet_api_changed }}" = "true" ]; then
-            BUILD_TASKS="$BUILD_TASKS :wallet_api:assemble"
-            echo "💰🔗 Building wallet_api"
-          fi
-          
-          if [ "${{ steps.changes.outputs.faith_api_changed }}" = "true" ]; then
-            BUILD_TASKS="$BUILD_TASKS :faith_api:assemble"
-            echo "🕌🔗 Building faith_api"
-          fi
-          
-          if [ "${{ steps.changes.outputs.dukan_api_changed }}" = "true" ]; then
-            BUILD_TASKS="$BUILD_TASKS :dukan_api:assemble"
-            echo "🛒🔗 Building dukan_api"
-          fi
-          
-          if [ "${{ steps.changes.outputs.trends_api_changed }}" = "true" ]; then
-            BUILD_TASKS="$BUILD_TASKS :trends_api:assemble"
-            echo "📈🔗 Building trends_api"
-          fi
-          
-          # Presentation modules
-          if [ "${{ steps.changes.outputs.identity_presentation_changed }}" = "true" ]; then
-            BUILD_TASKS="$BUILD_TASKS :identity_presentation:assemble"
-            echo "👤📱 Building identity_presentation"
-          fi
-          
-          if [ "${{ steps.changes.outputs.core_chat_presentation_changed }}" = "true" ]; then
-            BUILD_TASKS="$BUILD_TASKS :core_chat_presentation:assemble"
-            echo "💬📱 Building core_chat_presentation"
-          fi
-          
-          if [ "${{ steps.changes.outputs.wallet_presentation_changed }}" = "true" ]; then
-            BUILD_TASKS="$BUILD_TASKS :wallet_presentation:assemble"
-            echo "💰📱 Building wallet_presentation"
-          fi
-          
-          if [ "${{ steps.changes.outputs.faith_presentation_changed }}" = "true" ]; then
-            BUILD_TASKS="$BUILD_TASKS :faith_presentation:assemble"
-            echo "🕌📱 Building faith_presentation"
-          fi
-          
-          if [ "${{ steps.changes.outputs.dukan_presentation_changed }}" = "true" ]; then
-            BUILD_TASKS="$BUILD_TASKS :dukan_presentation:assemble"
-            echo "🛒📱 Building dukan_presentation"
-          fi
-          
-          if [ "${{ steps.changes.outputs.trends_presentation_changed }}" = "true" ]; then
-            BUILD_TASKS="$BUILD_TASKS :trends_presentation:assemble"
-            echo "📈📱 Building trends_presentation"
-          fi
-          
-          # Main compose app
-          if [ "${{ steps.changes.outputs.compose_app_changed }}" = "true" ]; then
-            BUILD_TASKS="$BUILD_TASKS :composeApp:assembleDebug"
-            echo "📱 Building composeApp"
-          fi
-          
-          # Execute build tasks
-          if [ -n "$BUILD_TASKS" ]; then
-            echo "🚀 Executing build tasks: $BUILD_TASKS"
-            ./gradlew $BUILD_TASKS --parallel --build-cache
-          else
-            echo "ℹ️ No modules changed - skipping build"
-          fi
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: 📊 Build Summary
-        if: always()
-        run: |
-          echo "## 📋 Build Summary" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          if [ "${{ steps.changes.outputs.root_changed }}" = "true" ]; then
-            echo "🔄 **Full build executed** - Root configuration files changed" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "🎯 **Selective build executed** - Only changed modules built" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "### Changed Modules:" >> $GITHUB_STEP_SUMMARY
-          
-            # List all changed modules
-            modules_changed=false
-            if [ "${{ steps.changes.outputs.design_system_changed }}" = "true" ]; then
-              echo "- 🎨 design_system" >> $GITHUB_STEP_SUMMARY
-              modules_changed=true
-            fi
-            if [ "${{ steps.changes.outputs.compose_app_changed }}" = "true" ]; then
-              echo "- 📱 composeApp" >> $GITHUB_STEP_SUMMARY
-              modules_changed=true
-            fi
-          
-            # Domain modules
-            if [ "${{ steps.changes.outputs.identity_domain_changed }}" = "true" ]; then
-              echo "- 🏗️ identity_domain" >> $GITHUB_STEP_SUMMARY
-              modules_changed=true
-            fi
-            if [ "${{ steps.changes.outputs.core_chat_domain_changed }}" = "true" ]; then
-              echo "- 🏗️ core_chat_domain" >> $GITHUB_STEP_SUMMARY
-              modules_changed=true
-            fi
-            if [ "${{ steps.changes.outputs.wallet_domain_changed }}" = "true" ]; then
-              echo "- 🏗️ wallet_domain" >> $GITHUB_STEP_SUMMARY
-              modules_changed=true
-            fi
-            if [ "${{ steps.changes.outputs.faith_domain_changed }}" = "true" ]; then
-              echo "- 🏗️ faith_domain" >> $GITHUB_STEP_SUMMARY
-              modules_changed=true
-            fi
-            if [ "${{ steps.changes.outputs.dukan_domain_changed }}" = "true" ]; then
-              echo "- 🏗️ dukan_domain" >> $GITHUB_STEP_SUMMARY
-              modules_changed=true
-            fi
-            if [ "${{ steps.changes.outputs.trends_domain_changed }}" = "true" ]; then
-              echo "- 🏗️ trends_domain" >> $GITHUB_STEP_SUMMARY
-              modules_changed=true
-            fi
-          
-            # Data modules
-            if [ "${{ steps.changes.outputs.identity_data_changed }}" = "true" ]; then
-              echo "- 📊 identity_data" >> $GITHUB_STEP_SUMMARY
-              modules_changed=true
-            fi
-            if [ "${{ steps.changes.outputs.core_chat_data_changed }}" = "true" ]; then
-              echo "- 📊 core_chat_data" >> $GITHUB_STEP_SUMMARY
-              modules_changed=true
-            fi
-            if [ "${{ steps.changes.outputs.wallet_data_changed }}" = "true" ]; then
-              echo "- 📊 wallet_data" >> $GITHUB_STEP_SUMMARY
-              modules_changed=true
-            fi
-            if [ "${{ steps.changes.outputs.dukan_data_changed }}" = "true" ]; then
-              echo "- 📊 dukan_data" >> $GITHUB_STEP_SUMMARY
-              modules_changed=true
-            fi
-            if [ "${{ steps.changes.outputs.faith_data_changed }}" = "true" ]; then
-              echo "- 📊 faith_data" >> $GITHUB_STEP_SUMMARY
-              modules_changed=true
-            fi
-            if [ "${{ steps.changes.outputs.trends_data_changed }}" = "true" ]; then
-              echo "- 📊 trends_data" >> $GITHUB_STEP_SUMMARY
-              modules_changed=true
-            fi
-          
-            # API modules
-            if [ "${{ steps.changes.outputs.identity_api_changed }}" = "true" ]; then
-              echo "- 🔗 identity_api" >> $GITHUB_STEP_SUMMARY
-              modules_changed=true
-            fi
-            if [ "${{ steps.changes.outputs.core_chat_api_changed }}" = "true" ]; then
-              echo "- 🔗 core_chat_api" >> $GITHUB_STEP_SUMMARY
-              modules_changed=true
-            fi
-            if [ "${{ steps.changes.outputs.wallet_api_changed }}" = "true" ]; then
-              echo "- 🔗 wallet_api" >> $GITHUB_STEP_SUMMARY
-              modules_changed=true
-            fi
-            if [ "${{ steps.changes.outputs.faith_api_changed }}" = "true" ]; then
-              echo "- 🔗 faith_api" >> $GITHUB_STEP_SUMMARY
-              modules_changed=true
-            fi
-            if [ "${{ steps.changes.outputs.dukan_api_changed }}" = "true" ]; then
-              echo "- 🔗 dukan_api" >> $GITHUB_STEP_SUMMARY
-              modules_changed=true
-            fi
-            if [ "${{ steps.changes.outputs.trends_api_changed }}" = "true" ]; then
-              echo "- 🔗 trends_api" >> $GITHUB_STEP_SUMMARY
-              modules_changed=true
-            fi
-          
-            # Presentation modules
-            if [ "${{ steps.changes.outputs.identity_presentation_changed }}" = "true" ]; then
-              echo "- 📱 identity_presentation" >> $GITHUB_STEP_SUMMARY
-              modules_changed=true
-            fi
-            if [ "${{ steps.changes.outputs.core_chat_presentation_changed }}" = "true" ]; then
-              echo "- 📱 core_chat_presentation" >> $GITHUB_STEP_SUMMARY
-              modules_changed=true
-            fi
-            if [ "${{ steps.changes.outputs.wallet_presentation_changed }}" = "true" ]; then
-              echo "- 📱 wallet_presentation" >> $GITHUB_STEP_SUMMARY
-              modules_changed=true
-            fi
-            if [ "${{ steps.changes.outputs.faith_presentation_changed }}" = "true" ]; then
-              echo "- 📱 faith_presentation" >> $GITHUB_STEP_SUMMARY
-              modules_changed=true
-            fi
-            if [ "${{ steps.changes.outputs.dukan_presentation_changed }}" = "true" ]; then
-              echo "- 📱 dukan_presentation" >> $GITHUB_STEP_SUMMARY
-              modules_changed=true
-            fi
-            if [ "${{ steps.changes.outputs.trends_presentation_changed }}" = "true" ]; then
-              echo "- 📱 trends_presentation" >> $GITHUB_STEP_SUMMARY
-              modules_changed=true
-            fi
-          
-            if [ "$modules_changed" = false ]; then
-              echo "- ℹ️ No modules changed" >> $GITHUB_STEP_SUMMARY
-            fi
-          fi
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: Build Android App
+        run: ./gradlew assembleDebug --build-cache
+
+      - name: Upload Android APK
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk-debug
+          path: app/build/outputs/apk/debug/*.apk
