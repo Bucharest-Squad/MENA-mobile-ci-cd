@@ -7,10 +7,10 @@ import kotlinx.serialization.Serializable
 data class ContactDto (
     @SerialName("name")
     val name: String? = null,
-    @SerialName("phone")
-    val phone: String? = null,
-    @SerialName("isMenaUser")
-    val isMenaUser: Boolean? = null,
+    @SerialName("phoneNumber")
+    val phoneNumber: String? = null,
+    @SerialName("isMenaMember")
+    val isMenaMember: Boolean? = null,
     @SerialName("imageUrl")
     val imageUrl: String? = null,
 )
