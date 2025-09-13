@@ -31,10 +31,10 @@ abstract class BaseViewModel<State, Effect>(
     }
 
     protected fun sendEffect(
-        event: Effect,
+        effect: Effect,
     ) {
         viewModelScope.launch(Dispatchers.Main) {
-            _effect.emit(event)
+            _effect.emit(effect)
         }
     }
 
