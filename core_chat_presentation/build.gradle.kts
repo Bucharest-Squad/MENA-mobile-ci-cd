@@ -38,6 +38,8 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+            implementation(libs.coil.compose)
+
         }
         iosMain.dependencies {
 
@@ -52,4 +54,7 @@ android {
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
     }
+}
+dependencies {
+    debugImplementation(compose.uiTooling)
 }
