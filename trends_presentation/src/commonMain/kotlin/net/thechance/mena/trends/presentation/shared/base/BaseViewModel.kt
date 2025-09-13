@@ -30,13 +30,9 @@ abstract class BaseViewModel<State, Effect>(
 
     protected fun sendEffect(
         event: Effect,
-        onStart: suspend () -> Unit = {},
-        onEnd: suspend () -> Unit = {}
     ) {
         viewModelScope.launch(Dispatchers.IO) {
-            onStart()
             _effect.emit(event)
-            onEnd()
         }
     }
 
