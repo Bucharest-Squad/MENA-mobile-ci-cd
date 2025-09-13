@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import mena.dukan_presentation.generated.resources.Res
 import mena.dukan_presentation.generated.resources.alert
+import mena.dukan_presentation.generated.resources.category
 import mena.dukan_presentation.generated.resources.dukan_name
 import mena.dukan_presentation.generated.resources.enter_dukan_name
 import mena.dukan_presentation.generated.resources.enter_your_dukan_information
