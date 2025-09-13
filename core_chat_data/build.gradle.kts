@@ -20,7 +20,6 @@ kotlin {
             implementation(libs.contacts.provider)
             implementation(libs.koin.core)
 
-            // ktor
             implementation(libs.bundles.ktor)
         }
         iosMain.dependencies {
