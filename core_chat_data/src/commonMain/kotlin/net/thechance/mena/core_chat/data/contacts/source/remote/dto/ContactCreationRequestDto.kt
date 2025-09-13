@@ -7,6 +7,6 @@ import kotlinx.serialization.Serializable
 data class ContactCreationRequestDto(
     @SerialName("name")
     val name: String,
-    @SerialName("phone")
-    val phone: String
+    @SerialName("phoneNumber")
+    val phone: String?
 )
