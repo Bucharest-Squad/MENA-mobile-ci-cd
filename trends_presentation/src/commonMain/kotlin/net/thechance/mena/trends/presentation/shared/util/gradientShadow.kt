@@ -1,4 +1,4 @@
-package net.thechance.mena.mange_my_trends
+package net.thechance.mena.trends.presentation.shared.util
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
