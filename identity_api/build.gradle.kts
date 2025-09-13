@@ -28,6 +28,7 @@ kotlin {
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.ui)
+            api(projects.identityPresentation)
         }
     }
 }
@@ -35,8 +36,12 @@ kotlin {
 android {
     namespace = "net.thechance.mena.identity.api"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
-
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
     }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+
 }
