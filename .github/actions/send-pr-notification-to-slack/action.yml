@@ -26,14 +26,15 @@ runs:
           -H "Content-type: application/json" \
           --data "{\"channel\": \"${{ inputs.slack-notification-channel-id }}\"}")
         
-        
         message_count=$(echo "$response" | jq '.messages | length')
-        echo "Found $message_count messages"
-
-        if [ "$message_count" -eq 1 ]; then
-          echo "is_empty=true" >> $GITHUB_OUTPUT
+        if [ -z "$message_count" ] || ! [[ "$message_count" =~ ^[0-9]+$ ]]; then
+          message_count=0
+        fi
+    
+        if [ "$message_count" -eq 0 ]; then
+        echo "is_empty=true" >> "$GITHUB_OUTPUT"
         else
-          echo "is_empty=false" >> $GITHUB_OUTPUT
+        echo "is_empty=false" >> "$GITHUB_OUTPUT"
         fi
 
     - name: Send Slack messages (only if empty)
