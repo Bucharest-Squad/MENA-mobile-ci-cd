@@ -29,8 +29,10 @@ jobs:
           prefix="${team:0:3}"
 
           for i in "${!REGIONS[@]}"; do
+              echo "${REGIONS[$i]} = $prefix"
             if [[ "${REGIONS[$i]}" == "$prefix" ]]; then
               thread_ts=${$messages[$i].ts}
+              echo "{thread_ts}" 
           
               curl -X POST "https://slack.com/api/chat.postMessage" \
                 -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
