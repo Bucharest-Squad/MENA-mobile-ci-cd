@@ -28,7 +28,6 @@ jobs:
           echo "changed_files<<EOF" >> $GITHUB_OUTPUT
           echo "$CHANGED_FILES" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
-
       - name: Determine changed modules from file list
         id: changes
         run: |
@@ -42,7 +41,6 @@ jobs:
               FINAL_MODULES="$FINAL_MODULES $module"
             fi
           done
-
           if grep -qE '^build.gradle.kts|^settings.gradle.kts|^gradle/|^\.github/' <<< "$CHANGED_FILES"; then
             echo "Core project file changed. Overriding to test all modules."
             FINAL_MODULES="$ALL_MODULES"
@@ -57,7 +55,6 @@ jobs:
             echo "has_changes=false" >> $GITHUB_OUTPUT
             echo "modules=[]" >> $GITHUB_OUTPUT
           fi
-
   test:
     needs: changed-modules
     if: needs.changed-modules.outputs.has_changes == 'true'
@@ -109,9 +106,9 @@ jobs:
         run: |
           echo "Kover verification or tests failed for ${{ matrix.module }}. Failing the job."
           exit 1
-
+          
   codecov-report:
-    needs: [changed-modules, test]
+    needs: [ changed-modules, test ]
     if: always() && needs.changed-modules.outputs.has_changes == 'true'
     runs-on: ubuntu-latest
     permissions:
@@ -134,4 +131,4 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./coverage-reports/
-          fail_ci_if_error: true
+          fail_ci_if_error: true```
