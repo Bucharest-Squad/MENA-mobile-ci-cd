@@ -120,70 +120,71 @@ jobs:
           echo "Available projects:"
           ./gradlew projects --quiet
           
-          # Try to find a shared/common module or XCFramework task
-          SHARED_MODULE=""
-          if ./gradlew tasks --all | grep -q "assembleXCFramework"; then
-            # Find which module has the assembleXCFramework task
-            SHARED_MODULE=$(./gradlew tasks --all | grep "assembleXCFramework" | head -1 | awk '{print $1}' | sed 's/:assembleXCFramework//')
+          echo "Available tasks in composeApp:"
+          ./gradlew :composeApp:tasks --group="build" --quiet || true
+          
+          echo "Searching for iOS-related tasks:"
+          ./gradlew tasks --all | grep -i ios || echo "No iOS-specific tasks found"
+          
+          echo "Searching for framework/library tasks:"
+          ./gradlew tasks --all | grep -E "(framework|library|assemble)" | head -10 || echo "No framework tasks found"
+          
+          # Try to find iOS/KMP build tasks
+          BUILD_TASK=""
+          if ./gradlew tasks --all | grep -q "embedAndSignAppleFrameworkForXcode"; then
+            BUILD_TASK="embedAndSignAppleFrameworkForXcode"
+          elif ./gradlew tasks --all | grep -q "assembleDebugAppleFrameworkForXcode"; then
+            BUILD_TASK="assembleDebugAppleFrameworkForXcode"
+          elif ./gradlew tasks --all | grep -q "iosSimulatorArm64MainBinaries"; then
+            BUILD_TASK="iosSimulatorArm64MainBinaries"
+          elif ./gradlew tasks --all | grep -q "linkDebugFrameworkIosSimulatorArm64"; then
+            BUILD_TASK="linkDebugFrameworkIosSimulatorArm64"
+          elif ./gradlew tasks --all | grep -q ":composeApp:build"; then
+            BUILD_TASK="build"
+          else
+            BUILD_TASK="build"
           fi
           
-          if [ -z "$SHARED_MODULE" ]; then
-            # Fallback: look for common KMP module names
-            if ./gradlew projects | grep -q ":shared"; then
-              SHARED_MODULE=":shared"
-            elif ./gradlew projects | grep -q ":common"; then
-              SHARED_MODULE=":common"
-            elif ./gradlew projects | grep -q ":composeApp"; then
-              SHARED_MODULE=":composeApp"
-            else
-              # If no shared module found, we might need to build all modules
-              echo "No shared module found, will build all modules"
-              SHARED_MODULE=""
-            fi
-          fi
-          
-          echo "shared_module=$SHARED_MODULE" >> $GITHUB_OUTPUT
-          echo "Detected shared module: $SHARED_MODULE"
+          echo "build_task=$BUILD_TASK" >> $GITHUB_OUTPUT
+          echo "Detected build task: $BUILD_TASK"
 
       - name: Build All KMP Modules (Full Build)
         if: matrix.build_type == 'full' && needs.changed-modules.outputs.build_all == 'true'
         run: |
-          SHARED_MODULE="${{ steps.discover.outputs.shared_module }}"
-          if [ -n "$SHARED_MODULE" ]; then
-            echo "Building XCFramework for module: $SHARED_MODULE"
-            ./gradlew ${SHARED_MODULE}:assembleXCFramework
+          BUILD_TASK="${{ steps.discover.outputs.build_task }}"
+          echo "Building with task: $BUILD_TASK"
+          
+          if [ "$BUILD_TASK" = "build" ]; then
+            # Standard build - should work for most KMP projects
+            ./gradlew :composeApp:build
           else
-            echo "No shared module found, building all modules that affect iOS"
-            # Build modules that typically contain shared code
-            MODULES='${{ needs.changed-modules.outputs.changed_modules }}'
-            if [ "$MODULES" != "[]" ]; then
-              MODULE_TASKS=$(echo $MODULES | jq -r '.[] | ":"+.+":build"' | tr '\n' ' ')
-              echo "Building modules: $MODULE_TASKS"
-              ./gradlew $MODULE_TASKS
-            else
-              echo "Building all available modules"
-              ./gradlew build
-            fi
+            # iOS-specific task
+            ./gradlew :composeApp:$BUILD_TASK
           fi
 
       - name: Build Changed KMP Modules Only
         if: matrix.build_type == 'selective' && needs.changed-modules.outputs.build_all == 'false'
         run: |
-          SHARED_MODULE="${{ steps.discover.outputs.shared_module }}"
+          BUILD_TASK="${{ steps.discover.outputs.build_task }}"
           MODULES='${{ needs.changed-modules.outputs.changed_modules }}'
           
-          if [ -n "$SHARED_MODULE" ] && [ "$MODULES" != "[]" ]; then
-            echo "Building XCFramework for shared module due to changes in: $MODULES"
-            ./gradlew ${SHARED_MODULE}:assembleXCFramework
-          elif [ -n "$SHARED_MODULE" ]; then
-            echo "Building XCFramework for iOS compatibility"
-            ./gradlew ${SHARED_MODULE}:assembleXCFramework
-          elif [ "$MODULES" != "[]" ]; then
-            echo "No shared module found, building changed modules: $MODULES"
-            MODULE_TASKS=$(echo $MODULES | jq -r '.[] | ":"+.+":build"' | tr '\n' ' ')
-            ./gradlew $MODULE_TASKS
+          echo "Building with task: $BUILD_TASK"
+          echo "Changed modules: $MODULES"
+          
+          if [ "$MODULES" != "[]" ]; then
+            echo "Building composeApp due to changes in modules: $MODULES"
+            if [ "$BUILD_TASK" = "build" ]; then
+              ./gradlew :composeApp:build
+            else
+              ./gradlew :composeApp:$BUILD_TASK
+            fi
           else
-            echo "No changes detected and no shared module found, skipping build"
+            echo "Building composeApp for iOS compatibility"
+            if [ "$BUILD_TASK" = "build" ]; then
+              ./gradlew :composeApp:build
+            else
+              ./gradlew :composeApp:$BUILD_TASK
+            fi
           fi
 
       - name: Resolve Swift Package Dependencies
