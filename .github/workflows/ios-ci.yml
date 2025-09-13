@@ -129,6 +129,9 @@ jobs:
     needs: ios-build
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Notify Slack on failure
         uses: ./.github/actions/send-pr-notification-to-slack
         with:
