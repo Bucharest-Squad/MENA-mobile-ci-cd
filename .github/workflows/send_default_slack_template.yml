@@ -24,8 +24,8 @@ jobs:
           curl -X POST https://slack.com/api/chat.postMessage \
             -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
             -H 'Content-type: application/json' \
-            --data "{
+            --data '{
               \"channel\": \"$SLACK_CHANNEL_ID\",
               \"blocks\": $MESSAGE
-            }"
+            }'
           done
