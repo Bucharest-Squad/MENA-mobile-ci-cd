@@ -40,18 +40,15 @@ abstract class BaseViewModel<State, Effect>(
 
     protected fun <R> tryToExecute(
         block: suspend () -> R,
-        onSuccess: suspend (R) -> Unit,
-        onError: suspend (Throwable) -> Unit,
-        onStart: suspend () -> Unit = {},
-        onEnd: suspend () -> Unit = {},
+        onSuccess: (R) -> Unit,
+        onError: (Throwable) -> Unit,
+        onStart: () -> Unit = {},
+        onEnd: () -> Unit = {},
         dispatcher: CoroutineDispatcher = Dispatchers.IO,
         scope: CoroutineScope = viewModelScope
     ): Job {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            scope.launch {
-                onError(exception)
-                onEnd()
-            }
+            onError(exception)
         }
 
         return scope.launch(dispatcher + exceptionHandler) {
