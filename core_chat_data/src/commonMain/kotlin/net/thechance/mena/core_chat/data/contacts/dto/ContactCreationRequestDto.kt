@@ -1,4 +1,4 @@
-package net.thechance.mena.core_chat.data.contacts.source.dto
+package net.thechance.mena.core_chat.data.contacts.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
