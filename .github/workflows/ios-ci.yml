@@ -45,23 +45,23 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO
 
-notify-slack-on-failure:
-  if: failure()
-  needs: build
-  runs-on: ubuntu-latest
-  steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+  notify-slack-on-failure:
+    if: failure()
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Notify Slack on failure
-      uses: ./.github/actions/slack/send-pr-notification
-      with:
-        slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
-        slack-notification-channel-id: ${{ secrets.SLACK_NOTIFICATION_CHANNEL_ID }}
-        bot-app-id: ${{ secrets.BOT_APP_ID }}
-        branch-name: ${{ github.head_ref }}
-        message: |
-          🚨 *Build Failed on IOS!*
-          One or more matrix jobs failed.
-          PR: ${{ github.event.pull_request.html_url }}
-          Commit: ${{ github.sha }}
+      - name: Notify Slack on failure
+        uses: ./.github/actions/slack/send-pr-notification
+        with:
+          slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          slack-notification-channel-id: ${{ secrets.SLACK_NOTIFICATION_CHANNEL_ID }}
+          bot-app-id: ${{ secrets.BOT_APP_ID }}
+          branch-name: ${{ github.head_ref }}
+          message: |
+            🚨 *Build Failed on IOS!*
+            One or more matrix jobs failed.
+            PR: ${{ github.event.pull_request.html_url }}
+            Commit: ${{ github.sha }}
