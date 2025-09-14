@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
@@ -52,11 +51,11 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun ShowReelsScreen() {
     //TODO pass listener and ui state to replace this dummy data
-    Content()
+    ShowReelsScreenContent()
 }
 
 @Composable
-private fun Content() {
+private fun ShowReelsScreenContent() {
     Box(modifier = Modifier.fillMaxSize()) {
 
         RunningVideoPlaceHolder()
@@ -66,6 +65,7 @@ private fun Content() {
         UsersReAct(
             viewCount = "11",
             likeCount = "4",
+            onDeleteClick = { TODO() },
             modifier = Modifier.align(Alignment.BottomEnd)
                 .padding(end = Theme.spacing._16, bottom = 140.dp)
         )
@@ -163,25 +163,30 @@ private fun RunningVideoPlaceHolder() {
 }
 
 @Composable
-private fun UsersReAct(likeCount: String, viewCount: String, modifier: Modifier = Modifier) {
+private fun UsersReAct(
+    likeCount: String,
+    viewCount: String,
+    onDeleteClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(Theme.spacing._24)
     ) {
         ReActIcon(
             icon = painterResource(resource = Res.drawable.ic_like),
-            reactCount = likeCount
+            label = likeCount
         )
 
         ReActIcon(
             icon = painterResource(resource = Res.drawable.ic_eye),
-            reactCount = viewCount
+            label = viewCount
         )
 
         ReActIcon(
             icon = painterResource(resource = Res.drawable.ic_delete),
-            reactCount = "Delete",
-            onClick = { TODO() }
+            label = "Delete",
+            onClick = { onDeleteClick() }
         )
     }
 }
@@ -189,7 +194,7 @@ private fun UsersReAct(likeCount: String, viewCount: String, modifier: Modifier 
 @Composable
 private fun ReActIcon(
     icon: Painter,
-    reactCount: String,
+    label: String,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {}
 ) {
@@ -202,7 +207,7 @@ private fun ReActIcon(
             tint = Theme.colorScheme.shadeTertiary
         )
         MenaText(
-            text = reactCount,
+            text = label,
             style = Theme.typography.label.small,
             color = Theme.colorScheme.shadeTertiary,
             textAlign = TextAlign.Center
