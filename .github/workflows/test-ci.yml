@@ -1,43 +1,25 @@
-name: Test Coverage and Codecov Report
+name: Tests
 
 on:
-  workflow_run:
-    workflows: ["Detect Changed Modules"]
-    types:
-      - completed
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
 
 jobs:
+  detect:
+    name: Detect Changes
+    uses: ./.github/workflows/changed-modules.yml
+    secrets: inherit
+
   test:
+    name: Test
+    needs: detect
+    if: needs.detect.outputs.has_changes == 'true'
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: false
       matrix:
-        module: []
-
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: detect-results
-
-      - name: Load detect results
-        id: vars
-        run: |
-          while IFS== read -r key value; do
-            echo "$key=$value" >> $GITHUB_ENV
-          done < detect_env.txt
-          echo "matrix=$(echo $modules)" >> $GITHUB_OUTPUT
-
-    outputs:
-      matrix: ${{ steps.vars.outputs.matrix }}
-
-  test-modules:
-    needs: test
-    if: env.has_changes == 'true'
-    runs-on: ubuntu-latest
-    strategy:
+        module: ${{ fromJSON(needs.detect.outputs.modules) }}
       fail-fast: false
-      matrix:
-        module: ${{ fromJSON(needs.test.outputs.matrix) }}
 
     steps:
       - uses: actions/checkout@v4
@@ -48,30 +30,37 @@ jobs:
           cache: gradle
 
       - run: chmod +x gradlew
-      - run: ./gradlew :${{ matrix.module }}:koverVerify --build-cache
-      - run: ./gradlew :${{ matrix.module }}:koverXmlReport :${{ matrix.module }}:koverHtmlReport
+
+      - name: Run tests
+        run: ./gradlew :${{ matrix.module }}:koverVerify --build-cache --parallel
+
+      - name: Generate reports
+        run: ./gradlew :${{ matrix.module }}:koverXmlReport :${{ matrix.module }}:koverHtmlReport --build-cache
 
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: html-coverage-report-${{ matrix.module }}
+          name: html-report-${{ matrix.module }}
           path: ${{ matrix.module }}/build/reports/kover/html/
 
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: xml-coverage-report-${{ matrix.module }}
+          name: xml-report-${{ matrix.module }}
           path: ${{ matrix.module }}/build/reports/kover/report.xml
 
   codecov:
-    needs: [ test-modules ]
+    name: Coverage
+    needs: [ detect, test ]
+    if: always() && needs.detect.outputs.has_changes == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
-          pattern: "xml-coverage-report-*"
+          pattern: "xml-report-*"
           path: coverage-reports
+
       - uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
