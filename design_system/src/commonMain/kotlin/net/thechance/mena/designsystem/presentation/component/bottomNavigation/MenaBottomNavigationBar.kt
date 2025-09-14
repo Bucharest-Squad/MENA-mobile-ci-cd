@@ -20,7 +20,7 @@ import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun MeanBottomNavigationBar(
+fun MenaBottomNavigationBar(
     onItemClick: (BottomNavigationBarItem) -> Unit,
     modifier: Modifier = Modifier
 ) {

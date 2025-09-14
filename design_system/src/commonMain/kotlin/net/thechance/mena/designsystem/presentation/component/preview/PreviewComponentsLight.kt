@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -30,7 +29,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -47,7 +45,7 @@ import mena.design_system.generated.resources.ic_user
 import mena.design_system.generated.resources.silver_tc
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBarOptionContainer
-import net.thechance.mena.designsystem.presentation.component.bottomNavigation.MeanBottomNavigationBar
+import net.thechance.mena.designsystem.presentation.component.bottomNavigation.MenaBottomNavigationBar
 import net.thechance.mena.designsystem.presentation.component.button.FabButton
 import net.thechance.mena.designsystem.presentation.component.button.NegativeButton
 import net.thechance.mena.designsystem.presentation.component.button.NegativeTextButton
@@ -58,7 +56,6 @@ import net.thechance.mena.designsystem.presentation.component.checkBox.Checkbox
 import net.thechance.mena.designsystem.presentation.component.chip.Chip
 import net.thechance.mena.designsystem.presentation.component.section.Section
 import net.thechance.mena.designsystem.presentation.component.segment.Segment
-import net.thechance.mena.designsystem.presentation.component.segment.SegmentButton
 import net.thechance.mena.designsystem.presentation.component.snackbar.SnackBar
 import net.thechance.mena.designsystem.presentation.component.switches.Switch
 import net.thechance.mena.designsystem.presentation.component.text.MenaText
@@ -407,7 +404,7 @@ private fun PreviewComponentsLight() {
                 title = "navigation bar",
                 isScrollable = false
             ) {
-                MeanBottomNavigationBar(
+                MenaBottomNavigationBar(
                     onItemClick = {},
                     modifier = Modifier.fillMaxWidth()
                 )
