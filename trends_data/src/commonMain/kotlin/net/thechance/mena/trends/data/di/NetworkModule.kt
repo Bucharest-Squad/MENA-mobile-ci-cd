@@ -1,7 +1,6 @@
 package net.thechance.mena.trends.data.di
 
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
@@ -13,13 +12,11 @@ import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
 
-expect fun createHttpEngine(): HttpClientEngine
-
 @Module
 class NetworkModule {
     @Single
-    fun provideHttpClient(engine: HttpClientEngine): HttpClient {
-        return HttpClient(engine) {
+    fun provideHttpClient(): HttpClient {
+        return HttpClient {
             defaultRequest {
                 // TODO: add base url
             }
@@ -48,9 +45,6 @@ class NetworkModule {
             }
         }
     }
-
-    @Single
-    fun provideHttpEngine(): HttpClientEngine = createHttpEngine()
 
     private companion object {
         const val TIME_OUT_INTERVAL_MILLI = 15_000L

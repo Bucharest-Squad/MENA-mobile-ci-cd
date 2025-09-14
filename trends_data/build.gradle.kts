@@ -20,7 +20,7 @@ kotlin {
 
     sourceSets {
         androidMain.dependencies {
-            implementation(libs.ktor.client.okhttp)
+
         }
         commonMain.dependencies {
             implementation(projects.trendsDomain)
@@ -30,7 +30,7 @@ kotlin {
             implementation(libs.bundles.ktor)
         }
         iosMain.dependencies {
-            implementation(libs.ktor.client.darwin)
+
         }
     }
 
