@@ -23,7 +23,7 @@ runs:
       run: |
         sudo apt-get update && sudo apt-get install -y jq
 
-    - name: Send or retrieve region messages and send thread
+    - name: Send notification to specific squad
       shell: bash
       env:
         SLACK_BOT_TOKEN: ${{ inputs.slack-bot-token }}
@@ -32,7 +32,7 @@ runs:
         BRANCH_NAME: ${{ inputs.branch-name }}
         MESSAGE: ${{ inputs.message }}
       run: |
-        REGIONS=("IDN" "DKN" "CHT" "FTH" "TRN" "WLT")
+        SQUADS=("IDN" "DKN" "CHT" "FTH" "TRN" "WLT")
 
         messages=$(curl -s -X POST "https://slack.com/api/conversations.history" \
           -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
@@ -43,8 +43,7 @@ runs:
         message_count=$(echo "$bot_messages" | jq 'length')
 
         if [ "$message_count" -lt 6 ]; then
-          echo "Sending default region messages to Slack..."
-          for REGION in "${REGIONS[@]}"; do
+          for SQUAD in "${SQUADS[@]}"; do
             curl -s -X POST https://slack.com/api/chat.postMessage \
               -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
               -H "Content-type: application/json; charset=utf-8" \
@@ -55,14 +54,13 @@ runs:
                     \"type\": \"section\",
                     \"text\": {
                       \"type\": \"mrkdwn\",
-                      \"text\": \"${REGION} prs info\"
+                      \"text\": \"${SQUAD} prs info\"
                     }
                   }
                 ]
               }"
           done
 
-          sleep 2
           messages=$(curl -s -X POST "https://slack.com/api/conversations.history" \
             -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
             -H "Content-type: application/json" \
@@ -75,11 +73,9 @@ runs:
         team=$(echo "$BRANCH_NAME" | cut -d'/' -f2)
         prefix="${team:0:3}"
 
-        for i in "${!REGIONS[@]}"; do
-          if [[ "${REGIONS[$i]}" == "$prefix" ]]; then
-            thread_ts=$(echo "$bot_messages" | jq -r ".[$i].ts")
-
-            echo "Replying to thread for region $prefix with timestamp $thread_ts..."
+        for i in "${!SQUADS[@]}"; do
+          if [[ "${SQUADS[$i]}" == "$prefix" ]]; then
+            thread_ts=$(echo "$bot_messages" | jq -r ".[$message_count - 1 -$i].ts")
 
             curl -s -X POST "https://slack.com/api/chat.postMessage" \
               -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
