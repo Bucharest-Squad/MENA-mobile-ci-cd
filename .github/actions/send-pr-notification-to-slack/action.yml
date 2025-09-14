@@ -30,15 +30,9 @@ runs:
         if [ -z "$message_count" ] || ! [[ "$message_count" =~ ^[0-9]+$ ]]; then
           message_count=0
         fi
-        
-        if [ "$message_count" -eq 0 ]; then
-        echo "is_empty=true" >> "$GITHUB_OUTPUT"
-        else
-        echo "is_empty=false" >> "$GITHUB_OUTPUT"
-        fi
 
     - name: Send Slack messages (only if empty)
-      if: steps.check_slack.outputs.is_empty == 'true'
+      if: steps.count.outputs.message_count == '0'
       uses: ./.github/actions/send-region-prs-to-slack
       with:
         slack-bot-token: ${{ inputs.slack-bot-token }}
