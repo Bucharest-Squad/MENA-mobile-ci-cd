@@ -68,7 +68,7 @@ abstract class BaseScreenModel<S, E>(initialState: S) : ScreenModel {
     private fun runWithErrorCheck(
         onError: (ErrorState) -> Unit,
         inScope: CoroutineScope = viewModelScope,
-        dispatcher: CoroutineDispatcher = Dispatchers.Unconfined,
+        dispatcher: CoroutineDispatcher = Dispatchers.IO,
         function: suspend () -> Unit,
     ): Job {
         return inScope.launch(dispatcher) {
