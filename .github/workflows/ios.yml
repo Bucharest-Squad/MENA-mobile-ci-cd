@@ -115,16 +115,3 @@ jobs:
             build \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO
-
-  ios-build-summary:
-    needs: [changed-modules, ios-build]
-    if: needs.changed-modules.outputs.has_changes == 'true' && needs.changed-modules.outputs.ios_modules != '[]'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Summary
-        run: |
-          if [ "${{ needs.changed-modules.outputs.has_ios_changes }}" = "true" ]; then
-            echo "📱 iOS app files changed - full rebuild triggered."
-          else
-            echo "🎯 Built iOS module(s): ${{ needs.changed-modules.outputs.ios_modules }}"
-          fi

@@ -71,7 +71,7 @@ jobs:
 
   android-build:
     needs: changed-modules
-    if: needs.changed-modules.outputs.has_changes == 'true'
+    if: needs.changed-modules.outputs.has_changes == 'true' && needs.changed-modules.outputs.changed_modules != '[]'
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -93,16 +93,3 @@ jobs:
 
       - name: Build Changed Module ${{ matrix.module }}
         run: ./gradlew :${{ matrix.module }}:assemble -x lintVitalRelease -x lint
-
-  android-build-summary:
-    needs: [changed-modules, android-build]
-    runs-on: ubuntu-latest
-    if: always()
-    steps:
-      - name: Summary
-        run: |
-          if [ "${{ needs.changed-modules.outputs.has_changes }}" = "false" ]; then
-            echo "✅ No changes detected in Android modules. Skipping build."
-          else
-            echo "🎯 Built modules: ${{ needs.changed-modules.outputs.changed_modules }}"
-          fi
