@@ -18,6 +18,8 @@ kotlin {
             implementation(libs.kotlin.serialization)
             implementation(libs.contacts.provider)
             implementation(libs.koin.core)
+            implementation(libs.androidx.datastore.preferences)
+
         }
         iosMain.dependencies {
 
