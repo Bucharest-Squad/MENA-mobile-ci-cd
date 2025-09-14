@@ -16,7 +16,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import mena.dukan_presentation.generated.resources.Res
 import mena.dukan_presentation.generated.resources.ic_arrow_left
-import mena.dukan_presentation.generated.resources.pencil_edit_01
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
@@ -71,7 +70,16 @@ fun CreateDukanContent(
         ) { pageIndex ->
             when (CreateDukanStep.steps[pageIndex]) {
                 CreateDukanStep.BASIC_INFORMATION -> CreateDukanContentBasicInformation()
-                CreateDukanStep.SELECT_IMAGE -> CreateDukanContentSelectImage()
+                CreateDukanStep.SELECT_IMAGE -> DukanImageCropContent(
+                    state = state,
+                    interactionListener = listener
+                )
+
+                CreateDukanStep.CROP_IMAGE -> UploadDukanImageContent(
+                    state = state,
+                    interactionListener = listener
+                )
+
                 CreateDukanStep.SELECT_LOCATION -> CreateDukanContentSelectLocation()
                 CreateDukanStep.SELECT_STYLE -> CreateDukanContentSelectStyle()
             }
@@ -86,7 +94,7 @@ fun CreateDukanContent(
             else
                 "Next",
             onClick = listener::onButtonClicked,
-            trailingIcon = painterResource(Res.drawable.pencil_edit_01),
+            trailingIcon = painterResource(Res.drawable.ic_arrow_left),
             isEnabled = state.isButtonEnabled,
             isLoading = state.isButtonLoading
         )
