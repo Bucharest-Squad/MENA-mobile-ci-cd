@@ -42,9 +42,6 @@ kotlin {
         iosMain.dependencies {
 
         }
-        jvmTest.dependencies {
-            implementation(libs.bundles.jvm.test)
-        }
     }
 }
 

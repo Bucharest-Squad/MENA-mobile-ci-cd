@@ -20,7 +20,7 @@ koin-annotations = "2.1.0"
 kotlinx-serialization = "1.6.3"
 mockk = "1.14.5"
 assertk = "0.28.1"
-kotlinxCoroutinesTest = "1.6.4"
+kotlinxCoroutinesTest = "1.10.2"
 
 [libraries]
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
