@@ -33,29 +33,30 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import coil3.compose.rememberAsyncImagePainter
 import mena.trends_presentation.generated.resources.Res
 import mena.trends_presentation.generated.resources.ic_arrow_left
 import mena.trends_presentation.generated.resources.ic_delete
 import mena.trends_presentation.generated.resources.ic_eye
 import mena.trends_presentation.generated.resources.ic_like
-import mena.trends_presentation.generated.resources.test
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
 import net.thechance.mena.designsystem.presentation.component.image.MenaImage
 import net.thechance.mena.designsystem.presentation.component.text.MenaText
+import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.trends.presentation.shared.util.gradientShadow
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun ShowReelsScreen() {
+fun UserReelScreen() {
     //TODO pass listener and ui state to replace this dummy data
-    ShowReelsScreenContent()
+    UserReelScreenContent()
 }
 
 @Composable
-private fun ShowReelsScreenContent() {
+private fun UserReelScreenContent() {
     Box(modifier = Modifier.fillMaxSize()) {
 
         RunningVideoPlaceHolder()
@@ -74,6 +75,8 @@ private fun ShowReelsScreenContent() {
             userName = "Hawraa Mahmood",
             timeOfPublish = "2 hour ago",
             description = "Latest AI -trends that are changing everything! \uD83D\uDE80",
+            //replace this with the user Avatar
+            avatar = "https://example.com/image.jpg",
             modifier = Modifier.align(Alignment.BottomCenter)
         )
 
@@ -109,6 +112,7 @@ private fun TopAppBar(
 
 @Composable
 private fun PublisherDetails(
+    avatar: String,
     userName: String,
     timeOfPublish: String,
     description: String,
@@ -127,7 +131,7 @@ private fun PublisherDetails(
             modifier = Modifier
                 .padding(top = Theme.spacing._8)
         ) {
-            AvatarPlaceHolder()
+            AvatarPlaceHolder(avatar = avatar)
 
             Column(Modifier.padding(bottom = Theme.spacing._16)) {
                 MenaText(
@@ -216,9 +220,9 @@ private fun ReActIcon(
 }
 
 @Composable
-private fun AvatarPlaceHolder() {
+private fun AvatarPlaceHolder(avatar: String) {
     MenaImage(
-        painter = painterResource(resource = Res.drawable.test),
+        painter = rememberAsyncImagePainter( avatar),
         modifier = Modifier.size(size = 40.dp).clip(shape = CircleShape)
             .border(shape = CircleShape, width = 0.5.dp, color = Theme.colorScheme.stroke),
         contentScale = ContentScale.Crop
@@ -228,5 +232,7 @@ private fun AvatarPlaceHolder() {
 @Preview
 @Composable
 private fun Preview() {
-    ShowReelsScreen()
+    MenaTheme{
+        UserReelScreen()
+    }
 }
