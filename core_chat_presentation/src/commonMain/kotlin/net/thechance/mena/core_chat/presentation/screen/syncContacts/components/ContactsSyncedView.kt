@@ -2,9 +2,7 @@ package net.thechance.mena.core_chat.presentation.screen.syncContacts.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,11 +27,6 @@ fun ContactsSyncedView(
             color = Theme.colorScheme.shadePrimary,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(vertical = Theme.spacing._24)
-        )
-        LinearProgressIndicator(
-            modifier = Modifier.fillMaxWidth(),
-            color = Theme.colorScheme.background.surfaceHigh,
-            trackColor = Theme.colorScheme.primary.primary,
         )
     }
 }
