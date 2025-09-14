@@ -81,7 +81,7 @@ jobs:
 
   ios-build:
     needs: changed-modules
-    if: needs.changed-modules.outputs.has_changes == 'true'
+    if: needs.changed-modules.outputs.has_changes == 'true' && needs.changed-modules.outputs.ios_modules != '[]'
     runs-on: macos-latest
     strategy:
       matrix:
@@ -118,14 +118,12 @@ jobs:
 
   ios-build-summary:
     needs: [changed-modules, ios-build]
+    if: needs.changed-modules.outputs.has_changes == 'true' && needs.changed-modules.outputs.ios_modules != '[]'
     runs-on: ubuntu-latest
-    if: always()
     steps:
       - name: Summary
         run: |
-          if [ "${{ needs.changed-modules.outputs.has_changes }}" = "false" ]; then
-            echo "✅ No changes detected in iOS-related modules. Skipping build."
-          elif [ "${{ needs.changed-modules.outputs.has_ios_changes }}" = "true" ]; then
+          if [ "${{ needs.changed-modules.outputs.has_ios_changes }}" = "true" ]; then
             echo "📱 iOS app files changed - full rebuild triggered."
           else
             echo "🎯 Built iOS module(s): ${{ needs.changed-modules.outputs.ios_modules }}"
