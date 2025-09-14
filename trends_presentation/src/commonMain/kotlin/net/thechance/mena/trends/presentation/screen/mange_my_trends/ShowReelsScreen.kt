@@ -1,6 +1,7 @@
 package net.thechance.mena.trends.presentation.screen.mange_my_trends
 
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -34,7 +35,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun showReelsScreen() {
+fun ShowReelsScreen() {
     //TODO pass listener and ui state to replace this dummy data
     Content()
 }
@@ -135,6 +136,7 @@ private fun PublisherDetails(
         MenaText(
             text = description,
             modifier = Modifier
+                .animateContentSize()
                 .padding(bottom = Theme.spacing._32)
                 .padding(horizontal = Theme.spacing._16),
             color = Theme.colorScheme.primary.onPrimary,
@@ -205,5 +207,5 @@ private fun AvatarPlaceHolder() {
 @Preview
 @Composable
 private fun Preview() {
-    showReelsScreen()
+    ShowReelsScreen()
 }
