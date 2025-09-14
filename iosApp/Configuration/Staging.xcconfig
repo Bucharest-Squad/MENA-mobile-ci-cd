@@ -1,0 +1,3 @@
+#include "Config.xcconfig"
+
+PRODUCT_BUNDLE_IDENTIFIER = net.thechance.mena.MENA.staging$(TEAM_ID)

@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.io.ByteArrayOutputStream
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -13,8 +14,9 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-    
+
     listOf(
+        iosX64(),
         iosArm64(),
         iosSimulatorArm64()
     ).forEach { iosTarget ->
@@ -23,7 +25,7 @@ kotlin {
             isStatic = true
         }
     }
-    
+
     sourceSets {
         androidMain.dependencies {
             implementation(compose.preview)
@@ -70,9 +72,96 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
+    buildFeatures {
+        buildConfig = true
+    }
+
+    flavorDimensions += "environment"
+
+    productFlavors {
+        create("development") {
+            dimension = "environment"
+            applicationIdSuffix = ".dev"
+            versionNameSuffix = "-dev"
+        }
+        create("staging") {
+            dimension = "environment"
+            applicationIdSuffix = ".staging"
+            versionNameSuffix = "-staging"
+        }
+        create("production") {
+            dimension = "environment"
+        }
+    }
 }
 
 dependencies {
     debugImplementation(compose.uiTooling)
 }
 
+abstract class GenerateBadgedIconTask : DefaultTask() {
+    @get:Inject
+    abstract val execOperations: ExecOperations
+
+    @get:InputDirectory
+    abstract val baseIconResDir: DirectoryProperty
+
+    @get:InputFile
+    abstract val bannerFile: RegularFileProperty
+
+    @get:OutputDirectory
+    abstract val outputDir: DirectoryProperty
+
+    @TaskAction
+    fun generate() {
+        val baseDir = baseIconResDir.get().asFile
+        baseDir
+            .walk()
+            .filter {
+                it.isFile &&
+                it.parentFile.name.startsWith("mipmap-") &&
+                it.name.startsWith("ic_launcher") &&
+                it.name.endsWith(".png")
+            }
+            .forEach { iconFile ->
+                val densityDirName = iconFile.parentFile.name
+                val widthBaos = ByteArrayOutputStream()
+                execOperations.exec {
+                    commandLine("magick", "identify", "-format", "%w", iconFile.path)
+                    standardOutput = widthBaos
+                }
+                val iconWidth = widthBaos.toString().trim()
+                val outDir = outputDir.get().asFile
+                val mipmapDir = outDir.resolve(densityDirName)
+                mipmapDir.mkdirs()
+                val resizedBanner = temporaryDir.resolve("${densityDirName}_banner_resized.png")
+                val outputIconPath = mipmapDir.resolve(iconFile.name).path
+                execOperations.exec {
+                    commandLine("magick", bannerFile.get().asFile.path, "-resize", "${iconWidth}x${iconWidth}", resizedBanner.path)
+                }
+                execOperations.exec {
+                    commandLine("magick", "composite", "-gravity", "southeast", resizedBanner.path, iconFile.path, outputIconPath)
+                }
+            }
+    }
+}
+
+androidComponents {
+    onVariants { variant ->
+        if (variant.flavorName == "development" || variant.flavorName == "staging") {
+            val bannerFileName = if (variant.flavorName == "development") "banner_dev.png" else "banner_staging.png"
+            val task = tasks.register<GenerateBadgedIconTask>("generate${variant.name.replaceFirstChar { it.uppercase() }}BadgedIcon") {
+                group = "Icon Generation"
+                description = "Generates a badged icon for the ${variant.name} build."
+                baseIconResDir.set(project.layout.projectDirectory.dir("src/androidMain/res"))
+                bannerFile.set(project.file("build-assets/$bannerFileName"))
+                outputDir.set(layout.buildDirectory.dir("generated/icons/res"))
+            }
+            variant.sources.res?.addGeneratedSourceDirectory(
+                taskProvider = task,
+                wiredWith = GenerateBadgedIconTask::outputDir
+            )
+        }
+    }
+}
