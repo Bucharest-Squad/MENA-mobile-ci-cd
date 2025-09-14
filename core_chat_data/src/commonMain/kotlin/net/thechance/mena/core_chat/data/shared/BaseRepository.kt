@@ -1,8 +1,10 @@
 package net.thechance.mena.core_chat.data.shared
 
+import kotlinx.coroutines.flow.Flow
 import net.thechance.mena.core_chat.data.shared.dto.BaseResponseDto
 import net.thechance.mena.core_chat.domain.exception.ChatException
 import net.thechance.mena.core_chat.domain.exception.ContactsPermissionDeniedException
+import net.thechance.mena.core_chat.domain.exception.DataStoreException
 import net.thechance.mena.core_chat.domain.exception.UnAuthorizedException
 import net.thechance.mena.core_chat.domain.exception.UnknownException
 import com.bilalazzam.contacts_provider.ContactsPermissionDeniedException as ContactsProviderPermissionDeniedException
@@ -59,6 +61,16 @@ interface BaseRepository {
             else -> throw UnknownException(this.message)
         }
     }
+
+
+    suspend fun <T> safeDataStoreCall(block: suspend () -> T): T {
+        return try {
+            block()
+        }catch(e: Exception){
+            throw DataStoreException("error with data store", e)
+        }
+    }
+
 
     companion object {
         private const val STATUS_UNAUTHORIZED = 401
