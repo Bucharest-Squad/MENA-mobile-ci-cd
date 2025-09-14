@@ -1,4 +1,4 @@
-package net.thechance.mena.core_chat.presentation.screen.contacts
+package net.thechance.mena.core_chat.presentation.screen.contacts.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

@@ -1,4 +1,4 @@
-package net.thechance.mena.core_chat.presentation.screen.contacts
+package net.thechance.mena.core_chat.presentation.screen.contacts.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.ic_image_disabled
 import mena.core_chat_presentation.generated.resources.ic_image_enabled
+import net.thechance.mena.core_chat.presentation.screen.contacts.ContactUi
 import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
 import net.thechance.mena.designsystem.presentation.component.text.MenaText
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
@@ -60,7 +61,6 @@ fun ContactItem(
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.padding(top = Theme.spacing._2)
             )
-
         }
 
         MenaIcon(
