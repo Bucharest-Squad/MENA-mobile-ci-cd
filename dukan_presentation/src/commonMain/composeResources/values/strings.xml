@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="Save">Save</string>
-    <string name="Upload another image">Upload another image</string>
-    <string name="Click to upload">Click to upload</string>
-    <string name="Dukan image">Dukan image</string>
     <string name="Reset">Reset</string>
-    <string name="Upload dukan image">Upload dukan image, it should be rectangle 9:16 aspect ratio</string>
+    <string name="dukan_image">Dukan Image</string>"
+    <string name="click_to_upload">Click to upload</string>
+    <string name="upload_another_image">Upload another image</string>
+    <string name="upload_dukan_image">Upload dukan image</string>
     <string name="ImageSize">Image (9:16)</string>
+    <string name="image_size_description">Upload dukan image, it should be rectangle 9:16 aspect ratio</string>
 </resources>

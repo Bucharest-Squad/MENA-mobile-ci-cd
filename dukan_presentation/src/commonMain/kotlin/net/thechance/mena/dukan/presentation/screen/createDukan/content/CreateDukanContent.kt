@@ -70,12 +70,8 @@ fun CreateDukanContent(
         ) { pageIndex ->
             when (CreateDukanStep.steps[pageIndex]) {
                 CreateDukanStep.BASIC_INFORMATION -> CreateDukanContentBasicInformation()
-                CreateDukanStep.SELECT_IMAGE -> DukanImageCropContent(
-                    state = state,
-                    interactionListener = listener
-                )
 
-                CreateDukanStep.CROP_IMAGE -> UploadDukanImageContent(
+                CreateDukanStep.SELECT_IMAGE -> UploadDukanImageContent(
                     state = state,
                     interactionListener = listener
                 )
