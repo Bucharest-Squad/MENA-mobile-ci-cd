@@ -5,6 +5,7 @@ package net.thechance.mena.designsystem.presentation.component.bottomSheet
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,6 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalBottomSheetProperties
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -48,15 +50,18 @@ fun ScaffoldScope.BottomSheet(
     ),
     paddingFromTop: Dp = 64.dp,
     skipPartiallyExpanded: Boolean = false,
-    content: @Composable () -> Unit
+    content: @Composable ColumnScope.(state: SheetState) -> Unit
 ) {
+
     if (!visible) return
+
+    val state = rememberModalBottomSheetState(skipPartiallyExpanded)
 
     ModalBottomSheet(
         modifier = modifier
             .fillMaxSize()
             .padding(top = paddingFromTop),
-        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded),
+        sheetState = state,
         onDismissRequest = onDismiss,
         shape = cornerShape,
         scrimColor = scrimColor,
@@ -65,10 +70,11 @@ fun ScaffoldScope.BottomSheet(
         ),
         containerColor = containerColor
     ) {
-        content()
+        content(state)
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 private fun BottomSheetPreview() {
@@ -87,7 +93,7 @@ private fun BottomSheetPreview() {
                         content = {
                             LazyColumn {
                                 items(10) {
-                                    MenaText("HI", Theme.typography.title.large)
+                                    MenaText("HI", style = Theme.typography.title.large)
                                 }
                             }
                         }
