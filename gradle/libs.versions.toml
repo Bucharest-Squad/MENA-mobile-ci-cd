@@ -19,6 +19,10 @@ koin-core = "4.1.0"
 koin-annotations = "2.1.0"
 kotlinx-datetime = "0.7.1"
 kotlinx-serialization = "1.6.3"
+truth = "1.5.0"
+turbine = "1.2.1"
+junitJupiter = "5.13.4"
+composeUi = "1.9.1"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -54,7 +58,6 @@ koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", ver
 koin-compose-viewmodel-navigation = { module = "io.insert-koin:koin-compose-viewmodel-navigation", version.ref = "koin-core" }
 koin-annotations = { module = "io.insert-koin:koin-annotations", version.ref = "koin-annotations" }
 koin-ksp-compiler = { module = "io.insert-koin:koin-ksp-compiler", version.ref = "koin-annotations" }
-kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
