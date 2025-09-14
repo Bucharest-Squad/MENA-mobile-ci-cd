@@ -56,7 +56,8 @@ fun BottomNavigationBarItem(
         ) {
             MenaIcon(
                 painter = painter,
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(24.dp),
+                contentDescription = title,
             )
 
             if (isSelected) {
