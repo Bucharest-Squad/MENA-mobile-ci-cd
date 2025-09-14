@@ -6,13 +6,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.blur
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.ic_phone
@@ -20,6 +18,7 @@ import mena.core_chat_presentation.generated.resources.ic_phone_back
 import mena.core_chat_presentation.generated.resources.ic_phone_front
 import mena.core_chat_presentation.generated.resources.ic_shadow_ball
 import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
+import net.thechance.mena.designsystem.presentation.component.image.MenaImage
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
 
@@ -63,14 +62,10 @@ fun PhoneIcon(
                     .blur(radius = 40.dp, edgeTreatment = BlurredEdgeTreatment.Unbounded),
                 tint = Theme.colorScheme.primary.primary
             )
-            MenaIcon(
+            MenaImage(
                 painter = painterResource(resource = Res.drawable.ic_phone_front),
                 contentDescription = null,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(RoundedCornerShape(Theme.radius.xl))
-                    .blur(radius = 20.dp),
-                tint = Theme.colorScheme.shadeSecondary
+                modifier = Modifier.fillMaxSize(),
             )
             MenaIcon(
                 painter = painterResource(resource = Res.drawable.ic_phone),
