@@ -30,25 +30,19 @@ tasks.register("exportModuleDeps") {
             map[project.name] = deps
         }
 
-        // Compute reverse dependency graph
         val reverseDeps = mutableMapOf<String, MutableSet<String>>()
         map.keys.forEach { reverseDeps[it] = mutableSetOf() }
         map.forEach { (project, deps) ->
             deps.forEach { dep -> reverseDeps[dep]?.add(project) }
         }
 
-        // Function to get all dependents recursively
-        fun getAllDependents(
-            module: String,
-            visited: MutableSet<String> = mutableSetOf()
-        ): Set<String> {
+        fun getAllDependents(module: String, visited: MutableSet<String> = mutableSetOf()): Set<String> {
             if (!visited.add(module)) return emptySet()
             val direct = reverseDeps[module] ?: emptySet()
             return direct + direct.flatMap { getAllDependents(it, visited) }
         }
 
-        // Output as JSON
         val output = map.keys.associateWith { getAllDependents(it) }
-        println(JsonOutput.toJson(output))
+        println(output.toString())
     }
 }
