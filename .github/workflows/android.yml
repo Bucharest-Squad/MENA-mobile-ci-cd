@@ -1,4 +1,4 @@
-name: Android CI
+ame: Android CI
 
 on:
   push:
@@ -92,3 +92,23 @@ jobs:
         with:
           name: android-apk-debug
           path: app/build/outputs/apk/debug/*.apk
+
+  notify-slack-on-failure:
+    if: failure()
+    needs: android-build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Notify Slack on failure
+        uses: ./.github/actions/send-pr-notification-to-slack
+        with:
+          slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          slack-notification-channel-id: ${{ secrets.SLACK_NOTIFICATION_CHANNEL_ID }}
+          branch-name: ${{ github.head_ref }}
+          message: |
+            🚨 *Build Failed on Android!*
+            One or more matrix jobs failed.
+            PR: ${{ github.event.pull_request.html_url }}
+            Commit: ${{ github.sha }}
