@@ -1,0 +1,71 @@
+name: Android CI (combined build)
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  JAVA_VERSION: 21
+
+jobs:
+  changed-modules:
+    uses: ./.github/workflows/changed-modules.yml
+
+  android-build:
+    needs: changed-modules
+    if: needs.changed-modules.outputs.has_changes == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: Grant execute permissions for gradlew
+        run: chmod +x gradlew
+
+      - name: Build changed modules + app (single runner)
+        run: |
+          MODULES='${{ needs.changed-modules.outputs.modules }}'
+          echo "Changed modules: $MODULES"
+
+          if [ "$MODULES" = "[]" ]; then
+            echo "No changed modules detected -> nothing to build."
+            exit 0
+          fi
+
+          # Build tasks for changed modules. If modules list is the full list, this still works.
+          MODULE_TASKS=$(echo $MODULES | jq -r '.[] | ":"+.+":assemble"' | tr '\n' ' ')
+          echo "Gradle will run tasks: $MODULE_TASKS :app:assembleDebug"
+          ./gradlew $MODULE_TASKS :app:assembleDebug --no-daemon --stacktrace
+
+      - name: Upload Android APK
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk-debug
+          path: app/build/outputs/apk/debug/*.apk
+
+  android-build-summary:
+    needs: [changed-modules, android-build]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Summary
+        run: |
+          if [ "${{ needs.changed-modules.outputs.has_changes }}" = "false" ]; then
+            echo "✅ No changes detected in Android modules. Skipping build."
+          else
+            echo "🎯 Built modules: ${{ needs.changed-modules.outputs.modules }}"
+          fi
