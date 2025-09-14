@@ -51,15 +51,16 @@ runs:
       shell: bash
       env:
         bot_messages: ${{ env.bot_messages }}
+        message_count: ${{ steps.count.outputs.message_count }}
       run: |
         echo "bot_messages is :$bot_messages"
-        REGIONS=("WLT" "TRN" "FTH" "CHT" "DKN" "IDN")
+        REGIONS=("IDN" "DKN" "CHT" "FTH" "TRN" "WLT")
         team=$(echo "${{ inputs.branch-name }}" | cut -d'/' -f2)
         prefix="${team:0:3}"
         echo "${REGIONS[$i]} = $prefix"
         for i in "${!REGIONS[@]}"; do
           if [[ "${REGIONS[$i]}" == "$prefix" ]]; then
-            thread_ts=$(echo "$bot_messages" | jq -r ".messages[$i].ts")
+            thread_ts=$(echo "$bot_messages" | jq -r ".messages[message_count - 1 - $i].ts")
             echo "$thread_ts"
             curl -X POST "https://slack.com/api/chat.postMessage" \
               -H "Authorization: Bearer ${{ inputs.slack-bot-token }}" \
