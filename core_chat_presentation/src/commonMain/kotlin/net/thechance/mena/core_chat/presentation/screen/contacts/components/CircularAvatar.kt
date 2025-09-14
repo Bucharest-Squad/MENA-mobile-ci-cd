@@ -38,7 +38,7 @@ fun CircularAvatar(
             MenaText(
                 text = contactInitials,
                 color = Theme.colorScheme.shadePrimary,
-                style = Theme.typography.label.large,
+                style = Theme.typography.title.small,
             )
         }
     }

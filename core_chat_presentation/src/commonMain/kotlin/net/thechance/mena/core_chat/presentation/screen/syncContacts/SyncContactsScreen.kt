@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -56,9 +57,9 @@ private fun SyncContactsContent(
         modifier = Modifier.fillMaxSize()
             .background(color = Theme.colorScheme.background.surface)
             .statusBarsPadding()
+            .navigationBarsPadding()
     ) {
         AppBar(
-            modifier = Modifier,
             title = stringResource(Res.string.sync_contacts),
             contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
             leadingContent = {
@@ -77,7 +78,7 @@ private fun SyncContactsContent(
             modifier = Modifier
                 .weight(1f)
                 .verticalScroll(rememberScrollState())
-                .padding(vertical = Theme.spacing._16, horizontal = Theme.spacing._24),
+                .padding(horizontal = Theme.spacing._24),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {

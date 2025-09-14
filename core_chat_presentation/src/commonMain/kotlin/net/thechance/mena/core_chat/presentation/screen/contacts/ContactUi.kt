@@ -20,7 +20,7 @@ data class ContactUi(
     val initials: String
         get() = when {
             !firstName.isNullOrBlank() && !lastName.isNullOrBlank() ->
-                "${firstName.firstOrNull()}${lastName.firstOrNull()}".uppercase()
+                "${firstName.firstOrNull()} ${lastName.firstOrNull()}".uppercase()
             !firstName.isNullOrBlank() ->
                 firstName.firstOrNull()?.uppercaseChar()?.toString() ?: "?"
             !lastName.isNullOrBlank() ->
@@ -40,8 +40,8 @@ val temporaryContacts = listOf(
     ),
     ContactUi(
         id = "2",
-        firstName = "Jane",
-        lastName = "Smith",
+        firstName = "Noor",
+        lastName = "Al-Taie",
         phoneNumber = "+1987654321",
         isMenaMember = false,
         imageUri = null
