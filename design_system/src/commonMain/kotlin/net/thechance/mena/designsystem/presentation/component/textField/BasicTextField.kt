@@ -22,7 +22,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
@@ -151,17 +150,10 @@ private fun TextFieldContent(
         verticalAlignment = Alignment.CenterVertically
     ) {
         leadingIcon?.let {
-            //todo add error color
-            val errorTintColor = Brush.linearGradient(
-                listOf(
-                    Theme.colorScheme.border.error,
-                    Color(0xFFEA8E87)
-                )
-            )
 
             MenaIcon(
                 painter = leadingIcon,
-                tint = if (isError) Theme.colorScheme.border.error else leadingIconTint,
+                tint = if (isError) Theme.colorScheme.error else leadingIconTint,
                 contentDescription = null,
                 modifier = Modifier
                     .padding(end = Theme.spacing._8)
