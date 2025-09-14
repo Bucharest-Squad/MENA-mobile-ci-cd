@@ -36,7 +36,7 @@ runs:
 
     - name: Send Slack messages (only if empty)
       if: steps.count.outputs.message_count == '0'
-      uses: ./.github/actions/send-pr-notification-to-slack
+      uses: ./.github/actions/send-default-slack-template
       with:
         slack-bot-token: ${{ inputs.slack-bot-token }}
         slack-notification-channel-id: ${{ inputs.slack-notification-channel-id }}
