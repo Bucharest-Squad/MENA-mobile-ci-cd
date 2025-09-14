@@ -55,6 +55,7 @@ fun ScaffoldScope.Dialog(
     onActionClick: () -> Unit = {},
     onCancelClick: () -> Unit = {},
     modifier: Modifier = Modifier,
+    scrimColor: Color = Theme.colorScheme.primary.primary.copy(0.55f),
     contentColor: Color = Theme.colorScheme.background.surfaceLow,
     dialogCornerShape: Shape = RoundedCornerShape(Theme.radius.xl),
     cancelBackgroundShape: Shape = RoundedCornerShape(Theme.radius.full),
@@ -65,31 +66,38 @@ fun ScaffoldScope.Dialog(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .clickable(
-                enabled = dismissOnClickOutside,
-                onClick = onDismiss,
-                indication = null,
-                interactionSource = remember { MutableInteractionSource() }
-            )
-    )
+            .background(scrimColor),
+        contentAlignment = Alignment.Center
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .clickable(
+                    enabled = dismissOnClickOutside,
+                    onClick = onDismiss,
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                )
+        )
 
-    DialogContent(
-        title = title,
-        message = message,
-        buttonText = buttonText,
-        cancelBackgroundShape = cancelBackgroundShape,
-        onActionClick = onActionClick,
-        onCancelClick = onCancelClick,
-        contentColor = contentColor,
-        dialogCornerShape = dialogCornerShape,
-        contentPadding = contentPadding,
-        modifier = modifier
-            .clickable(
-                enabled = false,
-                onClick = {},
-            )
-            .padding(horizontal = 16.dp)
-    )
+        DialogContent(
+            title = title,
+            message = message,
+            buttonText = buttonText,
+            cancelBackgroundShape = cancelBackgroundShape,
+            onActionClick = onActionClick,
+            onCancelClick = onCancelClick,
+            contentColor = contentColor,
+            dialogCornerShape = dialogCornerShape,
+            contentPadding = contentPadding,
+            modifier = modifier
+                .clickable(
+                    enabled = false,
+                    onClick = {},
+                )
+                .padding(horizontal = 16.dp)
+        )
+    }
 
     if (dismissOnBackPress) {
         BackHandler(true) {
