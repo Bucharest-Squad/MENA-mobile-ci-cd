@@ -47,5 +47,5 @@ runs:
         --data "{\"channel\": \"$SLACK_NOTIFICATION_CHANNEL_ID\"}")
           
           bot_messages=$(echo "$messages" | jq --arg app_id "$BOT_APP_ID" '.messages[] | select(.app_id == $app_id)')
-          
+          echo "bot_messages :$bot_messages"
           echo "bot_messages=$(echo "$bot_messages" | jq -c -s .)" >> "$GITHUB_ENV"
