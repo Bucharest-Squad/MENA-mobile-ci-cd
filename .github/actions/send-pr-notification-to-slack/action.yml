@@ -28,11 +28,10 @@ runs:
           -H "Authorization: Bearer ${{ inputs.slack-bot-token }}" \
           -H "Content-type: application/json" \
           --data "{\"channel\": \"${{ inputs.slack-notification-channel-id }}\"}")
-        message_count=$(echo "$response" | jq '.messages | length')
-        echo "count is : $message_count"
-        if [ -z "$message_count" ] || ! [[ "$message_count" =~ ^[0-9]+$ ]]; then
-          message_count=0
-        fi
+        
+        message_count=$(echo "$response" | jq -r '.messages | length' 2>/dev/null || echo 0)
+        
+        echo "messages=$messages" >> $GITHUB_OUTPUT
 
     - name: Send Slack messages (only if empty)
       if: steps.count.outputs.message_count == '0'
@@ -43,6 +42,8 @@ runs:
 
     - name: Send Slack messages
       shell: bash
+      env:
+        messages: ${{ steps.send-slack-message.outputs.messages }}
       run: |
         echo "messages is :$messages"
         REGIONS=("WLT" "TRN" "FTH" "CHT" "DKN" "IDN")
