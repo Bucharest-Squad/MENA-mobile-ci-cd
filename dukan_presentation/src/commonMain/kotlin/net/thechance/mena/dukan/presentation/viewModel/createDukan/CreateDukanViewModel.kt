@@ -8,6 +8,10 @@ class CreateDukanViewModel :
     BaseViewModel<CreateDukanUiState, CreateDukanEffect>(CreateDukanUiState()),
     CreateDukanInteractionListener {
 
+    init {
+        loadMockCategories() // TODO: Remove mock data
+    }
+
     override fun onButtonClicked() {
         if (state.value.currentStep != CreateDukanUiState.CreateDukanStep.SELECT_STYLE) {
             onCLickNext()
@@ -37,10 +41,6 @@ class CreateDukanViewModel :
         }
     }
 
-    private fun onCreateClicked() {
-        TODO("Not yet implemented")
-    }
-
     override fun onClickUploadImage() {
         emitEffect(CreateDukanEffect.NavigateToImageCropScreen)
     }
@@ -51,18 +51,12 @@ class CreateDukanViewModel :
 
     override fun onCLickNext() {
         val current = state.value.currentStep
-        updateState {
-            copy(currentStep = nextStep(current))
-        }
-        updateNextButtonEnableState()
-    }
-
-    fun onImageCroppedAndSaved(croppedUri: String) {
-        updateState {
-            copy(
-                savedImageUri = croppedUri,
-                isNextButtonEnabled = true
-            )
+        when (current) {
+            CreateDukanStep.BASIC_INFORMATION -> handleBasicInformationNext()
+            else -> {
+                updateState { copy(currentStep = nextStep(current)) }
+                updateNextButtonEnableState()
+            }
         }
     }
 
@@ -98,6 +92,45 @@ class CreateDukanViewModel :
     }
 
     override fun onUploadAnotherImageClicked() {}
+
+    override fun onNameChanged(name: String) {
+        updateState { copy(name = name, showSnackBar = false) }
+        updateNextButtonEnableState()
+    }
+
+    override fun onCategorySelected(category: Category) {
+        if (state.value.selectedCategories.size < 3) {
+            updateState { copy(selectedCategories = state.value.selectedCategories + category) }
+        }
+        updateNextButtonEnableState()
+    }
+
+    override fun onCategoryDeselected(category: Category) {
+        updateState { copy(selectedCategories = state.value.selectedCategories - category) }
+        updateNextButtonEnableState()
+    }
+
+    private fun onCreateClicked() {
+        TODO("Not yet implemented")
+    }
+
+    private fun handleBasicInformationNext() {
+        if (isBasicInformationStepValid(state.value)) {
+            checkNameUniqueness(state.value.name)
+            return
+        }
+        updateState { copy(showSnackBar = true, isNameUnique = false) }
+    }
+
+    fun onImageCroppedAndSaved(croppedUri: String) {
+        updateState {
+            copy(
+                savedImageUri = croppedUri,
+                isNextButtonEnabled = true
+            )
+        }
+    }
+
     private fun nextStep(step: CreateDukanStep): CreateDukanStep =
         when (step) {
             CreateDukanStep.BASIC_INFORMATION -> CreateDukanStep.SELECT_IMAGE
@@ -116,11 +149,6 @@ class CreateDukanViewModel :
             CreateDukanStep.CROP_IMAGE -> CreateDukanStep.CROP_IMAGE
         }
 
-    override fun onNameChanged(name: String) {
-        updateState { copy(name = name, showSnackBar = false) }
-        updateNextButtonEnableState()
-    }
-
     private fun checkNameUniqueness(name: String) {
         tryToExecute(
             block = {
@@ -134,14 +162,15 @@ class CreateDukanViewModel :
     }
 
     private fun handleNameValidationResult(isTaken: Boolean) {
+        val current = state.value.currentStep
         updateState {
-            copy(isNameUnique = !isTaken, showSnackBar = isTaken)
+            copy(
+                isNameUnique = !isTaken,
+                showSnackBar = isTaken,
+                currentStep = if (isTaken) current else nextStep(current)
+            )
         }
         updateNextButtonEnableState()
-
-        if (!isTaken) {
-            onNextClicked()
-        }
     }
 
     private fun handleNameValidationError() {
@@ -149,20 +178,22 @@ class CreateDukanViewModel :
         updateNextButtonEnableState()
     }
 
-    override fun onCategorySelected(category: Category) {
-        if (state.value.selectedCategories.size < 3) {
-            updateState { copy(selectedCategories = state.value.selectedCategories + category) }
+    private fun updateNextButtonEnableState() {
+        val currentState = state.value
+        val isNextButtonEnabled = when (currentState.currentStep) {
+            CreateDukanStep.BASIC_INFORMATION -> isBasicInformationStepValid(currentState)
+            CreateDukanStep.SELECT_IMAGE -> currentState.savedImageUri != null
+            CreateDukanStep.SELECT_LOCATION -> true
+            CreateDukanStep.SELECT_STYLE -> true
+            CreateDukanStep.CROP_IMAGE -> true
         }
-        updateNextButtonEnableState()
+        updateState { this.copy(isButtonEnabled = isNextButtonEnabled) }
     }
 
-    override fun onCategoryDeselected(category: Category) {
-        updateState { copy(selectedCategories = state.value.selectedCategories - category) }
-        updateNextButtonEnableState()
-    }
-
-    init {
-        loadMockCategories()
+    private fun isBasicInformationStepValid(state: CreateDukanUiState): Boolean {
+        return state.name.isNotBlank() &&
+                state.selectedCategories.size in 1..3 &&
+                !state.showSnackBar
     }
 
     private fun loadMockCategories() {
@@ -175,24 +206,6 @@ class CreateDukanViewModel :
             Category("5", "Sports", "")
         )
         updateState { copy(availableCategories = categories) }
-    }
-
-    private fun updateNextButtonEnableState() {
-        val state = state.value
-        val isNextButtonEnabled = when (state.currentStep) {
-            CreateDukanStep.BASIC_INFORMATION -> isBasicInformationStepValid(state)
-            CreateDukanStep.SELECT_IMAGE -> state.savedImageUri != null
-            CreateDukanStep.SELECT_LOCATION -> true
-            CreateDukanStep.SELECT_STYLE -> true
-            CreateDukanStep.CROP_IMAGE -> true
-        }
-        updateState { this.copy(isButtonEnabled = isNextButtonEnabled) }
-    }
-
-    private fun isBasicInformationStepValid(state: CreateDukanUiState): Boolean {
-        return state.name.isNotBlank() &&
-                state.selectedCategories.size in 1..3 &&
-                !state.showSnackBar
     }
 
     private companion object {

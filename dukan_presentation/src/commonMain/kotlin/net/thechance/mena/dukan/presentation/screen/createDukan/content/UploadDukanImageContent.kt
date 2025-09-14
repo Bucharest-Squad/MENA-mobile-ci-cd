@@ -7,10 +7,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import mena.dukan_presentation.generated.resources.`Dukan image`
+import mena.dukan_presentation.generated.resources.Dukan_image
 import mena.dukan_presentation.generated.resources.ImageSize
 import mena.dukan_presentation.generated.resources.Res
-import mena.dukan_presentation.generated.resources.`Upload dukan image`
+import mena.dukan_presentation.generated.resources.Upload_dukan_image
 import net.thechance.mena.designsystem.presentation.component.text.MenaText
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
@@ -20,7 +20,6 @@ import net.thechance.mena.dukan.presentation.viewModel.createDukan.CreateDukanIn
 import net.thechance.mena.dukan.presentation.viewModel.createDukan.CreateDukanUiState
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-
 
 @Composable
 fun UploadDukanImageContent(
@@ -35,7 +34,7 @@ fun UploadDukanImageContent(
     ) {
         item {
             MenaText(
-                text = stringResource(Res.string.`Dukan image`),
+                text = stringResource(Res.string.Dukan_image),
                 style = Theme.typography.title.medium,
                 color = Theme.colorScheme.shadePrimary,
                 modifier = Modifier.padding(top = 20.dp)
@@ -43,7 +42,7 @@ fun UploadDukanImageContent(
         }
         item {
             MenaText(
-                text = stringResource(Res.string.`Upload dukan image`),
+                text = stringResource(Res.string.Upload_dukan_image),
                 style = Theme.typography.body.small,
                 color = Theme.colorScheme.shadeSecondary,
             )

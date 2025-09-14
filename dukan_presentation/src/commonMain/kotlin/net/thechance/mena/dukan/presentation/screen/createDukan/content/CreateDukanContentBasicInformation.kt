@@ -40,7 +40,7 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun CreateDukanContentBasicInformation(
     state: CreateDukanUiState,
-    listener: CreateDukanInteractionListener
+    interactionListener: CreateDukanInteractionListener
 ) {
     LazyColumn(
         modifier = Modifier
@@ -55,7 +55,7 @@ fun CreateDukanContentBasicInformation(
         item {
             TextField(
                 value = state.name,
-                onValueChanged = listener::onNameChanged,
+                onValueChanged = interactionListener::onNameChanged,
                 placeholder = stringResource(Res.string.enter_dukan_name),
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 12.dp),
                 leadingIcon = painterResource(Res.drawable.ic_shop),
@@ -68,7 +68,7 @@ fun CreateDukanContentBasicInformation(
             CategoryHeaderSection()
             CategorySelectionRow(
                 state = state,
-                listener = listener
+                listener = interactionListener
             )
         }
     }
