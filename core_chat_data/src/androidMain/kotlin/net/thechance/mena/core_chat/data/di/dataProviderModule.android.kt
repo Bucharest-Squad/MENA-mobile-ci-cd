@@ -8,7 +8,6 @@ import net.thechance.mena.core_chat.data.contacts.source.device.SettingDataSourc
 import net.thechance.mena.core_chat.data.utils.createDataStore
 import org.koin.core.scope.Scope
 
-
 actual fun Scope.createContactsProvider(): ContactsProvider {
     return ContactsProviderFactory(this.get()).createContactsProvider()
 }

@@ -18,37 +18,43 @@ interface BaseRepository {
         maxAttempts: Int = 1,
         call: suspend () -> BaseResponseDto<T>,
     ): T? {
-        runCatchingWithException(defaultException) {
+        return runCatchingWithException(defaultException) {
             //TODO: handle network connection
-            var attempt = 0
-            while (attempt < maxAttempts) {
-                try {
-                    val response = call()
-                    return@runCatchingWithException response.getSuccessBodyOrThrow()
-                } catch (e: ChatException) {
-                    throw e
-                } catch (e: Exception) {
-                    attempt++
-                    if (attempt >= maxAttempts) {
-                        throw e
-                    }
-                }
+            retry(maxAttempts) {
+                val response = call()
+                response.getSuccessBodyOrThrow()
             }
         }
-        throw UnknownException("This line should never be reached")
+    }
+
+    suspend fun <T> retry(
+        maxAttempts: Int = 3,
+        block: suspend () -> T?
+    ): T? {
+        return try {
+            block()
+        } catch (e: ChatException) {
+            throw e
+        }  catch (e: Throwable) {
+            if (maxAttempts <= 1) throw e
+            retry(
+                maxAttempts = maxAttempts - 1,
+                block = block
+            )
+        }
     }
 
     private suspend fun <T> runCatchingWithException(
         defaultException: (Throwable) -> ChatException,
-        block: suspend () -> T
-    ): T {
-        try {
-            return block()
+        block: suspend () -> T?
+    ): T? {
+        return try {
+            block()
         } catch (e: ContactsProviderPermissionDeniedException) {
             throw ContactsPermissionDeniedException("Contacts Permission Denied!", e)
         } catch (e: ChatException) {
             throw e
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             throw defaultException(e)
         }
     }

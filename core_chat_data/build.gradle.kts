@@ -11,23 +11,30 @@ kotlin {
 
     sourceSets {
         androidMain.dependencies {
-
+            implementation(libs.ktor.client.android)
+            implementation(libs.ktor.client.okhttp)
         }
         commonMain.dependencies {
             implementation(projects.coreChatDomain)
             implementation(libs.kotlin.serialization)
             implementation(libs.contacts.provider)
             implementation(libs.koin.core)
+
+            implementation(libs.bundles.ktor)
             implementation(libs.androidx.datastore.preferences)
 
         }
         iosMain.dependencies {
-
+            implementation(libs.ktor.client.darwin)
         }
     }
 }
 
 android {
+    namespace = "net.thechance.mena.core_chat.data"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
-    namespace = "net.thechance.mena.core_chat_data"
+
+    defaultConfig {
+        minSdk = libs.versions.android.minSdk.get().toInt()
+    }
 }

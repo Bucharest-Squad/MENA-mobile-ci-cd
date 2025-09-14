@@ -12,12 +12,12 @@ import org.koin.dsl.module
 
 const val SETTINGS_DATA_STORE = "settingsDataStore"
 
+internal val dataProviderModule = module {
+
 internal val dataSourceModule = module {
     single { createContactsProvider() }
     single(qualifier(name = SETTINGS_DATA_STORE)) { createSettingsDataStore() }
     single { SettingDataSource(get(qualifier(name = SETTINGS_DATA_STORE))) }
-    single { DummyContactsDataSource() }
-    single { DeviceContactsDataSource(get()) }
 }
 
 expect fun Scope.createContactsProvider(): ContactsProvider
