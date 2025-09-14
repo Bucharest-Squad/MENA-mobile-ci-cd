@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.ic_arrow_left
 import mena.core_chat_presentation.generated.resources.sync_contacts
@@ -16,8 +15,12 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun SyncContactsAppBar(navController: NavController) {
+fun SyncContactsAppBar(
+    onNavigateBack : () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     AppBar(
+        modifier = modifier,
         title = stringResource(Res.string.sync_contacts),
         contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
         leadingContent = {
@@ -28,7 +31,7 @@ fun SyncContactsAppBar(navController: NavController) {
                 tint = Theme.colorScheme.primary.primary,
             )
         },
-        onLeadingClick = { navController.popBackStack() },
+        onLeadingClick = onNavigateBack,
     )
 }
 

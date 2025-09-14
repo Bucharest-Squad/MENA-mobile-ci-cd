@@ -18,7 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import mena.core_chat_presentation.generated.resources.Res
-import mena.core_chat_presentation.generated.resources.phone_icon
+import mena.core_chat_presentation.generated.resources.ic_phone
 import net.thechance.mena.core_chat.presentation.navigation.LocalNavController
 import net.thechance.mena.core_chat.presentation.screen.syncContacts.components.ContactsSyncedView
 import net.thechance.mena.core_chat.presentation.screen.syncContacts.components.NoContactsSyncView
@@ -54,7 +54,11 @@ private fun SyncContactsContent(
             .background(color = Theme.colorScheme.background.surface)
             .statusBarsPadding()
     ) {
-        SyncContactsAppBar(navController = navController)
+        SyncContactsAppBar(
+            onNavigateBack = {
+                navController.popBackStack()
+            },
+        )
         Column(
             modifier = Modifier
                 .weight(1f)
@@ -64,7 +68,7 @@ private fun SyncContactsContent(
             verticalArrangement = Arrangement.Center,
         ) {
             MenaImage(
-                painter = painterResource(resource = Res.drawable.phone_icon),
+                painter = painterResource(resource = Res.drawable.ic_phone),
                 contentDescription = "No contacts synced",
                 modifier = Modifier.size(128.dp, 122.dp)
             )

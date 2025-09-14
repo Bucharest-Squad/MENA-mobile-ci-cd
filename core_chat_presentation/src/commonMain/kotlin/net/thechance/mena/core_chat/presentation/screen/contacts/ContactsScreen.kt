@@ -18,7 +18,9 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun ContactsScreen() {
     val navController = LocalNavController.current
     ContactsContent(
-        navController = navController,
+        onNavigateBack = {
+            navController.popBackStack()
+        },
         onResyncClick = {
             navController.navigate(SyncContactsRoute)
         },
@@ -29,7 +31,7 @@ fun ContactsScreen() {
 @Composable
 private fun ContactsContent(
     modifier: Modifier = Modifier,
-    navController: androidx.navigation.NavController = LocalNavController.current,
+    onNavigateBack: () -> Unit,
     onResyncClick: () -> Unit,
     contacts: List<ContactUi>
 ) {
@@ -39,7 +41,7 @@ private fun ContactsContent(
             .statusBarsPadding()
     ) {
         ContactsAppBar(
-            navController = navController,
+            onNavigateBack = onNavigateBack,
             onResyncClick = onResyncClick
         )
         ContactsList(

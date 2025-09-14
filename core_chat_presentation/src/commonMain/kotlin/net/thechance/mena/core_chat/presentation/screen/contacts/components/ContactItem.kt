@@ -15,8 +15,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import mena.core_chat_presentation.generated.resources.Res
-import mena.core_chat_presentation.generated.resources.ic_image_disabled
-import mena.core_chat_presentation.generated.resources.ic_image_enabled
+import mena.core_chat_presentation.generated.resources.ic_circular_mena_disabled
+import mena.core_chat_presentation.generated.resources.ic_circular_mena_enabled
 import net.thechance.mena.core_chat.presentation.screen.contacts.ContactUi
 import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
 import net.thechance.mena.designsystem.presentation.component.text.MenaText
@@ -66,9 +66,9 @@ fun ContactItem(
         MenaIcon(
             painter = painterResource(
                 if (contact.isMenaMember)
-                    Res.drawable.ic_image_enabled
+                    Res.drawable.ic_circular_mena_enabled
                 else
-                    Res.drawable.ic_image_disabled
+                    Res.drawable.ic_circular_mena_disabled
             ),
             contentDescription = null,
             modifier = Modifier.padding(start = Theme.spacing._8).size(24.dp),

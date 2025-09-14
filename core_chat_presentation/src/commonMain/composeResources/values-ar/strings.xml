@@ -3,6 +3,6 @@
     <string name="contacts_title">جهات الاتصال</string>
     <string name="sync_contacts">مزامنة جهات الاتصال</string>
     <string name="sync_contacts_title">مزامنة جهات اتصالك</string>
-    <string name="sync_contacts_desc">قم بمزامنة جهات الاتصال الخاصة بك حتى تتمكن بسهولة من بدء المحادثات والتواصل مع أصدقائك</string>
-    <string name="syncing_contacts_message">جاري مزامنة جهات الاتصال الخاصة بك، برجاء الانتظار حتى تكتمل المزامنة.</string>
+    <string name="sync_contacts_desc">قم بمزامنة جهات اتصالك حتى تتمكن بسهولة من بدء المحادثات والتواصل مع أصدقائك</string>
+    <string name="syncing_contacts_message">جاري مزامنة جهات اتصالك، برجاء الانتظار حتى تكتمل المزامنة.</string>
 </resources>

@@ -18,8 +18,8 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun ContactsAppBar(
-    navController: androidx.navigation.NavController,
-    onResyncClick: () -> Unit
+    onResyncClick: () -> Unit,
+    onNavigateBack: () -> Unit,
 ) {
     AppBar(
         title = stringResource(Res.string.contacts_title),
@@ -32,7 +32,7 @@ fun ContactsAppBar(
                 tint = Theme.colorScheme.primary.primary,
             )
         },
-        onLeadingClick = { navController.popBackStack() },
+        onLeadingClick = onNavigateBack,
         trailingContent = {
             AppBarOptionContainer(
                 badgeColor = Theme.colorScheme.primary.primary,
