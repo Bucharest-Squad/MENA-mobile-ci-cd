@@ -104,19 +104,6 @@ jobs:
           name: android-apk-debug
           path: app/build/outputs/apk/debug/*.apk
 
-  android-build-summary:
-    needs: [changed-modules, android-build]
-    runs-on: ubuntu-latest
-    if: always()
-    steps:
-      - name: Summary
-        run: |
-          if [ "${{ needs.changed-modules.outputs.has_changes }}" = "false" ]; then
-            echo "✅ No changes detected in Android modules. Skipping build."
-          else
-            echo "🎯 Built modules: ${{ needs.changed-modules.outputs.changed_modules }}"
-          fi
-
   notify-slack-on-failure:
     if: failure()
     needs: android-build
@@ -136,3 +123,16 @@ jobs:
             One or more matrix jobs failed.
             PR: ${{ github.event.pull_request.html_url }}
             Commit: ${{ github.sha }}
+
+  android-build-summary:
+    needs: [ changed-modules, android-build ]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Summary
+        run: |
+          if [ "${{ needs.changed-modules.outputs.has_changes }}" = "false" ]; then
+            echo "✅ No changes detected in Android modules. Skipping build."
+          else
+            echo "🎯 Built modules: ${{ needs.changed-modules.outputs.changed_modules }}"
+          fi
