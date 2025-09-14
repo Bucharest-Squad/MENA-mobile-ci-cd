@@ -9,6 +9,8 @@ class ContactSyncFailedException(logMessage: String, cause: Throwable? = null) :
 class ContactsFetchFailedException(logMessage: String, cause: Throwable? = null) :
     ChatException(logMessage, cause)
 
+class ContactsPermissionDeniedException(logMessage: String, cause: Throwable? = null) :
+        ChatException(logMessage, cause)
 class UnAuthorizedException(logMessage: String? = null) :
     ChatException(logMessage ?: "User is not authorized")
 

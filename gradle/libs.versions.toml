@@ -23,7 +23,7 @@ kotlin-serialization-json = "1.9.0"
 paging = "3.4.0-alpha04"
 
 #contacts-provider
-contacts-provider = "1.1.9"
+contacts-provider = "1.1.10"
 
 #koin
 koin = "4.1.1"
