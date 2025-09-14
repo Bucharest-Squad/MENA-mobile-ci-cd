@@ -8,21 +8,22 @@ class CreateDukanViewModel :
     CreateDukanInteractionListener {
 
     override fun onButtonClicked() {
-        if (state.value.currentStep != SELECT_STYLE_INDEX) {
-            if (state.value.currentStep == BASIC_INFORMATION_INDEX) {
-                if (checkNameUniqueness(state.value.name)) return
-            }
-            onNextClicked()
-        } else {
-            onCreateClicked()
+        when (state.value.currentStep) {
+            SELECT_STYLE_INDEX -> onCreateClicked()
+            BASIC_INFORMATION_INDEX -> checkNameUniqueness(state.value.name)
+            else -> onNextClicked()
         }
     }
 
     override fun onBackClicked() {
-        if (state.value.currentStep == BASIC_INFORMATION_INDEX) {
+        when (state.value.currentStep) {
+            BASIC_INFORMATION_INDEX -> {
+                TODO("Not yet implemented")
+            }
 
-        } else {
-            updateState { copy(currentStep = currentStep - 1) }
+            else -> {
+                updateState { copy(currentStep = currentStep - 1) }
+            }
         }
         updateNextButtonEnableState()
     }
@@ -43,27 +44,32 @@ class CreateDukanViewModel :
         updateNextButtonEnableState()
     }
 
-    private fun checkNameUniqueness(name: String): Boolean {
-        // TODO: Implement real uniqueness check when DukanRepository is available
-        if (name.lowercase() == "test") {
-            updateState {
-                copy(
-                    isNameUnique = false,
-                    showSnackBar = true
-                )
-            }
-            updateNextButtonEnableState()
-            return true
-        } else {
-            updateState {
-                copy(
-                    isNameUnique = true,
-                    showSnackBar = false
-                )
-            }
-            updateNextButtonEnableState()
-            return false
+    private fun checkNameUniqueness(name: String) {
+        tryToExecute(
+            block = {
+                // TODO: Use repository when dependency injection is set up
+                // For now, use mock data
+                name.lowercase() == "test"
+            },
+            onSuccess = { isTaken -> handleNameValidationResult(isTaken) },
+            onError = { handleNameValidationError() }
+        )
+    }
+
+    private fun handleNameValidationResult(isTaken: Boolean) {
+        updateState {
+            copy(isNameUnique = !isTaken, showSnackBar = isTaken)
         }
+        updateNextButtonEnableState()
+
+        if (!isTaken) {
+            onNextClicked()
+        }
+    }
+
+    private fun handleNameValidationError() {
+        updateState { copy(isNameUnique = false, showSnackBar = true) }
+        updateNextButtonEnableState()
     }
 
     override fun onCategorySelected(category: Category) {
@@ -83,6 +89,7 @@ class CreateDukanViewModel :
     }
 
     private fun loadMockCategories() {
+        // TODO: Remove mock data
         val categories = listOf(
             Category("1", "Food", ""),
             Category("2", "Electronics", ""),
@@ -96,16 +103,19 @@ class CreateDukanViewModel :
     private fun updateNextButtonEnableState() {
         val state = state.value
         val isNextButtonEnabled = when (state.currentStep) {
-            BASIC_INFORMATION_INDEX -> state.name.isNotBlank() &&
-                    state.selectedCategories.size in 1..3 &&
-                    !state.showSnackBar
-
+            BASIC_INFORMATION_INDEX -> isBasicInformationStepValid(state)
             SELECT_IMAGE_INDEX -> true
             SELECT_LOCATION_INDEX -> true
             SELECT_STYLE_INDEX -> true
             else -> true
         }
         updateState { this.copy(isButtonEnabled = isNextButtonEnabled) }
+    }
+
+    private fun isBasicInformationStepValid(state: CreateDukanUiState): Boolean {
+        return state.name.isNotBlank() &&
+                state.selectedCategories.size in 1..3 &&
+                !state.showSnackBar
     }
 
     companion object {
