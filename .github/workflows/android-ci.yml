@@ -1,34 +1,38 @@
 name: Android CI
 
 on:
-  pull_request:
-    branches: [ main, develop ]
-  push:
-    branches: [ main, develop ]
-  workflow_dispatch:
+  workflow_run:
+    workflows: ["Detect Changed Modules"]
+    types:
+      - completed
 
 jobs:
-  android-build:
-    uses: ./.github/workflows/changed-modules.yml
-    secrets: inherit
-
   build:
-    needs: android-build
-    if: needs.android-build.outputs.has_changes == 'true'
     runs-on: ubuntu-latest
-
     steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: detect-results
+
+      - name: Load detect results
+        id: vars
+        run: |
+          while IFS== read -r key value; do
+            echo "$key=$value" >> $GITHUB_ENV
+          done < detect_env.txt
+
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: 21
 
-      - name: Grant execute permission
-        run: chmod +x gradlew
+      - run: chmod +x gradlew
 
       - name: Build all changed Android modules
-        run: ./gradlew $(for m in $(echo '${{ needs.android-build.outputs.modules }}' | jq -r '.[]'); do echo ":$m:assemble"; done)
+        if: env.has_changes == 'true'
+        run: ./gradlew $(for m in $(echo $modules | jq -r '.[]'); do echo ":$m:assemble"; done)
+
 
   notify-slack-on-failure:
     if: failure()

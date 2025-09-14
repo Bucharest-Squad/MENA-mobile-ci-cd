@@ -1,23 +1,43 @@
 name: Test Coverage and Codecov Report
 
 on:
-  pull_request:
-    branches: [ main, develop ]
-  workflow_dispatch:
+  workflow_run:
+    workflows: ["Detect Changed Modules"]
+    types:
+      - completed
 
 jobs:
-  detect:
-    uses: ./.github/workflows/changed-modules.yml
-    secrets: inherit
-
   test:
-    needs: detect
-    if: needs.detect.outputs.has_changes == 'true'
     runs-on: ubuntu-latest
     strategy:
-      matrix:
-        module: ${{ fromJSON(needs.detect.outputs.modules) }}
       fail-fast: false
+      matrix:
+        module: []
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: detect-results
+
+      - name: Load detect results
+        id: vars
+        run: |
+          while IFS== read -r key value; do
+            echo "$key=$value" >> $GITHUB_ENV
+          done < detect_env.txt
+          echo "matrix=$(echo $modules)" >> $GITHUB_OUTPUT
+
+    outputs:
+      matrix: ${{ steps.vars.outputs.matrix }}
+
+  test-modules:
+    needs: test
+    if: env.has_changes == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        module: ${{ fromJSON(needs.test.outputs.matrix) }}
 
     steps:
       - uses: actions/checkout@v4
@@ -28,12 +48,8 @@ jobs:
           cache: gradle
 
       - run: chmod +x gradlew
-
-      - name: Run Tests & Kover Verification
-        run: ./gradlew :${{ matrix.module }}:koverVerify --build-cache
-
-      - name: Generate Reports
-        run: ./gradlew :${{ matrix.module }}:koverXmlReport :${{ matrix.module }}:koverHtmlReport
+      - run: ./gradlew :${{ matrix.module }}:koverVerify --build-cache
+      - run: ./gradlew :${{ matrix.module }}:koverXmlReport :${{ matrix.module }}:koverHtmlReport
 
       - uses: actions/upload-artifact@v4
         if: always()
@@ -48,8 +64,7 @@ jobs:
           path: ${{ matrix.module }}/build/reports/kover/report.xml
 
   codecov:
-    needs: [ detect, test ]
-    if: always() && needs.detect.outputs.has_changes == 'true'
+    needs: [ test-modules ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -57,7 +72,6 @@ jobs:
         with:
           pattern: "xml-coverage-report-*"
           path: coverage-reports
-
       - uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
