@@ -30,13 +30,12 @@ runs:
         if [ -z "$message_count" ] || ! [[ "$message_count" =~ ^[0-9]+$ ]]; then
           message_count=0
         fi
-        echo "$message_count"
+        
         if [ "$message_count" -eq 0 ]; then
         echo "is_empty=true" >> "$GITHUB_OUTPUT"
         else
         echo "is_empty=false" >> "$GITHUB_OUTPUT"
         fi
-        echo "condition ${steps.check_slack.outputs.is_empty == 'true'} is empty : ${steps.check_slack.outputs.is_empty}"
 
     - name: Send Slack messages (only if empty)
       if: steps.check_slack.outputs.is_empty == 'true'
