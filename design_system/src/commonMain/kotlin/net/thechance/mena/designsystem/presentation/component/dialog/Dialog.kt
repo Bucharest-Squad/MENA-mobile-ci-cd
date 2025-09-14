@@ -34,6 +34,8 @@ import mena.design_system.generated.resources.Res
 import mena.design_system.generated.resources.cancel_dialog_icon
 import mena.design_system.generated.resources.ic_cancel
 import net.thechance.mena.designsystem.presentation.component.appBar.HomeAppBar
+import net.thechance.mena.designsystem.presentation.component.scaffold.MenaScaffold
+import net.thechance.mena.designsystem.presentation.component.scaffold.ScaffoldScope
 import net.thechance.mena.designsystem.presentation.component.text.MenaText
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
@@ -42,7 +44,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun Dialog(
+fun ScaffoldScope.Dialog(
     visible: Boolean,
     title: String,
     message: String,
@@ -176,25 +178,8 @@ private fun DialoguePreview() {
     MenaTheme {
         var showDialog by remember { mutableStateOf(true) }
 
-        DialogScaffold(
-            parentContent = {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clickable(onClick = {
-                            showDialog = true
-                        })
-                        .background(Theme.colorScheme.background.surface).fillMaxSize()
-                ) {
-                    HomeAppBar("202")
-                    MenaText(
-                        text = "HI",
-                        style = Theme.typography.title.large,
-                    )
-                }
-            },
-            dialogContent = {
+        MenaScaffold(overlays = {
+            dialog(showDialog) {
                 Dialog(
                     visible = showDialog,
                     onDismiss = {
@@ -213,6 +198,22 @@ private fun DialoguePreview() {
                     },
                 )
             }
-        )
+        }) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clickable(onClick = {
+                        showDialog = true
+                    })
+                    .background(Theme.colorScheme.background.surface).fillMaxSize()
+            ) {
+                HomeAppBar("202")
+                MenaText(
+                    text = "HI",
+                    style = Theme.typography.title.large,
+                )
+            }
+        }
     }
 }
