@@ -106,7 +106,6 @@ jobs:
             PR: ${{ github.event.pull_request.html_url }}
             Commit: ${{ github.sha }}
 
-
   codecov-report:
     needs: [changed-modules, test]
     if: always() && needs.changed-modules.outputs.has_changes == 'true'
