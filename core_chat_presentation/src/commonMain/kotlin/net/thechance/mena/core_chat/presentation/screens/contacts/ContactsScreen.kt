@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -25,6 +24,7 @@ import mena.core_chat_presentation.generated.resources.contacts_title
 import mena.core_chat_presentation.generated.resources.ic_arrow_left
 import mena.core_chat_presentation.generated.resources.ic_resync
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
+import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
@@ -54,7 +54,7 @@ private fun ContactsContent(
         AppBar(
             title = stringResource(Res.string.contacts_title),
             leadingContent = {
-                Icon(
+                MenaIcon(
                     painter = painterResource(Res.drawable.ic_arrow_left),
                     contentDescription = null,
                     modifier = Modifier.size(20.dp)
@@ -78,7 +78,7 @@ private fun ContactsContent(
                         },
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(
+                    MenaIcon(
                         painter = painterResource(Res.drawable.ic_resync),
                         contentDescription = null,
                         modifier = Modifier.size(20.dp),

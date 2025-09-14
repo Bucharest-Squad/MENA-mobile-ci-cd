@@ -1,6 +1,5 @@
 package net.thechance.mena.core_chat.presentation.screens.syncContacts
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -13,9 +12,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,6 +31,9 @@ import mena.core_chat_presentation.generated.resources.sync_contacts_title
 import mena.core_chat_presentation.generated.resources.syncing_contacts_message
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.button.Button
+import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
+import net.thechance.mena.designsystem.presentation.component.image.MenaImage
+import net.thechance.mena.designsystem.presentation.component.text.MenaText
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
@@ -63,7 +63,7 @@ private fun SyncContactsContent(
         AppBar(
             title = stringResource(Res.string.sync_contacts),
             leadingContent = {
-                Icon(
+                MenaIcon(
                     painter = painterResource(resource = Res.drawable.ic_arrow_left),
                     contentDescription = null,
                     modifier = Modifier.size(20.dp)
@@ -101,19 +101,19 @@ private fun NoContactsSyncView(
         modifier = modifier.padding(horizontal = Theme.spacing._24).fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Image(
+        MenaImage(
             painter = painterResource(resource = Res.drawable.phone_icon),
             contentDescription = "No contacts synced",
             modifier = Modifier.size(128.dp, 122.dp)
         )
-        Text(
+        MenaText(
             text = stringResource(Res.string.sync_contacts_title),
             style = Theme.typography.title.small,
             color = Theme.colorScheme.shadePrimary,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(top = Theme.spacing._12).fillMaxWidth()
         )
-        Text(
+        MenaText(
             text = stringResource(Res.string.sync_contacts_desc),
             modifier = Modifier.padding(top = Theme.spacing._2, bottom = Theme.spacing._12),
             textAlign = TextAlign.Center,
@@ -128,7 +128,7 @@ private fun NoContactsSyncView(
             shape = RoundedCornerShape(Theme.radius.md),
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(
+            MenaText(
                 modifier = Modifier.padding(vertical = 13.dp),
                 text = stringResource(Res.string.sync_contacts),
                 style = Theme.typography.label.medium,
@@ -146,12 +146,12 @@ private fun ContactsSyncedView(
         modifier = modifier.padding(horizontal = Theme.spacing._24).fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Image(
+        MenaImage(
             painter = painterResource(resource = Res.drawable.phone_icon),
             contentDescription = "No contacts synced",
             modifier = Modifier.size(128.dp, 122.dp)
         )
-        Text(
+        MenaText(
             text = stringResource(Res.string.syncing_contacts_message),
             style = Theme.typography.title.small,
             color = Theme.colorScheme.shadePrimary,
