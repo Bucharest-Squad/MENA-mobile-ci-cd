@@ -30,7 +30,7 @@ runs:
         messages=$(curl -s -X POST "https://slack.com/api/conversations.history" \
           -H "Authorization: Bearer ${{ inputs.slack-bot-token }}" \
           -H "Content-type: application/json" \
-          --data "{\"channel\": \"${{ $SLACK_NOTIFICATION_CHANNEL_ID }}\"}")
+          --data "{\"channel\": \"${{ inputs.slack-notification-channel-id }}\"}")
         
         bot_messages = echo "$json" | jq '.messages[] | select(.app_id == inputs.bot-app-id)'
 
