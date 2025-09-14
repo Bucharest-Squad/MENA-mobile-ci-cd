@@ -29,3 +29,24 @@ jobs:
 
       - name: Build all changed Android modules
         run: ./gradlew $(for m in $(echo '${{ needs.android-build.outputs.modules }}' | jq -r '.[]'); do echo ":$m:assemble"; done)
+
+  notify-slack-on-failure:
+    if: failure()
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Notify Slack on failure
+        uses: ./.github/actions/send-pr-notification-to-slack
+        with:
+          slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          slack-notification-channel-id: ${{ secrets.SLACK_NOTIFICATION_CHANNEL_ID }}
+          bot-app-id: ${{ secrets.BOT_APP_ID }}
+          branch-name: ${{ github.head_ref }}
+          message: |
+            🚨 *Build Failed on Android!*
+            One or more matrix jobs failed.
+            PR: ${{ github.event.pull_request.html_url }}
+            Commit: ${{ github.sha }}
