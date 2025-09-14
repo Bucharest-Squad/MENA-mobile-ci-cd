@@ -28,7 +28,7 @@ runs:
           -H "Authorization: Bearer ${{ inputs.slack-bot-token }}" \
           -H "Content-type: application/json" \
           --data "{\"channel\": \"${{ inputs.slack-notification-channel-id }}\"}")
-        
+        echo "$messages"
         message_count=$(echo "$response" | jq '.messages | length')
         echo "$message_count"
         if [ -z "$message_count" ] || ! [[ "$message_count" =~ ^[0-9]+$ ]]; then
@@ -47,6 +47,7 @@ runs:
       env:
         messages: steps.count.outputs.messages
       run: |
+        echo "$messages"
         REGIONS=("WLT" "TRN" "FTH" "CHT" "DKN" "IDN")
         team=$(echo "${{ inputs.branch-name }}" | cut -d'/' -f2)
         prefix="${team:0:3}"
