@@ -22,6 +22,7 @@ runs:
         sudo apt-get update && sudo apt-get install -y jq
 
     - name: Send Slack message
+      id: count
       shell: bash
       run: |
         messages=$(curl -s -X POST "https://slack.com/api/conversations.history" \
@@ -29,8 +30,9 @@ runs:
           -H "Content-type: application/json" \
           --data "{\"channel\": \"${{ inputs.slack-notification-channel-id }}\"}")
         
-        message_count=$(echo "$response" | jq -r '.messages | length' 2>/dev/null || echo 0)
+        message_count=$(echo "$messages" | jq -r '.messages | length' 2>/dev/null || echo 0)
         echo "$message_count"
+        echo "message_count=$message_count" >> $GITHUB_OUTPUT
         echo "messages=$messages" >> $GITHUB_OUTPUT
 
     - name: Send Slack messages (only if empty)
@@ -43,7 +45,7 @@ runs:
     - name: Send Slack messages
       shell: bash
       env:
-        messages: ${{ steps.send-slack-message.outputs.messages }}
+        messages: ${{ steps.count.outputs.messages }}
       run: |
         echo "messages is :$messages"
         REGIONS=("WLT" "TRN" "FTH" "CHT" "DKN" "IDN")
