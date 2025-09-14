@@ -13,7 +13,7 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun MenaScaffold(
+fun Scaffold(
     modifier: Modifier = Modifier,
     topBar: @Composable () -> Unit = {},
     bottomBar: @Composable () -> Unit = {},

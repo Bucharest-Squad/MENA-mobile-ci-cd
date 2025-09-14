@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -34,9 +33,8 @@ import mena.design_system.generated.resources.Res
 import mena.design_system.generated.resources.cancel_dialog_icon
 import mena.design_system.generated.resources.ic_cancel
 import net.thechance.mena.designsystem.presentation.component.appBar.HomeAppBar
-import net.thechance.mena.designsystem.presentation.component.scaffold.MenaScaffold
+import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.component.scaffold.ScaffoldScope
-import net.thechance.mena.designsystem.presentation.component.text.MenaText
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
@@ -146,19 +144,19 @@ private fun DialogContent(
                     .align(Alignment.Center)
                     .padding(top = 12.dp)
             ) {
-                Text(
+                androidx.compose.material3.Text(
                     text = title,
                     style = Theme.typography.title.medium,
                     color = Theme.colorScheme.primary.primary,
                 )
-                Text(
+                androidx.compose.material3.Text(
                     text = message,
                     style = Theme.typography.body.small,
                     color = Theme.colorScheme.shadeSecondary,
                 )
             }
         }
-        Text(
+        androidx.compose.material3.Text(
             text = buttonText,
             color = Theme.colorScheme.error,
             style = Theme.typography.label.medium,
@@ -182,7 +180,7 @@ private fun DialoguePreview() {
     MenaTheme {
         var showDialog by remember { mutableStateOf(true) }
 
-        MenaScaffold(overlays = {
+        Scaffold(overlays = {
             dialog(showDialog) {
                 Dialog(
                     onDismiss = {
@@ -212,7 +210,7 @@ private fun DialoguePreview() {
                     .background(Theme.colorScheme.background.surface).fillMaxSize()
             ) {
                 HomeAppBar("202")
-                MenaText(
+                net.thechance.mena.designsystem.presentation.component.text.Text(
                     text = "HI",
                     style = Theme.typography.title.large,
                 )

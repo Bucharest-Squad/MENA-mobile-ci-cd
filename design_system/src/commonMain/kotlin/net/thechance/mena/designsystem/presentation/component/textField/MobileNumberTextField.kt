@@ -19,9 +19,9 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import mena.design_system.generated.resources.Res
 import mena.design_system.generated.resources.ic_arrow_down
-import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
-import net.thechance.mena.designsystem.presentation.component.image.MenaImage
-import net.thechance.mena.designsystem.presentation.component.text.MenaText
+import net.thechance.mena.designsystem.presentation.component.icon.Icon
+import net.thechance.mena.designsystem.presentation.component.image.Image
+import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
 
@@ -86,7 +86,7 @@ fun MobileNumberLeadingContent(
                 horizontal = 8.dp
             )
     ) {
-        MenaImage(
+        Image(
             painter = countryPainter,
             contentDescription = "country image",
             modifier = Modifier
@@ -94,14 +94,14 @@ fun MobileNumberLeadingContent(
                 .size(20.dp)
         )
 
-        MenaText(
+        Text(
             text = countryCode,
             style = Theme.typography.label.medium,
             modifier = Modifier.padding(start = 4.dp, end = 2.dp),
             color = Theme.colorScheme.shadePrimary
         )
 
-        MenaIcon(
+        Icon(
             painter = painterResource(Res.drawable.ic_arrow_down),
             contentDescription = "arrow down",
             modifier = Modifier.size(16.dp)

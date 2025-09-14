@@ -15,8 +15,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
-import net.thechance.mena.designsystem.presentation.component.text.MenaText
+import net.thechance.mena.designsystem.presentation.component.icon.Icon
+import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 
 @Composable
@@ -41,7 +41,7 @@ fun SnackBar(
                 end = Theme.spacing._24
             )
     ) {
-        MenaIcon(
+        Icon(
             painter = leadingIcon,
             contentDescription = contentDescription,
             modifier = Modifier.size(28.dp),
@@ -49,7 +49,7 @@ fun SnackBar(
         )
 
         Column {
-            MenaText(
+            Text(
                 text = title,
                 style = Theme.typography.label.large,
                 color = Theme.colorScheme.shadePrimary,
@@ -57,7 +57,7 @@ fun SnackBar(
                 lineHeight = 24.sp
             )
 
-            MenaText(
+            Text(
                 text = message,
                 style = Theme.typography.body.small,
                 color = Theme.colorScheme.shadeSecondary

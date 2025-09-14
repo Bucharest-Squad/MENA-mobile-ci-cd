@@ -19,8 +19,8 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
-import net.thechance.mena.designsystem.presentation.component.text.MenaText
+import net.thechance.mena.designsystem.presentation.component.icon.Icon
+import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 
 @Composable
@@ -63,14 +63,14 @@ fun Chip(
                 horizontal = Theme.spacing._12
             )
     ) {
-        MenaIcon(
+        Icon(
             painter = painter,
             modifier = Modifier.size(iconSize),
             contentDescription = null,
             tint = if (isEnabled) contentColor else Theme.colorScheme.textDisabled
         )
 
-        MenaText(
+        Text(
             text = text,
             style = Theme.typography.label.small,
             color = if (isEnabled) contentColor else Theme.colorScheme.textDisabled,

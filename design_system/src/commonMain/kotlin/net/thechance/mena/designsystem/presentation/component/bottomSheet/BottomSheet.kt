@@ -28,9 +28,9 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import net.thechance.mena.designsystem.presentation.component.appBar.HomeAppBar
-import net.thechance.mena.designsystem.presentation.component.scaffold.MenaScaffold
+import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.component.scaffold.ScaffoldScope
-import net.thechance.mena.designsystem.presentation.component.text.MenaText
+import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -79,7 +79,7 @@ private fun BottomSheetPreview() {
 
         var showBottomSheet by remember { mutableStateOf(false) }
 
-        MenaScaffold(
+        Scaffold(
             overlays = {
                 bottomSheet(showBottomSheet) {
                     BottomSheet(
@@ -89,7 +89,7 @@ private fun BottomSheetPreview() {
                         content = {
                             LazyColumn {
                                 items(10) {
-                                    MenaText("HI", style = Theme.typography.title.large)
+                                    Text("HI", style = Theme.typography.title.large)
                                 }
                             }
                         }
@@ -109,7 +109,7 @@ private fun BottomSheetPreview() {
                     .background(Theme.colorScheme.background.surface).fillMaxSize()
             ) {
                 HomeAppBar("202")
-                MenaText(
+                Text(
                     text = "HI",
                     style = Theme.typography.title.large,
                 )

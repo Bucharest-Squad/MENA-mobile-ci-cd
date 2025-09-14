@@ -45,7 +45,7 @@ import mena.design_system.generated.resources.ic_user
 import mena.design_system.generated.resources.silver_tc
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBarOptionContainer
-import net.thechance.mena.designsystem.presentation.component.bottomNavigation.MenaBottomNavigationBar
+import net.thechance.mena.designsystem.presentation.component.bottomNavigation.BottomNavigationBar
 import net.thechance.mena.designsystem.presentation.component.button.FabButton
 import net.thechance.mena.designsystem.presentation.component.button.NegativeButton
 import net.thechance.mena.designsystem.presentation.component.button.NegativeTextButton
@@ -58,7 +58,6 @@ import net.thechance.mena.designsystem.presentation.component.section.Section
 import net.thechance.mena.designsystem.presentation.component.segment.Segment
 import net.thechance.mena.designsystem.presentation.component.snackbar.SnackBar
 import net.thechance.mena.designsystem.presentation.component.switches.Switch
-import net.thechance.mena.designsystem.presentation.component.text.MenaText
 import net.thechance.mena.designsystem.presentation.component.textField.MobileNumberLeadingContent
 import net.thechance.mena.designsystem.presentation.component.textField.MobileNumberTextField
 import net.thechance.mena.designsystem.presentation.component.textField.MultiLineTextField
@@ -404,7 +403,7 @@ private fun PreviewComponentsLight() {
                 title = "navigation bar",
                 isScrollable = false
             ) {
-                MenaBottomNavigationBar(
+                BottomNavigationBar(
                     onItemClick = {},
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -436,7 +435,7 @@ private fun PreviewComponent(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier.fillMaxWidth()
     ) {
-        MenaText(
+        net.thechance.mena.designsystem.presentation.component.text.Text(
             text = title,
             style = Theme.typography.headline.small,
             color = Theme.colorScheme.shadeTertiary
@@ -462,7 +461,7 @@ private fun PreviewTextFieldComponent() {
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier.fillMaxWidth()
     ) {
-        MenaText(
+        net.thechance.mena.designsystem.presentation.component.text.Text(
             text = "Text field",
             style = Theme.typography.headline.small,
             color = Theme.colorScheme.shadeTertiary
@@ -532,7 +531,7 @@ private fun PreviewSnackBarComponent() {
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier.fillMaxWidth()
     ) {
-        MenaText(
+        net.thechance.mena.designsystem.presentation.component.text.Text(
             text = "SnackBar",
             style = Theme.typography.headline.small,
             color = Theme.colorScheme.shadeTertiary

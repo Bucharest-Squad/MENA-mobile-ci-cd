@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,7 +22,6 @@ import mena.design_system.generated.resources.Res
 import mena.design_system.generated.resources.app_coin_icon
 import mena.design_system.generated.resources.app_name
 import mena.design_system.generated.resources.silver_tc
-import net.thechance.mena.designsystem.presentation.component.text.MenaText
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
@@ -48,7 +46,7 @@ fun HomeAppBar(
             .fillMaxWidth()
             .padding(contentPadding)
     ) {
-        MenaText(
+        net.thechance.mena.designsystem.presentation.component.text.Text(
             text = title,
             color = titleColor,
             style = Theme.typography.title.medium
@@ -75,7 +73,7 @@ private fun DefaultHomeTrailingIcon(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
+        androidx.compose.material3.Text(
             text = coins,
             style = Theme.typography.label.small,
             color = coinSoldTextColor,

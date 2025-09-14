@@ -15,7 +15,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 
 @Composable
-fun MenaText(
+fun Text(
     text: String,
     style: TextStyle,
     modifier: Modifier = Modifier,

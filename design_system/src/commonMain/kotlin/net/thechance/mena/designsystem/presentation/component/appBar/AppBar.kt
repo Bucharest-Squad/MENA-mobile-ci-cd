@@ -17,7 +17,7 @@ import mena.design_system.generated.resources.Res
 import mena.design_system.generated.resources.checkmark
 import mena.design_system.generated.resources.ic_arrow_left
 import mena.design_system.generated.resources.ic_user
-import net.thechance.mena.designsystem.presentation.component.text.MenaText
+import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
@@ -47,7 +47,7 @@ fun AppBar(
                 content = content
             )
         }
-        MenaText(
+        Text(
             text = title,
             color = titleColor,
             style = Theme.typography.title.medium,

@@ -32,9 +32,9 @@ import androidx.compose.ui.unit.sp
 import mena.design_system.generated.resources.Res
 import mena.design_system.generated.resources.ic_user
 import mena.design_system.generated.resources.silver_tc
-import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
-import net.thechance.mena.designsystem.presentation.component.image.MenaImage
-import net.thechance.mena.designsystem.presentation.component.text.MenaText
+import net.thechance.mena.designsystem.presentation.component.icon.Icon
+import net.thechance.mena.designsystem.presentation.component.image.Image
+import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
@@ -67,7 +67,7 @@ fun BasicTextField(
 ) {
     Column(modifier) {
         title?.let {
-            MenaText(
+            Text(
                 text = title,
                 style = Theme.typography.title.small,
                 modifier = Modifier.padding(bottom = 4.dp),
@@ -121,7 +121,7 @@ fun BasicTextField(
         }
 
         errorMessage?.let {
-            MenaText(
+            Text(
                 text = errorMessage,
                 style = Theme.typography.label.small,
                 modifier = Modifier.padding(
@@ -151,7 +151,7 @@ private fun TextFieldContent(
     ) {
         leadingIcon?.let {
 
-            MenaIcon(
+            Icon(
                 painter = leadingIcon,
                 contentDescription = null,
                 modifier = Modifier
@@ -171,7 +171,7 @@ private fun TextFieldContent(
 
         trailingIcon?.let {
             VerticalDivider()
-            MenaImage(
+            Image(
                 painter = trailingIcon,
                 contentDescription = null,
                 modifier = Modifier.size(24.dp)
@@ -195,7 +195,7 @@ private fun InnerTextFieldWithPlaceHolder(
     ) {
         innerTextField()
         if (text.isEmpty()) {
-            MenaText(
+            Text(
                 text = placeholder,
                 style = Theme.typography.label.medium,
                 color = Theme.colorScheme.shadeTertiary

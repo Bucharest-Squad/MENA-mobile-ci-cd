@@ -7,7 +7,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 
 @Composable
-fun MenaIcon(
+fun Icon(
     painter: Painter,
     contentDescription: String?,
     modifier: Modifier = Modifier,
