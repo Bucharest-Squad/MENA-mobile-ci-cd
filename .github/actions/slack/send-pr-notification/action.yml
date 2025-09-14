@@ -32,8 +32,7 @@ runs:
           -H "Content-type: application/json" \
           --data "{\"channel\": \"${{ inputs.slack-notification-channel-id }}\"}")
         
-        bot_messages = echo "$json" | jq '.messages[] | select(.app_id == inputs.bot-app-id)'
-
+        bot_messages=$(echo "$messages" | jq --arg app_id "${{ inputs.bot-app-id }}" '.messages[] | select(.app_id == $app_id)')
         
         message_count=$(echo "$bot_messages" | jq -r '.messages | length' 2>/dev/null || echo 0)
         
