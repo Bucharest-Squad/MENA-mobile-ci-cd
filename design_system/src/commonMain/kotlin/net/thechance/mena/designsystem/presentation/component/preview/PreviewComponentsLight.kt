@@ -475,7 +475,7 @@ private fun PreviewTextFieldComponent() {
             TextField(
                 value = "adad",
                 onValueChanged = {},
-                placeholder = "Placeholder",
+                hint = "Placeholder",
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth(),
                 leadingIcon = painterResource(Res.drawable.ic_profile)
@@ -484,7 +484,7 @@ private fun PreviewTextFieldComponent() {
             TextField(
                 value = "",
                 onValueChanged = {},
-                placeholder = "Placeholder",
+                hint = "Placeholder",
                 modifier = Modifier.fillMaxWidth(),
                 leadingIcon = painterResource(Res.drawable.ic_profile),
                 trailingIcon = painterResource(Res.drawable.silver_tc)
@@ -493,7 +493,7 @@ private fun PreviewTextFieldComponent() {
             TextField(
                 value = "",
                 onValueChanged = {},
-                placeholder = "Placeholder",
+                hint = "Placeholder",
                 leadingIcon = painterResource(Res.drawable.ic_profile),
                 isError = true,
                 errorMessage = "error message",
@@ -503,7 +503,7 @@ private fun PreviewTextFieldComponent() {
             MultiLineTextField(
                 value = "",
                 onValueChanged = {},
-                placeholder = "Placeholder",
+                hint = "Placeholder",
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -511,7 +511,7 @@ private fun PreviewTextFieldComponent() {
                 value = "",
                 onValueChanged = { },
                 title = "title",
-                placeholder = "value",
+                hint = "value",
                 leadingIcon = painterResource(Res.drawable.ic_profile),
                 leadingContent = {
                     MobileNumberLeadingContent(

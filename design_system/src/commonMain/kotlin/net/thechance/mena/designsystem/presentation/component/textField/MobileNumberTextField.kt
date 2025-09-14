@@ -29,7 +29,7 @@ import org.jetbrains.compose.resources.painterResource
 fun MobileNumberTextField(
     value: String,
     onValueChanged: (String) -> Unit,
-    placeholder: String,
+    hint: String,
     leadingIcon: Painter,
     modifier: Modifier = Modifier,
     leadingContent: (@Composable () -> Unit)? = null,
@@ -49,7 +49,7 @@ fun MobileNumberTextField(
     BasicTextField(
         value = value,
         onValueChanged = onValueChanged,
-        placeholder = placeholder,
+        hint = hint,
         leadingIcon = leadingIcon,
         trailingIcon = null,
         title = title,

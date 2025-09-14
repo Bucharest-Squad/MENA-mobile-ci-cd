@@ -43,7 +43,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun BasicTextField(
     value: String,
-    placeholder: String,
+    hint: String,
     onValueChanged: (String) -> Unit,
     modifier: Modifier = Modifier,
     leadingContent: @Composable (() -> Unit)? = null,
@@ -102,7 +102,7 @@ fun BasicTextField(
                         text = value,
                         isError = isError,
                         singleLine = singleLine,
-                        placeholder = placeholder,
+                        placeholder = hint,
                         leadingIcon = leadingIcon,
                         trailingIcon = trailingIcon,
                         leadingIconTint = leadingIconTint
@@ -223,7 +223,7 @@ private fun PreviewTextField() {
         }
         BasicTextField(
             value = value,
-            placeholder = "Placeholder",
+            hint = "Placeholder",
             onValueChanged = onValueChanged,
             leadingIcon = painterResource(Res.drawable.ic_user),
             trailingIcon = painterResource(Res.drawable.silver_tc),
