@@ -57,7 +57,7 @@ fun ShowReelsScreen() {
 
 @Composable
 private fun Content() {
-    Box(modifier = Modifier.fillMaxSize().navigationBarsPadding()) {
+    Box(modifier = Modifier.fillMaxSize()) {
 
         RunningVideoPlaceHolder()
         TopAppBar(onBackClick = { TODO("call on back click")})
@@ -89,26 +89,22 @@ private fun TopAppBar(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Box(
+    AppBar(
+        title = "",
         modifier = modifier
             .fillMaxWidth()
             .height(height = 96.dp)
             .gradientShadow(startColor = Color(0x33FFFFFF), endColor = Color(0x00FFFFFF))
-    ) {
-        AppBar(
-            title = "",
-            modifier = Modifier.padding(
+            .padding(horizontal = Theme.spacing._16).padding(
                 top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding() + 8.dp
             )
-                .padding(horizontal = Theme.spacing._16)
-                .requiredHeight(56.dp),
-            contentPadding = PaddingValues(0.dp),
-            leadingContent = {
-                MenaIcon(painter = painterResource(resource = Res.drawable.ic_arrow_left))
-            },
-            onLeadingClick = { onBackClick() }
-        )
-    }
+            .requiredHeight(height = 56.dp),
+        contentPadding = PaddingValues(0.dp),
+        leadingContent = {
+            MenaIcon(painter = painterResource(resource = Res.drawable.ic_arrow_left))
+        },
+        onLeadingClick = { onBackClick() }
+    )
 }
 
 @Composable
@@ -185,7 +181,8 @@ private fun UsersReAct(likeCount: String, viewCount: String, modifier: Modifier 
         ReActIcon(
             icon = painterResource(resource = Res.drawable.ic_delete),
             reactCount = "Delete",
-            onClick = { TODO() })
+            onClick = { TODO() }
+        )
     }
 }
 
@@ -197,7 +194,13 @@ private fun ReActIcon(
     onClick: () -> Unit = {}
 ) {
     Column(modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-        MenaIcon(painter = icon, modifier = Modifier.padding(bottom = 8.dp).clickable { onClick() })
+        MenaIcon(
+            painter = icon,
+            modifier = Modifier
+                .padding(bottom = 8.dp)
+                .clickable { onClick() },
+            tint = Theme.colorScheme.shadeTertiary
+        )
         MenaText(
             text = reactCount,
             style = Theme.typography.label.small,
