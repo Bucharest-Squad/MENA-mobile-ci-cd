@@ -1,5 +1,6 @@
 package net.thechance.mena.designsystem.presentation.component.textField
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -145,6 +147,11 @@ private fun TextFieldContent(
     isError: Boolean,
     singleLine: Boolean
 ) {
+
+    val animatedIconErrorColor by animateColorAsState(
+        targetValue = if (isError) Theme.colorScheme.error else leadingIconTint
+
+    )
     Row(
         modifier = Modifier.padding(12.dp).fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
@@ -157,7 +164,7 @@ private fun TextFieldContent(
                 modifier = Modifier
                     .padding(end = Theme.spacing._8)
                     .size(24.dp),
-                tint = if (isError) Theme.colorScheme.error else leadingIconTint
+                tint = animatedIconErrorColor
             )
         }
 
@@ -227,7 +234,7 @@ private fun PreviewTextField() {
             onValueChanged = onValueChanged,
             leadingIcon = painterResource(Res.drawable.ic_user),
             trailingIcon = painterResource(Res.drawable.silver_tc),
-            isError = false,
+            isError = true,
             modifier = Modifier.fillMaxWidth()
         )
     }
