@@ -1,4 +1,4 @@
-package net.thechance.mena.dukan.presentation.screen.createDukan.components
+package net.thechance.mena.dukan.presentation.screen.cropImage.componetns
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.unit.dp
 import mena.dukan_presentation.generated.resources.Res
-import mena.dukan_presentation.generated.resources.`Upload another image`
+import mena.dukan_presentation.generated.resources.upload_another_image
 import net.thechance.mena.designsystem.presentation.component.button.OutlinedButton
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
@@ -25,7 +25,7 @@ fun UploadAnotherImageButton(
     modifier: Modifier = Modifier,
 ) {
     OutlinedButton(
-        text = stringResource(Res.string.`Upload another image`),
+        text = stringResource(Res.string.upload_another_image),
         trailingIcon = ColorPainter(Color.Transparent),
         onClick = onClick,
         modifier = modifier.fillMaxWidth(),
