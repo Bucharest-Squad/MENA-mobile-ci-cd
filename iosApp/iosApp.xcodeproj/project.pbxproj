@@ -71,10 +71,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 620EC33049E133A3FB836427 /* Build configuration list for PBXNativeTarget "iosApp" */;
 			buildPhases = (
+				AA530A912E75AE860071062F /* Badge App Icon */,
 				6C1C1DCB45EE2FB611673510 /* Compile Kotlin Framework */,
 				D21C05603AD67961BB6451F7 /* Sources */,
 				6365C4AF1AAD164DCCE558F9 /* Frameworks */,
 				D081E6A75F3CC26B3E25D43C /* Resources */,
+				AAB542D72E75A5F300610DA4 /* Restore App Icon */,
 			);
 			buildRules = (
 			);
@@ -153,6 +155,42 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "if [ \"YES\" = \"$OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED\" ]; then\n  echo \"Skipping Gradle build task invocation due to OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED environment variable set to \\\"YES\\\"\"\n  exit 0\nfi\ncd \"$SRCROOT/..\"\n./gradlew :composeApp:embedAndSignAppleFrameworkForXcode\n";
+		};
+		AA530A912E75AE860071062F /* Badge App Icon */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Badge App Icon";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "#!/bin/bash\n\nSOURCE_ICON_SET=\"${PROJECT_DIR}/iosApp/Assets.xcassets/AppIcon.appiconset\"\n\ngit restore -- $SOURCE_ICON_SET\n\n# Only run for non-Production configurations.\nif [[ \"$CONFIGURATION\" == *\"Production\"* ]]; then\n  echo \"Skipping icon badging for Production build.\"\n  exit 0\nfi\n\n# ... (The rest of the script is the same, just without the 'trap' line) ...\n\nif ! [ -x \"$(command -v convert)\" ] || ! [ -x \"$(command -v composite)\" ]; then\n  echo \"error: ImageMagick is not installed. Please run 'brew install imagemagick'.\" >&2\n  exit 1\nfi\n\nif [[ \"$CONFIGURATION\" == *\"Development\"* ]]; then\n  BANNER_FILE=\"${PROJECT_DIR}/banner_dev.png\"\nelif [[ \"$CONFIGURATION\" == *\"Staging\"* ]]; then\n  BANNER_FILE=\"${PROJECT_DIR}/banner_staging.png\"\nelse\n  echo \"No banner for configuration: $CONFIGURATION\"\n  exit 0\nfi\n\nif [ ! -f \"$BANNER_FILE\" ] || [ ! -d \"$SOURCE_ICON_SET\" ]; then\n  echo \"error: Required files are missing. Banner: $BANNER_FILE, Icon Set: $SOURCE_ICON_SET\" >&2\n  exit 1\nfi\n\necho \"Temporarily modifying source icons for '$CONFIGURATION' build...\"\nRESIZED_BANNER_PATH=\"${TARGET_TEMP_DIR}/temp_banner.png\"\n\nfind \"$SOURCE_ICON_SET\" -name \"*.png\" | while read icon_file; do\n    width=$(identify -format %w \"$icon_file\")\n    convert \"$BANNER_FILE\" -resize ${width}x${width} \"$RESIZED_BANNER_PATH\"\n    composite -gravity center \"$RESIZED_BANNER_PATH\" \"$icon_file\" \"$icon_file\"\ndone\n\nrm -f \"$RESIZED_BANNER_PATH\"\n\necho \"Icon badging complete. The build will now use the modified source icons.\"\n";
+		};
+		AAB542D72E75A5F300610DA4 /* Restore App Icon */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Restore App Icon";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "# Restores the original app icons after the build is complete.\ngit restore -- \"${PROJECT_DIR}/iosApp/Assets.xcassets/AppIcon.appiconset\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
