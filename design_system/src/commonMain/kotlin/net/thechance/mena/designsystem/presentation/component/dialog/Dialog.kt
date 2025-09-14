@@ -64,38 +64,43 @@ fun ScaffoldScope.Dialog(
     if (!visible) return
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(scrimColor)
-            .clickable(
-                enabled = dismissOnClickOutside,
-                onClick = onDismiss,
-                indication = null,
-                interactionSource = remember { MutableInteractionSource() }
-            )
-    )
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(scrimColor)
+                .clickable(
+                    enabled = dismissOnClickOutside,
+                    onClick = onDismiss,
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                )
+        )
 
-    DialogContent(
-        title = title,
-        message = message,
-        buttonText = buttonText,
-        cancelBackgroundShape = cancelBackgroundShape,
-        onActionClick = onActionClick,
-        onCancelClick = onCancelClick,
-        contentColor = contentColor,
-        dialogCornerShape = dialogCornerShape,
-        contentPadding = contentPadding,
-        modifier = modifier
-            .clickable(
-                enabled = false,
-                onClick = {},
-            )
-            .padding(horizontal = 16.dp)
-    )
+        DialogContent(
+            title = title,
+            message = message,
+            buttonText = buttonText,
+            cancelBackgroundShape = cancelBackgroundShape,
+            onActionClick = onActionClick,
+            onCancelClick = onCancelClick,
+            contentColor = contentColor,
+            dialogCornerShape = dialogCornerShape,
+            contentPadding = contentPadding,
+            modifier = modifier
+                .clickable(
+                    enabled = false,
+                    onClick = {},
+                )
+                .padding(horizontal = 16.dp)
+        )
 
-    if (dismissOnBackPress) {
-        BackHandler(true) {
-            onDismiss()
+        if (dismissOnBackPress) {
+            BackHandler(true) {
+                onDismiss()
+            }
         }
     }
 }
