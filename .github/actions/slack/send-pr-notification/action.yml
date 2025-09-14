@@ -1,4 +1,4 @@
-name: 'Send Slack Message'
+name: 'Send notification PR to Slack'
 
 inputs:
   slack-bot-token:
@@ -23,60 +23,76 @@ runs:
       run: |
         sudo apt-get update && sudo apt-get install -y jq
 
-    - name: Send Slack message
-      id: count
-      shell: bash
-      run: |
-        messages=$(curl -s -X POST "https://slack.com/api/conversations.history" \
-          -H "Authorization: Bearer ${{ inputs.slack-bot-token }}" \
-          -H "Content-type: application/json" \
-          --data "{\"channel\": \"${{ inputs.slack-notification-channel-id }}\"}")
-        
-        bot_messages=$(echo "$messages" | jq --arg app_id "${{ inputs.bot-app-id }}" '.messages[] | select(.app_id == $app_id)')
-        
-        message_count=$(echo "$bot_messages" | jq -r '.messages | length' 2>/dev/null || echo 0)
-        
-        echo "message_count=$message_count" >> $GITHUB_OUTPUT
-        encoded_bot_messages=$(echo "$bot_messages" | jq -c -s . | base64 | tr -d '\n'))
-        echo "encoded_bot_messages=$encoded_bot_messages" >> $GITHUB_ENV
-
-    - name: Send Slack messages (only if empty)
-      if: ${{ steps.count.outputs.message_count < 6 }}
-      uses: ./.github/actions/slack/send-default-template
-      with:
-        slack-bot-token: ${{ inputs.slack-bot-token }}
-        slack-notification-channel-id: ${{ inputs.slack-notification-channel-id }}
-        bot-app-id: ${{ inputs.bot-app-id }}
-
-    - name: Send Slack messages
+    - name: Send or retrieve region messages and send thread
       shell: bash
       env:
-        encoded_bot_messages: ${{ env.encoded_bot_messages }}
-        message_count: ${{ steps.count.outputs.message_count }}
+        SLACK_BOT_TOKEN: ${{ inputs.slack-bot-token }}
+        SLACK_NOTIFICATION_CHANNEL_ID: ${{ inputs.slack-notification-channel-id }}
+        BOT_APP_ID: ${{ inputs.bot-app-id }}
+        BRANCH_NAME: ${{ inputs.branch-name }}
+        MESSAGE: ${{ inputs.message }}
       run: |
-        bot_messages = echo "$encoded_bot_messages | base64 --decode | jq"
-        echo "bot_messages is :$bot_messages"
-        
         REGIONS=("IDN" "DKN" "CHT" "FTH" "TRN" "WLT")
-        team=$(echo "${{ inputs.branch-name }}" | cut -d'/' -f2)
-        prefix="${team:0:3}"
-        echo "${REGIONS[$i]} = $prefix"
-        for i in "${!REGIONS[@]}"; do
-          if [[ "${REGIONS[$i]}" == "$prefix" ]]; then
-            thread_ts=$(echo "$bot_messages" | jq -r ".messages[message_count - 1 - $i].ts")
-            echo "$thread_ts"
-            curl -X POST "https://slack.com/api/chat.postMessage" \
-              -H "Authorization: Bearer ${{ inputs.slack-bot-token }}" \
+
+        messages=$(curl -s -X POST "https://slack.com/api/conversations.history" \
+          -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
+          -H "Content-type: application/json" \
+          --data "{\"channel\": \"$SLACK_NOTIFICATION_CHANNEL_ID\"}")
+
+        bot_messages=$(echo "$messages" | jq --arg app_id "$BOT_APP_ID" '[.messages[] | select(.app_id == $app_id)]')
+        message_count=$(echo "$bot_messages" | jq 'length')
+
+        if [ "$message_count" -lt 6 ]; then
+          echo "Sending default region messages to Slack..."
+          for REGION in "${REGIONS[@]}"; do
+            curl -s -X POST https://slack.com/api/chat.postMessage \
+              -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
               -H "Content-type: application/json; charset=utf-8" \
               --data "{
-                \"channel\": \"${{ inputs.slack-notification-channel-id }}\",
+                \"channel\": \"$SLACK_NOTIFICATION_CHANNEL_ID\",
+                \"blocks\": [
+                  {
+                    \"type\": \"section\",
+                    \"text\": {
+                      \"type\": \"mrkdwn\",
+                      \"text\": \"${REGION} prs info\"
+                    }
+                  }
+                ]
+              }"
+          done
+
+          sleep 2
+          messages=$(curl -s -X POST "https://slack.com/api/conversations.history" \
+            -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
+            -H "Content-type: application/json" \
+            --data "{\"channel\": \"$SLACK_NOTIFICATION_CHANNEL_ID\"}")
+
+          bot_messages=$(echo "$messages" | jq --arg app_id "$BOT_APP_ID" '[.messages[] | select(.app_id == $app_id)]')
+          message_count=$(echo "$bot_messages" | jq 'length')
+        fi
+
+        team=$(echo "$BRANCH_NAME" | cut -d'/' -f2)
+        prefix="${team:0:3}"
+
+        for i in "${!REGIONS[@]}"; do
+          if [[ "${REGIONS[$i]}" == "$prefix" ]]; then
+            thread_ts=$(echo "$bot_messages" | jq -r ".[$i].ts")
+
+            echo "Replying to thread for region $prefix with timestamp $thread_ts..."
+
+            curl -s -X POST "https://slack.com/api/chat.postMessage" \
+              -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
+              -H "Content-type: application/json; charset=utf-8" \
+              --data "{
+                \"channel\": \"$SLACK_NOTIFICATION_CHANNEL_ID\",
                 \"thread_ts\": \"$thread_ts\",
                 \"blocks\": [
                   {
                     \"type\": \"section\",
                     \"text\": {
                       \"type\": \"mrkdwn\",
-                      \"text\": \"${{ inputs.message }}\"
+                      \"text\": \"$MESSAGE\"
                     }
                   }
                 ]
