@@ -43,8 +43,6 @@ runs:
 
     - name: Send Slack messages
       shell: bash
-      env:
-        messages: steps.count.outputs.messages
       run: |
         echo "messages is :$messages"
         REGIONS=("WLT" "TRN" "FTH" "CHT" "DKN" "IDN")
