@@ -1,6 +1,5 @@
 package net.thechance.mena.core_chat.domain.repository
 
-import kotlinx.coroutines.flow.Flow
 import net.thechance.mena.core_chat.domain.entity.Contact
 import net.thechance.mena.core_chat.domain.model.PagedData
 
