@@ -27,7 +27,7 @@ abstract class BaseScreenModel<S, E>(initialState: S) : ScreenModel {
     private val _state = MutableStateFlow(initialState)
     val state = _state.asStateFlow()
 
-    private val _effect = MutableSharedFlow<E?>()
+    private val _effect = MutableSharedFlow<E>()
     val effect = _effect.asSharedFlow().throttleFirst(500).mapNotNull { it }
 
     protected fun <T> tryToExecute(
