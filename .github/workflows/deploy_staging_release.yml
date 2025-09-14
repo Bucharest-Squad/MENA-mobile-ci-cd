@@ -1,0 +1,31 @@
+name: Deploy release APK from develop to Firebase
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  deploy-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Build and Sign APK
+        uses: ./.github/actions/build-release-apk
+        with:
+          android-keystore-base64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          keystore-password: ${{ secrets.KEYSTORE_PASSWORD }}
+          android-key-alias: ${{ secrets.ANDROID_KEY_ALIAS }}
+          android-key-alias-password: ${{ secrets.ANDROID_KEY_ALIAS_PASSWORD }}
+          build-type: Staging
+
+      - name: Deploy to Firebase
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.FIREBASE_STAGING_APP_ID }}
+          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
+          file: ${{ env.SIGNED_APK_PATH }}
+          debug: true
+          groups: testers

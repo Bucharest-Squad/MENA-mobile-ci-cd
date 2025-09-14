@@ -9,6 +9,8 @@ inputs:
     required: true
   android-key-alias-password:
     required: true
+  build-type:
+    required: true
 
 runs:
   using: "composite"
@@ -41,8 +43,9 @@ runs:
         versionName: 1.0.${{ github.run_number }}
 
     - name: Generate unsigned APK
-      run: ./gradlew :composeApp:assembleRelease --build-cache -x test -x lint
+      run: ./gradlew :composeApp:assemble${{ inputs.BUILD_TYPE }}Release --build-cache -x test -x lint
       shell: bash
+
 
     - name: Sign APK
       uses: r0adkll/sign-android-release@v1
