@@ -30,4 +30,14 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build modules
-        run: ./gradlew $(for m in $(echo '${{ needs.detect.outputs.modules }}' | jq -r '.[]'); do echo ":$m:assembleDebug"; done) --parallel --build-cache
+        run: |
+          MODULES='${{ needs.detect.outputs.modules }}'
+          TASKS=""
+          for m in $(echo "$MODULES" | jq -r '.[]'); do
+            if [[ "$m" == *"_presentation" ]]; then
+              TASKS="$TASKS :$m:assembleDebug"
+            else
+              TASKS="$TASKS :$m:compileDebugKotlinAndroid"
+            fi
+          done
+          ./gradlew $TASKS --parallel --build-cache
