@@ -29,6 +29,7 @@ import mena.core_chat_presentation.generated.resources.sync_contacts
 import mena.core_chat_presentation.generated.resources.sync_contacts_desc
 import mena.core_chat_presentation.generated.resources.sync_contacts_title
 import mena.core_chat_presentation.generated.resources.syncing_contacts_message
+import net.thechance.mena.core_chat.presentation.navigation.LocalNavController
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.button.Button
 import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
@@ -55,6 +56,8 @@ private fun SyncContactsContent(
     modifier: Modifier = Modifier,
 ) {
     var isSynced by remember { mutableStateOf(false) }
+    val navController = LocalNavController.current
+
     Column(
         modifier = modifier.fillMaxSize()
             .background(color = Theme.colorScheme.background.surface)
@@ -67,7 +70,9 @@ private fun SyncContactsContent(
                     painter = painterResource(resource = Res.drawable.ic_arrow_left),
                     contentDescription = null,
                     modifier = Modifier.size(20.dp)
-                        .clickable {},
+                        .clickable {
+                            navController.popBackStack()
+                        },
                     tint = Theme.colorScheme.primary.primary,
                 )
             }
