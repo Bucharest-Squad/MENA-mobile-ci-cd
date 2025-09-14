@@ -5,5 +5,5 @@ import com.bilalazzam.contacts_provider.ContactsProviderFactory
 import org.koin.core.scope.Scope
 
 actual fun Scope.createContactsProvider(): ContactsProvider {
-    return ContactsProviderFactory().createContactsProvider()
+    return ContactsProviderFactory(this.get()).createContactsProvider()
 }

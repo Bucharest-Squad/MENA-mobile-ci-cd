@@ -4,7 +4,7 @@ import com.bilalazzam.contacts_provider.ContactsProvider
 import org.koin.core.scope.Scope
 import org.koin.dsl.module
 
-internal val dataSourceModule = module {
+internal val dataProviderModule = module {
     single { createContactsProvider() }
 }
 
