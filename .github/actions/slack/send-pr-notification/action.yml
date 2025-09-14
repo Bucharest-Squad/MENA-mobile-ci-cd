@@ -28,7 +28,7 @@ runs:
       shell: bash
       run: |
         messages=$(curl -s -X POST "https://slack.com/api/conversations.history" \
-          -H "Authorization: Bearer ${{ inputs.slack-bot-token: }}" \
+          -H "Authorization: Bearer ${{ inputs.slack-bot-token }}" \
           -H "Content-type: application/json" \
           --data "{\"channel\": \"${{ $SLACK_NOTIFICATION_CHANNEL_ID }}\"}")
         
@@ -42,7 +42,7 @@ runs:
 
     - name: Send Slack messages (only if empty)
       if: steps.count.outputs.message_count == '0'
-      uses: ./.github/actions/send-default-slack-template
+      uses: ./.github/actions/slack/send-default-template
       with:
         slack-bot-token: ${{ inputs.slack-bot-token }}
         slack-notification-channel-id: ${{ inputs.slack-notification-channel-id }}
