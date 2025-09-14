@@ -2,6 +2,7 @@ package net.thechance.mena.dukan.presentation.screen.createDukan.content
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,9 +14,11 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import mena.dukan_presentation.generated.resources.Res
+import mena.dukan_presentation.generated.resources.ic_arrow_left
 import mena.dukan_presentation.generated.resources.create_new_dukan
 import mena.dukan_presentation.generated.resources.dukan_name_is_already_exist
 import mena.dukan_presentation.generated.resources.error
@@ -26,13 +29,15 @@ import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
 import net.thechance.mena.designsystem.presentation.component.snackbar.SnackBar
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import net.thechance.mena.dukan.presentation.util.OnSystemBackPressed
 import net.thechance.mena.dukan.presentation.screen.CreateDukan.content.CreateDukanContentBasicInformation
 import net.thechance.mena.dukan.presentation.viewModel.createDukan.CreateDukanInteractionListener
 import net.thechance.mena.dukan.presentation.viewModel.createDukan.CreateDukanUiState
-import net.thechance.mena.dukan.presentation.viewModel.createDukan.CreateDukanViewModel
+import net.thechance.mena.dukan.presentation.viewModel.createDukan.CreateDukanUiState.CreateDukanStep
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CreateDukanContent(
     state: CreateDukanUiState,
@@ -41,13 +46,15 @@ fun CreateDukanContent(
 
     val pagerState = rememberPagerState(
         initialPage = 0,
-        pageCount = { CreateDukanViewModel.MAX_STEPS }
+        pageCount = { CreateDukanStep.steps.size }
     )
 
     SyncPageWithScreenState(
         state = state,
         pagerState = pagerState
     )
+
+    OnSystemBackPressed(listener::onBackClicked)
 
     Box(
         modifier = Modifier
@@ -58,52 +65,60 @@ fun CreateDukanContent(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            AppBar(
-                title = stringResource(Res.string.create_new_dukan),
-                onLeadingClick = listener::onBackClicked,
-                leadingContent = {
-                    Icon(
-                        painter = painterResource(Res.drawable.ic_arrow_left),
-                        contentDescription = "Back Arrow"
-                    )
-                }
-            )
-            HorizontalPager(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .padding(top = Theme.spacing._12),
-                state = pagerState,
-                userScrollEnabled = false
-            ) { pageIndex ->
-                when (pageIndex) {
-                    CreateDukanViewModel.BASIC_INFORMATION_INDEX -> CreateDukanContentBasicInformation(
-                        state,
-                        listener
-                    )
-
-                    CreateDukanViewModel.SELECT_IMAGE_INDEX -> CreateDukanContentSelectImage()
-                    CreateDukanViewModel.SELECT_LOCATION_INDEX -> CreateDukanContentSelectLocation()
-                    CreateDukanViewModel.SELECT_STYLE_INDEX -> CreateDukanContentSelectStyle()
-                }
+        AppBar(
+            title = "Create New Dukan",
+            onLeadingClick = listener::onBackClicked,
+            leadingContent = {
+                Icon(
+                    painter = painterResource(Res.drawable.ic_arrow_left),
+                    contentDescription = "Back Arrow"
+                )
             }
+        )
+        HorizontalPager(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .padding(top = Theme.spacing._12),
+            state = pagerState,
+            userScrollEnabled = false
+        ) { pageIndex ->
+            when (CreateDukanStep.steps[pageIndex]) {
+                CreateDukanStep.BASIC_INFORMATION -> CreateDukanContentBasicInformation(
+                    state = state,
+                    interactionListener = listener
+                )
+                CreateDukanStep.SELECT_IMAGE -> DukanImageCropContent(
+                    state = state,
+                    interactionListener = listener
+                )
 
-            PrimaryButton(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(Theme.spacing._16),
-                text = if (state.currentStep == CreateDukanViewModel.SELECT_STYLE_INDEX)
-                    "Create"
-                else
-                    "Next",
-                onClick = listener::onButtonClicked,
-                trailingIcon = painterResource(Res.drawable.ic_edit),
-                isEnabled = state.isButtonEnabled,
-                isLoading = state.isButtonLoading
-            )
+                CreateDukanStep.CROP_IMAGE -> UploadDukanImageContent(
+                    state = state,
+                    interactionListener = listener
+                )
+
+                CreateDukanStep.SELECT_LOCATION -> CreateDukanContentSelectLocation()
+                CreateDukanStep.SELECT_STYLE -> CreateDukanContentSelectStyle()
+            }
         }
-        ErrorSnackBar(state)
+
+        PrimaryButton(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(Theme.spacing._16),
+            text = if (state.currentStep == CreateDukanStep.SELECT_STYLE)
+                "Create"
+            else
+                "Next",
+            onClick = listener::onButtonClicked,
+            trailingIcon = painterResource(Res.drawable.ic_arrow_left),
+            isEnabled = state.isButtonEnabled,
+            isLoading = state.isButtonLoading
+        )
     }
+    ErrorSnackBar(state)
+}
 }
 
 @Composable
@@ -125,7 +140,7 @@ private fun SyncPageWithScreenState(
     state: CreateDukanUiState,
     pagerState: PagerState
 ) {
-    val currentStepIndex = state.currentStep
+    val currentStepIndex = state.currentStep.ordinal
     LaunchedEffect(currentStepIndex) {
         if (currentStepIndex == pagerState.currentPage) return@LaunchedEffect
         try {

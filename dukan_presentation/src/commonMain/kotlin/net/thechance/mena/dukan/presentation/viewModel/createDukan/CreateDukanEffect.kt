@@ -1,5 +1,7 @@
 package net.thechance.mena.dukan.presentation.viewModel.createDukan
 
-sealed class CreateDukanEffect {
-    object BackNavigation : CreateDukanEffect()
+sealed interface CreateDukanEffect {
+    data object NavigateToImageCropScreen : CreateDukanEffect
+    data object NavigateNext : CreateDukanEffect
+    data object NavigateBack : CreateDukanEffect
 }
