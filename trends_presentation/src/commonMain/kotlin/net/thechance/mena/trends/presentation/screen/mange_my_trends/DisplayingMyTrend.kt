@@ -34,13 +34,13 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun DisplayingMyTrend() {
+fun showReelsScreen() {
     //TODO pass listener and ui state to replace this dummy data
-    DisplayingMyTrendContent()
+    Content()
 }
 
 @Composable
-private fun DisplayingMyTrendContent() {
+private fun Content() {
     Box(modifier = Modifier.fillMaxSize().navigationBarsPadding()) {
 
         RunningVideoPlaceHolder()
@@ -82,7 +82,8 @@ private fun TopAppBar(
         AppBar(
             title = "",
             contentPadding = PaddingValues(
-                top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding() + Theme.spacing._16,
+                top = WindowInsets.statusBars.asPaddingValues()
+                    .calculateTopPadding() + Theme.spacing._16,
                 start = Theme.spacing._16
             ),
             leadingContent = {
@@ -149,7 +150,11 @@ private fun RunningVideoPlaceHolder() {
 }
 
 @Composable
-private fun UsersReAct(likeCount: String, viewCount: String, modifier: Modifier = Modifier) {
+private fun UsersReAct(
+    likeCount: String,
+    viewCount: String,
+    modifier: Modifier = Modifier
+) {
     Column(modifier = modifier.padding(bottom = Theme.spacing._24)) {
         ReActIcon(
             icon = painterResource(resource = Res.drawable.ic_like),
@@ -199,6 +204,6 @@ private fun AvatarPlaceHolder() {
 
 @Preview
 @Composable
-private fun DisplayingMyTrendPreview() {
-    DisplayingMyTrend()
+private fun Preview() {
+    showReelsScreen()
 }
