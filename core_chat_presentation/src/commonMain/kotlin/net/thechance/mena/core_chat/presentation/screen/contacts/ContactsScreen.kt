@@ -3,15 +3,24 @@ package net.thechance.mena.core_chat.presentation.screen.contacts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import mena.core_chat_presentation.generated.resources.Res
+import mena.core_chat_presentation.generated.resources.contacts_title
+import mena.core_chat_presentation.generated.resources.ic_resync
 import net.thechance.mena.core_chat.presentation.navigation.LocalNavController
 import net.thechance.mena.core_chat.presentation.navigation.SyncContactsRoute
-import net.thechance.mena.core_chat.presentation.screen.contacts.components.ContactsAppBar
 import net.thechance.mena.core_chat.presentation.screen.contacts.components.ContactsList
+import net.thechance.mena.core_chat.presentation.shared.components.ChatAppBar
+import net.thechance.mena.designsystem.presentation.component.appBar.AppBarOptionContainer
+import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -40,9 +49,22 @@ private fun ContactsContent(
             .background(color = Theme.colorScheme.background.surface)
             .statusBarsPadding()
     ) {
-        ContactsAppBar(
+        ChatAppBar(
+            title = stringResource(Res.string.contacts_title),
             onNavigateBack = onNavigateBack,
-            onResyncClick = onResyncClick
+            trailingContent = {
+                AppBarOptionContainer(
+                    badgeColor = Theme.colorScheme.primary.primary,
+                    onClick = { onResyncClick() }
+                ) {
+                    MenaIcon(
+                        painter = painterResource(Res.drawable.ic_resync),
+                        contentDescription = null,
+                        modifier = Modifier.size(20.dp),
+                        tint = Theme.colorScheme.shadePrimary,
+                    )
+                }
+            }
         )
         ContactsList(
             contacts = contacts
