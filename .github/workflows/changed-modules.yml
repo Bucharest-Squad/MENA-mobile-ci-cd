@@ -1,76 +1,68 @@
 name: Changed Modules
 
 on:
-  pull_request:
-    branches: [ main, develop ]
-  push:
-    branches: [ main, develop ]
+  workflow_call: {}
 
 jobs:
   detect:
     runs-on: ubuntu-latest
-
+    outputs:
+      modules: ${{ steps.changes.outputs.modules }}
+      has_changes: ${{ steps.changes.outputs.has_changes }}
+      has_ios_changes: ${{ steps.changes.outputs.has_ios_changes }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out repository
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Get changed files
-        id: changed-files
+      - name: Get all changed files
+        id: changed-files-git
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             CHANGED_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }})
           else
             CHANGED_FILES=$(git diff --name-only HEAD~1..HEAD)
           fi
-          echo "$CHANGED_FILES" > changed_files.txt
+          echo "changed_files<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGED_FILES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
-      - name: Determine changed modules
-        id: detect
+      - name: Determine changed modules from file list
+        id: changes
         run: |
           ALL_MODULES='core_chat_api core_chat_data core_chat_domain core_chat_presentation dukan_api dukan_data dukan_domain dukan_presentation faith_api faith_data faith_domain faith_presentation identity_api identity_data identity_domain identity_presentation trends_api trends_data trends_domain trends_presentation wallet_api wallet_data wallet_domain wallet_presentation'
-          IOS_MODULES='core_chat_presentation dukan_presentation faith_presentation identity_presentation trends_presentation wallet_presentation'
+          CHANGED_FILES="${{ steps.changed-files-git.outputs.changed_files }}"
 
-          CHANGED_FILES=$(cat changed_files.txt)
+          # detect iOS app changes
+          if grep -qE '^iosApp/' <<< "$CHANGED_FILES"; then
+            echo "has_ios_changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_ios_changes=false" >> $GITHUB_OUTPUT
+          fi
 
           UNIQUE_MODULE_LIST=$(echo "$CHANGED_FILES" | awk -F/ '{print $1}' | sort -u)
           FINAL_MODULES=""
-          IOS_FINAL_MODULES=""
 
           for module in $UNIQUE_MODULE_LIST; do
             if [[ " $ALL_MODULES " =~ " $module " ]]; then
               FINAL_MODULES="$FINAL_MODULES $module"
             fi
-            if [[ " $IOS_MODULES " =~ " $module " ]]; then
-              IOS_FINAL_MODULES="$IOS_FINAL_MODULES $module"
-            fi
           done
 
-          if grep -qE '^build.gradle.kts|^settings.gradle.kts|^gradle/|^\.github/' <<< "$CHANGED_FILES"; then
+          # If core files / gradle / app / iosApp changed -> treat as all modules changed
+          if grep -qE '^build.gradle.kts|^settings.gradle.kts|^gradle/|^\.github/|^app/|^iosApp/' <<< "$CHANGED_FILES"; then
+            echo "Core project files or app changed -> building/testing all modules."
             FINAL_MODULES="$ALL_MODULES"
           fi
-          if grep -qE '^iosApp/' <<< "$CHANGED_FILES"; then
-            IOS_FINAL_MODULES="$IOS_MODULES"
-            echo "has_ios_changes=true" >> detect_env.txt
-          else
-            echo "has_ios_changes=false" >> detect_env.txt
-          fi
 
+          # convert to JSON array (jq)
           JSON_ARRAY=$(echo "$FINAL_MODULES" | jq -R 'split(" ") | map(select(length > 0))' | jq -c '.')
-          IOS_JSON_ARRAY=$(echo "$IOS_FINAL_MODULES" | jq -R 'split(" ") | map(select(length > 0))' | jq -c '.')
 
-          if [ "$(echo $JSON_ARRAY | jq 'length')" -gt 0 ]; then
-            echo "has_changes=true" >> detect_env.txt
-            echo "modules=$JSON_ARRAY" >> detect_env.txt
+          if [ "$(echo "$JSON_ARRAY" | jq 'length')" -gt 0 ]; then
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "modules=$JSON_ARRAY" >> $GITHUB_OUTPUT
           else
-            echo "has_changes=false" >> detect_env.txt
-            echo "modules=[]" >> detect_env.txt
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "modules=[]" >> $GITHUB_OUTPUT
           fi
-
-          echo "ios_modules=$IOS_JSON_ARRAY" >> detect_env.txt
-
-      - name: Upload detect results
-        uses: actions/upload-artifact@v4
-        with:
-          name: detect-results
-          path: detect_env.txt
