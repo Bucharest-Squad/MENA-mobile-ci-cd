@@ -3,8 +3,23 @@ package net.thechance.mena.trends.presentation.screen.mange_my_trends
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -73,7 +88,7 @@ private fun Content() {
 private fun TopAppBar(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
-){
+) {
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -82,11 +97,12 @@ private fun TopAppBar(
     ) {
         AppBar(
             title = "",
-            contentPadding = PaddingValues(
-                top = WindowInsets.statusBars.asPaddingValues()
-                    .calculateTopPadding() + Theme.spacing._16,
-                start = Theme.spacing._16
-            ),
+            modifier = Modifier.padding(
+                top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding() + 8.dp
+            )
+                .padding(horizontal = Theme.spacing._16)
+                .requiredHeight(56.dp),
+            contentPadding = PaddingValues(0.dp),
             leadingContent = {
                 MenaIcon(painter = painterResource(resource = Res.drawable.ic_arrow_left))
             },
@@ -107,12 +123,12 @@ private fun PublisherDetails(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .clickable { isExpanded = !isExpanded }
+            .padding(bottom = Theme.spacing._32)
+            .padding(horizontal = Theme.spacing._16)
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(space = Theme.spacing._8),
             modifier = Modifier
-                .padding(horizontal = Theme.spacing._16)
                 .padding(top = Theme.spacing._8)
         ) {
             AvatarPlaceHolder()
@@ -137,8 +153,7 @@ private fun PublisherDetails(
             text = description,
             modifier = Modifier
                 .animateContentSize()
-                .padding(bottom = Theme.spacing._32)
-                .padding(horizontal = Theme.spacing._16),
+                .clickable { isExpanded = !isExpanded },
             color = Theme.colorScheme.primary.onPrimary,
             style = Theme.typography.label.medium,
             maxLines = if (isExpanded) Int.MAX_VALUE else 1
@@ -152,22 +167,19 @@ private fun RunningVideoPlaceHolder() {
 }
 
 @Composable
-private fun UsersReAct(
-    likeCount: String,
-    viewCount: String,
-    modifier: Modifier = Modifier
-) {
-    Column(modifier = modifier.padding(bottom = Theme.spacing._24)) {
+private fun UsersReAct(likeCount: String, viewCount: String, modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(Theme.spacing._24)
+    ) {
         ReActIcon(
             icon = painterResource(resource = Res.drawable.ic_like),
-            reactCount = likeCount,
-            modifier = Modifier.padding(bottom = Theme.spacing._24)
+            reactCount = likeCount
         )
 
         ReActIcon(
             icon = painterResource(resource = Res.drawable.ic_eye),
-            reactCount = viewCount,
-            modifier = Modifier.padding(bottom = Theme.spacing._24)
+            reactCount = viewCount
         )
 
         ReActIcon(
@@ -199,7 +211,8 @@ private fun ReActIcon(
 private fun AvatarPlaceHolder() {
     MenaImage(
         painter = painterResource(resource = Res.drawable.test),
-        modifier = Modifier.size(size = 40.dp).clip(shape = CircleShape),
+        modifier = Modifier.size(size = 40.dp).clip(shape = CircleShape)
+            .border(shape = CircleShape, width = 0.5.dp, color = Theme.colorScheme.stroke),
         contentScale = ContentScale.Crop
     )
 }

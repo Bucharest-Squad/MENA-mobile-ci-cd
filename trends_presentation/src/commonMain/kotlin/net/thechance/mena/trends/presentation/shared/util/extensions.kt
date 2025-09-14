@@ -1,5 +1,13 @@
 package net.thechance.mena.trends.presentation.shared.util
 
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
@@ -7,9 +15,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.launch
-import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
-import kotlin.time.Instant
 
 fun <T> Flow<T>.throttleFirst(windowDuration: Long): Flow<T> {
     var job: Job = Job().apply { complete() }
@@ -26,3 +31,25 @@ fun <T> Flow<T>.throttleFirst(windowDuration: Long): Flow<T> {
         }
     }
 }
+
+fun Modifier.gradientShadow(
+    startColor: Color = Color(color = 0x00FFFFFF),
+    endColor: Color = Color(color = 0x33FFFFFF),
+    spread: Dp = 18.dp,
+    offsetY: Dp = 2.dp
+): Modifier = this.then(
+    other = Modifier.drawBehind {
+        val spreadPx = spread.toPx()
+        val offsetYPx = offsetY.toPx()
+
+        drawRect(
+            brush = Brush.verticalGradient(
+                colors = listOf(startColor, endColor),
+                startY = 0f,
+                endY = size.height + spreadPx
+            ),
+            topLeft = Offset(0f, offsetYPx),
+            size = Size(size.width, size.height + spreadPx)
+        )
+    }
+)
