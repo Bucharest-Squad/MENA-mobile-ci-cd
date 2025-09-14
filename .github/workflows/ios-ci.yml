@@ -124,6 +124,21 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO
 
+  ios-build-summary:
+    needs: [changed-modules, ios-build]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Summary
+        run: |
+          if [ "${{ needs.changed-modules.outputs.has_changes }}" = "false" ]; then
+            echo "✅ No changes detected in modules that affect iOS. Skipping build."
+          elif [ "${{ needs.changed-modules.outputs.has_ios_changes }}" = "true" ]; then
+            echo "📱 iOS app files changed - full rebuild triggered."
+          else
+            echo "🎯 Built shared module(s): ${{ needs.changed-modules.outputs.changed_modules }}"
+          fi
+
   notify-slack-on-failure:
     if: failure()
     needs: ios-build
@@ -143,18 +158,3 @@ jobs:
             One or more matrix jobs failed.
             PR: ${{ github.event.pull_request.html_url }}
             Commit: ${{ github.sha }}
-
-  ios-build-summary:
-    needs: [changed-modules, ios-build]
-    runs-on: ubuntu-latest
-    if: always()
-    steps:
-      - name: Summary
-        run: |
-          if [ "${{ needs.changed-modules.outputs.has_changes }}" = "false" ]; then
-            echo "✅ No changes detected in modules that affect iOS. Skipping build."
-          elif [ "${{ needs.changed-modules.outputs.has_ios_changes }}" = "true" ]; then
-            echo "📱 iOS app files changed - full rebuild triggered."
-          else
-            echo "🎯 Built shared module(s): ${{ needs.changed-modules.outputs.changed_modules }}"
-          fi
