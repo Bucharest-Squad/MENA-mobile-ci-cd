@@ -41,23 +41,24 @@ fun DisplayingMyTrend() {
 
 @Composable
 private fun DisplayingMyTrendContent() {
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize().navigationBarsPadding()) {
+
         RunningVideoPlaceHolder()
         TopAppBar(onBackClick = { TODO("call on back click")})
 
         // TODO replace this dummy data with real one
+        UsersReAct(
+            viewCount = "11",
+            likeCount = "4",
+            modifier = Modifier.align(Alignment.BottomEnd)
+                .padding(end = Theme.spacing._16, bottom = 140.dp)
+        )
+
         PublisherDetails(
             userName = "Hawraa Mahmood",
             timeOfPublish = "2 hour ago",
             description = "Latest AI -trends that are changing everything! \uD83D\uDE80",
             modifier = Modifier.align(Alignment.BottomCenter)
-        )
-
-        UsersReAct(
-            viewCount = "11",
-            likeCount = "4",
-            modifier = Modifier.align(Alignment.BottomEnd)
-                .padding(end = Theme.spacing._16, bottom = 130.dp)
         )
 
         Box(
@@ -104,7 +105,6 @@ private fun PublisherDetails(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .navigationBarsPadding()
             .clickable { isExpanded = !isExpanded }
     ) {
         Row(
