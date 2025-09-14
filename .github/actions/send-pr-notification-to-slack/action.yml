@@ -30,7 +30,7 @@ runs:
           --data "{\"channel\": \"${{ inputs.slack-notification-channel-id }}\"}")
         
         message_count=$(echo "$response" | jq -r '.messages | length' 2>/dev/null || echo 0)
-        
+        echo "$message_count"
         echo "messages=$messages" >> $GITHUB_OUTPUT
 
     - name: Send Slack messages (only if empty)
