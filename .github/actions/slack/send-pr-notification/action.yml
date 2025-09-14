@@ -59,7 +59,7 @@ runs:
         echo "${REGIONS[$i]} = $prefix"
         for i in "${!REGIONS[@]}"; do
           if [[ "${REGIONS[$i]}" == "$prefix" ]]; then
-            thread_ts=$(echo "$bot_messages" | jq -r ".bot_messages[$i].ts")
+            thread_ts=$(echo "$bot_messages" | jq -r ".messages[$i].ts")
             echo "$thread_ts"
             curl -X POST "https://slack.com/api/chat.postMessage" \
               -H "Authorization: Bearer ${{ inputs.slack-bot-token }}" \
