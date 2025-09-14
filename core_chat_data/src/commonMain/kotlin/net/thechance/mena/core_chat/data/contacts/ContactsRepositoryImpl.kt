@@ -11,8 +11,6 @@ import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
 import net.thechance.mena.core_chat.data.contacts.dto.ContactDto
 import net.thechance.mena.core_chat.data.shared.BaseRepository
 import net.thechance.mena.core_chat.data.shared.dto.BaseResponseDto
@@ -26,7 +24,6 @@ import com.bilalazzam.contacts_provider.Contact as DeviceContact
 
 
 class ContactsRepositoryImpl(
-    private val baseUrl: String,
     private val client: HttpClient,
     private val contactsProvider: ContactsProvider
 ) : ContactsRepository, BaseRepository {
@@ -34,7 +31,7 @@ class ContactsRepositoryImpl(
     override suspend fun getUserContacts(pageNumber: Int, pageSize: Int): PagedData<Contact> {
         return tryNetworkCall(
             defaultException = { ContactsFetchFailedException("Couldn't get user contacts", it) }) {
-            client.get("$baseUrl/contacts") {
+            client.get(CONTACTS_ENDPOINT) {
                 parameter("pageNumber", pageNumber)
                 parameter("pageSize", pageSize)
             }.body<BaseResponseDto<PagedDataDto<ContactDto>>>()
@@ -45,8 +42,7 @@ class ContactsRepositoryImpl(
         tryNetworkCall(
             defaultException = { ContactSyncFailedException("Couldn't sync user contacts", it) }) {
             val contacts = getDeviceContacts()
-            client.post("$baseUrl/contacts/sync") {
-                contentType(ContentType.Application.Json)
+            client.post(SYNC_CONTACTS_ENDPOINT) {
                 setBody(contacts.toListOfContactCreationRequestDto())
             }.body<BaseResponseDto<Unit>>()
         }
@@ -56,5 +52,10 @@ class ContactsRepositoryImpl(
         return contactsProvider.getAllContacts(
             fields = setOf(ID, FIRST_NAME, LAST_NAME, PHONE_NUMBERS)
         )
+    }
+
+    private companion object {
+        const val CONTACTS_ENDPOINT = "/contacts"
+        const val SYNC_CONTACTS_ENDPOINT = "$CONTACTS_ENDPOINT/sync"
     }
 }

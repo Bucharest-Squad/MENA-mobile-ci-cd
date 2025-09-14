@@ -4,7 +4,6 @@ import io.ktor.client.engine.HttpClientEngineConfig
 import io.ktor.client.engine.HttpClientEngineFactory
 import net.thechance.mena.core_chat.data.network.createHttpClient
 import org.koin.core.qualifier.named
-import org.koin.core.scope.Scope
 import org.koin.dsl.module
 
 internal val networkModule = module {
@@ -13,4 +12,4 @@ internal val networkModule = module {
     single { createHttpClient(get(named("baseUrl")), get()) }
 }
 
-expect fun Scope.createHttpClientEngine(): HttpClientEngineFactory<HttpClientEngineConfig>
+expect fun createHttpClientEngine(): HttpClientEngineFactory<HttpClientEngineConfig>
