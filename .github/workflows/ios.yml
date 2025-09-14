@@ -129,6 +129,7 @@ jobs:
         with:
           slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
           slack-notification-channel-id: ${{ secrets.SLACK_NOTIFICATION_CHANNEL_ID }}
+          bot-app-id: ${{ secrets.BOT_APP_ID }}
           branch-name: ${{ github.head_ref }}
           message: |
             🚨 *Build Failed on IOS!*
