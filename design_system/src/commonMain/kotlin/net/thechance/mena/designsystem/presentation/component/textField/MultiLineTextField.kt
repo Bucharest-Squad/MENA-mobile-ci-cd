@@ -66,7 +66,7 @@ fun PreviewMultilineTextField() {
         MultiLineTextField(
             value = value,
             onValueChanged = onValueChanged,
-            hint = "Placeholder",
+            hint = "Hint",
             modifier = Modifier
         )
     }

@@ -102,7 +102,7 @@ fun BasicTextField(
                         text = value,
                         isError = isError,
                         singleLine = singleLine,
-                        placeholder = hint,
+                        hint = hint,
                         leadingIcon = leadingIcon,
                         trailingIcon = trailingIcon,
                         leadingIconTint = leadingIconTint
@@ -138,7 +138,7 @@ fun BasicTextField(
 private fun TextFieldContent(
     innerTextField: @Composable () -> Unit,
     text: String,
-    placeholder: String,
+    hint: String,
     leadingIcon: Painter?,
     trailingIcon: Painter?,
     leadingIconTint: Color,
@@ -161,10 +161,10 @@ private fun TextFieldContent(
             )
         }
 
-        InnerTextFieldWithPlaceHolder(
+        InnerTextFieldWithHint(
             innerTextField = innerTextField,
             text = text,
-            placeholder = placeholder,
+            hint = hint,
             singleLine = singleLine,
             modifier = Modifier.weight(1f)
         )
@@ -182,10 +182,10 @@ private fun TextFieldContent(
 }
 
 @Composable
-private fun InnerTextFieldWithPlaceHolder(
+private fun InnerTextFieldWithHint(
     innerTextField: @Composable (() -> Unit),
     text: String,
-    placeholder: String,
+    hint: String,
     singleLine: Boolean,
     modifier: Modifier
 ) {
@@ -196,7 +196,7 @@ private fun InnerTextFieldWithPlaceHolder(
         innerTextField()
         if (text.isEmpty()) {
             Text(
-                text = placeholder,
+                text = hint,
                 style = Theme.typography.label.medium,
                 color = Theme.colorScheme.shadeTertiary
             )
@@ -223,7 +223,7 @@ private fun PreviewTextField() {
         }
         BasicTextField(
             value = value,
-            hint = "Placeholder",
+            hint = "hint",
             onValueChanged = onValueChanged,
             leadingIcon = painterResource(Res.drawable.ic_user),
             trailingIcon = painterResource(Res.drawable.silver_tc),
