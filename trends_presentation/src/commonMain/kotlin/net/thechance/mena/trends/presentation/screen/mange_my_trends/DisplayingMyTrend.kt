@@ -42,10 +42,17 @@ fun DisplayingMyTrend() {
 @Composable
 private fun DisplayingMyTrendContent() {
     Box(modifier = Modifier.fillMaxSize()) {
-
         RunningVideoPlaceHolder()
+        TopAppBar(onBackClick = { TODO("call on back click")})
 
-        //TODO pass listener and ui state to replace this dummy data
+        // TODO replace this dummy data with real one
+        PublisherDetails(
+            userName = "Hawraa Mahmood",
+            timeOfPublish = "2 hour ago",
+            description = "Latest AI -trends that are changing everything! \uD83D\uDE80",
+            modifier = Modifier.align(Alignment.BottomCenter)
+        )
+
         UsersReAct(
             viewCount = "11",
             likeCount = "4",
@@ -53,36 +60,34 @@ private fun DisplayingMyTrendContent() {
                 .padding(end = Theme.spacing._16, bottom = 130.dp)
         )
 
-        PublisherDetails(
-            userName = "Hawraa Mahmood",
-            timeOfPublish = "2 hour ago",
-            description = "Latest AI -trends that are changing everything!",
-            modifier = Modifier.align(Alignment.BottomCenter)
-        )
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(height = 96.dp)
-                .gradientShadow(startColor = Color(0x33FFFFFF), endColor = Color(0x00FFFFFF))
-                .align(Alignment.TopCenter)
-        ) {
-            AppBar(
-                title = "",
-                contentPadding = PaddingValues(
-                    top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding() + Theme.spacing._16,
-                    start = Theme.spacing._16
-                ),
-                leadingContent = {
-                    MenaIcon(painter = painterResource(resource = Res.drawable.ic_arrow_left))
-                },
-                onLeadingClick = { TODO("on back click") }
-            )
-        }
-
         Box(
             modifier = Modifier.fillMaxWidth().height(height = 118.dp).gradientShadow()
                 .align(Alignment.BottomCenter)
+        )
+    }
+}
+
+@Composable
+private fun TopAppBar(
+    onBackClick: () -> Unit,
+    modifier: Modifier = Modifier
+){
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(height = 96.dp)
+            .gradientShadow(startColor = Color(0x33FFFFFF), endColor = Color(0x00FFFFFF))
+    ) {
+        AppBar(
+            title = "",
+            contentPadding = PaddingValues(
+                top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding() + Theme.spacing._16,
+                start = Theme.spacing._16
+            ),
+            leadingContent = {
+                MenaIcon(painter = painterResource(resource = Res.drawable.ic_arrow_left))
+            },
+            onLeadingClick = { onBackClick() }
         )
     }
 }
@@ -102,7 +107,6 @@ private fun PublisherDetails(
             .navigationBarsPadding()
             .clickable { isExpanded = !isExpanded }
     ) {
-
         Row(
             horizontalArrangement = Arrangement.spacedBy(space = Theme.spacing._8),
             modifier = Modifier
@@ -110,6 +114,7 @@ private fun PublisherDetails(
                 .padding(top = Theme.spacing._8)
         ) {
             AvatarPlaceHolder()
+
             Column(Modifier.padding(bottom = Theme.spacing._16)) {
                 MenaText(
                     text = userName,
@@ -133,9 +138,14 @@ private fun PublisherDetails(
                 .padding(horizontal = Theme.spacing._16),
             color = Theme.colorScheme.primary.onPrimary,
             style = Theme.typography.label.medium,
-            maxLines = if (isExpanded) Int.MAX_VALUE else 1,
+            maxLines = if (isExpanded) Int.MAX_VALUE else 1
         )
     }
+}
+
+@Composable
+private fun RunningVideoPlaceHolder() {
+    Box(Modifier.background(Color.Black).fillMaxSize())
 }
 
 @Composable
@@ -161,20 +171,6 @@ private fun UsersReAct(likeCount: String, viewCount: String, modifier: Modifier 
 }
 
 @Composable
-private fun RunningVideoPlaceHolder() {
-    Box(Modifier.background(Color.Black).fillMaxSize())
-}
-
-@Composable
-private fun AvatarPlaceHolder() {
-    MenaImage(
-        painter = painterResource(resource = Res.drawable.test),
-        modifier = Modifier.size(size = 40.dp).clip(shape = CircleShape),
-        contentScale = ContentScale.Crop
-    )
-}
-
-@Composable
 private fun ReActIcon(
     icon: Painter,
     reactCount: String,
@@ -190,6 +186,15 @@ private fun ReActIcon(
             textAlign = TextAlign.Center
         )
     }
+}
+
+@Composable
+private fun AvatarPlaceHolder() {
+    MenaImage(
+        painter = painterResource(resource = Res.drawable.test),
+        modifier = Modifier.size(size = 40.dp).clip(shape = CircleShape),
+        contentScale = ContentScale.Crop
+    )
 }
 
 @Preview
