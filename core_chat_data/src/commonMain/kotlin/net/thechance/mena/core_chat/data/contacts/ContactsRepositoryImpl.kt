@@ -1,9 +1,9 @@
 package net.thechance.mena.core_chat.data.contacts
 
-import kotlinx.coroutines.flow.Flow
-import net.thechance.mena.core_chat.data.contacts.source.device.DeviceContactsDataSource
-import net.thechance.mena.core_chat.data.contacts.source.device.SettingDataSource
-import net.thechance.mena.core_chat.data.contacts.source.remote.DummyContactsDataSource
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
 import com.bilalazzam.contacts_provider.ContactField.FIRST_NAME
 import com.bilalazzam.contacts_provider.ContactField.ID
 import com.bilalazzam.contacts_provider.ContactField.LAST_NAME
@@ -15,6 +15,8 @@ import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 import net.thechance.mena.core_chat.data.contacts.dto.ContactDto
 import net.thechance.mena.core_chat.data.network.ApiConstants.CONTACTS_ENDPOINT
 import net.thechance.mena.core_chat.data.network.ApiConstants.SYNC_CONTACTS_ENDPOINT
@@ -32,7 +34,7 @@ import com.bilalazzam.contacts_provider.Contact as DeviceContact
 class ContactsRepositoryImpl(
     private val client: HttpClient,
     private val contactsProvider: ContactsProvider,
-    private val settingDataSource: SettingDataSource
+    private val dataStore : DataStore<Preferences>
 ) : ContactsRepository, BaseRepository {
 
     override suspend fun getUserContacts(pageNumber: Int, pageSize: Int): PagedData<Contact> {
@@ -63,13 +65,22 @@ class ContactsRepositoryImpl(
 
     override suspend fun getUserSyncedState(): Boolean {
         return safeDataStoreCall{
-            settingDataSource.getUserSyncedState()
+            dataStore.data.map {
+                it[USER_SYNCED_STATE_KEY]
+            }.firstOrNull() == true
         }
     }
 
     override suspend fun setUserSyncedState(state: Boolean) {
         return safeDataStoreCall {
-            settingDataSource.setUserSyncedState(state)
+            dataStore.edit {preferences ->
+                preferences[USER_SYNCED_STATE_KEY] = state
+            }
         }
+    }
+
+    private companion object{
+        val USER_SYNCED_STATE_KEY = booleanPreferencesKey("user_synced_state_key")
+
     }
 }

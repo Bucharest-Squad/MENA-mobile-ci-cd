@@ -4,7 +4,6 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import com.bilalazzam.contacts_provider.ContactsProvider
 import com.bilalazzam.contacts_provider.ContactsProviderFactory
-import net.thechance.mena.core_chat.data.contacts.source.device.SettingDataSource
 import net.thechance.mena.core_chat.data.utils.createDataStore
 import org.koin.core.scope.Scope
 

@@ -1,6 +1,5 @@
 package net.thechance.mena.core_chat.data.shared
 
-import kotlinx.coroutines.flow.Flow
 import net.thechance.mena.core_chat.data.shared.dto.BaseResponseDto
 import net.thechance.mena.core_chat.domain.exception.ChatException
 import net.thechance.mena.core_chat.domain.exception.ContactsPermissionDeniedException
