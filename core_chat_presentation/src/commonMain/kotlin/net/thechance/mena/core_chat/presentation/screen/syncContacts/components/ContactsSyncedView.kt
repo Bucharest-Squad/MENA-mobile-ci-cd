@@ -28,7 +28,7 @@ fun ContactsSyncedView(
             style = Theme.typography.title.small,
             color = Theme.colorScheme.shadePrimary,
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(vertical = Theme.spacing._12)
+            modifier = Modifier.padding(vertical = Theme.spacing._24)
         )
         LinearProgressIndicator(
             modifier = Modifier.fillMaxWidth(),

@@ -2,12 +2,17 @@ package net.thechance.mena.core_chat.presentation.screen.syncContacts
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -16,14 +21,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.BlurredEdgeTreatment
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.ic_phone
+import mena.core_chat_presentation.generated.resources.ic_phone_back
+import mena.core_chat_presentation.generated.resources.ic_phone_front
+import mena.core_chat_presentation.generated.resources.ic_shadow_ball
 import net.thechance.mena.core_chat.presentation.navigation.LocalNavController
 import net.thechance.mena.core_chat.presentation.screen.syncContacts.components.ContactsSyncedView
 import net.thechance.mena.core_chat.presentation.screen.syncContacts.components.NoContactsSyncView
+import net.thechance.mena.core_chat.presentation.screen.syncContacts.components.PhoneIcon
 import net.thechance.mena.core_chat.presentation.screen.syncContacts.components.SyncContactsAppBar
-import net.thechance.mena.designsystem.presentation.component.image.MenaImage
+import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
@@ -67,10 +79,8 @@ private fun SyncContactsContent(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
-            MenaImage(
-                painter = painterResource(resource = Res.drawable.ic_phone),
-                contentDescription = "No contacts synced",
-                modifier = Modifier.size(128.dp, 122.dp)
+            PhoneIcon(
+                modifier = Modifier.padding(bottom = Theme.spacing._8)
             )
             if (isSyncing) {
                 ContactsSyncedView()
