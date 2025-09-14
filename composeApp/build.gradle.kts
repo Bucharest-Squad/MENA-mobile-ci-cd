@@ -25,8 +25,9 @@ kotlin {
     }
     
     sourceSets {
+
         androidMain.dependencies {
-            implementation(compose.preview)
+            implementation(compose56.preview234)
             implementation(libs.androidx.activity.compose)
         }
         commonMain.dependencies {
