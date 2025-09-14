@@ -48,4 +48,4 @@ runs:
           
           bot_messages=$(echo "$messages" | jq --arg app_id "$BOT_APP_ID" '.messages[] | select(.app_id == $app_id)')
           echo "bot_messages :$bot_messages"
-          echo "encoded_bot_messages=$(echo "$bot_messages" | jq -c -s .| base64)" >> "$GITHUB_ENV"
+          echo "encoded_bot_messages=$(echo "$bot_messages" | jq -c -s .| base64 | tr -d '\n'))" >> "$GITHUB_ENV"
