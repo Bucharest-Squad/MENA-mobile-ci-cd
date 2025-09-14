@@ -50,7 +50,7 @@ runs:
     - name: Send Slack messages
       shell: bash
       env:
-        bot_messages:  ${{ env.bot_messages }}
+        bot_messages: ${{ env.bot_messages }}
       run: |
         echo "bot_messages is :$bot_messages"
         REGIONS=("WLT" "TRN" "FTH" "CHT" "DKN" "IDN")
