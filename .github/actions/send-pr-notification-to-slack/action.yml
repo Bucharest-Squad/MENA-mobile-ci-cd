@@ -28,7 +28,7 @@ runs:
       shell: bash
       run: |
         messages=$(curl -s -X POST "https://slack.com/api/conversations.history" \
-          -H "Authorization: Bearer ${{ SLACK_BOT_TOKEN: }}" \
+          -H "Authorization: Bearer ${{ inputs.slack-bot-token: }}" \
           -H "Content-type: application/json" \
           --data "{\"channel\": \"${{ $SLACK_NOTIFICATION_CHANNEL_ID }}\"}")
         
