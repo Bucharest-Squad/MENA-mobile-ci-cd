@@ -39,7 +39,10 @@ runs:
 
     - name: Send Slack messages (only if empty)
       if: steps.check_slack.outputs.is_empty == 'true'
-      uses: ./.github/actions/create-slack-notification-template
+      uses: ./.github/actions/send-region-prs-to-slack
+      with:
+        slack-bot-token: ${{ inputs.slack-bot-token }}
+        slack-notification-channel-id: ${{ inputs.slack-notification-channel-id }}
 
     - name: Send Slack messages
       shell: bash
