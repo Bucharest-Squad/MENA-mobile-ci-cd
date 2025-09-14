@@ -1,10 +1,10 @@
 package net.thechance.mena.wallet.data.repository.balance
 
-import net.thechance.mena.wallet.data.utils.ApiClient
+import net.thechance.mena.wallet.data.utils.NetworkClient
 import net.thechance.mena.wallet.domain.repository.BalanceRepository
 
 class FakeBalanceRepositoryImpl(
-    private val apiClient: ApiClient
+    private val networkClient: NetworkClient
 ) : BalanceRepository {
 
     override suspend fun getBalance(userId: Int): Double {
