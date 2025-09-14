@@ -1,8 +1,8 @@
 import groovy.json.JsonOutput
+import org.gradle.api.artifacts.ProjectDependency
 
 plugins {
-    // this is necessary to avoid the plugins to be loaded multiple times
-    // in each subproject's classloader
+    // Avoid loading plugins multiple times in each subproject's classloader
     alias(libs.plugins.androidApplication) apply false
     alias(libs.plugins.androidLibrary) apply false
     alias(libs.plugins.composeMultiplatform) apply false
@@ -12,43 +12,41 @@ plugins {
 
 tasks.register("exportModuleDeps") {
     doLast {
-        val allProjects = rootProject.subprojects.map { it.name }.toSet()
-        val map = mutableMapOf<String, MutableSet<String>>()
+        val allModuleNames = rootProject.subprojects.map { it.name }.toSet()
+        val directDependencies = mutableMapOf<String, MutableSet<String>>()
 
         rootProject.subprojects.forEach { project ->
-            val deps = mutableSetOf<String>()
+            val projectDeps = mutableSetOf<String>()
             project.configurations
-                .matching { it.name.contains("implementation", true) }
-                .forEach { cfg ->
-                    cfg.dependencies.forEach { dep ->
-                        if (dep is ProjectDependency && allProjects.contains(dep.dependencyProject.name)) {
-                            deps.add(dep.dependencyProject.name)
+                .matching { it.name.contains("implementation", ignoreCase = true) }
+                .forEach { configuration ->
+                    configuration.dependencies.forEach { dependency ->
+                        if (dependency is ProjectDependency && allModuleNames.contains(dependency.dependencyProject.name)) {
+                            projectDeps.add(dependency.dependencyProject.name)
                         }
                     }
                 }
-            map[project.name] = deps
+            directDependencies[project.name] = projectDeps
         }
 
-        // Reverse dependency graph
-        val reverseDeps = mutableMapOf<String, MutableSet<String>>()
-        map.keys.forEach { reverseDeps[it] = mutableSetOf() }
-        map.forEach { (project, deps) ->
-            deps.forEach { dep -> reverseDeps[dep]?.add(project) }
+        val reverseDependencies = mutableMapOf<String, MutableSet<String>>()
+        directDependencies.keys.forEach { module -> reverseDependencies[module] = mutableSetOf() }
+        directDependencies.forEach { (module, deps) ->
+            deps.forEach { dep -> reverseDependencies[dep]?.add(module) }
         }
 
-        fun getAllDependents(
+        fun collectAllDependents(
             module: String,
             visited: MutableSet<String> = mutableSetOf()
         ): Set<String> {
             if (!visited.add(module)) return emptySet()
-            val direct = reverseDeps[module] ?: emptySet()
-            return direct + direct.flatMap { getAllDependents(it, visited) }
+            val directDependents = reverseDependencies[module] ?: emptySet()
+            return directDependents + directDependents.flatMap { collectAllDependents(it, visited) }
         }
 
-        // Compute dependents for each module
-        val output = map.keys.associateWith { getAllDependents(it) }
+        val modulesWithDependents =
+            directDependencies.keys.associateWith { collectAllDependents(it) }
 
-        // THIS IS THE KEY: use JsonOutput.toJson to produce strict JSON
-        System.out.println(JsonOutput.toJson(output))
+        println(JsonOutput.toJson(modulesWithDependents))
     }
 }
