@@ -5,7 +5,7 @@ data class ContactUi(
     val id: String?,
     val firstName: String?,
     val lastName: String?,
-    val phoneNumbers: String,
+    val phoneNumber: String,
     val imageUri: String? = null
 ) {
     val displayName: String
