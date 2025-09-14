@@ -55,8 +55,8 @@ fun ScaffoldScope.Dialog(
     onActionClick: () -> Unit = {},
     onCancelClick: () -> Unit = {},
     modifier: Modifier = Modifier,
-    scrimColor: Color = Theme.colorScheme.primary.primary.copy(0.55f),
     contentColor: Color = Theme.colorScheme.background.surfaceLow,
+    scrimColor: Color = Theme.colorScheme.primary.primary.copy(0.55f),
     dialogCornerShape: Shape = RoundedCornerShape(Theme.radius.xl),
     cancelBackgroundShape: Shape = RoundedCornerShape(Theme.radius.full),
     contentPadding: PaddingValues = PaddingValues(12.dp),
@@ -64,14 +64,13 @@ fun ScaffoldScope.Dialog(
     if (!visible) return
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(scrimColor),
-        contentAlignment = Alignment.Center
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
     ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .background(scrimColor)
                 .clickable(
                     enabled = dismissOnClickOutside,
                     onClick = onDismiss,
@@ -97,11 +96,11 @@ fun ScaffoldScope.Dialog(
                 )
                 .padding(horizontal = 16.dp)
         )
-    }
 
-    if (dismissOnBackPress) {
-        BackHandler(true) {
-            onDismiss()
+        if (dismissOnBackPress) {
+            BackHandler(true) {
+                onDismiss()
+            }
         }
     }
 }
