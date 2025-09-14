@@ -438,8 +438,8 @@ private fun PreviewComponent(
     ) {
         MenaText(
             text = title,
-            color = Theme.colorScheme.shadeTertiary,
-            style = Theme.typography.headline.small
+            style = Theme.typography.headline.small,
+            color = Theme.colorScheme.shadeTertiary
         )
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -464,8 +464,8 @@ private fun PreviewTextFieldComponent() {
     ) {
         MenaText(
             text = "Text field",
-            color = Theme.colorScheme.shadeTertiary,
-            style = Theme.typography.headline.small
+            style = Theme.typography.headline.small,
+            color = Theme.colorScheme.shadeTertiary
         )
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -534,8 +534,8 @@ private fun PreviewSnackBarComponent() {
     ) {
         MenaText(
             text = "SnackBar",
-            color = Theme.colorScheme.shadeTertiary,
-            style = Theme.typography.headline.small
+            style = Theme.typography.headline.small,
+            color = Theme.colorScheme.shadeTertiary
         )
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,

@@ -71,11 +71,11 @@ fun Chip(
 
         MenaText(
             text = text,
-            color = if (isEnabled) contentColor else Theme.colorScheme.textDisabled,
             style = Theme.typography.label.small,
+            color = if (isEnabled) contentColor else Theme.colorScheme.textDisabled,
             fontSize = 10.sp,
-            lineHeight = 16.sp,
-            letterSpacing = 0.sp
+            letterSpacing = 0.sp,
+            lineHeight = 16.sp
         )
     }
 }

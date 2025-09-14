@@ -25,9 +25,9 @@ internal fun BaseButtonContent(
     text?.let {
         MenaText(
             text = text,
+            style = Theme.typography.label.medium,
             color = contentColor,
             overflow = overflow,
-            style = Theme.typography.label.medium,
         )
     }
 

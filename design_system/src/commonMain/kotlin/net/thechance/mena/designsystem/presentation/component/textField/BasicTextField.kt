@@ -69,12 +69,12 @@ fun BasicTextField(
         title?.let {
             MenaText(
                 text = title,
+                style = Theme.typography.title.small,
+                modifier = Modifier.padding(bottom = 4.dp),
                 color = Theme.colorScheme.shadePrimary,
                 fontSize = 16.sp,
-                lineHeight = 22.sp,
                 letterSpacing = 0.sp,
-                style = Theme.typography.title.small,
-                modifier = Modifier.padding(bottom = 4.dp)
+                lineHeight = 22.sp
             )
         }
 
@@ -123,12 +123,12 @@ fun BasicTextField(
         errorMessage?.let {
             MenaText(
                 text = errorMessage,
-                color = Theme.colorScheme.error,
                 style = Theme.typography.label.small,
                 modifier = Modifier.padding(
                     start = 12.dp,
                     top = 2.dp
-                )
+                ),
+                color = Theme.colorScheme.error
             )
         }
     }
@@ -197,8 +197,8 @@ private fun InnerTextFieldWithPlaceHolder(
         if (text.isEmpty()) {
             MenaText(
                 text = placeholder,
-                color = Theme.colorScheme.shadeTertiary,
-                style = Theme.typography.label.medium
+                style = Theme.typography.label.medium,
+                color = Theme.colorScheme.shadeTertiary
             )
         }
     }

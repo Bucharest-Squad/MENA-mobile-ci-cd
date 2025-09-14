@@ -97,8 +97,8 @@ fun MobileNumberLeadingContent(
         MenaText(
             text = countryCode,
             style = Theme.typography.label.medium,
-            color = Theme.colorScheme.shadePrimary,
-            modifier = Modifier.padding(start = 4.dp, end = 2.dp)
+            modifier = Modifier.padding(start = 4.dp, end = 2.dp),
+            color = Theme.colorScheme.shadePrimary
         )
 
         MenaIcon(

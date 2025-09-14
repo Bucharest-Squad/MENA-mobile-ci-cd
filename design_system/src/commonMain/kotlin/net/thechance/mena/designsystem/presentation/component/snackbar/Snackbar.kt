@@ -51,16 +51,16 @@ fun SnackBar(
         Column {
             MenaText(
                 text = title,
-                color = Theme.colorScheme.shadePrimary,
                 style = Theme.typography.label.large,
+                color = Theme.colorScheme.shadePrimary,
                 fontSize = 16.sp,
                 lineHeight = 24.sp
             )
 
             MenaText(
                 text = message,
-                color = Theme.colorScheme.shadeSecondary,
-                style = Theme.typography.body.small
+                style = Theme.typography.body.small,
+                color = Theme.colorScheme.shadeSecondary
             )
         }
     }
