@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -19,6 +17,8 @@ import androidx.compose.ui.unit.dp
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.ic_image_disabled
 import mena.core_chat_presentation.generated.resources.ic_image_enabled
+import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
+import net.thechance.mena.designsystem.presentation.component.text.MenaText
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
 
@@ -39,23 +39,23 @@ fun ContactItem(
             ) { onContactClick() },
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Avatar(
+        CircularAvatar(
             contactImageUri = contact.imageUri,
             contactInitials = contact.initials,
-            size = 48
+            size = 48.dp
         )
         Column(
             modifier = Modifier.padding(start = Theme.spacing._8).weight(1f)
         ) {
-            Text(
+            MenaText(
                 text = contact.displayName,
                 style = Theme.typography.label.large,
                 color = Theme.colorScheme.shadePrimary,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
-            Text(
-                text = contact.phoneNumbers,
+            MenaText(
+                text = contact.phoneNumber,
                 style = Theme.typography.label.medium,
                 color = Theme.colorScheme.shadeTertiary,
                 maxLines = 1,
@@ -65,17 +65,16 @@ fun ContactItem(
 
         }
 
-        if (hasImage) {
-            if (hasAccount) {
-                val iconRes =
-                    if (hasImage) Res.drawable.ic_image_enabled else Res.drawable.ic_image_disabled
-                Icon(
-                    painter = painterResource(iconRes),
-                    contentDescription = null,
-                    modifier = Modifier.padding(start = Theme.spacing._8).size(24.dp),
-                    tint = Color.Unspecified
-                )
-            }
+
+        if (hasAccount) {
+            val iconRes =
+                if (hasImage) Res.drawable.ic_image_enabled else Res.drawable.ic_image_disabled
+            MenaIcon(
+                painter = painterResource(iconRes),
+                contentDescription = null,
+                modifier = Modifier.padding(start = Theme.spacing._8).size(24.dp),
+                tint = Color.Unspecified
+            )
         }
     }
 }
