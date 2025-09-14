@@ -26,8 +26,6 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun ContactItem(
     contact: ContactUi,
-    hasAccount: Boolean,
-    hasImage: Boolean,
     onContactClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -65,16 +63,16 @@ fun ContactItem(
 
         }
 
-
-        if (hasAccount) {
-            val iconRes =
-                if (hasImage) Res.drawable.ic_image_enabled else Res.drawable.ic_image_disabled
-            MenaIcon(
-                painter = painterResource(iconRes),
-                contentDescription = null,
-                modifier = Modifier.padding(start = Theme.spacing._8).size(24.dp),
-                tint = Color.Unspecified
-            )
-        }
+        MenaIcon(
+            painter = painterResource(
+                if (contact.isMenaMember)
+                    Res.drawable.ic_image_enabled
+                else
+                    Res.drawable.ic_image_disabled
+            ),
+            contentDescription = null,
+            modifier = Modifier.padding(start = Theme.spacing._8).size(24.dp),
+            tint = Color.Unspecified
+        )
     }
 }
