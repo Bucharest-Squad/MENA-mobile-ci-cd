@@ -38,7 +38,6 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScaffoldScope.BottomSheet(
-    visible: Boolean,
     dismissOnBackPress: Boolean = true,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
@@ -52,8 +51,6 @@ fun ScaffoldScope.BottomSheet(
     skipPartiallyExpanded: Boolean = false,
     content: @Composable ColumnScope.(state: SheetState) -> Unit
 ) {
-
-    if (!visible) return
 
     val state = rememberModalBottomSheetState(skipPartiallyExpanded)
 
@@ -80,13 +77,12 @@ fun ScaffoldScope.BottomSheet(
 private fun BottomSheetPreview() {
     MenaTheme {
 
-        var showBottomSheet by remember { mutableStateOf(true) }
+        var showBottomSheet by remember { mutableStateOf(false) }
 
         MenaScaffold(
             overlays = {
                 bottomSheet(showBottomSheet) {
                     BottomSheet(
-                        visible = showBottomSheet,
                         onDismiss = {
                             showBottomSheet = false
                         },

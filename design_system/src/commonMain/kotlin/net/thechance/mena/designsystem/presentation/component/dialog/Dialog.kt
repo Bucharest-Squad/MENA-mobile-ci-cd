@@ -45,7 +45,6 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun ScaffoldScope.Dialog(
-    visible: Boolean,
     title: String,
     message: String,
     buttonText: String,
@@ -61,8 +60,6 @@ fun ScaffoldScope.Dialog(
     cancelBackgroundShape: Shape = RoundedCornerShape(Theme.radius.full),
     contentPadding: PaddingValues = PaddingValues(12.dp),
 ) {
-    if (!visible) return
-
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
@@ -188,7 +185,6 @@ private fun DialoguePreview() {
         MenaScaffold(overlays = {
             dialog(showDialog) {
                 Dialog(
-                    visible = showDialog,
                     onDismiss = {
                         showDialog = false
                     },
