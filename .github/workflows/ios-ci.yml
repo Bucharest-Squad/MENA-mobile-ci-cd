@@ -1,4 +1,4 @@
-name: iOS CI
+name: iOS
 
 on:
   pull_request:
@@ -8,13 +8,15 @@ on:
   workflow_dispatch:
 
 jobs:
-  ios-build:
+  detect:
+    name: Detect Changes
     uses: ./.github/workflows/changed-modules.yml
     secrets: inherit
 
   build:
-    needs: ios-build
-    if: needs.ios-build.outputs.has_changes == 'true'
+    name: Build
+    needs: detect
+    if: needs.detect.outputs.has_changes == 'true'
     runs-on: macos-latest
 
     steps:
@@ -27,11 +29,11 @@ jobs:
       - name: Grant execute permission
         run: chmod +x gradlew
 
-      - name: Build all changed iOS modules
-        run: ./gradlew $(for m in $(echo '${{ needs.ios-build.outputs.ios_modules }}' | jq -r '.[]'); do echo ":$m:linkDebugFrameworkIosSimulatorArm64"; done)
+      - name: Build KMP modules
+        run: ./gradlew $(for m in $(echo '${{ needs.detect.outputs.ios_modules }}' | jq -r '.[]'); do echo ":$m:linkDebugFrameworkIosSimulatorArm64"; done) --parallel --build-cache
 
-      - name: Build iOS App if iosApp changed
-        if: needs.ios-build.outputs.has_ios_changes == 'true'
+      - name: Build iOS app
+        if: needs.detect.outputs.has_ios_changes == 'true'
         run: |
           xcodebuild \
             -project iosApp/iosApp.xcodeproj \

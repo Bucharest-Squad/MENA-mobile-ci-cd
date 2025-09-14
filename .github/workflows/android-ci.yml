@@ -1,4 +1,4 @@
-name: Android CI
+name: Android
 
 on:
   pull_request:
@@ -8,13 +8,15 @@ on:
   workflow_dispatch:
 
 jobs:
-  android-build:
+  detect:
+    name: Detect Changes
     uses: ./.github/workflows/changed-modules.yml
     secrets: inherit
 
   build:
-    needs: android-build
-    if: needs.android-build.outputs.has_changes == 'true'
+    name: Build
+    needs: detect
+    if: needs.detect.outputs.has_changes == 'true'
     runs-on: ubuntu-latest
 
     steps:
@@ -27,5 +29,5 @@ jobs:
       - name: Grant execute permission
         run: chmod +x gradlew
 
-      - name: Build all changed Android modules
-        run: ./gradlew $(for m in $(echo '${{ needs.android-build.outputs.modules }}' | jq -r '.[]'); do echo ":$m:assemble"; done)
+      - name: Build modules
+        run: ./gradlew $(for m in $(echo '${{ needs.detect.outputs.modules }}' | jq -r '.[]'); do echo ":$m:assembleDebug"; done) --parallel --build-cache
