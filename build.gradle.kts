@@ -10,7 +10,6 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform) apply false
 }
 
-
 tasks.register("exportModuleDeps") {
     doLast {
         val allProjects = rootProject.subprojects.map { it.name }.toSet()
@@ -30,19 +29,26 @@ tasks.register("exportModuleDeps") {
             map[project.name] = deps
         }
 
+        // Reverse dependency graph
         val reverseDeps = mutableMapOf<String, MutableSet<String>>()
         map.keys.forEach { reverseDeps[it] = mutableSetOf() }
         map.forEach { (project, deps) ->
             deps.forEach { dep -> reverseDeps[dep]?.add(project) }
         }
 
-        fun getAllDependents(module: String, visited: MutableSet<String> = mutableSetOf()): Set<String> {
+        fun getAllDependents(
+            module: String,
+            visited: MutableSet<String> = mutableSetOf()
+        ): Set<String> {
             if (!visited.add(module)) return emptySet()
             val direct = reverseDeps[module] ?: emptySet()
             return direct + direct.flatMap { getAllDependents(it, visited) }
         }
 
+        // Compute dependents for each module
         val output = map.keys.associateWith { getAllDependents(it) }
-        println(output.toString())
+
+        // THIS IS THE KEY: use JsonOutput.toJson to produce strict JSON
+        System.out.println(JsonOutput.toJson(output))
     }
 }
