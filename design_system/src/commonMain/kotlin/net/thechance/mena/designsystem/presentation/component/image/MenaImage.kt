@@ -9,8 +9,8 @@ import androidx.compose.ui.layout.ContentScale
 @Composable
 fun MenaImage(
     painter: Painter,
+    contentDescription: String?,
     modifier: Modifier = Modifier,
-    contentDescription: String? = null,
     contentScale: ContentScale = ContentScale.Fit
 ) {
     Image(

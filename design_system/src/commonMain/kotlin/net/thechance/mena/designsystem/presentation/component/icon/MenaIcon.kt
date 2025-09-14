@@ -9,9 +9,9 @@ import androidx.compose.ui.graphics.painter.Painter
 @Composable
 fun MenaIcon(
     painter: Painter,
+    contentDescription: String?,
     modifier: Modifier = Modifier,
     tint: Color = Color.Unspecified,
-    contentDescription: String? = null,
 ) {
     Icon(
         painter = painter,

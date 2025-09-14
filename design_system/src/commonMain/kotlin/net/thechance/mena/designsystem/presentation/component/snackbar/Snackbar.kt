@@ -44,8 +44,8 @@ fun SnackBar(
         MenaIcon(
             painter = leadingIcon,
             contentDescription = contentDescription,
-            tint = tint,
-            modifier = Modifier.size(28.dp)
+            modifier = Modifier.size(28.dp),
+            tint = tint
         )
 
         Column {

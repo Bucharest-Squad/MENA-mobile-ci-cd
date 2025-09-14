@@ -34,11 +34,11 @@ internal fun BaseButtonContent(
     trailingIcon?.let {
         MenaIcon(
             painter = trailingIcon,
-            tint = contentColor,
             contentDescription = contentDescription,
             modifier = Modifier
                 .padding(start = iconStartPadding)
-                .size(iconSize)
+                .size(iconSize),
+            tint = contentColor
         )
     }
 }

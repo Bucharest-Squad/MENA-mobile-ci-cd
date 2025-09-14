@@ -65,8 +65,9 @@ fun Chip(
     ) {
         MenaIcon(
             painter = painter,
-            tint = if (isEnabled) contentColor else Theme.colorScheme.textDisabled,
-            modifier = Modifier.size(iconSize)
+            modifier = Modifier.size(iconSize),
+            contentDescription = null,
+            tint = if (isEnabled) contentColor else Theme.colorScheme.textDisabled
         )
 
         MenaText(

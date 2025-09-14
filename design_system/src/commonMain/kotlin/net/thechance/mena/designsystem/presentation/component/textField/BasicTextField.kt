@@ -153,11 +153,11 @@ private fun TextFieldContent(
 
             MenaIcon(
                 painter = leadingIcon,
-                tint = if (isError) Theme.colorScheme.error else leadingIconTint,
                 contentDescription = null,
                 modifier = Modifier
                     .padding(end = Theme.spacing._8)
-                    .size(24.dp)
+                    .size(24.dp),
+                tint = if (isError) Theme.colorScheme.error else leadingIconTint
             )
         }
 
