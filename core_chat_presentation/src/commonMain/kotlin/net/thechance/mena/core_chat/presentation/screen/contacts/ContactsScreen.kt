@@ -1,4 +1,4 @@
-package net.thechance.mena.core_chat.presentation.screens.contacts
+package net.thechance.mena.core_chat.presentation.screen.contacts
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,6 +23,7 @@ import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.contacts_title
 import mena.core_chat_presentation.generated.resources.ic_arrow_left
 import mena.core_chat_presentation.generated.resources.ic_resync
+import net.thechance.mena.core_chat.presentation.navigation.LocalNavController
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
@@ -45,7 +46,7 @@ private fun ContactsContent(
     onResyncClick: () -> Unit,
     contacts: List<ContactUi>
 ) {
-
+    val navController = LocalNavController.current
     Column(
         modifier = modifier.fillMaxSize()
             .background(color = Theme.colorScheme.background.surface)
@@ -59,7 +60,7 @@ private fun ContactsContent(
                     contentDescription = null,
                     modifier = Modifier.size(20.dp)
                         .clickable {
-
+                            navController.popBackStack()
                         },
                     tint = Theme.colorScheme.primary.primary,
                 )

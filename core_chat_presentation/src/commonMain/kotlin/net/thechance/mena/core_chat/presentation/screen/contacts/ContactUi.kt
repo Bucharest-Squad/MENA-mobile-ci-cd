@@ -1,4 +1,4 @@
-package net.thechance.mena.core_chat.presentation.screens.contacts
+package net.thechance.mena.core_chat.presentation.screen.contacts
 
 
 data class ContactUi(

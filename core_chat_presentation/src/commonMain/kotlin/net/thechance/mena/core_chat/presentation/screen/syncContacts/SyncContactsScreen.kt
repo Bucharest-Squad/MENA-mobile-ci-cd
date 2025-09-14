@@ -1,4 +1,4 @@
-package net.thechance.mena.core_chat.presentation.screens.syncContacts
+package net.thechance.mena.core_chat.presentation.screen.syncContacts
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

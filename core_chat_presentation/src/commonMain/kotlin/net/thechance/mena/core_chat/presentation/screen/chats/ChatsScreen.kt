@@ -1,4 +1,4 @@
-package net.thechance.mena.core_chat.presentation.screens
+package net.thechance.mena.core_chat.presentation.screen.chats
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -7,10 +7,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import net.thechance.mena.core_chat.presentation.navigation.ContactsRoute
 import net.thechance.mena.core_chat.presentation.navigation.LocalNavController
 
 @Composable
-fun ContactsScreen() {
+fun ChatsScreen() {
 
     val navController = LocalNavController.current
 
@@ -19,8 +20,8 @@ fun ContactsScreen() {
         contentAlignment = Alignment.Center
     )    {
 
-        Button (onClick = { navController.popBackStack() }){
-            Text(text = "Navigate Back")
+        Button (onClick = { navController.navigate(ContactsRoute) }){
+            Text(text = "Show contacts")
         }
     }
 }
