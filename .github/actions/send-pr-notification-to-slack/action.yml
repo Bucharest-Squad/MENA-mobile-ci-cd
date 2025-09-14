@@ -30,6 +30,7 @@ runs:
           --data "{\"channel\": \"${{ inputs.slack-notification-channel-id }}\"}")
         
         message_count=$(echo "$response" | jq '.messages | length')
+        echo "$message_count"
         if [ -z "$message_count" ] || ! [[ "$message_count" =~ ^[0-9]+$ ]]; then
           message_count=0
         fi
