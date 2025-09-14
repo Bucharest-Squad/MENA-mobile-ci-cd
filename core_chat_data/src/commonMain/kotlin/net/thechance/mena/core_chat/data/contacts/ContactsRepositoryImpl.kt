@@ -12,6 +12,8 @@ import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import net.thechance.mena.core_chat.data.contacts.dto.ContactDto
+import net.thechance.mena.core_chat.data.network.ApiConstants.CONTACTS_ENDPOINT
+import net.thechance.mena.core_chat.data.network.ApiConstants.SYNC_CONTACTS_ENDPOINT
 import net.thechance.mena.core_chat.data.shared.BaseRepository
 import net.thechance.mena.core_chat.data.shared.dto.BaseResponseDto
 import net.thechance.mena.core_chat.data.shared.dto.PagedDataDto
@@ -52,10 +54,5 @@ class ContactsRepositoryImpl(
         return contactsProvider.getAllContacts(
             fields = setOf(ID, FIRST_NAME, LAST_NAME, PHONE_NUMBERS)
         )
-    }
-
-    private companion object {
-        const val CONTACTS_ENDPOINT = "/contacts"
-        const val SYNC_CONTACTS_ENDPOINT = "$CONTACTS_ENDPOINT/sync"
     }
 }
