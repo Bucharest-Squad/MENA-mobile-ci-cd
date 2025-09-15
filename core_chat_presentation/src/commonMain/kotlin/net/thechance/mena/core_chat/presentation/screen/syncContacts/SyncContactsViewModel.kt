@@ -8,7 +8,7 @@ import net.thechance.mena.core_chat.presentation.shared.BaseViewModel
 class SyncContactsViewModel(
     private val contactsRepository: ContactsRepository,
     private val permissionsController: PermissionsController
-) : BaseViewModel<SyncContactsUiState>(SyncContactsUiState()) {
+) : BaseViewModel<SyncContactsUiState, SyncContactsScreenEffect>(SyncContactsUiState()) {
 
     init {
         onInit()
@@ -71,6 +71,11 @@ class SyncContactsViewModel(
                     )
                 }
                 contactsRepository.setUserSyncedState(true)
+                if(state.value.isFirstSynced) {
+                    emitEffect(SyncContactsScreenEffect.NavigateToContacts)
+                } else {
+                    emitEffect(SyncContactsScreenEffect.NavigateBackWithResult)
+                }
             },
             onError = { throwable ->
                 updateState { it.copy(

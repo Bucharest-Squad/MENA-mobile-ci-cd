@@ -1,14 +1,15 @@
 
 package net.thechance.mena.core_chat.presentation.screen.contacts
 
+import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
 import net.thechance.mena.core_chat.domain.entity.Contact
 import net.thechance.mena.core_chat.domain.repository.ContactsRepository
 import net.thechance.mena.core_chat.presentation.shared.BasePagingSource
 import net.thechance.mena.core_chat.presentation.shared.BaseViewModel
-
 class ContactsViewModel(
     private val contactsRepository: ContactsRepository
-) : BaseViewModel<ContactsUiState>(ContactsUiState()) {
+) : BaseViewModel<ContactsUiState, ContactsUiEffect>(ContactsUiState()), ContactsScreenInteractionListener {
 
     init {
         getContacts()
@@ -27,8 +28,19 @@ class ContactsViewModel(
                 )
             },
             mapper = { contact: Contact -> contact.toUiModel() }
-        )
+        ).cachedIn(viewModelScope)
         updateState { it.copy(contacts = contactsFlow) }
     }
-}
 
+    override fun onNavigateBack() {
+        emitEffect(ContactsUiEffect.NavigateBack)
+    }
+
+    override fun onResyncClick() {
+        emitEffect(ContactsUiEffect.NavigateToSyncContacts)
+    }
+
+    override fun onContactClick(contactId: Int) {
+        emitEffect(ContactsUiEffect.NavigateToChatScreen(contactId))
+    }
+}
