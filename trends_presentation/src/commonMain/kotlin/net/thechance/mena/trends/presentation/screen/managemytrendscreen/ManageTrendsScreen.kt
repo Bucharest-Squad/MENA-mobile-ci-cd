@@ -28,6 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
 import mena.trends_presentation.generated.resources.Res
@@ -40,23 +41,26 @@ import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
 import net.thechance.mena.designsystem.presentation.component.segment.Segment
 import net.thechance.mena.designsystem.presentation.component.text.MenaText
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import net.thechance.mena.trends.presentation.navigation.LocalNavController
+import net.thechance.mena.trends.presentation.navigation.Route
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import kotlin.Int
 import kotlin.math.roundToInt
 
 @Composable
 fun ManageTrendsScreen(
-    viewModel: ManageTrendsViewModel = koinViewModel(),
-    navController: NavHostController
+    viewModel: ManageTrendsViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsState()
+    val navController = LocalNavController.current
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
                 is ManageTrendsUiEffect.NavigateBack -> navController.popBackStack()
-                is ManageTrendsUiEffect.NavigateToTrend -> navController.navigate("${effect.reelId}")
+                is ManageTrendsUiEffect.NavigateToTrend -> navController.navigate(Route.Trend(effect.reelId))
             }
         }
     }

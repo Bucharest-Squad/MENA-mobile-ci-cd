@@ -3,6 +3,7 @@ package net.thechance.mena.trends.presentation.navigation
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
@@ -32,6 +33,6 @@ fun TrendsNavHost() {
    }
 }
 
-private val LocalNavController = compositionLocalOf<NavController> {
+val LocalNavController = compositionLocalOf<NavController> {
    error("NavController not provided")
 }
