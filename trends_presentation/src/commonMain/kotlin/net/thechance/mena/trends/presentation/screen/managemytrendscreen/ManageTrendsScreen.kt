@@ -1,4 +1,4 @@
-package net.thechance.mena.trends.presentation.screen.managemytrends
+package net.thechance.mena.trends.presentation.screen.managemytrendscreen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -37,12 +37,18 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
 import mena.trends_presentation.generated.resources.Res
+import mena.trends_presentation.generated.resources.favorite
 import mena.trends_presentation.generated.resources.ic_arrow_left
+import mena.trends_presentation.generated.resources.manage_trends_title
+import mena.trends_presentation.generated.resources.my_trends
+import mena.trends_presentation.generated.resources.profile_image_desc
+import mena.trends_presentation.generated.resources.trend_image_desc
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
 import net.thechance.mena.designsystem.presentation.component.segment.Segment
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.math.roundToInt
 
@@ -88,12 +94,12 @@ private fun ManageTrendsContent(
                     contentDescription = "Back arrow"
                 )
             },
-            title = "Manage my trends",
+            title =  stringResource(Res.string.manage_trends_title),
         )
 
         AsyncImage(
             model = state.profileImageUrl,
-            contentDescription = "Profile Image",
+            contentDescription =  stringResource(Res.string.profile_image_desc),
             modifier = Modifier
                 .padding(top = 32.dp)
                 .size(100.dp)
@@ -133,7 +139,7 @@ private fun SegmentSection(
             modifier = Modifier.padding(bottom = 8.dp),
             contentPadding = PaddingValues(top = 16.dp)
         ) {
-            item("My Trends") {
+            item( "My Trends") {
                 BoxWithConstraints(
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -160,7 +166,7 @@ private fun SegmentSection(
                                     ) {
                                         AsyncImage(
                                             model = item.thumbnailUrl,
-                                            contentDescription = "Trend Image",
+                                            contentDescription =  stringResource(Res.string.trend_image_desc),
                                             modifier = Modifier.fillMaxSize(),
                                             contentScale = ContentScale.Crop
                                         )
@@ -178,7 +184,7 @@ private fun SegmentSection(
                     }
                 }
             }
-            item("Favorite") {
+            item("Favorite" ) {
                 // TODO: Implement favorites , empty for now
             }
         }

@@ -1,4 +1,4 @@
-package net.thechance.mena.trends.presentation.screen.managemytrends
+package net.thechance.mena.trends.presentation.screen.managemytrendscreen
 
 import net.thechance.mena.trends.domain.entity.Reel
 import net.thechance.mena.trends.domain.repository.ReelRepository
