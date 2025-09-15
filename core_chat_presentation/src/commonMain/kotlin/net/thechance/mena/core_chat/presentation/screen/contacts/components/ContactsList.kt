@@ -17,11 +17,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
-import androidx.paging.compose.LazyPagingItems
+import app.cash.paging.compose.LazyPagingItems
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.ic_warning
 import mena.core_chat_presentation.generated.resources.no_contacts_message
 import mena.core_chat_presentation.generated.resources.refresh_contacts_message
+import net.thechance.mena.core_chat.presentation.screen.contacts.ContactItemInteractionListener
 import net.thechance.mena.core_chat.presentation.screen.contacts.ContactUiModel
 import net.thechance.mena.core_chat.presentation.screen.syncContacts.components.PhoneIcon
 import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
@@ -32,7 +33,8 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun ContactsList(
-    contacts: LazyPagingItems<ContactUiModel>
+    contacts: LazyPagingItems<ContactUiModel>,
+    listener: ContactItemInteractionListener
 ) {
     AnimatedContent(
         targetState = Pair((contacts.itemCount == 0), contacts.loadState.refresh == LoadState.Loading),
@@ -54,7 +56,7 @@ fun ContactsList(
                     contact?.let {
                         ContactItem(
                             contact = it,
-                            onContactClick = { /* //TODO: navigate to chat screen */ },
+                            onContactClick = { /*listener.onContactClick(contact.id)*/ },
                         )
                     }
                 }
@@ -74,8 +76,7 @@ private fun EmptyContactsColumn() {
             contentAlignment = Alignment.TopEnd,
             modifier = Modifier.padding(bottom = Theme.spacing._12)
         ) {
-            PhoneIcon(
-            )
+            PhoneIcon()
             MenaIcon(
                 painter = painterResource(Res.drawable.ic_warning),
                 contentDescription = null,
