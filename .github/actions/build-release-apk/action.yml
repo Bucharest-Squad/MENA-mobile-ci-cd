@@ -39,7 +39,6 @@ runs:
         chmod +x magick
         ./magick
         sudo mv magick /usr/bin/
-        magick
         sudo rm /usr/bin/magick
 
 
