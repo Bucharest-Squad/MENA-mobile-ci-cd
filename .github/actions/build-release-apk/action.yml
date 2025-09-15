@@ -38,10 +38,6 @@ runs:
         wget https://download.imagemagick.org/ImageMagick/download/binaries/magick
         chmod +x magick
         mv magick /usr/local/bin/
-        magick -version
-        which magick
-        
-
 
     - name: Make gradlew executable
       run: chmod +x ./gradlew
@@ -64,7 +60,6 @@ runs:
     - name: Generate unsigned APK
       run: ./gradlew :composeApp:assemble${{ inputs.build-type }}Release --build-cache -x test -x lint
       shell: bash
-
 
     - name: Sign APK
       uses: r0adkll/sign-android-release@v1
