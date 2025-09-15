@@ -22,13 +22,13 @@ import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 @Composable
 fun BottomNavigationBarItem(
     isSelected: Boolean,
-    notSelectedIcon: Painter,
+    unselectedIcon: Painter,
     selectedIcon: Painter,
     title: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val painter = if (isSelected) selectedIcon else notSelectedIcon
+    val painter = if (isSelected) selectedIcon else unselectedIcon
     val interactionSource = remember { MutableInteractionSource() }
 
     Column(
