@@ -29,9 +29,12 @@ fun CategorySelectionRow(
     ) {
         availableCategories.forEach { category ->
             item {
+                val isSelected = selectedCategories.contains(category)
+                val isEnabled = isSelected || selectedCategories.size < MAX_CATEGORIES
                 CategoryChip(
                     category = category,
-                    selectedCategories = selectedCategories,
+                    isSelected = isSelected,
+                    isEnabled = isEnabled,
                     onCategorySelected = onCategorySelected,
                     onCategoryDeselected = onCategoryDeselected
                 )
@@ -43,13 +46,11 @@ fun CategorySelectionRow(
 @Composable
 private fun CategoryChip(
     category: Category,
-    selectedCategories: Set<Category>,
+    isSelected: Boolean,
+    isEnabled: Boolean,
     onCategorySelected: (Category) -> Unit,
     onCategoryDeselected: (Category) -> Unit
 ) {
-    val isSelected = selectedCategories.contains(category)
-    val isEnabled = isSelected || selectedCategories.size < MAX_CATEGORIES
-
     Chip(
         text = category.name,
         painter = painterResource(Res.drawable.ic_edit),
@@ -61,7 +62,7 @@ private fun CategoryChip(
         onClick = {
             when {
                 isSelected -> onCategoryDeselected(category)
-                selectedCategories.size < MAX_CATEGORIES -> onCategorySelected(category)
+                isEnabled -> onCategorySelected(category)
             }
         },
     )
