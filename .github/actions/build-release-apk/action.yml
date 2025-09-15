@@ -34,6 +34,7 @@ runs:
     - name: Install ImageMagick 7
       shell: bash
       run: |
+        sudo apt-get update && sudo apt-get install -y libfuse2 
         wget https://download.imagemagick.org/ImageMagick/download/binaries/magick
         chmod +x magick
         ./magick
