@@ -39,6 +39,7 @@ runs:
         chmod +x magick
         sudo mv magick /usr/bin/
         sudo rm /usr/bin/magick
+        magick -version
 
 
     - name: Make gradlew executable
