@@ -43,7 +43,6 @@ import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
 import net.thechance.mena.designsystem.presentation.component.segment.Segment
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.math.roundToInt
 
@@ -70,7 +69,7 @@ fun ManageTrendsScreen(
 }
 
 @Composable
-fun ManageTrendsContent(
+private fun ManageTrendsContent(
     state: ManageTrendsUiState,
     listener: ManageTrendsInteractionListener,
 ) {
@@ -86,14 +85,14 @@ fun ManageTrendsContent(
                 MenaIcon(
                     modifier = Modifier.clickable { listener.onBackClick() },
                     painter = painterResource(Res.drawable.ic_arrow_left),
-                    contentDescription = null
+                    contentDescription = "Back arrow"
                 )
             },
             title = "Manage my trends",
         )
 
         AsyncImage(
-            model = state.profileImageUrl.ifEmpty { "placeholder_url" },
+            model = state.profileImageUrl,
             contentDescription = "Profile Image",
             modifier = Modifier
                 .padding(top = 32.dp)

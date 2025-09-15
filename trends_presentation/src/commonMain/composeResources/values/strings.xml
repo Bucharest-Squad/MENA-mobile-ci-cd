@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">MENA</string>
+    <string name="app_coin_icon">App Coin Icon</string>
+    <string name="cancel_dialog_icon">Cancel Dialog Icon</string>
+
+    <string name="manage_trends_title">Manage my trends</string>
+    <string name="profile_image_desc">Profile Image</string>
+    <string name="my_trends">My Trends</string>
+    <string name="favorite">Favorite</string>
+    <string name="trend_image_desc">Trend Image</string>
+</resources>
