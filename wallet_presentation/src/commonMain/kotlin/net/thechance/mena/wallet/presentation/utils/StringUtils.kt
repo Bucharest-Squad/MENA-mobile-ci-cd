@@ -1,4 +1,4 @@
-package net.thechance.mena.wallet.presentation.util
+package net.thechance.mena.wallet.presentation.utils
 
 import kotlin.math.abs
 

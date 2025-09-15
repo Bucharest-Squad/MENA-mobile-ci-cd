@@ -1,4 +1,4 @@
-package net.thechance.mena.wallet.presentation.util
+package net.thechance.mena.wallet.presentation.utils
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -12,12 +12,10 @@ import kotlinx.coroutines.withContext
 @Composable
 fun <T> ObserveAsEffect(
     effect: Flow<T>,
-    key1: Any? = null,
-    key2: Any? = null,
     onEvent: (T) -> Unit,
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
-    LaunchedEffect(key1 = lifecycleOwner.lifecycle, key1, key2) {
+    LaunchedEffect(key1 = lifecycleOwner.lifecycle) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
             withContext(Dispatchers.Main.immediate) {
                 effect.collect(onEvent)

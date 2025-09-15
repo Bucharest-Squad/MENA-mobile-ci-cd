@@ -1,16 +1,11 @@
 package net.thechance.mena.wallet.presentation.screen.wallet
 
-import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
 import net.thechance.mena.wallet.domain.repository.BalanceRepository
 import net.thechance.mena.wallet.presentation.base.BaseViewModel
 
 class WalletViewModel(
     private val balanceRepository: BalanceRepository
-): BaseViewModel<WalletUiState, WalletUiEvent>(WalletUiState()), WalletInteractionListener {
+): BaseViewModel<WalletUiState, WalletEffect>(WalletUiState()), WalletInteractionListener {
 
     init {
         getBalance()
@@ -39,6 +34,6 @@ class WalletViewModel(
     }
 
     override fun onBackClick() {
-        sendEffect(WalletUiEvent.NavigateBack)
+        sendEffect(WalletEffect.NavigateBack)
     }
 }
