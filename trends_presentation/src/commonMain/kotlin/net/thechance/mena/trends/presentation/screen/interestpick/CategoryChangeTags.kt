@@ -32,6 +32,7 @@ import mena.trends_presentation.generated.resources.choose_interests
 import mena.trends_presentation.generated.resources.help_text
 import mena.trends_presentation.generated.resources.save_change
 import net.thechance.mena.trends.presentation.shared.component.CategoryItem
+import net.thechance.mena.trends.presentation.shared.util.ObserveAsEffect
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -41,12 +42,10 @@ fun CategoryScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
-        viewModel.effect.collect { effect ->
-            when (effect) {
-                is CategoryPickUiEffect.NavigateBack -> navController.popBackStack()
-                is CategoryPickUiEffect.NavigateToSave -> navController.navigate("next_screen")
-            }
+    ObserveAsEffect(viewModel.effect) { effect ->
+        when (effect) {
+            is CategoryPickUiEffect.NavigateBack -> navController.popBackStack()
+            is CategoryPickUiEffect.NavigateToSave -> navController.navigate("next_screen")
         }
     }
 
