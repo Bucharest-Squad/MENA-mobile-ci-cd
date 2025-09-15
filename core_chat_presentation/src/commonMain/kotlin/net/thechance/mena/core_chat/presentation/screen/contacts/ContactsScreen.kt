@@ -12,6 +12,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import app.cash.paging.compose.LazyPagingItems
@@ -36,6 +37,20 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun ContactsScreen(viewModel: ContactsViewModel = koinViewModel()) {
     val state by viewModel.state.collectAsState()
+    val navController = LocalNavController.current
+
+    LaunchedEffect(Unit) {
+        snapshotFlow { navController.currentBackStackEntry }
+            .collect { backStackEntry ->
+                val isSync =
+                    backStackEntry?.savedStateHandle?.get<Boolean>("is_sync") == true
+                if (isSync) {
+                    viewModel.getContacts()
+                    backStackEntry?.savedStateHandle?.remove<Boolean>("is_sync")
+                }
+            }
+    }
+
     ContactsEffectsHandler(effects = viewModel.effect)
 
     ContactsContent(
@@ -50,7 +65,8 @@ private fun ContactsContent(
     interactionListener: ContactsScreenInteractionListener
 ) {
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .background(color = Theme.colorScheme.background.surface)
             .statusBarsPadding()
             .navigationBarsPadding()
