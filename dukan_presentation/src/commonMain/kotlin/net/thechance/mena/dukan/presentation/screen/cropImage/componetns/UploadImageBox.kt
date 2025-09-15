@@ -32,8 +32,10 @@ import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
 import kotlinx.coroutines.launch
 import mena.dukan_presentation.generated.resources.Res
 import mena.dukan_presentation.generated.resources.click_to_upload
+import mena.dukan_presentation.generated.resources.dukan_image
 import mena.dukan_presentation.generated.resources.ic_add_image
 import mena.dukan_presentation.generated.resources.ic_edit
+import mena.dukan_presentation.generated.resources.upload_dukan_image
 import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
 import net.thechance.mena.designsystem.presentation.component.image.MenaImage
 import net.thechance.mena.designsystem.presentation.component.text.MenaText
@@ -92,7 +94,7 @@ fun UploadImageContainer(
             if (image != null) {
                 Image(
                     bitmap = image,
-                    contentDescription = "Upload The image",
+                    contentDescription = stringResource(Res.string.dukan_image),
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )
@@ -100,7 +102,7 @@ fun UploadImageContainer(
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     MenaImage(
                         painter = painterResource(Res.drawable.ic_add_image),
-                        contentDescription = "Upload The image"
+                        contentDescription = stringResource(Res.string.upload_dukan_image)
                     )
                     MenaText(
                         text = stringResource(Res.string.click_to_upload),
