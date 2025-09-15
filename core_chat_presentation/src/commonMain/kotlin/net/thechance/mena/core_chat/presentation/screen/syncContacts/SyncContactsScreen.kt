@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.icerock.moko.permissions.compose.BindEffect
 import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
+import kotlinx.coroutines.flow.collectLatest
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.ic_arrow_left
 import mena.core_chat_presentation.generated.resources.sync_contacts
@@ -49,16 +50,20 @@ fun SyncContactsScreen() {
     val state by viewModel.state.collectAsState()
     val navController = LocalNavController.current
 
-    LaunchedEffect(state.isSyncFinished) {
-        if (state.isSyncFinished) {
-            if (state.isFirstSynced) {
-                navController.popBackStack()
-                navController.navigate(ContactsRoute)
-            } else {
-                navController.previousBackStackEntry
-                    ?.savedStateHandle
-                    ?.set("is_sync", true)
-                navController.popBackStack()
+    LaunchedEffect(Unit) {
+        viewModel.effect.collectLatest { effect ->
+            when (effect) {
+                SyncContactsScreenEffect.NavigateToContacts -> {
+                    navController.popBackStack()
+                    navController.navigate(ContactsRoute)
+                }
+
+                SyncContactsScreenEffect.NavigateBackWithResult -> {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("is_sync", true)
+                    navController.popBackStack()
+                }
             }
         }
     }
