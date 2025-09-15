@@ -21,8 +21,8 @@ import net.thechance.mena.designsystem.presentation.component.text.MenaText
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.trends.presentation.screen.interestpick.CategoryPickScreenUiState.CategoryUiState
-import net.thechance.mena.trends.presentation.screen.interestpick.Selectable
 import net.thechance.mena.trends.presentation.shared.component.modifier.noRippleClickable
+import net.thechance.mena.trends.presentation.shared.util.Selectable
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
