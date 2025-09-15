@@ -17,9 +17,7 @@ jobs:
       - name: Get branch name and validate
         run: |
           if [[ "${GITHUB_EVENT_NAME}" == "create" ]]; then
-            # full ref comes in github.event.ref (e.g. refs/heads/feature/CHT-32-test)
-            BRANCH_NAME="${{ github.event.ref }}"
-            BRANCH_NAME="${BRANCH_NAME#refs/heads/}"
+            BRANCH_NAME="${GITHUB_REF_NAME}"
           else
             BRANCH_NAME="${GITHUB_REF##*/}"
           fi
@@ -37,7 +35,7 @@ jobs:
               "https://api.github.com/repos/${{ github.repository }}/git/refs/heads/$BRANCH_NAME"
 
             echo "✅ Invalid branch deleted successfully."
-            exit 0
+            exit 0   # <-- mark success instead of failure
           fi
 
           echo "✅ Branch name is valid."
