@@ -16,20 +16,20 @@ class ManageTrendsViewModel(
     ManageTrendsInteractionListener {
 
     init {
-        loadReels()
+        getReels()
     }
 
-    private fun loadReels() {
+    private fun getReels() {
         tryToExecute(
             block = { repository.getAllReels() },
-            onSuccess = ::onHandleLoadReelsSuccess,
-            onError = ::onHandleError,
+            onSuccess = ::onGetReelsSuccess,
+            onError = {},
             onStart = { updateState { copy(isLoading = true) } },
             onEnd = { updateState { copy(isLoading = false) } }
         )
     }
 
-    private fun onHandleLoadReelsSuccess(reels: List<Reel>) {
+    private fun onGetReelsSuccess(reels: List<Reel>) {
         val uiReals = reels.map { it.toUiState() }
         updateState { copy(isLoading = false, reels = uiReals) }
     }
@@ -43,11 +43,4 @@ class ManageTrendsViewModel(
         sendEffect(ManageTrendsUiEffect.NavigateBack)
     }
 
-    private fun onHandleError(throwable: Throwable) {
-        val errorMessage = when (throwable) {
-            // TODO: exceptions
-            else -> null
-        }
-        updateState { copy(errorMessage = errorMessage) }
-    }
 }
