@@ -104,14 +104,25 @@ class CreateDukanViewModel :
 
     override fun onCategorySelected(category: Category): Boolean {
         val currentState = state.value
-        if (currentState.selectedCategories.size < MAX_CATEGORIES) {
-            updateState {
-                copy(selectedCategories = selectedCategories + category)
-            }
-            updateNextButtonEnableState()
-            return true
+        
+        if (!canSelectMoreCategories(currentState)) {
+            return false
         }
-        return false
+        
+        addCategoryToSelection(category)
+        
+        updateNextButtonEnableState()
+        return true
+    }
+
+    private fun canSelectMoreCategories(currentState: CreateDukanUiState): Boolean {
+        return currentState.selectedCategories.size < MAX_CATEGORIES
+    }
+
+    private fun addCategoryToSelection(category: Category) {
+        updateState {
+            copy(selectedCategories = selectedCategories + category)
+        }
     }
 
     override fun onCategoryDeselected(category: Category): Boolean {
@@ -124,7 +135,7 @@ class CreateDukanViewModel :
 
     override fun onCategoryEnabled(category: Category): Boolean {
         val currentState = state.value
-        return currentState.selectedCategories.size < MAX_CATEGORIES ||
+        return canSelectMoreCategories(currentState) || 
                 currentState.selectedCategories.contains(category)
     }
 
