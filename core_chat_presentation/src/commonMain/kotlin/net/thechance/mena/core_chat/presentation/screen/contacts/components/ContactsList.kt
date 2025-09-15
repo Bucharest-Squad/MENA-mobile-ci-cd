@@ -16,11 +16,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.LazyPagingItems
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.ic_warning
 import mena.core_chat_presentation.generated.resources.no_contacts_message
 import mena.core_chat_presentation.generated.resources.refresh_contacts_message
-import net.thechance.mena.core_chat.presentation.screen.contacts.ContactUi
+import net.thechance.mena.core_chat.presentation.screen.contacts.ContactUiModel
 import net.thechance.mena.core_chat.presentation.screen.syncContacts.components.PhoneIcon
 import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
 import net.thechance.mena.designsystem.presentation.component.text.MenaText
@@ -30,10 +31,10 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun ContactsList(
-    contacts: List<ContactUi>
+    contacts: LazyPagingItems<ContactUiModel>
 ) {
     AnimatedContent(
-        targetState = contacts.isEmpty(),
+        targetState = contacts.itemCount == 0,
         modifier = Modifier.fillMaxSize()
     ) { isEmpty ->
         if (isEmpty) EmptyContactsColumn()
@@ -43,17 +44,23 @@ fun ContactsList(
                 verticalArrangement = Arrangement.spacedBy(Theme.spacing._16),
                 contentPadding = PaddingValues(vertical = Theme.spacing._8)
             ) {
-                items(contacts.size) { contact ->
-                    ContactItem(
-                        contact = contacts[contact],
-                        onContactClick = { /* //TODO: navigate to chat screen */ },
-                    )
+                items(
+                    count = contacts.itemCount,
+                    key = { index -> contacts[index]?.phoneNumber ?: index }
+                ) { index ->
+                    val contact = contacts[index]
+
+                    contact?.let {
+                        ContactItem(
+                            contact = it,
+                            onContactClick = { /* //TODO: navigate to chat screen */ },
+                        )
+                    }
                 }
             }
         }
     }
 }
-
 @Composable
 private fun EmptyContactsColumn() {
     Column(

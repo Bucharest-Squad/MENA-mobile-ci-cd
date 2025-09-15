@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.ic_circular_mena_disabled
 import mena.core_chat_presentation.generated.resources.ic_circular_mena_enabled
-import net.thechance.mena.core_chat.presentation.screen.contacts.ContactUi
+import net.thechance.mena.core_chat.presentation.screen.contacts.ContactUiModel
 import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
 import net.thechance.mena.designsystem.presentation.component.text.MenaText
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
@@ -26,7 +26,7 @@ import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun ContactItem(
-    contact: ContactUi,
+    contact: ContactUiModel,
     onContactClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -65,7 +65,7 @@ fun ContactItem(
 
         MenaIcon(
             painter = painterResource(
-                if (contact.isMenaMember)
+                if (contact.isMenaUser)
                     Res.drawable.ic_circular_mena_enabled
                 else
                     Res.drawable.ic_circular_mena_disabled

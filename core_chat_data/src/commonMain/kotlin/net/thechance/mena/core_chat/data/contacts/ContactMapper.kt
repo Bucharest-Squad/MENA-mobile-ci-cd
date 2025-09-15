@@ -23,7 +23,8 @@ private fun List<ContactDto>.toListOfContact(): List<Contact> {
 
 private fun ContactDto.toDomain(): Contact {
     return Contact(
-        name = name.orEmpty(),
+        firstName = firstName.orEmpty(),
+        lastName = lastName.orEmpty(),
         phone = phoneNumber.orEmpty(),
         isMenaUser = isMenaMember == true,
         imageUrl = imageUrl
