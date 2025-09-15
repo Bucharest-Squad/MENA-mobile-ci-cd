@@ -9,19 +9,23 @@ jobs:
   enforce-branch-name:
     runs-on: ubuntu-latest
     permissions:
-      contents: write   # required to delete branches
+      contents: write
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0   # needed to check remote branches
+
       - name: Get branch name and validate
         run: |
-          # Get branch name
           BRANCH_NAME="${GITHUB_REF##*/}"
           echo "Branch: $BRANCH_NAME"
 
-          # Check if branch is new (first push)
-          if [[ "${GITHUB_EVENT_BEFORE}" == "0000000000000000000000000000000000000000" ]]; then
-            IS_NEW_BRANCH=true
-          else
+          # Check if branch already exists on remote
+          if git ls-remote --heads origin "$BRANCH_NAME" | grep -q "$BRANCH_NAME"; then
             IS_NEW_BRANCH=false
+          else
+            IS_NEW_BRANCH=true
           fi
 
           # Allowed prefixes and Jira keys
