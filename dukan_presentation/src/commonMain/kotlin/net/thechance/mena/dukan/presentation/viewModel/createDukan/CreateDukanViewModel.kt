@@ -99,7 +99,7 @@ class CreateDukanViewModel :
     }
 
     override fun onCategorySelected(category: Category) {
-        if (state.value.selectedCategories.size < 3) {
+        if (state.value.selectedCategories.size < MAX_CATEGORIES) {
             updateState { copy(selectedCategories = state.value.selectedCategories + category) }
         }
         updateNextButtonEnableState()
@@ -192,7 +192,7 @@ class CreateDukanViewModel :
 
     private fun isBasicInformationStepValid(state: CreateDukanUiState): Boolean {
         return state.name.isNotBlank() &&
-                state.selectedCategories.size in 1..3 &&
+                state.selectedCategories.size in MIN_CATEGORIES..MAX_CATEGORIES &&
                 !state.showSnackBar
     }
 
@@ -212,5 +212,7 @@ class CreateDukanViewModel :
         private const val MIN_ZOOM = 1f
         private const val MAX_ZOOM = 4f
         private const val ZOOM_STEP = 0.25f
+        private const val MIN_CATEGORIES = 1
+        private const val MAX_CATEGORIES = 3
     }
 }

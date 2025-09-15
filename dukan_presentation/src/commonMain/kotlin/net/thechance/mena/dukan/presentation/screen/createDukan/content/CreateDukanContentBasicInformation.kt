@@ -37,6 +37,8 @@ import net.thechance.mena.dukan.presentation.viewModel.createDukan.CreateDukanUi
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
+private const val MAX_CATEGORIES = 3
+
 @Composable
 fun CreateDukanContentBasicInformation(
     state: CreateDukanUiState,
@@ -162,7 +164,7 @@ private fun CategoryChip(
     listener: CreateDukanInteractionListener
 ) {
     val isSelected = state.selectedCategories.contains(category)
-    val isEnabled = isSelected || state.selectedCategories.size < 3
+    val isEnabled = isSelected || state.selectedCategories.size < MAX_CATEGORIES
 
     Chip(
         text = category.name,
@@ -175,7 +177,7 @@ private fun CategoryChip(
         onClick = {
             when {
                 isSelected -> listener.onCategoryDeselected(category)
-                state.selectedCategories.size < 3 -> listener.onCategorySelected(category)
+                state.selectedCategories.size < MAX_CATEGORIES -> listener.onCategorySelected(category)
             }
         },
     )
