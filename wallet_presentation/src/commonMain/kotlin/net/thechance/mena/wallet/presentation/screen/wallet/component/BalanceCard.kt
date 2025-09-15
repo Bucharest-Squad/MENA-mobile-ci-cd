@@ -33,6 +33,7 @@ import mena.wallet_presentation.generated.resources.img_silver
 import mena.wallet_presentation.generated.resources.silver_coin
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import net.thechance.mena.wallet.presentation.util.formatBalance
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -105,7 +106,7 @@ fun BalanceCard(
                 .align(Alignment.BottomCenter),
         ) {
             Text(
-                text = balance.toString(),
+                text = formatBalance(balance),
                 style = Theme.typography.headline.medium,
                 color = Theme.colorScheme.shadePrimary,
                 modifier = Modifier.padding(top = 45.dp)

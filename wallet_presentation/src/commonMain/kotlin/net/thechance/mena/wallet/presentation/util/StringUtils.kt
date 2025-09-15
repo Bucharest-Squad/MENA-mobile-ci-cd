@@ -1,6 +1,16 @@
 package net.thechance.mena.wallet.presentation.util
 
-fun formatBalance(balance: Double): String {
-        return String.format(Locale.US, "%,.2f", balance)
+import kotlin.math.abs
 
+fun formatBalance(balance: Double): String {
+    val wholePart = balance.toLong()
+    val decimalPart = ((abs(balance) % 1) * 100).toLong()
+
+    val wholeString = wholePart.toString()
+        .reversed()
+        .chunked(3)
+        .joinToString(",")
+        .reversed()
+
+    return "$wholeString.${decimalPart.toString().padStart(2, '0')}"
 }

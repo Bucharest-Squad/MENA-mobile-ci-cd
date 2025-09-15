@@ -17,6 +17,7 @@ class WalletViewModel(
     }
 
     private fun getBalance() {
+        //TODO: get real user id
         tryToExecute(
             onStart = ::onGetBalanceStart,
             callee = { balanceRepository.getBalance(userId = 1) },
