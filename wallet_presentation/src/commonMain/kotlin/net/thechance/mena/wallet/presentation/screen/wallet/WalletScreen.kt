@@ -65,7 +65,7 @@ private fun WalletContent(
                     contentDescription = stringResource(Res.string.back_button)
                 )
             },
-            onLeadingClick = interactionListener::onBackClick,
+            onLeadingClick = interactionListener::onBackClicked,
         )
 
         AnimatedContent(
@@ -123,7 +123,7 @@ private fun WalletScreenPreview() {
         WalletContent(
             state = WalletUiState(isLoading = true),
             interactionListener = object : WalletInteractionListener {
-                override fun onBackClick() {}
+                override fun onBackClicked() {}
             }
         )
     }

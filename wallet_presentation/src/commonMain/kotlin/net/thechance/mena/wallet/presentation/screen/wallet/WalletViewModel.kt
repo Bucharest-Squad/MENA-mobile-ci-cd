@@ -33,7 +33,7 @@ class WalletViewModel(
         updateState { it.copy(isLoading = false) }
     }
 
-    override fun onBackClick() {
+    override fun onBackClicked() {
         sendEffect(WalletEffect.NavigateBack)
     }
 }
