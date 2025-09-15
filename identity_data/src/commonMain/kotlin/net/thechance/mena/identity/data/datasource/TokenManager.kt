@@ -8,7 +8,6 @@ import net.thechance.mena.identity.data.datautils.DataStoreConstants.REFRESH_TOK
 class TokenManager(
     private val settings: Settings = Settings()
 ) {
-
     fun saveAccessToken(accessToken: String) {
         settings.putString(ACCESS_TOKEN, accessToken)
     }
@@ -25,7 +24,4 @@ class TokenManager(
         return settings.getString(REFRESH_TOKEN, "")
     }
 
-    fun clearTokens() {
-        settings.clear()
-    }
 }
