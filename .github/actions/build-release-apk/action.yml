@@ -35,15 +35,9 @@ runs:
       shell: bash
       run: |
         sudo apt-get update && sudo apt-get install -y libfuse2
-        sudo apt-get remove -y imagemagick imagemagick-6.q16
-        sudo apt-get update
-        sudo apt-get install -y build-essential checkinstall
-        sudo apt-get install -y libx11-dev libxext-dev zlib1g-dev
-        sudo apt-get install -y libpng-dev libjpeg-dev libtiff-dev libwebp-dev
-        sudo apt-get install -y libfreetype6-dev libxml2-dev
         wget https://download.imagemagick.org/ImageMagick/download/binaries/magick
         chmod +x magick
-        export PATH=$PATH:.
+        mv magick /usr/local/bin/
         magick -version
         which magick
         
