@@ -31,6 +31,8 @@ import mena.wallet_presentation.generated.resources.Res
 import mena.wallet_presentation.generated.resources.current_balance
 import mena.wallet_presentation.generated.resources.img_silver
 import mena.wallet_presentation.generated.resources.silver_coin
+import net.thechance.mena.designsystem.presentation.component.image.MenaImage
+import net.thechance.mena.designsystem.presentation.component.text.MenaText
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.wallet.presentation.util.formatBalance
@@ -86,7 +88,7 @@ fun BalanceCard(
                 .padding(top = 12.dp)
                 .align(Alignment.TopCenter)
         ) {
-            Image(
+            MenaImage(
                 painter = painterResource(Res.drawable.img_silver),
                 contentDescription = stringResource(Res.string.silver_coin),
                 modifier = Modifier
@@ -105,13 +107,13 @@ fun BalanceCard(
                 .background(color = Theme.colorScheme.background.surface, shape = curvedShape)
                 .align(Alignment.BottomCenter),
         ) {
-            Text(
+            MenaText(
                 text = formatBalance(balance),
                 style = Theme.typography.headline.medium,
                 color = Theme.colorScheme.shadePrimary,
                 modifier = Modifier.padding(top = 45.dp)
             )
-            Text(
+            MenaText(
                 text = stringResource(Res.string.current_balance),
                 style = Theme.typography.label.extraSmall,
                 color = Theme.colorScheme.shadeSecondary,
