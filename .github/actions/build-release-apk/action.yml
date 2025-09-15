@@ -34,20 +34,9 @@ runs:
     - name: Install ImageMagick 7
       shell: bash
       run: |
-        sudo apt-get remove -y imagemagick imagemagick-6.q16
+        sudo add-apt-repository ppa:ubuntuhandbook1/imagemagick
         sudo apt-get update
-        sudo apt-get install -y build-essential checkinstall
-        sudo apt-get install -y libx11-dev libxext-dev zlib1g-dev
-        sudo apt-get install -y libpng-dev libjpeg-dev libtiff-dev libwebp-dev
-        sudo apt-get install -y libfreetype6-dev libxml2-dev
-        wget https://imagemagick.org/archive/ImageMagick.tar.gz
-        tar xvzf ImageMagick.tar.gz
-        cd ImageMagick-7.*
-        ./configure
-        make
-        sudo make install
-        sudo ldconfig
-        magick -version
+        sudo apt-get install imagemagick
 
 
     - name: Make gradlew executable
@@ -86,6 +75,6 @@ runs:
 
     - name: Set signed APK path to env
       run: |
-        APK_NAME="composeApp-${{ steps.normalize.outputs.build_type_lower }}-release-unsigned-signed.apk"
-        echo "SIGNED_APK_PATH=composeApp/build/outputs/apk/${{ steps.normalize.outputs.build_type_lower }}/release/$APK_NAME" >> $GITHUB_ENV
+        APK_NAME="composeApp-${{ steps.convert.outputs.build_type_lower }}-release-unsigned-signed.apk"
+        echo "SIGNED_APK_PATH=composeApp/build/outputs/apk/${{ steps.convert.outputs.build_type_lower }}/release/$APK_NAME" >> $GITHUB_ENV
       shell: bash
