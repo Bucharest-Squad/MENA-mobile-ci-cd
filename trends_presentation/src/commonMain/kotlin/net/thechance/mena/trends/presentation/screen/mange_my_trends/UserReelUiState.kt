@@ -3,6 +3,7 @@ package net.thechance.mena.trends.presentation.screen.mange_my_trends
 import org.jetbrains.compose.resources.StringResource
 
 data class UserReelUiState(
+    val id: Int = 0,
     val username: String = "",
     val thumbnail: String = "",
     val createdAt: String = "",

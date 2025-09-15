@@ -12,7 +12,9 @@ class UserReelViewModel(
     UserReelUiInteractionListener {
 
 
-    private fun updateLoading(isLoading: Boolean) = updateState { copy(isLoading = isLoading) }
+    private fun setLoadingTrue() = updateState { copy(isLoading = true) }
+
+    private fun setLoadingFalse() = updateState { copy(isLoading = false) }
 
     private fun handleError(throwable: Throwable) {
         val errorRes = when (throwable) {
