@@ -12,10 +12,12 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import mena.dukan_presentation.generated.resources.Res
+import mena.dukan_presentation.generated.resources.create
+import mena.dukan_presentation.generated.resources.create_new_dukan
 import mena.dukan_presentation.generated.resources.ic_arrow_left
+import mena.dukan_presentation.generated.resources.next
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
@@ -24,8 +26,8 @@ import net.thechance.mena.dukan.presentation.viewModel.createDukan.CreateDukanIn
 import net.thechance.mena.dukan.presentation.viewModel.createDukan.CreateDukanUiState
 import net.thechance.mena.dukan.presentation.viewModel.createDukan.CreateDukanUiState.CreateDukanStep
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CreateDukanContent(
     state: CreateDukanUiState,
@@ -51,7 +53,7 @@ fun CreateDukanContent(
             .systemBarsPadding()
     ) {
         AppBar(
-            title = "Create New Dukan",
+            title = stringResource(Res.string.create_new_dukan),
             onLeadingClick = listener::onBackClicked,
             leadingContent = {
                 Icon(
@@ -86,9 +88,9 @@ fun CreateDukanContent(
                     .fillMaxWidth()
                     .padding(Theme.spacing._16),
                 text = if (state.currentStep == CreateDukanStep.SELECT_STYLE)
-                    "Create"
+                    stringResource(Res.string.create)
                 else
-                    "Next",
+                    stringResource(Res.string.next),
                 onClick = listener::onButtonClicked,
                 trailingIcon = painterResource(Res.drawable.ic_arrow_left),
                 isEnabled = state.isButtonEnabled,

@@ -2,13 +2,12 @@ package net.thechance.mena.dukan.presentation.screen.createDukan.content
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import mena.dukan_presentation.generated.resources.ImageSize
+import mena.dukan_presentation.generated.resources.image_size
 import mena.dukan_presentation.generated.resources.Res
 import mena.dukan_presentation.generated.resources.dukan_image
 import mena.dukan_presentation.generated.resources.image_size_description
@@ -25,7 +24,6 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun UploadDukanImageContent(
     state: CreateDukanUiState,
@@ -43,43 +41,50 @@ fun UploadDukanImageContent(
             )
         }
     } else {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Theme.colorScheme.background.surface)
-                .padding(horizontal = Theme.spacing._16)
-        ) {
-            item {
-                MenaText(
-                    text = stringResource(Res.string.dukan_image),
-                    style = Theme.typography.title.medium,
-                    color = Theme.colorScheme.shadePrimary,
-                )
-            }
-            item {
-                MenaText(
-                    text = stringResource(Res.string.image_size_description),
-                    style = Theme.typography.body.small,
-                    color = Theme.colorScheme.shadeSecondary,
-                )
-            }
-            item {
-                MenaText(
-                    text = stringResource(Res.string.ImageSize),
-                    style = Theme.typography.title.small,
-                    color = Theme.colorScheme.shadePrimary,
-                    modifier = Modifier.padding(top = Theme.spacing._16, bottom = Theme.spacing._4)
-                )
-            }
-            item {
-                UploadImageContainer(
-                    onClick = interactionListener::onClickUploadImage,
-                    onBottomIconClick = interactionListener::onClickUploadImage,
-                    showBottomIcon = state.isEditIconVisible,
-                    image = state.croppedImage,
-                )
-            }
-        }
+        UploadDukanImageSection(
+            state,
+            interactionListener
+        )
+    }
+}
+
+
+@Composable
+private fun UploadDukanImageSection(
+    state: CreateDukanUiState,
+    interactionListener: CreateDukanInteractionListener
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Theme.colorScheme.background.surface)
+            .padding(horizontal = Theme.spacing._16)
+    ) {
+        MenaText(
+            text = stringResource(Res.string.dukan_image),
+            style = Theme.typography.title.medium,
+            color = Theme.colorScheme.shadePrimary,
+        )
+        MenaText(
+            text = stringResource(Res.string.image_size_description),
+            style = Theme.typography.body.small,
+            color = Theme.colorScheme.shadeSecondary,
+        )
+        MenaText(
+            text = stringResource(Res.string.image_size),
+            style = Theme.typography.title.small,
+            color = Theme.colorScheme.shadePrimary,
+            modifier = Modifier.padding(
+                top = Theme.spacing._16,
+                bottom = Theme.spacing._4
+            )
+        )
+        UploadImageContainer(
+            onClick = interactionListener::onClickUploadImage,
+            onBottomIconClick = interactionListener::onClickUploadImage,
+            showBottomIcon = state.isEditIconVisible,
+            image = state.croppedImage,
+        )
     }
 }
 

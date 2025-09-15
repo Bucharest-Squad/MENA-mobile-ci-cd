@@ -35,8 +35,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun ImageCropScreen(
     selectedImage: ImageSrc?,
     onImageCrop: (ImageBitmap) -> Unit,
-    viewModel: ImageCropViewModel = ImageCropViewModel(),
-
+    viewModel: ImageCropViewModel = ImageCropViewModel()
     ) {
     val state = viewModel.state.collectAsStateWithLifecycle()
 
