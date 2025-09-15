@@ -16,6 +16,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import mena.dukan_presentation.generated.resources.Res
+import mena.dukan_presentation.generated.resources.back_arrow
 import mena.dukan_presentation.generated.resources.create_new_dukan
 import mena.dukan_presentation.generated.resources.dukan_name_is_already_exist
 import mena.dukan_presentation.generated.resources.ic_arrow_left
@@ -67,7 +68,7 @@ fun CreateDukanContent(
                 leadingContent = {
                     Icon(
                         painter = painterResource(Res.drawable.ic_arrow_left),
-                        contentDescription = "Back Arrow"
+                        contentDescription = stringResource(Res.string.back_arrow),
                     )
                 }
             )
