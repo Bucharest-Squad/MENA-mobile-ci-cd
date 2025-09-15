@@ -20,9 +20,9 @@ import net.thechance.mena.designsystem.presentation.component.button.radioButton
 import net.thechance.mena.designsystem.presentation.component.text.MenaText
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import net.thechance.mena.trends.presentation.screen.interestpick.CategoryPickScreenUiState.CategoryUiState
+import net.thechance.mena.trends.presentation.screen.interestpick.Selectable
 import net.thechance.mena.trends.presentation.shared.component.modifier.noRippleClickable
-import net.thechance.mena.trends.presentation.shared.model.CategoryUiState
-import net.thechance.mena.trends.presentation.shared.model.Selectable
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -40,7 +40,7 @@ fun CategoryItem(
         modifier = modifier
             .clip(RoundedCornerShape(Theme.radius.full))
             .background(color = Theme.colorScheme.primary.onPrimary)
-            .noRippleClickable { category.value.id?.let { onClick(it) } }
+            .noRippleClickable { category.uiState.id?.let { onClick(it) } }
             .padding(10.dp)
     ) {
         Row(
@@ -48,19 +48,19 @@ fun CategoryItem(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             MenaText(
-                text = category.value.emoji,
+                text = category.uiState.emoji,
                 style = Theme.typography.label.extraSmall,
                 fontSize = 14.sp
             )
             MenaText(
-                text = category.value.name,
+                text = category.uiState.name,
                 color = textColor,
                 style = Theme.typography.label.extraSmall // TODO: Should be Label/XSmall
             )
         }
         RadioButton(
             isSelected = category.isSelected,
-            onClick = { category.value.id?.let { onClick(it) } },
+            onClick = { category.uiState.id?.let { onClick(it) } },
         )
     }
 }
