@@ -29,6 +29,7 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.ktor.client.android)
         }
         commonMain.dependencies {
             implementation(projects.coreChatApi)
@@ -41,8 +42,11 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
-            implementation(libs.coil.compose)
 
+            //coil
+            implementation(libs.coil.compose)
+            //implementation(libs.coil.compose.core)
+            implementation(libs.coil.network.ktor)
 
             // Serialization
             implementation(libs.kotlin.serialization)
@@ -61,6 +65,7 @@ kotlin {
             implementation(libs.moko.permissions.compose)
         }
         iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
 
         }
     }
