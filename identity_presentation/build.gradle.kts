@@ -41,14 +41,8 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
 
-            implementation(libs.koin.compose)
-            implementation(libs.koin.core)
-            implementation(libs.androidx.lifecycle.viewmodelCompose)
-            implementation(libs.androidx.lifecycle.runtimeCompose)
-
-            implementation(projects.identityData)
-
-
+            implementation(libs.bundles.koin)
+            implementation(libs.bundles.voyager)
         }
         iosMain.dependencies {
 
