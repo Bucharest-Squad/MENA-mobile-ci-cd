@@ -47,7 +47,7 @@ runs:
         versionName: 1.0.${{ github.run_number }}
 
     - name: Generate unsigned APK
-      run: ./gradlew :composeApp:assemble${{ inputs.BUILD_TYPE }}Release --build-cache -x test -x lint
+      run: ./gradlew :composeApp:assemble${{ inputs.build-type }}Release --build-cache -x test -x lint
       shell: bash
 
 
@@ -63,5 +63,5 @@ runs:
         BUILD_TOOLS_VERSION: "35.0.0"
 
     - name: Set signed APK path to env
-      run: echo "SIGNED_APK_PATH=composeApp/build/outputs/apk/release/composeApp-release-unsigned-signed.apk" >> $GITHUB_ENV
+      run: echo "SIGNED_APK_PATH=composeApp/build/outputs/apk/${{ inputs.build-type | toLowerCase }}/release/composeApp-release-unsigned-signed.apk" >> $GITHUB_ENV
       shell: bash
