@@ -185,15 +185,15 @@ private fun SegmentSection(
         }
     }
 }
-@Preview
-@Composable
-private fun ManageTrendsContentPreview() {
-    ManageTrendsContent(
-        state = ManageTrendsUiState.preview(),
-        listener = object : ManageTrendsInteractionListener {
-            override fun onRealTrendClick(reelId: Int) { }
-            override fun onBackClick() {  }
-        }
-    )
-}
-
+//@Preview
+//@Composable
+//private fun ManageTrendsContentPreview() {
+//    ManageTrendsContent(
+//        state = ManageTrendsUiState.preview(),
+//        listener = object : ManageTrendsInteractionListener {
+//            override fun onRealTrendClick(reelId: Int) { }
+//            override fun onBackClick() {  }
+//        }
+//    )
+//}
+//

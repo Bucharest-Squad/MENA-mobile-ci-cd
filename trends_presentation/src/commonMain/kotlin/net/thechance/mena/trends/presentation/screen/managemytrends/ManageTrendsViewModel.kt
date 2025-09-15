@@ -3,9 +3,13 @@ package net.thechance.mena.trends.presentation.screen.managemytrends
 import net.thechance.mena.trends.domain.entity.Reel
 import net.thechance.mena.trends.domain.repository.ReelRepository
 import net.thechance.mena.trends.presentation.shared.base.BaseViewModel
+import org.koin.android.annotation.KoinViewModel
+import org.koin.core.annotation.Provided
 
+
+@KoinViewModel
 class ManageTrendsViewModel(
-    private val repository: ReelRepository
+   @Provided private val repository: ReelRepository
 ) : BaseViewModel<ManageTrendsUiState, ManageTrendsUiEffect>(
     initialState = ManageTrendsUiState(isLoading = true)
 ), ManageTrendsInteractionListener {
