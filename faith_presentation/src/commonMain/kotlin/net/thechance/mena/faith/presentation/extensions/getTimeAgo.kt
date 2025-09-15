@@ -15,50 +15,56 @@ import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
+data class TimeAgoData(val value: Int, val unit: TimeUnit)
+
+enum class TimeUnit {
+    SECONDS, MINUTES, HOURS, DAYS, WEEKS, MONTHS, YEARS
+}
+
 @OptIn(ExperimentalTime::class)
 @Composable
 fun Instant.getTimeAgo(): String {
-    val now: Instant = Clock.System.now()
+    val timeAgoData = calculateTimeAgo()
+
+    return when (timeAgoData.unit) {
+        TimeUnit.SECONDS -> pluralStringResource(Res.plurals.time_seconds_ago, timeAgoData.value, timeAgoData.value)
+        TimeUnit.MINUTES -> pluralStringResource(Res.plurals.time_minutes_ago, timeAgoData.value, timeAgoData.value)
+        TimeUnit.HOURS -> pluralStringResource(Res.plurals.time_hours_ago, timeAgoData.value, timeAgoData.value)
+        TimeUnit.DAYS -> pluralStringResource(Res.plurals.time_days_ago, timeAgoData.value, timeAgoData.value)
+        TimeUnit.WEEKS -> pluralStringResource(Res.plurals.time_weeks_ago, timeAgoData.value, timeAgoData.value)
+        TimeUnit.MONTHS -> pluralStringResource(Res.plurals.time_months_ago, timeAgoData.value, timeAgoData.value)
+        TimeUnit.YEARS -> pluralStringResource(Res.plurals.time_years_ago, timeAgoData.value, timeAgoData.value)
+    }
+}
+
+@OptIn(ExperimentalTime::class)
+fun Instant.calculateTimeAgo(now: Instant = Clock.System.now()): TimeAgoData {
     val duration: Duration = now - this
 
     return when {
         duration.inWholeSeconds < TimeConstants.ONE_MINUTE_IN_SECONDS -> {
-            val seconds = duration.inWholeSeconds.toInt()
-            pluralStringResource(Res.plurals.time_seconds_ago, seconds, seconds)
+            TimeAgoData(duration.inWholeSeconds.toInt(), TimeUnit.SECONDS)
         }
-
         duration.inWholeMinutes < TimeConstants.ONE_HOUR_IN_MINUTES -> {
-            val minutes = duration.inWholeMinutes.toInt()
-            pluralStringResource(Res.plurals.time_minutes_ago, minutes, minutes)
+            TimeAgoData(duration.inWholeMinutes.toInt(), TimeUnit.MINUTES)
         }
-
         duration.inWholeHours < TimeConstants.ONE_DAY_IN_HOURS -> {
-            val hours = duration.inWholeHours.toInt()
-            pluralStringResource(Res.plurals.time_hours_ago, hours, hours)
+            TimeAgoData(duration.inWholeHours.toInt(), TimeUnit.HOURS)
         }
-
         duration.inWholeDays < TimeConstants.ONE_WEEK_IN_DAYS -> {
-            val days = duration.inWholeDays.toInt()
-            pluralStringResource(Res.plurals.time_days_ago, days, days)
+            TimeAgoData(duration.inWholeDays.toInt(), TimeUnit.DAYS)
         }
-
         duration.inWholeDays < TimeConstants.ONE_MONTH_IN_DAYS -> {
-            val weeks = (duration.inWholeDays / TimeConstants.ONE_WEEK_IN_DAYS).toInt()
-            pluralStringResource(Res.plurals.time_weeks_ago, weeks, weeks)
+            TimeAgoData((duration.inWholeDays / TimeConstants.ONE_WEEK_IN_DAYS).toInt(), TimeUnit.WEEKS)
         }
-
         duration.inWholeDays < TimeConstants.ONE_YEAR_IN_DAYS -> {
-            val months = (duration.inWholeDays / TimeConstants.ONE_MONTH_IN_DAYS).toInt()
-            pluralStringResource(Res.plurals.time_months_ago, months, months)
+            TimeAgoData((duration.inWholeDays / TimeConstants.ONE_MONTH_IN_DAYS).toInt(), TimeUnit.MONTHS)
         }
-
         else -> {
-            val years = (duration.inWholeDays / TimeConstants.ONE_YEAR_IN_DAYS).toInt()
-            pluralStringResource(Res.plurals.time_years_ago, years, years)
+            TimeAgoData((duration.inWholeDays / TimeConstants.ONE_YEAR_IN_DAYS).toInt(), TimeUnit.YEARS)
         }
     }
 }
-
 
 object TimeConstants {
     const val ONE_MINUTE_IN_SECONDS = 60
