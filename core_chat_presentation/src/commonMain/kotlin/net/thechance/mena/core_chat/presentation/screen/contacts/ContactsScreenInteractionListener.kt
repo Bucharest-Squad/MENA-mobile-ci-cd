@@ -1,0 +1,9 @@
+package net.thechance.mena.core_chat.presentation.screen.contacts
+
+interface ContactsScreenInteractionListener : ContactItemInteractionListener{
+    fun onNavigateBack()
+    fun onResyncClick()
+}
+interface ContactItemInteractionListener{
+    fun onContactClick(contactId: Int)
+}
