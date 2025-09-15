@@ -3,10 +3,10 @@ name: Deploy release APK from develop to Firebase
 on:
   push:
     branches:
-      - develop
+      - staging
 
 jobs:
-  deploy-release:
+  deploy-staging-release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo

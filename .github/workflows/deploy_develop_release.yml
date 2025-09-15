@@ -6,7 +6,7 @@ on:
       - develop
 
 jobs:
-  deploy-release:
+  deploy-develop-release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
