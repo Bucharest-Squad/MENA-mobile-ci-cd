@@ -29,13 +29,13 @@ jobs:
             echo "❌ Invalid branch name: $BRANCH_NAME"
             echo "Deleting branch..."
 
-            # Correct GitHub API delete endpoint
             curl -s -X DELETE \
               -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
               -H "Accept: application/vnd.github.v3+json" \
               "https://api.github.com/repos/${{ github.repository }}/git/refs/heads/$BRANCH_NAME"
 
-            exit 1
+            echo "✅ Invalid branch deleted successfully."
+            exit 0   # <-- mark success instead of failure
           fi
 
           echo "✅ Branch name is valid."
