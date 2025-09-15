@@ -30,11 +30,11 @@ class ManageTrendsViewModel(
     }
 
     private fun onHandleLoadReelsSuccess(reels: List<Reel>) {
-        val uiModels = reels.map { it.toUiState() }
-        updateState { copy(isLoading = false, reels = uiModels) }
+        val uiReals = reels.map { it.toUiState() }
+        updateState { copy(isLoading = false, reels = uiReals) }
     }
 
-    override fun onRealTrendClick(reelId: Int) {
+    override fun onReelItemClick(reelId: Int) {
         sendEffect(ManageTrendsUiEffect.NavigateToTrend(reelId))
 
     }

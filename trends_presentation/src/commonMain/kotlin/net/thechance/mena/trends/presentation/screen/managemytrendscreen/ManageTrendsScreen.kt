@@ -37,15 +37,14 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
 import mena.trends_presentation.generated.resources.Res
-import mena.trends_presentation.generated.resources.favorite
 import mena.trends_presentation.generated.resources.ic_arrow_left
 import mena.trends_presentation.generated.resources.manage_trends_title
-import mena.trends_presentation.generated.resources.my_trends
 import mena.trends_presentation.generated.resources.profile_image_desc
 import mena.trends_presentation.generated.resources.trend_image_desc
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
 import net.thechance.mena.designsystem.presentation.component.segment.Segment
+import net.thechance.mena.designsystem.presentation.component.text.MenaText
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -83,7 +82,7 @@ private fun ManageTrendsContent(
         modifier = Modifier
             .fillMaxSize()
             .windowInsetsPadding(WindowInsets.systemBars)
-            .background(Theme.colorScheme.background.surfaceLow)
+            .background(Theme.colorScheme.background.surface)
             .verticalScroll(rememberScrollState()),
     ) {
         AppBar(
@@ -107,10 +106,9 @@ private fun ManageTrendsContent(
                 .align(Alignment.CenterHorizontally),
             contentScale = ContentScale.Crop,
         )
-        Text(
+        MenaText(
             text = state.userName,
             style = Theme.typography.label.medium,
-            fontWeight = FontWeight.Bold,
             modifier = Modifier
                 .padding(top = 8.dp, bottom = 32.dp)
                 .align(Alignment.CenterHorizontally)
@@ -121,7 +119,7 @@ private fun ManageTrendsContent(
         } else {
             SegmentSection(
                 reels = state.reels,
-                onTrendClick = listener::onRealTrendClick,
+                onTrendClick = listener::onReelItemClick,
             )
         }
     }
