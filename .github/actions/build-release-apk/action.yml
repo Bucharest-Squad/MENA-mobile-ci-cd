@@ -39,10 +39,7 @@ runs:
         chmod +x magick
         sudo mv magick /usr/bin/
         sudo rm /usr/bin/magick
-        ls -l /usr/bin/magick
-        echo $PATH
-        /usr/bin/magick -version
-        
+        export PATH=$PATH:/usr/bin
         
 
 
