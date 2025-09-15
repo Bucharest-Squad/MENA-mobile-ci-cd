@@ -51,15 +51,15 @@ fun SyncContactsScreen() {
 
     LaunchedEffect(state.isSyncFinished) {
         if (state.isSyncFinished) {
-            navController.previousBackStackEntry
-                ?.savedStateHandle
-                ?.set("is_sync", true)
-
-            navController.popBackStack()
-            navController.navigate(ContactsRoute)
-//            navController.navigate(ContactsRoute, navOptions = navOptions {
-//                popUpTo(ContactsRoute) { inclusive = true }
-//            })
+            if (state.isFirstSynced) {
+                navController.popBackStack()
+                navController.navigate(ContactsRoute)
+            } else {
+                navController.previousBackStackEntry
+                    ?.savedStateHandle
+                    ?.set("is_sync", true)
+                navController.popBackStack()
+            }
         }
     }
 

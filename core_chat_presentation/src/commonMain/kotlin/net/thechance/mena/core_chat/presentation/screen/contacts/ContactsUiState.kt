@@ -6,7 +6,6 @@ import kotlinx.coroutines.flow.emptyFlow
 
 data class ContactsUiState(
     val contacts: Flow<PagingData<ContactUiModel>> = emptyFlow(),
-    val isPagingLoading: Boolean = false,
     val isLastPage: Boolean = false,
     val error: String? = null
 )   
