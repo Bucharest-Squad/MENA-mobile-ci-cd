@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
@@ -49,6 +50,7 @@ private fun ContactsContent(
         modifier = Modifier.fillMaxSize()
             .background(color = Theme.colorScheme.background.surface)
             .statusBarsPadding()
+            .navigationBarsPadding()
     ) {
         AppBar(
             modifier = Modifier,
