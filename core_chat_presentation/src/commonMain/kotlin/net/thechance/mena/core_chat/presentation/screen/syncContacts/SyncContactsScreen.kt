@@ -82,13 +82,14 @@ private fun SyncContactsContent(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
-            PhoneIcon(
-                modifier = Modifier.padding(bottom = Theme.spacing._8)
-            )
+            PhoneIcon()
             if (isSyncing) {
-                ContactsSyncedView()
+                ContactsSyncedView(
+                    modifier = Modifier.padding(top = Theme.spacing._24),
+                )
             } else {
                 NoContactsSyncView(
+                    modifier = Modifier.padding(top = Theme.spacing._12),
                     onSyncClick = onSyncClick,
                 )
             }

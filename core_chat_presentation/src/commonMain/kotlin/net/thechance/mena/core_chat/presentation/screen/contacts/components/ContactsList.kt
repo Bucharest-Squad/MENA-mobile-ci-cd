@@ -74,9 +74,11 @@ private fun EmptyContactsColumn() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Box {
+        Box(
+            contentAlignment = Alignment.TopEnd,
+            modifier = Modifier.padding(bottom = Theme.spacing._12)
+        ) {
             PhoneIcon(
-                modifier = Modifier.padding(bottom = Theme.spacing._8)
             )
             MenaIcon(
                 painter = painterResource(Res.drawable.ic_warning),
