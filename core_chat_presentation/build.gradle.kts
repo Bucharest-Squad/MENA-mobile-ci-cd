@@ -55,8 +55,8 @@ kotlin {
             implementation(libs.navigation.compose)
 
             // Paging 3
-            implementation(libs.bundles.paging)
-
+            implementation(libs.paging.compose.common)
+            implementation(libs.paging.common)
             // Koin
             implementation(libs.bundles.koin.compose)
 
