@@ -12,10 +12,6 @@ class UserReelViewModel(
     UserReelUiInteractionListener {
 
 
-    private fun setLoadingTrue() = updateState { copy(isLoading = true) }
-
-    private fun setLoadingFalse() = updateState { copy(isLoading = false) }
-
     private fun handleError(throwable: Throwable) {
         val errorRes = when (throwable) {
             //TODO() WILL HANDLE EXCEPTIONS
