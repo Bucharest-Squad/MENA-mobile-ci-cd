@@ -1,6 +1,7 @@
 package net.thechance.mena.trends.presentation.screen.interestpick
 
 import net.thechance.mena.trends.presentation.screen.interestpick.CategoryPickScreenUiState.CategoryUiState
+import net.thechance.mena.trends.presentation.shared.util.Selectable
 import org.jetbrains.compose.resources.StringResource
 
 data class CategoryPickScreenUiState(
@@ -15,10 +16,5 @@ data class CategoryPickScreenUiState(
         val emoji: String = "",
     )
 }
-
-data class Selectable<T>(
-    val uiState: T,
-    val isSelected: Boolean
-)
 
 fun CategoryPickScreenUiState.isSavingEnabled() = categories.any(Selectable<CategoryUiState>::isSelected)
