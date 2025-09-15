@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
 import mena.trends_presentation.generated.resources.Res
 import mena.trends_presentation.generated.resources.ic_arrow_left
@@ -49,16 +50,15 @@ import kotlin.math.roundToInt
 @Composable
 fun ManageTrendsScreen(
     viewModel: ManageTrendsViewModel = koinViewModel(),
-    onBack: () -> Unit,
-    onTrend: (Int) -> Unit
+    navController: NavHostController
 ) {
     val state by viewModel.state.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                is ManageTrendsUiEffect.NavigateBack -> onBack()
-                is ManageTrendsUiEffect.NavigateToTrend -> onTrend(effect.reelId)
+                is ManageTrendsUiEffect.NavigateBack -> navController.popBackStack()
+                is ManageTrendsUiEffect.NavigateToTrend -> navController.navigate("${effect.reelId}")
             }
         }
     }
@@ -93,7 +93,7 @@ fun ManageTrendsContent(
         )
 
         AsyncImage(
-            model = if (state.profileImageUrl.isNotEmpty()) state.profileImageUrl else "placeholder_url",
+            model = state.profileImageUrl.ifEmpty { "placeholder_url" },
             contentDescription = "Profile Image",
             modifier = Modifier
                 .padding(top = 32.dp)
@@ -185,15 +185,3 @@ private fun SegmentSection(
         }
     }
 }
-//@Preview
-//@Composable
-//private fun ManageTrendsContentPreview() {
-//    ManageTrendsContent(
-//        state = ManageTrendsUiState.preview(),
-//        listener = object : ManageTrendsInteractionListener {
-//            override fun onRealTrendClick(reelId: Int) { }
-//            override fun onBackClick() {  }
-//        }
-//    )
-//}
-//

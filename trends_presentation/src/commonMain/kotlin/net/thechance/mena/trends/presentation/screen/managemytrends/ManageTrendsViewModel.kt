@@ -9,10 +9,11 @@ import org.koin.core.annotation.Provided
 
 @KoinViewModel
 class ManageTrendsViewModel(
-   @Provided private val repository: ReelRepository
-) : BaseViewModel<ManageTrendsUiState, ManageTrendsUiEffect>(
-    initialState = ManageTrendsUiState(isLoading = true)
-), ManageTrendsInteractionListener {
+    @Provided private val repository: ReelRepository,
+    initialState: ManageTrendsUiState
+) : BaseViewModel<ManageTrendsUiState,
+        ManageTrendsUiEffect>(initialState),
+    ManageTrendsInteractionListener {
 
     init {
         loadReels()
@@ -21,14 +22,14 @@ class ManageTrendsViewModel(
     private fun loadReels() {
         tryToExecute(
             block = { repository.getAllReels() },
-            onSuccess = ::handleLoadReelsSuccess,
-            onError = ::handleError,
+            onSuccess = ::onHandleLoadReelsSuccess,
+            onError = ::onHandleError,
             onStart = { updateState { copy(isLoading = true) } },
             onEnd = { updateState { copy(isLoading = false) } }
         )
     }
 
-    private fun handleLoadReelsSuccess(reels: List<Reel>) {
+    private fun onHandleLoadReelsSuccess(reels: List<Reel>) {
         val uiModels = reels.map { it.toUiState() }
         updateState { copy(isLoading = false, reels = uiModels) }
     }
@@ -42,11 +43,11 @@ class ManageTrendsViewModel(
         sendEffect(ManageTrendsUiEffect.NavigateBack)
     }
 
-    private fun handleError(throwable: Throwable) {
-        val errorRes = when (throwable) {
+    private fun onHandleError(throwable: Throwable) {
+        val errorMessage = when (throwable) {
             // TODO: exceptions
             else -> null
         }
-        updateState { copy(errorMessage = errorRes) }
+        updateState { copy(errorMessage = errorMessage) }
     }
 }
