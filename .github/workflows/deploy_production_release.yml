@@ -1,4 +1,4 @@
-name: Deploy release APK from develop to Firebase
+name: Deploy production release APK
 
 on:
   push:
