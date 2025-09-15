@@ -17,8 +17,9 @@ jobs:
       - name: Get branch name and validate
         run: |
           if [[ "${GITHUB_EVENT_NAME}" == "create" ]]; then
-            # full ref comes in github.event.ref
+            # full ref comes in github.event.ref (e.g. refs/heads/feature/CHT-32-test)
             BRANCH_NAME="${{ github.event.ref }}"
+            BRANCH_NAME="${BRANCH_NAME#refs/heads/}"
           else
             BRANCH_NAME="${GITHUB_REF##*/}"
           fi
