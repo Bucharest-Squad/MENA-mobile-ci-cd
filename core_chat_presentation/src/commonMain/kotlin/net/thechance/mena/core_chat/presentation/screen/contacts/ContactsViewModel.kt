@@ -9,7 +9,7 @@ import net.thechance.mena.core_chat.presentation.shared.BasePagingSource
 import net.thechance.mena.core_chat.presentation.shared.BaseViewModel
 class ContactsViewModel(
     private val contactsRepository: ContactsRepository
-) : BaseViewModel<ContactsUiState, ContactsUiEffect>(ContactsUiState()), ContactsScreenInteractionListener {
+) : BaseViewModel<ContactsUiState, ContactsScreenEffect>(ContactsUiState()), ContactsScreenInteractionListener {
 
     init {
         getContacts()
@@ -33,14 +33,14 @@ class ContactsViewModel(
     }
 
     override fun onNavigateBack() {
-        emitEffect(ContactsUiEffect.NavigateBack)
+        emitEffect(ContactsScreenEffect.NavigateBack)
     }
 
     override fun onResyncClick() {
-        emitEffect(ContactsUiEffect.NavigateToSyncContacts)
+        emitEffect(ContactsScreenEffect.NavigateToSyncContacts)
     }
 
     override fun onContactClick(contactId: Int) {
-        emitEffect(ContactsUiEffect.NavigateToChatScreen(contactId))
+        emitEffect(ContactsScreenEffect.NavigateToChatScreen(contactId))
     }
 }
