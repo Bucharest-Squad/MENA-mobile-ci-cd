@@ -11,11 +11,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.collectAsLazyPagingItems
+import app.cash.paging.compose.LazyPagingItems
+import app.cash.paging.compose.collectAsLazyPagingItems
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.contacts_title
 import mena.core_chat_presentation.generated.resources.ic_arrow_left
@@ -26,41 +28,26 @@ import net.thechance.mena.core_chat.presentation.screen.contacts.components.Cont
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBarOptionContainer
 import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
-import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun ContactsScreen(viewModel: ContactsViewModel = koinViewModel()) {
     val state by viewModel.state.collectAsState()
-    val navController = LocalNavController.current
+    ContactsEffectsHandler(effects = viewModel.effect)
 
-    LaunchedEffect(Unit) {
-        snapshotFlow { navController.currentBackStackEntry }
-            .collect { backStackEntry ->
-                val isSync =
-                    backStackEntry?.savedStateHandle?.get<Boolean>("is_sync") == true
-                if (isSync) {
-                    viewModel.getContacts()
-                    backStackEntry?.savedStateHandle?.remove<Boolean>("is_sync")
-                }
-            }
-    }
     ContactsContent(
-        onNavigateBack = { navController.popBackStack() },
-        onResyncClick = { navController.navigate(SyncContactsRoute(false)) },
-        contacts = state.contacts.collectAsLazyPagingItems()
+        contacts = state.contacts.collectAsLazyPagingItems(),
+        interactionListener = viewModel
     )
 }
 
 @Composable
 private fun ContactsContent(
-    onNavigateBack: () -> Unit,
-    onResyncClick: () -> Unit,
-    contacts: LazyPagingItems<ContactUiModel>
+    contacts: LazyPagingItems<ContactUiModel>,
+    interactionListener: ContactsScreenInteractionListener
 ) {
     Column(
         modifier = Modifier.fillMaxSize()
@@ -80,11 +67,11 @@ private fun ContactsContent(
                     tint = Theme.colorScheme.primary.primary,
                 )
             },
-            onLeadingClick = onNavigateBack,
+            onLeadingClick = interactionListener::onNavigateBack,
             trailingContent = {
                 AppBarOptionContainer(
                     badgeColor = Theme.colorScheme.primary.primary,
-                    onClick = { onResyncClick() }
+                    onClick = interactionListener::onResyncClick
                 ) {
                     MenaIcon(
                         painter = painterResource(Res.drawable.ic_resync),
@@ -95,15 +82,32 @@ private fun ContactsContent(
                 }
             }
         )
-        ContactsList(contacts = contacts)
+        ContactsList(
+            contacts = contacts,
+            listener = interactionListener
+        )
     }
 }
-
-
 @Composable
-@Preview()
-private fun ContactsScreenPreview() {
-    MenaTheme {
-        ContactsScreen()
+private fun ContactsEffectsHandler(
+    effects: Flow<ContactsScreenEffect>
+) {
+    val navController = LocalNavController.current
+    val currentNavController by rememberUpdatedState(navController)
+
+    LaunchedEffect(Unit) {
+        effects.collectLatest { effect ->
+            when (effect) {
+                is ContactsScreenEffect.NavigateBack -> {
+                    currentNavController.popBackStack()
+                }
+                is ContactsScreenEffect.NavigateToSyncContacts -> {
+                    currentNavController.navigate(SyncContactsRoute(false))
+                }
+                is ContactsScreenEffect.NavigateToChatScreen -> {
+                    currentNavController.navigate((effect.contactId))
+                }
+            }
+        }
     }
 }
