@@ -55,6 +55,10 @@ kotlin {
 
             // Koin
             implementation(libs.bundles.koin.compose)
+
+            //permission
+            implementation(libs.moko.permissions)
+            implementation(libs.moko.permissions.compose)
         }
         iosMain.dependencies {
 
