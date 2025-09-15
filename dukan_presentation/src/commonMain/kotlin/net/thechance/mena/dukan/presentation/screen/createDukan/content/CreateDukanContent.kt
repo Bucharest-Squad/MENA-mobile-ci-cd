@@ -2,7 +2,6 @@ package net.thechance.mena.dukan.presentation.screen.createDukan.content
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,19 +17,16 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import mena.dukan_presentation.generated.resources.Res
-import mena.dukan_presentation.generated.resources.ic_arrow_left
-import mena.dukan_presentation.generated.resources.create_new_dukan
 import mena.dukan_presentation.generated.resources.dukan_name_is_already_exist
 import mena.dukan_presentation.generated.resources.error
 import mena.dukan_presentation.generated.resources.ic_arrow_left
-import mena.dukan_presentation.generated.resources.ic_edit
 import mena.dukan_presentation.generated.resources.ic_error
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
 import net.thechance.mena.designsystem.presentation.component.snackbar.SnackBar
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.dukan.presentation.util.OnSystemBackPressed
 import net.thechance.mena.dukan.presentation.screen.CreateDukan.content.CreateDukanContentBasicInformation
+import net.thechance.mena.dukan.presentation.util.OnSystemBackPressed
 import net.thechance.mena.dukan.presentation.viewModel.createDukan.CreateDukanInteractionListener
 import net.thechance.mena.dukan.presentation.viewModel.createDukan.CreateDukanUiState
 import net.thechance.mena.dukan.presentation.viewModel.createDukan.CreateDukanUiState.CreateDukanStep
@@ -65,60 +61,61 @@ fun CreateDukanContent(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-        AppBar(
-            title = "Create New Dukan",
-            onLeadingClick = listener::onBackClicked,
-            leadingContent = {
-                Icon(
-                    painter = painterResource(Res.drawable.ic_arrow_left),
-                    contentDescription = "Back Arrow"
-                )
-            }
-        )
-        HorizontalPager(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-                .padding(top = Theme.spacing._12),
-            state = pagerState,
-            userScrollEnabled = false
-        ) { pageIndex ->
-            when (CreateDukanStep.steps[pageIndex]) {
-                CreateDukanStep.BASIC_INFORMATION -> CreateDukanContentBasicInformation(
-                    state = state,
-                    interactionListener = listener
-                )
-                CreateDukanStep.SELECT_IMAGE -> DukanImageCropContent(
-                    state = state,
-                    interactionListener = listener
-                )
+            AppBar(
+                title = "Create New Dukan",
+                onLeadingClick = listener::onBackClicked,
+                leadingContent = {
+                    Icon(
+                        painter = painterResource(Res.drawable.ic_arrow_left),
+                        contentDescription = "Back Arrow"
+                    )
+                }
+            )
+            HorizontalPager(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(top = Theme.spacing._12),
+                state = pagerState,
+                userScrollEnabled = false
+            ) { pageIndex ->
+                when (CreateDukanStep.steps[pageIndex]) {
+                    CreateDukanStep.BASIC_INFORMATION -> CreateDukanContentBasicInformation(
+                        state = state,
+                        interactionListener = listener
+                    )
 
-                CreateDukanStep.CROP_IMAGE -> UploadDukanImageContent(
-                    state = state,
-                    interactionListener = listener
-                )
+                    CreateDukanStep.SELECT_IMAGE -> DukanImageCropContent(
+                        state = state,
+                        interactionListener = listener
+                    )
 
-                CreateDukanStep.SELECT_LOCATION -> CreateDukanContentSelectLocation()
-                CreateDukanStep.SELECT_STYLE -> CreateDukanContentSelectStyle()
+                    CreateDukanStep.CROP_IMAGE -> UploadDukanImageContent(
+                        state = state,
+                        interactionListener = listener
+                    )
+
+                    CreateDukanStep.SELECT_LOCATION -> CreateDukanContentSelectLocation()
+                    CreateDukanStep.SELECT_STYLE -> CreateDukanContentSelectStyle()
+                }
             }
+
+            PrimaryButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(Theme.spacing._16),
+                text = if (state.currentStep == CreateDukanStep.SELECT_STYLE)
+                    "Create"
+                else
+                    "Next",
+                onClick = listener::onButtonClicked,
+                trailingIcon = painterResource(Res.drawable.ic_arrow_left),
+                isEnabled = state.isButtonEnabled,
+                isLoading = state.isButtonLoading
+            )
         }
-
-        PrimaryButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(Theme.spacing._16),
-            text = if (state.currentStep == CreateDukanStep.SELECT_STYLE)
-                "Create"
-            else
-                "Next",
-            onClick = listener::onButtonClicked,
-            trailingIcon = painterResource(Res.drawable.ic_arrow_left),
-            isEnabled = state.isButtonEnabled,
-            isLoading = state.isButtonLoading
-        )
+        ErrorSnackBar(state)
     }
-    ErrorSnackBar(state)
-}
 }
 
 @Composable
