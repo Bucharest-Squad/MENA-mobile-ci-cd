@@ -1,13 +1,14 @@
 package presentation
 
+import kotlin.time.ExperimentalTime
+import kotlin.time.toDuration
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
-import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
-import kotlin.time.Instant
-import kotlin.time.Duration
 import kotlin.test.assertEquals
+import kotlin.time.Clock
+import kotlin.time.DurationUnit
+import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
 class InstantGetTimeAgoTest {
@@ -26,14 +27,13 @@ class InstantGetTimeAgoTest {
 
     @AfterTest
     fun tearDown() {
-        // Clear all mocks
         unmockkAll()
     }
 
     @Test
     fun getTimeAgo_shouldReturnSecondsAgo_whenDurationIsLessThanOneMinute() {
         // Given
-        val testInstant = fixedNow.minus(Duration.seconds(30))
+        val testInstant = fixedNow.minus(30.toDuration(DurationUnit.SECONDS))
 
         // When
         val result = testInstant.getTimeAgo()
@@ -45,7 +45,7 @@ class InstantGetTimeAgoTest {
     @Test
     fun getTimeAgo_shouldReturnMinutesAgo_whenDurationIsLessThanOneHour() {
         // Given
-        val testInstant = fixedNow.minus(Duration.minutes(45))
+        val testInstant = fixedNow.minus(45.toDuration(DurationUnit.MINUTES))
 
         // When
         val result = testInstant.getTimeAgo()
@@ -57,7 +57,7 @@ class InstantGetTimeAgoTest {
     @Test
     fun getTimeAgo_shouldReturnHoursAgo_whenDurationIsLessThanOneDay() {
         // Given
-        val testInstant = fixedNow.minus(Duration.hours(12))
+        val testInstant = fixedNow.minus(12.toDuration(DurationUnit.HOURS))
 
         // When
         val result = testInstant.getTimeAgo()
@@ -69,7 +69,7 @@ class InstantGetTimeAgoTest {
     @Test
     fun getTimeAgo_shouldReturnDaysAgo_whenDurationIsLessThanOneWeek() {
         // Given
-        val testInstant = fixedNow.minus(Duration.days(5))
+        val testInstant = fixedNow.minus(5.toDuration(DurationUnit.DAYS))
 
         // When
         val result = testInstant.getTimeAgo()
@@ -81,7 +81,7 @@ class InstantGetTimeAgoTest {
     @Test
     fun getTimeAgo_shouldReturnWeeksAgo_whenDurationIsLessThanOneMonth() {
         // Given
-        val testInstant = fixedNow.minus(Duration.days(21)) // 3 weeks
+        val testInstant = fixedNow.minus(21.toDuration(DurationUnit.DAYS)) // 3 weeks
 
         // When
         val result = testInstant.getTimeAgo()
@@ -93,7 +93,7 @@ class InstantGetTimeAgoTest {
     @Test
     fun getTimeAgo_shouldReturnMonthsAgo_whenDurationIsLessThanOneYear() {
         // Given
-        val testInstant = fixedNow.minus(Duration.days(180)) // ~6 months
+        val testInstant = fixedNow.minus(180.toDuration(DurationUnit.DAYS)) // ~6 months
 
         // When
         val result = testInstant.getTimeAgo()
@@ -105,7 +105,7 @@ class InstantGetTimeAgoTest {
     @Test
     fun getTimeAgo_shouldReturnYearsAgo_whenDurationIsOneYearOrMore() {
         // Given
-        val testInstant = fixedNow.minus(Duration.days(400)) // ~1.1 years
+        val testInstant = fixedNow.minus(400.toDuration(DurationUnit.DAYS)) // ~1.1 years
 
         // When
         val result = testInstant.getTimeAgo()
@@ -119,30 +119,26 @@ class InstantGetTimeAgoTest {
         // Given
         val testInstant = fixedNow
 
-        // When
         val result = testInstant.getTimeAgo()
 
-        // Then
         assertEquals("0 seconds ago", result)
     }
 
     @Test
     fun getTimeAgo_shouldReturnSingularForm_whenDurationIsExactlyOneUnit() {
-        val testInstant = fixedNow.minus(Duration.minutes(1))
+        val testInstant = fixedNow.minus(1.toDuration(DurationUnit.MINUTES))
 
-        // When
         val result = testInstant.getTimeAgo()
 
-        // Then
         assertEquals("1 minutes ago", result)
     }
 
     @Test
     fun getTimeAgo_shouldHandleBoundaryConditionsCorrectly() {
-        val justBeforeMinute = fixedNow.minus(Duration.seconds(59))
+        val justBeforeMinute = fixedNow.minus(59.toDuration(DurationUnit.SECONDS))
         assertEquals("59 seconds ago", justBeforeMinute.getTimeAgo())
 
-        val exactlyOneMinute = fixedNow.minus(Duration.seconds(60))
+        val exactlyOneMinute = fixedNow.minus(60.toDuration(DurationUnit.SECONDS))
         assertEquals("1 minutes ago", exactlyOneMinute.getTimeAgo())
     }
 }
