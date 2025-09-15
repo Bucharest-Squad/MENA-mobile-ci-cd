@@ -32,6 +32,10 @@ kotlin {
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
         }
+
+        jvmTest.dependencies {
+            implementation(libs.bundles.jvm.test)
+        }
     }
 
 }
