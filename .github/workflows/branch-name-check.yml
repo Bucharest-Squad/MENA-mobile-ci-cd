@@ -3,10 +3,7 @@ name: Enforce Branch Naming Convention
 on:
   push:
     branches:
-      - '**'
-  create:
-    branches:
-      - '**'
+      - '**'  # validate all branches
 
 jobs:
   enforce-branch-name:
@@ -16,26 +13,34 @@ jobs:
     steps:
       - name: Get branch name and validate
         run: |
-          if [[ "${GITHUB_EVENT_NAME}" == "create" ]]; then
-            BRANCH_NAME="${GITHUB_REF_NAME}"
-          else
-            BRANCH_NAME="${GITHUB_REF##*/}"
-          fi
-
+          # Get branch name
+          BRANCH_NAME="${GITHUB_REF##*/}"
           echo "Branch: $BRANCH_NAME"
 
+          # Check if branch is new (first push)
+          if [[ "${GITHUB_EVENT_BEFORE}" == "0000000000000000000000000000000000000000" ]]; then
+            IS_NEW_BRANCH=true
+          else
+            IS_NEW_BRANCH=false
+          fi
+
           # Allowed prefixes and Jira keys
-          if [[ ! "$BRANCH_NAME" =~ ^(feature|fix|refactor|test)\/(IDN|DKN|CHT|FTH|TRN|WLT)-[0-9]+(-[a-z0-9-]+)*$ ]]; then
+          REGEX="^(feature|fix|refactor|test)\/(IDN|DKN|CHT|FTH|TRN|WLT)-[0-9]+(-[a-z0-9-]+)*$"
+
+          if [[ ! "$BRANCH_NAME" =~ $REGEX ]]; then
             echo "❌ Invalid branch name: $BRANCH_NAME"
-            echo "Deleting branch..."
 
-            curl -s -X DELETE \
-              -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-              -H "Accept: application/vnd.github.v3+json" \
-              "https://api.github.com/repos/${{ github.repository }}/git/refs/heads/$BRANCH_NAME"
-
-            echo "✅ Invalid branch deleted successfully."
-            exit 0   # <-- mark success instead of failure
+            if [[ "$IS_NEW_BRANCH" == true ]]; then
+              echo "Deleting invalid new branch..."
+              curl -s -X DELETE \
+                -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                -H "Accept: application/vnd.github.v3+json" \
+                "https://api.github.com/repos/${{ github.repository }}/git/refs/heads/$BRANCH_NAME"
+              echo "✅ Invalid branch deleted successfully."
+            else
+              echo "⚠️ Branch name is invalid but already existed, not deleting."
+            fi
+            exit 0
           fi
 
           echo "✅ Branch name is valid."
