@@ -5,7 +5,6 @@ import io.ktor.http.HttpStatusCode
 import kotlinx.serialization.SerializationException
 import net.thechance.mena.identity.domain.exception.InvalidDataException
 import net.thechance.mena.identity.domain.exception.NetworkException
-import net.thechance.mena.identity.domain.exception.NotFoundException
 import net.thechance.mena.identity.domain.exception.UnauthorizedException
 import net.thechance.mena.identity.domain.exception.UnknownException
 
@@ -15,7 +14,6 @@ suspend fun <T> safeWrapper(function: suspend () -> T): T {
     } catch (e: ClientRequestException) {
         when (e.response.status) {
             HttpStatusCode.Unauthorized -> throw UnauthorizedException()
-            HttpStatusCode.NotFound -> throw NotFoundException()
             else -> throw NetworkException()
         }
     } catch (e: SerializationException) {
