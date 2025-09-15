@@ -35,6 +35,10 @@ runs:
       shell: bash
       run: |
         sudo apt-get update && sudo apt-get install -y libfuse2 
+        sudo apt-get update && sudo apt-get install -y \
+        libfuse2 libx11-6 libxext6 zlib1g \
+        libpng16-16 libjpeg62 libtiff5 libwebp7 \
+        libfreetype6 libxml2
         wget https://download.imagemagick.org/ImageMagick/download/binaries/magick
         chmod +x magick
         export PATH=$PATH:.
