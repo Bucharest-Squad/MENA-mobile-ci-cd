@@ -1,13 +1,21 @@
 package net.thechance.mena.trends.presentation.screen.interestpick
 
 import net.thechance.mena.trends.domain.entity.Category
-import net.thechance.mena.trends.presentation.screen.interestpick.InterestsUiState.CategoryUiModel
+import net.thechance.mena.trends.presentation.screen.interestpick.CategoryPickScreenUiState.CategoryUiState
 
-internal fun Category.toUiModel(): CategoryUiModel {
-    return CategoryUiModel(
+internal fun Category.toUiState(): CategoryUiState {
+    return CategoryUiState(
         id = id,
         name = name,
         emoji = emoji,
-        isSelected = false
     )
+}
+
+fun List<Category>.toUiStates(): List<Selectable<CategoryUiState>> {
+    return map { category ->
+        Selectable(
+            uiState = category.toUiState(),
+            isSelected = false
+        )
+    }
 }
