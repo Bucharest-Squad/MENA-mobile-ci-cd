@@ -48,6 +48,8 @@ kotlin {
             implementation(libs.koin.compose.viewmodel)
             api(libs.koin.annotations)
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.coil.compose)
+            implementation(libs.coil.network.okhttp)
         }
         iosMain.dependencies {
 
