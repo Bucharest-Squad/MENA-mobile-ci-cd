@@ -1,8 +1,6 @@
 package net.thechance.mena.core_chat.presentation.screen.contacts.components
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,37 +28,27 @@ import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
-
 @Composable
 fun ContactsList(
     contacts: List<ContactUi>
 ) {
-    AnimatedVisibility(
-        visible = contacts.isEmpty(),
-        enter = fadeIn(),
-        exit = fadeOut(),
+    AnimatedContent(
+        targetState = contacts.isEmpty(),
         modifier = Modifier.fillMaxSize()
-    ) {
-        EmptyContactsColumn()
-    }
-    AnimatedVisibility(
-        visible = contacts.isNotEmpty(),
-        enter = fadeIn(),
-        exit = fadeOut(),
-        modifier = Modifier.fillMaxSize()
-    ) {
-        LazyColumn(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = Theme.spacing._16),
-            verticalArrangement = Arrangement.spacedBy(Theme.spacing._16),
-            contentPadding = PaddingValues(vertical = Theme.spacing._8)
-        ) {
-            items(contacts.size) { contact ->
-                ContactItem(
-                    contact = contacts[contact],
-                    onContactClick = {
-                        //TODO: navigate to chat screen
-                    },
-                )
+    ) { isEmpty ->
+        if (isEmpty) EmptyContactsColumn()
+        else {
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = Theme.spacing._16),
+                verticalArrangement = Arrangement.spacedBy(Theme.spacing._16),
+                contentPadding = PaddingValues(vertical = Theme.spacing._8)
+            ) {
+                items(contacts.size) { contact ->
+                    ContactItem(
+                        contact = contacts[contact],
+                        onContactClick = { /* //TODO: navigate to chat screen */ },
+                    )
+                }
             }
         }
     }

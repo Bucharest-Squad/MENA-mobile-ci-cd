@@ -30,12 +30,8 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun ContactsScreen() {
     val navController = LocalNavController.current
     ContactsContent(
-        onNavigateBack = {
-            navController.popBackStack()
-        },
-        onResyncClick = {
-            navController.navigate(SyncContactsRoute)
-        },
+        onNavigateBack = { navController.popBackStack() },
+        onResyncClick = { navController.navigate(SyncContactsRoute) },
         contacts = temporaryContacts
     )
 }
@@ -79,9 +75,7 @@ private fun ContactsContent(
                 }
             }
         )
-        ContactsList(
-            contacts = contacts
-        )
+        ContactsList(contacts = contacts)
     }
 }
 
