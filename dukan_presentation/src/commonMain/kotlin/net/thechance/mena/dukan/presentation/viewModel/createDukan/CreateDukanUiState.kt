@@ -5,10 +5,12 @@ import net.thechance.mena.dukan.domain.entity.Category
 data class CreateDukanUiState(
     val name: String = "",
     val currentStep: CreateDukanStep = CreateDukanStep.BASIC_INFORMATION,
-    val isButtonEnabled: Boolean = true, // TODO: Change this to be default be false
+    val isButtonEnabled: Boolean = false,
     val isButtonLoading: Boolean = false,
     val availableCategories: List<Category> = emptyList(),
     val selectedCategories: Set<Category> = emptySet(),
+    val isSelected: Boolean = false,
+    val isEnabled: Boolean = true,
     val isNameUnique: Boolean = true,
     val showSnackBar: Boolean = false,
     val savedImageUri: String? = null,

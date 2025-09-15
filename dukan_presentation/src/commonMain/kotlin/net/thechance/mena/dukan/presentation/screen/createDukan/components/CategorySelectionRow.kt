@@ -14,14 +14,13 @@ import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.dukan.domain.entity.Category
 import org.jetbrains.compose.resources.painterResource
 
-private const val MAX_CATEGORIES = 3
-
 @Composable
 fun CategorySelectionRow(
     availableCategories: List<Category>,
-    selectedCategories: Set<Category>,
-    onCategorySelected: (Category) -> Unit,
-    onCategoryDeselected: (Category) -> Unit
+    isCategorySelected: (Category) -> Boolean,
+    onCategorySelected: (Category) -> Boolean,
+    onCategoryDeselected: (Category) -> Boolean,
+    onCategoryEnabled: (Category) -> Boolean
 ) {
     LazyRow(
         contentPadding = PaddingValues(horizontal = Theme.spacing._16),
@@ -29,12 +28,10 @@ fun CategorySelectionRow(
     ) {
         availableCategories.forEach { category ->
             item {
-                val isSelected = selectedCategories.contains(category)
-                val isEnabled = isSelected || selectedCategories.size < MAX_CATEGORIES
                 CategoryChip(
                     category = category,
-                    isSelected = isSelected,
-                    isEnabled = isEnabled,
+                    isSelected = isCategorySelected(category),
+                    isEnabled = onCategoryEnabled(category),
                     onCategorySelected = onCategorySelected,
                     onCategoryDeselected = onCategoryDeselected
                 )
@@ -48,8 +45,8 @@ private fun CategoryChip(
     category: Category,
     isSelected: Boolean,
     isEnabled: Boolean,
-    onCategorySelected: (Category) -> Unit,
-    onCategoryDeselected: (Category) -> Unit
+    onCategorySelected: (Category) -> Boolean,
+    onCategoryDeselected: (Category) -> Boolean
 ) {
     Chip(
         text = category.name,
@@ -60,10 +57,7 @@ private fun CategoryChip(
         iconSize = 16.dp,
         shape = RoundedCornerShape(Theme.radius.full),
         onClick = {
-            when {
-                isSelected -> onCategoryDeselected(category)
-                isEnabled -> onCategorySelected(category)
-            }
-        },
+            if (isSelected) onCategoryDeselected(category) else onCategorySelected(category)
+        }
     )
 }

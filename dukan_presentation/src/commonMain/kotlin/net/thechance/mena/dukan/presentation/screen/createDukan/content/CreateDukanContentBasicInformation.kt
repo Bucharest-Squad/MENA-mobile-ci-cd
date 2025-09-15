@@ -64,9 +64,10 @@ fun CreateDukanContentBasicInformation(
             CategoryHeaderSection()
             CategorySelectionRow(
                 availableCategories = state.availableCategories,
-                selectedCategories = state.selectedCategories,
+                isCategorySelected = interactionListener::isCategorySelected,
                 onCategorySelected = interactionListener::onCategorySelected,
-                onCategoryDeselected = interactionListener::onCategoryDeselected
+                onCategoryDeselected = interactionListener::onCategoryDeselected,
+                onCategoryEnabled = interactionListener::onCategoryEnabled
             )
         }
     }

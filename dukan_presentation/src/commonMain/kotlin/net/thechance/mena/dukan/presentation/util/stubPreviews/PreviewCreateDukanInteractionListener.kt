@@ -9,8 +9,10 @@ object PreviewCreateDukanInteractionListener : CreateDukanInteractionListener {
     override fun onClickUploadImage() {}
     override fun onClickEditImage() {}
     override fun onNameChanged(name: String) {}
-    override fun onCategorySelected(category: Category) {}
-    override fun onCategoryDeselected(category: Category) {}
+    override fun onCategorySelected(category: Category): Boolean = true
+    override fun onCategoryDeselected(category: Category): Boolean = true
+    override fun onCategoryEnabled(category: Category): Boolean = true
+    override fun isCategorySelected(category: Category): Boolean = false
     override fun onCLickNext() {}
     override fun onSaveClicked() {}
     override fun onZoomInClicked() {}

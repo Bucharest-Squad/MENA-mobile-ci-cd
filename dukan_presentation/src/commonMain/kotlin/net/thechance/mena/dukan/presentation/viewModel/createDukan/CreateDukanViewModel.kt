@@ -98,16 +98,34 @@ class CreateDukanViewModel :
         updateNextButtonEnableState()
     }
 
-    override fun onCategorySelected(category: Category) {
-        if (state.value.selectedCategories.size < MAX_CATEGORIES) {
-            updateState { copy(selectedCategories = state.value.selectedCategories + category) }
-        }
-        updateNextButtonEnableState()
+    override fun isCategorySelected(category: Category): Boolean {
+        return state.value.selectedCategories.contains(category)
     }
 
-    override fun onCategoryDeselected(category: Category) {
-        updateState { copy(selectedCategories = state.value.selectedCategories - category) }
+    override fun onCategorySelected(category: Category): Boolean {
+        val currentState = state.value
+        if (currentState.selectedCategories.size < MAX_CATEGORIES) {
+            updateState {
+                copy(selectedCategories = selectedCategories + category)
+            }
+            updateNextButtonEnableState()
+            return true
+        }
+        return false
+    }
+
+    override fun onCategoryDeselected(category: Category): Boolean {
+        updateState {
+            copy(selectedCategories = selectedCategories - category)
+        }
         updateNextButtonEnableState()
+        return true
+    }
+
+    override fun onCategoryEnabled(category: Category): Boolean {
+        val currentState = state.value
+        return currentState.selectedCategories.size < MAX_CATEGORIES ||
+                currentState.selectedCategories.contains(category)
     }
 
     private fun onCreateClicked() {
