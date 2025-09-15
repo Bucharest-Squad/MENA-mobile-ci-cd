@@ -12,16 +12,19 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import dev.icerock.moko.permissions.compose.BindEffect
+import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.ic_arrow_left
 import mena.core_chat_presentation.generated.resources.sync_contacts
+import net.thechance.mena.core_chat.presentation.navigation.ContactsRoute
 import net.thechance.mena.core_chat.presentation.navigation.LocalNavController
 import net.thechance.mena.core_chat.presentation.screen.syncContacts.components.ContactsSyncedView
 import net.thechance.mena.core_chat.presentation.screen.syncContacts.components.NoContactsSyncView
@@ -33,17 +36,28 @@ import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 
 @Composable
-fun SyncContactsScreen(
-) {
-    var isSyncing by remember { mutableStateOf(false) }
+fun SyncContactsScreen() {
+    val factory = rememberPermissionsControllerFactory()
+    val controller = remember(factory) { factory.createPermissionsController() }
+    val viewModel: SyncContactsViewModel = koinViewModel { parametersOf(controller) }
+    BindEffect(controller)
+    val state by viewModel.state.collectAsState()
+    val navController = LocalNavController.current
+
+    LaunchedEffect(state.isSyncFinished) {
+        if (state.isSyncFinished) {
+            navController.navigate(ContactsRoute)
+        }
+    }
+
     SyncContactsContent(
-        isSyncing = isSyncing,
-        onSyncClick = {
-            isSyncing = true
-        },
+        isSyncing = state.isLoading,
+        onSyncClick = viewModel::onSyncContactsClicked,
     )
 }
 
