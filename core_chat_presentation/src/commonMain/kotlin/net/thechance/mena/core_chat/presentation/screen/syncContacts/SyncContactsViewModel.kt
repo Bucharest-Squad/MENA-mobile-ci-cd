@@ -6,14 +6,9 @@ import net.thechance.mena.core_chat.domain.repository.ContactsRepository
 import net.thechance.mena.core_chat.presentation.shared.BaseViewModel
 
 class SyncContactsViewModel(
-//    savedStateHandle: SavedStateHandle,
     private val contactsRepository: ContactsRepository,
     private val permissionsController: PermissionsController
 ) : BaseViewModel<SyncContactsUiState>(SyncContactsUiState()) {
-
-//    private val route = SyncContactsRoute(
-//        isFirstSync = checkNotNull(savedStateHandle["isFirstSync"])
-//    )
 
     init {
         onInit()
@@ -21,14 +16,19 @@ class SyncContactsViewModel(
 
     fun onInit() {
         tryToExecute(
-//            onStart = { updateState { it.copy(isLoading = false) } },
             execute = { contactsRepository.getUserSyncedState() },
             onSuccess = { isSynced ->
                 if (isSynced) {
-                    updateState { it.copy(showSyncView = true, isFirstSynced = false) }
+                    updateState { it.copy(
+                        showSyncView = true,
+                        isFirstSynced = false)
+                    }
                     syncContacts()
                 } else {
-                    updateState { it.copy(showSyncView = true, isFirstSynced = true) }
+                    updateState { it.copy(
+                        showSyncView = true,
+                        isFirstSynced = true)
+                    }
                 }
             },
             onError = { println(it.printStackTrace()) }
@@ -53,7 +53,6 @@ class SyncContactsViewModel(
     private fun syncContacts() {
         tryToExecute(
             onStart = {
-                println("Starting sync...")
                 updateState {
                     it.copy(
                         isLoading = true,
@@ -65,7 +64,6 @@ class SyncContactsViewModel(
                 contactsRepository.syncContacts()
             },
             onSuccess = {
-                println("Sync successful, updating state.")
                 updateState {
                     it.copy(
                         isLoading = false,
@@ -75,8 +73,10 @@ class SyncContactsViewModel(
                 contactsRepository.setUserSyncedState(true)
             },
             onError = { throwable ->
-                println("Sync failed: ${throwable.message}")
-                updateState { it.copy(isLoading = false, error = throwable.message) }
+                updateState { it.copy(
+                    isLoading = false,
+                    error = throwable.message)
+                }
             }
         )
     }

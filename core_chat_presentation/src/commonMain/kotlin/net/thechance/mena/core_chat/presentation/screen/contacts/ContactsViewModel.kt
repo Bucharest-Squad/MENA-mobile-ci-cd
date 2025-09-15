@@ -18,8 +18,12 @@ class ContactsViewModel(
         val contactsFlow = createPagingFlow(
             pagingSourceFactory = {
                 BasePagingSource(
-                    onError = { throwable -> updateState { it.copy(error = throwable.message) } },
-                    fetchItems = { page, pageSize -> contactsRepository.getUserContacts(page, pageSize) }
+                    onError = { throwable -> updateState {
+                        it.copy(error = throwable.message)
+                    } },
+                    fetchItems = { page, pageSize ->
+                        contactsRepository.getUserContacts(page, pageSize)
+                    }
                 )
             },
             mapper = { contact: Contact -> contact.toUiModel() }
