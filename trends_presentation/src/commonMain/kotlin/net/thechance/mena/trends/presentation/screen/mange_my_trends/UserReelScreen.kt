@@ -66,7 +66,7 @@ fun UserReelScreen(
 @Composable
 private fun UserReelScreenContent(
     state: UserReelUiState,
-    listener: UserReelUiInteractionListener
+    listener: UserReelInteractionListener
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -164,15 +164,16 @@ private fun PublisherDetails(
             }
         }
 
-        MenaText(
-            text = description,
-            modifier = Modifier
-                .animateContentSize()
-                .clickable { isExpanded = !isExpanded },
-            color = Theme.colorScheme.primary.onPrimary,
-            style = Theme.typography.label.medium,
-            maxLines = if (isExpanded) Int.MAX_VALUE else 1
-        )
+        if (description.isNotBlank())
+            MenaText(
+                text = description,
+                modifier = Modifier
+                    .animateContentSize()
+                    .clickable { isExpanded = !isExpanded },
+                color = Theme.colorScheme.primary.onPrimary,
+                style = Theme.typography.label.medium,
+                maxLines = if (isExpanded) Int.MAX_VALUE else 1
+            )
     }
 }
 

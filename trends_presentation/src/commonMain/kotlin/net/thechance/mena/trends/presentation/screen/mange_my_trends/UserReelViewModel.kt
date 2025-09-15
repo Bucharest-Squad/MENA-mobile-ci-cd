@@ -8,8 +8,8 @@ import org.koin.core.annotation.Provided
 @KoinViewModel
 class UserReelViewModel(
     @Provided private val reelRepository: ReelRepository
-) : BaseViewModel<UserReelUiState, UserReelUiEffect>(UserReelUiState()),
-    UserReelUiInteractionListener {
+) : BaseViewModel<UserReelUiState, UserReelEffect>(UserReelUiState()),
+    UserReelInteractionListener {
 
 
     private fun handleError(throwable: Throwable) {
@@ -20,7 +20,7 @@ class UserReelViewModel(
     }
 
     override fun onBackClick() {
-        sendEffect(UserReelUiEffect.NavigateBack)
+        sendEffect(UserReelEffect.NavigateBack)
     }
 
     override fun onDeleteClick() {
