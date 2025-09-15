@@ -13,11 +13,12 @@
     <string name="error">Error</string>
     <string name="success">Success</string>
     <string name="dukan_name_is_already_exist">Dukan name is already exist, try with another one.</string>
-    <string name="Save">Save</string>
-    <string name="Upload_another_image">Upload another image</string>
-    <string name="Click_to_upload">Click to upload</string>
-    <string name="Dukan_image">Dukan image</string>
-    <string name="Reset">Reset</string>
-    <string name="Upload_dukan_image">Upload dukan image, it should be rectangle 9:16 aspect ratio</string>
-    <string name="ImageSize">Image (9:16)</string>
+    <string name="save">Save</string>
+    <string name="upload_another_image">Upload another image</string>
+    <string name="click_to_upload">Click to upload</string>
+    <string name="dukan_image">Dukan image</string>
+    <string name="reset">Reset</string>
+    <string name="upload_dukan_image">Upload dukan image, it should be rectangle 9:16 aspect ratio</string>
+    <string name="image_size">Image (9:16)</string>
+    <string name="back_arrow">Back Arrow</string>
 </resources>
