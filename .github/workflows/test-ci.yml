@@ -66,3 +66,23 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./coverage-reports/
           fail_ci_if_error: true
+
+  notify-slack-on-failure:
+    if: failure()
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Notify Slack on failure
+        uses: ./.github/actions/slack/send-pr-notification
+        with:
+          slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          slack-notification-channel-id: ${{ secrets.SLACK_NOTIFICATION_CHANNEL_ID }}
+          branch-name: ${{ github.head_ref }}
+          message: |
+            🚨 *Test Coverage Failed!*
+            One or more matrix jobs failed.
+            PR: ${{ github.event.pull_request.html_url }}
+            Commit: ${{ github.sha }}
