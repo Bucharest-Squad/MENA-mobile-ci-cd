@@ -27,7 +27,7 @@ kotlin {
             isStatic = true
         }
     }
-    
+
     sourceSets {
         androidMain.dependencies {
             implementation(compose.preview)
@@ -44,6 +44,8 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(projects.designSystem)
+            implementation(projects.identityPresentation)
+            implementation(libs.bundles.voyager)
 
             implementation(projects.identityApi)
             implementation(projects.identityData)
