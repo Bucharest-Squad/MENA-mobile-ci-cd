@@ -3,11 +3,10 @@ name: Deploy production release APK
 on:
   push:
     branches:
-      - develop
-      - feature/**
+      - production
 
 jobs:
-  deploy-release:
+  deploy-production-release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo

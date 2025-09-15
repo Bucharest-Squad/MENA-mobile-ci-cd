@@ -3,11 +3,10 @@ name: Deploy staging release APK
 on:
   push:
     branches:
-      - develop
-      - feature/**
+      - staging
 
 jobs:
-  deploy-release:
+  deploy-staging-release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
