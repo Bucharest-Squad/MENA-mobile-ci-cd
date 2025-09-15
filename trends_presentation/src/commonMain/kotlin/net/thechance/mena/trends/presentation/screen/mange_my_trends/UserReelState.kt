@@ -1,9 +1,7 @@
 package net.thechance.mena.trends.presentation.screen.mange_my_trends
 
-import org.jetbrains.compose.resources.StringResource
-
-data class UserReelUiState(
-    val id: Int = 0,
+data class UserReelState(
+    val id: Int? = null,
     val username: String = "",
     val thumbnail: String = "",
     val createdAt: String = "",
@@ -11,7 +9,7 @@ data class UserReelUiState(
     val viewsCount: Int = 0,
     val likesCount: Int = 0,
     val description: String = "",
-    val errorMessage: StringResource? = null,
     val isConfirmationDialogVisible: Boolean = false,
     val isReelDeleted: Boolean = false,
+    val isDescriptionExpanded: Boolean = false
 )

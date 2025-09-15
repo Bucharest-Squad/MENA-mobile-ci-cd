@@ -20,10 +20,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -61,11 +59,19 @@ fun UserReelScreen(
         state = state,
         listener = viewModel
     )
+
+    LaunchedEffect(Unit) {
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                UserReelEffect.NavigateBack -> {}// TODO
+            }
+        }
+    }
 }
 
 @Composable
 private fun UserReelScreenContent(
-    state: UserReelUiState,
+    state: UserReelState,
     listener: UserReelInteractionListener
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
@@ -86,7 +92,9 @@ private fun UserReelScreenContent(
             timeOfPublish = state.createdAt,
             description = state.description,
             avatar = state.thumbnail,
-            modifier = Modifier.align(Alignment.BottomCenter)
+            modifier = Modifier.align(Alignment.BottomCenter),
+            isDescriptionExpanded = state.isDescriptionExpanded,
+            onDescriptionClick = listener::onDescriptionClick
         )
 
         Box(
@@ -124,10 +132,11 @@ private fun PublisherDetails(
     avatar: String,
     userName: String,
     timeOfPublish: String,
+    isDescriptionExpanded: Boolean,
+    onDescriptionClick: (Boolean) -> Unit,
     description: String,
     modifier: Modifier = Modifier
 ) {
-    var isExpanded by remember { mutableStateOf(false) }
 
     Column(
         modifier = modifier
@@ -164,16 +173,17 @@ private fun PublisherDetails(
             }
         }
 
-        if (description.isNotBlank())
+        if (description.isNotBlank()) {
             MenaText(
                 text = description,
                 modifier = Modifier
                     .animateContentSize()
-                    .clickable { isExpanded = !isExpanded },
+                    .clickable { onDescriptionClick(isDescriptionExpanded) },
                 color = Theme.colorScheme.primary.onPrimary,
                 style = Theme.typography.label.medium,
-                maxLines = if (isExpanded) Int.MAX_VALUE else 1
+                maxLines = if (isDescriptionExpanded) Int.MAX_VALUE else 1
             )
+        }
     }
 }
 

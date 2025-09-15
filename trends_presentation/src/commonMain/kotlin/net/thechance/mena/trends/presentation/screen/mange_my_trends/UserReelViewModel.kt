@@ -8,7 +8,7 @@ import org.koin.core.annotation.Provided
 @KoinViewModel
 class UserReelViewModel(
     @Provided private val reelRepository: ReelRepository
-) : BaseViewModel<UserReelUiState, UserReelEffect>(UserReelUiState()),
+) : BaseViewModel<UserReelState, UserReelEffect>(UserReelState()),
     UserReelInteractionListener {
 
 
@@ -16,6 +16,12 @@ class UserReelViewModel(
         val errorRes = when (throwable) {
             //TODO() WILL HANDLE EXCEPTIONS
             else -> {}
+        }
+    }
+
+    override fun onDescriptionClick(isCollapsed: Boolean) {
+        updateState {
+            copy(isDescriptionExpanded = !isCollapsed)
         }
     }
 
