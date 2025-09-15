@@ -18,7 +18,7 @@ class CategoryPickViewModel(
         tryToExecute(
             block = { repository.getAllCategories() },
             onSuccess = ::handleLoadCategoriesSuccess,
-            onError = TODO(),
+            onError = {},
             onStart = ::startLoading,
             onEnd = ::endLoading
         )
@@ -48,7 +48,7 @@ class CategoryPickViewModel(
             onSuccess = { sendEffect(CategoryPickUiEffect.NavigateToSave) },
             onStart = ::startSaving,
             onEnd = ::endSaving,
-            onError = TODO(),
+            onError = {},
         )
     }
 
