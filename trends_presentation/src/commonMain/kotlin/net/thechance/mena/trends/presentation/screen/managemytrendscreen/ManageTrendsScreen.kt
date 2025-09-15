@@ -40,6 +40,7 @@ import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
 import net.thechance.mena.designsystem.presentation.component.segment.Segment
 import net.thechance.mena.designsystem.presentation.component.text.MenaText
+import net.thechance.mena.designsystem.presentation.theme.color.scheme.ColorScheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.trends.presentation.navigation.LocalNavController
 import net.thechance.mena.trends.presentation.navigation.Route
@@ -157,7 +158,7 @@ private fun SegmentSection(
                                             .height(164.dp)
                                             .clip(RoundedCornerShape(12.dp))
                                             .clickable { onTrendClick(item.id) }
-                                            .background(Color.Gray)
+                                            .background(Theme.colorScheme.background.surfaceHigh)
                                     ) {
                                         AsyncImage(
                                             model = item.thumbnailUrl,
