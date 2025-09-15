@@ -15,17 +15,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import mena.dukan_presentation.generated.resources.Res
+import mena.dukan_presentation.generated.resources.create_new_dukan
 import mena.dukan_presentation.generated.resources.dukan_name_is_already_exist
-import mena.dukan_presentation.generated.resources.error
 import mena.dukan_presentation.generated.resources.ic_arrow_left
-import mena.dukan_presentation.generated.resources.ic_error
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
-import net.thechance.mena.designsystem.presentation.component.snackbar.SnackBar
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.dukan.presentation.screen.CreateDukan.content.CreateDukanContentBasicInformation
+import net.thechance.mena.dukan.presentation.screen.createDukan.components.SnackBar
+import net.thechance.mena.dukan.presentation.screen.createDukan.components.SnackBarType
+import net.thechance.mena.dukan.presentation.screen.createDukan.components.SnackBarUiState
 import net.thechance.mena.dukan.presentation.util.OnSystemBackPressed
 import net.thechance.mena.dukan.presentation.viewModel.createDukan.CreateDukanInteractionListener
 import net.thechance.mena.dukan.presentation.viewModel.createDukan.CreateDukanUiState
@@ -62,7 +62,7 @@ fun CreateDukanContent(
             modifier = Modifier.fillMaxSize()
         ) {
             AppBar(
-                title = "Create New Dukan",
+                title = stringResource(Res.string.create_new_dukan),
                 onLeadingClick = listener::onBackClicked,
                 leadingContent = {
                     Icon(
@@ -114,21 +114,15 @@ fun CreateDukanContent(
                 isLoading = state.isButtonLoading
             )
         }
-        ErrorSnackBar(state)
-    }
-}
 
-@Composable
-private fun ErrorSnackBar(state: CreateDukanUiState) {
-    if (state.showSnackBar) {
-        SnackBar(
-            title = stringResource(Res.string.error),
-            message = stringResource(Res.string.dukan_name_is_already_exist),
-            leadingIcon = painterResource(Res.drawable.ic_error),
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 12.dp),
-            tint = Theme.colorScheme.error,
-            contentDescription = stringResource(Res.string.error)
-        )
+        if (state.showSnackBar) {
+            SnackBar(
+                snackBarUiState = SnackBarUiState(
+                    snackBarType = SnackBarType.ERROR,
+                    message = stringResource(Res.string.dukan_name_is_already_exist)
+                )
+            )
+        }
     }
 }
 
