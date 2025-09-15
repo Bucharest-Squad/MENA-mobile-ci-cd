@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.ic_warning
@@ -34,10 +35,10 @@ fun ContactsList(
     contacts: LazyPagingItems<ContactUiModel>
 ) {
     AnimatedContent(
-        targetState = contacts.itemCount == 0,
+        targetState = Pair((contacts.itemCount == 0), contacts.loadState.refresh == LoadState.Loading),
         modifier = Modifier.fillMaxSize()
-    ) { isEmpty ->
-        if (isEmpty) EmptyContactsColumn()
+    ) { (isEmpty, isLoading) ->
+        if (isEmpty && !isLoading) EmptyContactsColumn()
         else {
             LazyColumn(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = Theme.spacing._16),
@@ -46,7 +47,7 @@ fun ContactsList(
             ) {
                 items(
                     count = contacts.itemCount,
-                    key = { index -> contacts[index]?.phoneNumber ?: index }
+                    key = { index -> "${contacts[index]?.phoneNumber}-$index" }
                 ) { index ->
                     val contact = contacts[index]
 

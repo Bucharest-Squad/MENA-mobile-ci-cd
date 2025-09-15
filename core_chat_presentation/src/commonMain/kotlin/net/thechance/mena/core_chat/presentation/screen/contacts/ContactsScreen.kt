@@ -8,10 +8,14 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.contacts_title
 import mena.core_chat_presentation.generated.resources.ic_arrow_left
@@ -28,14 +32,23 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
-import androidx.compose.runtime.getValue
-import androidx.paging.compose.collectAsLazyPagingItems
 
 @Composable
 fun ContactsScreen(viewModel: ContactsViewModel = koinViewModel()) {
     val state by viewModel.state.collectAsState()
     val navController = LocalNavController.current
 
+    LaunchedEffect(Unit) {
+        snapshotFlow { navController.currentBackStackEntry }
+            .collect { backStackEntry ->
+                val isSync =
+                    backStackEntry?.savedStateHandle?.get<Boolean>("is_sync") == true
+                if (isSync) {
+                    viewModel.getContacts()
+                    backStackEntry?.savedStateHandle?.remove<Boolean>("is_sync")
+                }
+            }
+    }
     ContactsContent(
         onNavigateBack = { navController.popBackStack() },
         onResyncClick = { navController.navigate(SyncContactsRoute) },
