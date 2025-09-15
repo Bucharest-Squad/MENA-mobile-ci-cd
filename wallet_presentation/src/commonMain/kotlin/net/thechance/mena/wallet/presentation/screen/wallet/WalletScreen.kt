@@ -121,7 +121,10 @@ private fun onWalletEffect(effect: WalletEffect) {
 private fun WalletScreenPreview() {
     MenaTheme {
         WalletContent(
-            state = WalletUiState(isLoading = true),
+            state = WalletUiState(
+                isLoading = false,
+                balance = 530320.55
+            ),
             interactionListener = object : WalletInteractionListener {
                 override fun onBackClicked() {}
             }
