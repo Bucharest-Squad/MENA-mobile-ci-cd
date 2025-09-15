@@ -37,9 +37,8 @@ runs:
         sudo apt-get update && sudo apt-get install -y libfuse2 
         wget https://download.imagemagick.org/ImageMagick/download/binaries/magick
         chmod +x magick
-        mkdir magick
-        sudo mv magick magick
-        export PATH=$PATH:magick
+        export PATH=$PATH:.
+        magick -version
         
 
 
