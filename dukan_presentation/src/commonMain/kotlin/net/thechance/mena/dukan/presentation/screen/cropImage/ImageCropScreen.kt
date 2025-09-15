@@ -22,6 +22,7 @@ import net.thechance.mena.dukan.presentation.screen.cropImage.componetns.ImageCr
 import net.thechance.mena.dukan.presentation.screen.cropImage.componetns.SaveButton
 import net.thechance.mena.dukan.presentation.screen.cropImage.componetns.UploadAnotherImageButton
 import net.thechance.mena.dukan.presentation.screen.cropImage.componetns.ZoomControls
+import net.thechance.mena.dukan.presentation.util.ObserveAsEffect
 import net.thechance.mena.dukan.presentation.viewModel.cropImage.ImageCropEffects
 import net.thechance.mena.dukan.presentation.viewModel.cropImage.ImageCropInteractionListener
 import net.thechance.mena.dukan.presentation.viewModel.cropImage.ImageCropUiState
@@ -38,11 +39,10 @@ fun ImageCropScreen(
 
     ) {
     val state = viewModel.state.collectAsStateWithLifecycle()
-    LaunchedEffect(Unit) {
-        viewModel.effect.collectLatest {
-            when (it) {
-                is ImageCropEffects.NavigateBack -> onImageCrop(it.image)
-            }
+
+    ObserveAsEffect(viewModel.effect) { effect ->
+        when (effect) {
+            is ImageCropEffects.NavigateBack -> onImageCrop(effect.image)
         }
     }
 
