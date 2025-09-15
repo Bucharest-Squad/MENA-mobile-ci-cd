@@ -10,8 +10,8 @@ import org.koin.core.annotation.Provided
 @KoinViewModel
 class ManageTrendsViewModel(
     @Provided private val repository: ReelRepository,
-    initialState: ManageTrendsUiState
-) : BaseViewModel<ManageTrendsUiState,
+    initialState: ManageTrendsScreenState
+) : BaseViewModel<ManageTrendsScreenState,
         ManageTrendsUiEffect>(initialState),
     ManageTrendsInteractionListener {
 

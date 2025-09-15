@@ -9,20 +9,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -32,7 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
@@ -67,23 +61,21 @@ fun ManageTrendsScreen(
         }
     }
 
-    ManageTrendsContent(
+    ManageTrendsScreenContent(
         state = state,
         listener = viewModel,
     )
 }
 
 @Composable
-private fun ManageTrendsContent(
-    state: ManageTrendsUiState,
+private fun ManageTrendsScreenContent(
+    state: ManageTrendsScreenState,
     listener: ManageTrendsInteractionListener,
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .windowInsetsPadding(WindowInsets.systemBars)
-            .background(Theme.colorScheme.background.surface)
-            .verticalScroll(rememberScrollState()),
+            .background(Theme.colorScheme.background.surface),
     ) {
         AppBar(
             leadingContent = {
@@ -93,30 +85,31 @@ private fun ManageTrendsContent(
                     contentDescription = "Back arrow"
                 )
             },
-            title =  stringResource(Res.string.manage_trends_title),
+            title = stringResource(Res.string.manage_trends_title),
         )
 
-        AsyncImage(
-            model = state.profileImageUrl,
-            contentDescription =  stringResource(Res.string.profile_image_desc),
+        Column(
             modifier = Modifier
-                .padding(top = 32.dp)
-                .size(100.dp)
-                .clip(CircleShape)
-                .align(Alignment.CenterHorizontally),
-            contentScale = ContentScale.Crop,
-        )
-        MenaText(
-            text = state.userName,
-            style = Theme.typography.label.medium,
-            modifier = Modifier
-                .padding(top = 8.dp, bottom = 32.dp)
-                .align(Alignment.CenterHorizontally)
-        )
-
-        if (state.isLoading) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
-        } else {
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+        ) {
+            AsyncImage(
+                model = state.profileImageUrl,
+                contentDescription = stringResource(Res.string.profile_image_desc),
+                modifier = Modifier
+                    .padding(top = 32.dp)
+                    .size(100.dp)
+                    .clip(CircleShape)
+                    .align(Alignment.CenterHorizontally),
+                contentScale = ContentScale.Crop,
+            )
+            MenaText(
+                text = state.userName,
+                style = Theme.typography.label.medium,
+                modifier = Modifier
+                    .padding(top = 8.dp, bottom = 32.dp)
+                    .align(Alignment.CenterHorizontally)
+            )
             SegmentSection(
                 reels = state.reels,
                 onTrendClick = listener::onReelItemClick,
@@ -131,11 +124,11 @@ private fun SegmentSection(
     onTrendClick: (Int) -> Unit,
 ) {
     Column(
-        modifier = Modifier.padding(16.dp)
+        modifier = Modifier.padding(Theme.spacing._16)
     ) {
         Segment(
-            modifier = Modifier.padding(bottom = 8.dp),
-            contentPadding = PaddingValues(top = 16.dp)
+            modifier = Modifier.padding(bottom = Theme.spacing._8),
+            contentPadding = PaddingValues(top = Theme.spacing._16)
         ) {
             item( "My Trends") {
                 BoxWithConstraints(

@@ -2,7 +2,7 @@ package net.thechance.mena.trends.presentation.screen.managemytrendscreen
 
 
 import org.jetbrains.compose.resources.StringResource
-data class ManageTrendsUiState(
+data class ManageTrendsScreenState(
     val reels: List<ReelUiState> = emptyList(),
     val userName: String = "",
     val profileImageUrl: String = "",
