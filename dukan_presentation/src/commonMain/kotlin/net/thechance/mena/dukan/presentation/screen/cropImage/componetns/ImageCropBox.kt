@@ -2,10 +2,7 @@ package net.thechance.mena.dukan.presentation.screen.cropImage.componetns
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -15,7 +12,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.toRect
 import androidx.compose.ui.graphics.ClipOp
@@ -40,6 +36,7 @@ import com.attafitamim.krop.core.utils.constrainOffset
 import com.attafitamim.krop.core.utils.times
 import com.attafitamim.krop.core.utils.viewMat
 import com.attafitamim.krop.ui.disabledSystemGestureArea
+import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.dukan.presentation.util.imageCrop.computeImageBounds
 import net.thechance.mena.dukan.presentation.util.imageCrop.createCropperStyle
 import net.thechance.mena.dukan.presentation.util.imageCrop.toAspectRatio
@@ -52,10 +49,10 @@ fun ImageCropBox(
     backgroundColor: Color = Color.Black,
     overlayColor: Color = Color.Black.copy(.44f),
     aspectRatio: Float = 16f / 9f,
-    cornerRadius: Dp = 16.dp,
+    cornerRadius: Dp = Theme.radius.lg,
     strokeWidth: Dp = 4.dp,
     cornerSize: Float = 0.1f,
-    handleColor: Color = Color(0xFFFFFFFF),
+    handleColor: Color = Theme.colorScheme.primary.onPrimary,
     enableZoomGestures: Boolean = true,
 ) {
     val strokeWidthPx = LocalDensity.current.run { strokeWidth.toPx() }
@@ -180,40 +177,3 @@ fun ImageCropBox(
         }
     }
 }
-
-
-private const val MIN_ZOOM = 1f
-private const val MAX_ZOOM = 5f
-
-
-// Zoom functions
-private fun zoomIn(cropState: CropState?, factor: Float = 2f) {
-    cropState?.let { state ->
-        val region = state.region
-        val current = state.transform.scale
-
-        val newScale = Offset(
-            x = (current.x * factor).coerceIn(MIN_ZOOM, MAX_ZOOM),
-            y = (current.y * factor).coerceIn(MIN_ZOOM, MAX_ZOOM)
-        )
-
-        state.transform = state.transform.copy(scale = newScale)
-        state.region = region
-    }
-}
-
-private fun zoomOut(cropState: CropState?, factor: Float = 0.5f) {
-    cropState?.let { state ->
-        val region = state.region
-        val current = state.transform.scale
-
-        val newScale = Offset(
-            x = (current.x * factor).coerceIn(MIN_ZOOM, MAX_ZOOM),
-            y = (current.y * factor).coerceIn(MIN_ZOOM, MAX_ZOOM)
-        )
-
-        state.transform = state.transform.copy(scale = newScale)
-        state.region = region
-    }
-}
-

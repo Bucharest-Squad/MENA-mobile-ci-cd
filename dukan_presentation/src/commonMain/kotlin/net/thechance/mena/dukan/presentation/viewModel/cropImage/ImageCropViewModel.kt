@@ -13,35 +13,22 @@ import net.thechance.mena.dukan.presentation.viewModel.cropImage.ImageCropUiStat
 
 class ImageCropViewModel() : BaseViewModel<
         ImageCropUiState, ImageCropEffects>(
-    ImageCropUiState()
+    initialState = ImageCropUiState()
 ), ImageCropInteractionListener {
 
 
     fun onSelectImage(imageSrc: ImageSrc?) {
-        println("hello")
-        tryToExecute(block = {
-            state.value.cropper.let { cropper ->
-
-                when (val result = cropper.crop(imageSrc)) {
-                    CropError.LoadingError -> {
-                        println("Loading Error")
-                    }
-
-                    CropError.SavingError -> {
-                        println("Saving Error")
-                    }
-
-                    CropResult.Cancelled -> {
-                        println("Cancelled")
-                    }
-
-                    is CropResult.Success -> {
-                        println("Success")
-                        onCropImageSuccess(result.bitmap)
+        tryToExecute(
+            block = {
+                state.value.cropper.let { cropper ->
+                    when (val result = cropper.crop(imageSrc)) {
+                        CropError.LoadingError -> {}
+                        CropResult.Cancelled -> {}
+                        is CropResult.Success -> onCropImageSuccess(result.bitmap)
+                        CropError.SavingError -> {}
                     }
                 }
             }
-        }
         )
     }
 

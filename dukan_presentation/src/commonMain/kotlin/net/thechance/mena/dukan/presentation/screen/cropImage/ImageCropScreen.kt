@@ -3,6 +3,7 @@ package net.thechance.mena.dukan.presentation.screen.cropImage
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -11,6 +12,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.attafitamim.krop.core.images.ImageSrc
 import kotlinx.coroutines.flow.collectLatest
@@ -75,7 +77,7 @@ private fun DukanImageCropContent(
         state.cropper.cropState?.let { cropState ->
             ImageCropBox(
                 cropState = cropState,
-                modifier = Modifier
+                modifier = Modifier.defaultMinSize(minHeight = 400.dp)
                     .weight(1f)
                     .fillMaxWidth()
             )

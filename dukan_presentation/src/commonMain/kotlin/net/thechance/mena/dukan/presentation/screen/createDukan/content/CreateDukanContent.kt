@@ -80,7 +80,6 @@ fun CreateDukanContent(
                 CreateDukanStep.SELECT_STYLE -> CreateDukanContentSelectStyle()
             }
         }
-//        if (state.isImageBeingCropped.not())
             PrimaryButton(
                 modifier = Modifier
                     .fillMaxWidth()
