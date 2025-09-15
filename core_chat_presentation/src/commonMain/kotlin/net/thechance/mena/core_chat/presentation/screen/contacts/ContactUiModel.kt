@@ -1,12 +1,13 @@
 package net.thechance.mena.core_chat.presentation.screen.contacts
 
+import net.thechance.mena.core_chat.domain.entity.Contact
 
-data class ContactUi(
-    val id: String?,
+
+data class ContactUiModel(
     val firstName: String?,
     val lastName: String?,
     val phoneNumber: String,
-    val isMenaMember: Boolean,
+    val isMenaUser: Boolean,
     val imageUri: String? = null
 ) {
     val displayName: String
@@ -28,46 +29,49 @@ data class ContactUi(
             else -> "?"
         }
 }
-
+fun Contact.toUiModel(): ContactUiModel {
+    return ContactUiModel(
+        firstName = this.firstName,
+        lastName = this.lastName,
+        phoneNumber = this.phone,
+        isMenaUser = this.isMenaUser,
+        imageUri = this.imageUrl
+    )
+}
 val temporaryContacts = listOf(
-    ContactUi(
-        id = "1",
+    ContactUiModel(
         firstName = "John",
         lastName = "Doe",
         phoneNumber = "+1234567890",
-        isMenaMember = true,
+        isMenaUser = true,
         imageUri = "https://fastly.picsum.photos/id/834/200/200.jpg?hmac=vcoSQ7O6i2vxWANscm-9EGrw0MNqLzU3X0pQZ1o5ovI"
     ),
-    ContactUi(
-        id = "2",
+    ContactUiModel(
         firstName = "Noor",
         lastName = "Al-Taie",
         phoneNumber = "+1987654321",
-        isMenaMember = false,
+        isMenaUser = false,
         imageUri = null
     ),
-    ContactUi(
-        id = "3",
+    ContactUiModel(
         firstName = "Alice",
         lastName = "Johnson",
         phoneNumber = "+1122334455",
-        isMenaMember = true,
+        isMenaUser = true,
         imageUri = "https://fastly.picsum.photos/id/310/200/200.jpg?hmac=gpEKQ-zUG9L-jZga6K0jQ2NHHqqoPzMKUR-_ZmiL734"
     ),
-    ContactUi(
-        id = "4",
+    ContactUiModel(
         firstName = "Bob",
         lastName = "Brown",
         phoneNumber = "+1222333444",
-        isMenaMember = false,
+        isMenaUser = false,
         imageUri = null
     ),
-    ContactUi(
-        id = "5",
+    ContactUiModel(
         firstName = null,
         lastName = null,
         phoneNumber = "+1555666777",
-        isMenaMember = false,
+        isMenaUser = false,
         imageUri = "https://fastly.picsum.photos/id/57/200/200.jpg?hmac=EAluVy04ceTUijEPw3vraS5dkJ6vtBD3HmNwvMI5f3k"
     )
 )
