@@ -26,6 +26,7 @@ import net.thechance.mena.core_chat.data.shared.dto.PagedDataDto
 import net.thechance.mena.core_chat.domain.entity.Contact
 import net.thechance.mena.core_chat.domain.exception.ContactSyncFailedException
 import net.thechance.mena.core_chat.domain.exception.ContactsFetchFailedException
+import net.thechance.mena.core_chat.domain.exception.DataStoreException
 import net.thechance.mena.core_chat.domain.model.PagedData
 import net.thechance.mena.core_chat.domain.repository.ContactsRepository
 import com.bilalazzam.contacts_provider.Contact as DeviceContact
@@ -34,7 +35,7 @@ import com.bilalazzam.contacts_provider.Contact as DeviceContact
 class ContactsRepositoryImpl(
     private val client: HttpClient,
     private val contactsProvider: ContactsProvider,
-    private val dataStore : DataStore<Preferences>
+    private val dataStore: DataStore<Preferences>
 ) : ContactsRepository, BaseRepository {
 
     override suspend fun getUserContacts(pageNumber: Int, pageSize: Int): PagedData<Contact> {
@@ -64,7 +65,8 @@ class ContactsRepositoryImpl(
     }
 
     override suspend fun getUserSyncedState(): Boolean {
-        return safeDataStoreCall{
+        return tryCall(
+            defaultException = { DataStoreException("error with data store", it) }) {
             dataStore.data.map {
                 it[USER_SYNCED_STATE_KEY]
             }.firstOrNull() == true
@@ -72,14 +74,15 @@ class ContactsRepositoryImpl(
     }
 
     override suspend fun setUserSyncedState(state: Boolean) {
-        return safeDataStoreCall {
-            dataStore.edit {preferences ->
+        return tryCall(
+            defaultException = { DataStoreException("error with data store", it) }) {
+            dataStore.edit { preferences ->
                 preferences[USER_SYNCED_STATE_KEY] = state
             }
         }
     }
 
-    private companion object{
+    private companion object {
         val USER_SYNCED_STATE_KEY = booleanPreferencesKey("user_synced_state_key")
 
     }

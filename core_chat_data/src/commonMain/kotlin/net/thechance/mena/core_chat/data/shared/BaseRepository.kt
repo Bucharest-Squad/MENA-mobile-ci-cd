@@ -27,25 +27,22 @@ interface BaseRepository {
     }
 
     suspend fun <T> retry(
-        maxAttempts: Int = 3,
-        block: suspend () -> T?
+        maxAttempts: Int = 3, block: suspend () -> T?
     ): T? {
         return try {
             block()
         } catch (e: ChatException) {
             throw e
-        }  catch (e: Throwable) {
+        } catch (e: Throwable) {
             if (maxAttempts <= 1) throw e
             retry(
-                maxAttempts = maxAttempts - 1,
-                block = block
+                maxAttempts = maxAttempts - 1, block = block
             )
         }
     }
 
     private suspend fun <T> runCatchingWithException(
-        defaultException: (Throwable) -> ChatException,
-        block: suspend () -> T?
+        defaultException: (Throwable) -> ChatException, block: suspend () -> T?
     ): T? {
         return try {
             block()
@@ -68,11 +65,14 @@ interface BaseRepository {
     }
 
 
-    suspend fun <T> safeDataStoreCall(block: suspend () -> T): T {
+    suspend fun <T> tryCall(
+        defaultException: (Throwable) -> ChatException,
+        block: suspend () -> T
+    ): T {
         return try {
             block()
-        }catch(e: Exception){
-            throw DataStoreException("error with data store", e)
+        } catch (e: Exception) {
+            throw defaultException(e)
         }
     }
 
