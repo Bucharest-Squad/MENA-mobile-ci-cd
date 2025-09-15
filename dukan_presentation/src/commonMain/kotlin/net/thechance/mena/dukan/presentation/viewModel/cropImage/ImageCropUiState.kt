@@ -5,6 +5,9 @@ import com.attafitamim.krop.core.crop.imageCropper
 
 data class ImageCropUiState(
     val cropper: ImageCropper = imageCropper(),
-    val isZoomInEnabled: Boolean = false,
-    val isZoomOutEnabled: Boolean = false
-)
+){
+    companion object {
+        const val MIN_ZOOM = 1f
+        const val MAX_ZOOM = 5f
+    }
+}

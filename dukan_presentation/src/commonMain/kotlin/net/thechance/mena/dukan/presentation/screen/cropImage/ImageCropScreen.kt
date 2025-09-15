@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -22,6 +23,8 @@ import net.thechance.mena.dukan.presentation.screen.cropImage.componetns.ZoomCon
 import net.thechance.mena.dukan.presentation.viewModel.cropImage.ImageCropEffects
 import net.thechance.mena.dukan.presentation.viewModel.cropImage.ImageCropInteractionListener
 import net.thechance.mena.dukan.presentation.viewModel.cropImage.ImageCropUiState
+import net.thechance.mena.dukan.presentation.viewModel.cropImage.ImageCropUiState.Companion.MAX_ZOOM
+import net.thechance.mena.dukan.presentation.viewModel.cropImage.ImageCropUiState.Companion.MIN_ZOOM
 import net.thechance.mena.dukan.presentation.viewModel.cropImage.ImageCropViewModel
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -61,23 +64,31 @@ private fun DukanImageCropContent(
     Column(
         modifier = Modifier.fillMaxSize()
             .background(Theme.colorScheme.background.surface)
-            .padding(top = Theme.spacing._16),
+            .padding(
+                top = Theme.spacing._16,
+                start = Theme.spacing._16,
+                end = Theme.spacing._16
+            ),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         state.cropper.cropState?.let { cropState ->
             ImageCropBox(
                 cropState = cropState,
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
             )
         }
 
-
+        val currentScale = state.cropper.cropState?.transform?.scale?.x ?: 1f
         ZoomControls(
             onZoomInClicked = interactionListener::onZoomInClicked,
             onZoomOutClicked = interactionListener::onZoomOutClicked,
             onResetClicked = interactionListener::onResetClicked,
             modifier = Modifier.padding(top = Theme.spacing._12),
-            isZoomOutEnabled = state.isZoomOutEnabled
+            isZoomOutEnabled = currentScale > MIN_ZOOM,
+            isZoomInEnabled = currentScale < MAX_ZOOM
         )
 
         SaveButton(

@@ -1,11 +1,15 @@
 package net.thechance.mena.dukan.presentation.viewModel.cropImage
 
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.ImageBitmap
 import com.attafitamim.krop.core.crop.CropError
 import com.attafitamim.krop.core.crop.CropResult
+import com.attafitamim.krop.core.crop.CropState
 import com.attafitamim.krop.core.crop.crop
 import com.attafitamim.krop.core.images.ImageSrc
 import net.thechance.mena.dukan.presentation.viewModel.base.BaseViewModel
+import net.thechance.mena.dukan.presentation.viewModel.cropImage.ImageCropUiState.Companion.MAX_ZOOM
+import net.thechance.mena.dukan.presentation.viewModel.cropImage.ImageCropUiState.Companion.MIN_ZOOM
 
 class ImageCropViewModel() : BaseViewModel<
         ImageCropUiState, ImageCropEffects>(
@@ -53,11 +57,11 @@ class ImageCropViewModel() : BaseViewModel<
     }
 
     override fun onZoomInClicked() {
-        TODO("Not yet implemented")
+        zoom(state.value.cropper.cropState, ZOOM_IN)
     }
 
     override fun onZoomOutClicked() {
-        TODO("Not yet implemented")
+        zoom(state.value.cropper.cropState, ZOOM_OUT)
     }
 
     override fun onResetClicked() {
@@ -66,5 +70,25 @@ class ImageCropViewModel() : BaseViewModel<
 
     private fun onCropImageSuccess(selectedImage: ImageBitmap) {
         emitEffect(ImageCropEffects.NavigateBack(selectedImage))
+    }
+
+
+    private fun zoom(cropState: CropState?, factor: Float) {
+        cropState?.let { cropState ->
+            val region = cropState.region
+            val current = cropState.transform.scale
+            val newScale = Offset(
+                (current.x * factor).coerceIn(MIN_ZOOM, MAX_ZOOM),
+                (current.y * factor).coerceIn(MIN_ZOOM, MAX_ZOOM)
+            )
+
+            cropState.transform = cropState.transform.copy(scale = newScale)
+            cropState.region = region
+        }
+    }
+
+    companion object {
+        private const val ZOOM_IN = 1.2f
+        private const val ZOOM_OUT = 0.8f
     }
 }

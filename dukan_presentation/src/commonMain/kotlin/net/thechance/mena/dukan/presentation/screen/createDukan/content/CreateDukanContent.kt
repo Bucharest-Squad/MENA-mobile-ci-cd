@@ -80,20 +80,20 @@ fun CreateDukanContent(
                 CreateDukanStep.SELECT_STYLE -> CreateDukanContentSelectStyle()
             }
         }
-
-        PrimaryButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(Theme.spacing._16),
-            text = if (state.currentStep == CreateDukanStep.SELECT_STYLE)
-                "Create"
-            else
-                "Next",
-            onClick = listener::onButtonClicked,
-            trailingIcon = painterResource(Res.drawable.ic_arrow_left),
-            isEnabled = state.isButtonEnabled,
-            isLoading = state.isButtonLoading
-        )
+//        if (state.isImageBeingCropped.not())
+            PrimaryButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(Theme.spacing._16),
+                text = if (state.currentStep == CreateDukanStep.SELECT_STYLE)
+                    "Create"
+                else
+                    "Next",
+                onClick = listener::onButtonClicked,
+                trailingIcon = painterResource(Res.drawable.ic_arrow_left),
+                isEnabled = state.isButtonEnabled,
+                isLoading = state.isButtonLoading
+            )
     }
 }
 

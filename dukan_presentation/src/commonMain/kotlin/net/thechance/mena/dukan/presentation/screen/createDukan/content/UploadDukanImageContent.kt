@@ -1,6 +1,6 @@
 package net.thechance.mena.dukan.presentation.screen.createDukan.content
 
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -28,24 +28,23 @@ fun UploadDukanImageContent(
     state: CreateDukanUiState,
     interactionListener: CreateDukanInteractionListener
 ) {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Theme.colorScheme.background.surface)
-            .padding(horizontal = Theme.spacing._16)
-    ) {
-        if (state.isImageBeingCropped) {
-            item {
-                AnimatedVisibility(state.isImageBeingCropped) {
-                    ImageCropScreen(
-                        selectedImage = state.selectedImage,
-                        onImageCrop = { image ->
-                            interactionListener.onImageCrop(image)
-                        },
-                    )
-                }
-            }
-        } else {
+
+    if (state.isImageBeingCropped)
+        AnimatedContent(state.isImageBeingCropped) {
+            ImageCropScreen(
+                selectedImage = state.selectedImage,
+                onImageCrop = { image ->
+                    interactionListener.onImageCrop(image)
+                },
+            )
+        }
+    else {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Theme.colorScheme.background.surface)
+                .padding(horizontal = Theme.spacing._16)
+        ) {
             item {
                 MenaText(
                     text = stringResource(Res.string.dukan_image),
