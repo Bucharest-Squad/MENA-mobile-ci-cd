@@ -103,14 +103,9 @@ class CreateDukanViewModel :
     }
 
     override fun onCategorySelected(category: Category): Boolean {
-        val currentState = state.value
-        
-        if (!canSelectMoreCategories(currentState)) {
-            return false
-        }
-        
+        if (!canSelectMoreCategories(state.value)) return false
+
         addCategoryToSelection(category)
-        
         updateNextButtonEnableState()
         return true
     }
@@ -135,7 +130,7 @@ class CreateDukanViewModel :
 
     override fun onCategoryEnabled(category: Category): Boolean {
         val currentState = state.value
-        return canSelectMoreCategories(currentState) || 
+        return canSelectMoreCategories(currentState) ||
                 currentState.selectedCategories.contains(category)
     }
 
