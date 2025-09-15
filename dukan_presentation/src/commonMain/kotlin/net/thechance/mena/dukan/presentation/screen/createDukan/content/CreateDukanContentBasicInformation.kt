@@ -8,9 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.sp
 import mena.dukan_presentation.generated.resources.Res
 import mena.dukan_presentation.generated.resources.alert
 import mena.dukan_presentation.generated.resources.category
@@ -124,12 +122,9 @@ private fun CategoryHeaderSection() {
             text = stringResource(Res.string.you_can_choose_up_to_3_categories),
             style = Theme.typography.title.small,
             color = Theme.colorScheme.shadePrimary,
-            fontSize = 10.sp,
-            lineHeight = 16.sp,
             maxLines = 1,
             modifier = Modifier.padding(end = Theme.spacing._16, bottom = Theme.spacing._8),
-            textAlign = TextAlign.Start,
-            fontWeight = FontWeight.Medium,
+            textAlign = TextAlign.Start
         )
     }
 }
