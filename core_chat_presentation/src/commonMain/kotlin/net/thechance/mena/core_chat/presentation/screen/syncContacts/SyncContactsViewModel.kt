@@ -16,24 +16,24 @@ class SyncContactsViewModel(
 //    )
 
     init {
-//        onInit()
+        onInit()
     }
 
-//    fun onInit() {
-//        tryToExecute(
-////            onStart = { updateState { it.copy(isLoading = false) } },
-//            execute = { contactsRepository.getUserSyncedState() },
-//            onSuccess = { isSynced ->
-//                if (isSynced) {
-//                    updateState { it.copy(showSyncView = true, isFirstSynced = false) }
-//                    syncContacts()
-//                } else {
-//                    updateState { it.copy(showSyncView = true, isFirstSynced = true) }
-//                }
-//            },
-//            onError = { println(it.printStackTrace()) }
-//        )
-//    }
+    fun onInit() {
+        tryToExecute(
+//            onStart = { updateState { it.copy(isLoading = false) } },
+            execute = { contactsRepository.getUserSyncedState() },
+            onSuccess = { isSynced ->
+                if (isSynced) {
+                    updateState { it.copy(showSyncView = true, isFirstSynced = false) }
+                    syncContacts()
+                } else {
+                    updateState { it.copy(showSyncView = true, isFirstSynced = true) }
+                }
+            },
+            onError = { println(it.printStackTrace()) }
+        )
+    }
 
     fun onSyncContactsClicked() {
         tryToExecute(

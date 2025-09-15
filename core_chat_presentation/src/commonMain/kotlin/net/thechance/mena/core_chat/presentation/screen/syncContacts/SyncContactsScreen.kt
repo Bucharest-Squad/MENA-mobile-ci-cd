@@ -64,6 +64,7 @@ fun SyncContactsScreen() {
     }
 
     SyncContactsContent(
+        showSyncView = state.showSyncView,
         isSyncing = state.isLoading,
         onSyncClick = viewModel::onSyncContactsClicked,
     )
@@ -105,16 +106,18 @@ private fun SyncContactsContent(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
-            PhoneIcon()
-            if (isSyncing) {
-                ContactsSyncedView(
-                    modifier = Modifier.padding(top = Theme.spacing._24),
-                )
-            } else {
-                NoContactsSyncView(
-                    modifier = Modifier.padding(top = Theme.spacing._12),
-                    onSyncClick = onSyncClick,
-                )
+            if (showSyncView) {
+                PhoneIcon()
+                if (isSyncing) {
+                    ContactsSyncedView(
+                        modifier = Modifier.padding(top = Theme.spacing._24),
+                    )
+                } else {
+                    NoContactsSyncView(
+                        modifier = Modifier.padding(top = Theme.spacing._12),
+                        onSyncClick = onSyncClick,
+                    )
+                }
             }
         }
     }

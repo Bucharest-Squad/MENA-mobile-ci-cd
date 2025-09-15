@@ -38,6 +38,12 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(projects.designSystem)
+
+            implementation(libs.bundles.koin.compose)
+            implementation(projects.coreChatPresentation)
+            implementation(projects.coreChatDomain)
+            implementation(projects.coreChatData)
+            implementation(projects.coreChatApi)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
