@@ -25,4 +25,4 @@ class InvalidCredentialsException(
     "user with mobile number: $countryCode$mobileNumber doesn't exist or password is incorrect"
 )
 
-class UserNeedsLoginException : AuthenticationException("user has no access to application")
+class UnAuthorizedException : AuthenticationException("user has no access to application")
