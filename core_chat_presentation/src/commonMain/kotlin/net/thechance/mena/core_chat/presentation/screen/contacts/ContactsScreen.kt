@@ -12,7 +12,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import app.cash.paging.compose.LazyPagingItems
@@ -39,16 +38,20 @@ fun ContactsScreen(viewModel: ContactsViewModel = koinViewModel()) {
     val state by viewModel.state.collectAsState()
     val navController = LocalNavController.current
 
-    LaunchedEffect(Unit) {
-        snapshotFlow { navController.currentBackStackEntry }
-            .collect { backStackEntry ->
-                val isSync =
-                    backStackEntry?.savedStateHandle?.get<Boolean>("is_sync") == true
-                if (isSync) {
-                    viewModel.getContacts()
-                    backStackEntry?.savedStateHandle?.remove<Boolean>("is_sync")
-                }
-            }
+    val stateFlow = navController.currentBackStackEntry
+        ?.savedStateHandle
+        ?.getStateFlow("is_sync_success", false)
+
+    val isSyncedState = stateFlow?.collectAsState(initial = false)
+    val isSynced = isSyncedState?.value == true
+
+    LaunchedEffect(isSynced) {
+        if (isSynced) {
+            viewModel.getContacts()
+            navController.currentBackStackEntry
+                ?.savedStateHandle
+                ?.set("is_sync_success", false)
+        }
     }
 
     ContactsEffectsHandler(effects = viewModel.effect)
@@ -104,6 +107,7 @@ private fun ContactsContent(
         )
     }
 }
+
 @Composable
 private fun ContactsEffectsHandler(
     effects: Flow<ContactsScreenEffect>
@@ -117,9 +121,11 @@ private fun ContactsEffectsHandler(
                 is ContactsScreenEffect.NavigateBack -> {
                     currentNavController.popBackStack()
                 }
+
                 is ContactsScreenEffect.NavigateToSyncContacts -> {
-                    currentNavController.navigate(SyncContactsRoute(false))
+                    currentNavController.navigate(SyncContactsRoute(forceSync = true))
                 }
+
                 is ContactsScreenEffect.NavigateToChatScreen -> {
                     currentNavController.navigate((effect.contactId))
                 }

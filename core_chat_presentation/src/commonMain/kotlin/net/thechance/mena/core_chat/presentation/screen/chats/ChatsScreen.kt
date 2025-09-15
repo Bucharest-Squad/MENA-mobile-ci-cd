@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import kotlinx.coroutines.flow.collectLatest
@@ -21,7 +20,6 @@ fun ChatsScreen(
     viewModel: ChatsViewModel = koinViewModel<ChatsViewModel>()
 ) {
 
-    val state = viewModel.state.collectAsState()
     val navController = LocalNavController.current
 
     LaunchedEffect(Unit) {
@@ -32,7 +30,7 @@ fun ChatsScreen(
                 }
 
                 ChatsScreenEffect.NavigateToSyncContacts -> {
-                    navController.navigate(SyncContactsRoute(isFirstSync = true))
+                    navController.navigate(SyncContactsRoute(forceSync = false))
                 }
             }
         }

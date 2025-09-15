@@ -11,4 +11,4 @@ data object ChatsRoute : ChatRoute
 data object ContactsRoute : ChatRoute
 
 @Serializable
-data class SyncContactsRoute(val isFirstSync: Boolean) : ChatRoute
+data class SyncContactsRoute(val forceSync: Boolean) : ChatRoute

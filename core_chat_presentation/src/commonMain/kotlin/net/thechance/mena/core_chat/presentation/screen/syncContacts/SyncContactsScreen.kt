@@ -41,8 +41,10 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 
+
 @Composable
-fun SyncContactsScreen() {
+fun SyncContactsScreen(forceSync: Boolean = false) {
+
     val factory = rememberPermissionsControllerFactory()
     val controller = remember(factory) { factory.createPermissionsController() }
     val viewModel: SyncContactsViewModel = koinViewModel { parametersOf(controller) }
@@ -50,6 +52,11 @@ fun SyncContactsScreen() {
     val state by viewModel.state.collectAsState()
     val navController = LocalNavController.current
 
+    LaunchedEffect(Unit) {
+        if (forceSync) {
+            viewModel.onForceSyncContacts()
+        }
+    }
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
             when (effect) {
@@ -61,7 +68,7 @@ fun SyncContactsScreen() {
                 SyncContactsScreenEffect.NavigateBackWithResult -> {
                     navController.previousBackStackEntry
                         ?.savedStateHandle
-                        ?.set("is_sync", true)
+                        ?.set("is_sync_success", true)
                     navController.popBackStack()
                 }
             }

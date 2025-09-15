@@ -10,29 +10,9 @@ class SyncContactsViewModel(
     private val permissionsController: PermissionsController
 ) : BaseViewModel<SyncContactsUiState, SyncContactsScreenEffect>(SyncContactsUiState()) {
 
-    init {
-        onInit()
-    }
 
-    fun onInit() {
-        tryToExecute(
-            execute = { contactsRepository.getUserSyncedState() },
-            onSuccess = { isSynced ->
-                if (isSynced) {
-                    updateState { it.copy(
-                        showSyncView = true,
-                        isFirstSynced = false)
-                    }
-                    syncContacts()
-                } else {
-                    updateState { it.copy(
-                        showSyncView = true,
-                        isFirstSynced = true)
-                    }
-                }
-            },
-            onError = { println(it.printStackTrace()) }
-        )
+    fun onForceSyncContacts(){
+        syncContacts()
     }
 
     fun onSyncContactsClicked() {
@@ -56,7 +36,8 @@ class SyncContactsViewModel(
                 updateState {
                     it.copy(
                         isLoading = true,
-                        isSyncFinished = false
+                        isSyncFinished = false,
+                        showSyncView = true
                     )
                 }
             },
@@ -66,7 +47,6 @@ class SyncContactsViewModel(
             onSuccess = {
                 updateState {
                     it.copy(
-                        isLoading = false,
                         isSyncFinished = true
                     )
                 }
