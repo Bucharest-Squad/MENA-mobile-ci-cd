@@ -51,7 +51,7 @@ fun ContactsScreen(viewModel: ContactsViewModel = koinViewModel()) {
     }
     ContactsContent(
         onNavigateBack = { navController.popBackStack() },
-        onResyncClick = { navController.navigate(SyncContactsRoute) },
+        onResyncClick = { navController.navigate(SyncContactsRoute(false)) },
         contacts = state.contacts.collectAsLazyPagingItems()
     )
 }

@@ -71,6 +71,7 @@ fun SyncContactsScreen() {
 
 @Composable
 private fun SyncContactsContent(
+    showSyncView: Boolean = false,
     isSyncing: Boolean,
     onSyncClick: () -> Unit,
 ) {
