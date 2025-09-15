@@ -98,8 +98,8 @@ class CreateDukanViewModel :
         updateNextButtonEnableState()
     }
 
-    override fun isCategorySelected(category: Category): Boolean {
-        return state.value.selectedCategories.contains(category)
+    override fun isCategorySelected(): (Category) -> Boolean {
+        return { category -> state.value.selectedCategories.contains(category) }
     }
 
     override fun onCategorySelected(category: Category): Boolean {
