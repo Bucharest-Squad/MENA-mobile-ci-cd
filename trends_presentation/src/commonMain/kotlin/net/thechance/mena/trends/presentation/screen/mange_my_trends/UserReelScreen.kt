@@ -1,6 +1,5 @@
 package net.thechance.mena.trends.presentation.screen.mange_my_trends
 
-
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -21,10 +20,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,6 +30,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.rememberAsyncImagePainter
 import mena.trends_presentation.generated.resources.Res
 import mena.trends_presentation.generated.resources.ic_arrow_left
@@ -48,36 +46,55 @@ import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.trends.presentation.shared.util.gradientShadow
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun UserReelScreen() {
-    //TODO pass listener and ui state to replace this dummy data
-    UserReelScreenContent()
+fun UserReelScreen(
+    viewModel: UserReelViewModel = koinViewModel()
+) {
+
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
+    UserReelScreenContent(
+        state = state,
+        listener = viewModel
+    )
+
+    LaunchedEffect(Unit) {
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                UserReelEffect.NavigateBack -> {}// TODO
+            }
+        }
+    }
 }
 
 @Composable
-private fun UserReelScreenContent() {
+private fun UserReelScreenContent(
+    state: UserReelState,
+    listener: UserReelInteractionListener
+) {
     Box(modifier = Modifier.fillMaxSize()) {
 
         RunningVideoPlaceHolder()
-        TopAppBar(onBackClick = { TODO("call on back click")})
+        TopAppBar(onBackClick = listener::onBackClick)
 
-        // TODO replace this dummy data with real one
         UsersReAct(
-            viewCount = "11",
-            likeCount = "4",
-            onDeleteClick = { TODO() },
+            viewCount = state.viewsCount.toString(),
+            likeCount = state.likesCount.toString(),
+            onDeleteClick = listener::onDeleteClick,
             modifier = Modifier.align(Alignment.BottomEnd)
                 .padding(end = Theme.spacing._16, bottom = 140.dp)
         )
 
         PublisherDetails(
-            userName = "Hawraa Mahmood",
-            timeOfPublish = "2 hour ago",
-            description = "Latest AI -trends that are changing everything! \uD83D\uDE80",
-            //replace this with the user Avatar
-            avatar = "https://example.com/image.jpg",
-            modifier = Modifier.align(Alignment.BottomCenter)
+            userName = state.username,
+            timeOfPublish = state.createdAt,
+            description = state.description,
+            avatar = state.thumbnail,
+            modifier = Modifier.align(Alignment.BottomCenter),
+            isDescriptionExpanded = state.isDescriptionExpanded,
+            onDescriptionClick = listener::onDescriptionClick
         )
 
         Box(
@@ -115,10 +132,11 @@ private fun PublisherDetails(
     avatar: String,
     userName: String,
     timeOfPublish: String,
+    isDescriptionExpanded: Boolean,
+    onDescriptionClick: (Boolean) -> Unit,
     description: String,
     modifier: Modifier = Modifier
 ) {
-    var isExpanded by remember { mutableStateOf(false) }
 
     Column(
         modifier = modifier
@@ -131,7 +149,13 @@ private fun PublisherDetails(
             modifier = Modifier
                 .padding(top = Theme.spacing._8)
         ) {
-            AvatarPlaceHolder(avatar = avatar)
+
+            MenaImage(
+                painter = rememberAsyncImagePainter(avatar),
+                modifier = Modifier.size(size = 40.dp).clip(shape = CircleShape)
+                    .border(shape = CircleShape, width = 0.5.dp, color = Theme.colorScheme.stroke),
+                contentScale = ContentScale.Crop
+            )
 
             Column(Modifier.padding(bottom = Theme.spacing._16)) {
                 MenaText(
@@ -149,15 +173,17 @@ private fun PublisherDetails(
             }
         }
 
-        MenaText(
-            text = description,
-            modifier = Modifier
-                .animateContentSize()
-                .clickable { isExpanded = !isExpanded },
-            color = Theme.colorScheme.primary.onPrimary,
-            style = Theme.typography.label.medium,
-            maxLines = if (isExpanded) Int.MAX_VALUE else 1
-        )
+        if (description.isNotBlank()) {
+            MenaText(
+                text = description,
+                modifier = Modifier
+                    .animateContentSize()
+                    .clickable { onDescriptionClick(isDescriptionExpanded) },
+                color = Theme.colorScheme.primary.onPrimary,
+                style = Theme.typography.label.medium,
+                maxLines = if (isDescriptionExpanded) Int.MAX_VALUE else 1
+            )
+        }
     }
 }
 
@@ -219,20 +245,10 @@ private fun ReActIcon(
     }
 }
 
-@Composable
-private fun AvatarPlaceHolder(avatar: String) {
-    MenaImage(
-        painter = rememberAsyncImagePainter( avatar),
-        modifier = Modifier.size(size = 40.dp).clip(shape = CircleShape)
-            .border(shape = CircleShape, width = 0.5.dp, color = Theme.colorScheme.stroke),
-        contentScale = ContentScale.Crop
-    )
-}
-
 @Preview
 @Composable
 private fun Preview() {
-    MenaTheme{
+    MenaTheme {
         UserReelScreen()
     }
 }
