@@ -39,6 +39,7 @@ runs:
         chmod +x magick
         export PATH=$PATH:.
         magick -version
+        which magick
         
 
 
