@@ -25,8 +25,7 @@ class CategoryPickViewModel(
     }
 
     private fun handleLoadCategoriesSuccess(categories: List<Category>) {
-        val uiModels = categories.toUiStates()
-        updateState { copy(categories = uiModels) }
+        updateState { copy(categories = categories.toUiStates()) }
     }
 
     override fun onCategoryClick(categoryId: Int) {
