@@ -25,7 +25,7 @@ jobs:
       - name: Deploy to Firebase
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
-          appId: ${{ secrets.FIREBASE_DEVELOP_APP_ID }}
+          appId: ${{ secrets.FIREBASE_DEVELOPMENT_APP_ID }}
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
           file: ${{ env.SIGNED_APK_PATH }}
           debug: true
@@ -35,7 +35,7 @@ jobs:
         uses: MeilCli/slack-upload-file@v4.0.20
         with:
           slack_token: ${{ secrets.SLACK_BOT_TOKEN }}
-          channel_id: ${{ secrets.SLACK_DEVELOP_CHANNEL_ID }}
+          channel_id: ${{ secrets.SLACK_DEVELOPMENT_CHANNEL_ID }}
           file_path: ${{ env.SIGNED_APK_PATH }}
           file_name: "app-release-${{ github.run_number }}.apk"
           initial_comment: |
