@@ -180,26 +180,30 @@ private fun DialoguePreview() {
     MenaTheme {
         var showDialog by remember { mutableStateOf(true) }
 
-        Scaffold(overlays = {
-            dialog(showDialog) {
-                Dialog(
-                    onDismiss = {
-                        showDialog = false
-                    },
-                    title = "Preview Title",
-                    message = "This is a preview message.",
-                    buttonText = "Confirm",
-                    dismissOnClickOutside = true,
-                    dismissOnBackPress = true,
-                    onActionClick = {
-                        showDialog = false
-                    },
-                    onCancelClick = {
-                        showDialog = false
-                    },
-                )
-            }
-        }) {
+        Scaffold(
+            topBar = {
+                HomeAppBar("202")
+            },
+            overlays = {
+                dialog(showDialog) {
+                    Dialog(
+                        onDismiss = {
+                            showDialog = false
+                        },
+                        title = "Preview Title",
+                        message = "This is a preview message.",
+                        buttonText = "Confirm",
+                        dismissOnClickOutside = true,
+                        dismissOnBackPress = true,
+                        onActionClick = {
+                            showDialog = false
+                        },
+                        onCancelClick = {
+                            showDialog = false
+                        },
+                    )
+                }
+            }) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
@@ -207,9 +211,9 @@ private fun DialoguePreview() {
                     .clickable(onClick = {
                         showDialog = true
                     })
-                    .background(Theme.colorScheme.background.surface).fillMaxSize()
+                    .background(Theme.colorScheme.background.surface)
+                    .fillMaxSize()
             ) {
-                HomeAppBar("202")
                 net.thechance.mena.designsystem.presentation.component.text.Text(
                     text = "HI",
                     style = Theme.typography.title.large,
