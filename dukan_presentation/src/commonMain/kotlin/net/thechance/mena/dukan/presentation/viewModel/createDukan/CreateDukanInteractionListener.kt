@@ -12,4 +12,6 @@ interface CreateDukanInteractionListener {
     fun onCLickNext()
 
     fun onImageCrop(image: ImageBitmap)
+
+    fun onCancelCrop()
 }

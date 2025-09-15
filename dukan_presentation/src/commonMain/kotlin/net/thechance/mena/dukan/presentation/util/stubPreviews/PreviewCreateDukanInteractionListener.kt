@@ -11,4 +11,5 @@ object PreviewCreateDukanInteractionListener : CreateDukanInteractionListener {
     override fun onClickEditImage() {}
     override fun onCLickNext() {}
     override fun onImageCrop(image: ImageBitmap) {}
+    override fun onCancelCrop() {}
 }

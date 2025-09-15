@@ -70,6 +70,16 @@ class CreateDukanViewModel :
         updateNextButtonEnableState()
     }
 
+    override fun onCancelCrop() {
+        updateState {
+            copy(
+                selectedImage = null,
+                isImageBeingCropped = false
+            )
+        }
+        updateNextButtonEnableState()
+    }
+
     private fun nextStep(step: CreateDukanStep): CreateDukanStep =
         when (step) {
             CreateDukanStep.BASIC_INFORMATION -> CreateDukanStep.SELECT_IMAGE

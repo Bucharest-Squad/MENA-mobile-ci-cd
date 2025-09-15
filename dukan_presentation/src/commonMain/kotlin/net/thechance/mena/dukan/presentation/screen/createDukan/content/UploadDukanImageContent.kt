@@ -1,11 +1,12 @@
 package net.thechance.mena.dukan.presentation.screen.createDukan.content
 
-import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import mena.dukan_presentation.generated.resources.ImageSize
 import mena.dukan_presentation.generated.resources.Res
@@ -16,6 +17,7 @@ import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.dukan.presentation.screen.cropImage.ImageCropScreen
 import net.thechance.mena.dukan.presentation.screen.cropImage.componetns.UploadImageContainer
+import net.thechance.mena.dukan.presentation.util.OnSystemBackPressed
 import net.thechance.mena.dukan.presentation.util.stubPreviews.PreviewCreateDukanInteractionListener
 import net.thechance.mena.dukan.presentation.viewModel.createDukan.CreateDukanInteractionListener
 import net.thechance.mena.dukan.presentation.viewModel.createDukan.CreateDukanUiState
@@ -23,22 +25,24 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun UploadDukanImageContent(
     state: CreateDukanUiState,
     interactionListener: CreateDukanInteractionListener
 ) {
 
-    if (state.isImageBeingCropped)
-        AnimatedContent(state.isImageBeingCropped) {
+    if (state.isImageBeingCropped) {
+        OnSystemBackPressed(interactionListener::onCancelCrop)
+        AnimatedVisibility(state.isImageBeingCropped) {
             ImageCropScreen(
                 selectedImage = state.selectedImage,
                 onImageCrop = { image ->
                     interactionListener.onImageCrop(image)
-                },
+                }
             )
         }
-    else {
+    } else {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
