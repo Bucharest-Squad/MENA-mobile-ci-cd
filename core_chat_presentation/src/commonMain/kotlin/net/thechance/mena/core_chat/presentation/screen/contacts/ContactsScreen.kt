@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.LazyPagingItems
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.contacts_title
 import mena.core_chat_presentation.generated.resources.ic_arrow_left
@@ -25,14 +27,19 @@ import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.viewmodel.koinViewModel
+import androidx.compose.runtime.getValue
+import androidx.paging.compose.collectAsLazyPagingItems
 
 @Composable
-fun ContactsScreen() {
+fun ContactsScreen(viewModel: ContactsViewModel = koinViewModel()) {
+    val state by viewModel.state.collectAsState()
     val navController = LocalNavController.current
+
     ContactsContent(
         onNavigateBack = { navController.popBackStack() },
         onResyncClick = { navController.navigate(SyncContactsRoute) },
-        contacts = temporaryContacts
+        contacts = state.contacts.collectAsLazyPagingItems()
     )
 }
 
@@ -40,7 +47,7 @@ fun ContactsScreen() {
 private fun ContactsContent(
     onNavigateBack: () -> Unit,
     onResyncClick: () -> Unit,
-    contacts: List<ContactUi>
+    contacts: LazyPagingItems<ContactUiModel>
 ) {
     Column(
         modifier = Modifier.fillMaxSize()
