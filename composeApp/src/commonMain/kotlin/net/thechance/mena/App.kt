@@ -24,7 +24,6 @@ import mena.composeapp.generated.resources.compose_multiplatform
 fun App() {
     MaterialTheme {
         var showContent by remember { mutableStateOf(false) }
-        let have an error here to test the notification
         Column(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.primaryContainer)
