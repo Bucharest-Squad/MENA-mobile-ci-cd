@@ -14,7 +14,7 @@ jobs:
     permissions:
       contents: write   # required to delete branches
     steps:
-      - name: Get branch name
+      - name: Get branch name and validate
         run: |
           if [[ "${GITHUB_EVENT_NAME}" == "create" ]]; then
             BRANCH_NAME="${GITHUB_REF_NAME}"
@@ -29,12 +29,11 @@ jobs:
             echo "❌ Invalid branch name: $BRANCH_NAME"
             echo "Deleting branch..."
 
-            # Delete branch via GitHub API
-            BRANCH_REF="refs/heads/$BRANCH_NAME"
+            # Correct GitHub API delete endpoint
             curl -s -X DELETE \
               -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
               -H "Accept: application/vnd.github.v3+json" \
-              "https://api.github.com/repos/${{ github.repository }}/git/$BRANCH_REF"
+              "https://api.github.com/repos/${{ github.repository }}/git/refs/heads/$BRANCH_NAME"
 
             exit 1
           fi
