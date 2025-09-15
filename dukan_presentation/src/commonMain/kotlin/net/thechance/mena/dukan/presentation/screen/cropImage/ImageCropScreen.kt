@@ -98,7 +98,7 @@ private fun DukanImageCropContentPreview() {
         DukanImageCropContent(
             state = ImageCropUiState(),
             interactionListener = object : ImageCropInteractionListener {
-                override fun onUploadAnotherImageClicked() {}
+                override fun onUploadAnotherImageClicked(imageSrc: ImageSrc?) {}
 
                 override fun onZoomInClicked() {}
 

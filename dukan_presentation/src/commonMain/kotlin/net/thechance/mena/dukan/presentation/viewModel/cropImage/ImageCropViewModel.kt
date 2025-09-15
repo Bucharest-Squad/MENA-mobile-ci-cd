@@ -46,8 +46,10 @@ class ImageCropViewModel() : BaseViewModel<
         state.value.cropper.cropState?.done(true)
     }
 
-    override fun onUploadAnotherImageClicked() {
-        TODO("Not yet implemented")
+    override fun onUploadAnotherImageClicked(
+        imageSrc: ImageSrc?
+    ) {
+        onSelectImage(imageSrc)
     }
 
     override fun onZoomInClicked() {
