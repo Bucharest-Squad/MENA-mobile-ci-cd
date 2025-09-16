@@ -28,9 +28,13 @@ class LoginUseCase(
         return mobileNumberValidator.isValid(countryCode = countryCode, number = number)
     }
 
-    fun isPasswordValid(password: String) = password.length >= 8
+    fun isPasswordValid(password: String) = password.length >= PASSWORD_MIN_LENGTH
 
     private suspend fun isUserBlocked(countryCode: String, number: String): Boolean {
         return authenticationRepository.isUserBlocked(countryCode = countryCode, number = number)
+    }
+
+    private companion object {
+        const val PASSWORD_MIN_LENGTH = 8
     }
 }
