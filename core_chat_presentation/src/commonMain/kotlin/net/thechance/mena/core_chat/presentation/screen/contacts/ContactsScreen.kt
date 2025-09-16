@@ -38,9 +38,8 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun ContactsScreen(viewModel: ContactsViewModel = koinViewModel()) {
-    val state by viewModel.state.collectAsState()
-    ContactsEffectsHandler(effects = viewModel.effect)
 
+    val state by viewModel.state.collectAsState()
     val navController = LocalNavController.current
 
     val stateFlow = navController.currentBackStackEntry
@@ -58,6 +57,8 @@ fun ContactsScreen(viewModel: ContactsViewModel = koinViewModel()) {
                 ?.set("is_sync_success", false)
         }
     }
+
+    ContactsEffectsHandler(effects = viewModel.effect)
 
     ContactsContent(
         state = state,

@@ -19,9 +19,12 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import app.cash.paging.compose.LazyPagingItems
 import mena.core_chat_presentation.generated.resources.Res
+import mena.core_chat_presentation.generated.resources.could_not_load_contacts
 import mena.core_chat_presentation.generated.resources.ic_warning
+import mena.core_chat_presentation.generated.resources.loading
 import mena.core_chat_presentation.generated.resources.no_contacts_message
 import mena.core_chat_presentation.generated.resources.refresh_contacts_message
+import mena.core_chat_presentation.generated.resources.something_went_wrong
 import net.thechance.mena.core_chat.presentation.components.ErrorView
 import net.thechance.mena.core_chat.presentation.screen.contacts.ContactListInteractionListener
 import net.thechance.mena.core_chat.presentation.screen.contacts.ContactUi
@@ -43,8 +46,8 @@ fun ContactsList(
     ) { (isEmpty, loadState) ->
         if (isEmpty && loadState is LoadState.Error) {
             ErrorView(
-                title = "Something went wrong",
-                message = "Could not load contacts, please try again",
+                title = stringResource(Res.string.something_went_wrong),
+                message = stringResource(Res.string.could_not_load_contacts),
                 onRetry = listener::onRefreshContacts
             )
         } else if (isEmpty && loadState != LoadState.Loading) {
@@ -54,7 +57,7 @@ fun ContactsList(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ){
-                MenaText(text = "Loading...", style = Theme.typography.title.small)
+                MenaText(text = stringResource(Res.string.loading), style = Theme.typography.title.small)
             }
         } else {
             LazyColumn(
