@@ -3,6 +3,7 @@ package net.thechance.mena.dukan.presentation.screen.createDukan.content
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -65,6 +66,10 @@ fun CreateDukanContent(
             AppBar(
                 title = stringResource(Res.string.create_new_dukan),
                 onLeadingClick = listener::onBackClicked,
+                contentPadding = PaddingValues(
+                    horizontal = Theme.spacing._12,
+                    vertical = Theme.spacing._8
+                ),
                 leadingContent = {
                     Icon(
                         painter = painterResource(Res.drawable.ic_arrow_left),
