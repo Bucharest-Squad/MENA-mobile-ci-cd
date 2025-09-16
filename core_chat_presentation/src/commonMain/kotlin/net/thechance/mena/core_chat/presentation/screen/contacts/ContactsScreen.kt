@@ -86,7 +86,7 @@ private fun ContactsContent(
                     tint = Theme.colorScheme.primary.primary,
                 )
             },
-            onLeadingClick = interactionListener::onNavigateBack,
+            onLeadingClick = interactionListener::onBackClick,
             trailingContent = {
                 AppBarOptionContainer(
                     badgeColor = Theme.colorScheme.primary.primary,

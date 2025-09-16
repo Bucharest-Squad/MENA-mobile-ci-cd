@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.icerock.moko.permissions.compose.BindEffect
 import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.ic_arrow_left
@@ -41,7 +42,6 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 
-
 @Composable
 fun SyncContactsScreen(forceSync: Boolean = false) {
 
@@ -49,46 +49,28 @@ fun SyncContactsScreen(forceSync: Boolean = false) {
     val controller = remember(factory) { factory.createPermissionsController() }
     val viewModel: SyncContactsViewModel = koinViewModel { parametersOf(controller) }
     BindEffect(controller)
+
     val state by viewModel.state.collectAsState()
-    val navController = LocalNavController.current
 
     LaunchedEffect(Unit) {
-        if (forceSync) {
-            viewModel.onForceSyncContacts()
-        }
+        viewModel.onForceSync(forceSync = forceSync)
     }
-    LaunchedEffect(Unit) {
-        viewModel.effect.collectLatest { effect ->
-            when (effect) {
-                SyncContactsScreenEffect.NavigateToContacts -> {
-                    navController.popBackStack()
-                    navController.navigate(ContactsRoute)
-                }
 
-                SyncContactsScreenEffect.NavigateBackWithResult -> {
-                    navController.previousBackStackEntry
-                        ?.savedStateHandle
-                        ?.set("is_sync_success", true)
-                    navController.popBackStack()
-                }
-            }
-        }
-    }
+    SyncContactsEffectsHandler(viewModel.effect)
 
     SyncContactsContent(
-        showSyncView = state.showSyncView,
-        isSyncing = state.isLoading,
-        onSyncClick = viewModel::onSyncContactsClicked,
+        state = state,
+        interactionListener = viewModel,
     )
 }
 
+
 @Composable
 private fun SyncContactsContent(
-    showSyncView: Boolean = false,
-    isSyncing: Boolean,
-    onSyncClick: () -> Unit,
+    state: SyncContactsUiState,
+    interactionListener: SyncContactsScreenInteractionListener,
 ) {
-    val navController = LocalNavController.current
+
     Column(
         modifier = Modifier.fillMaxSize()
             .background(color = Theme.colorScheme.background.surface)
@@ -106,9 +88,7 @@ private fun SyncContactsContent(
                     tint = Theme.colorScheme.primary.primary,
                 )
             },
-            onLeadingClick = {
-                navController.popBackStack()
-            },
+            onLeadingClick = interactionListener::onBackClick,
         )
         Column(
             modifier = Modifier
@@ -118,17 +98,41 @@ private fun SyncContactsContent(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
-            if (showSyncView) {
+            if (state.showSyncView) {
                 PhoneIcon()
-                if (isSyncing) {
-                    ContactsSyncedView(
-                        modifier = Modifier.padding(top = Theme.spacing._24),
-                    )
+                if (state.isLoading) {
+                    ContactsSyncedView(modifier = Modifier.padding(top = Theme.spacing._24))
                 } else {
                     NoContactsSyncView(
                         modifier = Modifier.padding(top = Theme.spacing._12),
-                        onSyncClick = onSyncClick,
+                        onSyncClick = interactionListener::onSyncClick,
                     )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SyncContactsEffectsHandler(effects: Flow<SyncContactsScreenEffect>) {
+    val navController = LocalNavController.current
+    LaunchedEffect(Unit) {
+        effects.collectLatest { effect ->
+            when (effect) {
+                SyncContactsScreenEffect.NavigateToContacts -> {
+                    navController.popBackStack()
+                    navController.navigate(ContactsRoute)
+                }
+
+                SyncContactsScreenEffect.NavigateBack -> {
+                    navController.popBackStack()
+                }
+
+                SyncContactsScreenEffect.NavigateBackWithResult -> {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("is_sync_success", true)
+                    navController.popBackStack()
                 }
             }
         }
@@ -139,6 +143,14 @@ private fun SyncContactsContent(
 @Preview()
 private fun SyncContactsScreenPreview() {
     MenaTheme {
-        SyncContactsScreen()
+        SyncContactsContent(
+            state = SyncContactsUiState(showSyncView = true, isLoading = false),
+            interactionListener = object :
+                SyncContactsScreenInteractionListener {
+                override fun onForceSync(forceSync: Boolean) {}
+                override fun onBackClick() {}
+                override fun onSyncClick() {}
+            }
+        )
     }
 }

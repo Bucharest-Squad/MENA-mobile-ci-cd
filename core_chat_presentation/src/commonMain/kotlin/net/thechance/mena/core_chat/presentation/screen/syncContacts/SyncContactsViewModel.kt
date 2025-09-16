@@ -8,62 +8,52 @@ import net.thechance.mena.core_chat.presentation.shared.BaseViewModel
 class SyncContactsViewModel(
     private val contactsRepository: ContactsRepository,
     private val permissionsController: PermissionsController
-) : BaseViewModel<SyncContactsUiState, SyncContactsScreenEffect>(SyncContactsUiState()) {
+) : BaseViewModel<SyncContactsUiState, SyncContactsScreenEffect>(SyncContactsUiState()),
+    SyncContactsScreenInteractionListener {
 
 
-    fun onForceSyncContacts(){
-        syncContacts()
+    override fun onForceSync(forceSync: Boolean) {
+        if (forceSync) {
+            updateState { it.copy(isFirstSync = false) }
+            syncContacts()
+        } else {
+            updateState { it.copy(isFirstSync = true, showSyncView = true, isLoading = false) }
+        }
     }
 
-    fun onSyncContactsClicked() {
+    override fun onBackClick() {
+        emitEffect(SyncContactsScreenEffect.NavigateBack)
+    }
+
+    override fun onSyncClick() {
         tryToExecute(
             execute = { permissionsController.providePermission(Permission.CONTACTS) },
             onSuccess = { syncContacts() },
-            onError = { throwable ->
-                updateState {
-                    it.copy(
-                        isLoading = false,
-                        error = throwable.message
-                    )
-                }
-            },
+            onError = ::onError,
         )
     }
 
     private fun syncContacts() {
         tryToExecute(
-            onStart = {
-                updateState {
-                    it.copy(
-                        isLoading = true,
-                        isSyncFinished = false,
-                        showSyncView = true
-                    )
-                }
-            },
-            execute = {
-                contactsRepository.syncContacts()
-            },
-            onSuccess = {
-                updateState {
-                    it.copy(
-                        isSyncFinished = true
-                    )
-                }
-                contactsRepository.setUserSyncedState(true)
-                if(state.value.isFirstSynced) {
-                    emitEffect(SyncContactsScreenEffect.NavigateToContacts)
-                } else {
-                    emitEffect(SyncContactsScreenEffect.NavigateBackWithResult)
-                }
-            },
-            onError = { throwable ->
-                updateState { it.copy(
-                    isLoading = false,
-                    error = throwable.message)
-                }
-            }
+            onStart = { updateState { it.copy(isLoading = true, showSyncView = true) } },
+            execute = { contactsRepository.syncContacts() },
+            onSuccess = { onSyncContactsSuccess() },
+            onError = ::onError
         )
+    }
+
+    private suspend fun onSyncContactsSuccess() {
+        if (state.value.isFirstSync) {
+            contactsRepository.setUserSyncedState(true)
+            emitEffect(SyncContactsScreenEffect.NavigateToContacts)
+        } else {
+            emitEffect(SyncContactsScreenEffect.NavigateBackWithResult)
+        }
+    }
+
+    private fun onError(throwable: Throwable) {
+        updateState { it.copy(isLoading = false, error = throwable.message) }
+        println(throwable.printStackTrace())
     }
 }
 

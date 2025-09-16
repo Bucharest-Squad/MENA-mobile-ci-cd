@@ -1,7 +1,7 @@
 package net.thechance.mena.core_chat.presentation.screen.contacts
 
 interface ContactsScreenInteractionListener : ContactItemInteractionListener{
-    fun onNavigateBack()
+    fun onBackClick()
     fun onResyncClick()
 }
 interface ContactItemInteractionListener{

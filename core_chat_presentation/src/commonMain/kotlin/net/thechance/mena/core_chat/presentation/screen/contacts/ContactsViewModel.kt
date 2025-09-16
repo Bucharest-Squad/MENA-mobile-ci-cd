@@ -32,7 +32,7 @@ class ContactsViewModel(
         updateState { it.copy(contacts = contactsFlow) }
     }
 
-    override fun onNavigateBack() {
+    override fun onBackClick() {
         emitEffect(ContactsScreenEffect.NavigateBack)
     }
 
