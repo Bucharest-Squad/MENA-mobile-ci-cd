@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -30,9 +31,13 @@ import mena.trends_presentation.generated.resources.change_tags
 import mena.trends_presentation.generated.resources.choose_interests
 import mena.trends_presentation.generated.resources.help_text
 import mena.trends_presentation.generated.resources.save_change
+import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
+import net.thechance.mena.trends.presentation.screen.interestpick.CategoryScreenUiState.CategoryUiState
 import net.thechance.mena.trends.presentation.shared.component.CategoryItem
 import net.thechance.mena.trends.presentation.shared.util.ObserveAsEffect
+import net.thechance.mena.trends.presentation.shared.util.Selectable
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun CategoryScreen(
@@ -72,7 +77,7 @@ private fun CategoryScreenContent(
                     MenaIcon(
                         painter = painterResource(Res.drawable.ic_arrow_left),
                         contentDescription = null,
-                        modifier = Modifier.clickable { listener::onBackClick}
+                        modifier = Modifier.clickable { listener.onBackClick() }
                     )
                 },
                 title = stringResource(Res.string.change_tags),
@@ -82,26 +87,25 @@ private fun CategoryScreenContent(
                     .padding(bottom = Theme.spacing._16),
             )
 
-            MenaText(
-                text = stringResource(Res.string.choose_interests),
-                style = Theme.typography.title.medium,
-                color = Theme.colorScheme.shadePrimary,
-                modifier = Modifier
-                    .padding(horizontal = Theme.spacing._16)
-                    .padding(bottom = Theme.spacing._4)
-            )
+            if (!state.isLoading) {
+                MenaText(
+                    text = stringResource(Res.string.choose_interests),
+                    style = Theme.typography.title.medium,
+                    color = Theme.colorScheme.shadePrimary,
+                    modifier = Modifier
+                        .padding(horizontal = Theme.spacing._16)
+                        .padding(bottom = Theme.spacing._4)
+                )
 
-            MenaText(
-                text = stringResource(Res.string.help_text),
-                style = Theme.typography.body.small,
-                color = Theme.colorScheme.shadeSecondary,
-                modifier = Modifier.padding(Theme.spacing._16)
-                    .padding(bottom = Theme.spacing._24)
-            )
+                MenaText(
+                    text = stringResource(Res.string.help_text),
+                    style = Theme.typography.body.small,
+                    color = Theme.colorScheme.shadeSecondary,
+                    modifier = Modifier
+                        .padding(horizontal = Theme.spacing._16)
+                        .padding(bottom = Theme.spacing._24)
+                )
 
-            if (state.isLoading) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
-            } else {
                 FlowRow(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -110,38 +114,48 @@ private fun CategoryScreenContent(
                     state.categories.forEach { category ->
                         CategoryItem(
                             category = category,
-                            onClick = { id -> listener::onCategoryClick },
+                            onClick = { id -> listener.onCategoryClick(id) },
                             modifier = Modifier
                                 .padding(bottom = Theme.spacing._12)
                                 .padding(end = Theme.spacing._8)
                         )
                     }
                 }
+                Spacer(modifier = Modifier.weight(1f))
+                Button(
+                    onClick = { listener.onSaveClick() },
+                    isEnabled = state.isSavingEnabled(),
+                    isLoading = state.isSaveButtonLoading,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = Theme.spacing._24)
+                        .padding(horizontal = Theme.spacing._16),
+                    shape = RoundedCornerShape(Theme.spacing._12),
+                    containerColor = Theme.colorScheme.primary.primary,
+                    disabledContainerColor = Theme.colorScheme.primary.primary.copy(alpha = 0.5f),
+                    contentColor = Theme.colorScheme.primary.onPrimary,
+                    disabledContentColor = Theme.colorScheme.primary.onPrimary.copy(alpha = 0.5f),
+                ) { contentColor ->
+                    MenaText(
+                        text = stringResource(Res.string.save_change),
+                        color = contentColor,
+                        style = Theme.typography.label.medium,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(horizontal = Theme.spacing._24, vertical = Theme.spacing._12)
+                    )
+                }
             }
         }
 
-        Button(
-            onClick = { listener::onSaveClick},
-            isEnabled = state.isSavingEnabled(),
-            isLoading = state.isSaveButtonLoading,
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter)
-                .padding(bottom = Theme.spacing._24)
-                .padding(horizontal = Theme.spacing._16),
-            shape = RoundedCornerShape(Theme.spacing._12),
-            containerColor = Theme.colorScheme.primary.primary,
-            disabledContainerColor = Theme.colorScheme.primary.primary.copy(alpha = 0.5f),
-            contentColor = Theme.colorScheme.primary.onPrimary,
-            disabledContentColor = Theme.colorScheme.primary.onPrimary.copy(alpha = 0.5f),
-        ) { contentColor ->
-            MenaText(
-                text = stringResource(Res.string.save_change),
-                color = contentColor,
-                style = Theme.typography.label.medium,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(horizontal = Theme.spacing._24, vertical = Theme.spacing._12)
-            )
+        if (state.isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Theme.colorScheme.background.surface.copy(alpha = 0.7f)),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
         }
     }
 }
