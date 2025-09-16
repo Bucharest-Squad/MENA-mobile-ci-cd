@@ -11,7 +11,7 @@ import net.thechance.mena.core_chat.presentation.shared.BaseViewModel
 class SyncContactsViewModel(
     private val contactsRepository: ContactsRepository,
     private val permissionsController: PermissionsController
-) : BaseViewModel<SyncContactsUiState, SyncContactsScreenEffect>(SyncContactsUiState()),
+) : BaseViewModel<SyncContactsState, SyncContactsScreenEffect>(SyncContactsState()),
     SyncContactsScreenInteractionListener {
 
 

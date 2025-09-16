@@ -70,7 +70,7 @@ fun SyncContactsScreen(forceSync: Boolean = false) {
 
 @Composable
 private fun SyncContactsContent(
-    state: SyncContactsUiState,
+    state: SyncContactsState,
     interactionListener: SyncContactsScreenInteractionListener,
 ) {
 
@@ -165,7 +165,7 @@ private fun SyncContactsEffectsHandler(effects: Flow<SyncContactsScreenEffect>) 
 private fun SyncContactsScreenPreview() {
     MenaTheme {
         SyncContactsContent(
-            state = SyncContactsUiState(showSyncView = true, isLoading = false),
+            state = SyncContactsState(showSyncView = true, isLoading = false),
             interactionListener = object :
                 SyncContactsScreenInteractionListener {
                 override fun onForceSync(forceSync: Boolean) {}

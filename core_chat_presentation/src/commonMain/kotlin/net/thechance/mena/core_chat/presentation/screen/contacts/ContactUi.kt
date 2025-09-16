@@ -3,18 +3,18 @@ package net.thechance.mena.core_chat.presentation.screen.contacts
 import net.thechance.mena.core_chat.domain.entity.Contact
 
 
-data class ContactUiModel(
-    val firstName: String?,
-    val lastName: String?,
+data class ContactUi(
+    val firstName: String,
+    val lastName: String,
     val phoneNumber: String,
     val isMenaUser: Boolean,
     val imageUri: String? = null
 ) {
     val displayName: String
         get() = when {
-            !firstName.isNullOrBlank() && !lastName.isNullOrBlank() -> "$firstName $lastName"
-            !firstName.isNullOrBlank() -> firstName
-            !lastName.isNullOrBlank() -> lastName
+            firstName.isNotBlank() && lastName.isNotBlank() -> "$firstName $lastName"
+            firstName.isNotBlank() -> firstName
+            lastName.isNotBlank() -> lastName
             else -> "Unknown"
         }
 
@@ -29,8 +29,8 @@ data class ContactUiModel(
             else -> "?"
         }
 }
-fun Contact.toUiModel(): ContactUiModel {
-    return ContactUiModel(
+fun Contact.toUiModel(): ContactUi {
+    return ContactUi(
         firstName = this.firstName,
         lastName = this.lastName,
         phoneNumber = this.phone,

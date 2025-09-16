@@ -18,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import app.cash.paging.compose.collectAsLazyPagingItems
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.contacts_title
 import mena.core_chat_presentation.generated.resources.ic_arrow_left
@@ -49,7 +48,7 @@ fun ContactsScreen(viewModel: ContactsViewModel = koinViewModel()) {
 
 @Composable
 private fun ContactsContent(
-    state: ContactsScreenUiState,
+    state: ContactsScreenState,
     interactionListener: ContactsScreenInteractionListener
 ) {
     val contacts = state.contacts.collectAsLazyPagingItems()

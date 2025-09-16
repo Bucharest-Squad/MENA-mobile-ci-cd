@@ -15,7 +15,7 @@ import net.thechance.mena.core_chat.presentation.shared.BaseViewModel
 class ContactsViewModel(
     private val contactsRepository: ContactsRepository,
     private val savedHandle: SavedStateHandle
-) : BaseViewModel<ContactsScreenUiState, ContactsScreenEffect>(ContactsScreenUiState()),
+) : BaseViewModel<ContactsScreenState, ContactsScreenEffect>(ContactsScreenState()),
     ContactsScreenInteractionListener {
 
     init {
@@ -42,14 +42,14 @@ class ContactsViewModel(
         )
     }
 
-    private fun loadContactsOperation(): Flow<PagingData<ContactUiModel>> {
+    private fun loadContactsOperation(): Flow<PagingData<ContactUi>> {
         return createPagingFlow(
             pagingSourceFactory = { createContactsPagingSource() },
             mapper = Contact::toUiModel
         )
     }
 
-    private fun onLoadContactsSuccess(pagingData: PagingData<ContactUiModel>?) {
+    private fun onLoadContactsSuccess(pagingData: PagingData<ContactUi>?) {
         updateState { it.copy(contacts = flowOf(pagingData ?: PagingData.empty())) }
     }
 

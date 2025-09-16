@@ -5,8 +5,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import net.thechance.mena.core_chat.presentation.components.SnackBarData
 
-data class ContactsScreenUiState(
-    val contacts: Flow<PagingData<ContactUiModel>> = flowOf(PagingData.empty()),
+data class ContactsScreenState(
+    val contacts: Flow<PagingData<ContactUi>> = flowOf(PagingData.empty()),
     val isLastPage: Boolean = false,
     val snackBarData: SnackBarData? = null,
 )
