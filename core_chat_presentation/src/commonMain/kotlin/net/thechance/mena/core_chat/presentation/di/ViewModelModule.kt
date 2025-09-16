@@ -12,7 +12,7 @@ internal val viewModelModule = module {
     viewModelOf(::ChatsViewModel)
     viewModel { (handle: SavedStateHandle) ->
         ContactsViewModel(
-            savedStateHandle = handle,
+            savedHandle = handle,
             contactsRepository = get()
         )
     }
