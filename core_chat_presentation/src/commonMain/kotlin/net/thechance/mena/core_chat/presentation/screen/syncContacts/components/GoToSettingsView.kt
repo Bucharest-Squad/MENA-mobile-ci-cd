@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import mena.core_chat_presentation.generated.resources.Res
+import mena.core_chat_presentation.generated.resources.go_to_settings
 import mena.core_chat_presentation.generated.resources.ic_phone_back
 import mena.core_chat_presentation.generated.resources.sync_contacts
 import mena.core_chat_presentation.generated.resources.sync_contacts_title
@@ -37,7 +38,7 @@ fun GoToSettingsView(
             modifier = Modifier.fillMaxWidth()
         )
         MenaText(
-            text = "To sync your contacts, please enable the contacts permission in your device settings",
+            text = stringResource(Res.string.go_to_settings),
             modifier = Modifier.padding(top = Theme.spacing._2, bottom = Theme.spacing._12),
             textAlign = TextAlign.Center,
             style = Theme.typography.body.small,
