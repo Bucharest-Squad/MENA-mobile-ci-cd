@@ -12,6 +12,8 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
+import net.thechance.mena.identity.domain.exception.InvalidMobileNumberException
+import net.thechance.mena.identity.domain.exception.InvalidPasswordException
 import net.thechance.mena.identity.domain.exception.UserIsBlockedException
 import net.thechance.mena.identity.domain.repository.AuthenticationRepository
 import net.thechance.mena.identity.domain.useCase.validation.mobileNumber.MobileNumberValidator
@@ -94,5 +96,29 @@ internal class LoginUseCaseTest {
         assertFailure {
             loginUseCase.login(countryCode, number, password)
         }.isInstanceOf(UserIsBlockedException::class)
+    }
+
+    @Test
+    fun `should throw InvalidMobileNumberException when mobile number is not valid`() = runTest {
+        every { mobileNumberValidator.isValid(any(), any()) } returns false
+        val password = "12845678"
+        val countryCode = ValidMobileNumbersDummyData.EGYPT.countryCode
+        val number = ValidMobileNumbersDummyData.EGYPT.mobileNumber
+
+        assertFailure {
+            loginUseCase.login(countryCode, number, password)
+        }.isInstanceOf(InvalidMobileNumberException::class)
+    }
+
+    @Test
+    fun `should throw InvalidPasswordException when password is not valid`() = runTest {
+        every { mobileNumberValidator.isValid(any(), any()) } returns true
+        val password = "78"
+        val countryCode = ValidMobileNumbersDummyData.IRAQ.countryCode
+        val number = ValidMobileNumbersDummyData.IRAQ.mobileNumber
+
+        assertFailure {
+            loginUseCase.login(countryCode, number, password)
+        }.isInstanceOf(InvalidPasswordException::class)
     }
 }
