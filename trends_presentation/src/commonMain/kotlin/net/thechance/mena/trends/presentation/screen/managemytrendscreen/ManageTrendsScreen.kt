@@ -7,11 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -29,11 +25,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
 import mena.trends_presentation.generated.resources.Back_arrow
 import mena.trends_presentation.generated.resources.Res
@@ -161,20 +154,10 @@ private fun SegmentSection(
                         contentPadding = PaddingValues(0.dp)
                     ) {
                         items(reels) { item ->
-                            Box(
-                                modifier = Modifier
-                                    .size(itemWidth, itemHeight)
-                                    .clip(RoundedCornerShape(12.dp))
-                                    .clickable { onTrendClick(item.id) }
-                                    .background(Theme.colorScheme.background.surfaceHigh)
-                            ) {
-                                AsyncImage(
-                                    model = item.thumbnailUrl,
-                                    contentDescription = stringResource(Res.string.trend_image_desc),
-                                    modifier = Modifier.fillMaxSize().clickable{},
-                                    contentScale = ContentScale.Crop
-                                )
-                            }
+                            TrendItem(
+                                item = item,
+                                onTrendClick = onTrendClick
+                            )
                         }
                     }
                 }
@@ -183,5 +166,28 @@ private fun SegmentSection(
                 // TODO: Implement favorites, empty for now
             }
         }
+    }
+}
+
+@Composable
+private fun TrendItem(
+    item: ReelUiState,
+    onTrendClick: (Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .size(106.dp, 164.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .clickable { onTrendClick(item.id) }
+            .background(Theme.colorScheme.background.surfaceHigh)
+    ) {
+        AsyncImage(
+            model = item.thumbnailUrl,
+            contentDescription = stringResource(Res.string.trend_image_desc),
+            modifier = Modifier
+                .fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
     }
 }
