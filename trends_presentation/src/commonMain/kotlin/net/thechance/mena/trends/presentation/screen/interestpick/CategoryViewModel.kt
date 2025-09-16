@@ -3,12 +3,13 @@ package net.thechance.mena.trends.presentation.screen.interestpick
 import net.thechance.mena.trends.domain.entity.Category
 import net.thechance.mena.trends.domain.repository.CategoryRepository
 import net.thechance.mena.trends.presentation.shared.base.BaseViewModel
+import net.thechance.mena.trends.presentation.shared.util.toggleCategory
 
-class CategoryPickViewModel(
+class CategoryViewModel(
     private val repository: CategoryRepository
-) : BaseViewModel<CategoryPickScreenUiState, CategoryPickUiEffect>(
-    initialState = CategoryPickScreenUiState()
-), CategoryPickInteractionListener {
+) : BaseViewModel<CategoryScreenUiState, CategoryUiEffect>(
+    initialState = CategoryScreenUiState()
+), CategoryInteractionListener {
 
     init {
         loadCategories()
@@ -28,23 +29,14 @@ class CategoryPickViewModel(
         updateState { copy(categories = categories.toUiStates()) }
     }
 
-    override fun onCategoryClick(categoryId: Int) {
-        updateState {
-            val updated = categories.map {
-                if (it.uiState.id == categoryId) {
-                    it.copy(isSelected = !it.isSelected)
-                } else {
-                    it
-                }
-            }
-            copy(categories = updated)
-        }
+    override fun onCategoryClick(categoryId: Int) = updateState {
+        copy(categories = categories.toggleCategory(categoryId))
     }
 
     override fun onSaveClick() {
         tryToExecute(
             block = { saveSelectedCategories() },
-            onSuccess = { sendEffect(CategoryPickUiEffect.NavigateToSave) },
+            onSuccess = { sendEffect(CategoryUiEffect.NavigateToTrends) },
             onStart = ::startSaving,
             onEnd = ::endSaving,
             onError = {},
@@ -54,12 +46,12 @@ class CategoryPickViewModel(
     private suspend fun saveSelectedCategories() {
         val selectedIds = state.value.categories
             .filter { it.isSelected }
-            .mapNotNull { it.uiState.id }
+            .mapNotNull { it.value.id }
         repository.updateUserInterestedCategories(selectedIds)
     }
 
     override fun onBackClick() {
-        sendEffect(CategoryPickUiEffect.NavigateBack)
+        sendEffect(CategoryUiEffect.NavigateBack)
     }
 
     private fun startLoading() = updateState { copy(isLoading = true) }

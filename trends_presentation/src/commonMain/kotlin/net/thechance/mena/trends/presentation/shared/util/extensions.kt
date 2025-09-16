@@ -7,9 +7,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.launch
-import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
-import kotlin.time.Instant
+import net.thechance.mena.trends.presentation.screen.interestpick.CategoryScreenUiState
 
 fun <T> Flow<T>.throttleFirst(windowDuration: Long): Flow<T> {
     var job: Job = Job().apply { complete() }
@@ -26,3 +24,6 @@ fun <T> Flow<T>.throttleFirst(windowDuration: Long): Flow<T> {
         }
     }
 }
+
+fun List<Selectable<CategoryScreenUiState.CategoryUiState>>.toggleCategory(id: Int) =
+    map { if (it.value.id == id) it.copy(isSelected = !it.isSelected) else it }
