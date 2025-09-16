@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -38,27 +37,27 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun CategoryScreen(
     navController: NavController,
-    viewModel: CategoryPickViewModel = koinViewModel(),
+    viewModel: CategoryViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     ObserveAsEffect(viewModel.effect) { effect ->
         when (effect) {
-            is CategoryPickUiEffect.NavigateBack -> navController.popBackStack()
-            is CategoryPickUiEffect.NavigateToSave -> navController.navigate("next_screen")
+            is CategoryUiEffect.NavigateBack -> navController.popBackStack()
+            is CategoryUiEffect.NavigateToTrends -> navController.navigate("")
         }
     }
 
-    CategoryContent(
+    CategoryScreenContent(
         state = state,
         listener = viewModel,
     )
 }
 
 @Composable
-fun CategoryContent(
-    state: CategoryPickScreenUiState,
-    listener: CategoryPickInteractionListener,
+private fun CategoryScreenContent(
+    state: CategoryScreenUiState,
+    listener: CategoryInteractionListener,
 ) {
     Box(
         modifier = Modifier

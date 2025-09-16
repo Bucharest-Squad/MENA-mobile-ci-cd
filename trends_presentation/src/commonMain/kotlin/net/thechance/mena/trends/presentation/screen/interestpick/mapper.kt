@@ -1,7 +1,7 @@
 package net.thechance.mena.trends.presentation.screen.interestpick
 
 import net.thechance.mena.trends.domain.entity.Category
-import net.thechance.mena.trends.presentation.screen.interestpick.CategoryPickScreenUiState.CategoryUiState
+import net.thechance.mena.trends.presentation.screen.interestpick.CategoryScreenUiState.CategoryUiState
 import net.thechance.mena.trends.presentation.shared.util.Selectable
 
 internal fun Category.toUiState(): CategoryUiState {
@@ -15,7 +15,7 @@ internal fun Category.toUiState(): CategoryUiState {
 fun List<Category>.toUiStates(): List<Selectable<CategoryUiState>> {
     return map { category ->
         Selectable(
-            uiState = category.toUiState(),
+            value = category.toUiState(),
             isSelected = false
         )
     }
