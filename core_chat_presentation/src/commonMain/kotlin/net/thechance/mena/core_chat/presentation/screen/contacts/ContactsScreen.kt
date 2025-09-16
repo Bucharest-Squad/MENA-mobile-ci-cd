@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
@@ -18,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import app.cash.paging.compose.collectAsLazyPagingItems
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.contacts_title
 import mena.core_chat_presentation.generated.resources.ic_arrow_left
@@ -40,6 +40,24 @@ import org.koin.compose.viewmodel.koinViewModel
 fun ContactsScreen(viewModel: ContactsViewModel = koinViewModel()) {
     val state by viewModel.state.collectAsState()
     ContactsEffectsHandler(effects = viewModel.effect)
+
+    val navController = LocalNavController.current
+
+    val stateFlow = navController.currentBackStackEntry
+        ?.savedStateHandle
+        ?.getStateFlow("is_sync_success", false)
+
+    val isSyncedState = stateFlow?.collectAsState(initial = false)
+    val isSynced = isSyncedState?.value == true
+
+    LaunchedEffect(isSynced) {
+        if (isSynced) {
+            viewModel.onRefreshContacts()
+            navController.currentBackStackEntry
+                ?.savedStateHandle
+                ?.set("is_sync_success", false)
+        }
+    }
 
     ContactsContent(
         state = state,
