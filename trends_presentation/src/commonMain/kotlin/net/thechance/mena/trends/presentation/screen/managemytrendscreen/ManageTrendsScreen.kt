@@ -9,11 +9,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -31,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
+import mena.trends_presentation.generated.resources.Back_arrow
 import mena.trends_presentation.generated.resources.Res
 import mena.trends_presentation.generated.resources.ic_arrow_left
 import mena.trends_presentation.generated.resources.manage_trends_title
@@ -48,7 +53,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.Int
-import kotlin.math.roundToInt
+import kotlin.math.floor
 
 @Composable
 fun ManageTrendsScreen(
@@ -87,7 +92,7 @@ private fun ManageTrendsScreenContent(
                 MenaIcon(
                     modifier = Modifier.clickable { listener.onBackClick() },
                     painter = painterResource(Res.drawable.ic_arrow_left),
-                    contentDescription = "Back arrow"
+                    contentDescription = stringResource(Res.string.Back_arrow)
                 )
             },
             title = stringResource(Res.string.manage_trends_title),
@@ -135,53 +140,47 @@ private fun SegmentSection(
             modifier = Modifier.padding(bottom = Theme.spacing._8),
             contentPadding = PaddingValues(top = Theme.spacing._16)
         ) {
-            item( "My Trends") {
-                BoxWithConstraints(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
+            item("My Trends") {
+                BoxWithConstraints {
                     val itemWidth = 106.dp
-                    val numColumns = (maxWidth / itemWidth).roundToInt().coerceAtLeast(1)
-                    val chunks = reels.chunked(numColumns)
-                    Column(
-                        modifier = Modifier,
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    val itemHeight = 164.dp
+                    val spacing = 4.dp
+                    val numColumns = floor((maxWidth.value + spacing.value) / (itemWidth.value + spacing.value)).toInt().coerceAtLeast(1)
+                    val numRows = (reels.size + numColumns - 1) / numColumns
+                    val totalHeight = (numRows * itemHeight.value + (numRows - 1) * spacing.value).dp
+
+                    LazyVerticalGrid(
+                        columns = GridCells.Adaptive(
+                            minSize = 106.dp
+                        ),
+                        modifier = Modifier
+                            .height(totalHeight),
+                        userScrollEnabled = false,
+                        verticalArrangement = Arrangement.spacedBy(spacing),
+                        horizontalArrangement = Arrangement.spacedBy(spacing, Alignment.CenterHorizontally),
+                        contentPadding = PaddingValues(0.dp)
                     ) {
-                        chunks.forEach { rowItems ->
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        items(reels) { item ->
+                            Box(
+                                modifier = Modifier
+                                    .size(itemWidth, itemHeight)
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .clickable { onTrendClick(item.id) }
+                                    .background(Theme.colorScheme.error)
                             ) {
-                                rowItems.forEach { item ->
-                                    Box(
-                                        modifier = Modifier
-                                            .weight(1f)
-                                            .height(164.dp)
-                                            .clip(RoundedCornerShape(12.dp))
-                                            .clickable { onTrendClick(item.id) }
-                                            .background(Theme.colorScheme.background.surfaceHigh)
-                                    ) {
-                                        AsyncImage(
-                                            model = item.thumbnailUrl,
-                                            contentDescription =  stringResource(Res.string.trend_image_desc),
-                                            modifier = Modifier.fillMaxSize(),
-                                            contentScale = ContentScale.Crop
-                                        )
-                                    }
-                                }
-                                repeat(numColumns - rowItems.size) {
-                                    Spacer(
-                                        modifier = Modifier
-                                            .weight(1f)
-                                            .height(164.dp)
-                                    )
-                                }
+                                AsyncImage(
+                                    model = item.thumbnailUrl,
+                                    contentDescription = stringResource(Res.string.trend_image_desc),
+                                    modifier = Modifier.fillMaxSize().clickable{},
+                                    contentScale = ContentScale.Crop
+                                )
                             }
                         }
                     }
                 }
             }
-            item("Favorite" ) {
-                // TODO: Implement favorites , empty for now
+            item("Favorite") {
+                // TODO: Implement favorites, empty for now
             }
         }
     }

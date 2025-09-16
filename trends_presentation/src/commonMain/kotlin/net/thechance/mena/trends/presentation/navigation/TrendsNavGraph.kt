@@ -12,6 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import net.thechance.mena.trends.presentation.screen.TestScreen
+import net.thechance.mena.trends.presentation.screen.managemytrendscreen.ManageTrendsScreen
 
 @Composable
 fun TrendsNavHost() {
