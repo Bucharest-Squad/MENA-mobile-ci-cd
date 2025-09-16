@@ -85,7 +85,7 @@ private fun ContactsContent(
         )
         ContactsList(
             contacts = contacts,
-            listener = interactionListener
+            onContactClick = interactionListener::onContactClick
         )
     }
 }
