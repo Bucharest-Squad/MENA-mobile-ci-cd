@@ -31,18 +31,20 @@ class SyncContactsViewModel(
         tryToExecute(
             execute = { permissionsController.providePermission(Permission.CONTACTS) },
             onSuccess = { syncContacts() },
-            onError = { throwable ->
-                when (throwable) {
-                    is DeniedAlwaysException -> {
-                        updateState { it.copy(isLoading = false, deniedPermanently = true) }
-                    }
-                    is DeniedException -> {
-                        updateState { it.copy(isLoading = false, error = throwable.message) }
-                    }
-                    else -> onError(throwable)
-                }
-            },
+            onError = ::handlePermissionError
         )
+    }
+
+    private fun handlePermissionError(throwable: Throwable) {
+        when (throwable) {
+            is DeniedAlwaysException -> {
+                updateState { it.copy(isLoading = false, deniedPermanently = true) }
+            }
+            is DeniedException -> {
+                updateState { it.copy(isLoading = false, error = throwable.message) }
+            }
+            else -> onError(throwable)
+        }
     }
 
     private fun syncContacts() {
