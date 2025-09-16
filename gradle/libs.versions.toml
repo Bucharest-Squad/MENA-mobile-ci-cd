@@ -73,7 +73,6 @@ jvm-test = [
     "kotlinx-coroutines-test"
 ]
 
-[bundles]
 ktor = [
     "ktor-client-core",
     "ktor-client-content-negotiation",
