@@ -22,6 +22,8 @@ import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.ic_warning
 import mena.core_chat_presentation.generated.resources.no_contacts_message
 import mena.core_chat_presentation.generated.resources.refresh_contacts_message
+import net.thechance.mena.core_chat.presentation.components.ErrorView
+import net.thechance.mena.core_chat.presentation.screen.contacts.ContactListInteractionListener
 import net.thechance.mena.core_chat.presentation.screen.contacts.ContactUiModel
 import net.thechance.mena.core_chat.presentation.screen.syncContacts.components.PhoneIcon
 import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
@@ -33,19 +35,30 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun ContactsList(
     contacts: LazyPagingItems<ContactUiModel>,
-    onContactClick: (Int) -> Unit,
+    listener: ContactListInteractionListener
 ) {
     AnimatedContent(
-        targetState = Pair(
-            (contacts.itemCount == 0),
-            contacts.loadState.refresh == LoadState.Loading
-        ),
-        modifier = Modifier.fillMaxSize()
-    ) { (isEmpty, isLoading) ->
-        if (isEmpty && !isLoading) EmptyContactsColumn()
-        else {
+        targetState = Pair((contacts.itemCount == 0), contacts.loadState.refresh),
+        modifier = Modifier.fillMaxSize().padding(horizontal = Theme.spacing._16),
+    ) { (isEmpty, loadState) ->
+        if (isEmpty && loadState is LoadState.Error) {
+            ErrorView(
+                title = "Something went wrong",
+                message = "Could not load contacts, please try again",
+                onRetry = listener::onRefreshContacts
+            )
+        } else if (isEmpty && loadState != LoadState.Loading) {
+            EmptyContactsColumn()
+        } else if (loadState is LoadState.Loading) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ){
+                MenaText(text = "Loading...", style = Theme.typography.title.small)
+            }
+        } else {
             LazyColumn(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = Theme.spacing._16),
+                modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(Theme.spacing._16),
                 contentPadding = PaddingValues(vertical = Theme.spacing._8)
             ) {
@@ -58,7 +71,7 @@ fun ContactsList(
                     contact?.let {
                         ContactItem(
                             contact = it,
-                            onContactClick = {onContactClick},
+                            onContactClick = { /*listener.onContactClick(contact.id)*/ },
                         )
                     }
                 }

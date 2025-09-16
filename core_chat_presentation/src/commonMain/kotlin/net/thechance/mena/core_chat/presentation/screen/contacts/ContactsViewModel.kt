@@ -1,53 +1,46 @@
 package net.thechance.mena.core_chat.presentation.screen.contacts
 
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.viewModelScope
-import androidx.paging.cachedIn
+import androidx.paging.PagingData
+import androidx.paging.PagingSource
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import net.thechance.mena.core_chat.domain.entity.Contact
+import net.thechance.mena.core_chat.domain.exception.ChatException
 import net.thechance.mena.core_chat.domain.repository.ContactsRepository
+import net.thechance.mena.core_chat.presentation.components.SnackBarData
 import net.thechance.mena.core_chat.presentation.shared.BasePagingSource
 import net.thechance.mena.core_chat.presentation.shared.BaseViewModel
 
 class ContactsViewModel(
-    private val contactsRepository: ContactsRepository,
-    private val savedStateHandle: SavedStateHandle
-) : BaseViewModel<ContactsUiState, ContactsScreenEffect>(ContactsUiState()),
+    private val contactsRepository: ContactsRepository
+) : BaseViewModel<ContactsScreenUiState, ContactsScreenEffect>(ContactsScreenUiState()),
     ContactsScreenInteractionListener {
 
     init {
-        observeSyncSuccess()
-        getContacts()
+        loadContacts()
     }
 
-    private fun observeSyncSuccess() {
+    private fun loadContacts() {
         tryToCollect(
-            collect = { savedStateHandle.getStateFlow("is_sync_success", false) },
-            onCollect = { isSynced ->
-                if (isSynced == true) {
-                    getContacts()
-                    savedStateHandle["is_sync_success"] = false
-                }
-            }
+            collect = ::loadContactsOperation,
+            onCollect = ::onLoadContactsSuccess,
+            onError = ::onDataLoadError
         )
     }
 
-    fun getContacts() {
-        val contactsFlow = createPagingFlow(
-            pagingSourceFactory = {
-                BasePagingSource(
-                    onError = { throwable ->
-                        updateState {
-                            it.copy(error = throwable.message)
-                        }
-                    },
-                    fetchItems = { page, pageSize ->
-                        contactsRepository.getUserContacts(page, pageSize)
-                    }
-                )
-            },
-            mapper = { contact: Contact -> contact.toUiModel() }
-        ).cachedIn(viewModelScope)
-        updateState { it.copy(contacts = contactsFlow) }
+    private fun loadContactsOperation(): Flow<PagingData<ContactUiModel>> {
+        return createPagingFlow(
+            pagingSourceFactory = { createContactsPagingSource() },
+            mapper = Contact::toUiModel
+        )
+    }
+
+    private fun onLoadContactsSuccess(pagingData: PagingData<ContactUiModel>?) {
+        updateState { it.copy(contacts = flowOf(pagingData ?: PagingData.empty())) }
+    }
+
+    override fun onRefreshContacts() {
+        loadContacts()
     }
 
     override fun onBackClick() {
@@ -58,7 +51,32 @@ class ContactsViewModel(
         emitEffect(ContactsScreenEffect.NavigateToSyncContacts)
     }
 
+    override fun onSnackBarDismiss() {
+        updateState { it.copy(snackBarData = null) }
+    }
+
     override fun onContactClick(contactId: Int) {
         emitEffect(ContactsScreenEffect.NavigateToChatScreen(contactId))
+    }
+
+    private fun onDataLoadError(e: Throwable) {
+        updateState {
+            it.copy(
+                snackBarData = SnackBarData(
+                    title = "Something went wrong",
+                    message = e.message ?: "Unknown error",
+                )
+            )
+        }
+    }
+
+    private fun createContactsPagingSource(onError: ((ChatException) -> Unit)? = ::onDataLoadError)
+            : PagingSource<Int, Contact> {
+        return BasePagingSource(
+            onError = onError,
+            fetchItems = { page, pageSize ->
+                contactsRepository.getUserContacts(page, pageSize)
+            }
+        )
     }
 }

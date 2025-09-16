@@ -1,19 +1,21 @@
 package net.thechance.mena.core_chat.presentation.screen.contacts
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.collectAsLazyPagingItems
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
@@ -21,6 +23,7 @@ import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.contacts_title
 import mena.core_chat_presentation.generated.resources.ic_arrow_left
 import mena.core_chat_presentation.generated.resources.ic_resync
+import net.thechance.mena.core_chat.presentation.components.AnimatedSnackBarHost
 import net.thechance.mena.core_chat.presentation.navigation.LocalNavController
 import net.thechance.mena.core_chat.presentation.navigation.SyncContactsRoute
 import net.thechance.mena.core_chat.presentation.screen.contacts.components.ContactsList
@@ -39,16 +42,18 @@ fun ContactsScreen(viewModel: ContactsViewModel = koinViewModel()) {
     ContactsEffectsHandler(effects = viewModel.effect)
 
     ContactsContent(
-        contacts = state.contacts.collectAsLazyPagingItems(),
+        state = state,
         interactionListener = viewModel
     )
 }
 
 @Composable
 private fun ContactsContent(
-    contacts: LazyPagingItems<ContactUiModel>,
+    state: ContactsScreenUiState,
     interactionListener: ContactsScreenInteractionListener
 ) {
+    val contacts = state.contacts.collectAsLazyPagingItems()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -83,11 +88,22 @@ private fun ContactsContent(
                 }
             }
         )
+
         ContactsList(
             contacts = contacts,
-            onContactClick = interactionListener::onContactClick
+            listener = interactionListener
         )
     }
+    Box(
+        modifier = Modifier.fillMaxSize().statusBarsPadding().padding(horizontal = 16.dp),
+        contentAlignment = Alignment.TopCenter
+    ) {
+        AnimatedSnackBarHost(
+            data = state.snackBarData,
+            onDismiss = interactionListener::onSnackBarDismiss
+        )
+    }
+
 }
 
 @Composable
@@ -98,19 +114,17 @@ private fun ContactsEffectsHandler(
     val currentNavController by rememberUpdatedState(navController)
 
     EffectHandler(effects) { effect ->
-        effects.collectLatest { effect ->
-            when (effect) {
-                is ContactsScreenEffect.NavigateBack -> {
-                    currentNavController.popBackStack()
-                }
+        when (effect) {
+            is ContactsScreenEffect.NavigateBack -> {
+                currentNavController.popBackStack()
+            }
 
-                is ContactsScreenEffect.NavigateToSyncContacts -> {
-                    currentNavController.navigate(SyncContactsRoute(forceSync = true))
-                }
+            is ContactsScreenEffect.NavigateToSyncContacts -> {
+                currentNavController.navigate(SyncContactsRoute(forceSync = true))
+            }
 
-                is ContactsScreenEffect.NavigateToChatScreen -> {
-                    currentNavController.navigate((effect.contactId))
-                }
+            is ContactsScreenEffect.NavigateToChatScreen -> {
+                currentNavController.navigate((effect.contactId))
             }
         }
     }

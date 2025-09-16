@@ -2,6 +2,7 @@ package net.thechance.mena.core_chat.presentation.screen.syncContacts
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,6 +26,7 @@ import kotlinx.coroutines.flow.Flow
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.ic_arrow_left
 import mena.core_chat_presentation.generated.resources.sync_contacts
+import net.thechance.mena.core_chat.presentation.components.AnimatedSnackBarHost
 import net.thechance.mena.core_chat.presentation.navigation.ContactsRoute
 import net.thechance.mena.core_chat.presentation.navigation.LocalNavController
 import net.thechance.mena.core_chat.presentation.screen.syncContacts.components.ContactsSyncedView
@@ -123,6 +125,15 @@ private fun SyncContactsContent(
             }
         }
     }
+    Box(
+        modifier = Modifier.fillMaxSize().statusBarsPadding().padding(horizontal = 16.dp),
+        contentAlignment = Alignment.TopCenter
+    ) {
+        AnimatedSnackBarHost(
+            data = state.snackBarData,
+            onDismiss = interactionListener::onSnackBarDismiss
+        )
+    }
 }
 
 @Composable
@@ -158,6 +169,7 @@ private fun SyncContactsScreenPreview() {
             interactionListener = object :
                 SyncContactsScreenInteractionListener {
                 override fun onForceSync(forceSync: Boolean) {}
+                override fun onSnackBarDismiss() {}
                 override fun onBackClick() {}
                 override fun onSyncClick() {}
             }
