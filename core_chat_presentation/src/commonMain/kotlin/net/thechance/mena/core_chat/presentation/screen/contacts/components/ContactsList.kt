@@ -14,7 +14,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import app.cash.paging.compose.LazyPagingItems
@@ -100,8 +102,13 @@ private fun EmptyContactsColumn() {
                 painter = painterResource(Res.drawable.ic_warning),
                 contentDescription = null,
                 modifier = Modifier.size(28.6.dp)
-                    .align(Alignment.TopEnd)
-                    .offset(y = 23.dp, x = (-3).dp)
+                    .then(
+                        if (LocalLayoutDirection.current == LayoutDirection.Rtl) {
+                            Modifier.align (Alignment.TopStart).offset(y = 23.dp, x = 3.dp)
+                        } else {
+                            Modifier.align(Alignment.TopEnd).offset(y = 23.dp, x = (-3).dp)
+                        }
+                    )
             )
         }
         MenaText(
