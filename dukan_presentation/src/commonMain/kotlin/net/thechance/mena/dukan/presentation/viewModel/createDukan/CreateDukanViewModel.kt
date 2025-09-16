@@ -1,8 +1,8 @@
 package net.thechance.mena.dukan.presentation.viewModel.createDukan
 
-import net.thechance.mena.dukan.domain.entity.Category
 import androidx.compose.ui.graphics.ImageBitmap
 import com.attafitamim.krop.core.images.ImageSrc
+import net.thechance.mena.dukan.domain.entity.Category
 import net.thechance.mena.dukan.presentation.viewModel.base.BaseViewModel
 import net.thechance.mena.dukan.presentation.viewModel.createDukan.CreateDukanUiState.CreateDukanStep
 
@@ -15,7 +15,7 @@ class CreateDukanViewModel :
     }
 
     override fun onButtonClicked() {
-        if (state.value.currentStep != CreateDukanUiState.CreateDukanStep.SELECT_STYLE) {
+        if (state.value.currentStep != CreateDukanStep.SELECT_STYLE) {
             onCLickNext()
         } else {
             onCreateClicked()
@@ -24,7 +24,7 @@ class CreateDukanViewModel :
 
     override fun onBackClicked() {
         val current = state.value.currentStep
-        if (current == CreateDukanUiState.CreateDukanStep.BASIC_INFORMATION) {
+        if (current == CreateDukanStep.BASIC_INFORMATION) {
             // maybe do nothing or exit flow
         } else {
             updateState {
@@ -34,10 +34,6 @@ class CreateDukanViewModel :
         updateNextButtonEnableState()
     }
 
-
-    private fun onCreateClicked() {
-        TODO("Not yet implemented")
-    }
 
     override fun onClickUploadImage(
         image: ImageSrc
@@ -59,7 +55,9 @@ class CreateDukanViewModel :
     override fun onCLickNext() {
         val current = state.value.currentStep
         updateState {
-            CreateDukanStep.BASIC_INFORMATION -> handleBasicInformationNext()
+            if (current == CreateDukanStep.BASIC_INFORMATION) {
+                handleBasicInformationNext()
+            }
             copy(currentStep = nextStep(current))
         }
     }
@@ -134,15 +132,6 @@ class CreateDukanViewModel :
         updateState { copy(showSnackBar = true, isNameUnique = false) }
     }
 
-    fun onImageCroppedAndSaved(croppedUri: String) {
-        updateState {
-            copy(
-                savedImageUri = croppedUri,
-                isNextButtonEnabled = true
-            )
-        }
-    }
-
     private fun nextStep(step: CreateDukanStep): CreateDukanStep =
         when (step) {
             CreateDukanStep.BASIC_INFORMATION -> CreateDukanStep.SELECT_IMAGE
@@ -195,7 +184,6 @@ class CreateDukanViewModel :
             CreateDukanStep.SELECT_IMAGE -> currentState.croppedImage != null
             CreateDukanStep.SELECT_LOCATION -> true
             CreateDukanStep.SELECT_STYLE -> true
-            CreateDukanStep.CROP_IMAGE -> true
         }
         updateState { this.copy(isButtonEnabled = isNextButtonEnabled) }
     }

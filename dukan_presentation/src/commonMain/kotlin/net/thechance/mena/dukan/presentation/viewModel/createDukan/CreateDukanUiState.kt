@@ -16,7 +16,6 @@ data class CreateDukanUiState(
     val isEnabled: Boolean = true,
     val isNameUnique: Boolean = true,
     val showSnackBar: Boolean = false,
-    val isNextButtonEnabled: Boolean = false,
     val isEditIconVisible: Boolean = false,
     val selectedImage: ImageSrc? = null,
     val isNextButtonEnabled: Boolean = false,

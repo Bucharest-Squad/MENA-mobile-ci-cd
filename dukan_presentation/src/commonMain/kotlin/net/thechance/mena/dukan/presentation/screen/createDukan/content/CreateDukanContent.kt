@@ -17,9 +17,11 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import mena.dukan_presentation.generated.resources.Res
 import mena.dukan_presentation.generated.resources.back_arrow
+import mena.dukan_presentation.generated.resources.create
 import mena.dukan_presentation.generated.resources.create_new_dukan
 import mena.dukan_presentation.generated.resources.dukan_name_is_already_exist
 import mena.dukan_presentation.generated.resources.ic_arrow_left
+import mena.dukan_presentation.generated.resources.next
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
@@ -85,14 +87,13 @@ fun CreateDukanContent(
                         state = state,
                         interactionListener = listener
                     )
-
-                    CreateDukanStep.SELECT_IMAGE -> DukanImageCropContent(
+                    CreateDukanStep.SELECT_IMAGE -> UploadDukanImageContent(
                         state = state,
                         interactionListener = listener
                     )
-
                     CreateDukanStep.SELECT_LOCATION -> CreateDukanContentSelectLocation()
                     CreateDukanStep.SELECT_STYLE -> CreateDukanContentSelectStyle()
+
                 }
             }
 
