@@ -166,7 +166,7 @@ private fun SegmentSection(
                                     .size(itemWidth, itemHeight)
                                     .clip(RoundedCornerShape(12.dp))
                                     .clickable { onTrendClick(item.id) }
-                                    .background(Theme.colorScheme.error)
+                                    .background(Theme.colorScheme.background.surfaceHigh)
                             ) {
                                 AsyncImage(
                                     model = item.thumbnailUrl,
