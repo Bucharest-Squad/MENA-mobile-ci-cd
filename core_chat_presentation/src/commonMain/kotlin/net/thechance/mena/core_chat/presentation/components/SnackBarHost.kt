@@ -10,11 +10,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.ic_warning
 import net.thechance.mena.designsystem.presentation.component.snackbar.SnackBar
+import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -30,7 +30,7 @@ fun AnimatedSnackBarHost(
         exit = slideOutVertically(targetOffsetY = { -it }) + fadeOut(),
         modifier = modifier
             .fillMaxWidth()
-            .padding(top = 12.dp)
+            .padding(top = Theme.spacing._12)
     ) {
         if (data != null) {
             LaunchedEffect(data) {

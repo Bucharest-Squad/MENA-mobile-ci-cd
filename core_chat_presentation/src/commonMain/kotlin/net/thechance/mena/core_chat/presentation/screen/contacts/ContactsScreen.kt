@@ -83,7 +83,7 @@ private fun ContactsContent(
         AppBar(
             modifier = Modifier,
             title = stringResource(Res.string.contacts_title),
-            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
+            contentPadding = PaddingValues(horizontal = Theme.spacing._12, vertical = Theme.spacing._8),
             leadingContent = {
                 MenaIcon(
                     painter = painterResource(Res.drawable.ic_arrow_left),
@@ -114,7 +114,7 @@ private fun ContactsContent(
         )
     }
     Box(
-        modifier = Modifier.fillMaxSize().statusBarsPadding().padding(horizontal = 16.dp),
+        modifier = Modifier.fillMaxSize().statusBarsPadding().padding(horizontal = Theme.spacing._16),
         contentAlignment = Alignment.TopCenter
     ) {
         AnimatedSnackBarHost(
