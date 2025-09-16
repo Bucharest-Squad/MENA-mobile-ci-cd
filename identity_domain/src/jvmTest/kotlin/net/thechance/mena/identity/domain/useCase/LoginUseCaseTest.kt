@@ -1,0 +1,98 @@
+package net.thechance.mena.identity.domain.useCase
+
+import assertk.assertFailure
+import assertk.assertThat
+import assertk.assertions.isEqualTo
+import assertk.assertions.isFalse
+import assertk.assertions.isInstanceOf
+import assertk.assertions.isTrue
+import io.mockk.Runs
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
+import net.thechance.mena.identity.domain.exception.UserIsBlockedException
+import net.thechance.mena.identity.domain.repository.AuthenticationRepository
+import net.thechance.mena.identity.domain.useCase.validation.mobileNumber.MobileNumberValidator
+import net.thechance.mena.identity.domain.useCase.validation.mobileNumber.ValidMobileNumbersDummyData
+import org.junit.Test
+
+class LoginUseCaseTest {
+    private val authenticationRepository = mockk<AuthenticationRepository>()
+    private val mobileNumberValidator = mockk<MobileNumberValidator>()
+    private val loginUseCase = LoginUseCase(authenticationRepository, mobileNumberValidator)
+
+    @Test
+    fun `should return true if password length equal to 8`() {
+        val password = "password"
+
+        val isValid = loginUseCase.isPasswordValid(password)
+
+        assertThat(isValid).isTrue()
+    }
+
+    @Test
+    fun `should return true if password length greater than 8`() {
+        val password = "password1"
+
+        val isValid = loginUseCase.isPasswordValid(password)
+
+        assertThat(isValid).isTrue()
+    }
+
+    @Test
+    fun `should return true if password is not valid`() {
+        val password = "passwor"
+
+        val isValid = loginUseCase.isPasswordValid(password)
+
+        assertThat(isValid).isFalse()
+    }
+
+    @Test
+    fun `should return true if mobile number is valid`() {
+        every { mobileNumberValidator.isValid(any(), any()) } returns true
+
+        val isMobileNumberValid = loginUseCase.isMobileNumberValid("+20", "01283393335")
+
+        assertThat(isMobileNumberValid).isTrue()
+    }
+
+    @Test
+    fun `should return true if mobile number is not valid`() {
+        every { mobileNumberValidator.isValid(any(), any()) } returns false
+
+        val isMobileNumberValid = loginUseCase.isMobileNumberValid("+200", "0183393335")
+
+        assertThat(isMobileNumberValid).isFalse()
+    }
+
+    @Test
+    fun `should login with valid credentials`() = runTest {
+        coEvery { authenticationRepository.isUserBlocked(any(), any()) } returns false
+        every { mobileNumberValidator.isValid(any(), any()) } returns true
+        coEvery { authenticationRepository.login(any(), any(), any()) } just Runs
+        val password = "12345678"
+        val countryCode = ValidMobileNumbersDummyData.MOROCCO.countryCode
+        val number = ValidMobileNumbersDummyData.MOROCCO.mobileNumber
+
+        val result = loginUseCase.login(countryCode, number, password)
+
+        assertThat(result).isEqualTo(Unit)
+    }
+
+    @Test
+    fun `should throw UserIsBlockedException if user is blocked`() = runTest {
+        coEvery { authenticationRepository.isUserBlocked(any(), any()) } returns true
+        every { mobileNumberValidator.isValid(any(), any()) } returns true
+        coEvery { authenticationRepository.login(any(), any(), any()) } just Runs
+        val password = "12345678"
+        val countryCode = ValidMobileNumbersDummyData.MOROCCO.countryCode
+        val number = ValidMobileNumbersDummyData.MOROCCO.mobileNumber
+
+        assertFailure {
+            loginUseCase.login(countryCode, number, password)
+        }.isInstanceOf(UserIsBlockedException::class)
+    }
+}
