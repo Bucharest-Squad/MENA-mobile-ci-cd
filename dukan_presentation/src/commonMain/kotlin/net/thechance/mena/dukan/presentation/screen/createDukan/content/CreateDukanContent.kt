@@ -91,29 +91,25 @@ fun CreateDukanContent(
                         interactionListener = listener
                     )
 
-                    CreateDukanStep.CROP_IMAGE -> UploadDukanImageContent(
-                        state = state,
-                        interactionListener = listener
-                    )
-
                     CreateDukanStep.SELECT_LOCATION -> CreateDukanContentSelectLocation()
                     CreateDukanStep.SELECT_STYLE -> CreateDukanContentSelectStyle()
                 }
             }
 
-            PrimaryButton(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(Theme.spacing._16),
-                text = if (state.currentStep == CreateDukanStep.SELECT_STYLE)
-                    "Create"
-                else
-                    "Next",
-                onClick = listener::onButtonClicked,
-                trailingIcon = painterResource(Res.drawable.ic_arrow_left),
-                isEnabled = state.isButtonEnabled,
-                isLoading = state.isButtonLoading
-            )
+            if (state.isImageBeingCropped.not())
+                PrimaryButton(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(Theme.spacing._16),
+                    text = if (state.currentStep == CreateDukanStep.SELECT_STYLE)
+                        stringResource(Res.string.create)
+                    else
+                        stringResource(Res.string.next),
+                    onClick = listener::onButtonClicked,
+                    trailingIcon = painterResource(Res.drawable.ic_arrow_left),
+                    isEnabled = state.isButtonEnabled,
+                    isLoading = state.isButtonLoading
+                )
         }
 
         if (state.showSnackBar) {
