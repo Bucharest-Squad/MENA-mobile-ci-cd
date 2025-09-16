@@ -29,6 +29,7 @@ import mena.core_chat_presentation.generated.resources.sync_contacts
 import net.thechance.mena.core_chat.presentation.navigation.ContactsRoute
 import net.thechance.mena.core_chat.presentation.navigation.LocalNavController
 import net.thechance.mena.core_chat.presentation.screen.syncContacts.components.ContactsSyncedView
+import net.thechance.mena.core_chat.presentation.screen.syncContacts.components.GoToSettingsView
 import net.thechance.mena.core_chat.presentation.screen.syncContacts.components.NoContactsSyncView
 import net.thechance.mena.core_chat.presentation.screen.syncContacts.components.PhoneIcon
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
@@ -100,13 +101,22 @@ private fun SyncContactsContent(
         ) {
             if (state.showSyncView) {
                 PhoneIcon()
-                if (state.isLoading) {
-                    ContactsSyncedView(modifier = Modifier.padding(top = Theme.spacing._24))
-                } else {
-                    NoContactsSyncView(
-                        modifier = Modifier.padding(top = Theme.spacing._12),
-                        onSyncClick = interactionListener::onSyncClick,
-                    )
+                when {
+                    state.isLoading -> {
+                        ContactsSyncedView(modifier = Modifier.padding(top = Theme.spacing._24))
+                    }
+                    state.deniedPermanently -> {
+                        GoToSettingsView(
+                            onSyncClick = interactionListener::onSyncClick,
+                            modifier = Modifier.padding(top = Theme.spacing._12)
+                        )
+                    }
+                    else -> {
+                        NoContactsSyncView(
+                            modifier = Modifier.padding(top = Theme.spacing._12),
+                            onSyncClick = interactionListener::onSyncClick,
+                        )
+                    }
                 }
             }
         }
