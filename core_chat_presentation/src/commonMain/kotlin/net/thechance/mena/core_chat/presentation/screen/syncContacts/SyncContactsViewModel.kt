@@ -2,6 +2,8 @@ package net.thechance.mena.core_chat.presentation.screen.syncContacts
 
 import dev.icerock.moko.permissions.Permission
 import dev.icerock.moko.permissions.PermissionsController
+import dev.icerock.moko.permissions.DeniedException
+import dev.icerock.moko.permissions.DeniedAlwaysException
 import net.thechance.mena.core_chat.domain.repository.ContactsRepository
 import net.thechance.mena.core_chat.presentation.shared.BaseViewModel
 
@@ -29,7 +31,17 @@ class SyncContactsViewModel(
         tryToExecute(
             execute = { permissionsController.providePermission(Permission.CONTACTS) },
             onSuccess = { syncContacts() },
-            onError = ::onError,
+            onError = { throwable ->
+                when (throwable) {
+                    is DeniedAlwaysException -> {
+                        updateState { it.copy(isLoading = false, deniedPermanently = true) }
+                    }
+                    is DeniedException -> {
+                        updateState { it.copy(isLoading = false, error = throwable.message) }
+                    }
+                    else -> onError(throwable)
+                }
+            },
         )
     }
 

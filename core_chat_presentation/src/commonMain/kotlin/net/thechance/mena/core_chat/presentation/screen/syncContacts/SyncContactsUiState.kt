@@ -4,5 +4,6 @@ data class SyncContactsUiState(
     val isLoading: Boolean = false,
     val showSyncView: Boolean = false,
     val isFirstSync: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val deniedPermanently: Boolean = false
 )
