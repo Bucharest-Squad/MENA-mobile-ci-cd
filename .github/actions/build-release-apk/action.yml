@@ -9,6 +9,9 @@ inputs:
     required: true
   android-key-alias-password:
     required: true
+  build-type:
+    required: true
+
 
 runs:
   using: "composite"
@@ -29,6 +32,14 @@ runs:
         restore-keys: |
           gradle-${{ runner.os }}-
 
+    - name: Install ImageMagick 7
+      shell: bash
+      run: |
+        sudo apt-get update && sudo apt-get install -y libfuse2
+        wget https://download.imagemagick.org/ImageMagick/download/binaries/magick
+        chmod +x magick
+        mv magick /usr/local/bin/
+
     - name: Make gradlew executable
       run: chmod +x ./gradlew
       shell: bash
@@ -40,14 +51,21 @@ runs:
         versionCode: ${{ github.run_number }}
         versionName: 1.0.${{ github.run_number }}
 
+    - name: convert build type to lowercase
+      id: convert
+      run: |
+        BUILD_TYPE_LOWER=$(echo "${{ inputs.build-type }}" | tr '[:upper:]' '[:lower:]')
+        echo "build_type_lower=$BUILD_TYPE_LOWER" >> $GITHUB_OUTPUT
+      shell: bash
+
     - name: Generate unsigned APK
-      run: ./gradlew :composeApp:assembleRelease --build-cache -x test -x lint
+      run: ./gradlew :composeApp:assemble${{ inputs.build-type }}Release --build-cache -x test -x lint
       shell: bash
 
     - name: Sign APK
       uses: r0adkll/sign-android-release@v1
       with:
-        releaseDirectory: composeApp/build/outputs/apk/release
+        releaseDirectory: composeApp/build/outputs/apk/${{ steps.convert.outputs.build_type_lower }}/release
         signingKeyBase64: ${{ inputs.android-keystore-base64 }}
         keyStorePassword: ${{ inputs.keystore-password }}
         alias: ${{ inputs.android-key-alias }}
@@ -56,5 +74,7 @@ runs:
         BUILD_TOOLS_VERSION: "35.0.0"
 
     - name: Set signed APK path to env
-      run: echo "SIGNED_APK_PATH=composeApp/build/outputs/apk/release/composeApp-release-unsigned-signed.apk" >> $GITHUB_ENV
+      run: |
+        APK_NAME="composeApp-${{ steps.convert.outputs.build_type_lower }}-release-unsigned-signed.apk"
+        echo "SIGNED_APK_PATH=composeApp/build/outputs/apk/${{ steps.convert.outputs.build_type_lower }}/release/$APK_NAME" >> $GITHUB_ENV
       shell: bash
