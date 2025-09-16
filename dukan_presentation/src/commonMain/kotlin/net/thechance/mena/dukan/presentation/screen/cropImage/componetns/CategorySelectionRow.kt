@@ -7,20 +7,18 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import mena.dukan_presentation.generated.resources.Res
-import mena.dukan_presentation.generated.resources.ic_edit
+import coil3.compose.rememberAsyncImagePainter
 import net.thechance.mena.designsystem.presentation.component.chip.Chip
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.dukan.domain.entity.Category
-import org.jetbrains.compose.resources.painterResource
+import net.thechance.mena.dukan.presentation.viewModel.createDukan.DukanCategoryUiState
 
 @Composable
 fun CategorySelectionRow(
-    availableCategories: List<Category>,
-    isCategorySelected: (Category) -> Boolean,
-    onCategorySelected: (Category) -> Boolean,
-    onCategoryDeselected: (Category) -> Boolean,
-    onCategoryEnabled: (Category) -> Boolean
+    availableCategories: List<DukanCategoryUiState>,
+    isCategorySelected: (DukanCategoryUiState) -> Boolean,
+    onCategorySelected: (DukanCategoryUiState) -> Boolean,
+    onCategoryDeselected: (DukanCategoryUiState) -> Boolean,
+    onCategoryEnabled: (DukanCategoryUiState) -> Boolean
 ) {
     LazyRow(
         contentPadding = PaddingValues(horizontal = Theme.spacing._16),
@@ -42,15 +40,15 @@ fun CategorySelectionRow(
 
 @Composable
 private fun CategoryChip(
-    category: Category,
+    category: DukanCategoryUiState,
     isSelected: Boolean,
     isEnabled: Boolean,
-    onCategorySelected: (Category) -> Boolean,
-    onCategoryDeselected: (Category) -> Boolean
+    onCategorySelected: (DukanCategoryUiState) -> Boolean,
+    onCategoryDeselected: (DukanCategoryUiState) -> Boolean
 ) {
     Chip(
         text = category.name,
-        painter = painterResource(Res.drawable.ic_edit),
+        painter = rememberAsyncImagePainter(category.imageUrl),
         isSelected = isSelected,
         isEnabled = isEnabled,
         modifier = Modifier,

@@ -20,13 +20,13 @@ import mena.dukan_presentation.generated.resources.Res
 import mena.dukan_presentation.generated.resources.back_arrow
 import mena.dukan_presentation.generated.resources.create
 import mena.dukan_presentation.generated.resources.create_new_dukan
+import mena.dukan_presentation.generated.resources.dukan_image
 import mena.dukan_presentation.generated.resources.dukan_name_is_already_exist
 import mena.dukan_presentation.generated.resources.ic_arrow_left
 import mena.dukan_presentation.generated.resources.next
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.dukan.presentation.screen.CreateDukan.content.CreateDukanContentBasicInformation
 import net.thechance.mena.dukan.presentation.screen.createDukan.components.SnackBar
 import net.thechance.mena.dukan.presentation.screen.createDukan.components.SnackBarType
 import net.thechance.mena.dukan.presentation.screen.createDukan.components.SnackBarUiState
@@ -66,7 +66,11 @@ fun CreateDukanContent(
             modifier = Modifier.fillMaxSize()
         ) {
             AppBar(
-                title = stringResource(Res.string.create_new_dukan),
+                title = if (state.isImageBeingCropped)
+                    stringResource(Res.string.dukan_image)
+                else stringResource(
+                    Res.string.create_new_dukan
+                ),
                 onLeadingClick = listener::onBackClicked,
                 contentPadding = PaddingValues(
                     horizontal = Theme.spacing._12,
@@ -92,10 +96,12 @@ fun CreateDukanContent(
                         state = state,
                         interactionListener = listener
                     )
+
                     CreateDukanStep.SELECT_IMAGE -> UploadDukanImageContent(
                         state = state,
                         interactionListener = listener
                     )
+
                     CreateDukanStep.SELECT_LOCATION -> CreateDukanContentSelectLocation()
                     CreateDukanStep.SELECT_STYLE -> CreateDukanContentSelectStyle()
 

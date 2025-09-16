@@ -2,16 +2,18 @@ package net.thechance.mena.dukan.presentation.viewModel.createDukan
 
 import androidx.compose.ui.graphics.ImageBitmap
 import com.attafitamim.krop.core.images.ImageSrc
-import net.thechance.mena.dukan.domain.entity.Category
+import net.thechance.mena.dukan.domain.repository.DukanRepository
 import net.thechance.mena.dukan.presentation.viewModel.base.BaseViewModel
 import net.thechance.mena.dukan.presentation.viewModel.createDukan.CreateDukanUiState.CreateDukanStep
 
-class CreateDukanViewModel :
+class CreateDukanViewModel(
+    private val dukanRepository: DukanRepository
+) :
     BaseViewModel<CreateDukanUiState, CreateDukanEffect>(CreateDukanUiState()),
     CreateDukanInteractionListener {
 
     init {
-        loadMockCategories() // TODO: Remove mock data
+        loadDukanCategories()
     }
 
     override fun onButtonClicked() {
@@ -24,8 +26,12 @@ class CreateDukanViewModel :
 
     override fun onBackClicked() {
         val current = state.value.currentStep
+        if (state.value.isImageBeingCropped) {
+            updateState { copy(isImageBeingCropped = false) }
+            return
+        }
         if (current == CreateDukanStep.BASIC_INFORMATION) {
-            // maybe do nothing or exit flow
+            emitEffect(CreateDukanEffect.NavigateBack)
         } else {
             updateState {
                 copy(currentStep = previousStep(current))
@@ -35,30 +41,23 @@ class CreateDukanViewModel :
     }
 
 
-    override fun onClickUploadImage(
-        image: ImageSrc
-    ) {
+    override fun onClickUploadImage(image: ImageSrc) {
         updateState {
             copy(
                 selectedImage = image,
-                isEditIconVisible = false,
                 isImageBeingCropped = true
             )
         }
         updateNextButtonEnableState()
     }
 
-    override fun onClickEditImage() {
-        emitEffect(CreateDukanEffect.NavigateToImageCropScreen)
-    }
 
     override fun onCLickNext() {
         val current = state.value.currentStep
-        updateState {
-            if (current == CreateDukanStep.BASIC_INFORMATION) {
-                handleBasicInformationNext()
-            }
-            copy(currentStep = nextStep(current))
+        if (current == CreateDukanStep.BASIC_INFORMATION) {
+            handleBasicInformationNext()
+        } else {
+            updateState { copy(currentStep = nextStep(current)) }
         }
     }
 
@@ -67,7 +66,6 @@ class CreateDukanViewModel :
             copy(
                 croppedImage = image,
                 selectedImage = null,
-                isEditIconVisible = true,
                 isImageBeingCropped = false
             )
         }
@@ -90,11 +88,11 @@ class CreateDukanViewModel :
         updateNextButtonEnableState()
     }
 
-    override fun isCategorySelected(): (Category) -> Boolean {
+    override fun isCategorySelected(): (DukanCategoryUiState) -> Boolean {
         return { category -> state.value.selectedCategories.contains(category) }
     }
 
-    override fun onCategorySelected(category: Category): Boolean {
+    override fun onCategorySelected(category: DukanCategoryUiState): Boolean {
         if (!canSelectMoreCategories(state.value)) return false
 
         addCategoryToSelection(category)
@@ -102,13 +100,13 @@ class CreateDukanViewModel :
         return true
     }
 
-    override fun onCategoryDeselected(category: Category): Boolean {
+    override fun onCategoryDeselected(category: DukanCategoryUiState): Boolean {
         removeCategoryFromSelection(category)
         updateNextButtonEnableState()
         return true
     }
 
-    override fun onCategoryEnabled(category: Category): Boolean {
+    override fun onCategoryEnabled(category: DukanCategoryUiState): Boolean {
         return canSelectMoreCategories(state.value) ||
                 state.value.selectedCategories.contains(category)
     }
@@ -117,16 +115,16 @@ class CreateDukanViewModel :
         return currentState.selectedCategories.size < MAX_CATEGORIES
     }
 
-    private fun addCategoryToSelection(category: Category) {
+    private fun addCategoryToSelection(category: DukanCategoryUiState) {
         updateState { copy(selectedCategories = selectedCategories + category) }
     }
 
-    private fun removeCategoryFromSelection(category: Category) {
+    private fun removeCategoryFromSelection(category: DukanCategoryUiState) {
         updateState { copy(selectedCategories = selectedCategories - category) }
     }
 
     private fun onCreateClicked() {
-        TODO("Not yet implemented")
+        //TODO("Not yet implemented")
     }
 
     private fun handleBasicInformationNext() {
@@ -155,11 +153,7 @@ class CreateDukanViewModel :
 
     private fun checkNameUniqueness(name: String) {
         tryToExecute(
-            block = {
-                // TODO: Use repository when dependency injection is set up
-                // For now, use mock data
-                name.lowercase() == "test"
-            },
+            block = { dukanRepository.isDukanNameTaken(name) },
             onSuccess = { isTaken -> handleNameValidationResult(isTaken) },
             onError = { handleNameValidationError() }
         )
@@ -203,16 +197,13 @@ class CreateDukanViewModel :
                 !state.showSnackBar
     }
 
-    private fun loadMockCategories() {
-        // TODO: Remove mock data
-        val categories = listOf(
-            Category("1", "Food", ""),
-            Category("2", "Electronics", ""),
-            Category("3", "Clothing", ""),
-            Category("4", "Books", ""),
-            Category("5", "Sports", "")
+    private fun loadDukanCategories() {
+        tryToExecute(
+            block = { dukanRepository.getCategories() },
+            onSuccess = { categories ->
+                updateState { copy(dukanCategories = categories.toUiState()) }
+            }
         )
-        updateState { copy(availableCategories = categories) }
     }
 
     private companion object {
