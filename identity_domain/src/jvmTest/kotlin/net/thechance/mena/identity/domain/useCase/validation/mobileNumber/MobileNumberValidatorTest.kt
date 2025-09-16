@@ -238,8 +238,9 @@ internal class MobileNumberValidatorTest {
     @Test
     fun `should return false when country code is supported but with empty mobile number`() {
         val validCountryCode = ValidMobileNumbersDummyData.EGYPT.countryCode
+        val mobileNumber = ""
 
-        val isValid = mobileNumberValidator.isValid(validCountryCode, "")
+        val isValid = mobileNumberValidator.isValid(validCountryCode, mobileNumber)
 
         assertThat(isValid).isFalse()
     }
@@ -247,9 +248,9 @@ internal class MobileNumberValidatorTest {
     @Test
     fun `should return false when country code is supported but with word in mobile number`() {
         val validCountryCode = ValidMobileNumbersDummyData.EGYPT.countryCode
-        val number = "word"
+        val mobileNumber = "word"
 
-        val isValid = mobileNumberValidator.isValid(validCountryCode, number)
+        val isValid = mobileNumberValidator.isValid(validCountryCode, mobileNumber)
 
         assertThat(isValid).isFalse()
     }

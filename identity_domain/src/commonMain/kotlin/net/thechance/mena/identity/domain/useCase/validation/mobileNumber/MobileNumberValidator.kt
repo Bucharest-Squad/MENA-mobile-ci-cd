@@ -5,7 +5,7 @@ import net.thechance.mena.identity.domain.exception.InvalidCountryCodeException
 class MobileNumberValidator {
     fun isValid(countryCode: String, number: String): Boolean {
         val country = getCountry(countryCode)
-        return country.code == countryCode && isMobileNumberValid(number, country.regexPattern)
+        return isMobileNumberValid(number, country.regexPattern)
     }
 
     private fun getCountry(countryCode: String): Country {
