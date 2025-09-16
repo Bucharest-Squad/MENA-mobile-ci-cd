@@ -110,16 +110,6 @@ class CreateDukanViewModel :
         return true
     }
 
-    private fun canSelectMoreCategories(currentState: CreateDukanUiState): Boolean {
-        return currentState.selectedCategories.size < MAX_CATEGORIES
-    }
-
-    private fun addCategoryToSelection(category: Category) {
-        updateState {
-            copy(selectedCategories = selectedCategories + category)
-        }
-    }
-
     override fun onCategoryDeselected(category: Category): Boolean {
         updateState {
             copy(selectedCategories = selectedCategories - category)
@@ -134,6 +124,15 @@ class CreateDukanViewModel :
                 currentState.selectedCategories.contains(category)
     }
 
+    private fun canSelectMoreCategories(currentState: CreateDukanUiState): Boolean {
+        return currentState.selectedCategories.size < MAX_CATEGORIES
+    }
+
+    private fun addCategoryToSelection(category: Category) {
+        updateState {
+            copy(selectedCategories = selectedCategories + category)
+        }
+    }
     private fun onCreateClicked() {
         TODO("Not yet implemented")
     }
