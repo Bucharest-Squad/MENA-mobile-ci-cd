@@ -43,8 +43,17 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(libs.navigation.compose)
+
         }
         iosMain.dependencies {
+
+        }
+
+        commonTest.dependencies{
+            implementation(libs.kotlin.test)
+            implementation(libs.turbine)
+            implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.mockk)
 
         }
     }
