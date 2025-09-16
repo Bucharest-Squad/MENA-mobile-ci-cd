@@ -111,17 +111,14 @@ class CreateDukanViewModel :
     }
 
     override fun onCategoryDeselected(category: Category): Boolean {
-        updateState {
-            copy(selectedCategories = selectedCategories - category)
-        }
+        removeCategoryFromSelection(category)
         updateNextButtonEnableState()
         return true
     }
 
     override fun onCategoryEnabled(category: Category): Boolean {
-        val currentState = state.value
-        return canSelectMoreCategories(currentState) ||
-                currentState.selectedCategories.contains(category)
+        return canSelectMoreCategories(state.value) ||
+                state.value.selectedCategories.contains(category)
     }
 
     private fun canSelectMoreCategories(currentState: CreateDukanUiState): Boolean {
@@ -129,20 +126,23 @@ class CreateDukanViewModel :
     }
 
     private fun addCategoryToSelection(category: Category) {
-        updateState {
-            copy(selectedCategories = selectedCategories + category)
-        }
+        updateState { copy(selectedCategories = selectedCategories + category) }
     }
+
+    private fun removeCategoryFromSelection(category: Category) {
+        updateState { copy(selectedCategories = selectedCategories - category) }
+    }
+
     private fun onCreateClicked() {
         TODO("Not yet implemented")
     }
 
     private fun handleBasicInformationNext() {
-        if (isBasicInformationStepValid(state.value)) {
-            checkNameUniqueness(state.value.name)
+        if (!isBasicInformationStepValid(state.value)) {
+            updateState { copy(showSnackBar = true, isNameUnique = false) }
             return
         }
-        updateState { copy(showSnackBar = true, isNameUnique = false) }
+        checkNameUniqueness(state.value.name)
     }
 
     fun onImageCroppedAndSaved(croppedUri: String) {
@@ -186,6 +186,11 @@ class CreateDukanViewModel :
 
     private fun handleNameValidationResult(isTaken: Boolean) {
         val current = state.value.currentStep
+        updateNameValidationState(isTaken, current)
+        updateNextButtonEnableState()
+    }
+
+    private fun updateNameValidationState(isTaken: Boolean, current: CreateDukanStep) {
         updateState {
             copy(
                 isNameUnique = !isTaken,
@@ -193,7 +198,6 @@ class CreateDukanViewModel :
                 currentStep = if (isTaken) current else nextStep(current)
             )
         }
-        updateNextButtonEnableState()
     }
 
     private fun handleNameValidationError() {

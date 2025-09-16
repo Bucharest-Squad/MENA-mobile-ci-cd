@@ -5,10 +5,13 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import mena.dukan_presentation.generated.resources.Res
 import mena.dukan_presentation.generated.resources.alert
 import mena.dukan_presentation.generated.resources.category
@@ -22,12 +25,16 @@ import mena.dukan_presentation.generated.resources.you_can_choose_up_to_3_catego
 import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
 import net.thechance.mena.designsystem.presentation.component.text.MenaText
 import net.thechance.mena.designsystem.presentation.component.textField.TextField
+import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import net.thechance.mena.dukan.domain.entity.Category
 import net.thechance.mena.dukan.presentation.screen.createDukan.components.CategorySelectionRow
+import net.thechance.mena.dukan.presentation.util.stubPreviews.PreviewCreateDukanInteractionListener
 import net.thechance.mena.dukan.presentation.viewModel.createDukan.CreateDukanInteractionListener
 import net.thechance.mena.dukan.presentation.viewModel.createDukan.CreateDukanUiState
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun CreateDukanContentBasicInformation(
@@ -113,19 +120,51 @@ private fun CategoryHeaderSection() {
         textAlign = TextAlign.Start
     )
 
-    Row {
+    Row(
+        modifier = Modifier.padding(
+            start = Theme.spacing._16,
+            end = Theme.spacing._16,
+            bottom = Theme.spacing._8
+        ),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         MenaIcon(
-            modifier = Modifier.padding(start = Theme.spacing._16, end = Theme.spacing._2),
+            modifier = Modifier
+                .padding(top = Theme.spacing._2, bottom = Theme.spacing._2, end = Theme.spacing._2)
+                .align(Alignment.CenterVertically)
+                .size(12.dp),
             painter = painterResource(Res.drawable.ic_alert_circle),
-            contentDescription = stringResource(Res.string.alert)
+            contentDescription = stringResource(Res.string.alert),
+            tint = Theme.colorScheme.shadeSecondary
         )
         MenaText(
             text = stringResource(Res.string.you_can_choose_up_to_3_categories),
-            style = Theme.typography.title.small,
-            color = Theme.colorScheme.shadePrimary,
+            style = Theme.typography.label.small,
+            color = Theme.colorScheme.shadeSecondary,
             maxLines = 1,
-            modifier = Modifier.padding(end = Theme.spacing._16, bottom = Theme.spacing._8),
             textAlign = TextAlign.Start
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun CreateDukanContentBasicInformationPreview() {
+    val mockState = CreateDukanUiState(
+        name = "My Dukan",
+        availableCategories = listOf(
+            Category("1", "Food", ""),
+            Category("2", "Electronics", ""),
+            Category("3", "Clothing", ""),
+            Category("4", "Books", ""),
+            Category("5", "Toys", ""),
+        )
+    )
+
+    MenaTheme {
+        CreateDukanContentBasicInformation(
+            state = mockState,
+            interactionListener = PreviewCreateDukanInteractionListener
         )
     }
 }
