@@ -1,10 +1,11 @@
 package net.thechance.mena.core_chat.presentation.screen.syncContacts
 
+import dev.icerock.moko.permissions.DeniedAlwaysException
+import dev.icerock.moko.permissions.DeniedException
 import dev.icerock.moko.permissions.Permission
 import dev.icerock.moko.permissions.PermissionsController
-import dev.icerock.moko.permissions.DeniedException
-import dev.icerock.moko.permissions.DeniedAlwaysException
 import net.thechance.mena.core_chat.domain.repository.ContactsRepository
+import net.thechance.mena.core_chat.presentation.components.SnackBarData
 import net.thechance.mena.core_chat.presentation.shared.BaseViewModel
 
 class SyncContactsViewModel(
@@ -38,13 +39,32 @@ class SyncContactsViewModel(
     private fun handlePermissionError(throwable: Throwable) {
         when (throwable) {
             is DeniedAlwaysException -> {
-                updateState { it.copy(isLoading = false, deniedPermanently = true) }
+                updateState { it.copy(
+                    isLoading = false,
+                    deniedPermanently = true,
+                    snackBarData = SnackBarData(
+                        title = "Permission denied",
+                        message = "Contacts permission is required to sync contacts",
+                    )
+                ) }
             }
             is DeniedException -> {
-                updateState { it.copy(isLoading = false, error = throwable.message) }
+                updateState {
+                    it.copy(
+                        isLoading = false,
+                        snackBarData = SnackBarData(
+                            title = "Permission denied",
+                            message = "Contacts permission is required to sync contacts",
+                        )
+                    )
+                }
             }
             else -> onError(throwable)
         }
+    }
+
+    override fun onSnackBarDismiss() {
+        updateState { it.copy(snackBarData = null) }
     }
 
     private fun syncContacts() {
@@ -66,8 +86,15 @@ class SyncContactsViewModel(
     }
 
     private fun onError(throwable: Throwable) {
-        updateState { it.copy(isLoading = false, error = throwable.message) }
-        println(throwable.printStackTrace())
+        updateState {
+            it.copy(
+                isLoading = false,
+                snackBarData = SnackBarData(
+                    title = "Something went wrong",
+                    message = throwable.message ?: "Unknown error",
+                )
+            )
+        }
     }
 }
 
