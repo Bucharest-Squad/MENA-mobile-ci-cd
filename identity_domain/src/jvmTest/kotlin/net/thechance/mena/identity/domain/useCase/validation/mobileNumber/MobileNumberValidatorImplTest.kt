@@ -8,7 +8,7 @@ import assertk.assertions.isTrue
 import net.thechance.mena.identity.domain.exception.InvalidCountryCodeException
 import org.junit.Test
 
-class MobileNumberValidatorImplTest {
+internal class MobileNumberValidatorImplTest {
     private val mobileNumberValidator = MobileNumberValidatorImpl()
 
     @Test

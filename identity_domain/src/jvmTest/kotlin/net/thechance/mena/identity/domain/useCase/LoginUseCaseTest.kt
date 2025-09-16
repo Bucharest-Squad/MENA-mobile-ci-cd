@@ -18,7 +18,7 @@ import net.thechance.mena.identity.domain.useCase.validation.mobileNumber.Mobile
 import net.thechance.mena.identity.domain.useCase.validation.mobileNumber.ValidMobileNumbersDummyData
 import org.junit.Test
 
-class LoginUseCaseTest {
+internal class LoginUseCaseTest {
     private val authenticationRepository = mockk<AuthenticationRepository>()
     private val mobileNumberValidator = mockk<MobileNumberValidator>()
     private val loginUseCase = LoginUseCase(authenticationRepository, mobileNumberValidator)

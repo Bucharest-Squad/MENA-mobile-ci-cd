@@ -1,6 +1,6 @@
 package net.thechance.mena.identity.domain.useCase.validation.mobileNumber
 
-enum class ValidMobileNumbersDummyData(
+internal enum class ValidMobileNumbersDummyData(
     val countryCode: String,
     val mobileNumber: String
 ) {
