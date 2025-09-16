@@ -8,8 +8,8 @@ import assertk.assertions.isTrue
 import net.thechance.mena.identity.domain.exception.InvalidCountryCodeException
 import org.junit.Test
 
-internal class MobileNumberValidatorImplTest {
-    private val mobileNumberValidator = MobileNumberValidatorImpl()
+internal class MobileNumberValidatorTest {
+    private val mobileNumberValidator = MobileNumberValidator()
 
     @Test
     fun `should return true when use valid ALGERIA mobile number`() {
