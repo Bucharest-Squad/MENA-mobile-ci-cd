@@ -4,7 +4,7 @@ abstract class AuthenticationException(message: String) : Exception(message)
 
 class InvalidCountryCodeException(
     countryCode: String
-) : AuthenticationException("country code: $countryCode is not supported yet")
+) : AuthenticationException("country code: $countryCode is not valid or not supported yet")
 
 class InvalidMobileNumberException(
     mobileNumber: String
