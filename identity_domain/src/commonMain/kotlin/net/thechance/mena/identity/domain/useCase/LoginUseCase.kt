@@ -11,14 +11,11 @@ class LoginUseCase(
     private val mobileNumberValidator: MobileNumberValidator
 ) {
     suspend fun login(countryCode: String, number: String, password: String) {
-        if (isPasswordValid(password)) {
-            throw InvalidPasswordException()
-        }
-        if (isMobileNumberValid(countryCode, number)) {
-            throw InvalidMobileNumberException(number)
-        }
+        if (!isPasswordValid(password)) throw InvalidPasswordException()
+        if (!isMobileNumberValid(countryCode, number)) throw InvalidMobileNumberException(number)
         if (isUserBlocked(countryCode, number)) {
-            throw UserIsBlockedException("${countryCode}${number}")
+            val message = "${countryCode}${number}"
+            throw UserIsBlockedException(message)
         }
         authenticationRepository.login(
             countryCode = countryCode,
