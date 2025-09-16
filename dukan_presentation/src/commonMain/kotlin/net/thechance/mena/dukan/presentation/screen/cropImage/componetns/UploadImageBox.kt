@@ -50,7 +50,6 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun UploadImageContainer(
     onClick: (image: ImageSrc) -> Unit,
     image: ImageBitmap?,
-    onBottomIconClick: (image: ImageSrc) -> Unit,
     showBottomIcon: Boolean = true,
     modifier: Modifier = Modifier,
 ) {
@@ -143,6 +142,6 @@ fun UploadImageContainer(
 @Composable
 private fun UploadImageContainerPreview() {
     MenaTheme {
-        UploadImageContainer(onClick = {}, null, onBottomIconClick = {})
+        UploadImageContainer(onClick = {}, null)
     }
 }

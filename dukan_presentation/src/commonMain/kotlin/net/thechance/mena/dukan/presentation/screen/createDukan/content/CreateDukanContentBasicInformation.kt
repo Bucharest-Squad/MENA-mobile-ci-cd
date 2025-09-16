@@ -1,4 +1,4 @@
-package net.thechance.mena.dukan.presentation.screen.CreateDukan.content
+package net.thechance.mena.dukan.presentation.screen.createDukan.content
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
@@ -27,11 +27,11 @@ import net.thechance.mena.designsystem.presentation.component.text.MenaText
 import net.thechance.mena.designsystem.presentation.component.textField.TextField
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.dukan.domain.entity.Category
 import net.thechance.mena.dukan.presentation.screen.createDukan.components.CategorySelectionRow
 import net.thechance.mena.dukan.presentation.util.stubPreviews.PreviewCreateDukanInteractionListener
 import net.thechance.mena.dukan.presentation.viewModel.createDukan.CreateDukanInteractionListener
 import net.thechance.mena.dukan.presentation.viewModel.createDukan.CreateDukanUiState
+import net.thechance.mena.dukan.presentation.viewModel.createDukan.DukanCategoryUiState
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -70,7 +70,7 @@ fun CreateDukanContentBasicInformation(
         item {
             CategoryHeaderSection()
             CategorySelectionRow(
-                availableCategories = state.availableCategories,
+                availableCategories = state.dukanCategories,
                 isCategorySelected = interactionListener.isCategorySelected(),
                 onCategorySelected = interactionListener::onCategorySelected,
                 onCategoryDeselected = interactionListener::onCategoryDeselected,
@@ -152,12 +152,12 @@ private fun CategoryHeaderSection() {
 private fun CreateDukanContentBasicInformationPreview() {
     val mockState = CreateDukanUiState(
         name = "My Dukan",
-        availableCategories = listOf(
-            Category("1", "Food", ""),
-            Category("2", "Electronics", ""),
-            Category("3", "Clothing", ""),
-            Category("4", "Books", ""),
-            Category("5", "Toys", ""),
+        dukanCategories = listOf(
+            DukanCategoryUiState("1", "Food", ""),
+            DukanCategoryUiState("2", "Electronics", ""),
+            DukanCategoryUiState("3", "Clothing", ""),
+            DukanCategoryUiState("4", "Books", ""),
+            DukanCategoryUiState("5", "Toys", ""),
         )
     )
 
