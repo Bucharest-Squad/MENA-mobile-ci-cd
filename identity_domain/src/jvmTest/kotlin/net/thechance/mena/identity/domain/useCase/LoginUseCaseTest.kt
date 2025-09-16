@@ -24,7 +24,7 @@ internal class LoginUseCaseTest {
     private val loginUseCase = LoginUseCase(authenticationRepository, mobileNumberValidator)
 
     @Test
-    fun `should return true if password length equal to 8`() {
+    fun `should return true when password length equal to 8`() {
         val password = "password"
 
         val isValid = loginUseCase.isPasswordValid(password)
@@ -33,7 +33,7 @@ internal class LoginUseCaseTest {
     }
 
     @Test
-    fun `should return true if password length greater than 8`() {
+    fun `should return true when password length greater than 8`() {
         val password = "password1"
 
         val isValid = loginUseCase.isPasswordValid(password)
@@ -42,7 +42,7 @@ internal class LoginUseCaseTest {
     }
 
     @Test
-    fun `should return true if password is not valid`() {
+    fun `should return true when password is not valid`() {
         val password = "passwor"
 
         val isValid = loginUseCase.isPasswordValid(password)
@@ -51,7 +51,7 @@ internal class LoginUseCaseTest {
     }
 
     @Test
-    fun `should return true if mobile number is valid`() {
+    fun `should return true when mobile number is valid`() {
         every { mobileNumberValidator.isValid(any(), any()) } returns true
 
         val isMobileNumberValid = loginUseCase.isMobileNumberValid("+20", "01283393335")
@@ -60,7 +60,7 @@ internal class LoginUseCaseTest {
     }
 
     @Test
-    fun `should return true if mobile number is not valid`() {
+    fun `should return true when mobile number is not valid`() {
         every { mobileNumberValidator.isValid(any(), any()) } returns false
 
         val isMobileNumberValid = loginUseCase.isMobileNumberValid("+200", "0183393335")
@@ -83,7 +83,7 @@ internal class LoginUseCaseTest {
     }
 
     @Test
-    fun `should throw UserIsBlockedException if user is blocked`() = runTest {
+    fun `should throw UserIsBlockedException when user is blocked`() = runTest {
         coEvery { authenticationRepository.isUserBlocked(any(), any()) } returns true
         every { mobileNumberValidator.isValid(any(), any()) } returns true
         coEvery { authenticationRepository.login(any(), any(), any()) } just Runs
