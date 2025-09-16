@@ -26,6 +26,10 @@ class CreateDukanViewModel(
 
     override fun onBackClicked() {
         val current = state.value.currentStep
+        if (state.value.isImageBeingCropped) {
+            updateState { copy(isImageBeingCropped = false) }
+            return
+        }
         if (current == CreateDukanStep.BASIC_INFORMATION) {
             emitEffect(CreateDukanEffect.NavigateBack)
         } else {
@@ -41,7 +45,6 @@ class CreateDukanViewModel(
         updateState {
             copy(
                 selectedImage = image,
-                isEditIconVisible = false,
                 isImageBeingCropped = true
             )
         }
@@ -51,11 +54,10 @@ class CreateDukanViewModel(
 
     override fun onCLickNext() {
         val current = state.value.currentStep
-        updateState {
-            if (current == CreateDukanStep.BASIC_INFORMATION) {
-                handleBasicInformationNext()
-            }
-            copy(currentStep = nextStep(current))
+        if (current == CreateDukanStep.BASIC_INFORMATION) {
+            handleBasicInformationNext()
+        } else {
+            updateState { copy(currentStep = nextStep(current)) }
         }
     }
 
@@ -64,7 +66,6 @@ class CreateDukanViewModel(
             copy(
                 croppedImage = image,
                 selectedImage = null,
-                isEditIconVisible = true,
                 isImageBeingCropped = false
             )
         }

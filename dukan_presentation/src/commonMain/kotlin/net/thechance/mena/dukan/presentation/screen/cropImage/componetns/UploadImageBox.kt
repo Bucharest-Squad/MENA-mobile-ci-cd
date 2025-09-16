@@ -111,7 +111,7 @@ fun UploadImageContainer(
                 }
             }
         }
-        if (showBottomIcon) {
+        if (image != null) {
             Box(
                 modifier = Modifier
                     .size(40.dp)

@@ -80,7 +80,6 @@ private fun UploadDukanImageSection(
         )
         UploadImageContainer(
             onClick = interactionListener::onClickUploadImage,
-            showBottomIcon = state.isEditIconVisible,
             image = state.croppedImage,
         )
     }
