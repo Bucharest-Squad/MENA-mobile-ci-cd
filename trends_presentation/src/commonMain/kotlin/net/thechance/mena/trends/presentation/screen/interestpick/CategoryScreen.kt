@@ -93,8 +93,7 @@ private fun CategoryScreenContent(
                     style = Theme.typography.title.medium,
                     color = Theme.colorScheme.shadePrimary,
                     modifier = Modifier
-                        .padding(horizontal = Theme.spacing._16)
-                        .padding(bottom = Theme.spacing._4)
+                        .padding (bottom = Theme.spacing._4 , start = Theme.spacing._16 , end = Theme.spacing._16 )
                 )
 
                 MenaText(
@@ -102,8 +101,7 @@ private fun CategoryScreenContent(
                     style = Theme.typography.body.small,
                     color = Theme.colorScheme.shadeSecondary,
                     modifier = Modifier
-                        .padding(horizontal = Theme.spacing._16)
-                        .padding(bottom = Theme.spacing._24)
+                        .padding (bottom = Theme.spacing._24 , start = Theme.spacing._16 , end = Theme.spacing._16 )
                 )
 
                 FlowRow(
@@ -116,8 +114,7 @@ private fun CategoryScreenContent(
                             category = category,
                             onClick = { id -> listener.onCategoryClick(id) },
                             modifier = Modifier
-                                .padding(bottom = Theme.spacing._12)
-                                .padding(end = Theme.spacing._8)
+                                .padding(bottom = Theme.spacing._12,end = Theme.spacing._8)
                         )
                     }
                 }
@@ -128,8 +125,7 @@ private fun CategoryScreenContent(
                     isLoading = state.isSaveButtonLoading,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = Theme.spacing._24)
-                        .padding(horizontal = Theme.spacing._16),
+                        .padding (bottom = Theme.spacing._24 , start = Theme.spacing._16 , end = Theme.spacing._16 ),
                     shape = RoundedCornerShape(Theme.spacing._12),
                     containerColor = Theme.colorScheme.primary.primary,
                     disabledContainerColor = Theme.colorScheme.primary.primary.copy(alpha = 0.5f),
