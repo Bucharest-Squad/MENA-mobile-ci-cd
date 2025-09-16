@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
@@ -39,6 +40,24 @@ import org.koin.compose.viewmodel.koinViewModel
 fun ContactsScreen(viewModel: ContactsViewModel = koinViewModel()) {
     val state by viewModel.state.collectAsState()
     ContactsEffectsHandler(effects = viewModel.effect)
+
+    val navController = LocalNavController.current
+
+    val stateFlow = navController.currentBackStackEntry
+        ?.savedStateHandle
+        ?.getStateFlow("is_sync_success", false)
+
+    val isSyncedState = stateFlow?.collectAsState(initial = false)
+    val isSynced = isSyncedState?.value == true
+
+    LaunchedEffect(isSynced) {
+        if (isSynced) {
+            viewModel.onRefreshContacts()
+            navController.currentBackStackEntry
+                ?.savedStateHandle
+                ?.set("is_sync_success", false)
+        }
+    }
 
     ContactsContent(
         state = state,

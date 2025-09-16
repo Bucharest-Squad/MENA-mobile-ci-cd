@@ -1,6 +1,5 @@
 package net.thechance.mena.core_chat.presentation.screen.contacts
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.paging.PagingData
 import androidx.paging.PagingSource
 import kotlinx.coroutines.flow.Flow
@@ -14,25 +13,11 @@ import net.thechance.mena.core_chat.presentation.shared.BaseViewModel
 
 class ContactsViewModel(
     private val contactsRepository: ContactsRepository,
-    private val savedHandle: SavedStateHandle
 ) : BaseViewModel<ContactsScreenState, ContactsScreenEffect>(ContactsScreenState()),
     ContactsScreenInteractionListener {
 
     init {
-        observeSyncSuccess()
         loadContacts()
-    }
-
-    private fun observeSyncSuccess() {
-        tryToCollect(
-            collect = { savedHandle.getStateFlow("is_sync_success", false) },
-            onCollect = { isSynced ->
-                if (isSynced == true) {
-                    onRefreshContacts()
-                    savedHandle["is_sync_success"] = false
-                }
-            }
-        )
     }
     private fun loadContacts() {
         tryToCollect(
