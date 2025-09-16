@@ -28,8 +28,9 @@ class DukanRepositoryImpl(
         TODO("Not yet implemented")
     }
 
-    override suspend fun isDukanNameTaken(name: String) {
-        TODO("Not yet implemented")
+    override suspend fun isDukanNameTaken(name: String): Boolean {
+        // TODO: Implement real API call when backend is available
+        return false
     }
 
     override suspend fun isUserHasDukan(): Boolean {

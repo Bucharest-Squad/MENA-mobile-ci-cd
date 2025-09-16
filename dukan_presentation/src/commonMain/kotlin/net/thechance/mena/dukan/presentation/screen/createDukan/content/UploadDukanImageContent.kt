@@ -23,7 +23,6 @@ import net.thechance.mena.dukan.presentation.viewModel.createDukan.CreateDukanUi
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-
 @Composable
 fun UploadDukanImageContent(
     state: CreateDukanUiState,
