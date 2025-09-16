@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import dev.icerock.moko.permissions.compose.BindEffect
 import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.ic_arrow_left
 import mena.core_chat_presentation.generated.resources.sync_contacts
@@ -32,6 +31,7 @@ import net.thechance.mena.core_chat.presentation.screen.syncContacts.components.
 import net.thechance.mena.core_chat.presentation.screen.syncContacts.components.GoToSettingsView
 import net.thechance.mena.core_chat.presentation.screen.syncContacts.components.NoContactsSyncView
 import net.thechance.mena.core_chat.presentation.screen.syncContacts.components.PhoneIcon
+import net.thechance.mena.core_chat.presentation.utils.EffectHandler
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
@@ -105,12 +105,14 @@ private fun SyncContactsContent(
                     state.isLoading -> {
                         ContactsSyncedView(modifier = Modifier.padding(top = Theme.spacing._24))
                     }
+
                     state.deniedPermanently -> {
                         GoToSettingsView(
                             onSyncClick = interactionListener::onSyncClick,
                             modifier = Modifier.padding(top = Theme.spacing._12)
                         )
                     }
+
                     else -> {
                         NoContactsSyncView(
                             modifier = Modifier.padding(top = Theme.spacing._12),
@@ -126,24 +128,22 @@ private fun SyncContactsContent(
 @Composable
 private fun SyncContactsEffectsHandler(effects: Flow<SyncContactsScreenEffect>) {
     val navController = LocalNavController.current
-    LaunchedEffect(Unit) {
-        effects.collectLatest { effect ->
-            when (effect) {
-                SyncContactsScreenEffect.NavigateToContacts -> {
-                    navController.popBackStack()
-                    navController.navigate(ContactsRoute)
-                }
+    EffectHandler(effects) { effect ->
+        when (effect) {
+            SyncContactsScreenEffect.NavigateToContacts -> {
+                navController.popBackStack()
+                navController.navigate(ContactsRoute)
+            }
 
-                SyncContactsScreenEffect.NavigateBack -> {
-                    navController.popBackStack()
-                }
+            SyncContactsScreenEffect.NavigateBack -> {
+                navController.popBackStack()
+            }
 
-                SyncContactsScreenEffect.NavigateBackWithResult -> {
-                    navController.previousBackStackEntry
-                        ?.savedStateHandle
-                        ?.set("is_sync_success", true)
-                    navController.popBackStack()
-                }
+            SyncContactsScreenEffect.NavigateBackWithResult -> {
+                navController.previousBackStackEntry
+                    ?.savedStateHandle
+                    ?.set("is_sync_success", true)
+                navController.popBackStack()
             }
         }
     }

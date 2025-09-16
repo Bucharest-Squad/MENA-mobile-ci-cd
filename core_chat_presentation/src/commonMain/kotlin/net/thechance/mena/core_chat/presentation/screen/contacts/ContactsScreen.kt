@@ -25,6 +25,7 @@ import mena.core_chat_presentation.generated.resources.ic_resync
 import net.thechance.mena.core_chat.presentation.navigation.LocalNavController
 import net.thechance.mena.core_chat.presentation.navigation.SyncContactsRoute
 import net.thechance.mena.core_chat.presentation.screen.contacts.components.ContactsList
+import net.thechance.mena.core_chat.presentation.utils.EffectHandler
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBarOptionContainer
 import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
@@ -115,7 +116,7 @@ private fun ContactsEffectsHandler(
     val navController = LocalNavController.current
     val currentNavController by rememberUpdatedState(navController)
 
-    LaunchedEffect(Unit) {
+    EffectHandler(effects) { effect ->
         effects.collectLatest { effect ->
             when (effect) {
                 is ContactsScreenEffect.NavigateBack -> {

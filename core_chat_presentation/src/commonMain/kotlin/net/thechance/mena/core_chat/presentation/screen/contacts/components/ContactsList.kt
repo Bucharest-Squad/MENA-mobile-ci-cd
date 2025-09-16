@@ -37,7 +37,10 @@ fun ContactsList(
     listener: ContactItemInteractionListener
 ) {
     AnimatedContent(
-        targetState = Pair((contacts.itemCount == 0), contacts.loadState.refresh == LoadState.Loading),
+        targetState = Pair(
+            (contacts.itemCount == 0),
+            contacts.loadState.refresh == LoadState.Loading
+        ),
         modifier = Modifier.fillMaxSize()
     ) { (isEmpty, isLoading) ->
         if (isEmpty && !isLoading) EmptyContactsColumn()
@@ -64,6 +67,7 @@ fun ContactsList(
         }
     }
 }
+
 @Composable
 private fun EmptyContactsColumn() {
     Column(

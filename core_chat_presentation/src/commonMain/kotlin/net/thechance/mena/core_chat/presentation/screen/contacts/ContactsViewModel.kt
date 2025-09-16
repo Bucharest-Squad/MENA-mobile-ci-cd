@@ -1,6 +1,7 @@
 
 package net.thechance.mena.core_chat.presentation.screen.contacts
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import net.thechance.mena.core_chat.domain.entity.Contact
