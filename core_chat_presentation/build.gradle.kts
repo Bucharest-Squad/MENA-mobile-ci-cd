@@ -29,6 +29,7 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.ktor.client.android)
         }
         commonMain.dependencies {
             implementation(projects.coreChatApi)
@@ -41,8 +42,15 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+
+            //coil
             implementation(libs.coil.compose)
 
+            //data time
+            implementation(libs.kotlinx.datetime)
+
+            //implementation(libs.coil.compose.core)
+            implementation(libs.coil.network.ktor)
 
             // Serialization
             implementation(libs.kotlinx.serialization.json)
@@ -51,12 +59,17 @@ kotlin {
             implementation(libs.androidx.navigation.compose)
 
             // Paging 3
-            implementation(libs.bundles.paging)
-
+            implementation(libs.paging.compose.common)
+            implementation(libs.paging.common)
             // Koin
             implementation(libs.bundles.koin.compose)
+
+            //permission
+            implementation(libs.moko.permissions)
+            implementation(libs.moko.permissions.compose)
         }
         iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
 
         }
     }
