@@ -44,7 +44,7 @@ internal class LoginUseCaseTest {
     }
 
     @Test
-    fun `should return true when password is not valid`() {
+    fun `should return false when password is not valid`() {
         val password = "passwor"
 
         val isValid = loginUseCase.isPasswordValid(password)
