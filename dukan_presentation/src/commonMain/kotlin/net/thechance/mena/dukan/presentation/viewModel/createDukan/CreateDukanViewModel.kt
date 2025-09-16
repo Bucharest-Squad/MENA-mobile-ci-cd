@@ -90,34 +90,39 @@ class CreateDukanViewModel :
         updateNextButtonEnableState()
     }
 
-    override fun isCategorySelected(category: Category): Boolean {
-        return state.value.selectedCategories.contains(category)
+    override fun isCategorySelected(): (Category) -> Boolean {
+        return { category -> state.value.selectedCategories.contains(category) }
     }
 
     override fun onCategorySelected(category: Category): Boolean {
-        val currentState = state.value
-        if (currentState.selectedCategories.size < MAX_CATEGORIES) {
-            updateState {
-                copy(selectedCategories = selectedCategories + category)
-            }
-            updateNextButtonEnableState()
-            return true
-        }
-        return false
+        if (!canSelectMoreCategories(state.value)) return false
+
+        addCategoryToSelection(category)
+        updateNextButtonEnableState()
+        return true
     }
 
     override fun onCategoryDeselected(category: Category): Boolean {
-        updateState {
-            copy(selectedCategories = selectedCategories - category)
-        }
+        removeCategoryFromSelection(category)
         updateNextButtonEnableState()
         return true
     }
 
     override fun onCategoryEnabled(category: Category): Boolean {
-        val currentState = state.value
-        return currentState.selectedCategories.size < MAX_CATEGORIES ||
-                currentState.selectedCategories.contains(category)
+        return canSelectMoreCategories(state.value) ||
+                state.value.selectedCategories.contains(category)
+    }
+
+    private fun canSelectMoreCategories(currentState: CreateDukanUiState): Boolean {
+        return currentState.selectedCategories.size < MAX_CATEGORIES
+    }
+
+    private fun addCategoryToSelection(category: Category) {
+        updateState { copy(selectedCategories = selectedCategories + category) }
+    }
+
+    private fun removeCategoryFromSelection(category: Category) {
+        updateState { copy(selectedCategories = selectedCategories - category) }
     }
 
     private fun onCreateClicked() {
@@ -125,11 +130,11 @@ class CreateDukanViewModel :
     }
 
     private fun handleBasicInformationNext() {
-        if (isBasicInformationStepValid(state.value)) {
-            checkNameUniqueness(state.value.name)
+        if (!isBasicInformationStepValid(state.value)) {
+            updateState { copy(showSnackBar = true, isNameUnique = false) }
             return
         }
-        updateState { copy(showSnackBar = true, isNameUnique = false) }
+        checkNameUniqueness(state.value.name)
     }
 
     private fun nextStep(step: CreateDukanStep): CreateDukanStep =
@@ -162,6 +167,11 @@ class CreateDukanViewModel :
 
     private fun handleNameValidationResult(isTaken: Boolean) {
         val current = state.value.currentStep
+        updateNameValidationState(isTaken, current)
+        updateNextButtonEnableState()
+    }
+
+    private fun updateNameValidationState(isTaken: Boolean, current: CreateDukanStep) {
         updateState {
             copy(
                 isNameUnique = !isTaken,
@@ -169,7 +179,6 @@ class CreateDukanViewModel :
                 currentStep = if (isTaken) current else nextStep(current)
             )
         }
-        updateNextButtonEnableState()
     }
 
     private fun handleNameValidationError() {

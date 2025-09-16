@@ -14,7 +14,7 @@ object PreviewCreateDukanInteractionListener : CreateDukanInteractionListener {
     override fun onCategorySelected(category: Category): Boolean = true
     override fun onCategoryDeselected(category: Category): Boolean = true
     override fun onCategoryEnabled(category: Category): Boolean = true
-    override fun isCategorySelected(category: Category): Boolean = false
+    override fun isCategorySelected(): (Category) -> Boolean = { false }
     override fun onCLickNext() {}
     override fun onImageCrop(image: ImageBitmap) {}
     override fun onCancelCrop() {}

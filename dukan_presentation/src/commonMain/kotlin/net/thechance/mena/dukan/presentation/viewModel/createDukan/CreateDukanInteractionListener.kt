@@ -10,7 +10,7 @@ interface CreateDukanInteractionListener {
     fun onClickUploadImage(image: ImageSrc)
     fun onClickEditImage()
     fun onNameChanged(name: String)
-    fun isCategorySelected(category: Category): Boolean
+    fun isCategorySelected(): (Category) -> Boolean
     fun onCategorySelected(category: Category): Boolean
     fun onCategoryDeselected(category: Category): Boolean
     fun onCategoryEnabled(category: Category): Boolean
