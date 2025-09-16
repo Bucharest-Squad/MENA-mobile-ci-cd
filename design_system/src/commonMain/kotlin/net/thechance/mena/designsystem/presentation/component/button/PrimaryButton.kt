@@ -15,7 +15,7 @@ import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 @Composable
 fun PrimaryButton(
     text: String,
-    trailingIcon: Painter,
+    trailingIcon: Painter? = null,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     iconSize: Dp = 20.dp,

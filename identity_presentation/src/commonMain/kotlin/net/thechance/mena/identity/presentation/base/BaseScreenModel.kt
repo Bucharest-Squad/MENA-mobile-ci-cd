@@ -55,7 +55,7 @@ abstract class BaseScreenModel<S, E>(initialState: S) : ScreenModel {
         }
     }
 
-    protected fun updateState(updater: (S) -> S) {
+    protected fun updateState(updater: S.() -> S) {
         _state.update(updater)
     }
 
