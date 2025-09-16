@@ -35,7 +35,6 @@ class ManageTrendsViewModel(
 
     override fun onReelItemClick(reelId: Int) {
         sendEffect(ManageTrendsUiEffect.NavigateToTrend(reelId))
-
     }
 
     override fun onBackClick() {
