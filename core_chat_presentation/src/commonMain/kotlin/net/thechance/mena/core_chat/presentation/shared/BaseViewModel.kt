@@ -26,7 +26,8 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 open class BaseViewModel<S, E>(initialState: S) : ViewModel() {
 
@@ -58,6 +59,7 @@ open class BaseViewModel<S, E>(initialState: S) : ViewModel() {
         }
     }
 
+    @OptIn(ExperimentalTime::class)
     protected fun emitEffect(effect: E) {
         val now = Clock.System.now().toEpochMilliseconds()
 

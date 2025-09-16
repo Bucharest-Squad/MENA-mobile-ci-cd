@@ -47,7 +47,7 @@ kotlin {
             implementation(libs.coil.compose)
 
             //data time
-            implementation(libs.kotlinx.datetime.v060)
+            implementation(libs.kotlinx.datetime)
 
             //implementation(libs.coil.compose.core)
             implementation(libs.coil.network.ktor)
