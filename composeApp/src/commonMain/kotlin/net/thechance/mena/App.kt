@@ -23,6 +23,7 @@ import mena.composeapp.generated.resources.compose_multiplatform
 @Preview
 fun App() {
     MaterialTheme {
+        val x = 5/0
         var showContent by remember { mutableStateOf(false) }
         Column(
             modifier = Modifier
