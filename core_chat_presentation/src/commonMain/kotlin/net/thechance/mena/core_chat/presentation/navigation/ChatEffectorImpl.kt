@@ -10,8 +10,8 @@ import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 class ChatEffectorImpl() : ChatEffector {
-    private val _navigateEvent = Channel<ChatEffect>(Channel.BUFFERED)
-    override val chatEffect = _navigateEvent.receiveAsFlow()
+    private val _chatEffect = Channel<ChatEffect>(Channel.BUFFERED)
+    override val chatEffect = _chatEffect.receiveAsFlow()
     private val mutex = Mutex()
     private var lastNavigateTime = 0L
 
@@ -21,7 +21,7 @@ class ChatEffectorImpl() : ChatEffector {
             val now = Clock.System.now().toEpochMilliseconds()
             if (forceNavigate || now - lastNavigateTime >= EFFECT_DEBOUNCE_MS) {
                 lastNavigateTime = now
-                _navigateEvent.send(
+                _chatEffect.send(
                     ChatEffect.Navigate(route = route, navOptions = navOptions)
                 )
             }
@@ -29,11 +29,11 @@ class ChatEffectorImpl() : ChatEffector {
     }
 
     override suspend fun popBackStack(vararg arguments: Pair<String, Any>) {
-        _navigateEvent.send(ChatEffect.PopBackStack(arguments.toMap()))
+        _chatEffect.send(ChatEffect.PopBackStack(arguments.toMap()))
     }
 
     override suspend fun showSnackBar(snackBarData: SnackBarData) {
-        _navigateEvent.send(ChatEffect.ShowSnackBar(snackBarData))
+        _chatEffect.send(ChatEffect.ShowSnackBar(snackBarData))
     }
 
     companion object {
