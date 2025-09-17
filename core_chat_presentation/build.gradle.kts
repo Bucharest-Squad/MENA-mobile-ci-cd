@@ -1,4 +1,9 @@
+import org.gradle.kotlin.dsl.invoke
+import org.gradle.kotlin.dsl.kotlin
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
+
+
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -73,7 +78,18 @@ kotlin {
 
         }
     }
+    sourceSets.androidUnitTest.dependencies {
+        implementation(kotlin("test"))
+        implementation(kotlin("test-junit"))
+        implementation(libs.junit.jupiter)
+        implementation(libs.mockk)
+        implementation(libs.androidx.paging.testing)
+        implementation(libs.turbine)
+        implementation(libs.kotlinx.coroutines.test)
+
+    }
 }
+
 
 android {
     namespace = "net.thechance.mena.core_chat.presentation"
