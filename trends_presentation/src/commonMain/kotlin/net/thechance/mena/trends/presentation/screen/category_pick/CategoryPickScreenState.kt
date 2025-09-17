@@ -6,7 +6,7 @@ import net.thechance.mena.trends.presentation.shared.model.Selectable
 data class CategoryPickScreenState(
     val isLoading: Boolean = true,
     val categories: List<Selectable<CategoryUiState>> = emptyList(),
-    val isSaveButtonLoading: Boolean = false
+    val isNextButtonLoading: Boolean = false
 )
 
-fun CategoryPickScreenState.isSaveButtonEnabled() = categories.any(Selectable<CategoryUiState>::isSelected)
+fun CategoryPickScreenState.isNextButtonEnabled() = categories.any(Selectable<CategoryUiState>::isSelected)

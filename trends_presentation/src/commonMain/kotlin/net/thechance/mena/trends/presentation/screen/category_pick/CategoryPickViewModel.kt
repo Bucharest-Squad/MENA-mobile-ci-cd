@@ -3,10 +3,13 @@ package net.thechance.mena.trends.presentation.screen.category_pick
 import net.thechance.mena.trends.domain.entity.Category
 import net.thechance.mena.trends.domain.repository.CategoryRepository
 import net.thechance.mena.trends.presentation.shared.base.BaseViewModel
-import net.thechance.mena.trends.presentation.shared.util.toggleCategory
+import net.thechance.mena.trends.presentation.shared.model.toggleCategory
+import org.koin.android.annotation.KoinViewModel
+import org.koin.core.annotation.Provided
 
+@KoinViewModel
 class CategoryPickViewModel(
-    private val repository: CategoryRepository
+    @Provided private val repository: CategoryRepository
 ) : BaseViewModel<CategoryPickScreenState, CategoryPickScreenEffect>(
     initialState = CategoryPickScreenState()
 ), CategoryPickInteractionListener {
@@ -33,7 +36,7 @@ class CategoryPickViewModel(
         copy(categories = categories.toggleCategory(categoryId))
     }
 
-    override fun onSaveClick() {
+    override fun onNextClick() {
         tryToExecute(
             block = { saveSelectedCategories() },
             onSuccess = { sendEffect(CategoryPickScreenEffect.NavigateToTrends) },
@@ -57,6 +60,6 @@ class CategoryPickViewModel(
     private fun startLoading() = updateState { copy(isLoading = true) }
     private fun endLoading() = updateState { copy(isLoading = false) }
 
-    private fun startSaving() = updateState { copy(isSaveButtonLoading = true) }
-    private fun endSaving() = updateState { copy(isSaveButtonLoading = false) }
+    private fun startSaving() = updateState { copy(isNextButtonLoading = true) }
+    private fun endSaving() = updateState { copy(isNextButtonLoading = false) }
 }

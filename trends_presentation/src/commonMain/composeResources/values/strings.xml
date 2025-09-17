@@ -3,4 +3,5 @@
     <string name="choose_interests">Choose your interests</string>
     <string name="help_text">Help us understand your interests so we can show you trends that match your taste.</string>
     <string name="save_change">Save change</string>
+    <string name="next">Next</string>
 </resources>
