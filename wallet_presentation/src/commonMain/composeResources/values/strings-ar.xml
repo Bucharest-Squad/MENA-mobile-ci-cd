@@ -1,6 +1,0 @@
-<resources>
-    <string name="back_button">زر العودة</string>
-    <string name="my_wallet">محفظتي</string>
-    <string name="current_balance">الرصيد الحالي</string>
-    <string name="silver_coin">عملة فضية</string>
-</resources>

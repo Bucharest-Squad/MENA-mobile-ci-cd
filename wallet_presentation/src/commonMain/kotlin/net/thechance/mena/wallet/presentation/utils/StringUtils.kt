@@ -12,5 +12,7 @@ fun formatBalance(balance: Double): String {
         .joinToString(",")
         .reversed()
 
-    return "$wholeString.${decimalPart.toString().padStart(2, '0')}"
+    val decimalString = decimalPart.toString().padStart(2, '0')
+
+    return "$wholeString.$decimalString"
 }

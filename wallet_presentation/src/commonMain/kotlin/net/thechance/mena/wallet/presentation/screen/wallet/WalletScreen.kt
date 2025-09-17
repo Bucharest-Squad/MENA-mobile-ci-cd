@@ -23,6 +23,7 @@ import mena.wallet_presentation.generated.resources.my_wallet
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import net.thechance.mena.wallet.presentation.base.UiState
 import net.thechance.mena.wallet.presentation.screen.wallet.component.BalanceCard
 import net.thechance.mena.wallet.presentation.utils.ObserveAsEffect
 import org.jetbrains.compose.resources.painterResource
@@ -33,7 +34,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun WalletScreen(
     viewModel: WalletViewModel
 ) {
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     ObserveAsEffect(
         effect = viewModel.uiEffect,
@@ -47,14 +48,14 @@ fun WalletScreen(
 }
 @Composable
 private fun WalletContent(
-    state: WalletUiState,
+    state: WalletScreenState,
     interactionListener: WalletInteractionListener
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .statusBarsPadding()
             .background(Theme.colorScheme.background.surface)
+            .statusBarsPadding()
     ) {
         AppBar(
             title = stringResource(Res.string.my_wallet),
@@ -67,45 +68,18 @@ private fun WalletContent(
             },
             onLeadingClick = interactionListener::onBackClicked,
         )
-
-        AnimatedContent(
-            targetState = state.isLoading,
-            modifier = Modifier.weight(1f)
-        ) { isLoading ->
-            if (isLoading) {
-                LoadingContent()
-            } else {
-                MainContent(state = state, interactionListener = interactionListener)
-            }
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .padding(horizontal = 16.dp)
+                .padding(top = 16.dp)
+        ) {
+            BalanceCard(
+                balance = state.balance,
+                onRetry = interactionListener::onRetryLoadBalanceClicked,
+                modifier = Modifier.padding(top = 16.dp)
+            )
         }
-    }
-}
-
-@Composable
-private fun LoadingContent() {
-    Box(modifier = Modifier.fillMaxSize()) {
-        CircularProgressIndicator(
-            modifier = Modifier.align(Alignment.Center),
-            color = Theme.colorScheme.shadePrimary
-        )
-    }
-}
-
-@Composable
-private fun MainContent(
-    state: WalletUiState,
-    interactionListener: WalletInteractionListener
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp)
-            .padding(top = 16.dp)
-    ) {
-        BalanceCard(
-            balance = state.balance,
-            modifier = Modifier.padding(top = 16.dp)
-        )
     }
 }
 
@@ -121,12 +95,12 @@ private fun onWalletEffect(effect: WalletEffect) {
 private fun WalletScreenPreview() {
     MenaTheme {
         WalletContent(
-            state = WalletUiState(
-                isLoading = false,
-                balance = 530320.55
+            state = WalletScreenState(
+                balance = UiState.Success(530320.55)
             ),
             interactionListener = object : WalletInteractionListener {
                 override fun onBackClicked() {}
+                override fun onRetryLoadBalanceClicked() {}
             }
         )
     }
