@@ -183,8 +183,7 @@ tasks.register("generateEnvironmentXcconfig") {
     val developmentUrl = localProperties.getProperty("BASE_URL_DEVELOPMENT", "")
     val stagingUrl = localProperties.getProperty("BASE_URL_STAGING", "")
     val productionUrl = localProperties.getProperty("BASE_URL_PRODUCTION", "")
-
-    val buildType = project.providers.environmentVariable("KOTLIN_FRAMEWORK_BUILD_TYPE").getOrElse("DEBUG")
+    val buildType = providers.environmentVariable("CONFIGURATION").orNull ?: ""
 
     val baseUrl = when {
         buildType.endsWith("Staging", ignoreCase = true) -> stagingUrl
@@ -197,8 +196,8 @@ tasks.register("generateEnvironmentXcconfig") {
     doLast {
         val outputFile = outputFileProperty.get().asFile
         outputFile.parentFile.mkdirs()
-        outputFile.writeText("BASE_URL = $baseUrl")
-        println("Detected build type '$buildType', generated environment.xcconfig with BASE_URL = $baseUrl")
+        outputFile.writeText("BASE_URL=$baseUrl")
+        println("Generated environment.xcconfig")
     }
 }
 
