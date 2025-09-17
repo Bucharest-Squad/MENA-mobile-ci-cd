@@ -28,8 +28,8 @@ fun LoginScreen() {
                 println("onClick: ")
                 scope.launch {
                     try {
-                        repo.login("07701111111", "12341234")
-                      //  repo.getAccessToken()
+                       repo.login("+20","+200123456789","12341234")
+                        repo.getToken()
                        // println("WOWWOW"+repo.getAccessToken())
                     } catch (e: Exception) {
                         println(e.message)

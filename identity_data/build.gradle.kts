@@ -43,7 +43,8 @@ val generateBuildConfig by tasks.registering {
         load(rootProject.file("local.properties").inputStream())
     }
 
-    val baseUrl = props["BASE_URL"] ?: "https://test/"
+    val baseUrl = props["BASE_URL"] ?:
+    throw IllegalStateException("BASE_URL not found in local.properties")
 
     outputs.dir(outputDir)
 
