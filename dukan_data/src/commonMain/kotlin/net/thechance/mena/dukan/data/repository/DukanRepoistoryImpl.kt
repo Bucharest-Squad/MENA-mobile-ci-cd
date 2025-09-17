@@ -1,14 +1,15 @@
 package net.thechance.mena.dukan.data.repository
 
+import io.ktor.client.HttpClient
 import net.thechance.mena.dukan.domain.entity.Category
 import net.thechance.mena.dukan.domain.entity.Dukan
 import net.thechance.mena.dukan.domain.repository.DukanRepository
 
 class DukanRepositoryImpl(
-    // TODO inject data source here
+    private val httpClient: HttpClient
 ) : DukanRepository {
 
-    override suspend fun addDukan(dukan: Dukan) {
+    override suspend fun createDukan(dukan: Dukan) {
         TODO("Not yet implemented")
     }
 
