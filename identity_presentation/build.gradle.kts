@@ -43,15 +43,6 @@ kotlin {
 
             implementation(libs.bundles.koin)
             implementation(libs.bundles.voyager)
-
-            implementation(libs.koin.compose)
-            implementation(libs.koin.core)
-            implementation(libs.androidx.lifecycle.viewmodelCompose)
-            implementation(libs.androidx.lifecycle.runtimeCompose)
-
-            implementation(projects.identityData)
-
-
         }
         iosMain.dependencies {
 

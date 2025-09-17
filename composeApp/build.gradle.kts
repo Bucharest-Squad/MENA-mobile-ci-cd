@@ -17,7 +17,7 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-    
+
     listOf(
         iosArm64(),
         iosSimulatorArm64()
@@ -45,12 +45,11 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(projects.designSystem)
             implementation(projects.identityPresentation)
+            implementation(projects.identityPresentation)
             implementation(libs.bundles.voyager)
 
             implementation(projects.identityApi)
             implementation(projects.identityData)
-
-
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
