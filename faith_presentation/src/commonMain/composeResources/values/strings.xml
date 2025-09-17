@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="start_tilawah">Start Tilawah</string>
     <plurals name="time_seconds_ago">
         <item quantity="one">%d second ago</item>
         <item quantity="other">%d seconds ago</item>
