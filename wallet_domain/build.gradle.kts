@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.ksp)
 }
 
 kotlin {
@@ -9,7 +10,9 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-
+            //koin
+            implementation(libs.koin.core)
+            api(libs.koin.annotations)
         }
     }
 }
