@@ -8,6 +8,9 @@ jobs:
   get-send-pr-open:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Notify Slack on PR Open
         uses: ./.github/actions/slack/send-pr-notification
         with:
@@ -19,4 +22,4 @@ jobs:
             🚨 *New PR Open*
             PR Open by ${{ github.event.pull_request.user.login }}
             PR: ${{ github.event.pull_request.html_url }}
-            Commit: ${{ github.sha }}
+            Commit: ${{ github.event.head_commit.message }}

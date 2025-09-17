@@ -50,4 +50,4 @@ jobs:
           message: |
             🚨 *Build Failed on Android!*
             PR: ${{ github.event.pull_request.html_url }}
-            Commit: ${{ github.sha }}
+            Commit: ${{ github.event.head_commit.message }}
