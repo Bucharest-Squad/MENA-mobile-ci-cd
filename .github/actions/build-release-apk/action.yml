@@ -11,8 +11,6 @@ inputs:
     required: true
   build-type:
     required: true
-  version-code:
-    required: true
 
 runs:
   using: "composite"
