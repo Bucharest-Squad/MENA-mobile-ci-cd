@@ -3,21 +3,16 @@ import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinx.serialization)
 }
 
 kotlin {
-    androidTarget()
+    jvm()
     iosArm64()
     iosSimulatorArm64()
 
     sourceSets {
-        androidMain.dependencies {
-            implementation(libs.androidx.datastore.preferences)
-            implementation(libs.androidx.security.crypto)
-            implementation(libs.ktor.client.okhttp)
-        }
+
         commonMain.dependencies {
             implementation(projects.identityDomain)
             implementation(libs.kotlinx.serialization.json)
@@ -28,6 +23,7 @@ kotlin {
             implementation(libs.ktor.client.logging)
             implementation(libs.ktor.client.auth)
             implementation(libs.multiplatform.settings)
+            implementation("io.ktor:ktor-client-cio:3.2.3")
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
@@ -38,22 +34,6 @@ kotlin {
         }
     }
 
-}
-
-android {
-    namespace = "net.thechance.mena.identity.data"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
-    defaultConfig {
-        minSdk = libs.versions.android.minSdk.get().toInt()
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-}
-dependencies {
-    implementation(projects.identityDomain)
 }
 
 val generateBuildConfig by tasks.registering {

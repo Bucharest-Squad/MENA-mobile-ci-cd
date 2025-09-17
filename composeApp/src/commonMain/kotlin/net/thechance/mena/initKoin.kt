@@ -1,7 +1,7 @@
 package net.thechance.mena
 
 import net.thechance.mena.identity.data.di.platformModule
-import net.thechance.mena.identity.data.di.sharedModule
+import net.thechance.mena.identity.data.di.identityDataModule
 import org.koin.core.context.startKoin
 import org.koin.dsl.KoinAppDeclaration
 
@@ -11,7 +11,7 @@ fun initKoin(config: KoinAppDeclaration? = null) {
         modules(
             modules = listOf(
                 platformModule,
-                sharedModule,
+                identityDataModule,
             )
         )
     }

@@ -1,8 +1,10 @@
-package net.thechance.mena.identity.data.datautils
+package net.thechance.mena.identity.data.utils
 
 import BuildConfig
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
@@ -15,7 +17,8 @@ import kotlinx.serialization.json.Json
 fun provideHttpClient(
     engine: HttpClientEngine
 ): HttpClient {
-    return HttpClient(engine) {
+
+    return HttpClient {
         install(ContentNegotiation) {
             json(
                 Json {
@@ -32,4 +35,5 @@ fun provideHttpClient(
         }
     }
 }
+
 

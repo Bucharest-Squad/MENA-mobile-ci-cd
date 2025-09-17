@@ -2,7 +2,7 @@ package net.thechance.mena.identity.data.repository
 
 import net.thechance.mena.identity.data.datasource.RemoteAuthService
 import net.thechance.mena.identity.data.datasource.TokenManager
-import net.thechance.mena.identity.data.datautils.safeWrapper
+import net.thechance.mena.identity.data.utils.safeWrapper
 import net.thechance.mena.identity.data.dto.auth.LoginRequestDto
 import net.thechance.mena.identity.data.dto.auth.LoginResponseDto
 import net.thechance.mena.identity.data.dto.auth.RefreshRequestDto
