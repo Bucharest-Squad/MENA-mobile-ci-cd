@@ -1,7 +1,14 @@
-package net.thechance.mena.trends.presentation.screen.managemytrendscreen
+package net.thechance.mena.trends.presentation.screen.manage_my_trends
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.map
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import net.thechance.mena.trends.domain.entity.Reel
 import net.thechance.mena.trends.domain.repository.ReelRepository
+import net.thechance.mena.trends.presentation.shared.base.BasePagingSource
 import net.thechance.mena.trends.presentation.shared.base.BaseViewModel
 import org.koin.android.annotation.KoinViewModel
 import org.koin.core.annotation.Provided
@@ -20,7 +27,13 @@ class ManageTrendsViewModel(
 
     private fun getReels() {
         tryToExecute(
-            block = { repository.getAllReels() },
+            block = {
+                Pager(PagingConfig(pageSize = 10, prefetchDistance = 5, initialLoadSize = 15)) {
+                    BasePagingSource(
+                        onError = {}
+                    ) { page -> repository.getAllReels(page) }
+                }.flow
+            },
             onSuccess = ::onGetReelsSuccess,
             onError = {},
             onStart = { updateState { copy(isLoading = true) } },
@@ -28,9 +41,11 @@ class ManageTrendsViewModel(
         )
     }
 
-    private fun onGetReelsSuccess(reels: List<Reel>) {
-        val uiReals = reels.map { it.toUiState() }
-        updateState { copy(isLoading = false, reels = uiReals) }
+    private fun onGetReelsSuccess(reelsFlow: Flow<PagingData<Reel>>) {
+        val uiReelsFlow = reelsFlow.map { pagingData: PagingData<Reel> ->
+                pagingData.map { reel -> reel.toUiState() }
+            }
+        updateState { copy(isLoading = false, reels = uiReelsFlow) }
     }
 
     override fun onReelItemClick(reelId: Int) {
@@ -40,5 +55,4 @@ class ManageTrendsViewModel(
     override fun onBackClick() {
         sendEffect(ManageTrendsUiEffect.NavigateBack)
     }
-
 }
