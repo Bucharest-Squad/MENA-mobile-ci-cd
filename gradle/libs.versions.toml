@@ -21,8 +21,12 @@ koin-annotations = "2.1.0"
 kotlinx-serialization = "1.6.3"
 ktor = "3.2.3"
 resources = "0.25.0"
+pagingRuntime = "3.3.6"
+pagingCompose = "3.4.0-alpha04"
 
 [libraries]
+androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "pagingCompose" }
+androidx-paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "pagingRuntime" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilCompose" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }

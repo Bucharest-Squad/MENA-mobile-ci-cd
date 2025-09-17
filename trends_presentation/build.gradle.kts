@@ -31,6 +31,8 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.androidx.paging.compose)
+            implementation(libs.androidx.paging.runtime)
         }
         commonMain.dependencies {
             implementation(projects.trendsDomain)
@@ -50,6 +52,8 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.coil.compose)
             implementation(libs.coil.network.okhttp)
+            implementation(libs.androidx.paging.runtime)
+            implementation(libs.androidx.paging.compose)
             implementation(libs.resources)
         }
         iosMain.dependencies {
