@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -22,18 +21,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.icerock.moko.permissions.compose.BindEffect
 import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
-import kotlinx.coroutines.flow.Flow
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.ic_arrow_left
 import mena.core_chat_presentation.generated.resources.sync_contacts
 import net.thechance.mena.core_chat.presentation.components.AnimatedSnackBarHost
-import net.thechance.mena.core_chat.presentation.navigation.ContactsRoute
-import net.thechance.mena.core_chat.presentation.navigation.LocalNavController
 import net.thechance.mena.core_chat.presentation.screen.syncContacts.components.ContactsSyncedView
 import net.thechance.mena.core_chat.presentation.screen.syncContacts.components.GoToSettingsView
 import net.thechance.mena.core_chat.presentation.screen.syncContacts.components.NoContactsSyncView
 import net.thechance.mena.core_chat.presentation.screen.syncContacts.components.PhoneIcon
-import net.thechance.mena.core_chat.presentation.utils.EffectHandler
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
@@ -46,7 +41,7 @@ import org.koin.core.parameter.parametersOf
 
 
 @Composable
-fun SyncContactsScreen(forceSync: Boolean = false) {
+fun SyncContactsScreen() {
 
     val factory = rememberPermissionsControllerFactory()
     val controller = remember(factory) { factory.createPermissionsController() }
@@ -54,12 +49,6 @@ fun SyncContactsScreen(forceSync: Boolean = false) {
     BindEffect(controller)
 
     val state by viewModel.state.collectAsState()
-
-    LaunchedEffect(Unit) {
-        viewModel.onForceSync(forceSync = forceSync)
-    }
-
-    SyncContactsEffectsHandler(viewModel.effect)
 
     SyncContactsContent(
         state = state,
@@ -82,7 +71,10 @@ private fun SyncContactsContent(
     ) {
         AppBar(
             title = stringResource(Res.string.sync_contacts),
-            contentPadding = PaddingValues(horizontal = Theme.spacing._12, vertical = Theme.spacing._8),
+            contentPadding = PaddingValues(
+                horizontal = Theme.spacing._12,
+                vertical = Theme.spacing._8
+            ),
             leadingContent = {
                 MenaIcon(
                     painter = painterResource(Res.drawable.ic_arrow_left),
@@ -126,37 +118,14 @@ private fun SyncContactsContent(
         }
     }
     Box(
-        modifier = Modifier.fillMaxSize().statusBarsPadding().padding(horizontal =  Theme.spacing._16),
+        modifier = Modifier.fillMaxSize().statusBarsPadding()
+            .padding(horizontal = Theme.spacing._16),
         contentAlignment = Alignment.TopCenter
     ) {
         AnimatedSnackBarHost(
             data = state.snackBarData,
             onDismiss = interactionListener::onSnackBarDismiss
         )
-    }
-}
-
-@Composable
-private fun SyncContactsEffectsHandler(effects: Flow<SyncContactsScreenEffect>) {
-    val navController = LocalNavController.current
-    EffectHandler(effects) { effect ->
-        when (effect) {
-            SyncContactsScreenEffect.NavigateToContacts -> {
-                navController.popBackStack()
-                navController.navigate(ContactsRoute)
-            }
-
-            SyncContactsScreenEffect.NavigateBack -> {
-                navController.popBackStack()
-            }
-
-            SyncContactsScreenEffect.NavigateBackWithResult -> {
-                navController.previousBackStackEntry
-                    ?.savedStateHandle
-                    ?.set("is_sync_success", true)
-                navController.popBackStack()
-            }
-        }
     }
 }
 
@@ -168,7 +137,6 @@ private fun SyncContactsScreenPreview() {
             state = SyncContactsState(showSyncView = true, isLoading = false),
             interactionListener = object :
                 SyncContactsScreenInteractionListener {
-                override fun onForceSync(forceSync: Boolean) {}
                 override fun onSnackBarDismiss() {}
                 override fun onBackClick() {}
                 override fun onSyncClick() {}

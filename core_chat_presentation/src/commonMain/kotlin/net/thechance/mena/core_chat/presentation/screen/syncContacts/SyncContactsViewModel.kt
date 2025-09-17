@@ -1,21 +1,31 @@
 package net.thechance.mena.core_chat.presentation.screen.syncContacts
 
+import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.toRoute
 import dev.icerock.moko.permissions.DeniedAlwaysException
 import dev.icerock.moko.permissions.DeniedException
 import dev.icerock.moko.permissions.Permission
 import dev.icerock.moko.permissions.PermissionsController
 import net.thechance.mena.core_chat.domain.repository.ContactsRepository
 import net.thechance.mena.core_chat.presentation.components.SnackBarData
+import net.thechance.mena.core_chat.presentation.navigation.ContactsRoute
+import net.thechance.mena.core_chat.presentation.navigation.SyncContactsRoute
 import net.thechance.mena.core_chat.presentation.shared.BaseViewModel
 
 class SyncContactsViewModel(
     private val contactsRepository: ContactsRepository,
-    private val permissionsController: PermissionsController
-) : BaseViewModel<SyncContactsState, SyncContactsScreenEffect>(SyncContactsState()),
+    private val permissionsController: PermissionsController,
+    savedStateHandle: SavedStateHandle
+) : BaseViewModel<SyncContactsState>(SyncContactsState()),
     SyncContactsScreenInteractionListener {
 
+    private val forceSync: Boolean = savedStateHandle.toRoute<SyncContactsRoute>().forceSync
 
-    override fun onForceSync(forceSync: Boolean) {
+    init {
+        onForceSync()
+    }
+
+    fun onForceSync() {
         if (forceSync) {
             updateState { it.copy(isFirstSync = false) }
             syncContacts()
@@ -25,7 +35,7 @@ class SyncContactsViewModel(
     }
 
     override fun onBackClick() {
-        emitEffect(SyncContactsScreenEffect.NavigateBack)
+        popBackStack()
     }
 
     override fun onSyncClick() {
@@ -79,9 +89,10 @@ class SyncContactsViewModel(
     private suspend fun onSyncContactsSuccess() {
         if (state.value.isFirstSync) {
             contactsRepository.setUserSyncedState(true)
-            emitEffect(SyncContactsScreenEffect.NavigateToContacts)
+            popBackStack()
+            navigate(ContactsRoute)
         } else {
-            emitEffect(SyncContactsScreenEffect.NavigateBackWithResult)
+            popBackStack("is_sync_success" to true)
         }
     }
 

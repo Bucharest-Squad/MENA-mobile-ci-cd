@@ -8,4 +8,4 @@ data class SyncContactsState(
     val isFirstSync: Boolean = false,
     val deniedPermanently: Boolean = false,
     val snackBarData: SnackBarData? = null,
-    )
+)

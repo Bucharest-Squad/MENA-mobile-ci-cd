@@ -8,12 +8,14 @@ import net.thechance.mena.core_chat.domain.entity.Contact
 import net.thechance.mena.core_chat.domain.exception.ChatException
 import net.thechance.mena.core_chat.domain.repository.ContactsRepository
 import net.thechance.mena.core_chat.presentation.components.SnackBarData
+import net.thechance.mena.core_chat.presentation.navigation.ChatDetailsRoute
+import net.thechance.mena.core_chat.presentation.navigation.SyncContactsRoute
 import net.thechance.mena.core_chat.presentation.shared.BasePagingSource
 import net.thechance.mena.core_chat.presentation.shared.BaseViewModel
 
 class ContactsViewModel(
     private val contactsRepository: ContactsRepository,
-) : BaseViewModel<ContactsScreenState, ContactsScreenEffect>(ContactsScreenState()),
+) : BaseViewModel<ContactsScreenState>(ContactsScreenState()),
     ContactsScreenInteractionListener {
 
     init {
@@ -43,11 +45,11 @@ class ContactsViewModel(
     }
 
     override fun onBackClick() {
-        emitEffect(ContactsScreenEffect.NavigateBack)
+        popBackStack()
     }
 
     override fun onResyncClick() {
-        emitEffect(ContactsScreenEffect.NavigateToSyncContacts)
+        navigate(SyncContactsRoute(forceSync = true))
     }
 
     override fun onSnackBarDismiss() {
@@ -55,7 +57,7 @@ class ContactsViewModel(
     }
 
     override fun onContactClick(contactId: Int) {
-        emitEffect(ContactsScreenEffect.NavigateToChatScreen(contactId))
+        navigate(ChatDetailsRoute(contactId = contactId))
     }
 
     private fun onDataLoadError(e: Throwable) {
