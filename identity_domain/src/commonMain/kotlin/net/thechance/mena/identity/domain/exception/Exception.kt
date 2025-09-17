@@ -4,7 +4,7 @@ abstract class AuthenticationException(message: String) : Exception(message)
 
 class InvalidCountryCodeException(
     countryCode: String
-) : AuthenticationException("country code: $countryCode is not supported yet")
+) : AuthenticationException("country code: $countryCode is not valid or not supported yet")
 
 class InvalidMobileNumberException(
     mobileNumber: String
@@ -25,4 +25,4 @@ class InvalidCredentialsException(
     "user with mobile number: $countryCode$mobileNumber doesn't exist or password is incorrect"
 )
 
-class UserNeedsLoginException : AuthenticationException("user has no access to application")
+class UnAuthorizedException : AuthenticationException("user has no access to application")
