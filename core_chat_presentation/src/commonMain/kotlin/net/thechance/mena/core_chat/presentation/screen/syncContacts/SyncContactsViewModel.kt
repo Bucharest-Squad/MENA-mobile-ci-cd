@@ -49,32 +49,32 @@ class SyncContactsViewModel(
     private fun handlePermissionError(throwable: Throwable) {
         when (throwable) {
             is DeniedAlwaysException -> {
-                updateState { it.copy(
-                    isLoading = false,
-                    deniedPermanently = true,
+                updateState {
+                    it.copy(
+                        isLoading = false,
+                        deniedPermanently = true,
+                    )
+                }
+                showSnackBar(
                     snackBarData = SnackBarData(
                         title = "Permission denied",
                         message = "Contacts permission is required to sync contacts",
                     )
-                ) }
+                )
             }
+
             is DeniedException -> {
-                updateState {
-                    it.copy(
-                        isLoading = false,
-                        snackBarData = SnackBarData(
-                            title = "Permission denied",
-                            message = "Contacts permission is required to sync contacts",
-                        )
+                updateState { it.copy(isLoading = false) }
+                showSnackBar(
+                    SnackBarData(
+                        title = "Permission denied",
+                        message = "Contacts permission is required to sync contacts",
                     )
-                }
+                )
             }
+
             else -> onError(throwable)
         }
-    }
-
-    override fun onSnackBarDismiss() {
-        updateState { it.copy(snackBarData = null) }
     }
 
     private fun syncContacts() {
@@ -100,12 +100,14 @@ class SyncContactsViewModel(
         updateState {
             it.copy(
                 isLoading = false,
-                snackBarData = SnackBarData(
-                    title = "Something went wrong",
-                    message = throwable.message ?: "Unknown error",
-                )
             )
         }
+        showSnackBar(
+            SnackBarData(
+                title = "Something went wrong",
+                message = throwable.message ?: "Unknown error",
+            )
+        )
     }
 }
 

@@ -5,6 +5,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -19,34 +20,38 @@ import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun AnimatedSnackBarHost(
-    data: SnackBarData?,
+    isVisible: Boolean,
+    data: SnackBarData,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
-    durationMillis: Long = 2500,
 ) {
     AnimatedVisibility(
-        visible = data != null,
+        visible = isVisible,
         enter = slideInVertically(initialOffsetY = { -it }) + fadeIn(),
         exit = slideOutVertically(targetOffsetY = { -it }) + fadeOut(),
         modifier = modifier
             .fillMaxWidth()
             .padding(top = Theme.spacing._12)
     ) {
-        if (data != null) {
-            LaunchedEffect(data) {
-                delay(durationMillis)
-                onDismiss()
-            }
-            SnackBar(
-                title = data.title,
-                message = data.message,
-                leadingIcon = painterResource(Res.drawable.ic_warning),
-            )
+        LaunchedEffect(data) {
+            delay(data.duration)
+            onDismiss()
         }
+        SnackBar(
+            modifier = modifier.clickable(
+                onClick = onDismiss,
+                indication = null,
+                interactionSource = null
+            ),
+            title = data.title,
+            message = data.message,
+            leadingIcon = painterResource(Res.drawable.ic_warning),
+        )
     }
 }
 
 data class SnackBarData(
     val title: String,
     val message: String,
+    val duration: Long = 2500
 )

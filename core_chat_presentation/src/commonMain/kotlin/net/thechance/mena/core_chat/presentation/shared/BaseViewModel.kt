@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.onEmpty
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import net.thechance.mena.core_chat.presentation.components.SnackBarData
 import net.thechance.mena.core_chat.presentation.navigation.ChatRoute
 import net.thechance.mena.core_chat.presentation.navigation.ChatEffector
 import org.koin.core.component.KoinComponent
@@ -49,8 +50,8 @@ open class BaseViewModel<S>(initialState: S) : ViewModel(), KoinComponent {
     protected fun popBackStack(vararg arguments: Pair<String, Any>) =
         viewModelScope.launch { effector.popBackStack(*arguments) }
 
-    protected fun showSnackBar(message: String) = viewModelScope.launch {
-        effector.showSnackBar(message)
+    protected fun showSnackBar(snackBarData: SnackBarData) = viewModelScope.launch {
+        effector.showSnackBar(snackBarData)
     }
 
     fun updateState(updater: (S) -> S) = _state.update(updater)

@@ -21,6 +21,7 @@ class ContactsViewModel(
     init {
         loadContacts()
     }
+
     private fun loadContacts() {
         tryToCollect(
             collect = ::loadContactsOperation,
@@ -52,23 +53,17 @@ class ContactsViewModel(
         navigate(SyncContactsRoute(forceSync = true))
     }
 
-    override fun onSnackBarDismiss() {
-        updateState { it.copy(snackBarData = null) }
-    }
-
     override fun onContactClick(contactId: Int) {
         navigate(ChatDetailsRoute(contactId = contactId))
     }
 
     private fun onDataLoadError(e: Throwable) {
-        updateState {
-            it.copy(
-                snackBarData = SnackBarData(
-                    title = "Something went wrong",
-                    message = e.message ?: "Unknown error",
-                )
+        showSnackBar(
+            SnackBarData(
+                title = "Something went wrong",
+                message = e.message ?: "Unknown error",
             )
-        }
+        )
     }
 
     private fun createContactsPagingSource(onError: ((ChatException) -> Unit)? = ::onDataLoadError)

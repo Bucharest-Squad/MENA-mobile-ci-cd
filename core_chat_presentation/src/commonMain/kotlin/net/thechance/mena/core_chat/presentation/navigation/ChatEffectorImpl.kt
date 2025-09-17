@@ -5,6 +5,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import net.thechance.mena.core_chat.presentation.components.SnackBarData
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
@@ -31,8 +32,8 @@ class ChatEffectorImpl() : ChatEffector {
         _navigateEvent.send(ChatEffect.PopBackStack(arguments.toMap()))
     }
 
-    override suspend fun showSnackBar(message: String) {
-        _navigateEvent.send(ChatEffect.ShowSnackBar(message))
+    override suspend fun showSnackBar(snackBarData: SnackBarData) {
+        _navigateEvent.send(ChatEffect.ShowSnackBar(snackBarData))
     }
 
     companion object {
