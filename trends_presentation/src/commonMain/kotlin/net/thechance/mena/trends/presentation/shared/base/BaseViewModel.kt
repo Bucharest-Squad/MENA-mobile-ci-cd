@@ -24,7 +24,7 @@ abstract class BaseViewModel<State, Effect>(
     val state: StateFlow<State> = _state.asStateFlow()
 
     private val _effect = MutableSharedFlow<Effect>()
-    val effect = _effect.throttleFirst(300L)
+    val effect = _effect.throttleFirst(THROTTLE_WINDOW_DURATION)
 
     protected fun updateState(updater: State.() -> State) {
         _state.update { updater(it) }
@@ -58,5 +58,9 @@ abstract class BaseViewModel<State, Effect>(
                 .onFailure { onError(it) }
             onEnd()
         }
+    }
+
+    companion object {
+        private const val THROTTLE_WINDOW_DURATION = 300L
     }
 }

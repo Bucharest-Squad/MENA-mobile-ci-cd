@@ -1,4 +1,4 @@
-package net.thechance.mena.trends.presentation.screen.interestpick
+package net.thechance.mena.trends.presentation.screen.category_pick
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -36,29 +36,29 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun CategoryScreen(
+fun CategoryPickScreen(
     navController: NavController,
-    viewModel: CategoryViewModel = koinViewModel(),
+    viewModel: CategoryPickViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     ObserveAsEffect(viewModel.effect) { effect ->
         when (effect) {
-            is CategoryUiEffect.NavigateBack -> navController.popBackStack()
-            is CategoryUiEffect.NavigateToTrends -> navController.navigate("")
+            is CategoryPickScreenEffect.NavigateBack -> navController.popBackStack()
+            is CategoryPickScreenEffect.NavigateToTrends -> navController.navigate("") // TODO
         }
     }
 
-    CategoryScreenContent(
+    CategoryPickScreenContent(
         state = state,
         listener = viewModel,
     )
 }
 
 @Composable
-private fun CategoryScreenContent(
-    state: CategoryScreenUiState,
-    listener: CategoryInteractionListener,
+private fun CategoryPickScreenContent(
+    state: CategoryPickScreenState,
+    listener: CategoryPickInteractionListener,
 ) {
     Box(
         modifier = Modifier
@@ -89,7 +89,11 @@ private fun CategoryScreenContent(
                     style = Theme.typography.title.medium,
                     color = Theme.colorScheme.shadePrimary,
                     modifier = Modifier
-                        .padding (bottom = Theme.spacing._4 , start = Theme.spacing._16 , end = Theme.spacing._16 )
+                        .padding(
+                            bottom = Theme.spacing._4,
+                            start = Theme.spacing._16,
+                            end = Theme.spacing._16
+                        )
                 )
 
                 MenaText(
@@ -97,7 +101,11 @@ private fun CategoryScreenContent(
                     style = Theme.typography.body.small,
                     color = Theme.colorScheme.shadeSecondary,
                     modifier = Modifier
-                        .padding (bottom = Theme.spacing._24 , start = Theme.spacing._16 , end = Theme.spacing._16 )
+                        .padding(
+                            bottom = Theme.spacing._24,
+                            start = Theme.spacing._16,
+                            end = Theme.spacing._16
+                        )
                 )
 
                 FlowRow(
@@ -110,7 +118,7 @@ private fun CategoryScreenContent(
                             category = category,
                             onClick = { id -> listener.onCategoryClick(id) },
                             modifier = Modifier
-                                .padding(bottom = Theme.spacing._12,end = Theme.spacing._8)
+                                .padding(bottom = Theme.spacing._12, end = Theme.spacing._8)
                         )
                     }
                 }
@@ -121,7 +129,11 @@ private fun CategoryScreenContent(
                     isLoading = state.isSaveButtonLoading,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding (bottom = Theme.spacing._24 , start = Theme.spacing._16 , end = Theme.spacing._16 ),
+                        .padding(
+                            bottom = Theme.spacing._24,
+                            start = Theme.spacing._16,
+                            end = Theme.spacing._16
+                        ),
                     shape = RoundedCornerShape(Theme.spacing._12),
                     containerColor = Theme.colorScheme.primary.primary,
                     disabledContainerColor = Theme.colorScheme.primary.primary.copy(alpha = 0.5f),
@@ -133,7 +145,10 @@ private fun CategoryScreenContent(
                         color = contentColor,
                         style = Theme.typography.label.medium,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(horizontal = Theme.spacing._24, vertical = Theme.spacing._12)
+                        modifier = Modifier.padding(
+                            horizontal = Theme.spacing._24,
+                            vertical = Theme.spacing._12
+                        )
                     )
                 }
             }

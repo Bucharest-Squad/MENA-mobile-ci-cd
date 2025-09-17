@@ -6,11 +6,10 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import net.thechance.mena.trends.presentation.screen.TestScreen
+import net.thechance.mena.trends.presentation.screen.category_pick.CategoryPickScreen
 
 @Composable
 fun TrendsNavHost() {
@@ -23,10 +22,12 @@ fun TrendsNavHost() {
       NavHost(
          modifier = Modifier.fillMaxSize(),
          navController = navController,
-         startDestination = Route.Test,
+         startDestination = Route.Categories,
       ) {
-         composable<Route.Test> {
-            TestScreen()
+         composable<Route.Categories> {
+            CategoryPickScreen(
+               navController = navController
+            )
          }
       }
    }

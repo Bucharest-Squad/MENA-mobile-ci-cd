@@ -1,15 +1,15 @@
-package net.thechance.mena.trends.presentation.screen.interestpick
+package net.thechance.mena.trends.presentation.screen.category_pick
 
 import net.thechance.mena.trends.domain.entity.Category
 import net.thechance.mena.trends.domain.repository.CategoryRepository
 import net.thechance.mena.trends.presentation.shared.base.BaseViewModel
 import net.thechance.mena.trends.presentation.shared.util.toggleCategory
 
-class CategoryViewModel(
+class CategoryPickViewModel(
     private val repository: CategoryRepository
-) : BaseViewModel<CategoryScreenUiState, CategoryUiEffect>(
-    initialState = CategoryScreenUiState()
-), CategoryInteractionListener {
+) : BaseViewModel<CategoryPickScreenState, CategoryPickScreenEffect>(
+    initialState = CategoryPickScreenState()
+), CategoryPickInteractionListener {
 
     init {
         loadCategories()
@@ -36,7 +36,7 @@ class CategoryViewModel(
     override fun onSaveClick() {
         tryToExecute(
             block = { saveSelectedCategories() },
-            onSuccess = { sendEffect(CategoryUiEffect.NavigateToTrends) },
+            onSuccess = { sendEffect(CategoryPickScreenEffect.NavigateToTrends) },
             onStart = ::startSaving,
             onEnd = ::endSaving,
             onError = {},
@@ -51,7 +51,7 @@ class CategoryViewModel(
     }
 
     override fun onBackClick() {
-        sendEffect(CategoryUiEffect.NavigateBack)
+        sendEffect(CategoryPickScreenEffect.NavigateBack)
     }
 
     private fun startLoading() = updateState { copy(isLoading = true) }

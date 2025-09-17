@@ -1,8 +1,8 @@
-package net.thechance.mena.trends.presentation.screen.interestpick
+package net.thechance.mena.trends.presentation.screen.category_pick
 
 import net.thechance.mena.trends.domain.entity.Category
 import net.thechance.mena.trends.presentation.shared.model.CategoryUiState
-import net.thechance.mena.trends.presentation.shared.util.Selectable
+import net.thechance.mena.trends.presentation.shared.model.Selectable
 
 internal fun Category.toUiState(): CategoryUiState {
     return CategoryUiState(
