@@ -38,7 +38,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Immutable
-data class BottomNavigationBarItem(
+data class BottomNavigationItem(
     val notSelectedIcon: Painter,
     val selectedIcon: Painter,
     val title: String
@@ -46,9 +46,9 @@ data class BottomNavigationBarItem(
 
 @Composable
 fun BottomNavigationBarContent(
-    items: List<BottomNavigationBarItem>,
+    items: List<BottomNavigationItem>,
     selectedItemIndex: Int,
-    onItemClick: (BottomNavigationBarItem) -> Unit,
+    onItemClick: (BottomNavigationItem) -> Unit,
     modifier: Modifier = Modifier
 ) {
     BoxWithConstraints(modifier.height(74.dp)) {
@@ -65,7 +65,7 @@ fun BottomNavigationBarContent(
                 BottomNavigationBarItem(
                     isSelected = index == selectedItemIndex,
                     selectedIcon = item.selectedIcon,
-                    notSelectedIcon = item.notSelectedIcon,
+                    unselectedIcon = item.notSelectedIcon,
                     title = item.title,
                     onClick = { onItemClick(item) },
                     modifier = Modifier.weight(1f)
@@ -94,22 +94,22 @@ fun BottomNavigationBarContent(
 private fun PreviewBottomNavigationBar() {
     MenaTheme {
         val items = listOf(
-            BottomNavigationBarItem(
+            BottomNavigationItem(
                 selectedIcon = painterResource(Res.drawable.ic_home_selected),
                 notSelectedIcon = painterResource(Res.drawable.ic_home),
                 title = "Home"
             ),
-            BottomNavigationBarItem(
+            BottomNavigationItem(
                 selectedIcon = painterResource(Res.drawable.ic_dukan_selected),
                 notSelectedIcon = painterResource(Res.drawable.ic_dukan),
                 title = "Dukan"
             ),
-            BottomNavigationBarItem(
+            BottomNavigationItem(
                 selectedIcon = painterResource(Res.drawable.ic_trends_selected),
                 notSelectedIcon = painterResource(Res.drawable.ic_trends),
                 title = "Trends"
             ),
-            BottomNavigationBarItem(
+            BottomNavigationItem(
                 selectedIcon = painterResource(Res.drawable.ic_profile_selected),
                 notSelectedIcon = painterResource(Res.drawable.ic_profile),
                 title = "Profile"
