@@ -87,4 +87,5 @@ runs:
         
         echo "APK_NAME=$APK_NAME" >> $GITHUB_ENV
         echo "SIGNED_APK_PATH=composeApp/build/outputs/apk/${{ steps.convert.outputs.build_type_lower }}/release/$APK_NAME.apk" >> $GITHUB_ENV
+        ls
       shell: bash

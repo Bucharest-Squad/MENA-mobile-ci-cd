@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - production
-      - feature/**
 
 jobs:
   deploy-production-release:
