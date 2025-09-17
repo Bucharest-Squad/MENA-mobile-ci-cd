@@ -1,0 +1,22 @@
+name: Notify Slack on PR Open
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+jobs:
+  get-send-pr-open:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify Slack on PR Open
+        uses: ./.github/actions/slack/send-pr-notification
+        with:
+          slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          slack-notification-channel-id: ${{ secrets.SLACK_NOTIFICATION_CHANNEL_ID }}
+          bot-app-id: ${{ secrets.BOT_APP_ID }}
+          branch-name: ${{ github.head_ref }}
+          message: |
+            🚨 *New PR Open*
+            PR Open by ${{ github.event.pull_request.user.login }}
+            PR: ${{ github.event.pull_request.html_url }}
+            Commit: ${{ github.sha }}
