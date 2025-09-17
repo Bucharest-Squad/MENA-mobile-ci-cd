@@ -1,21 +1,25 @@
 package net.thechance.mena.identity.data.di
 
 import com.russhwolf.settings.Settings
-import net.thechance.mena.identity.data.datasource.RemoteAuthService
-import net.thechance.mena.identity.data.datasource.TokenManager
-import net.thechance.mena.identity.data.utils.provideHttpClient
+import io.ktor.client.engine.cio.CIO
+import net.thechance.mena.identity.data.datasource.AuthRemoteDataSource
+import net.thechance.mena.identity.data.datasource.AuthRemoteDataSourceImpl
+import net.thechance.mena.identity.data.datasource.LocalDataSource
+import net.thechance.mena.identity.data.datasource.LocalDataSourceImpl
 import net.thechance.mena.identity.data.repository.AuthenticationRepositoryImpl
+import net.thechance.mena.identity.data.utils.provideHttpClient
 import net.thechance.mena.identity.domain.repository.AuthenticationRepository
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-expect val platformModule: Module
+expect val IdentityPlatformModule: Module
 val identityDataModule = module {
+    single { CIO.create() }
     singleOf(::Settings)
     singleOf(::provideHttpClient)
-    singleOf(::TokenManager)
-    singleOf(::RemoteAuthService)
-    singleOf(::AuthenticationRepositoryImpl).bind<AuthenticationRepository>()
+    singleOf(::LocalDataSourceImpl) bind LocalDataSource::class
+    singleOf(::AuthenticationRepositoryImpl) bind AuthenticationRepository::class
+    singleOf(::AuthRemoteDataSourceImpl) bind AuthRemoteDataSource::class
 }

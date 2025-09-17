@@ -11,9 +11,9 @@ import net.thechance.mena.identity.data.dto.auth.LoginRequestDto
 import net.thechance.mena.identity.data.dto.auth.LoginResponseDto
 import net.thechance.mena.identity.data.dto.auth.RefreshRequestDto
 
-class RemoteAuthService(
+class AuthRemoteDataSourceImpl(
     private val client: HttpClient
-) :RemoteDataSource{
+) :AuthRemoteDataSource{
     override suspend fun login(loginRequest: LoginRequestDto): LoginResponseDto {
         return client.postJson(loginRequest, ApiConstants.LOGIN)
     }

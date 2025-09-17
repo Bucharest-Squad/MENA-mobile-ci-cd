@@ -4,7 +4,7 @@ import com.russhwolf.settings.Settings
 import net.thechance.mena.identity.data.datasource.DataStoreConstants.ACCESS_TOKEN
 import net.thechance.mena.identity.data.datasource.DataStoreConstants.REFRESH_TOKEN
 
-class TokenManager(
+class LocalDataSourceImpl(
     private val settings: Settings
 ) :LocalDataSource{
     override fun saveAccessToken(accessToken: String) {

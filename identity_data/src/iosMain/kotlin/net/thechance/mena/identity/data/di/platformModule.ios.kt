@@ -4,7 +4,6 @@ import io.ktor.client.engine.darwin.Darwin
 import org.koin.dsl.module
 import com.russhwolf.settings.Settings
 import org.koin.core.module.dsl.singleOf
-actual val platformModule = module {
+actual val IdentityPlatformModule = module {
     single { Darwin.create() }
-    singleOf(::Settings)
 }

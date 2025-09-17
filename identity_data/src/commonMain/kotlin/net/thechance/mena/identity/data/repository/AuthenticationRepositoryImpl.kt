@@ -1,39 +1,34 @@
 package net.thechance.mena.identity.data.repository
 
-import net.thechance.mena.identity.data.datasource.RemoteAuthService
-import net.thechance.mena.identity.data.datasource.TokenManager
-import net.thechance.mena.identity.data.utils.safeWrapper
+import net.thechance.mena.identity.data.datasource.AuthRemoteDataSource
+import net.thechance.mena.identity.data.datasource.LocalDataSource
 import net.thechance.mena.identity.data.dto.auth.LoginRequestDto
 import net.thechance.mena.identity.data.dto.auth.LoginResponseDto
 import net.thechance.mena.identity.data.dto.auth.RefreshRequestDto
-import net.thechance.mena.identity.data.dto.auth.mappers.toDomain
-import net.thechance.mena.identity.domain.entity.AuthToken
+import net.thechance.mena.identity.data.utils.safeWrapper
 import net.thechance.mena.identity.domain.repository.AuthenticationRepository
 
 class AuthenticationRepositoryImpl(
-    private val remoteAuthService: RemoteAuthService,
-    private val tokenManager: TokenManager,
+    private val RemoteAuthService: AuthRemoteDataSource,
+    private val localDataSource: LocalDataSource,
 ) : AuthenticationRepository {
     override suspend fun login(mobileNumber: String, password: String) {
         return safeWrapper {
-            val response = remoteAuthService.login(LoginRequestDto(mobileNumber, password))
-            saveAuthTokens(response)
+            val loginResponse = RemoteAuthService.login(LoginRequestDto(mobileNumber, password))
+            saveAuthTokens(loginResponse)
         }
     }
 
-    override suspend fun getAccessToken(): AuthToken {
-        val response = safeWrapper {
-            remoteAuthService.refreshToken(RefreshRequestDto(tokenManager.getRefreshToken()))
+    override suspend fun getAccessToken(): String {
+        val refreshResponse = safeWrapper {
+            RemoteAuthService.refreshToken(RefreshRequestDto(localDataSource.getRefreshToken()))
         }
-        saveAuthTokens(response)
-        return LoginResponseDto(
-            tokenManager.getAccessToken(),
-            tokenManager.getRefreshToken()
-        ).toDomain()
+        saveAuthTokens(refreshResponse)
+        return localDataSource.getAccessToken()
     }
 
     private fun saveAuthTokens(loginResponseDto: LoginResponseDto) {
-        tokenManager.saveAccessToken(loginResponseDto.accessToken)
-        tokenManager.saveRefreshToken(loginResponseDto.refreshToken)
+        localDataSource.saveAccessToken(loginResponseDto.accessToken)
+        localDataSource.saveRefreshToken(loginResponseDto.refreshToken)
     }
 }

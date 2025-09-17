@@ -18,7 +18,7 @@ fun provideHttpClient(
     engine: HttpClientEngine
 ): HttpClient {
 
-    return HttpClient {
+    return HttpClient(engine) {
         install(ContentNegotiation) {
             json(
                 Json {

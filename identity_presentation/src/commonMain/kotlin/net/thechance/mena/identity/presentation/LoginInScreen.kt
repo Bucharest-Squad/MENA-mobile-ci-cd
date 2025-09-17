@@ -10,12 +10,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import kotlinx.coroutines.launch
-import net.thechance.mena.identity.data.repository.AuthenticationRepositoryImpl
+import net.thechance.mena.identity.domain.repository.AuthenticationRepository
 import org.koin.compose.getKoin
 
 @Composable
 fun LoginScreen() {
-    val repo = getKoin().get<AuthenticationRepositoryImpl>()
+    val repo = getKoin().get<AuthenticationRepository>()
     val scope = rememberCoroutineScope()
     Column(
         Modifier.fillMaxSize(),
