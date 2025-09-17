@@ -1,8 +1,8 @@
 package net.thechance.mena.identity.data.datasource
 
 import com.russhwolf.settings.Settings
-import net.thechance.mena.identity.data.datasource.DataStoreConstants.ACCESS_TOKEN
-import net.thechance.mena.identity.data.datasource.DataStoreConstants.REFRESH_TOKEN
+import net.thechance.mena.identity.data.datasource.LocalDataConstants.ACCESS_TOKEN
+import net.thechance.mena.identity.data.datasource.LocalDataConstants.REFRESH_TOKEN
 
 class LocalDataSourceImpl(
     private val settings: Settings
