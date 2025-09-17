@@ -21,26 +21,26 @@ import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun BottomNavigationBar(
-    onItemClick: (BottomNavigationBarItem) -> Unit,
+    onItemClick: (BottomNavigationItem) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val items = listOf(
-        BottomNavigationBarItem(
+        BottomNavigationItem(
             selectedIcon = painterResource(Res.drawable.ic_home_selected),
             notSelectedIcon = painterResource(Res.drawable.ic_home),
             title = "Home"
         ),
-        BottomNavigationBarItem(
+        BottomNavigationItem(
             selectedIcon = painterResource(Res.drawable.ic_dukan_selected),
             notSelectedIcon = painterResource(Res.drawable.ic_dukan),
             title = "Dukan"
         ),
-        BottomNavigationBarItem(
+        BottomNavigationItem(
             selectedIcon = painterResource(Res.drawable.ic_trends_selected),
             notSelectedIcon = painterResource(Res.drawable.ic_trends),
             title = "Trends"
         ),
-        BottomNavigationBarItem(
+        BottomNavigationItem(
             selectedIcon = painterResource(Res.drawable.ic_profile_selected),
             notSelectedIcon = painterResource(Res.drawable.ic_profile),
             title = "Profile"

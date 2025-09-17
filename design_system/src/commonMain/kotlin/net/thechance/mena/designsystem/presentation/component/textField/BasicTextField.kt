@@ -2,6 +2,8 @@ package net.thechance.mena.designsystem.presentation.component.textField
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -65,6 +67,7 @@ fun BasicTextField(
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     focusRequester: FocusRequester = FocusRequester(),
     onFocusChanged: (Boolean) -> Unit = {},
+    onTrailingIconClick: (() -> Unit)? = null,
     visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
     Column(modifier) {
@@ -107,6 +110,7 @@ fun BasicTextField(
                         hint = hint,
                         leadingIcon = leadingIcon,
                         trailingIcon = trailingIcon,
+                        onTrailingIconClick = onTrailingIconClick,
                         leadingIconTint = leadingIconTint
                     )
                 },
@@ -145,7 +149,8 @@ private fun TextFieldContent(
     trailingIcon: Painter?,
     leadingIconTint: Color,
     isError: Boolean,
-    singleLine: Boolean
+    singleLine: Boolean,
+    onTrailingIconClick: (() -> Unit)? = null,
 ) {
 
     val animatedIconErrorColor by animateColorAsState(
@@ -181,7 +186,17 @@ private fun TextFieldContent(
             Image(
                 painter = trailingIcon,
                 contentDescription = null,
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier
+                    .size(24.dp)
+                    .clickable(
+                        enabled = onTrailingIconClick != null,
+                        indication = null,
+                        interactionSource = remember {
+                            MutableInteractionSource()
+                        }
+                    ) {
+                        onTrailingIconClick?.invoke()
+                    }
             )
         }
     }
@@ -235,6 +250,7 @@ private fun PreviewTextField() {
             leadingIcon = painterResource(Res.drawable.ic_user),
             trailingIcon = painterResource(Res.drawable.silver_tc),
             isError = true,
+            onTrailingIconClick = {},
             modifier = Modifier.fillMaxWidth()
         )
     }

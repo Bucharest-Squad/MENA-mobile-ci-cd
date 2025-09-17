@@ -26,9 +26,9 @@ import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 @Composable
 fun Chip(
     text: String,
-    painter: Painter,
     isSelected: Boolean,
     onClick: () -> Unit,
+    painter: Painter? = null,
     modifier: Modifier = Modifier,
     iconSize: Dp = 16.dp,
     isEnabled: Boolean = true,
@@ -49,7 +49,7 @@ fun Chip(
     )
 
     Row(
-        horizontalArrangement = Arrangement.Center,
+        horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally),
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .clip(shape)
@@ -63,12 +63,15 @@ fun Chip(
                 horizontal = Theme.spacing._12
             )
     ) {
-        Icon(
-            painter = painter,
-            modifier = Modifier.size(iconSize),
-            contentDescription = null,
-            tint = if (isEnabled) contentColor else Theme.colorScheme.textDisabled
-        )
+
+        painter?.let { iconPainter ->
+            Icon(
+                painter = iconPainter,
+                modifier = Modifier.size(iconSize),
+                contentDescription = null,
+                tint = if (isEnabled) contentColor else Theme.colorScheme.textDisabled
+            )
+        }
 
         Text(
             text = text,
