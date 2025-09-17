@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 import java.io.ByteArrayOutputStream
 
 plugins {
@@ -6,6 +7,12 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+}
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
 }
 
 kotlin {
@@ -84,14 +91,20 @@ android {
             dimension = "environment"
             applicationIdSuffix = ".dev"
             versionNameSuffix = "-dev"
+            val baseUrl = localProperties.getProperty("BASE_URL_DEVELOPMENT", "")
+            buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
         }
         create("staging") {
             dimension = "environment"
             applicationIdSuffix = ".staging"
             versionNameSuffix = "-staging"
+            val baseUrl = localProperties.getProperty("BASE_URL_STAGING", "")
+            buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
         }
         create("production") {
             dimension = "environment"
+            val baseUrl = localProperties.getProperty("BASE_URL_PRODUCTION", "")
+            buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
         }
     }
 }
@@ -164,4 +177,30 @@ androidComponents {
             )
         }
     }
+}
+
+tasks.register("generateEnvironmentXcconfig") {
+    val developmentUrl = localProperties.getProperty("BASE_URL_DEVELOPMENT", "")
+    val stagingUrl = localProperties.getProperty("BASE_URL_STAGING", "")
+    val productionUrl = localProperties.getProperty("BASE_URL_PRODUCTION", "")
+    val buildType = providers.environmentVariable("CONFIGURATION").orNull ?: ""
+
+    val baseUrl = when {
+        buildType.endsWith("Staging", ignoreCase = true) -> stagingUrl
+        buildType.endsWith("Production", ignoreCase = true) -> productionUrl
+        else -> developmentUrl
+    }
+
+    val outputFileProperty = project.layout.buildDirectory.file("generated/ios/environment.xcconfig")
+
+    doLast {
+        val outputFile = outputFileProperty.get().asFile
+        outputFile.parentFile.mkdirs()
+        outputFile.writeText("BASE_URL=$baseUrl")
+        println("Generated environment.xcconfig")
+    }
+}
+
+tasks.named("embedAndSignAppleFrameworkForXcode") {
+    dependsOn(tasks.named("generateEnvironmentXcconfig"))
 }
