@@ -11,10 +11,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -61,9 +64,9 @@ fun PendingDukanScreen(
                 MenaIcon(
                     painter = painterResource(Res.drawable.ic_arrow_left),
                     contentDescription = "left_arrow",
-                    modifier = Modifier.clickable(onClick = onBackClick)
                 )
             },
+            onLeadingClick = onBackClick
         )
         Spacer(modifier = Modifier.weight(1f))
         LazyColumn(
@@ -78,7 +81,10 @@ fun PendingDukanScreen(
                         painter = painterResource(Res.drawable.dukan_blur),
                         contentDescription = "dukan_pending_blur",
                         modifier = Modifier
-                            .blur(30.dp)
+                            .blur(
+                                radius = 30.dp,
+                                edgeTreatment = BlurredEdgeTreatment.Unbounded
+                            )
                             .offset(y = 20.dp)
                             .align(Alignment.BottomCenter)
                     )
