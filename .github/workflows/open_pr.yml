@@ -7,9 +7,17 @@ on:
 jobs:
   get-send-pr-open:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Get last commit message
+        id: commit
+        run: |
+          echo "message<<EOF" >> $GITHUB_OUTPUT
+          git log -1 --pretty=%B >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Notify Slack on PR Open
         uses: ./.github/actions/slack/send-pr-notification
@@ -20,6 +28,6 @@ jobs:
           branch-name: ${{ github.head_ref }}
           message: |
             🚨 *New PR Open*
-            PR Open by ${{ github.event.pull_request.user.login }}
+            PR opened by: ${{ github.event.pull_request.user.login }}
             PR: ${{ github.event.pull_request.html_url }}
-            Commit: ${{ git log -1 --pretty=%B }}
+            Commit: ${{ steps.commit.outputs.message }}
