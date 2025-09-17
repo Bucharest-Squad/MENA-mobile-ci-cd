@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -38,14 +39,12 @@ import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
 import net.thechance.mena.designsystem.presentation.component.segment.Segment
 import net.thechance.mena.designsystem.presentation.component.text.MenaText
-import net.thechance.mena.designsystem.presentation.theme.color.scheme.ColorScheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.trends.presentation.navigation.LocalNavController
 import net.thechance.mena.trends.presentation.navigation.Route
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
-import kotlin.Int
 import kotlin.math.floor
 
 @Composable
@@ -80,10 +79,11 @@ private fun ManageTrendsScreenContent(
             .fillMaxSize()
             .background(Theme.colorScheme.background.surface),
     ) {
+        Spacer(Modifier.height(8.dp))
         AppBar(
+            onLeadingClick = { Modifier.clickable { listener.onBackClick() } },
             leadingContent = {
                 MenaIcon(
-                    modifier = Modifier.clickable { listener.onBackClick() },
                     painter = painterResource(Res.drawable.ic_arrow_left),
                     contentDescription = stringResource(Res.string.Back_arrow)
                 )
