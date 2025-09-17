@@ -15,62 +15,53 @@ import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
-data class TimeAgoData(val value: Int, val unit: TimeUnit)
-
-enum class TimeUnit {
-    SECONDS, MINUTES, HOURS, DAYS, WEEKS, MONTHS, YEARS
-}
-
 @OptIn(ExperimentalTime::class)
 @Composable
 fun Instant.getTimeAgo(): String {
-    val timeAgoData = calculateTimeAgo()
-
-    return when (timeAgoData.unit) {
-        TimeUnit.SECONDS -> pluralStringResource(Res.plurals.time_seconds_ago, timeAgoData.value, timeAgoData.value)
-        TimeUnit.MINUTES -> pluralStringResource(Res.plurals.time_minutes_ago, timeAgoData.value, timeAgoData.value)
-        TimeUnit.HOURS -> pluralStringResource(Res.plurals.time_hours_ago, timeAgoData.value, timeAgoData.value)
-        TimeUnit.DAYS -> pluralStringResource(Res.plurals.time_days_ago, timeAgoData.value, timeAgoData.value)
-        TimeUnit.WEEKS -> pluralStringResource(Res.plurals.time_weeks_ago, timeAgoData.value, timeAgoData.value)
-        TimeUnit.MONTHS -> pluralStringResource(Res.plurals.time_months_ago, timeAgoData.value, timeAgoData.value)
-        TimeUnit.YEARS -> pluralStringResource(Res.plurals.time_years_ago, timeAgoData.value, timeAgoData.value)
-    }
-}
-
-@OptIn(ExperimentalTime::class)
-fun Instant.calculateTimeAgo(now: Instant = Clock.System.now()): TimeAgoData {
+    val now: Instant = Clock.System.now()
     val duration: Duration = now - this
 
     return when {
-        duration.inWholeSeconds < TimeConstants.ONE_MINUTE_IN_SECONDS -> {
-            TimeAgoData(duration.inWholeSeconds.toInt(), TimeUnit.SECONDS)
+        duration.inWholeSeconds < ONE_MINUTE_IN_SECONDS -> {
+            val seconds = duration.inWholeSeconds.toInt()
+            pluralStringResource(Res.plurals.time_seconds_ago, seconds, seconds)
         }
-        duration.inWholeMinutes < TimeConstants.ONE_HOUR_IN_MINUTES -> {
-            TimeAgoData(duration.inWholeMinutes.toInt(), TimeUnit.MINUTES)
+
+        duration.inWholeMinutes < ONE_HOUR_IN_MINUTES -> {
+            val minutes = duration.inWholeMinutes.toInt()
+            pluralStringResource(Res.plurals.time_minutes_ago, minutes, minutes)
         }
-        duration.inWholeHours < TimeConstants.ONE_DAY_IN_HOURS -> {
-            TimeAgoData(duration.inWholeHours.toInt(), TimeUnit.HOURS)
+
+        duration.inWholeHours < ONE_DAY_IN_HOURS -> {
+            val hours = duration.inWholeHours.toInt()
+            pluralStringResource(Res.plurals.time_hours_ago, hours, hours)
         }
-        duration.inWholeDays < TimeConstants.ONE_WEEK_IN_DAYS -> {
-            TimeAgoData(duration.inWholeDays.toInt(), TimeUnit.DAYS)
+
+        duration.inWholeDays < ONE_WEEK_IN_DAYS -> {
+            val days = duration.inWholeDays.toInt()
+            pluralStringResource(Res.plurals.time_days_ago, days, days)
         }
-        duration.inWholeDays < TimeConstants.ONE_MONTH_IN_DAYS -> {
-            TimeAgoData((duration.inWholeDays / TimeConstants.ONE_WEEK_IN_DAYS).toInt(), TimeUnit.WEEKS)
+
+        duration.inWholeDays < ONE_MONTH_IN_DAYS -> {
+            val weeks = (duration.inWholeDays / ONE_WEEK_IN_DAYS).toInt()
+            pluralStringResource(Res.plurals.time_weeks_ago, weeks, weeks)
         }
-        duration.inWholeDays < TimeConstants.ONE_YEAR_IN_DAYS -> {
-            TimeAgoData((duration.inWholeDays / TimeConstants.ONE_MONTH_IN_DAYS).toInt(), TimeUnit.MONTHS)
+
+        duration.inWholeDays < ONE_YEAR_IN_DAYS -> {
+            val months = (duration.inWholeDays / ONE_MONTH_IN_DAYS).toInt()
+            pluralStringResource(Res.plurals.time_months_ago, months, months)
         }
+
         else -> {
-            TimeAgoData((duration.inWholeDays / TimeConstants.ONE_YEAR_IN_DAYS).toInt(), TimeUnit.YEARS)
+            val years = (duration.inWholeDays / ONE_YEAR_IN_DAYS).toInt()
+            pluralStringResource(Res.plurals.time_years_ago, years, years)
         }
     }
 }
 
-object TimeConstants {
-    const val ONE_MINUTE_IN_SECONDS = 60
-    const val ONE_HOUR_IN_MINUTES = 60
-    const val ONE_DAY_IN_HOURS = 24
-    const val ONE_WEEK_IN_DAYS = 7
-    const val ONE_MONTH_IN_DAYS = 30
-    const val ONE_YEAR_IN_DAYS = 365
-}
+private const val ONE_MINUTE_IN_SECONDS = 60
+private const val ONE_HOUR_IN_MINUTES = 60
+private const val ONE_DAY_IN_HOURS = 24
+private const val ONE_WEEK_IN_DAYS = 7
+private const val ONE_MONTH_IN_DAYS = 30
+private const val ONE_YEAR_IN_DAYS = 365
