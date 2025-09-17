@@ -80,7 +80,7 @@ runs:
           VERSION_NAME="Mena-${{ inputs.build-type }}"
         fi
         
-        APK_NAME="${{ inputs.build-type }}/release/${VERSION_NAME}-v1.0.${{ github.run_number }}.apk"
+        APK_NAME="${VERSION_NAME}-v1.0.${{ github.run_number }}.apk"
         
         mv composeApp/build/outputs/apk/${{ steps.convert.outputs.build_type_lower }}/release/composeApp-${{ steps.convert.outputs.build_type_lower }}-release-unsigned-signed.apk \
            composeApp/build/outputs/apk/${{ steps.convert.outputs.build_type_lower }}/release/$APK_NAME
