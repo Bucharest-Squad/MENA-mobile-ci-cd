@@ -5,6 +5,7 @@ import androidx.paging.PagingSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import mena.core_chat_presentation.generated.resources.Res
+import mena.core_chat_presentation.generated.resources.could_not_load_the_contacts
 import mena.core_chat_presentation.generated.resources.something_went_wrong
 import net.thechance.mena.core_chat.domain.entity.Contact
 import net.thechance.mena.core_chat.domain.exception.ChatException
@@ -64,8 +65,8 @@ class ContactsViewModel(
     private fun onDataLoadError(e: Throwable) {
         showSnackBar(
             SnackBarData(
-                title = "Something went wrong",
-                message = e.message ?: "Unknown error",
+                title = Res.string.something_went_wrong,
+                message = Res.string.could_not_load_the_contacts,
             )
         )
     }

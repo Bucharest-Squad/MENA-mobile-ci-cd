@@ -15,6 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import mena.core_chat_presentation.generated.resources.Res
+import mena.core_chat_presentation.generated.resources.empty
 import net.thechance.mena.core_chat.presentation.components.AnimatedSnackBarHost
 import net.thechance.mena.core_chat.presentation.components.SnackBarData
 import net.thechance.mena.core_chat.presentation.screen.chats.ChatsScreen
@@ -31,7 +33,7 @@ fun ChatNavHost(
 ) {
 
     val navController = rememberNavController()
-    var snackBarDataState by remember { mutableStateOf(SnackBarData(title = "", message = "")) }
+    var snackBarDataState by remember { mutableStateOf(SnackBarData(title = Res.string.empty, message = Res.string.empty)) }
     var isSnackBarVisible by remember { mutableStateOf(false) }
 
     EffectHandler(chatEffector.chatEffect) { effect ->

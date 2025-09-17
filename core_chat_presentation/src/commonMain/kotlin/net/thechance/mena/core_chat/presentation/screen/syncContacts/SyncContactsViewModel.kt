@@ -6,12 +6,17 @@ import dev.icerock.moko.permissions.DeniedAlwaysException
 import dev.icerock.moko.permissions.DeniedException
 import dev.icerock.moko.permissions.Permission
 import dev.icerock.moko.permissions.PermissionsController
+import mena.core_chat_presentation.generated.resources.Res
+import mena.core_chat_presentation.generated.resources.contacts_permission_required_message
+import mena.core_chat_presentation.generated.resources.permission_denied_title
+import mena.core_chat_presentation.generated.resources.something_went_wrong
 import net.thechance.mena.core_chat.domain.repository.ContactsRepository
 import net.thechance.mena.core_chat.presentation.components.SnackBarData
 import net.thechance.mena.core_chat.presentation.navigation.ChatEffector
 import net.thechance.mena.core_chat.presentation.navigation.ContactsRoute
 import net.thechance.mena.core_chat.presentation.navigation.SyncContactsRoute
 import net.thechance.mena.core_chat.presentation.shared.BaseViewModel
+import org.jetbrains.compose.resources.getString
 
 class SyncContactsViewModel(
     private val contactsRepository: ContactsRepository,
@@ -59,8 +64,8 @@ class SyncContactsViewModel(
                 }
                 showSnackBar(
                     snackBarData = SnackBarData(
-                        title = "Permission denied",
-                        message = "Contacts permission is required to sync contacts",
+                        title = Res.string.permission_denied_title,
+                        message = Res.string.contacts_permission_required_message,
                     )
                 )
             }
@@ -96,6 +101,8 @@ class SyncContactsViewModel(
         } else {
             popBackStack("is_sync_success" to true)
         }
+
+        val g:String = getString(Res.string.something_went_wrong)
     }
 
     private fun onError(throwable: Throwable) {
