@@ -11,6 +11,8 @@ inputs:
     required: true
   build-type:
     required: true
+  version-code:
+    required: true
 
 runs:
   using: "composite"
@@ -74,6 +76,7 @@ runs:
 
     - name: Set signed APK path to env
       run: |
-        APK_NAME="composeApp-${{ steps.convert.outputs.build_type_lower }}-release-unsigned-signed.apk"
+        APK_NAME="${{ steps.convert.outputs.build_type_lower }}/release/Mena-${{inputs.build-type}}-1.0.${{ github.run_number }}.apk"
+        mv composeApp/build/outputs/apk/${{ steps.convert.outputs.build_type_lower }}/release/unsigned-signed.apk composeApp/build/outputs/apk/${{ steps.convert.outputs.build_type_lower }}/release/$APK_NAME
         echo "SIGNED_APK_PATH=composeApp/build/outputs/apk/${{ steps.convert.outputs.build_type_lower }}/release/$APK_NAME" >> $GITHUB_ENV
       shell: bash
