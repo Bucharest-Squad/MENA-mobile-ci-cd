@@ -29,5 +29,6 @@ jobs:
           message: |
             🚨 *New PR Open*
             PR opened by: ${{ github.event.pull_request.user.login }}
+            Branch Name: ${{ github.head_ref }}
             PR: ${{ github.event.pull_request.html_url }}
             Commit: ${{ steps.commit.outputs.message }}

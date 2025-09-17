@@ -61,5 +61,6 @@ jobs:
           branch-name: ${{ github.head_ref }}
           message: |
             🚨 *Build Failed on IOS!*
+            Branch Name: ${{ github.head_ref }}
             PR: ${{ github.event.pull_request.html_url }}
             Commit: ${{ github.event.head_commit.message }}
