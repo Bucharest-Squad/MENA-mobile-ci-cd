@@ -1,4 +1,4 @@
-package net.thechance.mena.trends.presentation.screen.mange_my_trends
+package net.thechance.mena.trends.presentation.screen.user_reel
 
 import net.thechance.mena.trends.domain.repository.ReelRepository
 import net.thechance.mena.trends.presentation.shared.base.BaseViewModel
