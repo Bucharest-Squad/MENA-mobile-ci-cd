@@ -25,8 +25,8 @@ class TopNotchShape(
     private val offset: Float,
     private val cutoutWidth: Dp,
     private val cutoutDepth: Dp,
-    private val cutoutRoundness: Float = DEFAULT_CUTOUT_ROUNDNESS_MULTIPLIER,
     private val cornerRadius: Dp,
+    private val cutoutRoundness: Float = DEFAULT_CUTOUT_ROUNDNESS_MULTIPLIER,
 ) : Shape {
 
     override fun createOutline(
