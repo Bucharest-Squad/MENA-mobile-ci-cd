@@ -7,9 +7,9 @@ import net.thechance.mena.identity.domain.exception.UnAuthorizedException
 import net.thechance.mena.identity.domain.exception.UnknownException
 import net.thechance.mena.identity.domain.exception.UserIsBlockedException
 
-suspend fun <T> safeWrapper(function: suspend () -> T): T {
+suspend fun <T> safeWrapper(block: suspend () -> T): T {
     return try {
-        function()
+        block()
     } catch (e: ClientRequestException) {
         when (e.response.status) {
             HttpStatusCode.Unauthorized -> throw UnAuthorizedException()
