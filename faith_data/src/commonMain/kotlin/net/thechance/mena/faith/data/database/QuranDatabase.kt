@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
 
-@Database(entities = [AyaDto::class], version = 1)
+@Database(entities = [AyahDto::class], version = 1)
 @ConstructedBy(QuranDatabaseConstructor::class)
 abstract class QuranDatabase : RoomDatabase() {
     abstract fun getAyaDao(): AyaDao

@@ -5,8 +5,8 @@ import androidx.room.Query
 
 @Dao
 interface AyaDao {
-    @Query("SELECT * FROM ayat WHERE sura_no = :suraNo")
-    suspend fun getAyatOfSura(suraNo: Int): List<AyaDto>
+    @Query("SELECT * FROM ayat WHERE sura_no = :surahNumber")
+    suspend fun getAyatOfSura(surahNumber: Int): List<AyahDto>
 
     @Query(
         """
