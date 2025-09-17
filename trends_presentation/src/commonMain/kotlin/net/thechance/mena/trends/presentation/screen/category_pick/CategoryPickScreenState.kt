@@ -9,4 +9,4 @@ data class CategoryPickScreenState(
     val isSaveButtonLoading: Boolean = false
 )
 
-fun CategoryPickScreenState.isSavingEnabled() = categories.any(Selectable<CategoryUiState>::isSelected)
+fun CategoryPickScreenState.isSaveButtonEnabled() = categories.any(Selectable<CategoryUiState>::isSelected)

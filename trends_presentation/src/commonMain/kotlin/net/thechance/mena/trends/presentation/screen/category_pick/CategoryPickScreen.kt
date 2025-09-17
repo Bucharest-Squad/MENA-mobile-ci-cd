@@ -29,6 +29,7 @@ import net.thechance.mena.designsystem.presentation.component.button.Button
 import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
 import net.thechance.mena.designsystem.presentation.component.text.MenaText
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import net.thechance.mena.trends.presentation.navigation.Route
 import net.thechance.mena.trends.presentation.shared.component.CategoryItem
 import net.thechance.mena.trends.presentation.shared.util.ObserveAsEffect
 import org.jetbrains.compose.resources.painterResource
@@ -45,7 +46,7 @@ fun CategoryPickScreen(
     ObserveAsEffect(viewModel.effect) { effect ->
         when (effect) {
             is CategoryPickScreenEffect.NavigateBack -> navController.popBackStack()
-            is CategoryPickScreenEffect.NavigateToTrends -> navController.navigate("") // TODO
+            is CategoryPickScreenEffect.NavigateToTrends -> navController.navigate(Route.Trends)
         }
     }
 
@@ -125,7 +126,7 @@ private fun CategoryPickScreenContent(
                 Spacer(modifier = Modifier.weight(1f))
                 Button(
                     onClick = { listener.onSaveClick() },
-                    isEnabled = state.isSavingEnabled(),
+                    isEnabled = state.isSaveButtonEnabled(),
                     isLoading = state.isSaveButtonLoading,
                     modifier = Modifier
                         .fillMaxWidth()
