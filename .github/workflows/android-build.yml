@@ -51,4 +51,3 @@ jobs:
             🚨 *Build Failed on Android!*
             Branch Name: ${{ github.head_ref }}
             PR: ${{ github.event.pull_request.html_url }}
-            Commit: ${{ github.event.head_commit.message }}
