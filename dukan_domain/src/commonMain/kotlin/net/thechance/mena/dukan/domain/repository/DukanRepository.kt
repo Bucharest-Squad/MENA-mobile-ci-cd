@@ -4,7 +4,7 @@ import net.thechance.mena.dukan.domain.entity.Category
 import net.thechance.mena.dukan.domain.entity.Dukan
 
 interface DukanRepository {
-    suspend fun addDukan(dukan: Dukan)
+    suspend fun createDukan(dukan: Dukan)
     suspend fun getDukanStyles(): List<Dukan.Style>
     suspend fun getCategories(): List<Category>
     suspend fun getDukanColors(): List<Long>
