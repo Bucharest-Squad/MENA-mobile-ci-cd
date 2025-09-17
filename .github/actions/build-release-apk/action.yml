@@ -80,11 +80,11 @@ runs:
           VERSION_NAME="Mena-${{ inputs.build-type }}"
         fi
         
-        APK_NAME="${VERSION_NAME}-v1.0.${{ github.run_number }}.apk"
+        APK_NAME="${VERSION_NAME}-v1.0.${{ github.run_number }}"
         
         mv composeApp/build/outputs/apk/${{ steps.convert.outputs.build_type_lower }}/release/composeApp-${{ steps.convert.outputs.build_type_lower }}-release-unsigned-signed.apk \
-           composeApp/build/outputs/apk/${{ steps.convert.outputs.build_type_lower }}/release/$APK_NAME
+           composeApp/build/outputs/apk/${{ steps.convert.outputs.build_type_lower }}/release/$APK_NAME.apk
         
         echo "APK_NAME=$APK_NAME" >> $GITHUB_ENV
-        echo "SIGNED_APK_PATH=composeApp/build/outputs/apk/${{ steps.convert.outputs.build_type_lower }}/release/$APK_NAME" >> $GITHUB_ENV
+        echo "SIGNED_APK_PATH=composeApp/build/outputs/apk/${{ steps.convert.outputs.build_type_lower }}/release/$APK_NAME.apk" >> $GITHUB_ENV
       shell: bash
