@@ -37,7 +37,7 @@ fun WalletScreen(
 
     ObserveAsEffect(
         effect = viewModel.uiEffect,
-        onEvent = ::onWalletEffect
+        onEffect = ::onWalletEffect
     )
 
     WalletContent(
