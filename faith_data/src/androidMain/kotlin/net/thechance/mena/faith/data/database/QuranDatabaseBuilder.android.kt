@@ -6,7 +6,10 @@ import androidx.room.Room
 actual class QuranDatabaseBuilder(private val context: Context) {
     actual fun getBuilder() = Room.databaseBuilder<QuranDatabase>(
         context = context.applicationContext,
-        name = "hafs_smart_v8.db"
+        name = DATABASE_NAME
     ).fallbackToDestructiveMigration(false)
-        .createFromAsset(databaseUri.removePrefix("file:///android_asset/"))
+        .createFromAsset(databaseUri.removePrefix(prefix))
+
+    internal actual val prefix: String
+        get() = "file:///android_asset/"
 }
