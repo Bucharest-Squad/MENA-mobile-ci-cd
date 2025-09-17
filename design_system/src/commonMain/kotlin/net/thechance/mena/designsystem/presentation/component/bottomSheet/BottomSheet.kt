@@ -33,7 +33,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -57,6 +59,7 @@ import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.math.roundToInt
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ScaffoldScope.BottomSheet(
     isVisible: Boolean,
@@ -68,6 +71,10 @@ fun ScaffoldScope.BottomSheet(
 
     val scope = rememberCoroutineScope()
     val density = LocalDensity.current
+
+    BackHandler {
+        onDismissRequest()
+    }
 
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         val sheetFullHeightPx = with(density) { maxHeight.toPx() }
