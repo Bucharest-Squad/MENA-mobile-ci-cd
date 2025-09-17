@@ -12,7 +12,6 @@ inputs:
   build-type:
     required: true
 
-
 runs:
   using: "composite"
   steps:
