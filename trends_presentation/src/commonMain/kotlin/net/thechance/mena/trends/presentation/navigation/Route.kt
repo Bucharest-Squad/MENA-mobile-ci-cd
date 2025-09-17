@@ -19,4 +19,7 @@ sealed interface Route {
 
     @Serializable
     data object Test: Route
+
+    @Serializable
+    data class Trend(val reelId: Int): Route
 }
