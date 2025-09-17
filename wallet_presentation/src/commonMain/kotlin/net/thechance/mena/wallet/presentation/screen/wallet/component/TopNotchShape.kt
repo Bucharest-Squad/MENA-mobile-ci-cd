@@ -94,10 +94,11 @@ class TopNotchShape(
         cutoutDepth: Float,
         cutoutRightX: Float
     ) {
+        val cutoutLeftX = cutoutCenterX - (cutoutRightX - cutoutCenterX)
         val controlPointOffset = cutoutDepth * cutoutRoundness
 
         cubicTo(
-            x1 = cutoutCenterX - controlPointOffset,
+            x1 = cutoutLeftX + controlPointOffset,
             y1 = 0f,
             x2 = cutoutCenterX - controlPointOffset,
             y2 = cutoutDepth,
@@ -107,7 +108,7 @@ class TopNotchShape(
         cubicTo(
             x1 = cutoutCenterX + controlPointOffset,
             y1 = cutoutDepth,
-            x2 = cutoutCenterX + controlPointOffset,
+            x2 = cutoutRightX - controlPointOffset,
             y2 = 0f,
             x3 = cutoutRightX,
             y3 = 0f,
