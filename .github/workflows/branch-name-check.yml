@@ -66,3 +66,4 @@ jobs:
             } else {
               console.log('✅ Branch name is valid.');
             }
+
