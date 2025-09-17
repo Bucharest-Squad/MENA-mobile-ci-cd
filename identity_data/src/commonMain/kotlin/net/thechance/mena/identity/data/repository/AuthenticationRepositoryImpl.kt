@@ -9,19 +9,20 @@ import net.thechance.mena.identity.data.utils.safeWrapper
 import net.thechance.mena.identity.domain.repository.AuthenticationRepository
 
 class AuthenticationRepositoryImpl(
-    private val RemoteAuthService: AuthRemoteDataSource,
+    private val remoteAuthService: AuthRemoteDataSource,
     private val localDataSource: LocalDataSource,
 ) : AuthenticationRepository {
-    override suspend fun login(mobileNumber: String, password: String) {
+    override suspend fun login(countryCode: String, number: String, password: String) {
         return safeWrapper {
-            val loginResponse = RemoteAuthService.login(LoginRequestDto(mobileNumber, password))
+            val mobileNumber=countryCode+number
+            val loginResponse = remoteAuthService.login(LoginRequestDto(mobileNumber, password))
             saveAuthTokens(loginResponse)
         }
     }
 
-    override suspend fun getAccessToken(): String {
+    override suspend fun getToken(): String {
         val refreshResponse = safeWrapper {
-            RemoteAuthService.refreshToken(RefreshRequestDto(localDataSource.getRefreshToken()))
+            remoteAuthService.refreshToken(RefreshRequestDto(localDataSource.getRefreshToken()))
         }
         saveAuthTokens(refreshResponse)
         return localDataSource.getAccessToken()

@@ -25,13 +25,14 @@ class AuthenticationRepositoryImplTest {
         //given
         val mobileNumber = "0123456789"
         val passWord = "testpassword"
+        val countryCoed="+20"
         coEvery { authRemoteDataSource.login(any()) } returns fakeLoginResponse
 
         //when
-        authenticationRepository.login(mobileNumber, passWord)
+        authenticationRepository.login(countryCoed,mobileNumber, passWord)
 
         //then
-        coVerify { authRemoteDataSource.login(LoginRequestDto(mobileNumber, passWord)) }
+        coVerify { authRemoteDataSource.login(LoginRequestDto(countryCoed+mobileNumber, passWord)) }
         coVerify { localDataSource.saveAccessToken(fakeLoginResponse.accessToken) }
         coVerify { localDataSource.saveRefreshToken(fakeLoginResponse.refreshToken) }
     }
@@ -44,7 +45,7 @@ class AuthenticationRepositoryImplTest {
         coEvery { localDataSource.getAccessToken() } returns fakeLoginResponse.accessToken
 
         //when
-        val result = authenticationRepository.getAccessToken()
+        val result = authenticationRepository.getToken()
 
         //then
         coVerify { localDataSource.getRefreshToken() }
