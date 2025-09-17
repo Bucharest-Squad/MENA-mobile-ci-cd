@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.ksp)
 }
 
 kotlin {
@@ -27,6 +28,10 @@ kotlin {
 
             //ktor
             implementation(libs.bundles.ktor)
+
+            //Koin
+            implementation(libs.koin.core)
+            api(libs.koin.annotations)
         }
         iosMain.dependencies {
 
