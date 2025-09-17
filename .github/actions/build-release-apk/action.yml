@@ -82,8 +82,9 @@ runs:
         
         APK_NAME="${{ inputs.build-type }}/release/${VERSION_NAME}-v1.0.${{ github.run_number }}.apk"
         
-        mv composeApp/build/outputs/apk/${{ steps.convert.outputs.build_type_lower }}/release/composeApp-release-unsigned-signed.apk \
+        mv composeApp/build/outputs/apk/${{ steps.convert.outputs.build_type_lower }}/release/composeApp-release-${{ steps.convert.outputs.build_type_lower }}-unsigned-signed.apk \
            composeApp/build/outputs/apk/${{ steps.convert.outputs.build_type_lower }}/release/$APK_NAME
         
         echo "SIGNED_APK_PATH=composeApp/build/outputs/apk/${{ steps.convert.outputs.build_type_lower }}/release/$APK_NAME" >> $GITHUB_ENV
+        cat local.properties
       shell: bash
