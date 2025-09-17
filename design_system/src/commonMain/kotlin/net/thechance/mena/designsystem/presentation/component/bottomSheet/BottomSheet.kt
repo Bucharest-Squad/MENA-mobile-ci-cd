@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -64,6 +65,9 @@ import kotlin.math.roundToInt
 fun ScaffoldScope.BottomSheet(
     isVisible: Boolean,
     onDismissRequest: () -> Unit,
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(16.dp),
+    dismissOnBackPress: Boolean = true,
     stickyContent: @Composable BoxScope.() -> Unit = {},
     sheetContent: LazyListScope.() -> Unit
 ) {
@@ -72,15 +76,15 @@ fun ScaffoldScope.BottomSheet(
     val scope = rememberCoroutineScope()
     val density = LocalDensity.current
 
-    BackHandler {
-        onDismissRequest()
-    }
-
-    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+    BoxWithConstraints(modifier = modifier.fillMaxSize()) {
         val sheetFullHeightPx = with(density) { maxHeight.toPx() }
         val collapsedOffset = sheetFullHeightPx.coerceAtLeast(0f)
         val offset = remember { Animatable(collapsedOffset) }
         var referenceHeight by remember { mutableStateOf(0) }
+
+        BackHandler {
+            animateClose(scope, offset, collapsedOffset, onDismissRequest)
+        }
 
         LaunchedEffect(isVisible) {
             if (isVisible) {
@@ -116,13 +120,13 @@ fun ScaffoldScope.BottomSheet(
                         .pointerInput(Unit) {
                             detectTapGestures(
                                 onTap = {
-                                    scope.launch {
-                                        offset.animateTo(
-                                            targetValue = collapsedOffset,
-                                            animationSpec = spring(stiffness = Spring.StiffnessMedium)
+                                    if (dismissOnBackPress) {
+                                        animateClose(
+                                            scope,
+                                            offset,
+                                            collapsedOffset,
+                                            onDismissRequest
                                         )
-                                    }.invokeOnCompletion {
-                                        onDismissRequest()
                                     }
                                 })
                         })
@@ -180,6 +184,7 @@ fun ScaffoldScope.BottomSheet(
                             modifier = Modifier.weight(1f, fill = false),
                             state = innerLazyListState,
                             content = sheetContent,
+                            contentPadding = contentPadding
                         )
 
                         Box(
@@ -201,6 +206,22 @@ fun ScaffoldScope.BottomSheet(
                 }
             }
         }
+    }
+}
+
+private fun animateClose(
+    scope: CoroutineScope,
+    offset: Animatable<Float, AnimationVector1D>,
+    collapsedOffset: Float,
+    onDismissRequest: () -> Unit
+) {
+    scope.launch {
+        offset.animateTo(
+            targetValue = collapsedOffset,
+            animationSpec = spring(stiffness = Spring.StiffnessMedium)
+        )
+    }.invokeOnCompletion {
+        onDismissRequest()
     }
 }
 
