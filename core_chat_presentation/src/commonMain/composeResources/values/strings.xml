@@ -17,5 +17,6 @@
     <string name="could_not_load_the_contacts">Couldn't load the contacts</string>
     <string name="permission_denied_title">Permission Denied</string>
     <string name="contacts_permission_required_message">Contacts permission is required to sync contacts</string>
+    <string name="could_not_sync_contacts_message">Could not sync contacts</string>
 
 </resources>
