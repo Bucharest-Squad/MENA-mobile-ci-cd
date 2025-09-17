@@ -144,9 +144,9 @@ private fun BalanceInfoSection(
     val curvedShape = remember(parentWidthPx) {
         TopNotchShape(
             offset = parentWidthPx / 2,
-            circleRadius = 22.dp,
+            cutoutWidth = 100.dp,
+            cutoutDepth = 26.dp,
             cornerRadius = 24.dp,
-            circleGap = 5.dp
         )
     }
 
@@ -188,7 +188,9 @@ private fun BalanceContent(
             }
 
             balanceState.isError -> {
-                BalanceErrorContent(onRetry = onRetry)
+                BalanceErrorContent(
+                    onRetry = onRetry,
+                    modifier = Modifier.padding(vertical = 7.dp))
             }
 
             balanceState.isSuccess -> {
@@ -216,7 +218,6 @@ private fun BalanceErrorContent(
             text = stringResource(Res.string.couldnt_load_tap_to_retry),
             style = Theme.typography.body.small,
             color = Theme.colorScheme.error,
-            modifier = Modifier.padding(vertical = 7.dp)
         )
         MenaIcon(
             painter = painterResource(Res.drawable.ic_reload),

@@ -58,7 +58,7 @@ fun ThreeDotsLoadingIndicator(
         verticalAlignment = Alignment.CenterVertically
     ) {
         repeat(colorCount) { index ->
-            val colorIndex = (colorOffset.toInt() - index + colorCount) % colorCount
+            val colorIndex = (colorCount - colorOffset.toInt() + index) % colorCount
 
             Box(
                 modifier = Modifier
