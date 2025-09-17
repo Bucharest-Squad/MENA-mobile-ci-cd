@@ -1,0 +1,35 @@
+name: Enforce Branch Naming Convention
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  enforce-branch-name:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Get branch name and validate
+        run: |
+          BRANCH_NAME="${GITHUB_REF##*/}"
+          echo "Branch: $BRANCH_NAME"
+
+          # Allowed prefixes and Jira keys
+          REGEX="^(feature|fix|refactor|test)\/(IDN|DKN|CHT|FTH|TRN|WLT)-[0-9]+(-[a-z0-9-]+)*$"
+
+          if [[ ! "$BRANCH_NAME" =~ $REGEX ]]; then
+            echo "❌ Invalid branch name: $BRANCH_NAME"
+          
+            echo "Deleting invalid branch (if exists)..."
+            curl -s -X DELETE \
+              -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+              -H "Accept: application/vnd.github.v3+json" \
+              "https://api.github.com/repos/${{ github.repository }}/git/refs/heads/$BRANCH_NAME"
+            echo "✅ Invalid branch deleted (if it existed)."
+
+            exit 0
+          fi
+
+          echo "✅ Branch name is valid."
