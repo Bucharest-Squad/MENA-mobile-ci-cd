@@ -41,4 +41,4 @@ jobs:
           initial_comment: |
             📲 *New Staging APK Build Released*
             *Version:* `1.0.${{ github.run_number }}`
-            *File:* `app-release-${{ github.run_number }}.apk`
+            *File:* `${{ env.SIGNED_APK_PATH }}`
