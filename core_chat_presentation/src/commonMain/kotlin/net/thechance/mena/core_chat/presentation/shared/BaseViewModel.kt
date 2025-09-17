@@ -29,14 +29,11 @@ import net.thechance.mena.core_chat.presentation.components.SnackBarData
 import net.thechance.mena.core_chat.presentation.navigation.ChatRoute
 import net.thechance.mena.core_chat.presentation.navigation.ChatEffector
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
-open class BaseViewModel<S>(initialState: S) : ViewModel(), KoinComponent {
+open class BaseViewModel<S>(initialState: S, private val effector: ChatEffector) : ViewModel(), KoinComponent {
 
     private val _state = MutableStateFlow(initialState)
     val state = _state.asStateFlow()
-
-    private val effector: ChatEffector by inject()
 
     protected fun navigate(
         route: ChatRoute,

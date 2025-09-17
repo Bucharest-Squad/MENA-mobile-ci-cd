@@ -8,6 +8,7 @@ import dev.icerock.moko.permissions.Permission
 import dev.icerock.moko.permissions.PermissionsController
 import net.thechance.mena.core_chat.domain.repository.ContactsRepository
 import net.thechance.mena.core_chat.presentation.components.SnackBarData
+import net.thechance.mena.core_chat.presentation.navigation.ChatEffector
 import net.thechance.mena.core_chat.presentation.navigation.ContactsRoute
 import net.thechance.mena.core_chat.presentation.navigation.SyncContactsRoute
 import net.thechance.mena.core_chat.presentation.shared.BaseViewModel
@@ -15,8 +16,9 @@ import net.thechance.mena.core_chat.presentation.shared.BaseViewModel
 class SyncContactsViewModel(
     private val contactsRepository: ContactsRepository,
     private val permissionsController: PermissionsController,
-    savedStateHandle: SavedStateHandle
-) : BaseViewModel<SyncContactsState>(SyncContactsState()),
+    savedStateHandle: SavedStateHandle,
+    effector: ChatEffector
+) : BaseViewModel<SyncContactsState>(SyncContactsState(), effector),
     SyncContactsScreenInteractionListener {
 
     private val forceSync: Boolean = savedStateHandle.toRoute<SyncContactsRoute>().forceSync

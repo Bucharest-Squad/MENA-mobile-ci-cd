@@ -4,18 +4,22 @@ import androidx.paging.PagingData
 import androidx.paging.PagingSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
+import mena.core_chat_presentation.generated.resources.Res
+import mena.core_chat_presentation.generated.resources.something_went_wrong
 import net.thechance.mena.core_chat.domain.entity.Contact
 import net.thechance.mena.core_chat.domain.exception.ChatException
 import net.thechance.mena.core_chat.domain.repository.ContactsRepository
 import net.thechance.mena.core_chat.presentation.components.SnackBarData
 import net.thechance.mena.core_chat.presentation.navigation.ChatDetailsRoute
+import net.thechance.mena.core_chat.presentation.navigation.ChatEffector
 import net.thechance.mena.core_chat.presentation.navigation.SyncContactsRoute
 import net.thechance.mena.core_chat.presentation.shared.BasePagingSource
 import net.thechance.mena.core_chat.presentation.shared.BaseViewModel
 
 class ContactsViewModel(
     private val contactsRepository: ContactsRepository,
-) : BaseViewModel<ContactsScreenState>(ContactsScreenState()),
+    effector: ChatEffector
+) : BaseViewModel<ContactsScreenState>(ContactsScreenState(), effector),
     ContactsScreenInteractionListener {
 
     init {
