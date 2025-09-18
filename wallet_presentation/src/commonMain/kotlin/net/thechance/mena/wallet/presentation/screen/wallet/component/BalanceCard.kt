@@ -46,9 +46,9 @@ import mena.wallet_presentation.generated.resources.ic_reload
 import mena.wallet_presentation.generated.resources.img_silver
 import mena.wallet_presentation.generated.resources.reload
 import mena.wallet_presentation.generated.resources.silver_coin
-import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
-import net.thechance.mena.designsystem.presentation.component.image.MenaImage
-import net.thechance.mena.designsystem.presentation.component.text.MenaText
+import net.thechance.mena.designsystem.presentation.component.icon.Icon
+import net.thechance.mena.designsystem.presentation.component.image.Image
+import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.wallet.presentation.base.UiState
@@ -124,7 +124,7 @@ private fun AnimatedCoinImage(
         ) { it },
         modifier = modifier
     ) {
-        MenaImage(
+        Image(
             painter = painterResource(Res.drawable.img_silver),
             contentDescription = stringResource(Res.string.silver_coin),
             modifier = Modifier
@@ -163,7 +163,7 @@ private fun BalanceInfoSection(
             modifier = Modifier.padding(top = 45.dp)
         )
 
-        MenaText(
+        Text(
             text = stringResource(Res.string.current_balance),
             style = Theme.typography.label.extraSmall,
             color = Theme.colorScheme.shadeSecondary,
@@ -194,7 +194,7 @@ private fun BalanceContent(
             }
 
             balanceState.isSuccess -> {
-                MenaText(
+                Text(
                     text = formatBalance(balanceState.let { (it as UiState.Success).data }),
                     style = Theme.typography.headline.medium,
                     color = Theme.colorScheme.shadePrimary,
@@ -214,12 +214,12 @@ private fun BalanceErrorContent(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        MenaText(
+        Text(
             text = stringResource(Res.string.couldnt_load_tap_to_retry),
             style = Theme.typography.body.small,
             color = Theme.colorScheme.error,
         )
-        MenaIcon(
+        Icon(
             painter = painterResource(Res.drawable.ic_reload),
             contentDescription = stringResource(Res.string.reload),
             tint = Theme.colorScheme.error,

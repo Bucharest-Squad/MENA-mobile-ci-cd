@@ -84,7 +84,7 @@ private fun WalletContent(
 
 private fun onWalletEffect(effect: WalletEffect) {
     when (effect) {
-        is WalletEffect.NavigateBack -> TODO("Handle navigation back")
+        is WalletEffect.NavigateBack -> { /* TODO("Handle navigation back") */ }
     }
 }
 
