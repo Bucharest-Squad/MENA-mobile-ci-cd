@@ -88,16 +88,13 @@ class DukanRepositoryImpl(
         return MultiPartFormDataContent(
             formData {
                 append(
-                    key = "file", value = fileBytes, headers = Headers.build {
-                        append(
-                            HttpHeaders.ContentType,
-                            "multipart/form-data"
-                        )
-                        append(
-                            HttpHeaders.ContentDisposition,
-                            "filename=\"$fileName\""
-                        )
-                    })
+                    key = "file",
+                    value = fileBytes,
+                    headers = Headers.build {
+                        append( HttpHeaders.ContentType, "multipart/form-data")
+                        append( HttpHeaders.ContentDisposition,"filename=\"$fileName\"")
+                    }
+                )
             })
 
     }

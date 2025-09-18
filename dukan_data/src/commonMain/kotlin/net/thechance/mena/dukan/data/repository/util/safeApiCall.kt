@@ -30,7 +30,7 @@ suspend inline fun <reified T> handleResponse(response: HttpResponse): T {
             }
         }
 
-        401 -> throw DukanException("Unauthorized")
+        401 -> throw DukanException("Unauthorized") // TODO map these codes to what they are
         408 -> throw DukanException("Request timeout")
         429 -> throw DukanException("Too many requests")
         in 500..599 -> throw DukanException("Server error")
