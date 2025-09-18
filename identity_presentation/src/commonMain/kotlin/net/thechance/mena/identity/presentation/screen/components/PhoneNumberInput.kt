@@ -14,8 +14,8 @@ import mena.identity_presentation.generated.resources.Res
 import mena.identity_presentation.generated.resources.ic_phone
 import net.thechance.mena.designsystem.presentation.component.textField.MobileNumberLeadingContent
 import net.thechance.mena.designsystem.presentation.component.textField.MobileNumberTextField
+import net.thechance.mena.identity.presentation.screen.components.util.LengthBasedPhoneVisualTransformation
 import org.jetbrains.compose.resources.painterResource
-
 
 @Composable
 fun PhoneNumberInput(
@@ -37,15 +37,25 @@ fun PhoneNumberInput(
             countryPainter = countryFlag,
             onClick = onCountryClick
         )
+
         MobileNumberTextField(
             value = phoneNumber,
             leadingIcon = painterResource(Res.drawable.ic_phone),
-            onValueChanged = { phoneNumber -> onPhoneChange(phoneNumber) },
+            onValueChanged = { new ->
+                val filtered = new.filter { it.isDigit() }
+                onPhoneChange(filtered)
+            },
+            visualTransformation = LengthBasedPhoneVisualTransformation(
+                masks = mapOf(
+                    8 to "## ### ###",
+                    9 to "### ### ###",
+                    10 to "### ### ####",
+                    11 to "#### #### ###",
+                )
+            ),
             hint = "",
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
             modifier = Modifier.weight(1f)
         )
-
     }
-
 }
