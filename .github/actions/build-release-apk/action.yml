@@ -44,7 +44,8 @@ runs:
     - name: Create local.properties with base URLs
       shell: bash
       run: |
-        echo "BASE_URL_$(echo "${{ inputs.build-type }}" | tr '[:lower:]' '[:upper:]')=${{ inputs.base_url }}" >> local.properties
+        UPPER_BUILD_TYPE=$(echo "${{ inputs.build-type }}" | tr '[:lower:]' '[:upper:]')
+        echo "BASE_URL_${UPPER_BUILD_TYPE}=${{ inputs.base_url }}" >> local.properties
 
     - name: Make gradlew executable
       run: chmod +x ./gradlew
