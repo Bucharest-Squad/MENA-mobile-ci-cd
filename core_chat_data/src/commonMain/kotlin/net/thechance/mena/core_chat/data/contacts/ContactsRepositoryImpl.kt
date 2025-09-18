@@ -15,6 +15,7 @@ import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.util.reflect.typeInfo
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import net.thechance.mena.core_chat.data.contacts.dto.ContactDto
@@ -22,7 +23,6 @@ import net.thechance.mena.core_chat.data.network.ApiConstants.CONTACTS_ENDPOINT
 import net.thechance.mena.core_chat.data.network.ApiConstants.SYNC_CONTACTS_ENDPOINT
 import net.thechance.mena.core_chat.data.shared.BaseRepository
 import net.thechance.mena.core_chat.data.shared.dto.BaseResponseDto
-import net.thechance.mena.core_chat.data.shared.dto.PagedDataDto
 import net.thechance.mena.core_chat.domain.entity.Contact
 import net.thechance.mena.core_chat.domain.exception.ContactSyncFailedException
 import net.thechance.mena.core_chat.domain.exception.ContactsFetchFailedException
@@ -39,13 +39,17 @@ class ContactsRepositoryImpl(
 ) : ContactsRepository, BaseRepository {
 
     override suspend fun getUserContacts(pageNumber: Int, pageSize: Int): PagedData<Contact> {
-        return tryNetworkCall(
-            defaultException = { ContactsFetchFailedException("Couldn't get user contacts", it) }) {
-            client.get(CONTACTS_ENDPOINT) {
-                parameter(PAGE_NUMBER, pageNumber)
-                parameter(PAGE_SIZE, pageSize)
-            }.body<BaseResponseDto<PagedDataDto<ContactDto>>>()
-        }.toPagedListOfContacts()
+        return tryNetworkCall2(
+            defaultException = { ContactsFetchFailedException("Couldn't get user contacts", it) },
+            typeInfo = typeInfo<PagedData<ContactDto>>(),
+            maxAttempts = 3,
+            call = {
+                client.get(CONTACTS_ENDPOINT) {
+                    parameter(PAGE_NUMBER, pageNumber)
+                    parameter(PAGE_SIZE, pageSize)
+                }
+            }
+        )
     }
 
     override suspend fun syncContacts() {
