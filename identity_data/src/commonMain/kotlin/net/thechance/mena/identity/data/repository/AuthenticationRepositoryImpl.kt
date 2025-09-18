@@ -14,17 +14,21 @@ class AuthenticationRepositoryImpl(
 ) : AuthenticationRepository {
     override suspend fun login(countryCode: String, number: String, password: String) {
         return safeWrapper {
-            val mobileNumber=countryCode+number
+            val mobileNumber = countryCode + number
             val loginResponse = remoteAuthService.login(LoginRequestDto(mobileNumber, password))
             saveAuthTokens(loginResponse)
         }
     }
 
-    override suspend fun getToken(): String {
+    override suspend fun getNewAccessToken(): String {
         val refreshResponse = safeWrapper {
             remoteAuthService.refreshToken(RefreshRequestDto(localDataSource.getRefreshToken()))
         }
         saveAuthTokens(refreshResponse)
+        return localDataSource.getAccessToken()
+    }
+
+    override suspend fun getCurrentAccessToken(): String {
         return localDataSource.getAccessToken()
     }
 

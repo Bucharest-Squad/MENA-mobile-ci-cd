@@ -90,7 +90,7 @@ class AuthenticationRepositoryImplTest {
         coEvery { localDataSource.getAccessToken() } returns "invalid_or_expired_token"
 
         // When
-        authenticationRepository.getToken()
+        authenticationRepository.getAccessToken()
 
         // Then
         coVerify { localDataSource.saveAccessToken(fakeLoginResponse.accessToken) }
@@ -105,7 +105,7 @@ class AuthenticationRepositoryImplTest {
         coEvery { localDataSource.getAccessToken() } returns "invalid_or_expired_token"
 
         // When
-        authenticationRepository.getToken()
+        authenticationRepository.getAccessToken()
 
         // Then
         coVerify { localDataSource.saveRefreshToken(fakeLoginResponse.refreshToken) }
@@ -120,7 +120,7 @@ class AuthenticationRepositoryImplTest {
         coEvery { localDataSource.getAccessToken() } returns fakeLoginResponse.accessToken
 
         // When
-        val result = authenticationRepository.getToken()
+        val result = authenticationRepository.getAccessToken()
 
         // Then
         assertEquals(fakeLoginResponse.accessToken, result)
@@ -192,7 +192,7 @@ class AuthenticationRepositoryImplTest {
 
         // When & Then
         assertFailure {
-            authenticationRepository.getToken()
+            authenticationRepository.getAccessToken()
         }.isInstanceOf<UnAuthorizedException>()
     }
 
