@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import net.thechance.mena.designsystem.presentation.component.button.radioButton.RadioButton
-import net.thechance.mena.designsystem.presentation.component.text.MenaText
+import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.identity.presentation.countryPicker.menaCountries.MenaCountries
@@ -67,13 +67,13 @@ internal fun CountrySelectableRowItem(
                 .weight(1f)
                 .padding(end = 8.dp)
         ) {
-            MenaText(
+            Text(
                 text = stringResource(selectedCountry.countryNameRes),
                 color = Theme.colorScheme.primary.primary,
                 style = Theme.typography.title.small,
             )
 
-            MenaText(
+            Text(
                 text = "(${selectedCountry.callingCode})",
                 color = Theme.colorScheme.shadeSecondary,
                 style = Theme.typography.label.small,
