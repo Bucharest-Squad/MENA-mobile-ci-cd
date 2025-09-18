@@ -29,7 +29,7 @@ import mena.core_chat_presentation.generated.resources.sync_contacts
 import net.thechance.mena.core_chat.presentation.components.AnimatedSnackBarHost
 import net.thechance.mena.core_chat.presentation.navigation.ContactsRoute
 import net.thechance.mena.core_chat.presentation.navigation.LocalNavController
-import net.thechance.mena.core_chat.presentation.screen.syncContacts.components.ContactsSyncedView
+import net.thechance.mena.core_chat.presentation.screen.syncContacts.components.ContactsSyncingView
 import net.thechance.mena.core_chat.presentation.screen.syncContacts.components.GoToSettingsView
 import net.thechance.mena.core_chat.presentation.screen.syncContacts.components.NoContactsSyncView
 import net.thechance.mena.core_chat.presentation.screen.syncContacts.components.PhoneIcon
@@ -105,7 +105,7 @@ private fun SyncContactsContent(
                 PhoneIcon()
                 when {
                     state.isLoading -> {
-                        ContactsSyncedView(modifier = Modifier.padding(top = Theme.spacing._24))
+                        ContactsSyncingView(modifier = Modifier.padding(top = Theme.spacing._24))
                     }
 
                     state.deniedPermanently -> {
