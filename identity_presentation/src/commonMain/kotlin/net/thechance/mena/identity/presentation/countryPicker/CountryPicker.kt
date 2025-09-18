@@ -25,7 +25,7 @@ import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.identity.presentation.components.CountrySelectableRowItem
-import net.thechance.mena.identity.presentation.countryPicker.menaCountries.MenaCountries
+import net.thechance.mena.identity.presentation.countryPicker.menaCountries.MenaCountry
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -33,7 +33,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun ScaffoldScope.CountryPicker(
     isEnabled: Boolean,
     countries: List<SelectableCountryItemUiState>,
-    onSelectCountryItem: (MenaCountries) -> Unit,
+    onSelectCountryItem: (MenaCountry) -> Unit,
     onDismiss: () -> Unit,
     onClickConfirm: () -> Unit,
     modifier: Modifier = Modifier
@@ -103,7 +103,7 @@ private fun CountryPickerPreview() {
                         countries = List(18) {
                             SelectableCountryItemUiState(
                                 selectableCountry = Selectable(
-                                    item = MenaCountries.PALESTINE,
+                                    item = MenaCountry.PALESTINE,
                                     isSelected = it == 0
                                 )
                             )

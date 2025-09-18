@@ -3,7 +3,7 @@ package net.thechance.mena.identity.presentation.screen.login
 import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.coroutines.CoroutineScope
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
-import net.thechance.mena.identity.presentation.countryPicker.menaCountries.MenaCountries
+import net.thechance.mena.identity.presentation.countryPicker.menaCountries.MenaCountry
 import net.thechance.mena.identity.presentation.countryPicker.selectByCountry
 
 class LoginScreenModel :
@@ -21,7 +21,7 @@ class LoginScreenModel :
     }
 
 
-    override fun onSelectCountryItem(country: MenaCountries) {
+    override fun onSelectCountryItem(country: MenaCountry) {
         updateState {
             it.copy(
                 countryPickerUIState = it.countryPickerUIState.copy(

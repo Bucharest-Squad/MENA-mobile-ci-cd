@@ -44,7 +44,7 @@ import mena.identity_presentation.generated.resources.yemen
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 
-enum class MenaCountries(
+enum class MenaCountry(
     val countryNameRes: StringResource,
     val callingCode: String,
     val flagImage: DrawableResource

@@ -1,14 +1,14 @@
 package net.thechance.mena.identity.presentation.countryPicker
 
-import net.thechance.mena.identity.presentation.countryPicker.menaCountries.MenaCountries
+import net.thechance.mena.identity.presentation.countryPicker.menaCountries.MenaCountry
 
 data class CountryPickerUIState(
-    val selectedCountry: MenaCountries? = null,
+    val selectedCountry: MenaCountry? = null,
     val isEnabled: Boolean = false,
     val countries: List<SelectableCountryItemUiState> = defaultCountries
 ) {
     private companion object {
-        val defaultCountries = MenaCountries.entries.map { country ->
+        val defaultCountries = MenaCountry.entries.map { country ->
             SelectableCountryItemUiState(
                 selectableCountry = Selectable(
                     item = country,
@@ -20,8 +20,8 @@ data class CountryPickerUIState(
 }
 
 data class SelectableCountryItemUiState(
-    val selectableCountry: Selectable<MenaCountries> = Selectable(
-        item = MenaCountries.EGYPT,
+    val selectableCountry: Selectable<MenaCountry> = Selectable(
+        item = MenaCountry.EGYPT,
         isSelected = false
     )
 )

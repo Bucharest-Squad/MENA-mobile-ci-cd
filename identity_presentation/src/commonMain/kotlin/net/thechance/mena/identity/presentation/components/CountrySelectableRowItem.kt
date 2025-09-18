@@ -23,17 +23,17 @@ import net.thechance.mena.designsystem.presentation.component.button.radioButton
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.identity.presentation.countryPicker.menaCountries.MenaCountries
+import net.thechance.mena.identity.presentation.countryPicker.menaCountries.MenaCountry
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 internal fun CountrySelectableRowItem(
-    selectedCountry: MenaCountries,
+    selectedCountry: MenaCountry,
     isSelected: Boolean,
     modifier: Modifier = Modifier,
-    onClick: (MenaCountries) -> Unit = {}
+    onClick: (MenaCountry) -> Unit = {}
 ) {
 
     val animatedCountryItemColor by animateColorAsState(
@@ -96,7 +96,7 @@ internal fun CountrySelectableRowItem(
 private fun CountrySelectableRowItemPreview() {
     MenaTheme {
         CountrySelectableRowItem(
-            selectedCountry = MenaCountries.PALESTINE,
+            selectedCountry = MenaCountry.PALESTINE,
             isSelected = true,
             onClick = {}
         )
