@@ -24,9 +24,8 @@ import net.thechance.mena.dukan.domain.repository.DukanRepository
 class DukanRepositoryImpl(
     private val client: HttpClient
 ) : DukanRepository {
-
     override suspend fun createDukan(dukan: Dukan) {
-        safeApiCall {
+        safeApiCall<Unit> {
             client.post(
                 urlString = "$BASE_URL/create"
             ) {
@@ -36,37 +35,35 @@ class DukanRepositoryImpl(
     }
 
     override suspend fun getDukanStyles(): List<Dukan.Style> {
-        return safeApiCall {
+        return safeApiCall<List<String>> {
             client.get(
                 urlString = "$BASE_URL/styles"
-            ).body<List<String>>().map {
-                Dukan.Style.valueOf(it)
-            }
+            )
+        }.map {
+            Dukan.Style.valueOf(it)
         }
     }
 
     override suspend fun getCategories(): List<Category> {
-        return safeApiCall {
-            client.get(
-                urlString = "$BASE_URL/categories"
-            ).body<List<DukanCategoryDto>>().toEntity()
-        }
+        return safeApiCall<List<DukanCategoryDto>> {
+            client.get("$BASE_URL/categories")
+        }.toEntity()
     }
 
     override suspend fun getDukanColors(): List<Color> {
-        return safeApiCall {
+        return safeApiCall<List<DukanColorDto>> {
             client.get(
                 urlString = "$BASE_URL/colors"
-            ).body<List<DukanColorDto>>().toEntity()
-        }
+            )
+        }.toEntity()
     }
 
     override suspend fun getMyDukanStatus(): MyDukanStatus? {
-        return safeApiCall {
+        return safeApiCall<MyDukanStatusDto> {
             client.get(
-                urlString = "$BASE_URL/statues"
-            ).body<MyDukanStatusDto>().toEntity()
-        }
+                urlString = "$BASE_URL/status"
+            )
+        }.toEntity()
     }
 
     override suspend fun uploadDukanImage(
@@ -77,7 +74,7 @@ class DukanRepositoryImpl(
                 setBody(
                     buildMultiPartFormData(fileName, fileBytes)
                 )
-            }.body()
+            }
         }
     }
 
