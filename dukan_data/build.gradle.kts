@@ -23,6 +23,9 @@ kotlin {
             implementation(libs.koin.core)
             implementation(projects.dukanDomain)
             implementation(libs.junit)
+            implementation(libs.kotlin.test)
+            implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.ktor.client.mock)
             // GeoCoder
             implementation(libs.bundles.geoCoder)
             implementation(libs.bundles.ktor)
