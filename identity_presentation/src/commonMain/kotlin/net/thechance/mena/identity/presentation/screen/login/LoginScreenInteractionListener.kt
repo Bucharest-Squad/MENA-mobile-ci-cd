@@ -14,5 +14,5 @@ interface LoginScreenInteractionListener : BaseInteractionListener {
     fun onPasswordChanged(password: String)
 
     fun onPasswordVisibilityToggled()
-
+    fun clearErrorMessage()
 }

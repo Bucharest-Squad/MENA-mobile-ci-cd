@@ -5,7 +5,6 @@ sealed class LoginScreenUIEffect {
     data object NavigateToForgotPassword : LoginScreenUIEffect()
     data object NavigateToHome : LoginScreenUIEffect()
 
-    data class ShowErrorMessage(val message: String) : LoginScreenUIEffect()
 
 
 }

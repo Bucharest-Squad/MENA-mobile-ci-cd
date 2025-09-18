@@ -4,6 +4,8 @@ import kotlinx.coroutines.CoroutineScope
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import net.thechance.mena.identity.domain.useCase.LoginUseCase
+import net.thechance.mena.identity.presentation.base.ErrorState
+import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
 import org.koin.core.logger.Logger
 import kotlin.math.log
 
@@ -64,6 +66,9 @@ class LoginScreenModel (
 
     override fun onPasswordVisibilityToggled() {
         updateState { copy(isPasswordVisible = !isPasswordVisible ) }
+    }
+    override fun clearErrorMessage(){
+        updateState { copy(errorMessage = null) }
     }
 
 }
