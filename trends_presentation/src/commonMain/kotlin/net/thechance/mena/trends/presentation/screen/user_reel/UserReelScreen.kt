@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -30,21 +31,28 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.rememberAsyncImagePainter
 import mena.trends_presentation.generated.resources.Res
+import mena.trends_presentation.generated.resources.confirmation_message
+import mena.trends_presentation.generated.resources.delete
+import mena.trends_presentation.generated.resources.delete_reel
 import mena.trends_presentation.generated.resources.ic_arrow_left
 import mena.trends_presentation.generated.resources.ic_delete
 import mena.trends_presentation.generated.resources.ic_eye
 import mena.trends_presentation.generated.resources.ic_like
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
+import net.thechance.mena.designsystem.presentation.component.dialog.Dialog
 import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
 import net.thechance.mena.designsystem.presentation.component.image.MenaImage
 import net.thechance.mena.designsystem.presentation.component.text.MenaText
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import net.thechance.mena.trends.presentation.navigation.LocalNavController
 import net.thechance.mena.trends.presentation.shared.util.gradientShadow
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -55,6 +63,8 @@ fun UserReelScreen(
 
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+    val navController = LocalNavController.current
+
     UserReelScreenContent(
         state = state,
         listener = viewModel
@@ -63,7 +73,7 @@ fun UserReelScreen(
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                UserReelEffect.NavigateBack -> {}// TODO
+                UserReelEffect.NavigateBack -> navController.popBackStack()
             }
         }
     }
@@ -76,7 +86,26 @@ private fun UserReelScreenContent(
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
 
+        if (state.isConfirmationDialogVisible) {
+            Dialog(
+                visible = state.isConfirmationDialogVisible,
+                title = stringResource(Res.string.delete_reel),
+                message = stringResource(Res.string.confirmation_message) ,
+                buttonText = stringResource(Res.string.delete),
+                dismissOnBackPress = true,
+                dismissOnClickOutside = true,
+                onDismiss = { listener.onDismissDialog() },
+                onActionClick = { listener.onConfirmDeleteClick() },
+                onCancelClick = { listener.onDismissDialog() },
+                modifier = Modifier.align(Alignment.Center).zIndex(3f),
+                dialogCornerShape = RoundedCornerShape(12.dp),
+                cancelBackgroundShape = RoundedCornerShape(50),
+                contentPadding = PaddingValues(16.dp)
+            )
+        }
+
         RunningVideoPlaceHolder()
+
         TopAppBar(onBackClick = listener::onBackClick)
 
         UsersReAct(
@@ -215,7 +244,7 @@ private fun UsersReAct(
 
         ReActIcon(
             icon = painterResource(resource = Res.drawable.ic_delete),
-            label = "Delete",
+            label = stringResource(Res.string.delete),
             onClick = { onDeleteClick() }
         )
     }

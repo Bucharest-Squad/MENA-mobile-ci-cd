@@ -1,7 +1,7 @@
 package net.thechance.mena.trends.presentation.screen.user_reel
 
 data class UserReelState(
-    val id: Int? = null,
+    val id: String = "",
     val username: String = "",
     val thumbnail: String = "",
     val createdAt: String = "",
