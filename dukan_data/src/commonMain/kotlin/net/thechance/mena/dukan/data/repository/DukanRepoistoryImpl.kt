@@ -2,9 +2,13 @@ package net.thechance.mena.dukan.data.repository
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.request.forms.MultiPartFormDataContent
+import io.ktor.client.request.forms.formData
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.http.Headers
+import io.ktor.http.HttpHeaders
 import net.thechance.mena.dukan.data.repository.dto.DukanCategoryDto
 import net.thechance.mena.dukan.data.repository.dto.DukanColorDto
 import net.thechance.mena.dukan.data.repository.dto.MyDukanStatusDto
@@ -62,6 +66,31 @@ class DukanRepositoryImpl(
             client.get(
                 urlString = "$BASE_URL/statues"
             ).body<MyDukanStatusDto>().toEntity()
+        }
+    }
+
+    override suspend fun uploadDukanImage(
+        fileName: String, fileBytes: ByteArray
+    ): String {
+        return safeApiCall {
+            client.post("$BASE_URL/image") {
+                setBody(
+                    MultiPartFormDataContent(
+                        formData {
+                            append(
+                                key = "file", value = fileBytes, headers = Headers.build {
+                                    append(
+                                        HttpHeaders.ContentType,
+                                        "multipart/form-data"
+                                    )
+                                    append(
+                                        HttpHeaders.ContentDisposition,
+                                        "filename=\"$fileName\""
+                                    )
+                                })
+                        })
+                )
+            }.body()
         }
     }
 

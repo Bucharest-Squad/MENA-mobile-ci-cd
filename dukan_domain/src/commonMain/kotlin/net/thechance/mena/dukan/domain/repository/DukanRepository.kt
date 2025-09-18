@@ -12,4 +12,5 @@ interface DukanRepository {
     suspend fun getDukanColors(): List<DukanColor>
     suspend fun isDukanNameTaken(name: String): Boolean
     suspend fun getMyDukanStatus(): MyDukanStatus
+    suspend fun uploadDukanImage(fileName: String, fileBytes: ByteArray): String
 }
