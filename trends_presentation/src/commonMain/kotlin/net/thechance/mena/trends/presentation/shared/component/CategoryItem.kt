@@ -29,7 +29,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun CategoryItem(
     category: Selectable<CategoryUiState>,
     modifier: Modifier = Modifier,
-    onClick: (Int) -> Unit
+    onClick: (String) -> Unit
 ) {
     val textColor by animateColorAsState(
         targetValue = if (category.isSelected) Theme.colorScheme.shadePrimary else Theme.colorScheme.shadeSecondary
@@ -40,7 +40,7 @@ fun CategoryItem(
         modifier = modifier
             .clip(RoundedCornerShape(Theme.radius.full))
             .background(color = Theme.colorScheme.primary.onPrimary)
-            .noRippleClickable { category.value.id?.let { onClick(it) } }
+            .noRippleClickable { onClick(category.value.id) }
             .padding(10.dp)
     ) {
         Row(
@@ -60,7 +60,7 @@ fun CategoryItem(
         }
         RadioButton(
             isSelected = category.isSelected,
-            onClick = { category.value.id?.let { onClick(it) } },
+            onClick = { onClick(category.value.id) },
         )
     }
 }
@@ -70,7 +70,7 @@ fun CategoryItem(
 private fun CategoryItemPreview() {
     var isSelected by remember { mutableStateOf(false) }
     val category = CategoryUiState(
-        id = 1,
+        id = "1",
         name = "Hello",
         emoji = "\uD83D\uDE00"
     )

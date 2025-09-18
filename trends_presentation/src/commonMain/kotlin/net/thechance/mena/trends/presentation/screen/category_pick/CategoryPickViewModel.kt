@@ -32,7 +32,7 @@ class CategoryPickViewModel(
         updateState { copy(categories = categories.toUiStates()) }
     }
 
-    override fun onCategoryClick(categoryId: Int) = updateState {
+    override fun onCategoryClick(categoryId: String) = updateState {
         copy(categories = categories.toggleCategory(categoryId))
     }
 
@@ -49,7 +49,7 @@ class CategoryPickViewModel(
     private suspend fun saveSelectedCategories() {
         val selectedIds = state.value.categories
             .filter { it.isSelected }
-            .mapNotNull { it.value.id }
+            .map { it.value.id }
         repository.updateUserInterestedCategories(selectedIds)
     }
 

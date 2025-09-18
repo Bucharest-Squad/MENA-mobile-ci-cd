@@ -11,9 +11,9 @@ import org.koin.core.annotation.Single
 class FakeReelsRepositoryImpl : ReelRepository {
 
     private val categories = listOf(
-        Category(id = 1, name = "Sport", emoji = "⚽"),
-        Category(id = 2, name = "Food", emoji = "🍔"),
-        Category(id = 3, name = "Code", emoji = "💻")
+        Category(id = "1", name = "Sport", emoji = "⚽"),
+        Category(id = "2", name = "Food", emoji = "🍔"),
+        Category(id = "3", name = "Code", emoji = "💻")
     )
 
     private val reel = Reel(
