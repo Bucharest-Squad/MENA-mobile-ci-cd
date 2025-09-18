@@ -63,18 +63,22 @@ class SyncContactsViewModel(
         }
     }
 
+    private fun onContactsPermissionGranted() {
+        updateState {
+            it.copy(
+                deniedPermanently = false,
+                showSyncView = true
+            )
+        }
+        syncContacts()
+    }
+
     fun checkPermissions() {
         tryToExecute(
             execute = { permissionsController.isPermissionGranted(Permission.CONTACTS) },
             onSuccess = { granted ->
                 if (granted) {
-                    updateState {
-                        it.copy(
-                            deniedPermanently = false,
-                            showSyncView = true
-                        )
-                    }
-                    syncContacts()
+                    onContactsPermissionGranted()
                 }
             }
         )
