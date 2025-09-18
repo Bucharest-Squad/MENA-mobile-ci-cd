@@ -1,5 +1,6 @@
 package net.thechance.mena.identity.presentation.screen.login
 
+import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.coroutines.CoroutineScope
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
@@ -8,6 +9,8 @@ import net.thechance.mena.identity.presentation.base.ErrorState
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
 import org.koin.core.logger.Logger
 import kotlin.math.log
+import net.thechance.mena.identity.presentation.countryPicker.menaCountries.MenaCountry
+import net.thechance.mena.identity.presentation.countryPicker.selectByCountry
 
 class LoginScreenModel (
    val loginUseCase: LoginUseCase
@@ -71,4 +74,46 @@ class LoginScreenModel (
         updateState { copy(errorMessage = null) }
     }
 
+    override fun onClickCountryPicker() {
+        updateState {
+            copy(
+                showBottomSheet = true
+            )
+        }
+    }
+
+
+    override fun onSelectCountryItem(country: MenaCountry) {
+        updateState {
+            copy(
+                countryPickerUIState = countryPickerUIState.copy(
+                    selectedCountry = country,
+                    countries = countryPickerUIState.countries.selectByCountry(country),
+                    isEnabled = countryPickerUIState.selectedCountry != country
+                )
+            )
+        }
+    }
+
+    override fun onClickConfirmButton() {
+        updateState {
+            copy(
+                showBottomSheet = false,
+                countryPickerUIState = countryPickerUIState.copy(
+                    isEnabled = false
+                )
+            )
+        }
+    }
+
+    override fun onDismissBottomSheet() {
+        updateState {
+            copy(
+                showBottomSheet = false,
+                countryPickerUIState = countryPickerUIState.copy(
+                    selectedCountry = null
+                )
+            )
+        }
+    }
 }
