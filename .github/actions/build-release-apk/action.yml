@@ -40,6 +40,7 @@ runs:
         mv magick /usr/local/bin/
 
     - name: Create local.properties with base URLs
+      shell: bash
       run: |
         echo "BASE_URL_DEVELOPMENT=${{ secrets.BASE_URL_DEVELOPMENT }}" >> local.properties
         echo "BASE_URL_PRODUCTION=${{ secrets.BASE_URL_PRODUCTION }}" >> local.properties
