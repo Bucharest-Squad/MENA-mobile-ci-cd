@@ -23,10 +23,10 @@ class ReelsRepositoryImpl(
 
     override suspend fun deleteReelById(id: Int) = safeApiCall {}
 
-    override suspend fun getAllReels(page: Int): List<Reel> {
+    override suspend fun getAllReels(pageNumber: Int): List<Reel> {
         return safeApiCall {
             val response: RemoteResponse<ReelDto> = httpClient.get("$TRENDS/$REELS") {
-                parameter(PAGE, page)
+                parameter(PAGE, pageNumber)
             }.body()
 
             response.results.map { it.toEntity() }
