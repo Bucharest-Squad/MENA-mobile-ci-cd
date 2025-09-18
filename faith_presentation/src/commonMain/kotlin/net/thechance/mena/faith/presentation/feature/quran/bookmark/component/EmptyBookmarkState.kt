@@ -1,9 +1,7 @@
-package net.thechance.mena.faith.presentation.component
+package net.thechance.mena.faith.presentation.feature.quran.bookmark.component
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -12,6 +10,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import mena.faith_presentation.generated.resources.Res
@@ -22,7 +22,6 @@ import net.thechance.mena.designsystem.presentation.component.image.MenaImage
 import net.thechance.mena.designsystem.presentation.component.text.MenaText
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -30,24 +29,22 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun EmptyBookmarkState(
     title: String,
-    icon: DrawableResource,
+    icon: Painter,
     contentDescription: String,
     subTitle: String,
     modifier: Modifier = Modifier,
     onClickButton: () -> Unit = {},
 ) {
     Column(
-        modifier = modifier.fillMaxSize().padding(horizontal = 28.dp),
+        modifier = modifier.padding(horizontal = 28.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         MenaImage(
-            painter = painterResource(icon),
+            painter = icon,
             contentDescription = contentDescription,
             modifier = Modifier.size(128.dp)
         )
-
         MenaText(
             text = title,
             style = Theme.typography.title.medium,
@@ -55,7 +52,6 @@ fun EmptyBookmarkState(
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(top = Theme.spacing._24, bottom = Theme.spacing._8)
         )
-
         MenaText(
             text = subTitle,
             color = Theme.colorScheme.shadeSecondary,
@@ -66,11 +62,9 @@ fun EmptyBookmarkState(
 
         Button(
             modifier = Modifier.fillMaxWidth().height(48.dp)
-                .background(
-                    color = Theme.colorScheme.primary.primary,
-                    shape = RoundedCornerShape(Theme.radius.md)
-                ),
+                .clip(RoundedCornerShape(Theme.radius.md)),
             onClick = onClickButton,
+            containerColor = Theme.colorScheme.primary.primary
         ) {
             MenaText(
                 text = stringResource(Res.string.start_tilawah),
@@ -81,13 +75,12 @@ fun EmptyBookmarkState(
     }
 }
 
-
 @Preview()
 @Composable
 private fun EmptyBookMarkPreview() {
     MenaTheme {
         EmptyBookmarkState(
-            icon = Res.drawable.ic_not_saved_book_mark,
+            icon = painterResource(Res.drawable.ic_not_saved_book_mark),
             contentDescription = "Empty Bookmark",
             title = "No Bookmarks Yet",
             subTitle = "You haven't added any bookmarks. Start exploring and add your favorite items to your bookmarks."
