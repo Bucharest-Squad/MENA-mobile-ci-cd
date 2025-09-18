@@ -13,13 +13,14 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import dev.icerock.moko.permissions.compose.BindEffect
 import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
 import kotlinx.coroutines.flow.Flow
@@ -55,7 +56,9 @@ fun SyncContactsScreen(forceSync: Boolean = false) {
 
     val state by viewModel.state.collectAsState()
 
-    LaunchedEffect(Unit) {
+
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        viewModel.checkPermissions()
         viewModel.onForceSync(forceSync = forceSync)
     }
 
@@ -66,7 +69,6 @@ fun SyncContactsScreen(forceSync: Boolean = false) {
         interactionListener = viewModel,
     )
 }
-
 
 @Composable
 private fun SyncContactsContent(
@@ -101,26 +103,25 @@ private fun SyncContactsContent(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
-            if (state.showSyncView) {
-                PhoneIcon()
-                when {
-                    state.isLoading -> {
-                        ContactsSyncedView(modifier = Modifier.padding(top = Theme.spacing._24))
-                    }
+            when {
+                state.deniedPermanently -> {
+                    GoToSettingsView(
+                        onSyncClick = interactionListener::onGoToSettingsClick,
+                        modifier = Modifier.padding(top = Theme.spacing._12)
+                    )
+                }
 
-                    state.deniedPermanently -> {
-                        GoToSettingsView(
-                            onSyncClick = interactionListener::onSyncClick,
-                            modifier = Modifier.padding(top = Theme.spacing._12)
-                        )
-                    }
+                state.showSyncView && state.isLoading -> {
+                    PhoneIcon()
+                    ContactsSyncedView(modifier = Modifier.padding(top = Theme.spacing._24))
+                }
 
-                    else -> {
-                        NoContactsSyncView(
-                            modifier = Modifier.padding(top = Theme.spacing._12),
-                            onSyncClick = interactionListener::onSyncClick,
-                        )
-                    }
+                state.showSyncView -> {
+                    PhoneIcon()
+                    NoContactsSyncView(
+                        modifier = Modifier.padding(top = Theme.spacing._12),
+                        onSyncClick = interactionListener::onSyncClick,
+                    )
                 }
             }
         }
@@ -172,6 +173,7 @@ private fun SyncContactsScreenPreview() {
                 override fun onSnackBarDismiss() {}
                 override fun onBackClick() {}
                 override fun onSyncClick() {}
+                override fun onGoToSettingsClick(){}
             }
         )
     }
