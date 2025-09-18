@@ -11,11 +11,7 @@ inputs:
     required: true
   build-type:
     required: true
-  base-url-development:
-    required: true
-  base-url-staging:
-    required: true
-  base-url-production:
+  base-url:
     required: true
 
 runs:
@@ -48,9 +44,7 @@ runs:
     - name: Create local.properties with base URLs
       shell: bash
       run: |
-        echo "BASE_URL_DEVELOPMENT=${{ inputs.base_url_development }}" > local.properties
-        echo "BASE_URL_PRODUCTION=${{ inputs.base_url_production }}" >> local.properties
-        echo "BASE_URL_STAGING=${{ inputs.base_url_staging }}" >> local.properties
+        echo "BASE_URL_$(echo "${{ inputs.build-type }}" | tr '[:lower:]' '[:upper:]')=${{ inputs.base_url }}" >> local.properties
 
     - name: Make gradlew executable
       run: chmod +x ./gradlew
