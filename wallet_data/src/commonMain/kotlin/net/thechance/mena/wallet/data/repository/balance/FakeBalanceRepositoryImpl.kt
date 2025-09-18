@@ -9,7 +9,7 @@ class FakeBalanceRepositoryImpl(
     private val networkClient: NetworkClient
 ) : BalanceRepository {
 
-    override suspend fun getBalance(userId: Int): Double {
+    override suspend fun getBalance(): Double {
         return 530320.55 //TODO: add api call
     }
 }

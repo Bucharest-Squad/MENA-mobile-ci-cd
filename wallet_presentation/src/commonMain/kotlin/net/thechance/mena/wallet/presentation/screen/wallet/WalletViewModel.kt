@@ -25,7 +25,7 @@ class WalletViewModel(
         //TODO: get real user id
         tryToExecute(
             onStart = ::onGetBalanceStart,
-            callee = { balanceRepository.getBalance(userId = 1) },
+            callee = { balanceRepository.getBalance() },
             onSuccess = ::onGetBalanceSuccess,
             onError = ::onGetBalanceError
         )
