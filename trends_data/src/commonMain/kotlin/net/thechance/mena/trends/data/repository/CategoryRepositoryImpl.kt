@@ -5,8 +5,8 @@ import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
-import net.thechance.mena.trends.data.dto.CategoryDto
-import net.thechance.mena.trends.data.dto.SubmitInterestsRequest
+import net.thechance.mena.trends.data.dto.CategoryResponseDto
+import net.thechance.mena.trends.data.dto.SubmitInterestsRequestDto
 import net.thechance.mena.trends.data.mapper.toEntity
 import net.thechance.mena.trends.data.util.safeApiCall
 import net.thechance.mena.trends.domain.entity.Category
@@ -21,18 +21,22 @@ class CategoryRepositoryImpl(
 
     override suspend fun getAllCategories(): List<Category> {
         return safeApiCall {
-            httpClient.get("/trends/category").body<List<CategoryDto>>().toEntity()
+            httpClient.get("/trends/category").body<CategoryResponseDto>()
+                .categories.toEntity()
         }
     }
 
     override suspend fun isCategoriesAlreadySelectedByUser(): Boolean {
-        return false // TODO("Not yet implemented")
+        return safeApiCall {
+            httpClient.get("/trends/interests/user")
+                .body<CategoryResponseDto>().categories.isNotEmpty()
+        }
     }
 
     override suspend fun updateUserInterestedCategories(categoriesIds: List<String>) {
         return safeApiCall {
             httpClient.post("/trends/interests") {
-                setBody(SubmitInterestsRequest(categoriesIds))
+                setBody(SubmitInterestsRequestDto(categoriesIds))
             }
         }
     }

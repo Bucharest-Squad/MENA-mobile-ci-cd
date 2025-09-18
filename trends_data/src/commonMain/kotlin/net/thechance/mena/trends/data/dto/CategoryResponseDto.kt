@@ -4,6 +4,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class SubmitInterestsRequest(
-    @SerialName("categoryIds") val categoryIds: List<String>
+data class CategoryResponseDto(
+    @SerialName("data") val categories: List<CategoryDto>
 )
