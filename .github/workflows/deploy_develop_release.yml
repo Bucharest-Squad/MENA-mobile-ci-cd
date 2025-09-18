@@ -21,6 +21,9 @@ jobs:
           android-key-alias: ${{ secrets.ANDROID_KEY_ALIAS }}
           android-key-alias-password: ${{ secrets.ANDROID_KEY_ALIAS_PASSWORD }}
           build-type: Development
+          base-url-development: ${{ secrets.BASE_URL_DEVELOPMENT }}
+          base-url-staging: ${{ secrets.BASE_URL_STAGING }}
+          base-url-production: ${{ secrets.BASE_URL_PRODUCTION }}
 
       - name: Deploy to Firebase
         uses: wzieba/Firebase-Distribution-Github-Action@v1

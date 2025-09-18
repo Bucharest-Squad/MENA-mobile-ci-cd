@@ -11,6 +11,12 @@ inputs:
     required: true
   build-type:
     required: true
+  base-url-development:
+    required: true
+  base-url-staging:
+    required: true
+  base-url-production:
+    required: true
 
 runs:
   using: "composite"
@@ -42,9 +48,9 @@ runs:
     - name: Create local.properties with base URLs
       shell: bash
       run: |
-        echo "BASE_URL_DEVELOPMENT=${{ secrets.BASE_URL_DEVELOPMENT }}" >> local.properties
-        echo "BASE_URL_PRODUCTION=${{ secrets.BASE_URL_PRODUCTION }}" >> local.properties
-        echo "BASE_URL_STAGING=${{ secrets.BASE_URL_STAGING }}" >> local.properties
+        echo "BASE_URL_DEVELOPMENT=${{ inputs.base_url_development }}" > local.properties
+        echo "BASE_URL_PRODUCTION=${{ inputs.base_url_production }}" >> local.properties
+        echo "BASE_URL_STAGING=${{ inputs.base_url_staging }}" >> local.properties
 
     - name: Make gradlew executable
       run: chmod +x ./gradlew
