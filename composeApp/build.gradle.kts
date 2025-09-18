@@ -41,6 +41,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(projects.designSystem)
             implementation(projects.identityPresentation)
+            implementation(projects.identityDomain)
             implementation(libs.bundles.voyager)
         }
         commonTest.dependencies {
