@@ -8,7 +8,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform) apply false
     alias(libs.plugins.composeCompiler) apply false
     alias(libs.plugins.kotlinMultiplatform) apply false
-    asdads
+    asdads test
 }
 
 tasks.register("exportModuleDeps") {
