@@ -20,10 +20,9 @@ fun authInterceptor(
 ) = createClientPlugin("AuthInterceptor") {
 
     onRequest { request, _ ->
-        if (request.url.toString().contains("refresh"))
-            localDataSource.getAccessToken().let { token ->
-                request.headers.append(HttpHeaders.Authorization, "Bearer $token")
-            }
+        localDataSource.getAccessToken().let { token ->
+            request.headers.append(HttpHeaders.Authorization, "Bearer $token")
+        }
     }
 }
 
@@ -36,7 +35,6 @@ fun provideHttpClient(
     return HttpClient(engine) {
         defaultRequest {
             url(BuildConfig.BASE_URL)
-
         }
         install(ContentNegotiation) {
             json(
