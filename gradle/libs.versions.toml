@@ -17,7 +17,6 @@ assertk = "0.28.1"
 kotlin = "2.2.10"
 kotlinxCoroutinesTest = "1.7.3"
 kotlinxDatetime = "0.7.1"
-mockk = "1.13.13"
 navigationCompose = "2.9.0-rc02"
 ksp = "2.2.10-RC2-2.0.2"
 koin-core = "4.1.1"
@@ -73,8 +72,6 @@ koin-ksp-compiler = { module = "io.insert-koin:koin-ksp-compiler", version.ref =
 
 # permissions
 ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktor" }
-mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
-mockk-common = { module = "io.mockk:mockk-common", version.ref = "mockk" }
 moko-permissions = { module = "dev.icerock.moko:permissions", version.ref = "moko" }
 moko-permissions-compose = { module = "dev.icerock.moko:permissions-compose", version.ref = "moko" }
 
