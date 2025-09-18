@@ -16,6 +16,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import net.thechance.mena.designsystem.presentation.component.button.radioButton.RadioButton
 import net.thechance.mena.designsystem.presentation.component.text.Text
@@ -38,6 +40,8 @@ internal fun CountrySelectableRowItem(
         targetValue = if (isSelected) Theme.colorScheme.background.surfaceHigh
         else Theme.colorScheme.background.surfaceLow
     )
+
+    val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
 
     Row(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -74,7 +78,7 @@ internal fun CountrySelectableRowItem(
             )
 
             Text(
-                text = "(${selectedCountry.callingCode})",
+                text = "(${selectedCountry.getFormatedCountryCode(isRtl)})",
                 color = Theme.colorScheme.shadeSecondary,
                 style = Theme.typography.label.small,
             )

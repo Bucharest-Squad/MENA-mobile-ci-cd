@@ -69,5 +69,9 @@ enum class MenaCountries(
     SYRIA(Res.string.syria, "+963", Res.drawable.sy_flag),
     TUNISIA(Res.string.tunisia, "+216", Res.drawable.tn_flag),
     UAE(Res.string.uae, "+971", Res.drawable.ae_flag),
-    YEMEN(Res.string.yemen, "+967", Res.drawable.ye_flag)
+    YEMEN(Res.string.yemen, "+967", Res.drawable.ye_flag);
+
+
+    fun getFormatedCountryCode(isRtl: Boolean) =
+        if (isRtl) callingCode.drop(1) + "+" else callingCode
 }
