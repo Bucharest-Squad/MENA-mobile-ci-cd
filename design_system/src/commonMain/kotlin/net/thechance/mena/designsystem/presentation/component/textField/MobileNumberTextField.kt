@@ -15,6 +15,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import mena.design_system.generated.resources.Res
@@ -89,6 +90,7 @@ fun MobileNumberLeadingContent(
         Image(
             painter = countryPainter,
             contentDescription = "country image",
+            contentScale = ContentScale.FillBounds,
             modifier = Modifier
                 .clip(RoundedCornerShape(Theme.radius.full))
                 .size(20.dp)

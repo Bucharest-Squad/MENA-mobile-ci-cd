@@ -1,4 +1,17 @@
 <resources>
+
+    <string name="app_name">MENA</string>
+    <string name="welcome_back">Welcome Back to MENA</string>
+    <string name="login_prompt">Fill your information to login</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="password">Password</string>
+    <string name="forget_password">Forget Password?</string>
+    <string name="login">Login</string>
+    <string name="register_prompt">You are new?</string>
+    <string name="register_now">Register Now</string>
+    <string name="error">Error</string>
+
+
     <string name="pick_your_country">Pick Your Country</string>
     <string name="country_flag_image">Country Flag Image</string>
     <string name="confirm">Confirm</string>
