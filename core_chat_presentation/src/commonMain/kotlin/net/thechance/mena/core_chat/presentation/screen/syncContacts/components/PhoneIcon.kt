@@ -19,8 +19,8 @@ import mena.core_chat_presentation.generated.resources.ic_phone
 import mena.core_chat_presentation.generated.resources.ic_phone_back
 import mena.core_chat_presentation.generated.resources.ic_phone_front
 import mena.core_chat_presentation.generated.resources.ic_shadow_ball
-import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
-import net.thechance.mena.designsystem.presentation.component.image.MenaImage
+import net.thechance.mena.designsystem.presentation.component.icon.Icon
+import net.thechance.mena.designsystem.presentation.component.image.Image
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -35,7 +35,7 @@ fun PhoneIcon(
             .size(128.dp, 122.dp)
             .padding(top = 18.dp, bottom = 7.dp, end = 11.dp, start = 10.dp)
     ) {
-        MenaIcon(
+        Icon(
             painter = painterResource(resource = Res.drawable.ic_phone_back),
             contentDescription = null,
             modifier = Modifier
@@ -62,7 +62,7 @@ fun PhoneIcon(
                 ),
             contentAlignment = Alignment.Center
         ) {
-            MenaIcon(
+            Icon(
                 painter = painterResource(resource = Res.drawable.ic_shadow_ball),
                 contentDescription = null,
                 modifier = Modifier
@@ -72,12 +72,12 @@ fun PhoneIcon(
                     .blur(radius = 40.dp, edgeTreatment = BlurredEdgeTreatment.Unbounded),
                 tint = Theme.colorScheme.primary.primary
             )
-            MenaImage(
+            Image(
                 painter = painterResource(resource = Res.drawable.ic_phone_front),
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
             )
-            MenaIcon(
+            Icon(
                 painter = painterResource(resource = Res.drawable.ic_phone),
                 contentDescription = null,
                 modifier = Modifier

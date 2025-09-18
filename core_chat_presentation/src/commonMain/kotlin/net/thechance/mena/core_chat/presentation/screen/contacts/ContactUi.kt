@@ -20,11 +20,11 @@ data class ContactUi(
 
     val initials: String
         get() = when {
-            !firstName.isNullOrBlank() && !lastName.isNullOrBlank() ->
+            firstName.isNotBlank() && lastName.isNotBlank() ->
                 "${firstName.firstOrNull()} ${lastName.firstOrNull()}".uppercase()
-            !firstName.isNullOrBlank() ->
+            firstName.isNotBlank() ->
                 firstName.firstOrNull()?.uppercaseChar()?.toString() ?: "?"
-            !lastName.isNullOrBlank() ->
+            lastName.isNotBlank() ->
                 lastName.firstOrNull()?.uppercaseChar()?.toString() ?: "?"
             else -> "?"
         }
