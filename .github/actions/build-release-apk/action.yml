@@ -11,6 +11,8 @@ inputs:
     required: true
   build-type:
     required: true
+  base-url:
+    required: true
 
 runs:
   using: "composite"
@@ -38,6 +40,12 @@ runs:
         wget https://download.imagemagick.org/ImageMagick/download/binaries/magick
         chmod +x magick
         mv magick /usr/local/bin/
+
+    - name: Create local.properties with base URLs
+      shell: bash
+      run: |
+        UPPER_BUILD_TYPE=$(echo "${{ inputs.build-type }}" | tr '[:lower:]' '[:upper:]')
+        echo "BASE_URL_${UPPER_BUILD_TYPE}=${{ inputs.base-url }}" >> local.properties
 
     - name: Make gradlew executable
       run: chmod +x ./gradlew
@@ -74,6 +82,18 @@ runs:
 
     - name: Set signed APK path to env
       run: |
-        APK_NAME="composeApp-${{ steps.convert.outputs.build_type_lower }}-release-unsigned-signed.apk"
-        echo "SIGNED_APK_PATH=composeApp/build/outputs/apk/${{ steps.convert.outputs.build_type_lower }}/release/$APK_NAME" >> $GITHUB_ENV
+        if [[ "${{ inputs.build-type }}" == "Production" ]]; then
+          VERSION_NAME="Mena"
+        else
+          VERSION_NAME="Mena-${{ inputs.build-type }}"
+        fi
+        
+        APK_NAME="${VERSION_NAME}-v1.0.${{ github.run_number }}"
+        
+        mv composeApp/build/outputs/apk/${{ steps.convert.outputs.build_type_lower }}/release/composeApp-${{ steps.convert.outputs.build_type_lower }}-release-unsigned-signed.apk \
+           composeApp/build/outputs/apk/${{ steps.convert.outputs.build_type_lower }}/release/$APK_NAME.apk
+        
+        echo "APK_NAME=$APK_NAME" >> $GITHUB_ENV
+        echo "SIGNED_APK_PATH=composeApp/build/outputs/apk/${{ steps.convert.outputs.build_type_lower }}/release/$APK_NAME.apk" >> $GITHUB_ENV
+        cat local.properties
       shell: bash

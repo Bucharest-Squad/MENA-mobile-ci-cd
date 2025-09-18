@@ -1,4 +1,4 @@
-name: Tests
+name: Test Coverage and Codecov Report
 
 on:
   pull_request:
@@ -67,6 +67,7 @@ jobs:
           directory: ./coverage-reports/
           fail_ci_if_error: true
 
+
   notify-slack-on-failure:
     if: failure()
     needs: test
@@ -80,9 +81,9 @@ jobs:
         with:
           slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
           slack-notification-channel-id: ${{ secrets.SLACK_NOTIFICATION_CHANNEL_ID }}
+          bot-app-id: ${{ secrets.BOT_APP_ID }}
           branch-name: ${{ github.head_ref }}
           message: |
             🚨 *Test Coverage Failed!*
-            One or more matrix jobs failed.
+            Branch Name: ${{ github.head_ref }}
             PR: ${{ github.event.pull_request.html_url }}
-            Commit: ${{ github.sha }}
