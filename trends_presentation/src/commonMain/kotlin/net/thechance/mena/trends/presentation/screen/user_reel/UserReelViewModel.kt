@@ -1,13 +1,13 @@
 package net.thechance.mena.trends.presentation.screen.user_reel
 
-import net.thechance.mena.trends.domain.repository.ReelRepository
+import net.thechance.mena.trends.domain.repository.ReelsRepository
 import net.thechance.mena.trends.presentation.shared.base.BaseViewModel
 import org.koin.android.annotation.KoinViewModel
 import org.koin.core.annotation.Provided
 
 @KoinViewModel
 class UserReelViewModel(
-    @Provided private val reelRepository: ReelRepository
+    @Provided private val reelsRepository: ReelsRepository
 ) : BaseViewModel<UserReelState, UserReelEffect>(UserReelState()),
     UserReelInteractionListener {
 
