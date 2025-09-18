@@ -2,26 +2,19 @@ package net.thechance.mena.wallet.presentation.screen.wallet.component
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,15 +26,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import mena.wallet_presentation.generated.resources.Res
 import mena.wallet_presentation.generated.resources.couldnt_load_tap_to_retry
 import mena.wallet_presentation.generated.resources.current_balance
-import mena.wallet_presentation.generated.resources.ic_arrow_left
 import mena.wallet_presentation.generated.resources.ic_reload
 import mena.wallet_presentation.generated.resources.img_silver
 import mena.wallet_presentation.generated.resources.reload
@@ -55,6 +46,7 @@ import net.thechance.mena.wallet.presentation.base.UiState
 import net.thechance.mena.wallet.presentation.base.UiState.Idle.isError
 import net.thechance.mena.wallet.presentation.base.UiState.Idle.isLoading
 import net.thechance.mena.wallet.presentation.base.UiState.Idle.isSuccess
+import net.thechance.mena.wallet.presentation.utils.calculateTextHeight
 import net.thechance.mena.wallet.presentation.utils.formatBalance
 import net.thechance.mena.wallet.presentation.utils.noRippleClickable
 import org.jetbrains.compose.resources.painterResource
@@ -178,26 +170,34 @@ private fun BalanceContent(
     onRetry: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val balanceTextStyle = Theme.typography.headline.medium
+    val balanceTextHeight = calculateTextHeight(balanceTextStyle)
+
     Crossfade(
         targetState = balance,
-        modifier = modifier
+        modifier = modifier.fillMaxWidth().height(balanceTextHeight)
     ) { balanceState ->
         when {
             balanceState.isLoading -> {
-                ThreeDotsLoadingIndicator(modifier = Modifier.padding(vertical = 14.5.dp))
+                ThreeDotsLoadingIndicator(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 14.5.dp)
+                )
             }
 
             balanceState.isError -> {
                 BalanceErrorContent(
                     onRetry = onRetry,
-                    modifier = Modifier.padding(vertical = 7.dp))
+                    modifier = Modifier.padding(vertical = 7.dp)
+                )
             }
 
             balanceState.isSuccess -> {
                 Text(
                     text = formatBalance(balanceState.let { (it as UiState.Success).data }),
-                    style = Theme.typography.headline.medium,
+                    style = balanceTextStyle,
                     color = Theme.colorScheme.shadePrimary,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
         }
@@ -209,8 +209,8 @@ private fun BalanceErrorContent(
     onRetry: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Row (
-        modifier = modifier.fillMaxWidth().noRippleClickable{ onRetry() },
+    Row(
+        modifier = modifier.fillMaxWidth().noRippleClickable { onRetry() },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
@@ -232,7 +232,7 @@ private fun BalanceErrorContent(
 @Composable
 private fun BalanceCardPreview() {
     MenaTheme {
-        Column (
+        Column(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             BalanceCard(balance = UiState.Loading, onRetry = {})

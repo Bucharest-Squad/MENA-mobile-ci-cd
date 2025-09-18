@@ -22,7 +22,6 @@ class WalletViewModel(
     }
 
     private fun getBalance() {
-        //TODO: get real user id
         tryToExecute(
             onStart = ::onGetBalanceStart,
             callee = { balanceRepository.getBalance() },
@@ -75,7 +74,7 @@ class WalletViewModel(
     private fun hideSnackBar() {
         updateState { oldState ->
             oldState.copy(
-                snackBar = SnackBarState()
+                snackBar = oldState.snackBar.copy(isVisible = false)
             )
         }
     }

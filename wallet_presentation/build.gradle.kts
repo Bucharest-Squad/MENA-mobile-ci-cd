@@ -81,4 +81,6 @@ android {
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
     }
+
+    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 }
