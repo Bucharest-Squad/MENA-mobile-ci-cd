@@ -5,7 +5,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class CategoryDto(
-    val id : Int,
+    @SerialName("id")
+    val id : String,
+    @SerialName("name")
     val name : String,
     @SerialName("emoji")
     val iconPath : String

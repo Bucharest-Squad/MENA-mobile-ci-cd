@@ -6,14 +6,19 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ReelDto(
     @SerialName("reelId")
-    val id : Int,
+    val id : String,
     @SerialName("thumbnailUrl")
-    val reelImage : String,
+    val reelImageUrl : String,
     @SerialName("videoUrl")
-    val reelUrl : String,
+    val videoUrl : String,
+    @SerialName("description")
     val description : String,
+    @SerialName("createdAt")
     val createdAt : String,
+    @SerialName("likesCount")
     val likesCount : Int,
+    @SerialName("viewsCount")
     val viewsCount : Int,
+    @SerialName("categories")
     val categories : List<CategoryDto>
 )
