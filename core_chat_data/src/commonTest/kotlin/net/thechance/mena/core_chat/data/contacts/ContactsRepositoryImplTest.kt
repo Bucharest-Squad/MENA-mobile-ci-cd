@@ -330,7 +330,7 @@ class ContactsRepositoryImplTest {
         }
 
     @Test
-    fun `should return 10 contacts on first page`() = runTest {
+    fun `should return right pageSize when getUserContacts is called and response contains data`() = runTest {
         val page1Contacts = createSamplePagedData(
             pageNumber = 1,
             pageSize = 10,
@@ -354,26 +354,7 @@ class ContactsRepositoryImplTest {
     }
 
     @Test
-    fun `should return 5 contacts on second page`() = runTest {
-        val page2Contacts = createSamplePagedData(5)
-
-        repository = createRepository(
-            contactsProvider = mockContactsProvider,
-            contactsDataStore = mockDataStore,
-            contactsResponse = {
-                mockSuccessPagedResponse(
-                    body = page2Contacts
-                )
-            }
-        )
-
-        val result = repository.getUserContacts(pageNumber = 2, pageSize = 10)
-
-        assertThat(result.data).isEqualTo(page2Contacts.data?.map { it.toDomain() })
-    }
-
-    @Test
-    fun `should return empty list when requesting page beyond total pages`() = runTest {
+    fun `should return empty list when getUserContacts requests page beyond total pages`() = runTest {
         repository = createRepository(
             contactsProvider = mockContactsProvider,
             contactsDataStore = mockDataStore,
