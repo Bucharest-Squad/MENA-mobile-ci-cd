@@ -10,5 +10,5 @@ data class CategoryDto(
     @SerialName("name")
     val name : String,
     @SerialName("emoji")
-    val iconPath : String
+    val emoji : String
 )
