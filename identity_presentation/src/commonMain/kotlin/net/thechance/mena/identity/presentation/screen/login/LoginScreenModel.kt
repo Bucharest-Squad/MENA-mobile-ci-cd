@@ -3,10 +3,13 @@ package net.thechance.mena.identity.presentation.screen.login
 import kotlinx.coroutines.CoroutineScope
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import net.thechance.mena.identity.domain.useCase.LoginUseCase
+import org.koin.core.logger.Logger
 import kotlin.math.log
 
-class LoginScreenModel :
-    BaseScreenModel<LoginScreenUIState, LoginScreenUIEffect>(LoginScreenUIState()),
+class LoginScreenModel (
+   val loginUseCase: LoginUseCase
+): BaseScreenModel<LoginScreenUIState, LoginScreenUIEffect>(LoginScreenUIState()),
     LoginScreenInteractionListener {
     override val viewModelScope: CoroutineScope
         get() = screenModelScope
@@ -16,8 +19,11 @@ class LoginScreenModel :
         updateState { copy(isLoading = true, errorMessage = null) }
         tryToExecute(
             function = {
-                kotlinx.coroutines.delay(2000)
-                true
+               loginUseCase.login(
+                   state.value.phoneCode,
+                   state.value.phoneNumber,
+                   state.value.password
+               )
             },
             onSuccess = {
                 updateState { copy(isLoading = false) }
