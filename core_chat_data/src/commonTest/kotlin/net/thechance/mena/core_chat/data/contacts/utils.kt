@@ -12,42 +12,73 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.HttpResponseData
 import io.ktor.http.ContentType
 import io.ktor.http.Headers
+import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
+import io.ktor.http.headersOf
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
 import net.thechance.mena.core_chat.data.contacts.dto.ContactDto
+import net.thechance.mena.core_chat.data.contacts.fakes.sampleContactDto
 import net.thechance.mena.core_chat.data.network.ApiConstants.CONTACTS_ENDPOINT
 import net.thechance.mena.core_chat.data.network.ApiConstants.SYNC_CONTACTS_ENDPOINT
 import net.thechance.mena.core_chat.data.shared.dto.BaseResponseDto
 import net.thechance.mena.core_chat.data.shared.dto.PagedDataDto
 
-inline fun <reified T> successResponse(json: Json, body: T): String {
-    return json.encodeToString(
+val jsonSerialization = Json { ignoreUnknownKeys = true }
+val jsonHeaders = headersOf(
+    HttpHeaders.ContentType,
+    ContentType.Application.Json.toString()
+)
+
+inline fun <reified T> successResponse(
+    body: T
+): String {
+    return jsonSerialization.encodeToString(
         BaseResponseDto.serializer(serializer<T>()),
         BaseResponseDto(body = body, status = 200, success = true)
     )
 }
 
-inline fun <reified T> errorResponse(json: Json, status: Int, message: String): String {
-    return json.encodeToString(
+inline fun <reified T> errorResponse(
+    status: Int,
+    message: String = ""
+): String {
+    return jsonSerialization.encodeToString(
         BaseResponseDto.serializer(serializer<T>()),
         BaseResponseDto(status = status, success = false, message = message)
     )
 }
 
-fun MockRequestHandleScope.defaultContactsResponse(json: Json, headers: Headers) = respond(
+inline fun <reified T> MockRequestHandleScope.mockSuccessPagedResponse(
+    body: PagedDataDto<T>
+): HttpResponseData {
+    return respond(
+        content = successResponse(body),
+        status = HttpStatusCode.OK,
+        headers = jsonHeaders
+    )
+}
+
+inline fun <reified T> MockRequestHandleScope.mockErrorPagedResponse(
+    status: Int,
+    message: String = ""
+): HttpResponseData {
+    return respond(
+        content = errorResponse<T>(status, message),
+        status = HttpStatusCode.OK,
+        headers = jsonHeaders
+    )
+}
+
+
+
+fun MockRequestHandleScope.defaultContactsResponse() = respond(
     content = successResponse<PagedDataDto<ContactDto>>(
-        json = json,
         body = PagedDataDto(
             data = listOf(
-                ContactDto(
-                    name = "Bilal Azzam",
-                    phoneNumber = "01026388780",
-                    isMenaMember = true,
-                    imageUrl = "http://example.com/image.jpg"
-                )
+                sampleContactDto
             ),
             pageNumber = 1,
             pageSize = 10,
@@ -56,30 +87,25 @@ fun MockRequestHandleScope.defaultContactsResponse(json: Json, headers: Headers)
         )
     ),
     status = HttpStatusCode.OK,
-    headers = headers
+    headers = jsonHeaders
 )
 
-fun MockRequestHandleScope.defaultSyncContactsResponse(json: Json, headers: Headers) = respond(
+fun MockRequestHandleScope.defaultSyncContactsResponse() = respond(
     content = successResponse<Unit>(
-        json = json,
         body = Unit
     ),
     status = HttpStatusCode.OK,
-    headers = headers
+    headers = jsonHeaders
 )
 
 fun createRepository(
     contactsProvider: ContactsProvider,
     contactsDataStore: DataStore<Preferences>,
-    json: Json,
-    jsonHeaders: Headers,
     contactsResponse: (suspend MockRequestHandleScope.() -> HttpResponseData)? = null,
     syncContactsResponse: (suspend MockRequestHandleScope.() -> HttpResponseData)? = null
 ): ContactsRepositoryImpl {
     return ContactsRepositoryImpl(
         client = createHttpClient(
-            headers = jsonHeaders,
-            json = json,
             contactsResponse = contactsResponse,
             syncContactsResponse = syncContactsResponse
         ),
@@ -89,31 +115,29 @@ fun createRepository(
 }
 
 fun createHttpClient(
-    headers: Headers,
-    json: Json,
     contactsResponse: (suspend MockRequestHandleScope.() -> HttpResponseData)? = null,
     syncContactsResponse: (suspend MockRequestHandleScope.() -> HttpResponseData)? = null
 ) = HttpClient(MockEngine { request ->
     when (request.url.encodedPath) {
         CONTACTS_ENDPOINT -> if (contactsResponse == null)
-            defaultContactsResponse(json, headers)
+            defaultContactsResponse()
         else
             contactsResponse()
 
         SYNC_CONTACTS_ENDPOINT -> if (syncContactsResponse == null)
-            defaultSyncContactsResponse(json, headers)
+            defaultSyncContactsResponse()
         else
             syncContactsResponse()
 
         else -> respond(
             content = "",
             status = HttpStatusCode.BadRequest,
-            headers = headers
+            headers = jsonHeaders
         )
     }
 }) {
     install(ContentNegotiation) {
-        json(json)
+        json(jsonSerialization)
     }
     install(DefaultRequest) {
         contentType(ContentType.Application.Json)
