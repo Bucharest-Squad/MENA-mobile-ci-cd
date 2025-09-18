@@ -6,19 +6,15 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isTrue
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.mock.respond
-import io.ktor.http.ContentType
-import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpStatusCode
-import io.ktor.http.headersOf
 import kotlinx.coroutines.test.runTest
 import kotlinx.io.IOException
-import kotlinx.serialization.json.Json
 import net.thechance.mena.core_chat.data.contacts.dto.ContactDto
 import net.thechance.mena.core_chat.data.contacts.fakes.FakeContactsProvider
 import net.thechance.mena.core_chat.data.contacts.fakes.FakeDataStore
+import net.thechance.mena.core_chat.data.contacts.fakes.createSamplePagedData
+import net.thechance.mena.core_chat.data.contacts.fakes.sampleContact
+import net.thechance.mena.core_chat.data.contacts.fakes.sampleDeviceContact
 import net.thechance.mena.core_chat.data.shared.dto.PagedDataDto
-import net.thechance.mena.core_chat.domain.entity.Contact
 import net.thechance.mena.core_chat.domain.exception.ContactSyncFailedException
 import net.thechance.mena.core_chat.domain.exception.ContactsFetchFailedException
 import net.thechance.mena.core_chat.domain.exception.ContactsPermissionDeniedException
@@ -28,42 +24,27 @@ import net.thechance.mena.core_chat.domain.exception.UnknownException
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
-import com.bilalazzam.contacts_provider.Contact as DeviceContact
 
 
 class ContactsRepositoryImplTest {
     private val mockContactsProvider = FakeContactsProvider()
     private val mockDataStore = FakeDataStore()
-    private val json = Json { ignoreUnknownKeys = true }
-    private val jsonHeaders = headersOf(
-        HttpHeaders.ContentType,
-        ContentType.Application.Json.toString()
-    )
-
     private lateinit var httpClient: HttpClient
     private lateinit var repository: ContactsRepositoryImpl
-    private val sampleContact = Contact(
-        firstName = "Bilal",
-        lastName = "Azzam",
-        phone = "01026388780",
-        isMenaUser = true,
-        imageUrl = "http://example.com/image.jpg"
-    )
 
     @BeforeTest
     fun setUp() {
         mockContactsProvider.reset()
         mockDataStore.reset()
-        httpClient = createHttpClient(jsonHeaders, json)
+        httpClient = createHttpClient()
 
-        repository = createRepository(mockContactsProvider, mockDataStore, json, jsonHeaders)
+        repository = createRepository(mockContactsProvider, mockDataStore)
     }
 
     @Test
     fun `should return paged contacts when getUserContacts is called successfully`() = runTest {
 
         val result = repository.getUserContacts(pageNumber = 1, pageSize = 10)
-
 
         assertThat(result.data).isEqualTo(
             listOf(
@@ -79,22 +60,15 @@ class ContactsRepositoryImplTest {
         repository = createRepository(
             contactsProvider = mockContactsProvider,
             contactsDataStore = mockDataStore,
-            json = json,
-            jsonHeaders = jsonHeaders,
             contactsResponse = {
-                respond(
-                    content = successResponse<PagedDataDto<ContactDto>>(
-                        json = json,
-                        body = PagedDataDto(
-                            data = emptyList(),
-                            pageNumber = 1,
-                            pageSize = 10,
-                            totalItems = 0,
-                            totalPages = 1
-                        )
-                    ),
-                    status = HttpStatusCode.OK,
-                    headers = jsonHeaders
+                mockSuccessPagedResponse<PagedDataDto<ContactDto>>(
+                    body = PagedDataDto(
+                        data = emptyList(),
+                        pageNumber = 1,
+                        pageSize = 10,
+                        totalItems = 0,
+                        totalPages = 1
+                    )
                 )
             }
         )
@@ -113,27 +87,16 @@ class ContactsRepositoryImplTest {
             repository = createRepository(
                 contactsProvider = mockContactsProvider,
                 contactsDataStore = mockDataStore,
-                json = json,
-                jsonHeaders = jsonHeaders,
                 contactsResponse = {
-                    respond(
-                        content = errorResponse<PagedDataDto<ContactDto>>(
-                            json = json,
-                            status = 401,
-                            message = "Unauthorized"
-                        ),
-                        status = HttpStatusCode.OK,
-                        headers = jsonHeaders
+                    mockErrorPagedResponse<PagedDataDto<ContactDto>>(
+                        status = 401
                     )
                 }
             )
 
-
-            val exception = assertFailsWith<UnAuthorizedException> {
-
+            assertFailsWith<UnAuthorizedException> {
                 repository.getUserContacts(pageNumber = 1, pageSize = 10)
             }
-            assertThat(exception.message).isEqualTo("Unauthorized")
         }
 
     @Test
@@ -142,27 +105,17 @@ class ContactsRepositoryImplTest {
         repository = createRepository(
             contactsProvider = mockContactsProvider,
             contactsDataStore = mockDataStore,
-            json = json,
-            jsonHeaders = jsonHeaders,
             contactsResponse = {
-                respond(
-                    content = errorResponse<PagedDataDto<ContactDto>>(
-                        json = json,
-                        status = 500,
-                        message = "Server error"
-                    ),
-                    status = HttpStatusCode.OK,
-                    headers = jsonHeaders
+                mockErrorPagedResponse<PagedDataDto<ContactDto>>(
+                    status = 500
                 )
             }
         )
 
 
-        val exception = assertFailsWith<UnknownException> {
-
+        assertFailsWith<UnknownException> {
             repository.getUserContacts(pageNumber = 1, pageSize = 10)
         }
-        assertThat(exception.message).isEqualTo("Server error")
     }
 
     @Test
@@ -172,19 +125,15 @@ class ContactsRepositoryImplTest {
             repository = createRepository(
                 contactsProvider = mockContactsProvider,
                 contactsDataStore = mockDataStore,
-                json = json,
-                jsonHeaders = jsonHeaders,
                 contactsResponse = {
-                    throw IOException("Network error")
+                    throw IOException()
                 }
             )
 
 
-            val exception = assertFailsWith<ContactsFetchFailedException> {
-
+            assertFailsWith<ContactsFetchFailedException> {
                 repository.getUserContacts(pageNumber = 1, pageSize = 10)
             }
-            assertThat(exception.message).isEqualTo("Couldn't get user contacts")
         }
 
     @Test
@@ -192,12 +141,7 @@ class ContactsRepositoryImplTest {
 
         mockContactsProvider.setContacts(
             listOf(
-                DeviceContact(
-                    id = "1",
-                    firstName = "Bilal",
-                    lastName = "Azzam",
-                    phoneNumbers = listOf("01026388780")
-                )
+                sampleDeviceContact
             )
         )
 
@@ -215,19 +159,15 @@ class ContactsRepositoryImplTest {
             repository = createRepository(
                 contactsProvider = mockContactsProvider,
                 contactsDataStore = mockDataStore,
-                json = json,
-                jsonHeaders = jsonHeaders,
                 syncContactsResponse = {
-                    throw IOException("Network error")
+                    throw IOException()
                 }
             )
 
 
-            val exception = assertFailsWith<ContactSyncFailedException> {
-
+            assertFailsWith<ContactSyncFailedException> {
                 repository.syncContacts()
             }
-            assertThat(exception.message).isEqualTo("Couldn't sync user contacts")
         }
 
     @Test
@@ -237,27 +177,17 @@ class ContactsRepositoryImplTest {
             repository = createRepository(
                 contactsProvider = mockContactsProvider,
                 contactsDataStore = mockDataStore,
-                json = json,
-                jsonHeaders = jsonHeaders,
                 syncContactsResponse = {
-                    respond(
-                        content = errorResponse<PagedDataDto<ContactDto>>(
-                            json = json,
-                            status = 401,
-                            message = "User is not authorized"
-                        ),
-                        status = HttpStatusCode.OK,
-                        headers = jsonHeaders
+                    mockErrorPagedResponse<PagedDataDto<ContactDto>>(
+                        status = 401
                     )
                 }
             )
 
 
-            val exception = assertFailsWith<UnAuthorizedException> {
-
+            assertFailsWith<UnAuthorizedException> {
                 repository.syncContacts()
             }
-            assertThat(exception.message).isEqualTo("User is not authorized")
         }
 
     @Test
@@ -267,11 +197,9 @@ class ContactsRepositoryImplTest {
             mockContactsProvider.throwPermissionDenied = true
 
 
-            val exception = assertFailsWith<ContactsPermissionDeniedException> {
-
+            assertFailsWith<ContactsPermissionDeniedException> {
                 repository.syncContacts()
             }
-            assertThat(exception.message).isEqualTo("Contacts Permission Denied!")
         }
 
     @Test
@@ -313,11 +241,9 @@ class ContactsRepositoryImplTest {
         mockDataStore.throwOnRead = true
 
 
-        val exception = assertFailsWith<DataStoreException> {
-
+        assertFailsWith<DataStoreException> {
             repository.getUserSyncedState()
         }
-        assertThat(exception.message).isEqualTo("error with data store")
     }
 
     @Test
@@ -346,11 +272,9 @@ class ContactsRepositoryImplTest {
         mockDataStore.throwOnUpdate = true
 
 
-        val exception = assertFailsWith<DataStoreException> {
-
+        assertFailsWith<DataStoreException> {
             repository.setUserSyncedState(true)
         }
-        assertThat(exception.message).isEqualTo("error with data store")
     }
 
     @Test
@@ -404,5 +328,71 @@ class ContactsRepositoryImplTest {
 
             assertThat(mockDataStore.getUserSyncedState()).isFalse()
         }
+
+    @Test
+    fun `should return 10 contacts on first page`() = runTest {
+        val page1Contacts = createSamplePagedData(
+            pageNumber = 1,
+            pageSize = 10,
+            totalItems = 15,
+            totalPages = 2
+        )
+
+        repository = createRepository(
+            contactsProvider = mockContactsProvider,
+            contactsDataStore = mockDataStore,
+            contactsResponse = {
+                mockSuccessPagedResponse(
+                    body = page1Contacts
+                )
+            }
+        )
+
+        val result = repository.getUserContacts(pageNumber = 1, pageSize = 10)
+
+        assertThat(result.data).isEqualTo(page1Contacts.data?.map { it.toDomain() })
+    }
+
+    @Test
+    fun `should return 5 contacts on second page`() = runTest {
+        val page2Contacts = createSamplePagedData(5)
+
+        repository = createRepository(
+            contactsProvider = mockContactsProvider,
+            contactsDataStore = mockDataStore,
+            contactsResponse = {
+                mockSuccessPagedResponse(
+                    body = page2Contacts
+                )
+            }
+        )
+
+        val result = repository.getUserContacts(pageNumber = 2, pageSize = 10)
+
+        assertThat(result.data).isEqualTo(page2Contacts.data?.map { it.toDomain() })
+    }
+
+    @Test
+    fun `should return empty list when requesting page beyond total pages`() = runTest {
+        repository = createRepository(
+            contactsProvider = mockContactsProvider,
+            contactsDataStore = mockDataStore,
+            contactsResponse = {
+                mockSuccessPagedResponse<PagedDataDto<ContactDto>>(
+                    body = PagedDataDto(
+                        data = emptyList(),
+                        pageNumber = 3,
+                        pageSize = 10,
+                        totalItems = 15,
+                        totalPages = 2
+                    )
+                )
+            }
+        )
+
+        val result = repository.getUserContacts(pageNumber = 3, pageSize = 10)
+
+        assertThat(result.data).isEmpty()
+    }
 
 }

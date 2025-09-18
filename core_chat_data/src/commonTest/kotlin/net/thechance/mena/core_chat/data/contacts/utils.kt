@@ -11,7 +11,6 @@ import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.HttpResponseData
 import io.ktor.http.ContentType
-import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
@@ -71,7 +70,6 @@ inline fun <reified T> MockRequestHandleScope.mockErrorPagedResponse(
         headers = jsonHeaders
     )
 }
-
 
 
 fun MockRequestHandleScope.defaultContactsResponse() = respond(

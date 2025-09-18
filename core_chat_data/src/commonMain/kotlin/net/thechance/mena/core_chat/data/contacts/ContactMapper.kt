@@ -21,7 +21,7 @@ private fun List<ContactDto>.toListOfContact(): List<Contact> {
     return map { it.toDomain() }
 }
 
-private fun ContactDto.toDomain(): Contact {
+fun ContactDto.toDomain(): Contact {
     val names = name?.trim()?.split(" ", limit = 2) ?: listOf()
     val firstName = names.getOrNull(0).orEmpty()
     val lastName = names.getOrNull(1).orEmpty()
