@@ -63,8 +63,29 @@ class SyncContactsViewModel(
         }
     }
 
+    fun checkPermissions() {
+        tryToExecute(
+            execute = { permissionsController.isPermissionGranted(Permission.CONTACTS) },
+            onSuccess = { granted ->
+                if (granted) {
+                    updateState {
+                        it.copy(
+                            deniedPermanently = false,
+                            showSyncView = true
+                        )
+                    }
+                    syncContacts()
+                }
+            }
+        )
+    }
+
     override fun onSnackBarDismiss() {
         updateState { it.copy(snackBarData = null) }
+    }
+
+    override fun onGoToSettingsClick() {
+        permissionsController.openAppSettings()
     }
 
     private fun syncContacts() {
