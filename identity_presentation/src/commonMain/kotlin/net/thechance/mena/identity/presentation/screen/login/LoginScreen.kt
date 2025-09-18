@@ -21,7 +21,6 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.Navigator
 import kotlinx.coroutines.delay
-import mena.identity_presentation.generated.resources.Iraq_flag
 import mena.identity_presentation.generated.resources.Res
 import mena.identity_presentation.generated.resources.error
 import mena.identity_presentation.generated.resources.forget_password
