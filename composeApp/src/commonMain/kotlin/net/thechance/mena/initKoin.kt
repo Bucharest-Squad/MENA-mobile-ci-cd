@@ -12,7 +12,7 @@ fun initKoin(config: KoinAppDeclaration? = null) {
         config?.invoke(this)
         val identityModules = listOf(
             identityScreensModule,
-            domainModule
+            domainModule,
             IdentityPlatformModule,
             identityDataModule,
         )
