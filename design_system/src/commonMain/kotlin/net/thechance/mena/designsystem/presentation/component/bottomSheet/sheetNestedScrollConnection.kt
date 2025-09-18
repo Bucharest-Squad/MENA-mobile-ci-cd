@@ -1,7 +1,6 @@
 package net.thechance.mena.designsystem.presentation.component.bottomSheet
 
 import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.ui.geometry.Offset
