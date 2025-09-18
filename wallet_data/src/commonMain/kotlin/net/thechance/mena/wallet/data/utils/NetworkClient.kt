@@ -78,7 +78,7 @@ class NetworkClient {
     }
 
     companion object {
-        private const val BASE_URL = "https://" //TODO: add base url
+        private const val BASE_URL = "https://mena-dev.the-chance.net/"
         private const val TIME_OUT_INTERVAL_MILLI = 15_000L
     }
 }
