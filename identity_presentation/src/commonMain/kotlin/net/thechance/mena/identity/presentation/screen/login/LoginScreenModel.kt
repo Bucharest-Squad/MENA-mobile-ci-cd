@@ -6,6 +6,7 @@ import net.thechance.mena.identity.presentation.base.BaseScreenModel
 import net.thechance.mena.identity.domain.useCase.LoginUseCase
 import net.thechance.mena.identity.presentation.countryPicker.menaCountries.MenaCountry
 import net.thechance.mena.identity.presentation.countryPicker.selectByCountry
+import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
 
 class LoginScreenModel (
    val loginUseCase: LoginUseCase
@@ -20,7 +21,7 @@ class LoginScreenModel (
         tryToExecute(
             function = {
                loginUseCase.login(
-                   state.value.countryPickerUIState.selectedCountry?.callingCode?:"+964",
+                   state.value.countryPickerUIState.currentCountry.callingCode,
                    state.value.phoneNumber,
                    state.value.password
                )
@@ -30,7 +31,7 @@ class LoginScreenModel (
                 sendNewEffect(LoginScreenUIEffect.NavigateToHome)
             },
             onError = { errorState ->
-                updateState { copy(isLoading = false, errorMessage = "") }
+                updateState { copy(isLoading = false, errorMessage = mapErrorToMessage(errorState)) }
             }
         )
     }

@@ -24,12 +24,12 @@ import kotlinx.coroutines.delay
 import mena.identity_presentation.generated.resources.Res
 import mena.identity_presentation.generated.resources.error
 import mena.identity_presentation.generated.resources.forget_password
+import mena.identity_presentation.generated.resources.ic_close_circle
 import mena.identity_presentation.generated.resources.ic_close_eye
 import mena.identity_presentation.generated.resources.ic_lock
 import mena.identity_presentation.generated.resources.ic_open_eye
 import mena.identity_presentation.generated.resources.login
 import mena.identity_presentation.generated.resources.login_prompt
-import mena.identity_presentation.generated.resources.mena_logo
 import mena.identity_presentation.generated.resources.password
 import mena.identity_presentation.generated.resources.phone_number
 import mena.identity_presentation.generated.resources.register_now
@@ -162,7 +162,7 @@ class LoginScreen : BaseScreen<
                     SnackBar(
                         title = stringResource(Res.string.error),
                         message = state.errorMessage ?: "",
-                        leadingIcon = painterResource(Res.drawable.mena_logo),
+                        leadingIcon = painterResource(Res.drawable.ic_close_circle),
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 12.dp)
