@@ -16,8 +16,8 @@ fun CategoryDto.toEntity() =
 fun ReelDto.toEntity() =
     Reel(
         id = id,
-        thumbnailUrl = reelImage,
-        videoUrl = reelUrl,
+        thumbnailUrl = reelImageUrl,
+        videoUrl = videoUrl,
         description = description,
         likesCount = likesCount,
         viewsCount = viewsCount,
