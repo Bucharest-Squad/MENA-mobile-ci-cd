@@ -1,7 +1,7 @@
 package net.thechance.mena.wallet.data.di
 
-import org.koin.dsl.module
+import org.koin.core.annotation.ComponentScan
 
-val walletDataModule = module {
-    includes(walletRepositoryModule)
-}
+
+@ComponentScan("net.thechance.mena.wallet.data")
+class WalletDataModule

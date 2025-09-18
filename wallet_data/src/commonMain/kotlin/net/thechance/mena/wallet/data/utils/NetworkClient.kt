@@ -16,9 +16,11 @@ import io.ktor.client.request.put
 import io.ktor.client.statement.HttpResponse
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import org.koin.core.annotation.Single
 
 expect val platformHttpClientEngineFactory: HttpClientEngineFactory<HttpClientEngineConfig>
 
+@Single
 class NetworkClient {
     private var client: HttpClient = buildClient()
 
