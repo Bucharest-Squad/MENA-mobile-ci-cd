@@ -27,7 +27,7 @@ class LoginScreenModel :
                 countryPickerUIState = it.countryPickerUIState.copy(
                     selectedCountry = country,
                     countries = it.countryPickerUIState.countries.selectByCountry(country),
-                    isEnabled = true
+                    isEnabled = it.countryPickerUIState.selectedCountry != country
                 )
             )
         }
