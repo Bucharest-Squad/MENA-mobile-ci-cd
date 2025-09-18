@@ -5,7 +5,9 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.isSuccess
 import io.ktor.util.reflect.TypeInfo
-import net.thechance.mena.core_chat.data.shared.dto.BaseResponseDto
+import io.ktor.util.reflect.typeInfo
+import net.thechance.mena.core_chat.data.contacts.dto.ContactDto
+import net.thechance.mena.core_chat.data.shared.dto.PagedDataDto
 import net.thechance.mena.core_chat.domain.exception.ChatException
 import net.thechance.mena.core_chat.domain.exception.ContactsPermissionDeniedException
 import net.thechance.mena.core_chat.domain.exception.UnAuthorizedException
@@ -18,65 +20,18 @@ interface BaseRepository {
         defaultException: (Throwable) -> ChatException = { e ->
             UnknownException("Unknown error occurred", e)
         },
+        bodyType: TypeInfo,
         maxAttempts: Int = 1,
-        call: suspend () -> BaseResponseDto<T>,
+        call: suspend () -> HttpResponse,
     ): T? {
         return runCatchingWithException(defaultException) {
             //TODO: handle network connection
             retry(maxAttempts) {
                 val response = call()
-                response.getSuccessBodyOrThrow()
+                response.getSuccessBodyOrThrow(bodyType)
             }
         }
     }
-
-    suspend fun <T> tryNetworkCall2(
-        defaultException: (Throwable) -> ChatException = { e ->
-            UnknownException("UnKnown error occured", e)
-        },
-        maxAttempts: Int = 1,
-        call: suspend ()-> HttpResponse,
-        typeInfo: TypeInfo
-    ): T{
-        return retry2(maxAttempts) {
-            val response = call()
-            runCatching { manageResponse1<T>(response = response, typeInfo= typeInfo, defaultException = defaultException) }
-                .getOrElse { throw defaultException(it) }
-        }
-    }
-
-    suspend fun <T> manageResponse1(response: HttpResponse, typeInfo: TypeInfo, defaultException: (e: Exception) -> ChatException): T{
-        return when {
-            response.status.isSuccess() -> response.body(typeInfo = typeInfo)
-            response.status == HttpStatusCode.Unauthorized -> throw UnAuthorizedException()
-            response.status == HttpStatusCode.BadRequest -> throw defaultException(Exception("bad request"))
-            response.status.value in 500..599 -> throw defaultException(Exception("server error"))
-            else -> throw defaultException(Exception("unknown error"))
-        }
-    }
-//    suspend fun tryNetworkCall2(
-//        defaultException: (Throwable) -> ChatException = { e ->
-//            UnknownException("Unknown error occurred", e)
-//        },
-//        maxAttempts: Int = 1,
-//        call: suspend () -> HttpResponse,
-//    ): HttpResponse {
-//        return retry2 {
-//            val response = call()
-//            manageResponse(response)
-//        }
-//    }
-//
-//    fun  manageResponse(response: HttpResponse): HttpResponse {
-//        if(response.status.isSuccess()){
-//            return response
-//        }else if(response.status == HttpStatusCode.Unauthorized) {
-//            throw UnAuthorizedException()
-//        }else {
-//            throw UnknownException()
-//        }
-//    }
-
 
     suspend fun <T> retry(
         maxAttempts: Int = 3, block: suspend () -> T?
@@ -88,21 +43,6 @@ interface BaseRepository {
         } catch (e: Throwable) {
             if (maxAttempts <= 1) throw e
             retry(
-                maxAttempts = maxAttempts - 1, block = block
-            )
-        }
-    }
-
-    suspend fun <T> retry2(
-        maxAttempts: Int = 3, block: suspend () -> T
-    ): T {
-        return try {
-            block()
-        } catch (e: ChatException) {
-            throw e
-        } catch (e: Throwable) {
-            if (maxAttempts <= 1) throw e
-            retry2(
                 maxAttempts = maxAttempts - 1, block = block
             )
         }
@@ -122,15 +62,14 @@ interface BaseRepository {
         }
     }
 
-    private fun <T> BaseResponseDto<T>.getSuccessBodyOrThrow(): T? {
+    private suspend fun <T> HttpResponse.getSuccessBodyOrThrow(bodyType: TypeInfo): T? {
         return when {
-            this.success -> this.body
-            this.status == STATUS_UNAUTHORIZED -> throw UnAuthorizedException(this.message)
+            this.status.isSuccess() -> this.body(bodyType)
+            this.status == HttpStatusCode.Unauthorized -> throw UnAuthorizedException()
             //TODO: handle more cases like 500, 404
-            else -> throw UnknownException(this.message)
+            else -> throw UnknownException(this.status.description)
         }
     }
-
 
     suspend fun <T> tryCall(
         defaultException: (Throwable) -> ChatException,
@@ -141,10 +80,5 @@ interface BaseRepository {
         } catch (e: Exception) {
             throw defaultException(e)
         }
-    }
-
-
-    companion object {
-        private const val STATUS_UNAUTHORIZED = 401
     }
 }
