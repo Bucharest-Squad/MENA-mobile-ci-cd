@@ -39,6 +39,12 @@ runs:
         chmod +x magick
         mv magick /usr/local/bin/
 
+    - name: Create local.properties with base URLs
+      run: |
+        echo "BASE_URL_DEVELOPMENT=${{ secrets.BASE_URL_DEVELOPMENT }}" >> local.properties
+        echo "BASE_URL_PRODUCTION=${{ secrets.BASE_URL_PRODUCTION }}" >> local.properties
+        echo "BASE_URL_STAGING=${{ secrets.BASE_URL_STAGING }}" >> local.properties
+
     - name: Make gradlew executable
       run: chmod +x ./gradlew
       shell: bash
@@ -87,5 +93,5 @@ runs:
         
         echo "APK_NAME=$APK_NAME" >> $GITHUB_ENV
         echo "SIGNED_APK_PATH=composeApp/build/outputs/apk/${{ steps.convert.outputs.build_type_lower }}/release/$APK_NAME.apk" >> $GITHUB_ENV
-        ls
+        cat local.properties
       shell: bash
