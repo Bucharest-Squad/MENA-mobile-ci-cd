@@ -1,3 +1,8 @@
 package net.thechance.mena.identity.presentation.screen.login
 
-class LoginScreenUIState
+import net.thechance.mena.identity.presentation.countryPicker.CountryPickerUIState
+
+data class LoginScreenUIState(
+    val showBottomSheet: Boolean = false,
+    val countryPickerUIState: CountryPickerUIState = CountryPickerUIState()
+)
