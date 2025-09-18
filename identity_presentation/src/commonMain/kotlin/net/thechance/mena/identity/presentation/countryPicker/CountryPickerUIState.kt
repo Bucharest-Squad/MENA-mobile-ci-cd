@@ -3,7 +3,8 @@ package net.thechance.mena.identity.presentation.countryPicker
 import net.thechance.mena.identity.presentation.countryPicker.menaCountries.MenaCountry
 
 data class CountryPickerUIState(
-    val selectedCountry: MenaCountry? = null,
+    val selectedCountry: MenaCountry? = MenaCountry.IRAQ,
+    val currentCountry: MenaCountry = MenaCountry.IRAQ,
     val isEnabled: Boolean = false,
     val countries: List<SelectableCountryItemUiState> = defaultCountries
 ) {
@@ -12,7 +13,7 @@ data class CountryPickerUIState(
             SelectableCountryItemUiState(
                 selectableCountry = Selectable(
                     item = country,
-                    isSelected = false
+                    isSelected = country == MenaCountry.IRAQ // Default selected country
                 )
             )
         }

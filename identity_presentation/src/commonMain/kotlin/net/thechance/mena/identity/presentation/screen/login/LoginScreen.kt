@@ -55,10 +55,10 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 class LoginScreen : BaseScreen<
-    LoginScreenModel,
-    LoginScreenUIState,
-    LoginScreenUIEffect,
-    LoginScreenInteractionListener>() {
+        LoginScreenModel,
+        LoginScreenUIState,
+        LoginScreenUIEffect,
+        LoginScreenInteractionListener>() {
     @Composable
     override fun Content() {
         InitScreen(getScreenModel())
@@ -103,8 +103,8 @@ class LoginScreen : BaseScreen<
                             .padding(bottom = 4.dp)
                     )
                     PhoneNumberInput(
-                        state.phoneCode,
-                        painterResource(Res.drawable.Iraq_flag),
+                        state.countryPickerUIState.currentCountry.callingCode,
+                        painterResource(state.countryPickerUIState.currentCountry.flagImage),
                         onCountryClick = listener::onPhoneCodeClicked,
                         phoneNumber = state.phoneNumber,
                         onPhoneChange = listener::onPhoneChanged

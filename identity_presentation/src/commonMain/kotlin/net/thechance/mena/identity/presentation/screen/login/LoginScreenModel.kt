@@ -20,7 +20,7 @@ class LoginScreenModel (
         tryToExecute(
             function = {
                loginUseCase.login(
-                   state.value.phoneCode,
+                   state.value.countryPickerUIState.selectedCountry?.callingCode?:"+964",
                    state.value.phoneNumber,
                    state.value.password
                )
@@ -51,7 +51,6 @@ class LoginScreenModel (
     }
 
     override fun onPhoneCodeChanged(phoneCode: String) {
-        updateState { copy(phoneCode = phoneCode) }
     }
 
     override fun onPhoneChanged(phone: String) {
@@ -95,6 +94,7 @@ class LoginScreenModel (
             copy(
                 showCountryBottomSheet = false,
                 countryPickerUIState = countryPickerUIState.copy(
+                    currentCountry = countryPickerUIState.selectedCountry!!,
                     isEnabled = false
                 )
             )
@@ -106,7 +106,7 @@ class LoginScreenModel (
             copy(
                 showCountryBottomSheet = false,
                 countryPickerUIState = countryPickerUIState.copy(
-                    selectedCountry = null
+                    selectedCountry = countryPickerUIState.currentCountry
                 )
             )
         }
