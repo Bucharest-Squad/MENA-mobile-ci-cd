@@ -5,9 +5,6 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.isSuccess
 import io.ktor.util.reflect.TypeInfo
-import io.ktor.util.reflect.typeInfo
-import net.thechance.mena.core_chat.data.contacts.dto.ContactDto
-import net.thechance.mena.core_chat.data.shared.dto.PagedDataDto
 import net.thechance.mena.core_chat.domain.exception.ChatException
 import net.thechance.mena.core_chat.domain.exception.ContactsPermissionDeniedException
 import net.thechance.mena.core_chat.domain.exception.UnAuthorizedException
