@@ -31,7 +31,6 @@ class AuthenticationRepositoryImplTest {
 
     @Test
     fun `login should call remote service with correct credentials when successful`() = runTest {
-        // Given
         val mobileNumber = "0123456789"
         val passWord = "testpassword"
         val countryCoed = "+20"
