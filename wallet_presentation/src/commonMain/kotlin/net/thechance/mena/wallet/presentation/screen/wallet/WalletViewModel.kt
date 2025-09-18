@@ -9,9 +9,12 @@ import net.thechance.mena.wallet.presentation.base.BaseViewModel
 import net.thechance.mena.wallet.presentation.base.SnackBarState
 import net.thechance.mena.wallet.presentation.base.UiState
 import org.jetbrains.compose.resources.StringResource
+import org.koin.android.annotation.KoinViewModel
+import org.koin.core.annotation.Provided
 
+@KoinViewModel
 class WalletViewModel(
-    private val balanceRepository: BalanceRepository
+    @Provided private val balanceRepository: BalanceRepository
 ) : BaseViewModel<WalletScreenState, WalletEffect>(WalletScreenState()), WalletInteractionListener {
 
     init {
@@ -22,7 +25,7 @@ class WalletViewModel(
         //TODO: get real user id
         tryToExecute(
             onStart = ::onGetBalanceStart,
-            callee = { balanceRepository.getBalance(userId = 1) },
+            callee = { balanceRepository.getBalance() },
             onSuccess = ::onGetBalanceSuccess,
             onError = ::onGetBalanceError
         )
