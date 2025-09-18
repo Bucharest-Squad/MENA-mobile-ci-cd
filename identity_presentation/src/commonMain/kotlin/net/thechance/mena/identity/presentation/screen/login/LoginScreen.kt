@@ -25,8 +25,9 @@ import mena.identity_presentation.generated.resources.Iraq_flag
 import mena.identity_presentation.generated.resources.Res
 import mena.identity_presentation.generated.resources.error
 import mena.identity_presentation.generated.resources.forget_password
-import mena.identity_presentation.generated.resources.ic_eye
+import mena.identity_presentation.generated.resources.ic_close_eye
 import mena.identity_presentation.generated.resources.ic_lock
+import mena.identity_presentation.generated.resources.ic_open_eye
 import mena.identity_presentation.generated.resources.login
 import mena.identity_presentation.generated.resources.login_prompt
 import mena.identity_presentation.generated.resources.mena_logo
@@ -121,7 +122,10 @@ class LoginScreen : BaseScreen<
                         value = state.password,
                         onValueChanged = listener::onPasswordChanged,
                         hint = "",
-                        trailingIcon = painterResource(Res.drawable.ic_eye),
+                        trailingIcon = painterResource(
+                            if (state.isPasswordVisible) Res.drawable.ic_open_eye
+                            else Res.drawable.ic_close_eye
+                        ),
                         leadingIcon = painterResource(Res.drawable.ic_lock),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                         modifier = Modifier.fillMaxWidth(),
