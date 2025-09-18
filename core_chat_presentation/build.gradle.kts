@@ -80,7 +80,6 @@ kotlin {
     }
     sourceSets.androidUnitTest.dependencies {
         implementation(kotlin("test"))
-        implementation(kotlin("test-junit"))
         implementation(libs.junit.jupiter)
         implementation(libs.mockk)
         implementation(libs.androidx.paging.testing)

@@ -8,8 +8,8 @@ import kotlinx.coroutines.test.runTest
 import net.thechance.mena.core_chat.domain.entity.Contact
 import net.thechance.mena.core_chat.domain.model.PagedData
 import net.thechance.mena.core_chat.domain.repository.ContactsRepository
-import org.junit.Assert.assertNotNull
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class ContactsViewModelTest {
