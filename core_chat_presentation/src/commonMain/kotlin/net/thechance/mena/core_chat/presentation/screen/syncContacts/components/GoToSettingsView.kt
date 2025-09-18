@@ -36,7 +36,7 @@ fun GoToSettingsView(
     ) {
         Icon(
             painter = painterResource(Res.drawable.ic_error),
-            modifier = Modifier.size(150.dp),
+            modifier = Modifier.size(148.dp),
             contentDescription = null,
         )
         Text(
