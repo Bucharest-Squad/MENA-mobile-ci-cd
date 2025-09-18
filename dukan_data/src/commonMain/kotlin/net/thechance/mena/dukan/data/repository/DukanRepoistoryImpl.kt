@@ -16,8 +16,8 @@ import net.thechance.mena.dukan.data.repository.mapper.toCreateDukanRequest
 import net.thechance.mena.dukan.data.repository.mapper.toEntity
 import net.thechance.mena.dukan.data.repository.util.safeApiCall
 import net.thechance.mena.dukan.domain.entity.Category
+import net.thechance.mena.dukan.domain.entity.Color
 import net.thechance.mena.dukan.domain.entity.Dukan
-import net.thechance.mena.dukan.domain.entity.DukanColor
 import net.thechance.mena.dukan.domain.entity.MyDukanStatus
 import net.thechance.mena.dukan.domain.repository.DukanRepository
 
@@ -53,7 +53,7 @@ class DukanRepositoryImpl(
         }
     }
 
-    override suspend fun getDukanColors(): List<DukanColor> {
+    override suspend fun getDukanColors(): List<Color> {
         return safeApiCall {
             client.get(
                 urlString = "$BASE_URL/colors"
@@ -61,7 +61,7 @@ class DukanRepositoryImpl(
         }
     }
 
-    override suspend fun getMyDukanStatus(): MyDukanStatus {
+    override suspend fun getMyDukanStatus(): MyDukanStatus? {
         return safeApiCall {
             client.get(
                 urlString = "$BASE_URL/statues"
@@ -75,20 +75,7 @@ class DukanRepositoryImpl(
         return safeApiCall {
             client.post("$BASE_URL/image") {
                 setBody(
-                    MultiPartFormDataContent(
-                        formData {
-                            append(
-                                key = "file", value = fileBytes, headers = Headers.build {
-                                    append(
-                                        HttpHeaders.ContentType,
-                                        "multipart/form-data"
-                                    )
-                                    append(
-                                        HttpHeaders.ContentDisposition,
-                                        "filename=\"$fileName\""
-                                    )
-                                })
-                        })
+                    buildMultiPartFormData(fileName, fileBytes)
                 )
             }.body()
         }
@@ -96,6 +83,26 @@ class DukanRepositoryImpl(
 
     override suspend fun isDukanNameTaken(name: String): Boolean {
         return safeApiCall { client.get("$BASE_URL/available?name=$name").body() }
+    }
+
+    private fun buildMultiPartFormData(
+        fileName: String, fileBytes: ByteArray
+    ): MultiPartFormDataContent {
+        return MultiPartFormDataContent(
+            formData {
+                append(
+                    key = "file", value = fileBytes, headers = Headers.build {
+                        append(
+                            HttpHeaders.ContentType,
+                            "multipart/form-data"
+                        )
+                        append(
+                            HttpHeaders.ContentDisposition,
+                            "filename=\"$fileName\""
+                        )
+                    })
+            })
+
     }
 
     companion object {

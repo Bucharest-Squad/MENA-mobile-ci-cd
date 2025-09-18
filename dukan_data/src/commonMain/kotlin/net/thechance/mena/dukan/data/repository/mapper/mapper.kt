@@ -6,7 +6,7 @@ import net.thechance.mena.dukan.data.repository.dto.DukanColorDto
 import net.thechance.mena.dukan.data.repository.dto.MyDukanStatusDto
 import net.thechance.mena.dukan.domain.entity.Category
 import net.thechance.mena.dukan.domain.entity.Dukan
-import net.thechance.mena.dukan.domain.entity.DukanColor
+import net.thechance.mena.dukan.domain.entity.Color
 import net.thechance.mena.dukan.domain.entity.MyDukanStatus
 
 fun Dukan.toCreateDukanRequest(): CreateDukanRequest {
@@ -31,9 +31,9 @@ fun List<DukanCategoryDto>.toEntity(): List<Category> {
     }
 }
 
-fun List<DukanColorDto>.toEntity(): List<DukanColor> {
+fun List<DukanColorDto>.toEntity(): List<Color> {
     return map {
-        DukanColor(
+        Color(
             id = it.id,
             hexCode = it.hexCode
         )

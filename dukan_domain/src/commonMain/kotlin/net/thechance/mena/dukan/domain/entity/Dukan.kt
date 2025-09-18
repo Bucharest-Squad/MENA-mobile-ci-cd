@@ -8,7 +8,7 @@ data class Dukan(
     val coordinates:Coordinates,
     val address: String,
     val status: Status,
-    val color: DukanColor,
+    val color: Color,
     val style: Style
 ) {
     data class Coordinates(

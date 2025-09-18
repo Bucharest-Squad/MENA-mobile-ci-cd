@@ -1,6 +1,6 @@
 package net.thechance.mena.dukan.domain.entity
 
-data class DukanColor (
+data class Color (
     val id : String,
     val hexCode : String,
 )
