@@ -12,7 +12,6 @@ kotlin {
     iosSimulatorArm64()
 
     sourceSets {
-
         commonMain.dependencies {
             implementation(projects.identityDomain)
             implementation(libs.kotlinx.serialization.json)
