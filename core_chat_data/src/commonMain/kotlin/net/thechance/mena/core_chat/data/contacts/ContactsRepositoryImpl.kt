@@ -42,8 +42,8 @@ class ContactsRepositoryImpl(
         return tryNetworkCall(
             defaultException = { ContactsFetchFailedException("Couldn't get user contacts", it) }) {
             client.get(CONTACTS_ENDPOINT) {
-                parameter("pageNumber", pageNumber)
-                parameter("pageSize", pageSize)
+                parameter(PAGE_NUMBER, pageNumber)
+                parameter(PAGE_SIZE, pageSize)
             }.body<BaseResponseDto<PagedDataDto<ContactDto>>>()
         }.toPagedListOfContacts()
     }
@@ -84,6 +84,7 @@ class ContactsRepositoryImpl(
 
     private companion object {
         val USER_SYNCED_STATE_KEY = booleanPreferencesKey("user_synced_state_key")
-
+        val PAGE_SIZE = "size"
+        val PAGE_NUMBER = "page"
     }
 }
