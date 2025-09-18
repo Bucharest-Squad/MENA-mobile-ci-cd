@@ -1,15 +1,14 @@
 package net.thechance.mena.trends.presentation.screen.manage_my_trends
 
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
+import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.map
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import net.thechance.mena.trends.domain.entity.Reel
 import net.thechance.mena.trends.domain.repository.ReelsRepository
-import net.thechance.mena.trends.presentation.shared.base.BasePagingSource
 import net.thechance.mena.trends.presentation.shared.base.BaseViewModel
+import net.thechance.mena.trends.presentation.shared.base.createPager
 import org.koin.android.annotation.KoinViewModel
 import org.koin.core.annotation.Provided
 
@@ -28,11 +27,11 @@ class ManageTrendsViewModel(
     private fun getReels() {
         tryToExecute(
             block = {
-                Pager(PagingConfig(pageSize = 10, prefetchDistance = 5, initialLoadSize = 15)) {
-                    BasePagingSource(
-                        onError = {}
-                    ) { page -> repository.getAllReels(page) }
-                }.flow
+                createPager(
+                    scope = viewModelScope,
+                    onError = {},
+                    loadPage = { page -> repository.getAllReels(page) }
+                )
             },
             onSuccess = ::onGetReelsSuccess,
             onError = {},
@@ -43,8 +42,8 @@ class ManageTrendsViewModel(
 
     private fun onGetReelsSuccess(reelsFlow: Flow<PagingData<Reel>>) {
         val uiReelsFlow = reelsFlow.map { pagingData: PagingData<Reel> ->
-                pagingData.map { reel -> reel.toUiState() }
-            }
+            pagingData.map { reel -> reel.toUiState() }
+        }
         updateState { copy(isLoading = false, reels = uiReelsFlow) }
     }
 
