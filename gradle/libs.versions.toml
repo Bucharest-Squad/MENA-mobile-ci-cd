@@ -26,6 +26,12 @@ koin-annotations = "2.1.0"
 kotlinx-serialization = "1.6.3"
 ktor = "3.2.3"
 
+# Maps version
+map-libra = "0.11.1"
+
+# GeoCoder
+compass = "2.4.0"
+
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
@@ -39,7 +45,6 @@ androidx-lifecycle-viewmodelCompose = { module = "org.jetbrains.androidx.lifecyc
 androidx-lifecycle-runtimeCompose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
 compose-ui-backhandler = { module = "org.jetbrains.compose.ui:ui-backhandler", version.ref = "composeMultiplatform" }
 
-kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
 androidx-navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 
@@ -72,8 +77,17 @@ krop-core = { module = "com.attafitamim.krop:ui", version.ref = "krop" }
 # Navigation
 navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
+
 # Testing
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine"}
+
+# Map
+maplibre-compose = { module = "org.maplibre.compose:maplibre-compose", version.ref = "map-libra" }
+
+# GeoCoder
+compass-geocoder = { module = "dev.jordond.compass:geocoder", version.ref = "compass" }
+compass-geocoder-mobile = { module = "dev.jordond.compass:geocoder-mobile", version.ref = "compass" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -83,6 +97,7 @@ composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "k
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
 
 [bundles]
 ktor = [
@@ -98,3 +113,4 @@ filekit = [
     "filekit-dialogs-compose",
     "filekit-coil"
 ]
+geoCoder = ["compass-geocoder", "compass-geocoder-mobile"]

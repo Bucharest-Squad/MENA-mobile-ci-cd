@@ -1,7 +1,9 @@
 package net.thechance.mena.dukan.presentation.viewModel.createDukan
 
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.unit.DpOffset
 import com.attafitamim.krop.core.images.ImageSrc
+import org.maplibre.compose.camera.CameraPosition
 
 interface CreateDukanInteractionListener {
     fun onButtonClicked()
@@ -15,4 +17,10 @@ interface CreateDukanInteractionListener {
     fun onCLickNext()
     fun onImageCrop(image: ImageBitmap)
     fun onCancelCrop()
+    fun onMapClicked(
+        coordinates: CreateDukanUiState.CoordinatesUiState,
+        pointerLocation: DpOffset,
+    )
+    fun onCameraMoved(camera: CameraPosition)
+    fun onEditMapLocationClicked()
 }

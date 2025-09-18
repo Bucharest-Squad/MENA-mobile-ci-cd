@@ -22,7 +22,7 @@ fun DukanNavHost() {
             }
 
             composable<DukanRoute.CreateDukanScreenRoute> {
-                // CreateDukanScreen()
+                 CreateDukanScreen()
             }
             composable<DukanRoute.MyDukanScreenRoute> {
                 // MyDukanScreen()

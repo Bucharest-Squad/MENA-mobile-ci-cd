@@ -1,15 +1,18 @@
 package net.thechance.mena.dukan.presentation.viewModel.createDukan
 
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.unit.DpOffset
 import com.attafitamim.krop.core.images.ImageSrc
 import net.thechance.mena.dukan.domain.repository.DukanRepository
+import net.thechance.mena.dukan.domain.repository.LocationRepository
 import net.thechance.mena.dukan.presentation.viewModel.base.BaseViewModel
 import net.thechance.mena.dukan.presentation.viewModel.createDukan.CreateDukanUiState.CreateDukanStep
+import org.maplibre.compose.camera.CameraPosition
 
 class CreateDukanViewModel(
-    private val dukanRepository: DukanRepository
-) :
-    BaseViewModel<CreateDukanUiState, CreateDukanEffect>(CreateDukanUiState()),
+    private val dukanRepository: DukanRepository,
+    private val locationRepository: LocationRepository
+) : BaseViewModel<CreateDukanUiState, CreateDukanEffect>(CreateDukanUiState()),
     CreateDukanInteractionListener {
 
     init {
@@ -40,7 +43,6 @@ class CreateDukanViewModel(
         updateNextButtonEnableState()
     }
 
-
     override fun onClickUploadImage(image: ImageSrc) {
         updateState {
             copy(
@@ -51,13 +53,13 @@ class CreateDukanViewModel(
         updateNextButtonEnableState()
     }
 
-
     override fun onCLickNext() {
         val current = state.value.currentStep
         if (current == CreateDukanStep.BASIC_INFORMATION) {
             handleBasicInformationNext()
         } else {
             updateState { copy(currentStep = nextStep(current)) }
+            updateNextButtonEnableState()
         }
     }
 
@@ -81,7 +83,6 @@ class CreateDukanViewModel(
         }
         updateNextButtonEnableState()
     }
-
 
     override fun onNameChanged(name: String) {
         val limitedName = if (name.length > 40) name.take(40) else name
@@ -136,19 +137,78 @@ class CreateDukanViewModel(
         checkNameUniqueness(state.value.name)
     }
 
-    private fun nextStep(step: CreateDukanStep): CreateDukanStep =
-        when (step) {
+    private fun nextStep(step: CreateDukanStep): CreateDukanStep {
+        return when (step) {
             CreateDukanStep.BASIC_INFORMATION -> CreateDukanStep.SELECT_IMAGE
+
             CreateDukanStep.SELECT_IMAGE -> CreateDukanStep.SELECT_LOCATION
-            CreateDukanStep.SELECT_LOCATION -> CreateDukanStep.SELECT_STYLE
+
+            CreateDukanStep.SELECT_LOCATION -> {
+                updateState { copy(isMapLocked = true) }
+                CreateDukanStep.SELECT_STYLE
+            }
+
             CreateDukanStep.SELECT_STYLE -> step
         }
+    }
+
+    override fun onMapClicked(
+        coordinates: CreateDukanUiState.CoordinatesUiState,
+        pointerLocation: DpOffset
+    ) {
+        tryToExecute(
+            block = { onMapClickedBlock(coordinates, pointerLocation) },
+            onSuccess = ::onMapClickedSuccess
+        )
+        updateNextButtonEnableState()
+    }
+
+    override fun onCameraMoved(
+        camera: CameraPosition
+    ) {
+        updateState { copy(cameraPosition = camera) }
+    }
+
+    private suspend fun onMapClickedBlock(
+        coordinates: CreateDukanUiState.CoordinatesUiState,
+        pointerLocation: DpOffset
+    ): String {
+        updateState {
+            copy(
+                currentLocation = coordinates,
+                pointerLocation = pointerLocation
+            )
+        }
+        return locationRepository.getCurrentLocationName(coordinates.toEntity())
+    }
+
+    private fun onMapClickedSuccess(address: String) {
+        updateState {
+            copy(address = address)
+        }
+        updateNextButtonEnableState()
+    }
+
+    override fun onEditMapLocationClicked() {
+        updateState {
+            copy(
+                address = "",
+                currentLocation = CreateDukanUiState.CoordinatesUiState(),
+                pointerLocation = null,
+            )
+        }
+        updateNextButtonEnableState()
+    }
 
     private fun previousStep(step: CreateDukanStep): CreateDukanStep =
         when (step) {
             CreateDukanStep.BASIC_INFORMATION -> step
             CreateDukanStep.SELECT_IMAGE -> CreateDukanStep.BASIC_INFORMATION
-            CreateDukanStep.SELECT_LOCATION -> CreateDukanStep.SELECT_IMAGE
+            CreateDukanStep.SELECT_LOCATION -> {
+                updateState { copy(isMapLocked = state.value.pointerLocation != null) }
+                CreateDukanStep.SELECT_IMAGE
+            }
+
             CreateDukanStep.SELECT_STYLE -> CreateDukanStep.SELECT_LOCATION
         }
 
@@ -186,7 +246,7 @@ class CreateDukanViewModel(
         val isNextButtonEnabled = when (currentState.currentStep) {
             CreateDukanStep.BASIC_INFORMATION -> isBasicInformationStepValid(currentState)
             CreateDukanStep.SELECT_IMAGE -> currentState.croppedImage != null
-            CreateDukanStep.SELECT_LOCATION -> true
+            CreateDukanStep.SELECT_LOCATION -> currentState.address.isNotBlank()
             CreateDukanStep.SELECT_STYLE -> true
         }
         updateState { this.copy(isButtonEnabled = isNextButtonEnabled) }
