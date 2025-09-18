@@ -57,11 +57,7 @@ class ContactsRepositoryImplTest {
         mockDataStore.reset()
         httpClient = createHttpClient(jsonHeaders, json)
 
-        repository = ContactsRepositoryImpl(
-            client = httpClient,
-            contactsProvider = mockContactsProvider,
-            dataStore = mockDataStore
-        )
+        repository = createRepository(mockContactsProvider, mockDataStore, json, jsonHeaders)
     }
 
     @Test
@@ -84,23 +80,25 @@ class ContactsRepositoryImplTest {
         repository = createRepository(
             contactsProvider = mockContactsProvider,
             contactsDataStore = mockDataStore,
-            json = json
-        ) {
-            respond(
-                content = successResponse<PagedDataDto<ContactDto>>(
-                    json = json,
-                    body = PagedDataDto(
-                        data = emptyList(),
-                        pageNumber = 1,
-                        pageSize = 10,
-                        totalItems = 0,
-                        totalPages = 1
-                    )
-                ),
-                status = HttpStatusCode.OK,
-                headers = jsonHeaders
-            )
-        }
+            json = json,
+            jsonHeaders = jsonHeaders,
+            contactsResponse = {
+                respond(
+                    content = successResponse<PagedDataDto<ContactDto>>(
+                        json = json,
+                        body = PagedDataDto(
+                            data = emptyList(),
+                            pageNumber = 1,
+                            pageSize = 10,
+                            totalItems = 0,
+                            totalPages = 1
+                        )
+                    ),
+                    status = HttpStatusCode.OK,
+                    headers = jsonHeaders
+                )
+            }
+        )
 
 
         val result = repository.getUserContacts(pageNumber = 1, pageSize = 10)
@@ -116,18 +114,20 @@ class ContactsRepositoryImplTest {
             repository = createRepository(
                 contactsProvider = mockContactsProvider,
                 contactsDataStore = mockDataStore,
-                json = json
-            ) {
-                respond(
-                    content = errorResponse<PagedDataDto<ContactDto>>(
-                        json = json,
-                        status = 401,
-                        message = "Unauthorized"
-                    ),
-                    status = HttpStatusCode.OK,
-                    headers = jsonHeaders
-                )
-            }
+                json = json,
+                jsonHeaders = jsonHeaders,
+                contactsResponse = {
+                    respond(
+                        content = errorResponse<PagedDataDto<ContactDto>>(
+                            json = json,
+                            status = 401,
+                            message = "Unauthorized"
+                        ),
+                        status = HttpStatusCode.OK,
+                        headers = jsonHeaders
+                    )
+                }
+            )
 
 
             val exception = assertFailsWith<UnAuthorizedException> {
@@ -143,18 +143,20 @@ class ContactsRepositoryImplTest {
         repository = createRepository(
             contactsProvider = mockContactsProvider,
             contactsDataStore = mockDataStore,
-            json = json
-        ) {
-            respond(
-                content = errorResponse<PagedDataDto<ContactDto>>(
-                    json = json,
-                    status = 500,
-                    message = "Server error"
-                ),
-                status = HttpStatusCode.OK,
-                headers = jsonHeaders
-            )
-        }
+            json = json,
+            jsonHeaders = jsonHeaders,
+            contactsResponse = {
+                respond(
+                    content = errorResponse<PagedDataDto<ContactDto>>(
+                        json = json,
+                        status = 500,
+                        message = "Server error"
+                    ),
+                    status = HttpStatusCode.OK,
+                    headers = jsonHeaders
+                )
+            }
+        )
 
 
         val exception = assertFailsWith<UnknownException> {
@@ -171,10 +173,12 @@ class ContactsRepositoryImplTest {
             repository = createRepository(
                 contactsProvider = mockContactsProvider,
                 contactsDataStore = mockDataStore,
-                json = json
-            ) {
-                throw IOException("Network error")
-            }
+                json = json,
+                jsonHeaders = jsonHeaders,
+                contactsResponse = {
+                    throw IOException("Network error")
+                }
+            )
 
 
             val exception = assertFailsWith<ContactsFetchFailedException> {
@@ -212,10 +216,12 @@ class ContactsRepositoryImplTest {
             repository = createRepository(
                 contactsProvider = mockContactsProvider,
                 contactsDataStore = mockDataStore,
-                json = json
-            ) {
-                throw IOException("Network error")
-            }
+                json = json,
+                jsonHeaders = jsonHeaders,
+                syncContactsResponse = {
+                    throw IOException("Network error")
+                }
+            )
 
 
             val exception = assertFailsWith<ContactSyncFailedException> {
@@ -233,18 +239,19 @@ class ContactsRepositoryImplTest {
                 contactsProvider = mockContactsProvider,
                 contactsDataStore = mockDataStore,
                 json = json,
-                requestEndPoint = SYNC_CONTACTS_ENDPOINT
-            ) {
-                respond(
-                    content = errorResponse<PagedDataDto<ContactDto>>(
-                        json = json,
-                        status = 401,
-                        message = "User is not authorized"
-                    ),
-                    status = HttpStatusCode.OK,
-                    headers = jsonHeaders
-                )
-            }
+                jsonHeaders = jsonHeaders,
+                syncContactsResponse = {
+                    respond(
+                        content = errorResponse<PagedDataDto<ContactDto>>(
+                            json = json,
+                            status = 401,
+                            message = "User is not authorized"
+                        ),
+                        status = HttpStatusCode.OK,
+                        headers = jsonHeaders
+                    )
+                }
+            )
 
 
             val exception = assertFailsWith<UnAuthorizedException> {

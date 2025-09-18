@@ -55,7 +55,6 @@ class ContactsRepositoryImpl(
             defaultException = { ContactSyncFailedException("Couldn't sync user contacts", it) }) {
             val contacts = getDeviceContacts()
             client.post(SYNC_CONTACTS_ENDPOINT) {
-                contentType(ContentType.Application.Json)
                 setBody(contacts.toListOfContactCreationRequestDto())
             }.body<BaseResponseDto<Unit>>()
         }
