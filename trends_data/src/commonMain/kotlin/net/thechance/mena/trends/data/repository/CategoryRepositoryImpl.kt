@@ -3,7 +3,10 @@ package net.thechance.mena.trends.data.repository
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
 import net.thechance.mena.trends.data.dto.CategoryDto
+import net.thechance.mena.trends.data.dto.SubmitInterestsRequest
 import net.thechance.mena.trends.data.mapper.toEntity
 import net.thechance.mena.trends.data.util.safeApiCall
 import net.thechance.mena.trends.domain.entity.Category
@@ -27,6 +30,10 @@ class CategoryRepositoryImpl(
     }
 
     override suspend fun updateUserInterestedCategories(categoriesIds: List<String>) {
-        // TODO("Not yet implemented")
+        return safeApiCall {
+            httpClient.post("/trends/interests") {
+                setBody(SubmitInterestsRequest(categoriesIds))
+            }
+        }
     }
 }
