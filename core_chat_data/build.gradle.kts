@@ -26,7 +26,7 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
-            implementation(kotlin("test-annotations-common"))
+            implementation(libs.kotlin.test.annotations.common)
             implementation(libs.ktor.client.mock)
             implementation(libs.assertk)
             implementation(libs.kotlinx.coroutines.test)
