@@ -11,12 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -24,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.Navigator
 import kotlinx.coroutines.delay
@@ -44,15 +37,13 @@ import mena.identity_presentation.generated.resources.register_prompt
 import mena.identity_presentation.generated.resources.welcome_back
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
 import net.thechance.mena.designsystem.presentation.component.button.TextButton
+import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.component.snackbar.SnackBar
-import net.thechance.mena.designsystem.presentation.component.text.MenaText
+import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.component.textField.TextField
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
-import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
-import net.thechance.mena.designsystem.presentation.component.text.Text
-import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.identity.presentation.base.BaseScreen
+import net.thechance.mena.identity.presentation.countryPicker.CountryPicker
 import net.thechance.mena.identity.presentation.screen.components.AuthPrompt
 import net.thechance.mena.identity.presentation.screen.components.AuthScreenContainer
 import net.thechance.mena.identity.presentation.screen.components.PageDescription
@@ -61,13 +52,12 @@ import net.thechance.mena.identity.presentation.screen.forget_password.ForgetPas
 import net.thechance.mena.identity.presentation.screen.register.RegisterScreen
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import net.thechance.mena.identity.presentation.countryPicker.CountryPicker
 
 class LoginScreen : BaseScreen<
-    LoginScreenModel,
-    LoginScreenUIState,
-    LoginScreenUIEffect,
-    LoginScreenInteractionListener>() {
+        LoginScreenModel,
+        LoginScreenUIState,
+        LoginScreenUIEffect,
+        LoginScreenInteractionListener>() {
     @Composable
     override fun Content() {
         InitScreen(getScreenModel())
@@ -80,7 +70,7 @@ class LoginScreen : BaseScreen<
     ) {
         Scaffold(
             overlays = {
-                bottomSheet(state.showBottomSheet) {
+                bottomSheet(state.showCountryBottomSheet) {
                     CountryPicker(
                         isEnabled = state.countryPickerUIState.isEnabled,
                         countries = state.countryPickerUIState.countries,
@@ -92,109 +82,82 @@ class LoginScreen : BaseScreen<
             }
         ) {
             Box(
-                contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Theme.colorScheme.background.surface).fillMaxSize()
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(24.dp)
-                ) {
-                    AnimatedVisibility(
-                        visible = !state.showBottomSheet &&
-                                  state.countryPickerUIState.selectedCountry != null,
-                    ) {
-                        Text(
-                            text = "${state.countryPickerUIState.selectedCountry?.name} ${state.countryPickerUIState.selectedCountry?.callingCode}",
-                            style = Theme.typography.title.large
-                        )
-                    }
+                    .systemBarsPadding()
+            )
+            {
+                AuthScreenContainer {
+
+                    PageDescription(
+                        title = stringResource(Res.string.welcome_back),
+                        subtitle = stringResource(Res.string.login_prompt),
+                    )
+                    Text(
+                        text = stringResource(Res.string.phone_number),
+                        style = Theme.typography.title.small,
+                        color = Theme.colorScheme.shadePrimary,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 4.dp)
+                    )
+                    PhoneNumberInput(
+                        state.phoneCode,
+                        painterResource(Res.drawable.Iraq_flag),
+                        onCountryClick = listener::onPhoneCodeClicked,
+                        phoneNumber = state.phoneNumber,
+                        onPhoneChange = listener::onPhoneChanged
+                    )
+                    Text(
+                        text = stringResource(Res.string.password),
+                        style = Theme.typography.title.small,
+                        color = Theme.colorScheme.shadePrimary,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp, bottom = 4.dp)
+                    )
+
+                    TextField(
+                        value = state.password,
+                        onValueChanged = listener::onPasswordChanged,
+                        hint = "",
+                        trailingIcon = painterResource(Res.drawable.ic_eye),
+                        leadingIcon = painterResource(Res.drawable.ic_lock),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        modifier = Modifier.fillMaxWidth(),
+                        visualTransformation = if (state.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation()
+                    )
+
+                    ForgetPasswordText(
+                        onClick = listener::onForgotPasswordClicked
+                    )
+
+                    Spacer(modifier = Modifier.weight(1f))
+
                     PrimaryButton(
-                        text = "open countries",
-                        onClick = listener::onClickCountryPicker,
+                        text = stringResource(Res.string.login),
+                        onClick = listener::onLoginClicked,
+                        isEnabled = state.isLoginEnabled,
+                        isLoading = state.isLoading,
+                        contentPadding = PaddingValues(vertical = 13.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 12.dp)
+                    )
+                    AuthPrompt(
+                        message = stringResource(Res.string.register_prompt),
+                        actionLabel = stringResource(Res.string.register_now),
+                        onActionClick = listener::onRegisterClicked
                     )
                 }
-            }
-        }
-    override fun OnRender(state: LoginScreenUIState, listener: LoginScreenInteractionListener) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .systemBarsPadding()
-        )
-        {
-            AuthScreenContainer {
-
-                PageDescription(
-                    title = stringResource(Res.string.welcome_back),
-                    subtitle = stringResource(Res.string.login_prompt),
-                )
-                MenaText(
-                    text = stringResource(Res.string.phone_number),
-                    style = Theme.typography.title.small,
-                    color = Theme.colorScheme.shadePrimary,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 4.dp)
-                )
-                PhoneNumberInput(
-                    state.phoneCode,
-                    painterResource(Res.drawable.Iraq_flag),
-                    onCountryClick = listener::onPhoneCodeClicked,
-                    phoneNumber = state.phoneNumber,
-                    onPhoneChange = listener::onPhoneChanged
-                )
-                MenaText(
-                    text = stringResource(Res.string.password),
-                    style = Theme.typography.title.small,
-                    color = Theme.colorScheme.shadePrimary,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp, bottom = 4.dp)
-                )
-
-                TextField(
-                    value = state.password,
-                    onValueChanged = listener::onPasswordChanged,
-                    placeholder = "",
-                    trailingIcon = painterResource(Res.drawable.ic_eye),
-                    leadingIcon = painterResource(Res.drawable.ic_lock),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                    modifier = Modifier.fillMaxWidth(),
-                    visualTransformation = if (state.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation()
-                )
-
-                ForgetPasswordText(
-                    onClick = listener::onForgotPasswordClicked
-                )
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                PrimaryButton(
-                    text = stringResource(Res.string.login),
-                    onClick = listener::onLoginClicked,
-                    isEnabled = state.isLoginEnabled,
-                    isLoading = state.isLoading,
-                    contentPadding = PaddingValues(vertical = 13.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 12.dp)
-                )
-                AuthPrompt(
-                    message = stringResource(Res.string.register_prompt),
-                    actionLabel = stringResource(Res.string.register_now),
-                    onActionClick = listener::onRegisterClicked
-                )
-            }
-            AnimatedVisibility(
-                visible = state.errorMessage != null,
-                enter = slideInHorizontally(initialOffsetX = { it }),
-                exit = slideOutHorizontally(targetOffsetX = { it })
+                AnimatedVisibility(
+                    visible = state.errorMessage != null,
+                    enter = slideInHorizontally(initialOffsetX = { it }),
+                    exit = slideOutHorizontally(targetOffsetX = { it })
                 ) {
                     SnackBar(
                         title = stringResource(Res.string.error),
-                        message = state.errorMessage?:"",
+                        message = state.errorMessage ?: "",
                         leadingIcon = painterResource(Res.drawable.mena_logo),
                         modifier = Modifier
                             .fillMaxWidth()
@@ -202,13 +165,17 @@ class LoginScreen : BaseScreen<
                             .padding(horizontal = 16.dp)
                     )
 
+                }
+
+                LaunchedEffect(state.errorMessage) {
+                    delay(3000)
+                    listener.clearErrorMessage()
+                }
             }
 
-            LaunchedEffect(state.errorMessage){
-                delay(3000)
-                listener.clearErrorMessage()
-            }
+
         }
+
     }
 
     override fun onEffect(

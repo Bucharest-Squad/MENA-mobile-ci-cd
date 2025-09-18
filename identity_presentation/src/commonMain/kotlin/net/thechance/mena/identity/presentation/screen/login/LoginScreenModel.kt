@@ -3,12 +3,7 @@ package net.thechance.mena.identity.presentation.screen.login
 import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.coroutines.CoroutineScope
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
 import net.thechance.mena.identity.domain.useCase.LoginUseCase
-import net.thechance.mena.identity.presentation.base.ErrorState
-import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
-import org.koin.core.logger.Logger
-import kotlin.math.log
 import net.thechance.mena.identity.presentation.countryPicker.menaCountries.MenaCountry
 import net.thechance.mena.identity.presentation.countryPicker.selectByCountry
 
@@ -77,7 +72,7 @@ class LoginScreenModel (
     override fun onClickCountryPicker() {
         updateState {
             copy(
-                showBottomSheet = true
+                showCountryBottomSheet = true
             )
         }
     }
@@ -98,7 +93,7 @@ class LoginScreenModel (
     override fun onClickConfirmButton() {
         updateState {
             copy(
-                showBottomSheet = false,
+                showCountryBottomSheet = false,
                 countryPickerUIState = countryPickerUIState.copy(
                     isEnabled = false
                 )
@@ -109,7 +104,7 @@ class LoginScreenModel (
     override fun onDismissBottomSheet() {
         updateState {
             copy(
-                showBottomSheet = false,
+                showCountryBottomSheet = false,
                 countryPickerUIState = countryPickerUIState.copy(
                     selectedCountry = null
                 )
