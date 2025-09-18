@@ -5,4 +5,5 @@ interface SyncContactsScreenInteractionListener {
     fun onSyncClick()
     fun onForceSync(forceSync: Boolean)
     fun onSnackBarDismiss()
+    fun onGoToSettingsClick()
 }
