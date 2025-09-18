@@ -12,7 +12,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import coil3.compose.AsyncImage
-import net.thechance.mena.designsystem.presentation.component.text.MenaText
+import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 
 @Composable
@@ -39,7 +39,7 @@ fun CircularAvatar(
                 contentDescription = "Contact photo",
             )
         } else {
-            MenaText(
+            Text(
                 text = contactInitials,
                 color = Theme.colorScheme.shadePrimary,
                 style = Theme.typography.title.small,

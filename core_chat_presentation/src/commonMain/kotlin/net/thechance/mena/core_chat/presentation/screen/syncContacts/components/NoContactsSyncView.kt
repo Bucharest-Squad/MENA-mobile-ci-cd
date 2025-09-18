@@ -15,7 +15,7 @@ import mena.core_chat_presentation.generated.resources.sync_contacts
 import mena.core_chat_presentation.generated.resources.sync_contacts_desc
 import mena.core_chat_presentation.generated.resources.sync_contacts_title
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
-import net.thechance.mena.designsystem.presentation.component.text.MenaText
+import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -29,14 +29,14 @@ fun NoContactsSyncView(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        MenaText(
+        Text(
             text = stringResource(Res.string.sync_contacts_title),
             style = Theme.typography.title.small,
             color = Theme.colorScheme.shadePrimary,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()
         )
-        MenaText(
+        Text(
             text = stringResource(Res.string.sync_contacts_desc),
             modifier = Modifier.padding(top = Theme.spacing._2, bottom = Theme.spacing._12),
             textAlign = TextAlign.Center,
