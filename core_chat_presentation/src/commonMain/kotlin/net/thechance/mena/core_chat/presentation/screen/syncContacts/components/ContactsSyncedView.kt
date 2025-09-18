@@ -21,6 +21,7 @@ fun ContactsSyncedView(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        PhoneIcon()
         Text(
             text = stringResource(Res.string.syncing_contacts_message),
             style = Theme.typography.title.small,
