@@ -1,9 +1,11 @@
 package net.thechance.mena.core_chat.data.shared
 
+import io.ktor.client.statement.HttpResponse
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.isSuccess
 import net.thechance.mena.core_chat.data.shared.dto.BaseResponseDto
 import net.thechance.mena.core_chat.domain.exception.ChatException
 import net.thechance.mena.core_chat.domain.exception.ContactsPermissionDeniedException
-import net.thechance.mena.core_chat.domain.exception.DataStoreException
 import net.thechance.mena.core_chat.domain.exception.UnAuthorizedException
 import net.thechance.mena.core_chat.domain.exception.UnknownException
 import com.bilalazzam.contacts_provider.ContactsPermissionDeniedException as ContactsProviderPermissionDeniedException
@@ -25,6 +27,29 @@ interface BaseRepository {
             }
         }
     }
+    suspend fun tryNetworkCall2(
+        defaultException: (Throwable) -> ChatException = { e ->
+            UnknownException("Unknown error occurred", e)
+        },
+        maxAttempts: Int = 1,
+        call: suspend () -> HttpResponse,
+    ): HttpResponse {
+        return retry2 {
+            val response = call()
+            manageResponse(response)
+        }
+    }
+
+    fun  manageResponse(response: HttpResponse): HttpResponse {
+        if(response.status.isSuccess()){
+            return response
+        }else if(response.status == HttpStatusCode.Unauthorized) {
+            throw UnAuthorizedException()
+        }else {
+            throw UnknownException()
+        }
+    }
+
 
     suspend fun <T> retry(
         maxAttempts: Int = 3, block: suspend () -> T?
@@ -36,6 +61,21 @@ interface BaseRepository {
         } catch (e: Throwable) {
             if (maxAttempts <= 1) throw e
             retry(
+                maxAttempts = maxAttempts - 1, block = block
+            )
+        }
+    }
+
+    suspend fun <T> retry2(
+        maxAttempts: Int = 3, block: suspend () -> T
+    ): T {
+        return try {
+            block()
+        } catch (e: ChatException) {
+            throw e
+        } catch (e: Throwable) {
+            if (maxAttempts <= 1) throw e
+            retry2(
                 maxAttempts = maxAttempts - 1, block = block
             )
         }
