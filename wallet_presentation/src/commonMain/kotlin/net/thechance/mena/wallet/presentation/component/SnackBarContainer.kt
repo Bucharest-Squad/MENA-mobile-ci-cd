@@ -1,6 +1,7 @@
 package net.thechance.mena.wallet.presentation.component
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
@@ -16,6 +17,8 @@ import net.thechance.mena.wallet.presentation.base.SnackBarState
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
+private const val ANIMATION_DURATION = 500
+
 @Composable
 fun SnackBarContainer(
     snackBarState: SnackBarState,
@@ -29,8 +32,18 @@ fun SnackBarContainer(
 
     AnimatedVisibility(
         visible = snackBarState.isVisible,
-        enter = fadeIn() + slideInVertically { it / 2 },
-        exit = fadeOut() + slideOutVertically { it / 2 }
+        enter =
+            fadeIn(tween(ANIMATION_DURATION)) +
+                    slideInVertically(
+                        animationSpec = tween(ANIMATION_DURATION),
+                        initialOffsetY = { -it/2 },
+                    ),
+        exit =
+            fadeOut(tween(ANIMATION_DURATION)) +
+                    slideOutVertically(
+                        animationSpec = tween(ANIMATION_DURATION),
+                        targetOffsetY = { -it/2 },
+                    ),
     ) {
         SnackBar(
             title = snackBarState.titleRes?.let { stringResource(it) } ?: "",
