@@ -29,6 +29,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.takeOrElse
 import kotlinx.coroutines.delay
 import mena.wallet_presentation.generated.resources.Res
 import mena.wallet_presentation.generated.resources.couldnt_load_tap_to_retry
@@ -46,9 +47,9 @@ import net.thechance.mena.wallet.presentation.base.UiState
 import net.thechance.mena.wallet.presentation.base.UiState.Idle.isError
 import net.thechance.mena.wallet.presentation.base.UiState.Idle.isLoading
 import net.thechance.mena.wallet.presentation.base.UiState.Idle.isSuccess
-import net.thechance.mena.wallet.presentation.utils.calculateTextHeight
 import net.thechance.mena.wallet.presentation.utils.formatBalance
 import net.thechance.mena.wallet.presentation.utils.noRippleClickable
+import net.thechance.mena.wallet.presentation.utils.toDp
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -170,36 +171,39 @@ private fun BalanceContent(
     onRetry: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val density = LocalDensity.current
     val balanceTextStyle = Theme.typography.headline.medium
-    val balanceTextHeight = calculateTextHeight(balanceTextStyle)
+    val balanceTextHeight = balanceTextStyle.lineHeight.takeOrElse { balanceTextStyle.fontSize }.toDp(density)
 
     Crossfade(
         targetState = balance,
         modifier = modifier.fillMaxWidth().height(balanceTextHeight)
     ) { balanceState ->
-        when {
-            balanceState.isLoading -> {
+        when (balanceState) {
+            is UiState.Loading -> {
                 ThreeDotsLoadingIndicator(
                     modifier = Modifier.fillMaxWidth().padding(vertical = 14.5.dp)
                 )
             }
 
-            balanceState.isError -> {
+            is UiState.Error -> {
                 BalanceErrorContent(
                     onRetry = onRetry,
                     modifier = Modifier.padding(vertical = 7.dp)
                 )
             }
 
-            balanceState.isSuccess -> {
+            is UiState.Success -> {
                 Text(
-                    text = formatBalance(balanceState.let { (it as UiState.Success).data }),
+                    text = formatBalance(balanceState.data),
                     style = balanceTextStyle,
                     color = Theme.colorScheme.shadePrimary,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
             }
+
+            else -> Unit
         }
     }
 }
