@@ -54,10 +54,10 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 class LoginScreen : BaseScreen<
-        LoginScreenModel,
-        LoginScreenUIState,
-        LoginScreenUIEffect,
-        LoginScreenInteractionListener>() {
+    LoginScreenModel,
+    LoginScreenUIState,
+    LoginScreenUIEffect,
+    LoginScreenInteractionListener>() {
     @Composable
     override fun Content() {
         InitScreen(getScreenModel())
@@ -125,7 +125,8 @@ class LoginScreen : BaseScreen<
                         leadingIcon = painterResource(Res.drawable.ic_lock),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                         modifier = Modifier.fillMaxWidth(),
-                        visualTransformation = if (state.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation()
+                        visualTransformation = if (state.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        onTrailingIconClick = listener::onPasswordVisibilityToggled
                     )
 
                     ForgetPasswordText(
