@@ -9,7 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import net.thechance.mena.designsystem.presentation.component.button.TextButton
-import net.thechance.mena.designsystem.presentation.component.text.MenaText
+import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 
 @Composable
@@ -26,7 +26,7 @@ internal fun AuthPrompt(
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        MenaText(
+        Text(
             text = message,
             style = Theme.typography.label.small,
             color = Theme.colorScheme.shadeSecondary,

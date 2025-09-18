@@ -41,7 +41,7 @@ fun PhoneNumberInput(
             value = phoneNumber,
             leadingIcon = painterResource(Res.drawable.ic_phone),
             onValueChanged = { phoneNumber -> onPhoneChange(phoneNumber) },
-            placeholder = "",
+            hint = "",
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
             modifier = Modifier.weight(1f)
         )

@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,8 +19,7 @@ import mena.identity_presentation.generated.resources.Res
 import mena.identity_presentation.generated.resources.app_name
 import mena.identity_presentation.generated.resources.madimi_one_regular
 import mena.identity_presentation.generated.resources.mena_logo
-import net.thechance.mena.designsystem.presentation.component.image.MenaImage
-import net.thechance.mena.designsystem.presentation.component.text.MenaText
+import net.thechance.mena.designsystem.presentation.component.image.Image
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
@@ -43,11 +43,12 @@ fun PageDescription(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                MenaImage(
+                Image(
                     painter = painterResource(Res.drawable.mena_logo),
+                    contentDescription = "Mena Logo",
                     modifier = Modifier.size(88.dp)
                 )
-                MenaText(
+                Text(
                     text = stringResource(Res.string.app_name),
                     textAlign = TextAlign.Center,
                     style = TextStyle.Default.copy(
@@ -63,7 +64,7 @@ fun PageDescription(
                 )
             }
         }
-        MenaText(
+        Text(
             text = title,
             style = Theme.typography.title.medium,
             color = Theme.colorScheme.shadePrimary,
@@ -72,7 +73,7 @@ fun PageDescription(
                 .padding(top = 12.dp)
 
         )
-        MenaText(
+        Text(
             text = subtitle,
             style = Theme.typography.body.small,
             color = Theme.colorScheme.shadeSecondary,

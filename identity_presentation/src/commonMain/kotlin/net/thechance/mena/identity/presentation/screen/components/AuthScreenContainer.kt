@@ -1,5 +1,6 @@
 package net.thechance.mena.identity.presentation.screen.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,7 +17,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import mena.identity_presentation.generated.resources.Res
 import mena.identity_presentation.generated.resources.login_background
-import net.thechance.mena.designsystem.presentation.component.image.MenaImage
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
 
@@ -30,7 +30,7 @@ fun AuthScreenContainer(
             .fillMaxSize()
             .background(Theme.colorScheme.background.surface)
     ) {
-        MenaImage(
+        Image(
             painter = painterResource(Res.drawable.login_background),
             contentDescription = "background",
             modifier = Modifier.fillMaxSize(),
