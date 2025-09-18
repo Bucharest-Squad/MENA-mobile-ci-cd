@@ -26,7 +26,7 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun GoToSettingsView(
-    onSyncClick: () -> Unit,
+    onGoToSettingClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -57,7 +57,7 @@ fun GoToSettingsView(
             text = stringResource(Res.string.go_to_setting),
             contentPadding = PaddingValues(vertical =  Theme.spacing._12, horizontal =  Theme.spacing._16),
             trailingIcon = painterResource(Res.drawable.ic_phone_back),
-            onClick = {onSyncClick()},
+            onClick = {onGoToSettingClick()},
         )
     }
 }
