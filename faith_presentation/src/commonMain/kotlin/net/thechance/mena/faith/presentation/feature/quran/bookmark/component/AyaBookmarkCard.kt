@@ -42,6 +42,7 @@ import net.thechance.mena.designsystem.presentation.component.text.MenaText
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.faith.presentation.designSystem.theme.quran
+import net.thechance.mena.faith.presentation.extensions.getTimeAgo
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -76,7 +77,7 @@ fun AyaBookmarkCard(
             AyaBookmarkContent(
                 surahName = surahName,
                 ayaNumber = ayaNumber,
-                createdAt = timeAgo.toString(),
+                createdAt = timeAgo.getTimeAgo(),
                 ayaText = ayaText,
                 modifier = contentModifier
             )

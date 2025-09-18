@@ -30,6 +30,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 @Composable
 fun BookmarkScreen(
@@ -124,21 +125,22 @@ private fun BookmarkScreenPreview() {
                         "Al-Nisa",
                         176,
                         "يَسْتَفْتُونَكَ قُلِ اللَّهُ يُفْتِيكُمْ فِي الْكَلَالَةِ ۚ إِنِ امْرُؤٌ هَلَكَ لَيْسَ لَهُ وَلَدٌ وَلَهُ أُخْتٌ فَلَهَا نِصْفُ مَا تَرَكَ ۚ وَهُوَ يَرِثُهَا إِن لَّمْ يَكُن لَّهَا وَلَدٌ ۚ فَإِن كَانَتَا اثْنَتَيْنِ فَلَهُمَا الثُّلُثَانِ مِمَّا تَرَكَ ۚ وَإِن كَانُوا إِخْوَةً رِّجَالًا وَنِسَاءً فَلِلذَّكَرِ مِثْلُ حَظِّ الْأُنْثَيَيْنِ ۗ يُبَيِّنُ اللَّهُ لَكُمْ أَنْ تَضِلُّوا ۗ وَاللَّهُ بِكُلِّ شَيْءٍ عَلِيمٌَ",
-                        Clock.System.now()
+                        createdAt = Instant.fromEpochSeconds(223232, 2)
+
                     ),
                     BookmarksScreenState.BookmarkUiState(
                         3,
                         "Al-A'raf",
                         172,
                         "وَإِذْ أَخَذَ رَبُّكَ مِنْ بَنِي آدَمَ مِنْ ظُهُورِهِمْ ذُرِّيَّتَهُمْ وَأَشْهَدَهُمْ عَلَى أَنْفُسِهِمْ أَلَسْتُ بِرَبِّكُمْ قَالُوا بَلَى شَهِدْنَا أَنْ تَقُولُوا يَوْمَ الْقِيَامَةِ إِنَّا كُنَّا عَنْ هَذَا غَافِلِينَ",
-                        Clock.System.now()
+                        createdAt = Instant.fromEpochSeconds(232232, 52)
                     ),
                     BookmarksScreenState.BookmarkUiState(
                         4,
                         "Al-Baqarah",
                         152,
                         "فَاذْكُرُونِي أَذْكُرْكُمَْ",
-                        Clock.System.now()
+                        createdAt = Instant.fromEpochSeconds(2322, 342)
                     ),
                     BookmarksScreenState.BookmarkUiState(
                         5,
@@ -152,14 +154,14 @@ private fun BookmarkScreenPreview() {
                         "Al-Noor",
                         354,
                         "اللَّهُ نُورُ السَّمَاوَاتِ وَالْأَرْضٌَِ",
-                        Clock.System.now()
+                        createdAt = Instant.fromEpochSeconds(2, 42)
                     ),
                     BookmarksScreenState.BookmarkUiState(
                         7,
                         "Al-Baqarah",
                         134,
                         "تِلْكَ أُمَّةٌ قَدْ خَلَتْ لَهَا مَا كَسَبَتْ وَلَكُمْ مَا كَسَبْتُمْ وَلَا تُسْأَلُونَ عَمَّا كَانُوا يَعْمَلُونَ",
-                        Clock.System.now()
+                        createdAt = Instant.fromEpochSeconds(2878, 232)
                     ),
                 ),
             ),
