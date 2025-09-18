@@ -1,5 +1,6 @@
 package net.thechance.mena.core_chat.presentation.screen.syncContacts
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,7 +34,6 @@ import net.thechance.mena.core_chat.presentation.navigation.LocalNavController
 import net.thechance.mena.core_chat.presentation.screen.syncContacts.components.ContactsSyncedView
 import net.thechance.mena.core_chat.presentation.screen.syncContacts.components.GoToSettingsView
 import net.thechance.mena.core_chat.presentation.screen.syncContacts.components.NoContactsSyncView
-import net.thechance.mena.core_chat.presentation.screen.syncContacts.components.PhoneIcon
 import net.thechance.mena.core_chat.presentation.utils.EffectHandler
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
@@ -56,7 +56,6 @@ fun SyncContactsScreen(forceSync: Boolean = false) {
 
     val state by viewModel.state.collectAsState()
 
-
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         viewModel.checkPermissions()
         viewModel.onForceSync(forceSync = forceSync)
@@ -75,7 +74,6 @@ private fun SyncContactsContent(
     state: SyncContactsState,
     interactionListener: SyncContactsScreenInteractionListener,
 ) {
-
     Column(
         modifier = Modifier.fillMaxSize()
             .background(color = Theme.colorScheme.background.surface)
@@ -95,39 +93,41 @@ private fun SyncContactsContent(
             },
             onLeadingClick = interactionListener::onBackClick,
         )
-        Column(
+        AnimatedContent(
+            targetState = state.deniedPermanently,
+            label = "contacts_content_animation",
             modifier = Modifier
                 .weight(1f)
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = Theme.spacing._24),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-        ) {
-            when {
-                state.deniedPermanently -> {
-                    GoToSettingsView(
-                        onSyncClick = interactionListener::onGoToSettingsClick,
-                        modifier = Modifier.padding(top = Theme.spacing._12)
-                    )
-                }
-
-                state.showSyncView && state.isLoading -> {
-                    PhoneIcon()
-                    ContactsSyncedView(modifier = Modifier.padding(top = Theme.spacing._24))
-                }
-
-                state.showSyncView -> {
-                    PhoneIcon()
-                    NoContactsSyncView(
-                        modifier = Modifier.padding(top = Theme.spacing._12),
-                        onSyncClick = interactionListener::onSyncClick,
-                    )
+            contentAlignment = Alignment.Center
+        ) { isDeniedPermanently ->
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                when {
+                    isDeniedPermanently -> {
+                        GoToSettingsView(
+                            onGoToSettingClick = interactionListener::onGoToSettingsClick,
+                            modifier = Modifier.padding(top = Theme.spacing._12)
+                        )
+                    }
+                    state.showSyncView && state.isLoading -> {
+                        ContactsSyncedView(modifier = Modifier.padding(top = Theme.spacing._24))
+                    }
+                    state.showSyncView -> {
+                        NoContactsSyncView(
+                            modifier = Modifier.padding(top = Theme.spacing._12),
+                            onSyncClick = interactionListener::onSyncClick,
+                        )
+                    }
                 }
             }
         }
     }
     Box(
-        modifier = Modifier.fillMaxSize().statusBarsPadding().padding(horizontal =  Theme.spacing._16),
+        modifier = Modifier.fillMaxSize().statusBarsPadding().padding(horizontal = Theme.spacing._16),
         contentAlignment = Alignment.TopCenter
     ) {
         AnimatedSnackBarHost(
@@ -136,7 +136,6 @@ private fun SyncContactsContent(
         )
     }
 }
-
 @Composable
 private fun SyncContactsEffectsHandler(effects: Flow<SyncContactsScreenEffect>) {
     val navController = LocalNavController.current
