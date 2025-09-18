@@ -31,8 +31,6 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
-            implementation(libs.androidx.paging.compose)
-            implementation(libs.androidx.paging.runtime)
         }
         commonMain.dependencies {
             implementation(projects.trendsDomain)
