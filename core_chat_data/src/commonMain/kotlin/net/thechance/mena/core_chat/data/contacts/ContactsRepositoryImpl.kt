@@ -15,8 +15,6 @@ import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import net.thechance.mena.core_chat.data.contacts.dto.ContactDto

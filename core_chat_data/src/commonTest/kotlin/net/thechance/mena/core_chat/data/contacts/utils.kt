@@ -9,7 +9,6 @@ import io.ktor.client.engine.mock.MockRequestHandleScope
 import io.ktor.client.engine.mock.respond
 import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.request.HttpRequestData
 import io.ktor.client.request.HttpResponseData
 import io.ktor.http.ContentType
 import io.ktor.http.Headers
@@ -36,20 +35,6 @@ inline fun <reified T> errorResponse(json: Json, status: Int, message: String): 
         BaseResponseDto.serializer(serializer<T>()),
         BaseResponseDto(status = status, success = false, message = message)
     )
-}
-
-private fun createClient(
-    json: Json,
-    handler: suspend MockRequestHandleScope.(HttpRequestData) -> HttpResponseData
-): HttpClient {
-    val engine = MockEngine { request -> handler(this, request) }
-    return HttpClient(engine) {
-        install(ContentNegotiation) { json(json) }
-        install(DefaultRequest) {
-            contentType(ContentType.Application.Json)
-        }
-    }
-
 }
 
 fun MockRequestHandleScope.defaultContactsResponse(json: Json, headers: Headers) = respond(

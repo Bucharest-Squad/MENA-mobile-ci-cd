@@ -17,7 +17,6 @@ import kotlinx.serialization.json.Json
 import net.thechance.mena.core_chat.data.contacts.dto.ContactDto
 import net.thechance.mena.core_chat.data.contacts.fakes.FakeContactsProvider
 import net.thechance.mena.core_chat.data.contacts.fakes.FakeDataStore
-import net.thechance.mena.core_chat.data.network.ApiConstants.SYNC_CONTACTS_ENDPOINT
 import net.thechance.mena.core_chat.data.shared.dto.PagedDataDto
 import net.thechance.mena.core_chat.domain.entity.Contact
 import net.thechance.mena.core_chat.domain.exception.ContactSyncFailedException
