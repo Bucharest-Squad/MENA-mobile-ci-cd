@@ -52,7 +52,7 @@ jobs:
                  \`\`\`
                  git push origin -u <new-bottom-name> --force
                  \`\`\`
-              3. This pull request will update automatically with the new branch name.
+              3. Please make a new PR with the updated branch.
               `;
 
               await github.rest.issues.createComment({
