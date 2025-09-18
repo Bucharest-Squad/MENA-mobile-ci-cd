@@ -14,7 +14,7 @@ import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.ic_phone_back
 import mena.core_chat_presentation.generated.resources.retry
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
-import net.thechance.mena.designsystem.presentation.component.text.MenaText
+import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -31,14 +31,14 @@ fun ErrorView(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        MenaText(
+        Text(
             text = title,
             style = Theme.typography.title.small,
             color = Theme.colorScheme.shadePrimary,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()
         )
-        MenaText(
+        Text(
             text = message,
             modifier = Modifier.padding(top = Theme.spacing._2, bottom = Theme.spacing._12),
             textAlign = TextAlign.Center,

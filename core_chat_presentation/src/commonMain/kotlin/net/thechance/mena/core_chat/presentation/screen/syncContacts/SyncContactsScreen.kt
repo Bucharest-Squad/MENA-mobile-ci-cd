@@ -35,7 +35,7 @@ import net.thechance.mena.core_chat.presentation.screen.syncContacts.components.
 import net.thechance.mena.core_chat.presentation.screen.syncContacts.components.PhoneIcon
 import net.thechance.mena.core_chat.presentation.utils.EffectHandler
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
-import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
+import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
@@ -84,7 +84,7 @@ private fun SyncContactsContent(
             title = stringResource(Res.string.sync_contacts),
             contentPadding = PaddingValues(horizontal = Theme.spacing._12, vertical = Theme.spacing._8),
             leadingContent = {
-                MenaIcon(
+                Icon(
                     painter = painterResource(Res.drawable.ic_arrow_left),
                     modifier = Modifier.size(20.dp),
                     contentDescription = null,
