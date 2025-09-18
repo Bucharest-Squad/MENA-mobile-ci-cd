@@ -1,6 +1,5 @@
 package net.thechance.mena.core_chat.presentation.screen.syncContacts.components
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,11 +18,11 @@ import mena.core_chat_presentation.generated.resources.ic_phone_back
 import mena.core_chat_presentation.generated.resources.sync_contacts_title
 import mena.core_chat_presentation.generated.resources.to_sync_contacts_go_to_settings
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
+import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import net.thechance.mena.designsystem.presentation.component.icon.Icon
 
 @Composable
 fun GoToSettingsView(
