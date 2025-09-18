@@ -29,7 +29,7 @@ fun LoginScreen() {
                 scope.launch {
                     try {
                        repo.login("+20","+200123456789","12341234")
-                        repo.getAccessToken()
+                        repo.getCurrentAccessToken()
                        // println("WOWWOW"+repo.getAccessToken())
                     } catch (e: Exception) {
                         println(e.message)
