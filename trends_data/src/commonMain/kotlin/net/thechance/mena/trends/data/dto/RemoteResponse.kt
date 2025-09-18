@@ -4,9 +4,11 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ReelsListDto<T>(
-    val page : Int,
+data class RemoteResponse<T>(
+    @SerialName("pageNumber")
+    val pageNumber : Int,
+    @SerialName("results")
     val results: List<T>,
-    @SerialName("total_results")
+    @SerialName("totalResults")
     val totalResults: Int
 )
