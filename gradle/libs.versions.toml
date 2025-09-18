@@ -34,6 +34,8 @@ turbine = "1.2.1"
 
 
 
+room = "2.8.0"
+sqlite = "2.6.0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -97,6 +99,12 @@ turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
 
 
+# Room
+androidx-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+androidx-room-sqlite-wrapper = { module = "androidx.room:room-sqlite-wrapper", version.ref = "room" }
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
@@ -105,6 +113,7 @@ composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "k
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+room = { id = "androidx.room", version.ref = "room" }
 
 [bundles]
 ktor = [
