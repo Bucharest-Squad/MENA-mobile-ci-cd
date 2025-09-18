@@ -207,7 +207,6 @@ class AuthenticationRepositoryImplTest {
         )
         coEvery { authRemoteDataSource.login(any()) } throws clientException
 
-        // When & Then
         assertFailure {
             authenticationRepository.login("+20", "01234567", "password123")
         }.isInstanceOf<UnknownException>()
