@@ -199,6 +199,7 @@ fun ScaffoldScope.BottomSheet(
                     .offset(
                         y = stickyBottomOffset
                     )
+                    .clickable(false) {}
             ) {
                 stickyFooterContent()
             }
