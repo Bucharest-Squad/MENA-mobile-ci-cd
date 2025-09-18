@@ -13,13 +13,18 @@ import net.thechance.mena.identity.data.dto.auth.RefreshRequestDto
 
 class AuthRemoteDataSourceImpl(
     private val client: HttpClient
-) :AuthRemoteDataSource{
+) : AuthRemoteDataSource {
     override suspend fun login(loginRequest: LoginRequestDto): LoginResponseDto {
-        return client.postJson(loginRequest, ApiConstants.LOGIN)
+        return client.postJson(loginRequest, LOGIN)
     }
 
     override suspend fun refreshToken(refreshRequest: RefreshRequestDto): LoginResponseDto {
-        return client.postJson(refreshRequest, ApiConstants.REFRESH)
+        return client.postJson(refreshRequest, REFRESH)
+    }
+
+    companion object {
+        const val LOGIN = "identity/login"
+        const val REFRESH = "identity/refresh"
     }
 }
 
@@ -33,10 +38,3 @@ private suspend inline fun <reified T, reified R> HttpClient.postJson(
         setBody(requestDto)
     }.body()
 }
-object ApiConstants {
-    const val LOGIN = "identity/login"
-    const val REFRESH = "identity/refresh"
-}
-
-
-

@@ -12,7 +12,6 @@ kotlin {
     iosSimulatorArm64()
 
     sourceSets {
-
         commonMain.dependencies {
             implementation(projects.identityDomain)
             implementation(libs.kotlinx.serialization.json)
@@ -23,7 +22,7 @@ kotlin {
             implementation(libs.ktor.client.logging)
             implementation(libs.ktor.client.auth)
             implementation(libs.multiplatform.settings)
-            implementation("io.ktor:ktor-client-cio:3.2.3")
+            implementation(libs.ktor.client.cio)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
