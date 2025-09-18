@@ -30,7 +30,6 @@ fun LoginScreen() {
                     try {
                        repo.login("+20","+200123456789","12341234")
                         repo.getCurrentAccessToken()
-                       // println("WOWWOW"+repo.getAccessToken())
                     } catch (e: Exception) {
                         println(e.message)
                     }
