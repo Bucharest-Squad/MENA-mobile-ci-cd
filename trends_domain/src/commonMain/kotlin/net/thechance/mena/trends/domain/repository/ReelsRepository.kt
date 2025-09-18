@@ -2,7 +2,7 @@ package net.thechance.mena.trends.domain.repository
 
 import net.thechance.mena.trends.domain.entity.Reel
 
-interface ReelRepository {
+interface ReelsRepository {
     suspend fun deleteReelById(id: Int)
-    suspend fun getAllReels(): List<Reel>
+    suspend fun getAllReels(pageNumber : Int): List<Reel>
 }

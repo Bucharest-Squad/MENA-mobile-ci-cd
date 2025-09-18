@@ -1,4 +1,4 @@
-package net.thechance.mena.trends.presentation.screen.managemytrendscreen
+package net.thechance.mena.trends.presentation.screen.manage_my_trends
 
 sealed interface ManageTrendsUiEffect {
     object NavigateBack : ManageTrendsUiEffect

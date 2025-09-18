@@ -1,4 +1,4 @@
-package net.thechance.mena.trends.presentation.screen.managemytrendscreen
+package net.thechance.mena.trends.presentation.screen.manage_my_trends
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,6 +27,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import coil3.compose.AsyncImage
 import mena.trends_presentation.generated.resources.Back_arrow
 import mena.trends_presentation.generated.resources.Res
@@ -74,6 +77,8 @@ private fun ManageTrendsScreenContent(
     state: ManageTrendsScreenState,
     listener: ManageTrendsInteractionListener,
 ) {
+    val reels = state.reels.collectAsLazyPagingItems()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -114,7 +119,7 @@ private fun ManageTrendsScreenContent(
                     .align(Alignment.CenterHorizontally)
             )
             SegmentSection(
-                reels = state.reels,
+                reels = reels,
                 onTrendClick = listener::onReelItemClick,
             )
         }
@@ -123,7 +128,7 @@ private fun ManageTrendsScreenContent(
 
 @Composable
 private fun SegmentSection(
-    reels: List<ReelUiState>,
+    reels: LazyPagingItems<ReelUiState>,
     onTrendClick: (Int) -> Unit,
 ) {
     Column(
@@ -138,9 +143,12 @@ private fun SegmentSection(
                     val itemWidth = 106.dp
                     val itemHeight = 164.dp
                     val spacing = 4.dp
-                    val numColumns = floor((maxWidth.value + spacing.value) / (itemWidth.value + spacing.value)).toInt().coerceAtLeast(1)
-                    val numRows = (reels.size + numColumns - 1) / numColumns
-                    val totalHeight = (numRows * itemHeight.value + (numRows - 1) * spacing.value).dp
+                    val numColumns =
+                        floor((maxWidth.value + spacing.value) / (itemWidth.value + spacing.value)).toInt()
+                            .coerceAtLeast(1)
+                    val numRows = (reels.itemCount + numColumns - 1) / numColumns
+                    val totalHeight =
+                        (numRows * itemHeight.value + (numRows - 1) * spacing.value).dp
 
                     LazyVerticalGrid(
                         columns = GridCells.Adaptive(
@@ -150,18 +158,33 @@ private fun SegmentSection(
                             .height(totalHeight),
                         userScrollEnabled = false,
                         verticalArrangement = Arrangement.spacedBy(spacing),
-                        horizontalArrangement = Arrangement.spacedBy(spacing, Alignment.CenterHorizontally),
+                        horizontalArrangement = Arrangement.spacedBy(
+                            spacing,
+                            Alignment.CenterHorizontally
+                        ),
                         contentPadding = PaddingValues(0.dp)
                     ) {
-                        items(reels) { item ->
-                            TrendItem(
-                                item = item,
-                                onTrendClick = onTrendClick
-                            )
+                        items(key = reels.itemKey(), count = reels.itemCount) { index ->
+                            reels[index]?.let { reel ->
+                                TrendItem(
+                                    item = reel,
+                                    onTrendClick = onTrendClick
+                                )
+                            }
+                        }
+
+                        if (reels.loadState.append is LoadState.Loading) {
+                            item {
+                                Box(
+                                    contentAlignment = Alignment.Center
+                                ) { ///TODO add loading  }
+                                }
+                            }
                         }
                     }
                 }
             }
+
             item("Favorite") {
                 // TODO: Implement favorites, empty for now
             }
