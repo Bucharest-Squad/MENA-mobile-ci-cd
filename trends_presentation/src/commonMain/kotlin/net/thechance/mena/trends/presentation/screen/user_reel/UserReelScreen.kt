@@ -38,10 +38,15 @@ import mena.trends_presentation.generated.resources.Res
 import mena.trends_presentation.generated.resources.confirmation_message
 import mena.trends_presentation.generated.resources.delete
 import mena.trends_presentation.generated.resources.delete_reel
+import mena.trends_presentation.generated.resources.fail_delete_message
+import mena.trends_presentation.generated.resources.fail_delete_title
 import mena.trends_presentation.generated.resources.ic_arrow_left
 import mena.trends_presentation.generated.resources.ic_delete
 import mena.trends_presentation.generated.resources.ic_eye
 import mena.trends_presentation.generated.resources.ic_like
+import mena.trends_presentation.generated.resources.react
+import mena.trends_presentation.generated.resources.success_delete_message
+import mena.trends_presentation.generated.resources.success_delete_title
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.dialog.Dialog
 import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
@@ -86,23 +91,51 @@ private fun UserReelScreenContent(
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
 
-        if (state.isConfirmationDialogVisible) {
-            Dialog(
-                visible = state.isConfirmationDialogVisible,
-                title = stringResource(Res.string.delete_reel),
-                message = stringResource(Res.string.confirmation_message) ,
-                buttonText = stringResource(Res.string.delete),
-                dismissOnBackPress = true,
-                dismissOnClickOutside = true,
-                onDismiss = { listener.onDismissDialog() },
-                onActionClick = { listener.onConfirmDeleteClick() },
-                onCancelClick = { listener.onDismissDialog() },
-                modifier = Modifier.align(Alignment.Center).zIndex(3f),
-                dialogCornerShape = RoundedCornerShape(12.dp),
-                cancelBackgroundShape = RoundedCornerShape(50),
-                contentPadding = PaddingValues(16.dp)
-            )
-        }
+        Dialog(
+            visible = state.isConfirmationDialogVisible,
+            title = stringResource(Res.string.delete_reel),
+            message = stringResource(Res.string.confirmation_message),
+            buttonText = stringResource(Res.string.delete),
+            dismissOnBackPress = true,
+            dismissOnClickOutside = true,
+            onDismiss = { listener.onDismissConfirmationDialog() },
+            onActionClick = { listener.onConfirmDeleteClick() },
+            onCancelClick = { listener.onDismissConfirmationDialog() },
+            modifier = Modifier.align(Alignment.Center).zIndex(3f),
+            dialogCornerShape = RoundedCornerShape(12.dp),
+            cancelBackgroundShape = RoundedCornerShape(50),
+            contentPadding = PaddingValues(16.dp)
+        )
+
+        Dialog(
+            visible = state.isReelDeleted == true,
+            title = stringResource(Res.string.success_delete_title),
+            message = stringResource(Res.string.success_delete_message),
+            buttonText = "",
+            dismissOnBackPress = true,
+            dismissOnClickOutside = true,
+            onDismiss = { listener.onDismissSuccessDialog() },
+            onCancelClick = { listener.onDismissSuccessDialog() },
+            modifier = Modifier.align(Alignment.Center).zIndex(3f),
+            dialogCornerShape = RoundedCornerShape(12.dp),
+            cancelBackgroundShape = RoundedCornerShape(50),
+            contentPadding = PaddingValues(16.dp)
+        )
+
+        Dialog(
+            visible = state.isReelDeleted == false,
+            title = stringResource(Res.string.fail_delete_title),
+            message = stringResource(Res.string.fail_delete_message),
+            buttonText = "",
+            dismissOnBackPress = true,
+            dismissOnClickOutside = true,
+            onDismiss = { listener.onDismissErrorDialog() },
+            onCancelClick = { listener.onDismissErrorDialog() },
+            modifier = Modifier.align(Alignment.Center).zIndex(3f),
+            dialogCornerShape = RoundedCornerShape(12.dp),
+            cancelBackgroundShape = RoundedCornerShape(50),
+            contentPadding = PaddingValues(16.dp)
+        )
 
         RunningVideoPlaceHolder()
 
@@ -143,7 +176,7 @@ private fun TopAppBar(
         modifier = modifier
             .fillMaxWidth()
             .height(height = 96.dp)
-            .gradientShadow(startColor = Color(0x33FFFFFF), endColor = Color(0x00FFFFFF))
+            .gradientShadow()
             .padding(horizontal = Theme.spacing._16).padding(
                 top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding() + 8.dp
             )
@@ -245,8 +278,9 @@ private fun UsersReAct(
         ReActIcon(
             icon = painterResource(resource = Res.drawable.ic_delete),
             label = stringResource(Res.string.delete),
-            onClick = { onDeleteClick() }
-        )
+            onClick = { onDeleteClick() },
+
+            )
     }
 }
 
@@ -260,6 +294,7 @@ private fun ReActIcon(
     Column(modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         MenaIcon(
             painter = icon,
+            contentDescription = stringResource(Res.string.react),
             modifier = Modifier
                 .padding(bottom = 8.dp)
                 .clickable { onClick() },

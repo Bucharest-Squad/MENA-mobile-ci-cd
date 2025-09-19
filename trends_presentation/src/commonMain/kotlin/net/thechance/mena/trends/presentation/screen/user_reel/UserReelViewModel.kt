@@ -1,7 +1,5 @@
 package net.thechance.mena.trends.presentation.screen.user_reel
 
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.launch
 import net.thechance.mena.trends.domain.repository.ReelsRepository
 import net.thechance.mena.trends.presentation.shared.base.BaseViewModel
 import org.koin.android.annotation.KoinViewModel
@@ -37,17 +35,31 @@ class UserReelViewModel(
 
     override fun onConfirmDeleteClick() {
         tryToExecute(
-            block = { reelsRepository.deleteReelById(state.value.id) },
-            onSuccess = {
-                updateState { copy(isConfirmationDialogVisible = false, isReelDeleted = true) }
-            },
+            block = { reelsRepository.deleteReelById(state.value.id.orEmpty()) },
+            onSuccess = { ::onDeleteReelSuccess },
             onError = { handleError(it) },
         )
     }
 
-    override fun onDismissDialog() {
+    private fun onDeleteReelSuccess() {
+        updateState { copy(isConfirmationDialogVisible = false, isReelDeleted = true) }
+    }
+
+    override fun onDismissSuccessDialog() {
+        updateState {
+            copy(isReelDeleted = null, isConfirmationDialogVisible = false)
+        }
+    }
+
+    override fun onDismissConfirmationDialog() {
         updateState {
             copy(isConfirmationDialogVisible = false)
+        }
+    }
+
+    override fun onDismissErrorDialog() {
+        updateState {
+            copy(isReelDeleted = null, isConfirmationDialogVisible = false)
         }
     }
 }

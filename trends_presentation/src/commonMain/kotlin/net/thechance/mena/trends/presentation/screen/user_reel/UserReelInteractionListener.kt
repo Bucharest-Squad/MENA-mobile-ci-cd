@@ -4,6 +4,8 @@ interface UserReelInteractionListener {
     fun onBackClick()
     fun onDeleteClick()
     fun onConfirmDeleteClick()
-    fun onDismissDialog()
+    fun onDismissConfirmationDialog()
+    fun onDismissSuccessDialog()
+    fun onDismissErrorDialog()
     fun onDescriptionClick(isCollapsed: Boolean)
 }

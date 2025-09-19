@@ -12,5 +12,10 @@
 
     <string name="delete_reel">حذف الفيديو</string>
     <string name="confirmation_message">هل أنت متأكد من الحذف؟</string>
+    <string name="success_delete_message">تم الحذف الفيديو بنجاح</string>
+    <string name="success_delete_title">نجح</string>
+    <string name="fail_delete_message">حدث خطأ اثناء الحذف</string>
+    <string name="fail_delete_title">خطأ</string>
     <string name="delete">حذف</string>
+    <string name="react">ايقونه تفاعليه</string>
 </resources>

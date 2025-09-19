@@ -13,4 +13,9 @@
     <string name="delete_reel">Delete Reel</string>
     <string name="confirmation_message">Are you sure you want to delete this reel?</string>
     <string name="delete">Delete</string>
+    <string name="react">React icon</string>
+    <string name="success_delete_title">Success!</string>
+    <string name="fail_delete_title">Failed!</string>
+    <string name="success_delete_message">Video has been removed!</string>
+    <string name="fail_delete_message">There was an error while deleting the video!</string>
 </resources>
