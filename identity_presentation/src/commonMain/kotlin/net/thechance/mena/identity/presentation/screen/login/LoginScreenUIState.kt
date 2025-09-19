@@ -12,5 +12,9 @@ data class LoginScreenUIState(
     val countryPickerUIState: CountryPickerUIState = CountryPickerUIState()
 ){
     val isLoginEnabled: Boolean
-        get() = phoneNumber.isNotBlank() && password.isNotBlank()
+        get() = phoneNumber.isNotBlank() && password.isNotBlank() && password.length >= PASSWORD_MIN_LENGTH
+
+    private companion object {
+        const val PASSWORD_MIN_LENGTH = 8
+    }
 }
