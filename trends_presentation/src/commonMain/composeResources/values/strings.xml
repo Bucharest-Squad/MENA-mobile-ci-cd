@@ -23,4 +23,7 @@
     <string name="fail_delete_title">Failed!</string>
     <string name="success_delete_message">Video has been removed!</string>
     <string name="fail_delete_message">There was an error while deleting the video!</string>
+
+    <string name="error_no_internet">Could not connect, please check your internet connection</string>
+    <string name="error_generic">Something went wrong, please try again later</string>
 </resources>

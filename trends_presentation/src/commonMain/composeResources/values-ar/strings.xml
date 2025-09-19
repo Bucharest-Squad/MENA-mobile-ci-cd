@@ -23,4 +23,7 @@
     <string name="fail_delete_title">خطأ</string>
     <string name="delete">حذف</string>
     <string name="react">ايقونه تفاعليه</string>
+
+    <string name="error_no_internet">تعذر الاتصال، برجاء التحقق من اتصالك بالانترنت</string>
+    <string name="error_generic">حدث خطأ، حاول مجددًا لاحقًا</string>
 </resources>
