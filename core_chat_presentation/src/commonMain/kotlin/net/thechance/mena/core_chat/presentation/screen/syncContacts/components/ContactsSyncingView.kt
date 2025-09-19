@@ -1,9 +1,9 @@
 package net.thechance.mena.core_chat.presentation.screen.syncContacts.components
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,6 +22,7 @@ fun ContactsSyncingView(
     Column(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(Theme.spacing._24, Alignment.CenterVertically)
     ) {
         PhoneIcon()
         Text(
@@ -29,7 +30,6 @@ fun ContactsSyncingView(
             style = Theme.typography.title.small,
             color = Theme.colorScheme.shadePrimary,
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(bottom = Theme.spacing._24)
         )
 
         ProgressBar(modifier = Modifier.fillMaxWidth())
