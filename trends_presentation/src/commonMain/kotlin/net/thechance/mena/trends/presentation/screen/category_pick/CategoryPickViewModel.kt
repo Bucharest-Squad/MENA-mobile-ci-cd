@@ -22,7 +22,7 @@ internal class CategoryPickViewModel(
         tryToExecute(
             block = { repository.getAllCategories() },
             onSuccess = ::handleLoadCategoriesSuccess,
-            onError = { /* TODO: Handle error */ },
+            onError = { errorState -> updateState { copy(error = errorState) } },
             onStart = ::startLoading,
             onEnd = ::endLoading
         )
@@ -42,7 +42,7 @@ internal class CategoryPickViewModel(
             onSuccess = { sendEffect(CategoryPickScreenEffect.NavigateToTrends) },
             onStart = ::startSaving,
             onEnd = ::endSaving,
-            onError = { /* TODO: Handle error */ },
+            onError = { errorState -> updateState { copy(error = errorState) } },
         )
     }
 
