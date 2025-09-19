@@ -14,4 +14,7 @@ sealed interface Route {
 
     @Serializable
     data object ManageReels : Route
+
+    @Serializable
+    data object Test: Route
 }
