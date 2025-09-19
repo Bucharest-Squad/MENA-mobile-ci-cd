@@ -1,6 +1,5 @@
 package net.thechance.mena.identity.data.utils
 
-import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.ServerResponseException
 import io.ktor.http.HttpStatusCode
 import net.thechance.mena.identity.domain.exception.InvalidCredentialsException
