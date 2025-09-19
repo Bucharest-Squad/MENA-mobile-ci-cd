@@ -14,7 +14,6 @@ import androidx.compose.ui.unit.dp
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.go_to_setting
 import mena.core_chat_presentation.generated.resources.ic_error
-import mena.core_chat_presentation.generated.resources.ic_phone_back
 import mena.core_chat_presentation.generated.resources.sync_contacts_title
 import mena.core_chat_presentation.generated.resources.to_sync_contacts_go_to_settings
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
@@ -56,8 +55,7 @@ fun GoToSettingsView(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(Res.string.go_to_setting),
             contentPadding = PaddingValues(vertical =  Theme.spacing._12, horizontal =  Theme.spacing._16),
-            trailingIcon = painterResource(Res.drawable.ic_phone_back),
-            onClick = {onGoToSettingClick()},
+            onClick = onGoToSettingClick,
         )
     }
 }
