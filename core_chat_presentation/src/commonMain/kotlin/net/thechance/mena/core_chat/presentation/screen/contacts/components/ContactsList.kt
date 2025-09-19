@@ -120,7 +120,7 @@ private fun EmptyContactsColumn() {
         )
         Text(
             text = stringResource(Res.string.refresh_contacts_message),
-            modifier = Modifier.padding(top = Theme.spacing._2, bottom = Theme.spacing._12),
+            modifier = Modifier.padding(top = Theme.spacing._2),
             textAlign = TextAlign.Center,
             style = Theme.typography.body.small,
             color = Theme.colorScheme.shadeSecondary
