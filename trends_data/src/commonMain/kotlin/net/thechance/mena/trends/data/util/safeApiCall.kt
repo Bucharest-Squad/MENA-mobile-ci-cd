@@ -25,10 +25,10 @@ internal suspend inline fun <reified T> safeApiCall(
         throw exception
     }
 
-    return handleErrorStatus(result)
+    return handleResponseStatusCode(result)
 }
 
-private suspend inline fun <reified T> handleErrorStatus(result: HttpResponse): T {
+private suspend inline fun <reified T> handleResponseStatusCode(result: HttpResponse): T {
     return when (result.status.value) {
         in 200..299 -> {
             result.body<T>()
