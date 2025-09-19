@@ -50,8 +50,10 @@ class CreateDukanViewModelTest {
 
     @Test
     fun `init should load categories`() = runTest {
+        // When
         createDukanViewModel.state.test {
             val state = awaitItem()
+            // Then
             assertEquals(fakeCategories().size, state.dukanCategories.size)
             cancelAndIgnoreRemainingEvents()
         }
@@ -59,8 +61,10 @@ class CreateDukanViewModelTest {
 
     @Test
     fun `init should load colors`() = runTest {
+        // When
         createDukanViewModel.state.test {
             val state = awaitItem()
+            // Then
             assertEquals(fakeDukanColor().size, state.dukanColors.size)
             cancelAndIgnoreRemainingEvents()
         }
@@ -68,8 +72,10 @@ class CreateDukanViewModelTest {
 
     @Test
     fun `init should load styles`() = runTest {
+        // When
         createDukanViewModel.state.test {
             val state = awaitItem()
+            // Then
             assertEquals(fakeDukanStyle().size, state.dukanStyles.size)
             cancelAndIgnoreRemainingEvents()
         }
@@ -77,9 +83,13 @@ class CreateDukanViewModelTest {
 
     @Test
     fun `onAddressChanged SHOULD update address state`() = runTest {
+        // Given
         val address = "This new address"
 
+        // When
         createDukanViewModel.onAddressChanged(address)
+
+        // Then
         val newAddress = createDukanViewModel.state.value.address
         assertEquals(newAddress, address)
     }
@@ -87,9 +97,13 @@ class CreateDukanViewModelTest {
     @Test
     fun `onAddressChanged SHOULD set isButtonEnabled state to false if address is blank`() =
         runTest {
+            // Given
             val address = ""
 
+            // When
             createDukanViewModel.onAddressChanged(address)
+
+            // Then
             val buttonState = createDukanViewModel.state.value.isButtonEnabled
             assertFalse(buttonState)
         }
@@ -99,19 +113,17 @@ class CreateDukanViewModelTest {
         // Given
         val expectedAddress = "Egypt"
         val selectedCoordinates = CreateDukanUiState.CoordinatesUiState(28.0, 29.0)
-
         val selectedPointerLocation = DpOffset(2.dp, 4.dp)
         everySuspend {
             locationRepository.getCurrentLocationName(selectedCoordinates.toEntity())
         } calls { expectedAddress }
 
-        // when
+        // When
         createDukanViewModel.onMapClicked(selectedCoordinates, selectedPointerLocation)
-
         testDispatcher.scheduler.advanceUntilIdle()
-        val resultingAddress = createDukanViewModel.state.value.address
 
         // Then
+        val resultingAddress = createDukanViewModel.state.value.address
         assertEquals(resultingAddress, expectedAddress)
     }
 
@@ -120,21 +132,17 @@ class CreateDukanViewModelTest {
         // Given
         val expectedAddress = "Egypt"
         val selectedCoordinates = CreateDukanUiState.CoordinatesUiState(28.0, 29.0)
-
         val selectedPointerLocation = DpOffset(2.dp, 4.dp)
         everySuspend {
-            locationRepository.getCurrentLocationName(
-                selectedCoordinates.toEntity()
-            )
+            locationRepository.getCurrentLocationName(selectedCoordinates.toEntity())
         } calls { expectedAddress }
 
-        // when
+        // When
         createDukanViewModel.onMapClicked(selectedCoordinates, selectedPointerLocation)
-
         testDispatcher.scheduler.advanceUntilIdle()
-        val resultingCoordinates = createDukanViewModel.state.value.currentLocation
 
         // Then
+        val resultingCoordinates = createDukanViewModel.state.value.currentLocation
         assertEquals(resultingCoordinates, selectedCoordinates)
     }
 
@@ -144,21 +152,17 @@ class CreateDukanViewModelTest {
             // Given
             val expectedAddress = "Egypt"
             val selectedCoordinates = CreateDukanUiState.CoordinatesUiState(28.0, 29.0)
-
             val selectedPointerLocation = DpOffset(2.dp, 4.dp)
             everySuspend {
-                locationRepository.getCurrentLocationName(
-                    selectedCoordinates.toEntity()
-                )
+                locationRepository.getCurrentLocationName(selectedCoordinates.toEntity())
             } calls { expectedAddress }
 
-            // when
+            // When
             createDukanViewModel.onMapClicked(selectedCoordinates, selectedPointerLocation)
-
             testDispatcher.scheduler.advanceUntilIdle()
-            val resultingPointerLocation = createDukanViewModel.state.value.pointerLocation
 
             // Then
+            val resultingPointerLocation = createDukanViewModel.state.value.pointerLocation
             assertEquals(resultingPointerLocation, selectedPointerLocation)
         }
 
@@ -167,17 +171,13 @@ class CreateDukanViewModelTest {
         // Given
         val startingAddress = "Egypt"
         val startingCoordinates = CreateDukanUiState.CoordinatesUiState(28.0, 29.0)
-
         val startingPointerLocation = DpOffset(2.dp, 4.dp)
         everySuspend {
-            locationRepository.getCurrentLocationName(
-                startingCoordinates.toEntity()
-            )
+            locationRepository.getCurrentLocationName(startingCoordinates.toEntity())
         } calls { startingAddress }
-
-        // when
         createDukanViewModel.onMapClicked(startingCoordinates, startingPointerLocation)
 
+        // When
         createDukanViewModel.onEditMapLocationClicked()
 
         // Then
@@ -190,17 +190,13 @@ class CreateDukanViewModelTest {
         // Given
         val startingAddress = "Egypt"
         val startingCoordinates = CreateDukanUiState.CoordinatesUiState(28.0, 29.0)
-
         val startingPointerLocation = DpOffset(2.dp, 4.dp)
         everySuspend {
-            locationRepository.getCurrentLocationName(
-                startingCoordinates.toEntity()
-            )
+            locationRepository.getCurrentLocationName(startingCoordinates.toEntity())
         } calls { startingAddress }
-
-        // when
         createDukanViewModel.onMapClicked(startingCoordinates, startingPointerLocation)
 
+        // When
         createDukanViewModel.onEditMapLocationClicked()
 
         // Then
@@ -213,17 +209,13 @@ class CreateDukanViewModelTest {
         // Given
         val startingAddress = "Egypt"
         val startingCoordinates = CreateDukanUiState.CoordinatesUiState(28.0, 29.0)
-
         val startingPointerLocation = DpOffset(2.dp, 4.dp)
         everySuspend {
-            locationRepository.getCurrentLocationName(
-                startingCoordinates.toEntity()
-            )
+            locationRepository.getCurrentLocationName(startingCoordinates.toEntity())
         } calls { startingAddress }
-
-        // when
         createDukanViewModel.onMapClicked(startingCoordinates, startingPointerLocation)
 
+        // When
         createDukanViewModel.onEditMapLocationClicked()
 
         // Then
@@ -236,17 +228,13 @@ class CreateDukanViewModelTest {
         // Given
         val startingAddress = "Egypt"
         val startingCoordinates = CreateDukanUiState.CoordinatesUiState(28.0, 29.0)
-
         val startingPointerLocation = DpOffset(2.dp, 4.dp)
         everySuspend {
-            locationRepository.getCurrentLocationName(
-                startingCoordinates.toEntity()
-            )
+            locationRepository.getCurrentLocationName(startingCoordinates.toEntity())
         } calls { startingAddress }
-
-        // when
         createDukanViewModel.onMapClicked(startingCoordinates, startingPointerLocation)
 
+        // When
         createDukanViewModel.onEditMapLocationClicked()
 
         // Then
@@ -256,25 +244,27 @@ class CreateDukanViewModelTest {
 
     @Test
     fun `onCameraMoved SHOULD update the cameraPosition`() = runTest {
+        // Given
         val expectedCameraPosition = CameraPosition(target = Position(29.0, 28.0))
 
+        // When
         createDukanViewModel.onCameraMoved(expectedCameraPosition)
 
+        // Then
         val resultingCameraPosition = createDukanViewModel.state.value.cameraPosition
-
         assertEquals(expectedCameraPosition, resultingCameraPosition)
     }
 
     @Test
-    fun ` when onColorClicked is called, then the ViewModel's state of selectedColor should be updated`() =
+    fun `when onColorClicked is called, then the ViewModel's state of selectedColor should be updated`() =
         runTest {
+            // Given
+            val color = ColorUiState(id = "1", color = 0xFFF545)
 
-            val color = ColorUiState(
-                id = "1",
-                color = 0xFFF545
-            )
+            // When
             createDukanViewModel.onColorClicked(color)
 
+            // Then
             createDukanViewModel.state.test {
                 val state = awaitItem()
                 assertEquals(color, state.selectedColor)
@@ -285,11 +275,13 @@ class CreateDukanViewModelTest {
     @Test
     fun `when onStyleClicked is called, then the ViewModel's state of selectedStyle should be updated`() =
         runTest {
-
+            // Given
             val style = Dukan.Style.WIDE_IMAGE
 
+            // When
             createDukanViewModel.onStyleClicked(style)
 
+            // Then
             createDukanViewModel.state.test {
                 val state = awaitItem()
                 assertEquals(style, state.selectedStyle)
@@ -300,17 +292,16 @@ class CreateDukanViewModelTest {
     @Test
     fun `Given selectedStyle is not null and selectedColor is not null, when updateCreateButtonState is called, then isButtonEnabled should be true`() =
         runTest {
+            // Given
             val style = Dukan.Style.WIDE_IMAGE
-            val color = ColorUiState(
-                id = "1",
-                color = 0xFFF545
-            )
-
+            val color = ColorUiState(id = "1", color = 0xFFF545)
             createDukanViewModel.onStyleClicked(style)
             createDukanViewModel.onColorClicked(color)
 
+            // When
             createDukanViewModel.updateCreateButtonState()
 
+            // Then
             createDukanViewModel.state.test {
                 val state = awaitItem()
                 assertEquals(true, state.isButtonEnabled)
@@ -321,16 +312,14 @@ class CreateDukanViewModelTest {
     @Test
     fun `Given selectedStyle is null and selectedColor is not null, when updateCreateButtonState is called, then isButtonEnabled should be false`() =
         runTest {
-
-            val color = ColorUiState(
-                id = "1",
-                color = 0xFFF545
-            )
-
+            // Given
+            val color = ColorUiState(id = "1", color = 0xFFF545)
             createDukanViewModel.onColorClicked(color)
 
+            // When
             createDukanViewModel.updateCreateButtonState()
 
+            // Then
             createDukanViewModel.state.test {
                 val state = awaitItem()
                 assertEquals(false, state.isButtonEnabled)
@@ -341,12 +330,14 @@ class CreateDukanViewModelTest {
     @Test
     fun `Given selectedStyle is not null and selectedColor is null, when updateCreateButtonState is called, then isButtonEnabled should be false`() =
         runTest {
+            // Given
             val style = Dukan.Style.WIDE_IMAGE
-
             createDukanViewModel.onStyleClicked(style)
 
+            // When
             createDukanViewModel.updateCreateButtonState()
 
+            // Then
             createDukanViewModel.state.test {
                 val state = awaitItem()
                 assertEquals(false, state.isButtonEnabled)
@@ -357,8 +348,10 @@ class CreateDukanViewModelTest {
     @Test
     fun `Given selectedStyle is null and selectedColor is null, when updateCreateButtonState is called, then isButtonEnabled should be false`() =
         runTest {
+            // When
             createDukanViewModel.updateCreateButtonState()
 
+            // Then
             createDukanViewModel.state.test {
                 val state = awaitItem()
                 assertEquals(false, state.isButtonEnabled)
@@ -366,7 +359,6 @@ class CreateDukanViewModelTest {
             }
         }
 
-    // Test cases for onNameChanged method
     @Test
     fun `onNameChanged SHOULD update name state with limited length`() = runTest {
         // Given
@@ -425,7 +417,8 @@ class CreateDukanViewModelTest {
             createDukanViewModel.updateState { copy(selectedCategories = setOf(fakeCategories()[0].toUiState())) }
 
             // When
-            val isSelected = createDukanViewModel.isCategorySelected()(fakeCategories()[0].toUiState())
+            val isSelected =
+                createDukanViewModel.isCategorySelected()(fakeCategories()[0].toUiState())
 
             // Then
             assertTrue(isSelected)
@@ -438,7 +431,8 @@ class CreateDukanViewModelTest {
             createDukanViewModel.updateState { copy(selectedCategories = setOf(fakeCategories()[1].toUiState())) }
 
             // When
-            val isSelected = createDukanViewModel.isCategorySelected()(fakeCategories()[0].toUiState())
+            val isSelected =
+                createDukanViewModel.isCategorySelected()(fakeCategories()[0].toUiState())
 
             // Then
             assertFalse(isSelected)
@@ -473,11 +467,13 @@ class CreateDukanViewModelTest {
     fun `onCategorySelected SHOULD return false when max categories reached`() = runTest {
         // Given
         createDukanViewModel.updateState {
-            copy(selectedCategories = setOf(
-                fakeCategories()[0].toUiState(),
-                fakeCategories()[1].toUiState(),
-                fakeCategories()[2].toUiState()
-            ))
+            copy(
+                selectedCategories = setOf(
+                    fakeCategories()[0].toUiState(),
+                    fakeCategories()[1].toUiState(),
+                    fakeCategories()[2].toUiState()
+                )
+            )
         }
 
         // When
@@ -530,11 +526,13 @@ class CreateDukanViewModelTest {
     fun `onCategoryEnabled SHOULD return true when category is already selected`() = runTest {
         // Given
         createDukanViewModel.updateState {
-            copy(selectedCategories = setOf(
-                fakeCategories()[0].toUiState(),
-                fakeCategories()[1].toUiState(),
-                fakeCategories()[2].toUiState()
-            ))
+            copy(
+                selectedCategories = setOf(
+                    fakeCategories()[0].toUiState(),
+                    fakeCategories()[1].toUiState(),
+                    fakeCategories()[2].toUiState()
+                )
+            )
         }
 
         // When
@@ -549,11 +547,13 @@ class CreateDukanViewModelTest {
         runTest {
             // Given
             createDukanViewModel.updateState {
-                copy(selectedCategories = setOf(
-                    fakeCategories()[0].toUiState(),
-                    fakeCategories()[1].toUiState(),
-                    fakeCategories()[2].toUiState()
-                ))
+                copy(
+                    selectedCategories = setOf(
+                        fakeCategories()[0].toUiState(),
+                        fakeCategories()[1].toUiState(),
+                        fakeCategories()[2].toUiState()
+                    )
+                )
             }
 
             // When
@@ -609,11 +609,13 @@ class CreateDukanViewModelTest {
     fun `onCategorySelected SHOULD return false when maximum category limit reached`() = runTest {
         // Given
         createDukanViewModel.updateState {
-            copy(selectedCategories = setOf(
-                fakeCategories()[0].toUiState(),
-                fakeCategories()[1].toUiState(),
-                fakeCategories()[2].toUiState()
-            ))
+            copy(
+                selectedCategories = setOf(
+                    fakeCategories()[0].toUiState(),
+                    fakeCategories()[1].toUiState(),
+                    fakeCategories()[2].toUiState()
+                )
+            )
         }
 
         // When
@@ -627,11 +629,13 @@ class CreateDukanViewModelTest {
     fun `onCategorySelected SHOULD maintain category count when maximum limit reached`() = runTest {
         // Given
         createDukanViewModel.updateState {
-            copy(selectedCategories = setOf(
-                fakeCategories()[0].toUiState(),
-                fakeCategories()[1].toUiState(),
-                fakeCategories()[2].toUiState()
-            ))
+            copy(
+                selectedCategories = setOf(
+                    fakeCategories()[0].toUiState(),
+                    fakeCategories()[1].toUiState(),
+                    fakeCategories()[2].toUiState()
+                )
+            )
         }
 
         // When
@@ -647,11 +651,13 @@ class CreateDukanViewModelTest {
         runTest {
             // Given
             createDukanViewModel.updateState {
-                copy(selectedCategories = setOf(
-                    fakeCategories()[0].toUiState(),
-                    fakeCategories()[1].toUiState(),
-                    fakeCategories()[2].toUiState()
-                ))
+                copy(
+                    selectedCategories = setOf(
+                        fakeCategories()[0].toUiState(),
+                        fakeCategories()[1].toUiState(),
+                        fakeCategories()[2].toUiState()
+                    )
+                )
             }
 
             // When
@@ -766,24 +772,18 @@ class CreateDukanViewModelTest {
     }
 }
 
+private const val testName = "Test Dukan Name"
+private const val longName =
+    "This is a very long dukan name that exceeds the maximum allowed length of forty characters"
+private const val newName = "New Dukan Name"
+private const val testDukan = "Test Dukan"
+
 private fun fakeDukanColor(): List<Color> {
     return listOf(
-        Color(
-            id = "1",
-            hexCode = "#F77053"
-        ),
-        Color(
-            id = "2",
-            hexCode = "#F4C343"
-        ),
-        Color(
-            id = "3",
-            hexCode = "#C30C30"
-        ),
-        Color(
-            id = "4",
-            hexCode = "#30ABE8"
-        ),
+        Color(id = "1", hexCode = "#F77053"),
+        Color(id = "2", hexCode = "#F4C343"),
+        Color(id = "3", hexCode = "#C30C30"),
+        Color(id = "4", hexCode = "#30ABE8")
     )
 }
 
@@ -797,26 +797,10 @@ private fun fakeDukanStyle(): List<Dukan.Style> {
 
 private fun fakeCategories(): List<Category> {
     return listOf(
-        Category(
-            id = "1",
-            name = "Electronics",
-            imageUrl = "https://example.com/electronics.png"
-        ),
-        Category(
-            id = "2",
-            name = "Clothes",
-            imageUrl = "https://example.com/clothes.png"
-        ),
-        Category(
-            id = "3",
-            name = "Groceries",
-            imageUrl = "https://example.com/groceries.png"
-        ),
-        Category(
-            id = "4",
-            name = "Books",
-            imageUrl = "https://example.com/books.png"
-        )
+        Category(id = "1", name = "Electronics", imageUrl = "https://example.com/electronics.png"),
+        Category(id = "2", name = "Clothes", imageUrl = "https://example.com/clothes.png"),
+        Category(id = "3", name = "Groceries", imageUrl = "https://example.com/groceries.png"),
+        Category(id = "4", name = "Books", imageUrl = "https://example.com/books.png")
     )
 }
 
@@ -825,10 +809,3 @@ private fun Category.toUiState() = DukanCategoryUiState(
     name = name,
     imageUrl = imageUrl
 )
-
-private const val testName = "Test Dukan Name"
-private const val longName =
-    "This is a very long dukan name that exceeds the maximum allowed length of forty characters"
-private const val newName = "New Dukan Name"
-private const val testDukan = "Test Dukan"
-
