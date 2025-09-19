@@ -49,7 +49,7 @@ class CategoryPickViewModel(
     private suspend fun saveSelectedCategories() {
         val selectedIds = state.value.categories
             .filter { it.isSelected }
-            .map { it.value.id }
+            .mapNotNull { it.value.id }
         repository.updateUserInterestedCategories(selectedIds)
     }
 

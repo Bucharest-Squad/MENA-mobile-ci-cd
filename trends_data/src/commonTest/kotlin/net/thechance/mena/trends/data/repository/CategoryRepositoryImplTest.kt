@@ -4,7 +4,7 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isTrue
 import kotlinx.coroutines.test.runTest
-import net.thechance.mena.trends.data.mapper.toEntity
+import net.thechance.mena.trends.data.mapper.toEntityList
 import net.thechance.mena.trends.data.repository.util.createCategoryRepository
 import net.thechance.mena.trends.data.repository.util.mockCategories
 import kotlin.test.Test
@@ -17,7 +17,7 @@ class CategoryRepositoryImplTest {
     fun `getAllCategories should return list of mapped categories`() = runTest {
         val result = repository.getAllCategories()
 
-        assertThat(result).isEqualTo(mockCategories.toEntity())
+        assertThat(result).isEqualTo(mockCategories.toEntityList())
     }
 
     @Test

@@ -10,4 +10,4 @@ fun CategoryDto.toEntity(): Category =
         emoji = emoji.orEmpty()
     )
 
-fun List<CategoryDto>.toEntity(): List<Category> = map(CategoryDto::toEntity)
+fun List<CategoryDto>.toEntityList(): List<Category> = map(CategoryDto::toEntity)

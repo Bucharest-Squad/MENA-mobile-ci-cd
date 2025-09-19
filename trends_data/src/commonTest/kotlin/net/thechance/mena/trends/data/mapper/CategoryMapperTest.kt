@@ -35,7 +35,7 @@ class CategoryMapperTest {
             CategoryDto(id = "uuid 2", name = "Music", emoji = "🎵")
         )
 
-        val categories = dtos.toEntity()
+        val categories = dtos.toEntityList()
 
         assertThat(categories.first().id).isEqualTo("uuid 1")
         assertThat(categories.first().name).isEqualTo("Sport")

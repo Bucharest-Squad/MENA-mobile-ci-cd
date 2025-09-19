@@ -40,7 +40,7 @@ fun CategoryItem(
         modifier = modifier
             .clip(RoundedCornerShape(Theme.radius.full))
             .background(color = Theme.colorScheme.primary.onPrimary)
-            .noRippleClickable { onClick(category.value.id) }
+            .noRippleClickable { category.value.id?.let { onClick(it) } }
             .padding(10.dp)
     ) {
         Row(
@@ -60,7 +60,7 @@ fun CategoryItem(
         }
         RadioButton(
             isSelected = category.isSelected,
-            onClick = { onClick(category.value.id) },
+            onClick = { category.value.id?.let { onClick(it) } },
         )
     }
 }
