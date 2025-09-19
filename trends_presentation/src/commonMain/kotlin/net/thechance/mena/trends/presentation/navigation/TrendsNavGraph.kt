@@ -51,6 +51,6 @@ fun TrendsNavHost() {
    }
 }
 
-private val LocalNavController = compositionLocalOf<NavController> {
+val LocalNavController = compositionLocalOf<NavController> {
    error("NavController not provided")
 }
