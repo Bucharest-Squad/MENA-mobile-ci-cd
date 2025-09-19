@@ -9,9 +9,8 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
 import mena.dukan_presentation.generated.resources.Res
 import mena.dukan_presentation.generated.resources.error
 import mena.dukan_presentation.generated.resources.ic_error
@@ -34,14 +33,11 @@ fun SnackBar(
         top = Theme.spacing._12
     )
 ) {
-    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(isVisible) {
         if (isVisible) {
-            coroutineScope.launch {
-                kotlinx.coroutines.delay(autoDismissMillis)
-                onDismiss()
-            }
+            delay(autoDismissMillis)
+            onDismiss()
         }
     }
 
@@ -49,8 +45,8 @@ fun SnackBar(
         visible = isVisible,
         enter = slideInVertically(
             initialOffsetY = { -it },
-            animationSpec = tween(300)
-        ) + fadeIn(animationSpec = tween(300)),
+            animationSpec = tween(400)
+        ) + fadeIn(animationSpec = tween(400)),
         exit = slideOutVertically(
             targetOffsetY = { -it },
             animationSpec = tween(300)
@@ -67,6 +63,7 @@ fun SnackBar(
                     modifier = modifier
                 )
             }
+
             SnackBarType.ERROR -> {
                 SnackBar(
                     title = stringResource(Res.string.error),
