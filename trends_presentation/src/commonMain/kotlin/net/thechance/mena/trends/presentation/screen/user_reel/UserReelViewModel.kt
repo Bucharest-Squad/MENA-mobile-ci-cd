@@ -13,6 +13,7 @@ internal class UserReelViewModel(
     savedStateHandle: SavedStateHandle,
     @Provided private val reelsRepository: ReelsRepository
 ) : BaseViewModel<UserReelState, UserReelEffect>(UserReelState()), UserReelInteractionListener {
+
     val id = savedStateHandle.toRoute<Route.ReelDetails>().reelId
 
     override fun onDescriptionClick(isCollapsed: Boolean) {
@@ -57,7 +58,7 @@ internal class UserReelViewModel(
 
     override fun onDismissErrorDialog() {
         updateState {
-            copy(isReelDeleted = null, isConfirmationDialogVisible = false)
+            copy(isReelDeleted = null, isConfirmationDialogVisible = false, error = null)
         }
     }
 }
