@@ -22,6 +22,7 @@ fun CreateDukanScreen(
         when (effect) {
             CreateDukanEffect.NavigateBack -> navController.popBackStack()
             CreateDukanEffect.NavigateNext -> navController.navigate(DukanRoute.RequestPendingScreenRoute)
+            is CreateDukanEffect.NavigateToPending -> {}
         }
     }
 
