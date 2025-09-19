@@ -8,9 +8,9 @@ import net.thechance.mena.identity.presentation.countryPicker.menaCountries.Mena
 import net.thechance.mena.identity.presentation.countryPicker.selectByCountry
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
 
-class LoginScreenModel (
-   val loginUseCase: LoginUseCase
-): BaseScreenModel<LoginScreenUIState, LoginScreenUIEffect>(LoginScreenUIState()),
+class LoginScreenModel(
+    val loginUseCase: LoginUseCase
+) : BaseScreenModel<LoginScreenUIState, LoginScreenUIEffect>(LoginScreenUIState()),
     LoginScreenInteractionListener {
     override val viewModelScope: CoroutineScope
         get() = screenModelScope
@@ -20,21 +20,27 @@ class LoginScreenModel (
         updateState { copy(isLoading = true, errorMessage = null) }
         tryToExecute(
             function = {
-               loginUseCase.login(
-                   state.value.countryPickerUIState.currentCountry.callingCode,
-                   state.value.phoneNumber,
-                   state.value.password
-               )
+                loginUseCase.login(
+                    state.value.countryPickerUIState.currentCountry.callingCode,
+                    state.value.phoneNumber,
+                    state.value.password
+                )
             },
             onSuccess = {
                 updateState { copy(isLoading = false) }
                 sendNewEffect(LoginScreenUIEffect.NavigateToHome)
             },
             onError = { errorState ->
-                updateState { copy(isLoading = false, errorMessage = mapErrorToMessage(errorState)) }
+                updateState {
+                    copy(
+                        isLoading = false,
+                        errorMessage = mapErrorToMessage(errorState)
+                    )
+                }
             }
         )
     }
+
     override fun onRegisterClicked() {
         sendNewEffect(LoginScreenUIEffect.NavigateToRegister)
     }
@@ -63,9 +69,10 @@ class LoginScreenModel (
     }
 
     override fun onPasswordVisibilityToggled() {
-        updateState { copy(isPasswordVisible = !isPasswordVisible ) }
+        updateState { copy(isPasswordVisible = !isPasswordVisible) }
     }
-    override fun clearErrorMessage(){
+
+    override fun clearErrorMessage() {
         updateState { copy(errorMessage = null) }
     }
 
@@ -84,7 +91,7 @@ class LoginScreenModel (
                 countryPickerUIState = countryPickerUIState.copy(
                     selectedCountry = country,
                     countries = countryPickerUIState.countries.selectByCountry(country),
-                    isEnabled = countryPickerUIState.selectedCountry != country
+                    isEnabled = countryPickerUIState.currentCountry != country
                 )
             )
         }
