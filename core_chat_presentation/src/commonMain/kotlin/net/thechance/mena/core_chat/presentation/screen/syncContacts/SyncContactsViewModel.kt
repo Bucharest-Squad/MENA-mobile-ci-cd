@@ -7,6 +7,7 @@ import dev.icerock.moko.permissions.PermissionsController
 import net.thechance.mena.core_chat.domain.repository.ContactsRepository
 import net.thechance.mena.core_chat.presentation.components.SnackBarData
 import net.thechance.mena.core_chat.presentation.shared.BaseViewModel
+import net.thechance.mena.core_chat.presentation.utils.openAppSettings
 
 class SyncContactsViewModel(
     private val contactsRepository: ContactsRepository,
@@ -89,7 +90,7 @@ class SyncContactsViewModel(
     }
 
     override fun onGoToSettingsClick() {
-        permissionsController.openAppSettings()
+        openAppSettings()
     }
 
     private fun syncContacts() {
