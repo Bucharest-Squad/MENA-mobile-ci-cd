@@ -15,6 +15,9 @@ import io.ktor.http.headersOf
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import net.thechance.mena.trends.data.repository.CategoryRepositoryImpl
+import net.thechance.mena.trends.data.util.NetworkConstants.CATEGORY
+import net.thechance.mena.trends.data.util.NetworkConstants.INTERESTS
+import net.thechance.mena.trends.data.util.NetworkConstants.TRENDS
 
 val jsonSerialization = Json { ignoreUnknownKeys = true }
 val jsonHeaders = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString())
@@ -38,11 +41,11 @@ fun createHttpClient(
     return HttpClient(
         MockEngine { request ->
             when (request.url.encodedPath) {
-                "/trends/category", "/trends/interests/user" -> {
+                "/$TRENDS/$CATEGORY", -> {
                     getAllCategories?.invoke(this) ?: getAllCategoriesResponse()
                 }
 
-                "/trends/interests" -> updateInterests?.invoke(this) ?: updateInterestsResponse()
+                "/$TRENDS/$INTERESTS" -> updateInterests?.invoke(this) ?: updateInterestsResponse()
 
                 else -> respond("", HttpStatusCode.BadRequest, jsonHeaders)
             }
