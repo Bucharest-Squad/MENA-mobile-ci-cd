@@ -31,8 +31,8 @@ import net.thechance.mena.core_chat.presentation.components.ErrorView
 import net.thechance.mena.core_chat.presentation.screen.contacts.ContactListInteractionListener
 import net.thechance.mena.core_chat.presentation.screen.contacts.ContactUi
 import net.thechance.mena.core_chat.presentation.screen.syncContacts.components.PhoneIcon
-import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
-import net.thechance.mena.designsystem.presentation.component.text.MenaText
+import net.thechance.mena.designsystem.presentation.component.icon.Icon
+import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -59,7 +59,7 @@ fun ContactsList(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ){
-                MenaText(text = stringResource(Res.string.loading), style = Theme.typography.title.small)
+                Text(text = stringResource(Res.string.loading), style = Theme.typography.title.small)
             }
         } else {
             LazyColumn(
@@ -98,7 +98,7 @@ private fun EmptyContactsColumn() {
             modifier = Modifier.padding(bottom = Theme.spacing._12)
         ) {
             PhoneIcon()
-            MenaIcon(
+            Icon(
                 painter = painterResource(Res.drawable.ic_warning),
                 contentDescription = null,
                 modifier = Modifier.size(28.6.dp)
@@ -111,14 +111,14 @@ private fun EmptyContactsColumn() {
                     )
             )
         }
-        MenaText(
+        Text(
             text = stringResource(Res.string.no_contacts_message),
             style = Theme.typography.title.small,
             color = Theme.colorScheme.shadePrimary,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()
         )
-        MenaText(
+        Text(
             text = stringResource(Res.string.refresh_contacts_message),
             modifier = Modifier.padding(top = Theme.spacing._2, bottom = Theme.spacing._12),
             textAlign = TextAlign.Center,

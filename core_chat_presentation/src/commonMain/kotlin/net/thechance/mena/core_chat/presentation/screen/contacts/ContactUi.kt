@@ -17,17 +17,6 @@ data class ContactUi(
             lastName.isNotBlank() -> lastName
             else -> "Unknown"
         }
-
-    val initials: String
-        get() = when {
-            !firstName.isNullOrBlank() && !lastName.isNullOrBlank() ->
-                "${firstName.firstOrNull()} ${lastName.firstOrNull()}".uppercase()
-            !firstName.isNullOrBlank() ->
-                firstName.firstOrNull()?.uppercaseChar()?.toString() ?: "?"
-            !lastName.isNullOrBlank() ->
-                lastName.firstOrNull()?.uppercaseChar()?.toString() ?: "?"
-            else -> "?"
-        }
 }
 fun Contact.toUiModel(): ContactUi {
     return ContactUi(
