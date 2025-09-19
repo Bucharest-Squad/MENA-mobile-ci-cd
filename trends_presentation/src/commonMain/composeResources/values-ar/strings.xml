@@ -26,4 +26,5 @@
 
     <string name="error_no_internet">تعذر الاتصال، برجاء التحقق من اتصالك بالانترنت</string>
     <string name="error_generic">حدث خطأ، حاول مجددًا لاحقًا</string>
+    <string name="error_request_timeout">استغرق الأمر وقتًا طويلًا، حاول مجددًا</string>
 </resources>

@@ -8,6 +8,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -50,7 +52,8 @@ internal abstract class BaseViewModel<State, Effect>(
         onStart: () -> Unit = {},
         onEnd: () -> Unit = {},
         dispatcher: CoroutineDispatcher = Dispatchers.IO,
-        scope: CoroutineScope = viewModelScope
+        scope: CoroutineScope = viewModelScope,
+        timeout: Long = 7000L
     ): Job {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
             onError(ErrorState.RequestFailed(exception.message))
@@ -58,6 +61,13 @@ internal abstract class BaseViewModel<State, Effect>(
 
         return scope.launch(dispatcher + exceptionHandler) {
             onStart()
+
+            startTimeOutCheck(timeout) {
+                onError(ErrorState.RequestTimeout)
+                onEnd()
+                scope.cancel()
+            }
+
             runCatching { block() }
                 .onSuccess { onSuccess(it) }
                 .onFailure {
@@ -67,6 +77,13 @@ internal abstract class BaseViewModel<State, Effect>(
                     )
                 }
             onEnd()
+        }
+    }
+
+    private inline fun startTimeOutCheck(timeout: Long, crossinline callback: suspend () -> Unit) {
+        viewModelScope.launch {
+            delay(timeout)
+            callback()
         }
     }
 
