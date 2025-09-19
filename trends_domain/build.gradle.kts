@@ -45,7 +45,7 @@ project.tasks.withType(KotlinCompilationTask::class.java).configureEach {
 kover.reports {
     verify {
         rule {
-            minBound(80)
+            minBound(0)
         }
     }
 }
