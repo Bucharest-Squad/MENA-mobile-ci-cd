@@ -32,4 +32,5 @@ object PreviewCreateDukanInteractionListener : CreateDukanInteractionListener {
     override fun onCameraMoved(camera: CameraPosition) {}
 
     override fun onEditMapLocationClicked() {}
+    override fun onDismissSnackBar() {}
 }

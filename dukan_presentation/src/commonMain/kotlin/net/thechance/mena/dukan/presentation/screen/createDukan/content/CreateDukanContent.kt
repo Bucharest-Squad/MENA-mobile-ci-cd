@@ -106,6 +106,7 @@ fun CreateDukanContent(
                         state = state,
                         listener = listener
                     )
+
                     CreateDukanStep.SELECT_STYLE -> CreateDukanContentSelectStyle(
                         state = state,
                         listener = listener
@@ -130,14 +131,14 @@ fun CreateDukanContent(
                 )
         }
 
-        if (state.showSnackBar) {
-            SnackBar(
-                snackBarUiState = SnackBarUiState(
-                    snackBarType = SnackBarType.ERROR,
-                    message = stringResource(Res.string.dukan_name_is_already_exist)
-                )
-            )
-        }
+        SnackBar(
+            snackBarUiState = SnackBarUiState(
+                snackBarType = SnackBarType.ERROR,
+                message = stringResource(Res.string.dukan_name_is_already_exist)
+            ),
+            isVisible = state.showSnackBar,
+            onDismiss = listener::onDismissSnackBar
+        )
     }
 }
 
