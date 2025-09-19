@@ -61,7 +61,7 @@ fun ManageTrendsScreen(
         viewModel.effect.collect { effect ->
             when (effect) {
                 is ManageTrendsUiEffect.NavigateBack -> navController.popBackStack()
-                is ManageTrendsUiEffect.NavigateToTrend -> navController.navigate(Route.Trend(effect.reelId))
+                is ManageTrendsUiEffect.NavigateToTrend -> navController.navigate(Route.ReelDetails(effect.reelId))
             }
         }
     }

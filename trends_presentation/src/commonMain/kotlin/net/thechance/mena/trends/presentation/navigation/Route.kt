@@ -7,8 +7,8 @@ sealed interface Route {
     data object Test: Route
 
     @Serializable
-    data class Trend(val reelId: String): Route
+    data class ReelDetails(val reelId: String): Route
 
     @Serializable
-    data object MyTrends: Route
+    data object ManageReels: Route
 }
