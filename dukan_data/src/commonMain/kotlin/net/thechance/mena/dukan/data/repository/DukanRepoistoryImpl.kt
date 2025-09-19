@@ -7,8 +7,10 @@ import io.ktor.client.request.forms.formData
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
+import io.ktor.http.contentType
 import net.thechance.mena.dukan.data.repository.dto.DukanCategoryResponse
 import net.thechance.mena.dukan.data.repository.dto.DukanColorsResponse
 import net.thechance.mena.dukan.data.repository.dto.DukanNameResponse
@@ -31,6 +33,7 @@ class DukanRepositoryImpl(
             client.post(
                 urlString = "$BASE_URL/create"
             ) {
+                contentType(ContentType.Application.Json)
                 setBody(dukan.toCreateDukanRequest())
             }
         }
