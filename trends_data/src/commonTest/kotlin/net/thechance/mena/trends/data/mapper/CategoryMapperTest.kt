@@ -1,8 +1,10 @@
 package net.thechance.mena.trends.data.mapper
 
+import assertk.assertThat
+import assertk.assertions.isEmpty
+import assertk.assertions.isEqualTo
 import net.thechance.mena.trends.data.dto.CategoryDto
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class CategoryMapperTest {
 
@@ -11,9 +13,9 @@ class CategoryMapperTest {
         val dto = CategoryDto(id = "uuid 1", name = "Sport", emoji = "⚽")
         val category = dto.toEntity()
 
-        assertEquals("uuid 1", category.id)
-        assertEquals("Sport", category.name)
-        assertEquals("⚽", category.emoji)
+        assertThat(category.id).isEqualTo("uuid 1")
+        assertThat(category.name).isEqualTo("Sport")
+        assertThat(category.emoji).isEqualTo("⚽")
     }
 
     @Test
@@ -21,9 +23,9 @@ class CategoryMapperTest {
         val dto = CategoryDto()
         val category = dto.toEntity()
 
-        assertEquals("", category.id)
-        assertEquals("", category.name)
-        assertEquals("", category.emoji)
+        assertThat(category.id).isEmpty()
+        assertThat(category.name).isEmpty()
+        assertThat(category.emoji).isEmpty()
     }
 
     @Test
@@ -35,12 +37,14 @@ class CategoryMapperTest {
 
         val categories = dtos.toEntity()
 
-        assertEquals("uuid 1", categories[0].id)
-        assertEquals("Sport", categories[0].name)
-        assertEquals("⚽", categories[0].emoji)
-        assertEquals("uuid 2", categories[1].id)
-        assertEquals("Music", categories[1].name)
-        assertEquals("🎵", categories[1].emoji)
-        assertEquals(categories.size, 2)
+        assertThat(categories.first().id).isEqualTo("uuid 1")
+        assertThat(categories.first().name).isEqualTo("Sport")
+        assertThat(categories.first().emoji).isEqualTo("⚽")
+
+        assertThat(categories.last().id).isEqualTo("uuid 2")
+        assertThat(categories.last().name).isEqualTo("Music")
+        assertThat(categories.last().emoji).isEqualTo("🎵")
+
+        assertThat(categories.size).isEqualTo(2)
     }
 }

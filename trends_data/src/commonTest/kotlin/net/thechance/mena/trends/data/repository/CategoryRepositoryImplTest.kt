@@ -1,12 +1,13 @@
 package net.thechance.mena.trends.data.repository
 
+import assertk.assertThat
+import assertk.assertions.isEqualTo
+import assertk.assertions.isTrue
 import kotlinx.coroutines.test.runTest
 import net.thechance.mena.trends.data.mapper.toEntity
 import net.thechance.mena.trends.data.repository.util.createCategoryRepository
 import net.thechance.mena.trends.data.repository.util.mockCategories
 import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 class CategoryRepositoryImplTest {
 
@@ -16,21 +17,21 @@ class CategoryRepositoryImplTest {
     fun `getAllCategories should return list of mapped categories`() = runTest {
         val result = repository.getAllCategories()
 
-        assertEquals(mockCategories.toEntity(), result)
+        assertThat(result).isEqualTo(mockCategories.toEntity())
     }
 
     @Test
     fun `isCategoriesAlreadySelectedByUser should returns true if API returns non-empty list`() = runTest {
         val result = repository.isCategoriesAlreadySelectedByUser()
 
-        assertTrue(result)
+        assertThat(result).isTrue()
     }
 
     @Test
     fun `updateUserInterests should succeed when API call is successful`() = runTest {
         repository.updateUserInterestedCategories(listOf("uuid 1"))
 
-        assertTrue(true)
+        assertThat(true)
     }
 }
 
