@@ -1,4 +1,4 @@
-name: Deploy release APK from develop to Firebase
+name: Deploy develop release APK
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - develop
 
 jobs:
-  deploy-release:
+  deploy-develop-release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -19,12 +19,26 @@ jobs:
           keystore-password: ${{ secrets.KEYSTORE_PASSWORD }}
           android-key-alias: ${{ secrets.ANDROID_KEY_ALIAS }}
           android-key-alias-password: ${{ secrets.ANDROID_KEY_ALIAS_PASSWORD }}
+          build-type: Development
+          base-url: ${{ secrets.BASE_URL_DEVELOPMENT }}
 
       - name: Deploy to Firebase
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
-          appId: ${{ secrets.FIREBASE_APP_ID }}
+          appId: ${{ secrets.FIREBASE_DEVELOPMENT_APP_ID }}
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
           file: ${{ env.SIGNED_APK_PATH }}
           debug: true
-          groups: testers
+          groups: testers-develop
+
+      - name: Deploy APK to Slack
+        uses: MeilCli/slack-upload-file@v4.0.20
+        with:
+          slack_token: ${{ secrets.SLACK_BOT_TOKEN }}
+          channel_id: ${{ secrets.SLACK_DEVELOPMENT_CHANNEL_ID }}
+          file_path: ${{ env.SIGNED_APK_PATH }}
+          file_name: "app-release-${{ github.run_number }}.apk"
+          initial_comment: |
+            📲 *New Develop APK Build Released*
+            *Version:* `1.0.${{ github.run_number }}`
+            *File:* `${{ env.APK_NAME }}`
