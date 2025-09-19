@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">MENA</string>
     <string name="back_icon">Back Icon</string>
@@ -10,4 +11,8 @@
     <string name="empty_state_bookmark_image">Empty Bookmark Image</string>
     <string name="empty_state_bookmark_title">No ayah saved yet!</string>
     <string name="empty_state_bookmark_description">Start your tilawah and bookmark the ayah you want to return to later.</string>
+    <string name="success">Success</string>
+    <string name="error">Error</string>
+    <string name="success_icon">Success Icon</string>
+    <string name="error_icon">Error Icon</string>
 </resources>
