@@ -6,6 +6,7 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import net.thechance.mena.trends.data.dto.CategoryResponseDto
 import net.thechance.mena.trends.data.dto.SubmitInterestsRequestDto
+import net.thechance.mena.trends.data.dto.UserStatusResponse
 import net.thechance.mena.trends.data.mapper.toEntityList
 import net.thechance.mena.trends.data.util.NetworkConstants.CATEGORY
 import net.thechance.mena.trends.data.util.NetworkConstants.INTERESTS
@@ -28,9 +29,9 @@ class CategoryRepositoryImpl(
     }
 
     override suspend fun isCategoriesAlreadySelectedByUser(): Boolean {
-        return safeApiCall<CategoryResponseDto> {
-            httpClient.get("/$TRENDS/$CATEGORY") // TODO: put string of end point
-        }.categories.isNotEmpty()
+        return safeApiCall<UserStatusResponse> {
+            httpClient.get("/$TRENDS/user/categories/status") // TODO: put string of end point
+        }.value ?: false
     }
 
     override suspend fun updateUserInterestedCategories(categoriesIds: List<String>) {
