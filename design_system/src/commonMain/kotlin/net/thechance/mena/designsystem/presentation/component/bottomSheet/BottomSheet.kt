@@ -100,7 +100,7 @@ fun ScaffoldScope.BottomSheet(
         )
     }
 
-    val nestedConnection = remember {
+    val nestedConnection = remember(dragState) {
         sheetNestedScrollConnection(dragState, Orientation.Vertical)
     }
 
@@ -126,7 +126,8 @@ fun ScaffoldScope.BottomSheet(
         }
 
         val scrimAlpha by derivedStateOf {
-            val progress = 1f - dragState.progress(dragState.settledValue, BottomSheetValue.HIDDEN)
+            val progress =
+                1f - dragState.progress(dragState.settledValue, BottomSheetValue.HIDDEN)
             (progress * 0.5f).coerceIn(0f, 0.5f)
         }
 
@@ -166,8 +167,8 @@ fun ScaffoldScope.BottomSheet(
                 .padding(top = paddingFromTop)
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
-                .nestedScroll(nestedConnection)
                 .offset { IntOffset(0, dragState.requireOffset().roundToInt()) }
+                .nestedScroll(nestedConnection)
                 .anchoredDraggable(
                     state = dragState,
                     orientation = Orientation.Vertical
@@ -183,7 +184,8 @@ fun ScaffoldScope.BottomSheet(
                 Box(
                     modifier = Modifier.padding(vertical = 6.dp)
                         .size(width = 39.dp, height = 2.dp)
-                        .align(Alignment.CenterHorizontally).background(
+                        .align(Alignment.CenterHorizontally)
+                        .background(
                             color = Theme.colorScheme.shadeTertiary,
                             shape = RoundedCornerShape(2.dp)
                         )
