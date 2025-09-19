@@ -25,7 +25,6 @@ fun SaveButton(
 ) {
     PrimaryButton(
         text = stringResource(Res.string.save),
-        trailingIcon = ColorPainter(Color.Transparent),
         onClick = onClick,
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(Theme.radius.md),

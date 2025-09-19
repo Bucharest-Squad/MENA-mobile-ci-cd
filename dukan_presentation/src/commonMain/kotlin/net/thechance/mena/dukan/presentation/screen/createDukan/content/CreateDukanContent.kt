@@ -37,7 +37,6 @@ import net.thechance.mena.dukan.presentation.viewModel.createDukan.CreateDukanUi
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CreateDukanContent(
     state: CreateDukanUiState,
@@ -106,7 +105,6 @@ fun CreateDukanContent(
                         state = state,
                         listener = listener
                     )
-
                     CreateDukanStep.SELECT_STYLE -> CreateDukanContentSelectStyle(
                         state = state,
                         listener = listener

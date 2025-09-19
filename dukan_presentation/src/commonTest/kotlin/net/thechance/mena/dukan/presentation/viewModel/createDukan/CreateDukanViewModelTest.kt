@@ -563,26 +563,6 @@ class CreateDukanViewModelTest {
             assertFalse(result)
         }
 
-    @Test
-    fun `onCLickNext SHOULD trigger name validation when in basic information step`() = runTest {
-        // Given
-        createDukanViewModel.updateState {
-            copy(
-                name = fakeTestDukan(),
-                selectedCategories = setOf(fakeCategories()[0].toUiState()),
-                currentStep = CreateDukanUiState.CreateDukanStep.BASIC_INFORMATION,
-                showSnackBar = false
-            )
-        }
-        everySuspend { dukanRepository.isDukanNameTaken(fakeTestDukan()) } calls { false }
-
-        // When
-        createDukanViewModel.onCLickNext()
-        testDispatcher.scheduler.advanceUntilIdle()
-
-        // Then
-        assertTrue(true)
-    }
 
     @Test
     fun `onCLickNext SHOULD show snack bar when basic information is invalid`() = runTest {

@@ -21,8 +21,11 @@ fun CreateDukanScreen(
     ObserveAsEffect(viewModel.effect) { effect ->
         when (effect) {
             CreateDukanEffect.NavigateBack -> navController.popBackStack()
-            CreateDukanEffect.NavigateNext -> navController.navigate(DukanRoute.PendingScreenRoute)
-            is CreateDukanEffect.NavigateToPending -> navController.navigate(DukanRoute.PendingScreenRoute(effect.name)){
+            is CreateDukanEffect.NavigateToPending -> navController.navigate(
+                DukanRoute.PendingScreenRoute(
+                    effect.name
+                )
+            ) {
                 popUpTo(DukanRoute.MainScreenRoute)
             }
         }
