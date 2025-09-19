@@ -30,12 +30,6 @@ jobs:
       - name: Grant execute permission
         run: chmod +x gradlew
 
-      - name: Install CocoaPods
-        run: |
-          sudo gem install cocoapods
-          cd iosApp
-          pod install
-
       - name: Build KMP modules
         run: ./gradlew $(for m in $(echo '${{ needs.detect.outputs.ios_modules }}' | jq -r '.[]'); do echo ":$m:linkDebugFrameworkIosSimulatorArm64"; done) --parallel --build-cache
 
