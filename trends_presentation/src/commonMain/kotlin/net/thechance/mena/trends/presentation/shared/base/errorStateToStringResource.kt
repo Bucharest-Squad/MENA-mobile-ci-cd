@@ -3,6 +3,7 @@ package net.thechance.mena.trends.presentation.shared.base
 import mena.trends_presentation.generated.resources.Res
 import mena.trends_presentation.generated.resources.error_generic
 import mena.trends_presentation.generated.resources.error_no_internet
+import mena.trends_presentation.generated.resources.error_request_timeout
 import org.jetbrains.compose.resources.StringResource
 
 internal fun ErrorState.toStringResource(): StringResource {
