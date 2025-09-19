@@ -3,11 +3,13 @@ package net.thechance.mena.trends.data.mapper
 import net.thechance.mena.trends.data.dto.CategoryDto
 import net.thechance.mena.trends.domain.entity.Category
 
-fun CategoryDto.toEntity(): Category =
-    Category(
-        id = id.orEmpty(),
+internal fun CategoryDto.toEntity(): Category? {
+    if (id == null) return null
+    return Category(
+        id = id,
         name = name.orEmpty(),
         emoji = emoji.orEmpty()
     )
+}
 
-fun List<CategoryDto>.toEntityList(): List<Category> = map(CategoryDto::toEntity)
+internal fun List<CategoryDto>.toEntityList(): List<Category> = mapNotNull(CategoryDto::toEntity)

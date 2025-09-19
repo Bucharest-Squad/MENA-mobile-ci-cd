@@ -4,6 +4,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class UserStatusResponse(
+internal data class UserStatusResponse(
     @SerialName("value") val value: Boolean? = null
 )

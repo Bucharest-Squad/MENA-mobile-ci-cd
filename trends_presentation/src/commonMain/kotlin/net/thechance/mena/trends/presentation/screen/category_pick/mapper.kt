@@ -4,7 +4,7 @@ import net.thechance.mena.trends.domain.entity.Category
 import net.thechance.mena.trends.presentation.shared.model.CategoryUiState
 import net.thechance.mena.trends.presentation.shared.model.Selectable
 
-internal fun Category.toUiState(): CategoryUiState {
+private fun Category.toUiState(): CategoryUiState {
     return CategoryUiState(
         id = id,
         name = name,
@@ -12,7 +12,7 @@ internal fun Category.toUiState(): CategoryUiState {
     )
 }
 
-fun List<Category>.toUiStates(): List<Selectable<CategoryUiState>> {
+internal fun List<Category>.toUiStates(): List<Selectable<CategoryUiState>> {
     return map { category ->
         Selectable(
             value = category.toUiState(),

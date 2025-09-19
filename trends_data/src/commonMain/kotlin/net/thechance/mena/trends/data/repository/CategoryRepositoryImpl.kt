@@ -18,14 +18,14 @@ import org.koin.core.annotation.Provided
 import org.koin.core.annotation.Single
 
 @Single(binds = [CategoryRepository::class])
-class CategoryRepositoryImpl(
+internal class CategoryRepositoryImpl(
     @Provided private val httpClient: HttpClient
 ) : CategoryRepository {
 
     override suspend fun getAllCategories(): List<Category> {
         return safeApiCall<CategoryResponseDto> {
             httpClient.get("/$TRENDS/$CATEGORY")
-        }.categories.toEntityList()
+        }.categories?.toEntityList() ?: emptyList()
     }
 
     override suspend fun isCategoriesAlreadySelectedByUser(): Boolean {

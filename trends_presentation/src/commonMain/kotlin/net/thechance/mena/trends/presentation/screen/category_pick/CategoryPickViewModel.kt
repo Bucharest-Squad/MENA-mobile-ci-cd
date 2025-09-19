@@ -42,7 +42,7 @@ class CategoryPickViewModel(
             onSuccess = { sendEffect(CategoryPickScreenEffect.NavigateToTrends) },
             onStart = ::startSaving,
             onEnd = ::endSaving,
-            onError = {},
+            onError = { /* TODO: Handle error */ },
         )
     }
 
@@ -53,9 +53,7 @@ class CategoryPickViewModel(
         repository.updateUserInterestedCategories(selectedIds)
     }
 
-    override fun onBackClick() {
-        sendEffect(CategoryPickScreenEffect.NavigateBack)
-    }
+    override fun onBackClick() = sendEffect(CategoryPickScreenEffect.NavigateBack)
 
     private fun startLoading() = updateState { copy(isLoading = true) }
     private fun endLoading() = updateState { copy(isLoading = false) }

@@ -5,7 +5,7 @@ import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import net.thechance.mena.trends.data.dto.ReelDto
-import net.thechance.mena.trends.data.dto.RemoteResponse
+import net.thechance.mena.trends.data.dto.RemotePaginationResponse
 import net.thechance.mena.trends.data.mapper.toEntity
 import net.thechance.mena.trends.data.util.NetworkConstants.PAGE
 import net.thechance.mena.trends.data.util.NetworkConstants.REELS
@@ -17,7 +17,7 @@ import org.koin.core.annotation.Provided
 import org.koin.core.annotation.Single
 
 @Single(binds = [ReelsRepository::class])
-class ReelsRepositoryImpl(
+internal class ReelsRepositoryImpl(
     @Provided private val httpClient: HttpClient
 ) : ReelsRepository {
 
@@ -28,10 +28,10 @@ class ReelsRepositoryImpl(
     }
 
     override suspend fun getAllReels(pageNumber: Int): List<Reel> {
-        return safeApiCall<RemoteResponse<ReelDto>> {
+        return safeApiCall<RemotePaginationResponse<ReelDto>> {
             httpClient.get("$TRENDS/$REELS") {
                 parameter(PAGE, pageNumber)
             }
-        }.results.map { it.toEntity() }
+        }.results?.mapNotNull { it.toEntity() } ?: emptyList()
     }
 }
