@@ -13,14 +13,6 @@ internal class UserReelViewModel(
     savedStateHandle: SavedStateHandle,
     @Provided private val reelsRepository: ReelsRepository
 ) : BaseViewModel<UserReelState, UserReelEffect>(UserReelState()), UserReelInteractionListener {
-
-    private fun handleError(throwable: Throwable) {
-        val errorRes = when (throwable) {
-            //TODO() WILL HANDLE EXCEPTIONS
-            else -> {}
-        }
-    }
-
     val id = savedStateHandle.toRoute<Route.ReelDetails>().reelId
 
     override fun onDescriptionClick(isCollapsed: Boolean) {
@@ -43,7 +35,7 @@ internal class UserReelViewModel(
         tryToExecute(
             block = { reelsRepository.deleteReelById(id) },
             onSuccess = { onDeleteReelSuccess() },
-            onError = { handleError(it) },
+            onError = { errorState -> updateState { copy(error = errorState) } },
         )
     }
 
