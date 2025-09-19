@@ -9,7 +9,8 @@ fun AyahDto.toAyah(): Ayah {
     return Ayah(
         number = this.number,
         surahId = this.id ?: 1,
-        content = text
+        displayContent = text,
+        plainTextContent = ayaTextEmlaey
     )
 }
 

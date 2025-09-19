@@ -125,7 +125,7 @@ internal fun AyatContent(
 
     BasicText(
         text = annotatedText,
-        onTextLayout = {textLayoutResult = it },
+        onTextLayout = { textLayoutResult = it },
         style = getAyahTextStyle(),
         modifier = Modifier
             .fillMaxWidth()
@@ -166,7 +166,7 @@ private fun getAyahTextStyle() = Theme.typography.quran.large.copy(
         val position = layoutResult.getOffsetForPosition(offset)
         val clickedAyahIndex = findClickedAyahIndex(annotatedText, position)
         if (clickedAyahIndex >= 0 && clickedAyahIndex < ayat.size) {
-            val ayahContent = ayat[clickedAyahIndex].content
+            val ayahContent = ayat[clickedAyahIndex].plainTextContent
             listener.onAyahLongPress(ayahContent, clickedAyahIndex)
         }
     }

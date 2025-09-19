@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.collectLatest
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import net.thechance.mena.faith.presentation.designSystem.theme.QuranTheme
 import net.thechance.mena.faith.presentation.feature.quran.surah.component.AnimatedAyahActionButtons
 import net.thechance.mena.faith.presentation.feature.quran.surah.component.AyatContent
 import net.thechance.mena.faith.presentation.feature.quran.surah.component.BasmalaHeader
@@ -118,7 +119,7 @@ private fun AyatOfSurah(
         state = lazyListState
     ) {
         item {
-            BasmalaHeader(
+            if (state.surahId != AT_TAUBAH_ID) BasmalaHeader(
                 selectedAyahIndex = state.selectedAyahIndex,
                 onDismissActionButtons = listener::onDismissActionButtons
             )
@@ -150,3 +151,5 @@ private fun HideAyahActionButtonsOnScroll(
         }
     }
 }
+
+private const val AT_TAUBAH_ID = 9

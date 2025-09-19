@@ -5,9 +5,9 @@ import net.thechance.mena.faith.domain.repository.QuranRepository
 import net.thechance.mena.faith.presentation.base.BaseViewModel
 
 class SurahViewModel(
-    private val repository: QuranRepository,
     surahId: Int,
-    surahName: String
+    surahName: String,
+    private val repository: QuranRepository
 ): BaseViewModel<SurahScreenState, SurahScreenEffect>(
     initialState = SurahScreenState(surahId = surahId, surahName = surahName)
 ), SurahInteractionListener {
@@ -24,8 +24,7 @@ class SurahViewModel(
                     it.copy(ayatOfSurah = mapAyatToUiStates(ayat))
                 }
             },
-            onFinally = { updateState { it.copy(isLoading = false) }
-            }
+            onFinally = { updateState { it.copy(isLoading = false) } }
         )
     }
 
