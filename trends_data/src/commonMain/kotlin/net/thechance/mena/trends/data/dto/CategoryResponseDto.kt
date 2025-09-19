@@ -5,5 +5,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class CategoryResponseDto(
-    @SerialName("data") val categories: List<CategoryDto>
+    @SerialName("data") val categories: List<CategoryDto> = emptyList()
 )

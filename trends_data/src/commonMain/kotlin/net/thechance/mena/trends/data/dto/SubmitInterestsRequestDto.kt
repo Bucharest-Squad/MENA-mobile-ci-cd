@@ -5,5 +5,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class SubmitInterestsRequestDto(
-    @SerialName("categoryIds") val categoryIds: List<String>
+    @SerialName("categoryIds") val categoryIds: List<String> = emptyList()
 )

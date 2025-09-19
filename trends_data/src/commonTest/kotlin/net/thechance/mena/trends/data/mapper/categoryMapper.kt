@@ -18,7 +18,7 @@ class CategoryMapperTest {
 
     @Test
     fun `categoryDto with null values toEntity() should map to default values`() {
-        val dto = CategoryDto(id = null, name =  null, emoji =  null)
+        val dto = CategoryDto()
         val category = dto.toEntity()
 
         assertEquals("", category.id)
