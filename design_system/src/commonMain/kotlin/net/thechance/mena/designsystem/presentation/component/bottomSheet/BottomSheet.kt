@@ -1,7 +1,6 @@
 package net.thechance.mena.designsystem.presentation.component.bottomSheet
 
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.AnchoredDraggableState
@@ -9,7 +8,6 @@ import androidx.compose.foundation.gestures.DraggableAnchors
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.anchoredDraggable
 import androidx.compose.foundation.gestures.animateTo
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -27,11 +25,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -41,15 +37,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.component.scaffold.ScaffoldScope
@@ -81,79 +74,64 @@ fun ScaffoldScope.BottomSheet(
     stickyFooterContent: @Composable BoxScope.() -> Unit = {},
     sheetContent: @Composable ColumnScope.() -> Unit
 ) {
-    val scope = rememberCoroutineScope()
+    val density = LocalDensity.current
     var sheetSize by remember { mutableStateOf(IntSize.Zero) }
-    val sheetCollapsedHeightPx = with(LocalDensity.current) {
-        340.dp.toPx()
-    }
-    val stickyBottomOffset = WindowInsets.navigationBars.asPaddingValues()
-        .calculateBottomPadding()
 
-    val dragState = remember(sheetSize) {
+    val sheetCollapsedHeightPx = with(density) { 340.dp.toPx() }
+
+    val dragState = remember {
         AnchoredDraggableState(
-            initialValue = BottomSheetValue.COLLAPSED,
+            initialValue = BottomSheetValue.HIDDEN,
             anchors = DraggableAnchors {
-                BottomSheetValue.HIDDEN at sheetSize.height.toFloat()
-                BottomSheetValue.COLLAPSED at if (skipPartiallyExpanded) 0f else (sheetSize.height.toFloat() - sheetCollapsedHeightPx)
-                BottomSheetValue.EXPANDED at 0f
+                BottomSheetValue.HIDDEN at Float.MAX_VALUE
+                BottomSheetValue.COLLAPSED at Float.MAX_VALUE
+                BottomSheetValue.EXPANDED at Float.MAX_VALUE
             }
         )
+    }
+
+    LaunchedEffect(sheetSize) {
+        if (sheetSize != IntSize.Zero) {
+            val containerHeight = sheetSize.height.toFloat()
+            val collapsedOffset =
+                if (skipPartiallyExpanded) 0f else containerHeight - sheetCollapsedHeightPx
+
+            dragState.updateAnchors(
+                DraggableAnchors {
+                    BottomSheetValue.EXPANDED at 0f
+                    BottomSheetValue.COLLAPSED at collapsedOffset
+                    BottomSheetValue.HIDDEN at containerHeight
+                }
+            )
+
+            dragState.animateTo(
+                BottomSheetValue.COLLAPSED,
+                tween(500)
+            )
+        }
+    }
+
+    LaunchedEffect(dragState.targetValue) {
+        if (dragState.targetValue == BottomSheetValue.HIDDEN) {
+            dragState.animateTo(BottomSheetValue.HIDDEN, tween(250))
+                .also {
+                    onDismissRequest()
+                }
+        }
     }
 
     val nestedConnection = remember(dragState) {
         sheetNestedScrollConnection(dragState, Orientation.Vertical)
     }
 
-    LaunchedEffect(dragState.settledValue) {
-        if (dragState.settledValue != BottomSheetValue.HIDDEN) {
-            dragState.animateTo(
-                targetValue = dragState.settledValue,
-                animationSpec = spring(stiffness = Spring.StiffnessMedium)
-            )
-        } else {
-            animateClose(scope, dragState, onDismissRequest)
-        }
-    }
+    Box(modifier = modifier.fillMaxSize()) {
 
-    Box(
-        modifier = modifier.fillMaxSize()
-    ) {
-
-        BackHandler {
-            scope.launch {
-                dragState.animateTo(BottomSheetValue.HIDDEN)
-            }
-        }
-
-        val scrimAlpha by derivedStateOf {
-            val progress =
-                1f - dragState.progress(dragState.settledValue, BottomSheetValue.HIDDEN)
-            (progress * 0.5f).coerceIn(0f, 0.5f)
-        }
-
-        if (scrimAlpha > 0f) {
-            Box(
-                modifier = Modifier.fillMaxSize()
-                    .background(color = scrimColor)
-                    .pointerInput(Unit) {
-                        detectTapGestures(
-                            onTap = {
-                                if (dismissOnBackPress) {
-                                    animateClose(
-                                        scope,
-                                        dragState,
-                                        onDismissRequest
-                                    )
-                                }
-                            }
-                        )
-                    }
-            )
-        }
+        BackHandler(dismissOnBackPress) { onDismissRequest() }
 
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .background(color = scrimColor)
                 .clickable(
                     enabled = dismissOnClickOutside,
                     onClick = onDismissRequest,
@@ -194,30 +172,20 @@ fun ScaffoldScope.BottomSheet(
             }
         }
 
-        if (dragState.settledValue != BottomSheetValue.HIDDEN) {
+        if (dragState.currentValue != BottomSheetValue.HIDDEN && sheetSize != IntSize.Zero) {
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .offset(
-                        y = stickyBottomOffset
+                        y = WindowInsets.navigationBars
+                            .asPaddingValues()
+                            .calculateBottomPadding()
                     )
                     .clickable(false) {}
             ) {
                 stickyFooterContent()
             }
         }
-    }
-}
-
-private fun animateClose(
-    scope: CoroutineScope,
-    dragState: AnchoredDraggableState<BottomSheetValue>,
-    onDismissRequest: () -> Unit
-) {
-    scope.launch {
-        dragState.animateTo(BottomSheetValue.HIDDEN, spring(stiffness = Spring.StiffnessMedium))
-    }.invokeOnCompletion {
-        onDismissRequest()
     }
 }
 
@@ -237,13 +205,16 @@ private fun SimpleBottomSheetPreview() {
                                 text = "Test",
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(horizontal = 12.dp, vertical = 6.dp),
+                                    .fillMaxWidth()
+                                    .background(Theme.colorScheme.background.surface)
+                                    .padding(horizontal = 16.dp, vertical = 12.dp)
+                                    .padding(bottom = 12.dp),
                                 onClick = {},
                             )
                         },
                         sheetContent = {
                             LazyColumn {
-                                items(3) { index ->
+                                items(10) { index ->
                                     Text(
                                         modifier = Modifier
                                             .fillMaxWidth()
