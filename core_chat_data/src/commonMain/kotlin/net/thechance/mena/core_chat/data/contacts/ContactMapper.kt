@@ -22,15 +22,11 @@ private fun List<ContactDto>.toListOfContact(): List<Contact> {
 }
 
 private fun ContactDto.toDomain(): Contact {
-    val names = name?.trim()?.split(" ", limit = 2) ?: listOf()
-    val firstName = names.getOrNull(0).orEmpty()
-    val lastName = names.getOrNull(1).orEmpty()
-
     return Contact(
-        firstName = firstName,
-        lastName = lastName,
+        firstName = firstName.orEmpty(),
+        lastName = lastName.orEmpty(),
         phone = phoneNumber.orEmpty(),
-        isMenaUser = isMenaMember == true,
+        isMenaUser = isMenaUser == true,
         imageUrl = imageUrl
     )
 }
@@ -38,8 +34,8 @@ private fun ContactDto.toDomain(): Contact {
 private fun DeviceContact.toListOfContactCreationRequestDto(): List<ContactCreationRequestDto> {
     return phoneNumbers.map { phone ->
         ContactCreationRequestDto(
-            name = listOfNotNull(firstName, lastName)
-                .joinToString(" "),
+            firstName = firstName.orEmpty(),
+            lastName = lastName.orEmpty(),
             phone = phone
         )
     }

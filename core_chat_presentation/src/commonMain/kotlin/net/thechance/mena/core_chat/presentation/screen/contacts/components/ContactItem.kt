@@ -18,8 +18,8 @@ import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.ic_circular_mena_disabled
 import mena.core_chat_presentation.generated.resources.ic_circular_mena_enabled
 import net.thechance.mena.core_chat.presentation.screen.contacts.ContactUi
-import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
-import net.thechance.mena.designsystem.presentation.component.text.MenaText
+import net.thechance.mena.designsystem.presentation.component.icon.Icon
+import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
 
@@ -40,20 +40,19 @@ fun ContactItem(
     ) {
         CircularAvatar(
             contactImageUri = contact.imageUri,
-            contactInitials = contact.initials,
             size = 48.dp
         )
         Column(
             modifier = Modifier.padding(start = Theme.spacing._8).weight(1f)
         ) {
-            MenaText(
+            Text(
                 text = contact.displayName,
                 style = Theme.typography.label.large,
                 color = Theme.colorScheme.shadePrimary,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
-            MenaText(
+            Text(
                 text = contact.phoneNumber,
                 style = Theme.typography.label.medium,
                 color = Theme.colorScheme.shadeTertiary,
@@ -63,7 +62,7 @@ fun ContactItem(
             )
         }
 
-        MenaIcon(
+        Icon(
             painter = painterResource(
                 if (contact.isMenaUser)
                     Res.drawable.ic_circular_mena_enabled

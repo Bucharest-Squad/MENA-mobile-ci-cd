@@ -22,7 +22,7 @@ import net.thechance.mena.core_chat.presentation.navigation.LocalNavController
 import net.thechance.mena.core_chat.presentation.screen.contacts.components.ContactsList
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBarOptionContainer
-import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
+import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -78,7 +78,7 @@ private fun ContactsContent(
                 vertical = Theme.spacing._8
             ),
             leadingContent = {
-                MenaIcon(
+                Icon(
                     painter = painterResource(Res.drawable.ic_arrow_left),
                     modifier = Modifier.size(20.dp),
                     contentDescription = null,
@@ -91,7 +91,7 @@ private fun ContactsContent(
                     badgeColor = Theme.colorScheme.primary.primary,
                     onClick = interactionListener::onResyncClick
                 ) {
-                    MenaIcon(
+                    Icon(
                         painter = painterResource(Res.drawable.ic_resync),
                         contentDescription = null,
                         modifier = Modifier.size(20.dp),

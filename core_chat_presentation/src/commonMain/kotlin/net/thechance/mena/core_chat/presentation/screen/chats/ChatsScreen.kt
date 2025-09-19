@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import net.thechance.mena.designsystem.presentation.component.button.Button
-import net.thechance.mena.designsystem.presentation.component.text.MenaText
+import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -20,7 +20,7 @@ fun ChatsScreen(
     ) {
 
         Button(onClick = viewModel::onNewChatClicked) {
-            MenaText(
+            Text(
                 text = "Show contacts",
                 style = Theme.typography.title.medium
             )
