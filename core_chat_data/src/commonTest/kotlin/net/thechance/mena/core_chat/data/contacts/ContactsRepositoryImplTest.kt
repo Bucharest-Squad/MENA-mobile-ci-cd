@@ -6,6 +6,7 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isTrue
 import io.ktor.client.HttpClient
+import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.test.runTest
 import kotlinx.io.IOException
 import net.thechance.mena.core_chat.data.contacts.dto.ContactDto
@@ -89,7 +90,7 @@ class ContactsRepositoryImplTest {
                 contactsDataStore = mockDataStore,
                 contactsResponse = {
                     mockErrorPagedResponse<PagedDataDto<ContactDto>>(
-                        status = 401
+                        status = HttpStatusCode.Unauthorized
                     )
                 }
             )
@@ -107,7 +108,7 @@ class ContactsRepositoryImplTest {
             contactsDataStore = mockDataStore,
             contactsResponse = {
                 mockErrorPagedResponse<PagedDataDto<ContactDto>>(
-                    status = 500
+                    status = HttpStatusCode.InternalServerError
                 )
             }
         )
@@ -179,7 +180,7 @@ class ContactsRepositoryImplTest {
                 contactsDataStore = mockDataStore,
                 syncContactsResponse = {
                     mockErrorPagedResponse<PagedDataDto<ContactDto>>(
-                        status = 401
+                        status = HttpStatusCode.Unauthorized
                     )
                 }
             )

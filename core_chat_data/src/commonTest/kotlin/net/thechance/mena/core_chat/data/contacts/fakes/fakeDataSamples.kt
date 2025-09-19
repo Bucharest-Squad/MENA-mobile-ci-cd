@@ -14,9 +14,10 @@ val sampleDeviceContact = DeviceContact(
 )
 
 val sampleContactDto = ContactDto(
-    name = "Bilal Azzam",
+    firstName = "Bilal",
+    lastName = "Azzam",
     phoneNumber = "01026388780",
-    isMenaMember = true,
+    isMenaUser = true,
     imageUrl = "http://example.com/image.jpg"
 )
 
@@ -31,9 +32,10 @@ fun createSamplePagedData(
     PagedDataDto(
         data = List(pageSize) { i ->
             ContactDto(
-                name = "Page$pageNumber User$i",
+                firstName = "Page$pageNumber",
+                lastName = "User$i",
                 phoneNumber = "010000000$i",
-                isMenaMember = false,
+                isMenaUser = false,
                 imageUrl = null
             )
         },

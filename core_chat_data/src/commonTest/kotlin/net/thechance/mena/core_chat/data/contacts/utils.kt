@@ -22,7 +22,6 @@ import net.thechance.mena.core_chat.data.contacts.dto.ContactDto
 import net.thechance.mena.core_chat.data.contacts.fakes.sampleContactDto
 import net.thechance.mena.core_chat.data.network.ApiConstants.CONTACTS_ENDPOINT
 import net.thechance.mena.core_chat.data.network.ApiConstants.SYNC_CONTACTS_ENDPOINT
-import net.thechance.mena.core_chat.data.shared.dto.BaseResponseDto
 import net.thechance.mena.core_chat.data.shared.dto.PagedDataDto
 
 val jsonSerialization = Json { ignoreUnknownKeys = true }
@@ -31,50 +30,30 @@ val jsonHeaders = headersOf(
     ContentType.Application.Json.toString()
 )
 
-inline fun <reified T> successResponse(
-    body: T
-): String {
-    return jsonSerialization.encodeToString(
-        BaseResponseDto.serializer(serializer<T>()),
-        BaseResponseDto(body = body, status = 200, success = true)
-    )
-}
-
-inline fun <reified T> errorResponse(
-    status: Int,
-    message: String = ""
-): String {
-    return jsonSerialization.encodeToString(
-        BaseResponseDto.serializer(serializer<T>()),
-        BaseResponseDto(status = status, success = false, message = message)
-    )
-}
-
 inline fun <reified T> MockRequestHandleScope.mockSuccessPagedResponse(
     body: PagedDataDto<T>
 ): HttpResponseData {
     return respond(
-        content = successResponse(body),
+        content = jsonSerialization.encodeToString(PagedDataDto.serializer(serializer<T>()), body),
         status = HttpStatusCode.OK,
         headers = jsonHeaders
     )
 }
 
 inline fun <reified T> MockRequestHandleScope.mockErrorPagedResponse(
-    status: Int,
-    message: String = ""
+    status: HttpStatusCode,
 ): HttpResponseData {
     return respond(
-        content = errorResponse<T>(status, message),
-        status = HttpStatusCode.OK,
+        content = """{"status":$status,"success":false,"message":"${status.description}"}""",
+        status = status,
         headers = jsonHeaders
     )
 }
 
-
 fun MockRequestHandleScope.defaultContactsResponse() = respond(
-    content = successResponse<PagedDataDto<ContactDto>>(
-        body = PagedDataDto(
+    content = jsonSerialization.encodeToString(
+        PagedDataDto.serializer(ContactDto.serializer()),
+        PagedDataDto(
             data = listOf(
                 sampleContactDto
             ),
@@ -89,9 +68,7 @@ fun MockRequestHandleScope.defaultContactsResponse() = respond(
 )
 
 fun MockRequestHandleScope.defaultSyncContactsResponse() = respond(
-    content = successResponse<Unit>(
-        body = Unit
-    ),
+    content = "",
     status = HttpStatusCode.OK,
     headers = jsonHeaders
 )
