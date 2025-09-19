@@ -8,7 +8,7 @@ on:
 jobs:
   detect:
     name: Detect Changes
-    uses: ./.github/workflows/changed-modules.yml
+    uses: ./.github/workflows/shared/detect-changed-modules.yml
     secrets: inherit
 
   test:
