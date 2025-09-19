@@ -55,25 +55,27 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun SurScreen(
+    onNavigateBack: () -> Unit,
+    onNavigateToBookmarks: () -> Unit,
+    onNavigateToSurahDetails: (surahId: Int, surahName: String) -> Unit,
     viewModel: SurViewModel = koinViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-
     val effect by viewModel.uiEffect.collectAsState(initial = null)
 
     LaunchedEffect(effect) {
         effect?.let { currentEffect ->
             when (currentEffect) {
                 is SurEffect.NavigateToBack -> {
-                    //TODO() navigate back
+                    onNavigateBack()
                 }
 
                 is SurEffect.NavigateToBookmark -> {
-                    //TODO() navigate to bookmark screen
+                    onNavigateToBookmarks()
                 }
 
                 is SurEffect.NavigateToSurahDetails -> {
-                    //TODO() navigate to SurahDetails screen
+                    onNavigateToSurahDetails(currentEffect.surahId, currentEffect.surahName)
                 }
             }
         }
@@ -115,7 +117,10 @@ private fun Content(
         }
 
         items(uiState.sur) { surah ->
-            SurahItem(surah = surah, onClick = interactionListener::onSurahClick)
+            SurahItem(
+                surah = surah,
+                onClick = { interactionListener.onSurahClick(surah.id, surah.surahName) }
+            )
         }
     }
 }
@@ -318,9 +323,9 @@ private fun SurScreenPreview() {
                 )
             ),
             interactionListener = object : SurInteractionListener {
-                override fun onSurahClick(id: Int) {}
-                override fun onBackClick() {}
-                override fun onBookmarkClick() {}
+                override fun onSurahClick(surahId: Int, surahName: String) = Unit
+                override fun onBackClick() = Unit
+                override fun onBookmarkClick() = Unit
             }
         )
     }
