@@ -5,7 +5,9 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.androidLibrary)
-    alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.mockkery)
+    alias(libs.plugins.cocoapods)
 }
 
 kotlin {
@@ -20,6 +22,18 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
+            baseName = "DukanPresentation"
+            isStatic = true
+        }
+    }
+
+    cocoapods {
+        summary = "DukanPresentation — internal KMP maps module for Dukan. Contains iOS-compatible map composables and shared location logic used across mobile modules."
+        homepage = "https://github.com/TheChance101/MENA-mobile"
+        version = "1.0"
+        ios.deploymentTarget = "15.4"
+        podfile = project.file("../iosApp/Podfile")
+        framework {
             baseName = "DukanPresentation"
             isStatic = true
         }
@@ -42,19 +56,23 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+            implementation(libs.bundles.filekit)
+            implementation(libs.krop.extensions.filekit)
+            implementation(libs.krop.core)
             implementation(libs.navigation.compose)
 
+            // maps
+            implementation(libs.maplibre.compose)
         }
         iosMain.dependencies {
 
         }
-
-        commonTest.dependencies{
+        commonTest.dependencies {
             implementation(libs.kotlin.test)
             implementation(libs.turbine)
+            implementation(kotlin("test-annotations-common"))
             implementation(libs.kotlinx.coroutines.test)
-            implementation(libs.mockk)
-
+            implementation(libs.mokkery.core)
         }
     }
 }
@@ -66,4 +84,8 @@ android {
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
     }
+}
+
+dependencies {
+    debugImplementation(compose.uiTooling)
 }
