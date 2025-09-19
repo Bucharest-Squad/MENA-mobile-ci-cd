@@ -14,6 +14,9 @@ sealed interface ErrorState {
     data object InvalidPassword : ErrorState
     data object UserIsBlockedException : ErrorState
     data class WrongPassword(val message: String) : ErrorState
+    data object InvalidCredentials : ErrorState
+    data object Unauthorized : ErrorState
+    data object Unknown : ErrorState
     data object LocationPermissionDenied : ErrorState
     // endregion
 }

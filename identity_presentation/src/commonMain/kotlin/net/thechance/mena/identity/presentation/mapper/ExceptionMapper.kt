@@ -10,5 +10,8 @@ internal fun mapErrorToMessage(error: ErrorState): String {
         ErrorState.UserIsBlockedException -> "User is blocked"
         is ErrorState.WrongPassword -> error.message
         ErrorState.LocationPermissionDenied -> "Location permission denied"
+        ErrorState.InvalidCredentials -> "Invalid credentials. Please check your phone number and password."
+        ErrorState.Unknown -> "Something went wrong. Please try again later."
+        ErrorState.Unauthorized -> "You don’t have permission to access the app."
     }
 }
