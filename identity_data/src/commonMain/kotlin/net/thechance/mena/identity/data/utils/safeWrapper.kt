@@ -13,8 +13,8 @@ suspend fun <T> safeWrapper(block: suspend () -> T): T {
     } catch (e: ClientRequestException) {
         when (e.response.status) {
             HttpStatusCode.Unauthorized -> throw UnAuthorizedException()
-            HttpStatusCode.NotFound -> throw InvalidCredentialsException("+20","01234567")
-            HttpStatusCode.Forbidden -> throw UserIsBlockedException("01234567")
+            HttpStatusCode.NotFound -> throw InvalidCredentialsException("+00","0000")
+            HttpStatusCode.Forbidden -> throw UserIsBlockedException("00000")
             else -> throw UnknownException()
         }
     } catch (e: Exception) {

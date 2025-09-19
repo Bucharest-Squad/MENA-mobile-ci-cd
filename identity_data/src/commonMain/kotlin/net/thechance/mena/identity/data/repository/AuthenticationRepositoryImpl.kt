@@ -20,7 +20,7 @@ class AuthenticationRepositoryImpl(
         }
     }
 
-    override suspend fun getNewAccessToken(): String {
+    override suspend fun refreshAccessToken(): String {
         val refreshResponse = safeWrapper {
             remoteAuthService.refreshToken(RefreshRequestDto(localDataSource.getRefreshToken()))
         }
@@ -28,7 +28,7 @@ class AuthenticationRepositoryImpl(
         return localDataSource.getAccessToken()
     }
 
-    override suspend fun getCurrentAccessToken(): String {
+    override suspend fun getAccessToken(): String {
         return localDataSource.getAccessToken()
     }
 
