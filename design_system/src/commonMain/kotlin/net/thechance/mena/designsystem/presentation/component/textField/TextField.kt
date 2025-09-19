@@ -31,6 +31,7 @@ fun TextField(
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     focusRequester: FocusRequester = FocusRequester(),
     onFocusChanged: (Boolean) -> Unit = {},
+    onTrailingIconClick: (() -> Unit)? = null,
     visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
     BasicTextField(
@@ -51,6 +52,7 @@ fun TextField(
         visualTransformation = visualTransformation,
         focusRequester = focusRequester,
         onFocusChanged = onFocusChanged,
-        modifier = modifier
+        modifier = modifier,
+        onTrailingIconClick = onTrailingIconClick
     )
 }

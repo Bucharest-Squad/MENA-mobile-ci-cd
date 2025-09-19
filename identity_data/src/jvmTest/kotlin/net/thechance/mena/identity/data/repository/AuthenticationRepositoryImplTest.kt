@@ -31,7 +31,6 @@ class AuthenticationRepositoryImplTest {
 
     @Test
     fun `login should call remote service with correct credentials when successful`() = runTest {
-        // Given
         val mobileNumber = "0123456789"
         val passWord = "testpassword"
         val countryCoed = "+20"
@@ -207,7 +206,6 @@ class AuthenticationRepositoryImplTest {
         )
         coEvery { authRemoteDataSource.login(any()) } throws clientException
 
-        // When & Then
         assertFailure {
             authenticationRepository.login("+20", "01234567", "password123")
         }.isInstanceOf<UnknownException>()
