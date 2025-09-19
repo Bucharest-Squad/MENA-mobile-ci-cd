@@ -35,28 +35,30 @@ import org.koin.core.parameter.parametersOf
 fun SurahScreen(
     surahId: Int,
     surahName: String,
+    onNavigateBack: () -> Unit,
     clipboardManager: ClipboardManager,
     viewModel: SurahViewModel = koinViewModel(parameters = { parametersOf(surahId, surahName) })
 ) {
 
-        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-        LaunchedEffect(Unit) {
-            viewModel.uiEffect.collectLatest { effect ->
-                when (effect) {
-                    is SurahScreenEffect.NavigateBack -> {}
-                    is SurahScreenEffect.ShareAyah -> {}
+    LaunchedEffect(Unit) {
+        viewModel.uiEffect.collectLatest { effect ->
+            when (effect) {
+                is SurahScreenEffect.NavigateBack -> onNavigateBack()
+                is SurahScreenEffect.ShareAyah -> {}
 
-                }
             }
         }
-
-        Content(
-            state = uiState,
-            listener = viewModel,
-            clipboardManager = clipboardManager
-        )
     }
+
+    Content(
+        state = uiState,
+        listener = viewModel,
+        clipboardManager = clipboardManager
+    )
+}
+
 @Composable
 private fun Content(
     state: SurahScreenState,
@@ -66,34 +68,34 @@ private fun Content(
 ) {
     val lazyListState = rememberLazyListState()
 
-        Box(
-            modifier = modifier.fillMaxSize()
-                .background(Theme.colorScheme.background.surface)
-                .windowInsetsPadding(WindowInsets.statusBars)
-        ) {
-            Column {
-                SurahAppBar(
-                    surahName = state.surahName,
-                    onBackClick = listener::onBackClick
-                )
+    Box(
+        modifier = modifier.fillMaxSize()
+            .background(Theme.colorScheme.background.surface)
+            .windowInsetsPadding(WindowInsets.statusBars)
+    ) {
+        Column {
+            SurahAppBar(
+                surahName = state.surahName,
+                onBackClick = listener::onBackClick
+            )
 
-                AyatOfSurah(
-                    listener = listener,
-                    state = state,
-                    lazyListState = lazyListState
-                )
-            }
-
-            AnimatedAyahActionButtons(
-                state = state,
+            AyatOfSurah(
                 listener = listener,
-                clipboardManager = clipboardManager,
-                modifier = Modifier.fillMaxWidth()
-                    .align(Alignment.BottomCenter)
-                    .padding(Theme.spacing._16)
+                state = state,
+                lazyListState = lazyListState
             )
         }
+
+        AnimatedAyahActionButtons(
+            state = state,
+            listener = listener,
+            clipboardManager = clipboardManager,
+            modifier = Modifier.fillMaxWidth()
+                .align(Alignment.BottomCenter)
+                .padding(Theme.spacing._16)
+        )
     }
+}
 
 
 @Composable

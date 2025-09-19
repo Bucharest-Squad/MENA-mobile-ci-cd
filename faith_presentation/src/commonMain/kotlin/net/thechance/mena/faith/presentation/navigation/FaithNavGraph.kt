@@ -7,10 +7,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
+import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
+import net.thechance.mena.faith.presentation.designSystem.theme.QuranTheme
 import net.thechance.mena.faith.presentation.feature.quran.sur.SurScreen
+import net.thechance.mena.faith.presentation.feature.quran.surah.SurahScreen
+import net.thechance.mena.faith.presentation.util.ClipboardManager
 
 @Composable
-fun FaithNavigation() {
+fun FaithNavigation(clipboardManager: ClipboardManager) {
     val navController = rememberNavController()
 
     CompositionLocalProvider(
@@ -21,22 +26,31 @@ fun FaithNavigation() {
             startDestination = SurRoute
         ) {
             composable<SurRoute> {
-                SurScreen(
-                    onNavigateBack = {
-                        navController.popBackStack()
-                    },
-                    onNavigateToBookmarks = {
-                        navController.navigate(BookmarksRoute)
-                    },
-                    onNavigateToSurahDetails = { surahId, surahName ->
-                        navController.navigate(
-                            SurahDetailsRoute(
-                                surahId = surahId,
-                                surahName = surahName
-                            )
+                    QuranTheme {
+                        SurScreen(
+                            onNavigateBack = { navController.popBackStack() },
+                            onNavigateToSurahDetails = { surahId, surahName ->
+                                navController.navigate(
+                                    SurahDetailsRoute(
+                                        surahId = surahId,
+                                        surahName = surahName
+                                    )
+                                )
+                            }
                         )
                     }
-                )
+            }
+
+            composable<SurahDetailsRoute> { backStackEntry ->
+                val args = backStackEntry.toRoute<SurahDetailsRoute>()
+                    QuranTheme {
+                        SurahScreen(
+                            surahId = args.surahId,
+                            surahName = args.surahName,
+                            clipboardManager = clipboardManager,
+                            onNavigateBack = { navController.navigateUp() }
+                        )
+                    }
             }
         }
     }

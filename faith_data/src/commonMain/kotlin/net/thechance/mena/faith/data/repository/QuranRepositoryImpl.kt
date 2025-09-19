@@ -15,7 +15,6 @@ class QuranRepositoryImpl(val dao: AyahDao) : QuranRepository {
     override suspend fun getAyatOfSurah(ayahId: Int): List<Ayah> =
         dao.getAyatOfSurah(surahNumber = ayahId).map { it.toAyah() }
 
-    override suspend fun getAyahContent(): String {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getAyahContent(ayahNumber: Int, surahId: Int): String =
+        dao.getAyahContent(ayahNumber = ayahNumber, surahId = surahId)
 }
