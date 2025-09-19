@@ -19,7 +19,6 @@ internal class MainContainerViewModel(
             block = { repository.isCategoriesAlreadySelectedByUser() },
             onSuccess = ::handleGetIsUserCategorySet,
             onError = { errorState -> updateState { copy(error = errorState, isCategoriesAlreadySelectedByUser = false) } },
-            timeout = GET_USER_CATEGORY_STATUS_TIME_OUT
         )
     }
 
@@ -37,9 +36,5 @@ internal class MainContainerViewModel(
 
     fun navigateToManageTrends(){
         sendEffect(MainContainerEffect.NavigateToManageTrends)
-    }
-
-    companion object {
-        private const val GET_USER_CATEGORY_STATUS_TIME_OUT = 3000L
     }
 }
