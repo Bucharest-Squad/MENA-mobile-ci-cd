@@ -16,6 +16,7 @@ sealed interface ErrorState {
     data class WrongPassword(val message: String) : ErrorState
     data object LocationPermissionDenied : ErrorState
     // endregion
+    data class SomethingWentWrong(val message: String?) : ErrorState
 }
 
 fun handelAuthorizationException(

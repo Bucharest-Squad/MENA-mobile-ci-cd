@@ -10,5 +10,6 @@ internal fun mapErrorToMessage(error: ErrorState): String {
         ErrorState.UserIsBlockedException -> "User is blocked"
         is ErrorState.WrongPassword -> error.message
         ErrorState.LocationPermissionDenied -> "Location permission denied"
+        is ErrorState.SomethingWentWrong -> "Something went wrong"
     }
 }
