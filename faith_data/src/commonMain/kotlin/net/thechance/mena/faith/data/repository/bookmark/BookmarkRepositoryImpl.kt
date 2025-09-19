@@ -10,12 +10,17 @@ import kotlin.time.ExperimentalTime
 @OptIn(ExperimentalTime::class)
 class BookmarkRepositoryImpl: BookmarkRepository {
 
-    override suspend fun getAllBookmarks(): List<Bookmark> {
-        return bookmarks.toList()
+    override suspend fun getAllBookmarks(): List<Bookmark> = bookmarks
+
+    override suspend fun addBookmark(
+        surahId: Int,
+        ayahNumber: Int
+    ): Bookmark {
+        TODO("Not yet implemented")
     }
 
-    override suspend fun removeBookmark(id: Int) {
-        bookmarks.removeAt(bookmarks.indexOfFirst { it.id == id })
+    override suspend fun removeBookmark(bookmarkId: Int) {
+        bookmarks.removeAt(bookmarks.indexOfFirst { it.id == bookmarkId })
     }
 
     private val bookmarks = List(15) { id ->

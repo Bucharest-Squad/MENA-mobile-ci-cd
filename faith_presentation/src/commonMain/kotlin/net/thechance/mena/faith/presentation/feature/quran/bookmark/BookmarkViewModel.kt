@@ -10,15 +10,29 @@ class BookmarkViewModel(
     BookmarkInteractionListener {
 
     init {
-        initializeBookmarks()
+        getBookmarks()
     }
 
-    private fun initializeBookmarks() {
+    override fun onBackClick() = sendEffect(BookmarkEffect.NavigateBack)
+
+    override fun onStartTilawahClick() = sendEffect(BookmarkEffect.NavigateToQuran)
+
+    override fun onRemoveBookmarkClick(bookmarkId: Int) {
+        tryToExecute(
+            onStart = { setLoadingState(true) },
+            execute = { bookmarkRepository.removeBookmark(bookmarkId) },
+            onSuccess = { removeBookmarkFromState(bookmarkId) },
+            onError = { ::handleErrorState },
+            onFinally = { setLoadingState(false) }
+        )
+    }
+
+    private fun getBookmarks() {
         tryToExecute(
             onStart = { setLoadingState(true) },
             execute = { bookmarkRepository.getAllBookmarks() },
-            onSuccess = { bookmarks -> handleSuccessState(bookmarks) },
-            onError = { throwable -> handleErrorState(throwable) },
+            onSuccess = ::handleSuccessState,
+            onError = ::handleErrorState,
             onFinally = { setLoadingState(false) }
         )
     }
@@ -29,14 +43,12 @@ class BookmarkViewModel(
         }
     }
 
-    override fun onRemoveBookmarkClick(id: Int) {
-        tryToExecute(
-            onStart = { setLoadingState(true) },
-            execute = { bookmarkRepository.removeBookmark(id) },
-            onSuccess = { removeBookmarkFromState(id) },
-            onError = { throwable -> handleErrorState(throwable) },
-            onFinally = { setLoadingState(false) }
-        )
+    private fun handleErrorState(throwable: Throwable) {
+        updateState { it.copy(error = "${throwable.message}") }
+    }
+
+    private fun setLoadingState(isLoading: Boolean) {
+        updateState { it.copy(isLoading = isLoading) }
     }
 
     private fun removeBookmarkFromState(bookmarkId: Int) {
@@ -46,15 +58,5 @@ class BookmarkViewModel(
             )
         }
     }
-
-    private fun setLoadingState(isLoading: Boolean) {
-        updateState { it.copy(isLoading = isLoading) }
-    }
-
-    private fun handleErrorState(throwable: Throwable) {
-        updateState { it.copy(error = "${throwable.message}") }
-    }
-
-    override fun onBackClick() = sendEffect(BookmarkEffect.NavigateBack)
 
 }
