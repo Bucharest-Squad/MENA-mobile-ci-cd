@@ -68,6 +68,10 @@ internal fun ManageTrendsScreen(
         }
     }
 
+    LaunchedEffect(Unit) {
+        viewModel.getReels()
+    }
+
     ManageTrendsScreenContent(
         state = state,
         listener = viewModel,
@@ -166,7 +170,7 @@ private fun SegmentSection(
                         ),
                         contentPadding = PaddingValues(0.dp)
                     ) {
-                        items(key = reels.itemKey(), count = reels.itemCount) { index ->
+                        items(key = reels.itemKey { it.id }, count = reels.itemCount) { index ->
                             reels[index]?.let { reel ->
                                 TrendItem(
                                     item = reel,

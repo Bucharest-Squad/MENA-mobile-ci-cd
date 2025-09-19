@@ -24,7 +24,7 @@ internal class ManageTrendsViewModel(
         getReels()
     }
 
-    private fun getReels() {
+    fun getReels() {
         tryToExecute(
             block = {
                 createPager(

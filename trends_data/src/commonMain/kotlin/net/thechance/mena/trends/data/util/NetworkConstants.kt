@@ -4,6 +4,6 @@ internal object NetworkConstants {
     const val REELS = "reels"
     const val PAGE = "page"
     const val TRENDS = "trends"
-    const val CATEGORY = "category"
+    const val CATEGORY = "categories"
     const val INTERESTS = "interests"
 }

@@ -1,12 +1,16 @@
 package net.thechance.mena.trends.presentation.screen.user_reel
 
+import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.toRoute
 import net.thechance.mena.trends.domain.repository.ReelsRepository
+import net.thechance.mena.trends.presentation.navigation.Route
 import net.thechance.mena.trends.presentation.shared.base.BaseViewModel
 import org.koin.android.annotation.KoinViewModel
 import org.koin.core.annotation.Provided
 
 @KoinViewModel
 internal class UserReelViewModel(
+    savedStateHandle: SavedStateHandle,
     @Provided private val reelsRepository: ReelsRepository
 ) : BaseViewModel<UserReelState, UserReelEffect>(UserReelState()), UserReelInteractionListener {
 
@@ -16,6 +20,8 @@ internal class UserReelViewModel(
             else -> {}
         }
     }
+
+    val id = savedStateHandle.toRoute<Route.ReelDetails>().reelId
 
     override fun onDescriptionClick(isCollapsed: Boolean) {
         updateState {
@@ -35,8 +41,8 @@ internal class UserReelViewModel(
 
     override fun onConfirmDeleteClick() {
         tryToExecute(
-            block = { reelsRepository.deleteReelById(state.value.id.orEmpty()) },
-            onSuccess = { ::onDeleteReelSuccess },
+            block = { reelsRepository.deleteReelById(id) },
+            onSuccess = { onDeleteReelSuccess() },
             onError = { handleError(it) },
         )
     }
