@@ -72,7 +72,7 @@ kotlin {
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
         }
-        val commonTest by getting {
+        commonTest.dependencies {
             dependencies {
                 implementation(libs.kotlin.test)
                 implementation(libs.assertk)
