@@ -124,7 +124,7 @@ class CreateDukanViewModel(
     }
 
     override fun onDismissSnackBar() {
-        updateState{ copy(showSnackBar = false) }
+        updateState { copy(showSnackBar = false) }
     }
 
     override fun onImageCrop(image: ImageBitmap) {
