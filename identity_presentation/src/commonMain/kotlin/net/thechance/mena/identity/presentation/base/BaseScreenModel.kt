@@ -77,6 +77,7 @@ abstract class BaseScreenModel<S, E>(initialState: S) : ScreenModel {
             } catch (exception: AuthenticationException) {
                 handelAuthorizationException(exception, onError)
             } catch (exception: Exception) {
+                exception.printStackTrace()
                 onError(ErrorState.SomethingWentWrong(exception.message))
             }
         }
