@@ -1,4 +1,4 @@
-package net.thechance.mena.dukan.presentation.screen.pendingDukanScreen
+package net.thechance.mena.dukan.presentation.screen.pendingDukan
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -34,7 +35,7 @@ import net.thechance.mena.designsystem.presentation.component.image.Image
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.dukan.presentation.componetns.AnnotatedText
+import net.thechance.mena.dukan.presentation.component.AnnotatedText
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -44,7 +45,7 @@ fun PendingDukanScreen(
     dukanName: String,
     onBackClick: () -> Unit,
 ) {
-    val titleText = BuildPendingDukanTitle(
+    val titleText = buildPendingDukanTitle(
         brandName = dukanName,
         titleTemplate = stringResource(Res.string.dukan_request_pending),
     )
@@ -53,6 +54,7 @@ fun PendingDukanScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(Theme.colorScheme.background.surface)
+            .systemBarsPadding()
 
     ) {
         AppBar(
@@ -112,7 +114,7 @@ fun PendingDukanScreen(
 }
 
 @Composable
-private fun BuildPendingDukanTitle(
+private fun buildPendingDukanTitle(
     brandName: String,
     titleTemplate: String,
 ): AnnotatedString {

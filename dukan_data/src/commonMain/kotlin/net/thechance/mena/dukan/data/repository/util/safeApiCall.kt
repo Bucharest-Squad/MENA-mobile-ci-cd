@@ -5,6 +5,7 @@ import io.ktor.client.statement.HttpResponse
 import kotlinx.io.IOException
 import kotlinx.serialization.SerializationException
 import net.thechance.mena.dukan.domain.exceptions.DukanException
+import net.thechance.mena.dukan.domain.exceptions.DukanNotFoundException
 import net.thechance.mena.dukan.domain.exceptions.NoInternetException
 
 suspend inline fun <reified T> safeApiCall(
@@ -29,8 +30,8 @@ suspend inline fun <reified T> handleResponse(response: HttpResponse): T {
                 throw DukanException("Error parsing response")
             }
         }
-
-        401 -> throw DukanException("Unauthorized") // TODO map these codes to what they are
+        400 -> throw DukanNotFoundException("Bad request")
+        401 -> throw DukanException("Unauthorized")
         408 -> throw DukanException("Request timeout")
         429 -> throw DukanException("Too many requests")
         in 500..599 -> throw DukanException("Server error")

@@ -3,7 +3,7 @@ package net.thechance.mena.dukan.presentation.viewModel.mainScreen
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
-import net.thechance.mena.dukan.domain.entity.Dukan
+import net.thechance.mena.dukan.domain.exceptions.DukanNotFoundException
 import net.thechance.mena.dukan.domain.repository.DukanRepository
 import net.thechance.mena.dukan.presentation.viewModel.base.BaseViewModel
 import net.thechance.mena.dukan.presentation.viewModel.mainScreen.MainScreenUiState.DukanStatusUi
@@ -33,24 +33,21 @@ class MainViewModel(
     }
 
     private fun onGetDukanStateSuccess(dukanState: MainScreenUiState.DukanState?) {
-        when (dukanState) {
-            null -> updateState {
-                copy(
-                    errorMessage = "Dukan not found",
-                    dukanState = MainScreenUiState.DukanState(
-                        name = "",
-                        status = DukanStatusUi.None
-                    )
-                )
-            }
-
-            else -> updateState { copy(dukanState = dukanState) }
+        dukanState?.let {
+            updateState { copy(dukanState = dukanState) }
         }
     }
 
     private fun onGetDukanStateError(error: Throwable) {
-        updateState {
-            copy(errorMessage = error.message)
+        when (error) {
+            is DukanNotFoundException -> updateState {
+                copy(
+                    errorMessage = error.message,
+                    dukanState = MainScreenUiState.DukanState(
+                        status = DukanStatusUi.None
+                    )
+                )
+            }
         }
     }
 

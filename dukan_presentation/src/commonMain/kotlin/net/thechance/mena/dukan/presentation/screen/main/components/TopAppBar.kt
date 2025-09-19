@@ -123,7 +123,9 @@ private fun TopAppBarPreview() {
                 .background(Theme.colorScheme.background.surface),
             contentAlignment = Alignment.Center
         ) {
-            TopAppBar(dukanButtonStatus = MainScreenUiState.DukanStatusUi.None, onAddDukanIconClicked = {})
+            TopAppBar(
+                dukanButtonStatus = MainScreenUiState.DukanStatusUi.None,
+                onAddDukanIconClicked = {})
         }
     }
 }

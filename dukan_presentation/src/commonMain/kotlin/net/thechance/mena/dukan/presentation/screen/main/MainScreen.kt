@@ -29,10 +29,14 @@ fun MainScreen(
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle()
     val navController = LocalNavController.current
-    ObserveAsEffect(viewModel.effect){effect ->
-        when(effect){
+    ObserveAsEffect(viewModel.effect) { effect ->
+        when (effect) {
             MainEffect.NavigateToAddDukanScreen -> navController.navigate(DukanRoute.CreateDukanScreenRoute)
-            MainEffect.NavigateToPendingDukanScreen -> navController.navigate(DukanRoute.PendingScreenRoute)
+            MainEffect.NavigateToPendingDukanScreen -> navController.navigate(
+                DukanRoute.PendingScreenRoute(
+                    state.value.dukanState.name
+                )
+            )
         }
     }
 

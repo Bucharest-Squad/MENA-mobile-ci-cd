@@ -1,4 +1,4 @@
-package net.thechance.mena.dukan.presentation.componetns
+package net.thechance.mena.dukan.presentation.component
 
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.InlineTextContent
