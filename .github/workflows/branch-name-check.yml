@@ -4,6 +4,7 @@ on:
   pull_request:
     types: [ opened, reopened, edited, synchronize ]
 
+
 jobs:
   enforce-branch-name:
     runs-on: ubuntu-latest
@@ -65,4 +66,3 @@ jobs:
               core.setFailed('Branch name does not follow the required naming convention.');
             } else {
               console.log('✅ Branch name is valid.');
-            }
