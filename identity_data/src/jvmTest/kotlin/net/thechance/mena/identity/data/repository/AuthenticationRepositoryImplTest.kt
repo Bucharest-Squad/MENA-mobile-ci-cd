@@ -2,7 +2,7 @@ package net.thechance.mena.identity.data.repository
 
 import assertk.assertFailure
 import assertk.assertions.isInstanceOf
-import io.ktor.client.plugins.ClientRequestException
+import io.ktor.client.plugins.ServerResponseException
 import io.ktor.http.HttpStatusCode
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -89,7 +89,7 @@ class AuthenticationRepositoryImplTest {
         coEvery { localDataSource.getAccessToken() } returns "invalid_or_expired_token"
 
         // When
-        authenticationRepository.getToken()
+        authenticationRepository.refreshAccessToken()
 
         // Then
         coVerify { localDataSource.saveAccessToken(fakeLoginResponse.accessToken) }
@@ -104,7 +104,7 @@ class AuthenticationRepositoryImplTest {
         coEvery { localDataSource.getAccessToken() } returns "invalid_or_expired_token"
 
         // When
-        authenticationRepository.getToken()
+        authenticationRepository.refreshAccessToken()
 
         // Then
         coVerify { localDataSource.saveRefreshToken(fakeLoginResponse.refreshToken) }
@@ -119,7 +119,7 @@ class AuthenticationRepositoryImplTest {
         coEvery { localDataSource.getAccessToken() } returns fakeLoginResponse.accessToken
 
         // When
-        val result = authenticationRepository.getToken()
+        val result = authenticationRepository.getAccessToken()
 
         // Then
         assertEquals(fakeLoginResponse.accessToken, result)
@@ -128,7 +128,7 @@ class AuthenticationRepositoryImplTest {
     @Test
     fun `login should throw UnAuthorizedException when remote returns 401`() = runTest {
         // Given
-        val clientException = ClientRequestException(
+        val clientException = ServerResponseException(
             response = mockk(relaxed = true) {
                 every { status } returns HttpStatusCode.Unauthorized
             },
@@ -145,7 +145,7 @@ class AuthenticationRepositoryImplTest {
     @Test
     fun `login should throw InvalidCredentialsException when remote returns 404`() = runTest {
         // Given
-        val clientException = ClientRequestException(
+        val clientException = ServerResponseException(
             response = mockk(relaxed = true) {
                 every { status } returns HttpStatusCode.NotFound
             },
@@ -163,7 +163,7 @@ class AuthenticationRepositoryImplTest {
     @Test
     fun `login should throw UserIsBlockedException when remote returns 403`() = runTest {
         // Given
-        val clientException = ClientRequestException(
+        val clientException = ServerResponseException(
             response = mockk(relaxed = true) {
                 every { status } returns HttpStatusCode.Forbidden
             },
@@ -181,7 +181,7 @@ class AuthenticationRepositoryImplTest {
     @Test
     fun `getToken should throw UnAuthorizedException when remote returns 401`() = runTest {
         // Given
-        val clientException = ClientRequestException(
+        val clientException = ServerResponseException(
             response = mockk(relaxed = true) {
                 every { status } returns HttpStatusCode.Unauthorized
             },
@@ -191,14 +191,14 @@ class AuthenticationRepositoryImplTest {
 
         // When & Then
         assertFailure {
-            authenticationRepository.getToken()
+            authenticationRepository.refreshAccessToken()
         }.isInstanceOf<UnAuthorizedException>()
     }
 
     @Test
     fun `login should throw UnknownException when remote returns other error`() = runTest {
         // Given
-        val clientException = ClientRequestException(
+        val clientException = ServerResponseException(
             response = mockk(relaxed = true) {
                 every { status } returns HttpStatusCode.InternalServerError
             },

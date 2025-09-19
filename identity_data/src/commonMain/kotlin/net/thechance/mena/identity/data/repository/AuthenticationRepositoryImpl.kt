@@ -20,11 +20,15 @@ class AuthenticationRepositoryImpl(
         }
     }
 
-    override suspend fun getToken(): String {
+    override suspend fun refreshAccessToken(): String {
         val refreshResponse = safeWrapper {
             remoteAuthService.refreshToken(RefreshRequestDto(localDataSource.getRefreshToken()))
         }
         saveAuthTokens(refreshResponse)
+        return localDataSource.getAccessToken()
+    }
+
+    override suspend fun getAccessToken(): String {
         return localDataSource.getAccessToken()
     }
 
