@@ -100,7 +100,6 @@ class CreateDukanViewModelTest {
         val expectedAddress = "Egypt"
         val selectedCoordinates = CreateDukanUiState.CoordinatesUiState(28.0, 29.0)
 
-
         val selectedPointerLocation = DpOffset(2.dp, 4.dp)
         everySuspend {
             locationRepository.getCurrentLocationName(selectedCoordinates.toEntity())
@@ -366,377 +365,405 @@ class CreateDukanViewModelTest {
                 cancelAndIgnoreRemainingEvents()
             }
         }
-}
 
-// Test cases for onNameChanged method
-@Test
-fun `onNameChanged SHOULD update name state with limited length`() = runTest {
-    // Given
-    val name = testName
+    // Test cases for onNameChanged method
+    @Test
+    fun `onNameChanged SHOULD update name state with limited length`() = runTest {
+        // Given
+        val name = testName
 
-    // When
-    createDukanViewModel.onNameChanged(name)
+        // When
+        createDukanViewModel.onNameChanged(name)
 
-    // Then
-    val resultingName = createDukanViewModel.state.value.name
-    assertEquals(name, resultingName)
-}
-
-@Test
-fun `onNameChanged SHOULD limit name to 40 characters when name is longer`() = runTest {
-    // Given
-    val expectedName = longName.take(40)
-
-    // When
-    createDukanViewModel.onNameChanged(longName)
-
-    // Then
-    val resultingName = createDukanViewModel.state.value.name
-    assertEquals(expectedName, resultingName)
-}
-
-@Test
-fun `onNameChanged SHOULD hide snack bar when name is changed`() = runTest {
-    // Given
-    createDukanViewModel.updateState { copy(showSnackBar = true) }
-
-    // When
-    createDukanViewModel.onNameChanged(newName)
-
-    // Then
-    val showSnackBar = createDukanViewModel.state.value.showSnackBar
-    assertFalse(showSnackBar)
-}
-
-@Test
-fun `onNameChanged SHOULD update next button state`() = runTest {
-    // Given
-    val name = testName
-
-    // When
-    createDukanViewModel.onNameChanged(name)
-
-    // Then
-    assertTrue(true)
-}
-
-@Test
-fun `isCategorySelected SHOULD return true when category is in selected categories`() = runTest {
-    // Given
-    createDukanViewModel.updateState { copy(selectedCategories = setOf(category1)) }
-
-    // When
-    val isSelected = createDukanViewModel.isCategorySelected()(category1)
-
-    // Then
-    assertTrue(isSelected)
-}
-
-@Test
-fun `isCategorySelected SHOULD return false when category is not in selected categories`() = runTest {
-    // Given
-    createDukanViewModel.updateState { copy(selectedCategories = setOf(category2)) }
-
-    // When
-    val isSelected = createDukanViewModel.isCategorySelected()(category1)
-
-    // Then
-    assertFalse(isSelected)
-}
-
-@Test
-fun `onCategorySelected SHOULD return true when can select more categories`() = runTest {
-    // Given
-    val category = category1
-
-    // When
-    val result = createDukanViewModel.onCategorySelected(category)
-
-    // Then
-    assertTrue(result)
-}
-
-@Test
-fun `onCategorySelected SHOULD add category when can select more`() = runTest {
-    // Given
-    val category = category1
-
-    // When
-    createDukanViewModel.onCategorySelected(category)
-
-    // Then
-    val selectedCategories = createDukanViewModel.state.value.selectedCategories
-    assertTrue(selectedCategories.contains(category))
-}
-
-@Test
-fun `onCategorySelected SHOULD return false when max categories reached`() = runTest {
-    // Given
-    createDukanViewModel.updateState {
-        copy(selectedCategories = setOf(category1, category2, category3))
+        // Then
+        val resultingName = createDukanViewModel.state.value.name
+        assertEquals(name, resultingName)
     }
 
-    // When
-    val result = createDukanViewModel.onCategorySelected(category4)
+    @Test
+    fun `onNameChanged SHOULD limit name to 40 characters when name is longer`() = runTest {
+        // Given
+        val expectedName = longName.take(40)
 
-    // Then
-    assertFalse(result)
-    val selectedCategories = createDukanViewModel.state.value.selectedCategories
-    assertFalse(selectedCategories.contains(category4))
-}
+        // When
+        createDukanViewModel.onNameChanged(longName)
 
-@Test
-fun `onCategoryDeselected SHOULD return true when category is removed`() = runTest {
-    // Given
-    createDukanViewModel.updateState { copy(selectedCategories = setOf(category1)) }
-
-    // When
-    val result = createDukanViewModel.onCategoryDeselected(category1)
-
-    // Then
-    assertTrue(result)
-}
-
-@Test
-fun `onCategoryDeselected SHOULD remove category from selection`() = runTest {
-    // Given
-    createDukanViewModel.updateState { copy(selectedCategories = setOf(category1)) }
-
-    // When
-    createDukanViewModel.onCategoryDeselected(category1)
-
-    // Then
-    val selectedCategories = createDukanViewModel.state.value.selectedCategories
-    assertFalse(selectedCategories.contains(category1))
-}
-
-@Test
-fun `onCategoryEnabled SHOULD return true when can select more categories`() = runTest {
-    // Given
-    val category = category1
-
-    // When
-    val result = createDukanViewModel.onCategoryEnabled(category)
-
-    // Then
-    assertTrue(result)
-}
-
-@Test
-fun `onCategoryEnabled SHOULD return true when category is already selected`() = runTest {
-    // Given
-    createDukanViewModel.updateState {
-        copy(selectedCategories = setOf(category1, category2, category3))
+        // Then
+        val resultingName = createDukanViewModel.state.value.name
+        assertEquals(expectedName, resultingName)
     }
 
-    // When
-    val result = createDukanViewModel.onCategoryEnabled(category1)
+    @Test
+    fun `onNameChanged SHOULD hide snack bar when name is changed`() = runTest {
+        // Given
+        createDukanViewModel.updateState { copy(showSnackBar = true) }
 
-    // Then
-    assertTrue(result)
-}
+        // When
+        createDukanViewModel.onNameChanged(newName)
 
-@Test
-fun `onCategoryEnabled SHOULD return false when max categories reached and category not selected`() = runTest {
-    // Given
-    createDukanViewModel.updateState {
-        copy(selectedCategories = setOf(category1, category2, category3))
+        // Then
+        val showSnackBar = createDukanViewModel.state.value.showSnackBar
+        assertFalse(showSnackBar)
     }
 
-    // When
-    val result = createDukanViewModel.onCategoryEnabled(category4)
+    @Test
+    fun `onNameChanged SHOULD update next button state`() = runTest {
+        // Given
+        val name = testName
 
-    // Then
-    assertFalse(result)
-}
+        // When
+        createDukanViewModel.onNameChanged(name)
 
-@Test
-fun `onCLickNext SHOULD trigger name validation when in basic information step`() = runTest {
-    // Given
-    createDukanViewModel.updateState {
-        copy(
-            name = testDukan,
-            selectedCategories = setOf(category1),
-            currentStep = CreateDukanUiState.CreateDukanStep.BASIC_INFORMATION,
-            showSnackBar = false
-        )
-    }
-    everySuspend { dukanRepository.isDukanNameTaken(testDukan) } calls { false }
-
-    // When
-    createDukanViewModel.onCLickNext()
-    testDispatcher.scheduler.advanceUntilIdle()
-
-    // Then
-    assertTrue(true)
-}
-
-@Test
-fun `onCLickNext SHOULD show snack bar when basic information is invalid`() = runTest {
-    // Given
-    createDukanViewModel.updateState {
-        copy(
-            name = "",
-            selectedCategories = setOf(category1),
-            currentStep = CreateDukanUiState.CreateDukanStep.BASIC_INFORMATION,
-            showSnackBar = false
-        )
+        // Then
+        assertTrue(true)
     }
 
-    // When
-    createDukanViewModel.onCLickNext()
+    @Test
+    fun `isCategorySelected SHOULD return true when category is in selected categories`() =
+        runTest {
+            // Given
+            createDukanViewModel.updateState { copy(selectedCategories = setOf(fakeCategories()[0].toUiState())) }
 
-    // Then
-    val state = createDukanViewModel.state.value
-    assertTrue(state.showSnackBar)
-    assertFalse(state.isNameUnique)
-}
+            // When
+            val isSelected = createDukanViewModel.isCategorySelected()(fakeCategories()[0].toUiState())
 
-@Test
-fun `onCategorySelected SHOULD return false when maximum category limit reached`() = runTest {
-    // Given
-    createDukanViewModel.updateState {
-        copy(selectedCategories = setOf(category1, category2, category3))
+            // Then
+            assertTrue(isSelected)
+        }
+
+    @Test
+    fun `isCategorySelected SHOULD return false when category is not in selected categories`() =
+        runTest {
+            // Given
+            createDukanViewModel.updateState { copy(selectedCategories = setOf(fakeCategories()[1].toUiState())) }
+
+            // When
+            val isSelected = createDukanViewModel.isCategorySelected()(fakeCategories()[0].toUiState())
+
+            // Then
+            assertFalse(isSelected)
+        }
+
+    @Test
+    fun `onCategorySelected SHOULD return true when can select more categories`() = runTest {
+        // Given
+        val category = fakeCategories()[0].toUiState()
+
+        // When
+        val result = createDukanViewModel.onCategorySelected(category)
+
+        // Then
+        assertTrue(result)
     }
 
-    // When
-    val result = createDukanViewModel.onCategorySelected(category4)
+    @Test
+    fun `onCategorySelected SHOULD add category when can select more`() = runTest {
+        // Given
+        val category = fakeCategories()[0].toUiState()
 
-    // Then
-    assertFalse(result)
-}
+        // When
+        createDukanViewModel.onCategorySelected(category)
 
-@Test
-fun `onCategorySelected SHOULD maintain category count when maximum limit reached`() = runTest {
-    // Given
-    createDukanViewModel.updateState {
-        copy(selectedCategories = setOf(category1, category2, category3))
+        // Then
+        val selectedCategories = createDukanViewModel.state.value.selectedCategories
+        assertTrue(selectedCategories.contains(category))
     }
 
-    // When
-    createDukanViewModel.onCategorySelected(category4)
+    @Test
+    fun `onCategorySelected SHOULD return false when max categories reached`() = runTest {
+        // Given
+        createDukanViewModel.updateState {
+            copy(selectedCategories = setOf(
+                fakeCategories()[0].toUiState(),
+                fakeCategories()[1].toUiState(),
+                fakeCategories()[2].toUiState()
+            ))
+        }
 
-    // Then
-    val selectedCategories = createDukanViewModel.state.value.selectedCategories
-    assertEquals(3, selectedCategories.size)
-}
+        // When
+        val result = createDukanViewModel.onCategorySelected(fakeCategories()[3].toUiState())
 
-@Test
-fun `onCategorySelected SHOULD not include new category when maximum limit reached`() = runTest {
-    // Given
-    createDukanViewModel.updateState {
-        copy(selectedCategories = setOf(category1, category2, category3))
+        // Then
+        assertFalse(result)
+        val selectedCategories = createDukanViewModel.state.value.selectedCategories
+        assertFalse(selectedCategories.contains(fakeCategories()[3].toUiState()))
     }
 
-    // When
-    createDukanViewModel.onCategorySelected(category4)
+    @Test
+    fun `onCategoryDeselected SHOULD return true when category is removed`() = runTest {
+        // Given
+        createDukanViewModel.updateState { copy(selectedCategories = setOf(fakeCategories()[0].toUiState())) }
 
-    // Then
-    val selectedCategories = createDukanViewModel.state.value.selectedCategories
-    assertFalse(selectedCategories.contains(category4))
-}
+        // When
+        val result = createDukanViewModel.onCategoryDeselected(fakeCategories()[0].toUiState())
 
-@Test
-fun `onCategoryDeselected SHOULD handle empty selection correctly`() = runTest {
-    // Given
-    createDukanViewModel.updateState { copy(selectedCategories = emptySet()) }
-
-    // When
-    val result = createDukanViewModel.onCategoryDeselected(category1)
-
-    // Then
-    assertTrue(result)
-    val selectedCategories = createDukanViewModel.state.value.selectedCategories
-    assertTrue(selectedCategories.isEmpty())
-}
-
-@Test
-fun `onNameChanged SHOULD update button state based on validation`() = runTest {
-    // Given
-    createDukanViewModel.updateState {
-        copy(
-            name = "",
-            selectedCategories = setOf(category1),
-            currentStep = CreateDukanUiState.CreateDukanStep.BASIC_INFORMATION
-        )
+        // Then
+        assertTrue(result)
     }
 
-    // When
-    createDukanViewModel.onNameChanged(testDukan)
+    @Test
+    fun `onCategoryDeselected SHOULD remove category from selection`() = runTest {
+        // Given
+        createDukanViewModel.updateState { copy(selectedCategories = setOf(fakeCategories()[0].toUiState())) }
 
-    // Then
-    val state = createDukanViewModel.state.value
-    assertTrue(state.isButtonEnabled)
-}
+        // When
+        createDukanViewModel.onCategoryDeselected(fakeCategories()[0].toUiState())
 
-@Test
-fun `onCategorySelected SHOULD update button state`() = runTest {
-    // Given
-    createDukanViewModel.updateState {
-        copy(
-            name = testDukan,
-            selectedCategories = emptySet(),
-            currentStep = CreateDukanUiState.CreateDukanStep.BASIC_INFORMATION
-        )
+        // Then
+        val selectedCategories = createDukanViewModel.state.value.selectedCategories
+        assertFalse(selectedCategories.contains(fakeCategories()[0].toUiState()))
     }
 
-    // When
-    createDukanViewModel.onCategorySelected(category1)
+    @Test
+    fun `onCategoryEnabled SHOULD return true when can select more categories`() = runTest {
+        // Given
+        val category = fakeCategories()[0].toUiState()
 
-    // Then
-    val state = createDukanViewModel.state.value
-    assertTrue(state.isButtonEnabled)
-}
+        // When
+        val result = createDukanViewModel.onCategoryEnabled(category)
 
-@Test
-fun `onDismissSnackBar SHOULD hide snack bar when called`() = runTest {
-    // Given
-    createDukanViewModel.updateState { copy(showSnackBar = true) }
-
-    // When
-    createDukanViewModel.onDismissSnackBar()
-
-    // Then
-    val showSnackBar = createDukanViewModel.state.value.showSnackBar
-    assertFalse(showSnackBar)
-}
-
-@Test
-fun `onDismissSnackBar SHOULD not affect other state properties`() = runTest {
-    // Given
-    val testName = "Test Dukan"
-    val testCategories = setOf(category1, category2)
-    createDukanViewModel.updateState {
-        copy(
-            name = testName,
-            selectedCategories = testCategories,
-            showSnackBar = true,
-            isNameUnique = false
-        )
+        // Then
+        assertTrue(result)
     }
 
-    // When
-    createDukanViewModel.onDismissSnackBar()
+    @Test
+    fun `onCategoryEnabled SHOULD return true when category is already selected`() = runTest {
+        // Given
+        createDukanViewModel.updateState {
+            copy(selectedCategories = setOf(
+                fakeCategories()[0].toUiState(),
+                fakeCategories()[1].toUiState(),
+                fakeCategories()[2].toUiState()
+            ))
+        }
 
-    // Then
-    val state = createDukanViewModel.state.value
-    assertFalse(state.showSnackBar)
-    assertEquals(testName, state.name)
-    assertEquals(testCategories, state.selectedCategories)
-    assertFalse(state.isNameUnique)
-}
+        // When
+        val result = createDukanViewModel.onCategoryEnabled(fakeCategories()[0].toUiState())
 
-@Test
-fun `onDismissSnackBar SHOULD work when snack bar is already hidden`() = runTest {
-    // Given
-    createDukanViewModel.updateState { copy(showSnackBar = false) }
+        // Then
+        assertTrue(result)
+    }
 
-    // When
-    createDukanViewModel.onDismissSnackBar()
+    @Test
+    fun `onCategoryEnabled SHOULD return false when max categories reached and category not selected`() =
+        runTest {
+            // Given
+            createDukanViewModel.updateState {
+                copy(selectedCategories = setOf(
+                    fakeCategories()[0].toUiState(),
+                    fakeCategories()[1].toUiState(),
+                    fakeCategories()[2].toUiState()
+                ))
+            }
 
-    // Then
-    val showSnackBar = createDukanViewModel.state.value.showSnackBar
-    assertFalse(showSnackBar)
+            // When
+            val result = createDukanViewModel.onCategoryEnabled(fakeCategories()[3].toUiState())
+
+            // Then
+            assertFalse(result)
+        }
+
+    @Test
+    fun `onCLickNext SHOULD trigger name validation when in basic information step`() = runTest {
+        // Given
+        createDukanViewModel.updateState {
+            copy(
+                name = testDukan,
+                selectedCategories = setOf(fakeCategories()[0].toUiState()),
+                currentStep = CreateDukanUiState.CreateDukanStep.BASIC_INFORMATION,
+                showSnackBar = false
+            )
+        }
+        everySuspend { dukanRepository.isDukanNameTaken(testDukan) } calls { false }
+
+        // When
+        createDukanViewModel.onCLickNext()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Then
+        assertTrue(true)
+    }
+
+    @Test
+    fun `onCLickNext SHOULD show snack bar when basic information is invalid`() = runTest {
+        // Given
+        createDukanViewModel.updateState {
+            copy(
+                name = "",
+                selectedCategories = setOf(fakeCategories()[0].toUiState()),
+                currentStep = CreateDukanUiState.CreateDukanStep.BASIC_INFORMATION,
+                showSnackBar = false
+            )
+        }
+
+        // When
+        createDukanViewModel.onCLickNext()
+
+        // Then
+        val state = createDukanViewModel.state.value
+        assertTrue(state.showSnackBar)
+        assertFalse(state.isNameUnique)
+    }
+
+    @Test
+    fun `onCategorySelected SHOULD return false when maximum category limit reached`() = runTest {
+        // Given
+        createDukanViewModel.updateState {
+            copy(selectedCategories = setOf(
+                fakeCategories()[0].toUiState(),
+                fakeCategories()[1].toUiState(),
+                fakeCategories()[2].toUiState()
+            ))
+        }
+
+        // When
+        val result = createDukanViewModel.onCategorySelected(fakeCategories()[3].toUiState())
+
+        // Then
+        assertFalse(result)
+    }
+
+    @Test
+    fun `onCategorySelected SHOULD maintain category count when maximum limit reached`() = runTest {
+        // Given
+        createDukanViewModel.updateState {
+            copy(selectedCategories = setOf(
+                fakeCategories()[0].toUiState(),
+                fakeCategories()[1].toUiState(),
+                fakeCategories()[2].toUiState()
+            ))
+        }
+
+        // When
+        createDukanViewModel.onCategorySelected(fakeCategories()[3].toUiState())
+
+        // Then
+        val selectedCategories = createDukanViewModel.state.value.selectedCategories
+        assertEquals(3, selectedCategories.size)
+    }
+
+    @Test
+    fun `onCategorySelected SHOULD not include new category when maximum limit reached`() =
+        runTest {
+            // Given
+            createDukanViewModel.updateState {
+                copy(selectedCategories = setOf(
+                    fakeCategories()[0].toUiState(),
+                    fakeCategories()[1].toUiState(),
+                    fakeCategories()[2].toUiState()
+                ))
+            }
+
+            // When
+            createDukanViewModel.onCategorySelected(fakeCategories()[3].toUiState())
+
+            // Then
+            val selectedCategories = createDukanViewModel.state.value.selectedCategories
+            assertFalse(selectedCategories.contains(fakeCategories()[3].toUiState()))
+        }
+
+    @Test
+    fun `onCategoryDeselected SHOULD handle empty selection correctly`() = runTest {
+        // Given
+        createDukanViewModel.updateState { copy(selectedCategories = emptySet()) }
+
+        // When
+        val result = createDukanViewModel.onCategoryDeselected(fakeCategories()[0].toUiState())
+
+        // Then
+        assertTrue(result)
+        val selectedCategories = createDukanViewModel.state.value.selectedCategories
+        assertTrue(selectedCategories.isEmpty())
+    }
+
+    @Test
+    fun `onNameChanged SHOULD update button state based on validation`() = runTest {
+        // Given
+        createDukanViewModel.updateState {
+            copy(
+                name = "",
+                selectedCategories = setOf(fakeCategories()[0].toUiState()),
+                currentStep = CreateDukanUiState.CreateDukanStep.BASIC_INFORMATION
+            )
+        }
+
+        // When
+        createDukanViewModel.onNameChanged(testDukan)
+
+        // Then
+        val state = createDukanViewModel.state.value
+        assertTrue(state.isButtonEnabled)
+    }
+
+    @Test
+    fun `onCategorySelected SHOULD update button state`() = runTest {
+        // Given
+        createDukanViewModel.updateState {
+            copy(
+                name = testDukan,
+                selectedCategories = emptySet(),
+                currentStep = CreateDukanUiState.CreateDukanStep.BASIC_INFORMATION
+            )
+        }
+
+        // When
+        createDukanViewModel.onCategorySelected(fakeCategories()[0].toUiState())
+
+        // Then
+        val state = createDukanViewModel.state.value
+        assertTrue(state.isButtonEnabled)
+    }
+
+    @Test
+    fun `onDismissSnackBar SHOULD hide snack bar when called`() = runTest {
+        // Given
+        createDukanViewModel.updateState { copy(showSnackBar = true) }
+
+        // When
+        createDukanViewModel.onDismissSnackBar()
+
+        // Then
+        val showSnackBar = createDukanViewModel.state.value.showSnackBar
+        assertFalse(showSnackBar)
+    }
+
+    @Test
+    fun `onDismissSnackBar SHOULD not affect other state properties`() = runTest {
+        // Given
+        val testName = "Test Dukan"
+        val testCategories = setOf(fakeCategories()[0].toUiState(), fakeCategories()[1].toUiState())
+        createDukanViewModel.updateState {
+            copy(
+                name = testName,
+                selectedCategories = testCategories,
+                showSnackBar = true,
+                isNameUnique = false
+            )
+        }
+
+        // When
+        createDukanViewModel.onDismissSnackBar()
+
+        // Then
+        val state = createDukanViewModel.state.value
+        assertFalse(state.showSnackBar)
+        assertEquals(testName, state.name)
+        assertEquals(testCategories, state.selectedCategories)
+        assertFalse(state.isNameUnique)
+    }
+
+    @Test
+    fun `onDismissSnackBar SHOULD work when snack bar is already hidden`() = runTest {
+        // Given
+        createDukanViewModel.updateState { copy(showSnackBar = false) }
+
+        // When
+        createDukanViewModel.onDismissSnackBar()
+
+        // Then
+        val showSnackBar = createDukanViewModel.state.value.showSnackBar
+        assertFalse(showSnackBar)
+    }
 }
 
 private fun fakeDukanColor(): List<Color> {
@@ -759,7 +786,6 @@ private fun fakeDukanColor(): List<Color> {
         ),
     )
 }
-
 
 private fun fakeDukanStyle(): List<Dukan.Style> {
     return listOf(
@@ -793,3 +819,16 @@ private fun fakeCategories(): List<Category> {
         )
     )
 }
+
+private fun Category.toUiState() = DukanCategoryUiState(
+    id = id,
+    name = name,
+    imageUrl = imageUrl
+)
+
+private const val testName = "Test Dukan Name"
+private const val longName =
+    "This is a very long dukan name that exceeds the maximum allowed length of forty characters"
+private const val newName = "New Dukan Name"
+private const val testDukan = "Test Dukan"
+
