@@ -74,7 +74,7 @@ class WalletViewModel(
     private fun hideSnackBar() {
         updateState { oldState ->
             oldState.copy(
-                snackBar = SnackBarState()
+                snackBar = oldState.snackBar.copy(isVisible = false)
             )
         }
     }

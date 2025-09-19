@@ -9,9 +9,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
@@ -54,7 +52,7 @@ fun ThreeDotsLoadingIndicator(
 
     Row(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(spacing),
+        horizontalArrangement = Arrangement.spacedBy(spacing, Alignment.CenterHorizontally),
         verticalAlignment = Alignment.CenterVertically
     ) {
         repeat(colorCount) { index ->
@@ -63,10 +61,7 @@ fun ThreeDotsLoadingIndicator(
             Box(
                 modifier = Modifier
                     .size(dotSize)
-                    .background(
-                        color = colors[colorIndex],
-                        shape = CircleShape
-                    )
+                    .background(color = colors[colorIndex], shape = CircleShape)
             )
         }
     }
