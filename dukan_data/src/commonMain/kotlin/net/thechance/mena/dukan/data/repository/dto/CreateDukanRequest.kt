@@ -8,7 +8,7 @@ data class CreateDukanRequest(
     @SerialName("name")
     val name: String,
     @SerialName("categoryIds")
-    val categoryIds: List<String>,
+    val categoryIds: Set<String>,
     @SerialName("address")
     val address: String,
     @SerialName("latitude")

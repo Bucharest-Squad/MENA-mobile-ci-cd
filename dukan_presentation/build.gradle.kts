@@ -63,16 +63,13 @@ kotlin {
 
             // maps
             implementation(libs.maplibre.compose)
-
-            implementation(libs.turbine)
-            implementation(libs.junit)
         }
         iosMain.dependencies {
 
         }
-
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.turbine)
             implementation(kotlin("test-annotations-common"))
             implementation(libs.kotlinx.coroutines.test)
             implementation(libs.mokkery.core)
