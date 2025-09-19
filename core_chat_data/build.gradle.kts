@@ -24,6 +24,13 @@ kotlin {
             implementation(libs.androidx.datastore.preferences)
 
         }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+            implementation(libs.kotlin.test.annotations.common)
+            implementation(libs.ktor.client.mock)
+            implementation(libs.assertk)
+            implementation(libs.kotlinx.coroutines.test)
+        }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
         }
