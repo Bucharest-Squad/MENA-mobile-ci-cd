@@ -34,7 +34,7 @@ internal class ManageTrendsViewModel(
                 )
             },
             onSuccess = ::onGetReelsSuccess,
-            onError = {},
+            onError = { errorState -> updateState { copy(error = errorState) } },
             onStart = { updateState { copy(isLoading = true) } },
             onEnd = { updateState { copy(isLoading = false) } }
         )
