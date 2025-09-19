@@ -16,5 +16,5 @@ internal sealed interface Route {
     data object ManageReels : Route
 
     @Serializable
-    data object Test: Route
+    data object MainContainer: Route
 }

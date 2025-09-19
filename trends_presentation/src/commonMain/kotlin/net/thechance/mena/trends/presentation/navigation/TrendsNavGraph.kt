@@ -14,7 +14,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.trends.presentation.screen.TestScreen
+import net.thechance.mena.trends.presentation.screen.main_container.MainContainerScreen
 import net.thechance.mena.trends.presentation.screen.category_pick.CategoryPickScreen
 import net.thechance.mena.trends.presentation.screen.manage_my_trends.ManageTrendsScreen
 import net.thechance.mena.trends.presentation.screen.user_reel.UserReelScreen
@@ -30,11 +30,11 @@ fun TrendsNavHost() {
       NavHost(
          modifier = Modifier.fillMaxSize(),
          navController = navController,
-         startDestination = Route.Test,
+         startDestination = Route.MainContainer,
       ) {
 
-         composable<Route.Test> {
-            TestScreen()
+         composable<Route.MainContainer> {
+            MainContainerScreen()
          }
 
          composable<Route.Categories> {
