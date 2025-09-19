@@ -24,6 +24,7 @@ kotlin {
             implementation(libs.androidx.sqlite.bundled)
             implementation(libs.kotlinx.serialization.json)
             api(libs.koin.core)
+            implementation(compose.runtime)
         }
     }
 }
