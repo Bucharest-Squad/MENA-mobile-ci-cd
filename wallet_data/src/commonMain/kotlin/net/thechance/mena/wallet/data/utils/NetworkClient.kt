@@ -4,6 +4,9 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngineConfig
 import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.plugins.HttpTimeout
+import io.ktor.client.plugins.auth.Auth
+import io.ktor.client.plugins.auth.providers.BearerTokens
+import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
@@ -54,7 +57,7 @@ class NetworkClient {
 
     private fun buildClient(): HttpClient {
         return HttpClient(platformHttpClientEngineFactory) {
-            defaultRequest { url(BASE_URL) }
+            defaultRequest { url(LOCAL_BASE_URL) }
 
             install(Logging) { level = LogLevel.ALL }
 
@@ -69,6 +72,17 @@ class NetworkClient {
                 )
             }
 
+            install(plugin = Auth) {
+                bearer {
+                    loadTokens {
+                        BearerTokens(
+                            accessToken = ACCESS_TOKEN,
+                            refreshToken = ""
+                        )
+                    }
+                }
+            }
+
             install(HttpTimeout) {
                 requestTimeoutMillis = TIME_OUT_INTERVAL_MILLI
                 connectTimeoutMillis = TIME_OUT_INTERVAL_MILLI
@@ -79,6 +93,8 @@ class NetworkClient {
 
     companion object {
         private const val BASE_URL = "https://mena-dev.the-chance.net/"
+        private const val LOCAL_BASE_URL = "http://10.0.2.2:8080/"
+        val ACCESS_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzOGMxNWY2MS1kNW"
         private const val TIME_OUT_INTERVAL_MILLI = 15_000L
     }
 }
