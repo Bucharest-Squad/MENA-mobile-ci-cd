@@ -12,13 +12,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import coil3.compose.AsyncImage
-import net.thechance.mena.designsystem.presentation.component.text.Text
+import mena.core_chat_presentation.generated.resources.Res
+import mena.core_chat_presentation.generated.resources.ic_profile_placeholder
+import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun CircularAvatar(
     contactImageUri: String?,
-    contactInitials: String,
     size: Dp,
     modifier: Modifier = Modifier
 ) {
@@ -31,18 +33,17 @@ fun CircularAvatar(
             ),
         contentAlignment = Alignment.Center
     ) {
-        if (contactImageUri != null) {
+        Icon(
+            painter = painterResource(Res.drawable.ic_profile_placeholder),
+            contentDescription = null,
+        )
+
+        if (contactImageUri.isNullOrBlank().not()) {
             AsyncImage(
                 modifier = Modifier.fillMaxSize(),
                 model = contactImageUri,
                 contentScale = ContentScale.Crop,
                 contentDescription = "Contact photo",
-            )
-        } else {
-            Text(
-                text = contactInitials,
-                color = Theme.colorScheme.shadePrimary,
-                style = Theme.typography.title.small,
             )
         }
     }
