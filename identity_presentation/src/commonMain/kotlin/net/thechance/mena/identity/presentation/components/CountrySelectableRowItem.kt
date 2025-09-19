@@ -54,6 +54,7 @@ internal fun CountrySelectableRowItem(
             )
             .clip(RoundedCornerShape(Theme.radius.lg))
             .clickable(
+                enabled = !isSelected,
                 onClick = {
                     onClick(selectedCountry)
                 },
