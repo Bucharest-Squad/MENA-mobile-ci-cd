@@ -10,6 +10,7 @@ import net.thechance.mena.dukan.domain.entity.Color
 import net.thechance.mena.dukan.domain.entity.Dukan
 import net.thechance.mena.dukan.domain.repository.DukanRepository
 import net.thechance.mena.dukan.domain.repository.LocationRepository
+import net.thechance.mena.dukan.presentation.util.imageCrop.toPngByteArray
 import net.thechance.mena.dukan.presentation.viewModel.base.BaseViewModel
 import net.thechance.mena.dukan.presentation.viewModel.createDukan.CreateDukanUiState.CreateDukanStep
 import org.maplibre.compose.camera.CameraPosition
@@ -192,7 +193,12 @@ class CreateDukanViewModel(
     }
 
     private suspend fun onCreateClickedBlock() {
-        return dukanRepository.createDukan(state.value.toEntity())
+        dukanRepository.createDukan(state.value.toEntity())
+        state.value.croppedImage?.let {
+            val fileName = state.value.name.replace(" ", "_")
+                .plus("dukan_image")
+            dukanRepository.uploadDukanImage(fileName, it.toPngByteArray())
+        }
     }
 
     private fun onCreateClickedSuccess(unit: Unit) {

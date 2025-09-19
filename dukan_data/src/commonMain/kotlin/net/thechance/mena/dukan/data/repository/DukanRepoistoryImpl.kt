@@ -102,8 +102,8 @@ class DukanRepositoryImpl(
                         append(HttpHeaders.ContentDisposition, "filename=\"$fileName\"")
                     }
                 )
-            })
-
+            }
+        )
     }
 
     companion object {
