@@ -20,7 +20,7 @@ internal class BasePagingSource<T : Any>(
             LoadResult.Page(
                 data = result,
                 prevKey = if (nextPage == 1) null else nextPage - 1,
-                nextKey = if (result.isEmpty()) null else nextPage.inc()
+                nextKey = if (result.size < 10) null else nextPage + 1
             )
         } catch (e: Exception) {
             onError(e)
@@ -31,11 +31,11 @@ internal class BasePagingSource<T : Any>(
     override fun getRefreshKey(state: PagingState<Int, T>) = state.anchorPosition
 }
 
-fun <T: Any> createPager(
+fun <T : Any> createPager(
     scope: CoroutineScope,
     pageSize: Int = 10,
     prefetchDistance: Int = 5,
-    initialLoadSize: Int = 15,
+    initialLoadSize: Int = 10,
     onError: (Throwable) -> Unit = {},
     loadPage: suspend (page: Int) -> List<T>
 ): Flow<PagingData<T>> {

@@ -4,12 +4,12 @@ import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.http.contentType
 import net.thechance.mena.trends.data.dto.CategoryResponseDto
 import net.thechance.mena.trends.data.dto.SubmitInterestsRequestDto
 import net.thechance.mena.trends.data.dto.UserStatusResponse
 import net.thechance.mena.trends.data.mapper.toEntityList
 import net.thechance.mena.trends.data.util.NetworkConstants.CATEGORY
-import net.thechance.mena.trends.data.util.NetworkConstants.INTERESTS
 import net.thechance.mena.trends.data.util.NetworkConstants.TRENDS
 import net.thechance.mena.trends.data.util.safeApiCall
 import net.thechance.mena.trends.domain.entity.Category
@@ -36,7 +36,8 @@ internal class CategoryRepositoryImpl(
 
     override suspend fun updateUserInterestedCategories(categoriesIds: List<String>) {
         safeApiCall<Unit> {
-            httpClient.post("/$TRENDS/$INTERESTS") {
+            httpClient.post("/$TRENDS/$CATEGORY") {
+                contentType(io.ktor.http.ContentType.Application.Json)
                 setBody(SubmitInterestsRequestDto(categoriesIds))
             }
         }

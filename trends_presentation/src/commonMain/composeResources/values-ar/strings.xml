@@ -8,9 +8,9 @@
     <string name="app_coin_icon">رمز العملة للتطبيق</string>
     <string name="cancel_dialog_icon">رمز إلغاء الحوار</string>
 
-    <string name="manage_trends_title">إدارة ترنداتي</string>
+    <string name="manage_trends_title">إدارة الفيديوهات</string>
     <string name="profile_image_desc">صورة الملف الشخصي</string>
-    <string name="my_trends">ترنداتي</string>
+    <string name="my_trends">فيديوهاتي</string>
     <string name="favorite">المفضلة</string>
     <string name="trend_image_desc">صورة الاتجاه</string>
     <string name="back_arrow">سهم العودة</string>
