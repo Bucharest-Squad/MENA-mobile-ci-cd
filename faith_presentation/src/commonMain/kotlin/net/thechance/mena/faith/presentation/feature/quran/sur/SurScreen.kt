@@ -56,7 +56,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun SurScreen(
     onNavigateBack: () -> Unit,
-    onNavigateToBookmarks: () -> Unit,
+    onNavigateToBookmarks: () -> Unit = {},
     onNavigateToSurahDetails: (surahId: Int, surahName: String) -> Unit,
     viewModel: SurViewModel = koinViewModel(),
 ) {

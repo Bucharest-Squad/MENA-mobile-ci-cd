@@ -12,6 +12,7 @@ data class SurahScreenState(
 ) {
     data class AyahUiState(
         val number: Int,
-        val content: String
+        val displayContent: String,
+        val plainTextContent: String
     )
 }

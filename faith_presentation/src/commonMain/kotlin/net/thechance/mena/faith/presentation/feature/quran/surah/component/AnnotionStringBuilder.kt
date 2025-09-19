@@ -30,7 +30,7 @@ internal fun createClickableAyahText(
                     fontFamily = FontFamily(Font(Res.font.hafs))
                 )
             ) {
-                append(aya.content)
+                append(aya.displayContent)
                 if (index < ayatOfSurah.size - 1) append(" ")
             }
 

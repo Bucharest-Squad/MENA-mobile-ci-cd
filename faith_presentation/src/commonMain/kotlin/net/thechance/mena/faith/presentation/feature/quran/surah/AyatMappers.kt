@@ -4,5 +4,6 @@ import net.thechance.mena.faith.domain.entity.Ayah
 
 fun Ayah.toUiState() = SurahScreenState.AyahUiState(
     number = number,
-    content = content
+    displayContent = displayContent,
+    plainTextContent = plainTextContent
 )
