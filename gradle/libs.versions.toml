@@ -19,6 +19,8 @@ koin-core = "4.1.0"
 koin-annotations = "2.1.0"
 kotlinx-serialization = "1.6.3"
 ktor = "3.2.3"
+kotlinx-coroutines-test = "1.7.3"
+assertk = "0.28.1"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -36,6 +38,9 @@ kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.
 androidx-navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 
+kotlin-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines-test"}
+kotlin-test-annotations-common = { module = "org.jetbrains.kotlin:kotlin-test-annotations-common", version.ref = "kotlin" }
+assertk = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assertk" }
 
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin-core" }
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin-core" }
@@ -51,6 +56,7 @@ ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
+ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktor" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -67,4 +73,12 @@ ktor = [
     "ktor-client-content-negotiation",
     "ktor-client-logging",
     "ktor-serialization-kotlinx-json"
+]
+
+test = [
+    "kotlin-test",
+    "kotlin-coroutines-test",
+    "kotlin-test-annotations-common",
+    "assertk",
+    "ktor-client-mock"
 ]
