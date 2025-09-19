@@ -17,6 +17,7 @@ import net.thechance.mena.core_chat.presentation.navigation.ChatEffector
 import net.thechance.mena.core_chat.presentation.navigation.ContactsRoute
 import net.thechance.mena.core_chat.presentation.navigation.SyncContactsRoute
 import net.thechance.mena.core_chat.presentation.shared.BaseViewModel
+import net.thechance.mena.core_chat.presentation.utils.openAppSettings
 
 class SyncContactsViewModel(
     private val contactsRepository: ContactsRepository,
@@ -83,6 +84,32 @@ class SyncContactsViewModel(
             else -> onError(throwable)
         }
     }
+
+    private fun onContactsPermissionGranted() {
+        updateState {
+            it.copy(
+                deniedPermanently = false,
+                showSyncView = true
+            )
+        }
+        syncContacts()
+    }
+
+    fun checkPermissions() {
+        tryToExecute(
+            execute = { permissionsController.isPermissionGranted(Permission.CONTACTS) },
+            onSuccess = { granted ->
+                if (granted) {
+                    onContactsPermissionGranted()
+                }
+            }
+        )
+    }
+
+    override fun onGoToSettingsClick() {
+        openAppSettings()
+    }
+
 
     private fun syncContacts() {
         tryToExecute(

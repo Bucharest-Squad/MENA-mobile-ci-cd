@@ -21,7 +21,7 @@ private fun List<ContactDto>.toListOfContact(): List<Contact> {
     return map { it.toDomain() }
 }
 
-private fun ContactDto.toDomain(): Contact {
+fun ContactDto.toDomain(): Contact {
     return Contact(
         firstName = firstName.orEmpty(),
         lastName = lastName.orEmpty(),

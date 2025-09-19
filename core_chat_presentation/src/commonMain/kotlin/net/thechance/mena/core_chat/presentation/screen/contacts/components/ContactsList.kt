@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import app.cash.paging.compose.LazyPagingItems
+import app.cash.paging.compose.itemKey
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.could_not_load_contacts
 import mena.core_chat_presentation.generated.resources.ic_warning
@@ -69,7 +70,7 @@ fun ContactsList(
             ) {
                 items(
                     count = contacts.itemCount,
-                    key = { index -> "${contacts[index]?.phoneNumber}-$index" }
+                    key = contacts.itemKey { it.phoneNumber + it.displayName }
                 ) { index ->
                     val contact = contacts[index]
 
@@ -120,7 +121,7 @@ private fun EmptyContactsColumn() {
         )
         Text(
             text = stringResource(Res.string.refresh_contacts_message),
-            modifier = Modifier.padding(top = Theme.spacing._2, bottom = Theme.spacing._12),
+            modifier = Modifier.padding(top = Theme.spacing._2),
             textAlign = TextAlign.Center,
             style = Theme.typography.body.small,
             color = Theme.colorScheme.shadeSecondary

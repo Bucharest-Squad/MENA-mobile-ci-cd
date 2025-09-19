@@ -27,12 +27,13 @@ fun NoContactsSyncView(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        PhoneIcon()
         Text(
             text = stringResource(Res.string.sync_contacts_title),
             style = Theme.typography.title.small,
             color = Theme.colorScheme.shadePrimary,
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().padding(top = Theme.spacing._12)
         )
         Text(
             text = stringResource(Res.string.sync_contacts_desc),
