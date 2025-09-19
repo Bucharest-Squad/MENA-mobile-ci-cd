@@ -26,30 +26,31 @@ class LocationRepositoryImplTest {
     }
 
     @Test
-    fun `getCurrentLocationName SHOULD return formatted address WHEN the place is not valid`() = runTest {
-        // Given
-        val coordinates = Dukan.Coordinates(28.0, 29.0)
-        everySuspend { geocoder.placeOrNull(any()) } returns Place(
-            subAdministrativeArea = "Cairo",
-            administrativeArea = "Cairo Governorate",
-            country = "Egypt",
-            isoCountryCode = null,
-            coordinates = Coordinates(coordinates.latitude, coordinates.longitude),
-            name = "",
-            street = "",
-            postalCode = "",
-            locality = "",
-            subLocality = "",
-            thoroughfare = "",
-            subThoroughfare = ""
-        )
+    fun `getCurrentLocationName SHOULD return formatted address WHEN the place is not valid`() =
+        runTest {
+            // Given
+            val coordinates = Dukan.Coordinates(28.0, 29.0)
+            everySuspend { geocoder.placeOrNull(any()) } returns Place(
+                subAdministrativeArea = "Cairo",
+                administrativeArea = "Cairo Governorate",
+                country = "Egypt",
+                isoCountryCode = null,
+                coordinates = Coordinates(coordinates.latitude, coordinates.longitude),
+                name = "",
+                street = "",
+                postalCode = "",
+                locality = "",
+                subLocality = "",
+                thoroughfare = "",
+                subThoroughfare = ""
+            )
 
-        // When
-        val result = locationRepositoryImpl.getCurrentLocationName(coordinates)
+            // When
+            val result = locationRepositoryImpl.getCurrentLocationName(coordinates)
 
-        // Then
-        assertEquals("Cairo, Cairo Governorate, Egypt", result)
-    }
+            // Then
+            assertEquals("Cairo, Cairo Governorate, Egypt", result)
+        }
 
     @Test
     fun `getCurrentLocationName SHOULD return empty address WHEN the place is null`() = runTest {

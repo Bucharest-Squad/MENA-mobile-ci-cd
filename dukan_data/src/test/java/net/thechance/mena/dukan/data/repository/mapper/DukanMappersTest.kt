@@ -28,7 +28,7 @@ class DukanMappersTest {
         val request = dukan.toCreateDukanRequest()
 
         assertEquals("My Dukan", request.name)
-        assertEquals(listOf("cat1"), request.categoryIds)
+        assertEquals(setOf("cat1"), request.categoryIds)
         assertEquals("Baghdad", request.address)
         assertEquals(33.3, request.latitude)
         assertEquals(44.4, request.longitude)
@@ -77,7 +77,7 @@ class DukanMappersTest {
             dukanName = "My Dukan"
         )
 
-        val status = dto.toCategoryList()
+        val status = dto.toMyDukanStatus()
 
         assertEquals(Dukan.Status.PENDING, status.status)
         assertEquals("My Dukan", status.dukanName)

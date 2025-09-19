@@ -12,7 +12,7 @@ import net.thechance.mena.dukan.domain.entity.MyDukanStatus
 fun Dukan.toCreateDukanRequest(): CreateDukanRequest {
     return CreateDukanRequest(
         name = name,
-        categoryIds = categories.map { it.id },
+        categoryIds = categories.map { it.id }.toSet(),
         address = address,
         latitude = coordinates.latitude,
         longitude = coordinates.longitude,
@@ -41,7 +41,7 @@ fun List<DukanColorDto>.toColorsList(): List<Color> {
 }
 
 
-fun MyDukanStatusDto.toCategoryList(): MyDukanStatus {
+fun MyDukanStatusDto.toMyDukanStatus(): MyDukanStatus {
     return MyDukanStatus(
         status = Dukan.Status.valueOf(status),
         dukanName = dukanName

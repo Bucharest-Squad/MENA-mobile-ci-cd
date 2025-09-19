@@ -18,6 +18,7 @@ import net.thechance.mena.dukan.data.repository.dto.MyDukanStatusDto
 import net.thechance.mena.dukan.data.repository.mapper.toCategoryList
 import net.thechance.mena.dukan.data.repository.mapper.toColorsList
 import net.thechance.mena.dukan.data.repository.mapper.toCreateDukanRequest
+import net.thechance.mena.dukan.data.repository.mapper.toMyDukanStatus
 import net.thechance.mena.dukan.data.repository.util.safeApiCall
 import net.thechance.mena.dukan.domain.entity.Category
 import net.thechance.mena.dukan.domain.entity.Color
@@ -68,7 +69,7 @@ class DukanRepositoryImpl(
             client.get(
                 urlString = "$BASE_URL/statues"
             )
-        }.toCategoryList()
+        }.toMyDukanStatus()
     }
 
     override suspend fun uploadDukanImage(
