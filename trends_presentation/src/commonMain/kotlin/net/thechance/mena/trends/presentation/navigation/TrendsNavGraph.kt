@@ -20,7 +20,7 @@ import net.thechance.mena.trends.presentation.screen.manage_my_trends.ManageTren
 import net.thechance.mena.trends.presentation.screen.user_reel.UserReelScreen
 
 @Composable
-internal fun TrendsNavHost() {
+fun TrendsNavHost() {
 
    val navController = rememberNavController()
 
