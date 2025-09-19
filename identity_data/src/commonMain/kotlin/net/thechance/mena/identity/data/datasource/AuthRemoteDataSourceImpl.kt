@@ -2,10 +2,12 @@ package net.thechance.mena.identity.data.datasource
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.plugins.ServerResponseException
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.request.url
 import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import net.thechance.mena.identity.data.dto.auth.LoginRequestDto
 import net.thechance.mena.identity.data.dto.auth.LoginResponseDto
@@ -32,9 +34,15 @@ private suspend inline fun <reified T, reified R> HttpClient.postJson(
     requestDto: T,
     path: String
 ): R {
-    return this.post {
+    val post = this.post {
         url(path)
         contentType(ContentType.Application.Json)
         setBody(requestDto)
-    }.body()
+    }
+
+    if (post.status != HttpStatusCode.OK) {
+        throw ServerResponseException(post, post.body())
+    }
+
+    return post.body()
 }

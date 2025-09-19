@@ -34,5 +34,6 @@ fun handelAuthorizationException(
         is InvalidCredentialsException -> onError(
             ErrorState.WrongPassword(exception.message ?: "")
         )
+        else -> onError(ErrorState.SomethingWentWrong(exception.message))
     }
 }
