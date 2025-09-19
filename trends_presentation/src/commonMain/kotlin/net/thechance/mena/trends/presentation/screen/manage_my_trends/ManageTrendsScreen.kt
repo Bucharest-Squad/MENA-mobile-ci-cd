@@ -32,8 +32,8 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import coil3.compose.AsyncImage
-import mena.trends_presentation.generated.resources.back_arrow
 import mena.trends_presentation.generated.resources.Res
+import mena.trends_presentation.generated.resources.back_arrow
 import mena.trends_presentation.generated.resources.ic_arrow_left
 import mena.trends_presentation.generated.resources.manage_trends_title
 import mena.trends_presentation.generated.resources.profile_image_desc
@@ -60,8 +60,10 @@ fun ManageTrendsScreen(
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                is ManageTrendsUiEffect.NavigateBack -> navController.popBackStack()
-                is ManageTrendsUiEffect.NavigateToTrend -> navController.navigate(Route.ReelDetails(effect.reelId))
+                is ManageTrendsUiEffect.NavigateBack -> navController.navigateUp()
+
+                is ManageTrendsUiEffect.NavigateToTrend ->
+                    navController.navigate(Route.ReelDetails(effect.reelId))
             }
         }
     }
@@ -86,7 +88,7 @@ private fun ManageTrendsScreenContent(
     ) {
         Spacer(Modifier.height(8.dp))
         AppBar(
-            onLeadingClick = { Modifier.clickable { listener.onBackClick() } },
+            onLeadingClick = { listener.onBackClick() },
             leadingContent = {
                 MenaIcon(
                     painter = painterResource(Res.drawable.ic_arrow_left),
