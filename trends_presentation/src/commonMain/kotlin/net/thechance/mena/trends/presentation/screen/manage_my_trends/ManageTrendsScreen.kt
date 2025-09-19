@@ -129,7 +129,7 @@ private fun ManageTrendsScreenContent(
 @Composable
 private fun SegmentSection(
     reels: LazyPagingItems<ReelUiState>,
-    onTrendClick: (String) -> Unit,
+    onTrendClick: (id: String) -> Unit,
 ) {
     Column(
         modifier = Modifier.padding(Theme.spacing._16)
@@ -195,7 +195,7 @@ private fun SegmentSection(
 @Composable
 private fun TrendItem(
     item: ReelUiState,
-    onTrendClick: (String) -> Unit,
+    onTrendClick: (id: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(
