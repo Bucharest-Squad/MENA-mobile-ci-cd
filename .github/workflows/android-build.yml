@@ -10,7 +10,7 @@ on:
 jobs:
   detect:
     name: Detect Changes
-    uses: ./.github/workflows/shared/detect-changed-modules.yml
+    uses: ./.github/workflows/detect-changed-modules.yml
     secrets: inherit
 
   build:
