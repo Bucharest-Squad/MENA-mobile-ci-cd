@@ -1,8 +1,7 @@
 package net.thechance.mena.faith.data.mapper
 
 import net.thechance.mena.faith.data.database.AyahDto
-import net.thechance.mena.faith.data.database.SuraDto
-import net.thechance.mena.faith.data.database.SurahDbModel
+import net.thechance.mena.faith.data.database.SurahDto
 import net.thechance.mena.faith.domain.entity.Ayah
 import net.thechance.mena.faith.domain.entity.Surah
 
@@ -14,7 +13,7 @@ fun AyahDto.toAyah(): Ayah {
     )
 }
 
-fun SurahDbModel.toSurah(): Surah {
+fun SurahDto.toSurah(): Surah {
     val surahOrder = Surah.SurahOrder.entries.first { it.order == order }
     return Surah(
         id = order,

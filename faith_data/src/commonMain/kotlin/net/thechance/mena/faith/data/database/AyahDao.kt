@@ -17,5 +17,5 @@ interface AyahDao {
     GROUP BY sura_no, sura_name_en, sura_name_ar
     ORDER BY sura_no ASC
 """)
-    suspend fun getAllSur(): List<SurahDbModel>
+    suspend fun getAllSur(): List<SurahDto>
 }
