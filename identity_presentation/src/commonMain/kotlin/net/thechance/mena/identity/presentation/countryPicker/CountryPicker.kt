@@ -4,8 +4,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -49,7 +52,10 @@ fun ScaffoldScope.CountryPicker(
                     .fillMaxWidth()
                     .background(Theme.colorScheme.background.surface)
                     .padding(horizontal = 16.dp, vertical = 12.dp)
-                    .padding(bottom = 12.dp)
+                    .padding(
+                        bottom = WindowInsets.navigationBars.asPaddingValues()
+                            .calculateBottomPadding()
+                    )
             ) {
                 PrimaryButton(
                     text = stringResource(Res.string.confirm),
