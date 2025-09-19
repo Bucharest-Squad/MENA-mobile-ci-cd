@@ -4,7 +4,7 @@ import net.thechance.mena.trends.domain.util.Logger
 import org.koin.core.annotation.Single
 
 @Single(binds = [Logger::class])
-class LoggerDefault : Logger {
+internal class LoggerDefault : Logger {
     override fun logError(tag: String, message: String) {
         logErrorPlatform(tag, message)
     }

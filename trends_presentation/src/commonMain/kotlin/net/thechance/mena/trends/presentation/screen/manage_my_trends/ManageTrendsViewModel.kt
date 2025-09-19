@@ -14,7 +14,7 @@ import org.koin.core.annotation.Provided
 
 
 @KoinViewModel
-class ManageTrendsViewModel(
+internal class ManageTrendsViewModel(
     @Provided private val repository: ReelsRepository,
 ) : BaseViewModel<ManageTrendsScreenState,
         ManageTrendsUiEffect>(ManageTrendsScreenState()),

@@ -8,7 +8,7 @@ import org.koin.android.annotation.KoinViewModel
 import org.koin.core.annotation.Provided
 
 @KoinViewModel
-class CategoryPickViewModel(
+internal class CategoryPickViewModel(
     @Provided private val repository: CategoryRepository
 ) : BaseViewModel<CategoryPickScreenState, CategoryPickScreenEffect>(
     initialState = CategoryPickScreenState()
@@ -22,7 +22,7 @@ class CategoryPickViewModel(
         tryToExecute(
             block = { repository.getAllCategories() },
             onSuccess = ::handleLoadCategoriesSuccess,
-            onError = {},
+            onError = { /* TODO: Handle error */ },
             onStart = ::startLoading,
             onEnd = ::endLoading
         )

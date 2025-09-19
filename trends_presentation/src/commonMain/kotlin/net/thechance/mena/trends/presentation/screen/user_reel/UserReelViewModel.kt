@@ -6,7 +6,7 @@ import org.koin.android.annotation.KoinViewModel
 import org.koin.core.annotation.Provided
 
 @KoinViewModel
-class UserReelViewModel(
+internal class UserReelViewModel(
     @Provided private val reelsRepository: ReelsRepository
 ) : BaseViewModel<UserReelState, UserReelEffect>(UserReelState()), UserReelInteractionListener {
 

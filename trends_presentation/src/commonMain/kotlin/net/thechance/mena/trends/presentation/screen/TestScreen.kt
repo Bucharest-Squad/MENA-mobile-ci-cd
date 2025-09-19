@@ -14,7 +14,7 @@ import net.thechance.mena.trends.presentation.navigation.LocalNavController
 import net.thechance.mena.trends.presentation.navigation.Route
 
 @Composable
-fun TestScreen(){
+internal fun TestScreen(){
     val navController = LocalNavController.current
 
     Column(

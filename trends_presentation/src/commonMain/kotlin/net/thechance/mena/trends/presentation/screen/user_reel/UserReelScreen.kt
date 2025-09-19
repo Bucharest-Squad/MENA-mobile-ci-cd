@@ -62,7 +62,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun UserReelScreen(
+internal fun UserReelScreen(
     viewModel: UserReelViewModel = koinViewModel()
 ) {
 

@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 @Composable
-fun <T> ObserveAsEffect(
+internal fun <T> ObserveAsEffect(
     effects: Flow<T>,
     onEvent: suspend (T) -> Unit,
 ) {

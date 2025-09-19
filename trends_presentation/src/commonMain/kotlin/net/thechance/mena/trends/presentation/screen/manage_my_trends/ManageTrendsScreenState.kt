@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.flowOf
 import org.jetbrains.compose.resources.StringResource
 
 
-data class ManageTrendsScreenState(
+internal data class ManageTrendsScreenState(
     val reels: Flow<PagingData<ReelUiState>> = flowOf(),
     val userName: String = "",
     val profileImageUrl: String = "",

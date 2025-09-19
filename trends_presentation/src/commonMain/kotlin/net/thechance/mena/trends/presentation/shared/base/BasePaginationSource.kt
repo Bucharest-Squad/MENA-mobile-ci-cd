@@ -9,7 +9,7 @@ import androidx.paging.cachedIn
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 
-class BasePagingSource<T : Any>(
+internal class BasePagingSource<T : Any>(
     private val onError: (Throwable) -> Unit = {},
     private val fetch: suspend (Int) -> List<T>
 ) : PagingSource<Int, T>() {

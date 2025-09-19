@@ -26,7 +26,7 @@ import net.thechance.mena.trends.presentation.shared.model.Selectable
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun CategoryItem(
+internal fun CategoryItem(
     category: Selectable<CategoryUiState>,
     modifier: Modifier = Modifier,
     onClick: (String) -> Unit

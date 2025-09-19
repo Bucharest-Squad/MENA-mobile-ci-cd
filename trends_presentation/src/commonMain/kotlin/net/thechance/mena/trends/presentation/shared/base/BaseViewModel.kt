@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import net.thechance.mena.trends.presentation.shared.util.throttleFirst
 
-abstract class BaseViewModel<State, Effect>(
+internal abstract class BaseViewModel<State, Effect>(
     initialState: State
 ) : ViewModel() {
 

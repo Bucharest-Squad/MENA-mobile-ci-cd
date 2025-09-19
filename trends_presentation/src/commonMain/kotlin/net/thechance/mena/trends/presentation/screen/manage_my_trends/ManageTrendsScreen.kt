@@ -51,7 +51,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import kotlin.math.floor
 
 @Composable
-fun ManageTrendsScreen(
+internal fun ManageTrendsScreen(
     viewModel: ManageTrendsViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsState()
