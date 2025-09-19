@@ -18,7 +18,7 @@ internal class MainContainerViewModel(
         tryToExecute(
             block = { repository.isCategoriesAlreadySelectedByUser() },
             onSuccess = ::handleGetIsUserCategorySet,
-            onError = { /* TODO: Handle error */ }
+            onError = { errorState -> updateState { copy(error = errorState) } }
         )
     }
 
