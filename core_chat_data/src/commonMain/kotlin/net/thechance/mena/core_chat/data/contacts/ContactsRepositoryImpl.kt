@@ -15,13 +15,13 @@ import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.util.reflect.typeInfo
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import net.thechance.mena.core_chat.data.contacts.dto.ContactDto
 import net.thechance.mena.core_chat.data.network.ApiConstants.CONTACTS_ENDPOINT
 import net.thechance.mena.core_chat.data.network.ApiConstants.SYNC_CONTACTS_ENDPOINT
 import net.thechance.mena.core_chat.data.shared.BaseRepository
-import net.thechance.mena.core_chat.data.shared.dto.BaseResponseDto
 import net.thechance.mena.core_chat.data.shared.dto.PagedDataDto
 import net.thechance.mena.core_chat.domain.entity.Contact
 import net.thechance.mena.core_chat.domain.exception.ContactSyncFailedException
@@ -39,22 +39,26 @@ class ContactsRepositoryImpl(
 ) : ContactsRepository, BaseRepository {
 
     override suspend fun getUserContacts(pageNumber: Int, pageSize: Int): PagedData<Contact> {
-        return tryNetworkCall(
-            defaultException = { ContactsFetchFailedException("Couldn't get user contacts", it) }) {
+        return tryNetworkCall<PagedDataDto<ContactDto>>(
+            defaultException = { ContactsFetchFailedException("Couldn't get user contacts", it) },
+            bodyType = typeInfo<PagedDataDto<ContactDto>>()
+        ) {
             client.get(CONTACTS_ENDPOINT) {
-                parameter("pageNumber", pageNumber)
-                parameter("pageSize", pageSize)
-            }.body<BaseResponseDto<PagedDataDto<ContactDto>>>()
+                parameter(PAGE_NUMBER, pageNumber)
+                parameter(PAGE_SIZE, pageSize)
+            }
         }.toPagedListOfContacts()
     }
 
     override suspend fun syncContacts() {
-        tryNetworkCall(
-            defaultException = { ContactSyncFailedException("Couldn't sync user contacts", it) }) {
+        tryNetworkCall<Unit>(
+            defaultException = { ContactSyncFailedException("Couldn't sync user contacts", it) },
+            bodyType = typeInfo<Unit>()
+        ) {
             val contacts = getDeviceContacts()
             client.post(SYNC_CONTACTS_ENDPOINT) {
                 setBody(contacts.toListOfContactCreationRequestDto())
-            }.body<BaseResponseDto<Unit>>()
+            }
         }
     }
 
@@ -84,6 +88,7 @@ class ContactsRepositoryImpl(
 
     private companion object {
         val USER_SYNCED_STATE_KEY = booleanPreferencesKey("user_synced_state_key")
-
+        const val PAGE_SIZE = "size"
+        const val PAGE_NUMBER = "page"
     }
 }
