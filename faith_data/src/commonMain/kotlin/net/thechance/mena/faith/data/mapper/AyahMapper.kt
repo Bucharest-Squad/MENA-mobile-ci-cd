@@ -1,16 +1,16 @@
 package net.thechance.mena.faith.data.mapper
 
-import net.thechance.mena.faith.data.database.AyahDto
+import net.thechance.mena.faith.data.database.SimpleAyahDto
 import net.thechance.mena.faith.data.database.SurahDto
 import net.thechance.mena.faith.domain.entity.Ayah
 import net.thechance.mena.faith.domain.entity.Surah
 
-fun AyahDto.toAyah(): Ayah {
+fun SimpleAyahDto.toAyah(): Ayah {
     return Ayah(
-        number = this.number,
+        number = this.number ?: 1,
         surahId = this.id ?: 1,
-        displayContent = text,
-        plainTextContent = ayaTextEmlaey
+        displayContent = text ?: "",
+        plainTextContent = ayaTextEmlaey ?: ""
     )
 }
 

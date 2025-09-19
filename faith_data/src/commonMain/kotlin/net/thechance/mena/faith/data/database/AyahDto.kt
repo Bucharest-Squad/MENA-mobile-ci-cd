@@ -2,9 +2,13 @@ package net.thechance.mena.faith.data.database
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "ayat")
+@Entity(
+    tableName = "ayat",
+    indices = [Index(value = ["sura_no"])]
+)
 data class AyahDto(
     @PrimaryKey val id: Int?,
     @ColumnInfo(name = "sura_no") val surahNumber: Int,
