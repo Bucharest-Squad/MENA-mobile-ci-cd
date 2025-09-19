@@ -11,6 +11,9 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.mokkery)
+
+
 }
 
 kotlin {
@@ -78,17 +81,12 @@ kotlin {
 
         }
     }
-    sourceSets.androidUnitTest.dependencies {
-        implementation(kotlin("test"))
-        implementation(libs.junit.jupiter)
-        implementation(libs.mockk)
-        implementation(libs.androidx.paging.testing)
-        implementation(libs.turbine)
-        implementation(libs.kotlinx.coroutines.test)
-
-    }
+    sourceSets.commonTest.dependencies {
+        implementation(libs.kotlin.test)
+        implementation(libs.assertk)
+        implementation(libs.test.kotlin.coroutines)
+        implementation(libs.test.turbine)    }
 }
-
 
 android {
     namespace = "net.thechance.mena.core_chat.presentation"

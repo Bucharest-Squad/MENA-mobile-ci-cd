@@ -34,6 +34,9 @@ mockk = "1.13.4"
 junitJupiterApi = "5.9.2"
 pagingRuntime = "3.3.6"
 turbine = "1.2.1"
+mokkery = "2.10.0"
+test-turbine = "1.2.1"
+kotlin-coroutines = "1.10.2"
 
 room = "2.8.0"
 sqlite = "2.6.0"
@@ -43,7 +46,6 @@ kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotl
 kotlin-test-annotations-common = { module = "org.jetbrains.kotlin:kotlin-test-annotations-common", version.ref = "kotlin" }
 kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { module = "junit:junit", version.ref = "junit" }
-assertk = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assertk" }
 
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
 androidx-testExt-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-testExt" }
@@ -96,11 +98,11 @@ paging-common = { module = "app.cash.paging:paging-common", version.ref = "pagin
 paging-compose-common = { module = "app.cash.paging:paging-compose-common", version.ref = "pagingComposeCommon" }
 
 #test
-mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
-junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiterApi" }
 androidx-paging-testing = { module = "androidx.paging:paging-testing", version.ref = "pagingRuntime" }
-turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
-
+# Testing
+test-kotlin-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlin-coroutines" }
+test-turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "test-turbine" }
+assertk = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assertk" }
 # Room
 androidx-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
@@ -116,6 +118,8 @@ kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref =
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 room = { id = "androidx.room", version.ref = "room" }
+mokkery = { id = "dev.mokkery", version.ref = "mokkery" }
+
 
 [bundles]
 ktor = [
