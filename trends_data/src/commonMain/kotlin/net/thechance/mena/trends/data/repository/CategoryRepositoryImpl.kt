@@ -1,7 +1,6 @@
 package net.thechance.mena.trends.data.repository
 
 import io.ktor.client.HttpClient
-import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -20,24 +19,22 @@ import org.koin.core.annotation.Single
 @Single(binds = [CategoryRepository::class])
 class CategoryRepositoryImpl(
     @Provided private val httpClient: HttpClient
-): CategoryRepository {
+) : CategoryRepository {
 
     override suspend fun getAllCategories(): List<Category> {
-        return safeApiCall {
-            httpClient.get("/$TRENDS/$CATEGORY").body<CategoryResponseDto>()
-                .categories.toEntityList()
-        }
+        return safeApiCall<CategoryResponseDto> {
+            httpClient.get("/$TRENDS/$CATEGORY")
+        }.categories.toEntityList()
     }
 
     override suspend fun isCategoriesAlreadySelectedByUser(): Boolean {
-        return safeApiCall {
+        return safeApiCall<CategoryResponseDto> {
             httpClient.get("/$TRENDS/$CATEGORY") // TODO: put string of end point
-                .body<CategoryResponseDto>().categories.isNotEmpty()
-        }
+        }.categories.isNotEmpty()
     }
 
     override suspend fun updateUserInterestedCategories(categoriesIds: List<String>) {
-        safeApiCall {
+        safeApiCall<Unit> {
             httpClient.post("/$TRENDS/$INTERESTS") {
                 setBody(SubmitInterestsRequestDto(categoriesIds))
             }
