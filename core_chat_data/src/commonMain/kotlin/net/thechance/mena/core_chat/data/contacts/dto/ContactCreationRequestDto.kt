@@ -5,8 +5,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ContactCreationRequestDto(
-    @SerialName("name")
-    val name: String,
+    @SerialName("firstName")
+    val firstName: String,
+    @SerialName("lastName")
+    val lastName: String,
     @SerialName("phoneNumber")
     val phone: String
 )

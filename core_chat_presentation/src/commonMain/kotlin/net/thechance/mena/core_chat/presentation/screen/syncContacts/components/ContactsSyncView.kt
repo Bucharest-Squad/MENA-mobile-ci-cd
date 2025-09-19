@@ -10,14 +10,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import mena.core_chat_presentation.generated.resources.Res
-import mena.core_chat_presentation.generated.resources.ic_phone_back
 import mena.core_chat_presentation.generated.resources.sync_contacts
 import mena.core_chat_presentation.generated.resources.sync_contacts_desc
 import mena.core_chat_presentation.generated.resources.sync_contacts_title
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -29,12 +27,13 @@ fun NoContactsSyncView(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        PhoneIcon()
         Text(
             text = stringResource(Res.string.sync_contacts_title),
             style = Theme.typography.title.small,
             color = Theme.colorScheme.shadePrimary,
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().padding(top = Theme.spacing._12)
         )
         Text(
             text = stringResource(Res.string.sync_contacts_desc),
@@ -47,7 +46,6 @@ fun NoContactsSyncView(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(Res.string.sync_contacts),
             contentPadding = PaddingValues(vertical =  Theme.spacing._12, horizontal =  Theme.spacing._16),
-            trailingIcon = painterResource(Res.drawable.ic_phone_back), // TODO: remove it, it's here because it's required and will be removed later
             onClick = { onSyncClick() },
         )
     }

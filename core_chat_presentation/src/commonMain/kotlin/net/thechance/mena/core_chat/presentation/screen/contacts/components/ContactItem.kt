@@ -40,7 +40,6 @@ fun ContactItem(
     ) {
         CircularAvatar(
             contactImageUri = contact.imageUri,
-            contactInitials = contact.initials,
             size = 48.dp
         )
         Column(
