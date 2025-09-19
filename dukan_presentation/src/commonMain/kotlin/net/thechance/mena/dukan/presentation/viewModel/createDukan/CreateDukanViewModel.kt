@@ -123,6 +123,10 @@ class CreateDukanViewModel(
         }
     }
 
+    override fun onDismissSnackBar() {
+        updateState { copy(showSnackBar = false) }
+    }
+
     override fun onImageCrop(image: ImageBitmap) {
         updateState {
             copy(
@@ -145,8 +149,7 @@ class CreateDukanViewModel(
     }
 
     override fun onNameChanged(name: String) {
-        val limitedName = if (name.length > 40) name.take(40) else name
-        updateState { copy(name = limitedName, showSnackBar = false) }
+        updateState { copy(name = limitNameLength(name), showSnackBar = false) }
         updateNextButtonEnableState()
     }
 
@@ -297,6 +300,10 @@ class CreateDukanViewModel(
         )
     }
 
+    private fun limitNameLength(name: String): String {
+        return if (name.length > MAX_NAME_LENGTH) name.take(MAX_NAME_LENGTH) else name
+    }
+
     private fun handleNameValidationResult(isTaken: Boolean) {
         val current = state.value.currentStep
         updateNameValidationState(isTaken, current)
@@ -352,5 +359,6 @@ class CreateDukanViewModel(
     private companion object {
         private const val MIN_CATEGORIES = 1
         private const val MAX_CATEGORIES = 3
+        private const val MAX_NAME_LENGTH = 40
     }
 }
