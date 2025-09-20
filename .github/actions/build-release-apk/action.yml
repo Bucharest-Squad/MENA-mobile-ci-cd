@@ -95,8 +95,6 @@ runs:
         BUILD_TOOLS_VERSION: "35.0.0"
 
     - name: Set signed APK path to env
-      env:
-        APK_VERSION: ${{ env.APK_VERSION }}
       run: |
         if [[ "${{ inputs.build-type }}" == "Production" ]]; then
           VERSION_NAME="Mena"
