@@ -1,4 +1,4 @@
-package net.thechance.mena.wallet.data.utils
+package net.thechance.mena.wallet.data.exceptions
 
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngineConfig

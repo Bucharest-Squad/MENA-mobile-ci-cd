@@ -1,4 +1,4 @@
-package net.thechance.mena.wallet.data.repository.balance.dto
+package net.thechance.mena.wallet.data.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
