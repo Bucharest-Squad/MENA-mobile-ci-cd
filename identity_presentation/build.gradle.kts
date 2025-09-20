@@ -5,9 +5,12 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.devMokkery)
 }
 
 kotlin {
+
+
     androidTarget {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
@@ -25,12 +28,13 @@ kotlin {
     }
 
     sourceSets {
-        androidMain.dependencies {
+         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
-        }
+         }
+
         commonMain.dependencies {
             implementation(projects.identityDomain)
             implementation(projects.designSystem)
@@ -43,6 +47,11 @@ kotlin {
 
             implementation(libs.bundles.koin)
             implementation(libs.bundles.voyager)
+        }
+        commonTest.dependencies {
+            implementation(libs.bundles.common.test)
+
+
         }
         iosMain.dependencies {
 
