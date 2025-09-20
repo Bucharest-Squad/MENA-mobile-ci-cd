@@ -19,6 +19,7 @@ kotlin {
 
     sourceSets {
         androidMain.dependencies {
+            implementation(libs.ktor.client.cio)
         }
         commonMain.dependencies {
             implementation(libs.koin.core)
@@ -26,10 +27,12 @@ kotlin {
             implementation(libs.junit)
             implementation(libs.kotlin.test)
             implementation(libs.kotlinx.coroutines.test)
-            implementation(libs.ktor.client.mock)
             // GeoCoder
             implementation(libs.bundles.geoCoder)
+            // Ktor
             implementation(libs.bundles.ktor)
+            implementation(libs.ktor.client.mock)
+            implementation(libs.ktor.client.auth)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -39,7 +42,7 @@ kotlin {
             implementation(libs.mokkery.core)
         }
         iosMain.dependencies {
-
+            implementation(libs.ktor.client.darwin)
         }
     }
 }
