@@ -92,29 +92,33 @@ fun createRepository(
 fun createHttpClient(
     contactsResponse: (suspend MockRequestHandleScope.() -> HttpResponseData)? = null,
     syncContactsResponse: (suspend MockRequestHandleScope.() -> HttpResponseData)? = null
-) = HttpClient(MockEngine { request ->
-    when (request.url.encodedPath) {
-        CONTACTS_ENDPOINT -> if (contactsResponse == null)
-            defaultContactsResponse()
-        else
-            contactsResponse()
+): HttpClient {
+    val engine = MockEngine { request ->
+        when (request.url.encodedPath) {
+            CONTACTS_ENDPOINT -> if (contactsResponse == null)
+                defaultContactsResponse()
+            else
+                contactsResponse()
 
-        SYNC_CONTACTS_ENDPOINT -> if (syncContactsResponse == null)
-            defaultSyncContactsResponse()
-        else
-            syncContactsResponse()
+            SYNC_CONTACTS_ENDPOINT -> if (syncContactsResponse == null)
+                defaultSyncContactsResponse()
+            else
+                syncContactsResponse()
 
-        else -> respond(
-            content = "",
-            status = HttpStatusCode.BadRequest,
-            headers = jsonHeaders
-        )
+            else -> respond(
+                content = "",
+                status = HttpStatusCode.BadRequest,
+                headers = jsonHeaders
+            )
+        }
     }
-}) {
-    install(ContentNegotiation) {
-        json(jsonSerialization)
-    }
-    install(DefaultRequest) {
-        contentType(ContentType.Application.Json)
+
+    return HttpClient(engine) {
+        install(ContentNegotiation) {
+            json(jsonSerialization)
+        }
+        install(DefaultRequest) {
+            contentType(ContentType.Application.Json)
+        }
     }
 }

@@ -12,7 +12,7 @@ import kotlinx.io.IOException
 import net.thechance.mena.core_chat.data.contacts.dto.ContactDto
 import net.thechance.mena.core_chat.data.contacts.fakes.FakeContactsProvider
 import net.thechance.mena.core_chat.data.contacts.fakes.FakeDataStore
-import net.thechance.mena.core_chat.data.contacts.fakes.createSamplePagedData
+import net.thechance.mena.core_chat.data.contacts.fakes.createPagedDataDto
 import net.thechance.mena.core_chat.data.contacts.fakes.sampleContact
 import net.thechance.mena.core_chat.data.contacts.fakes.sampleDeviceContact
 import net.thechance.mena.core_chat.data.shared.dto.PagedDataDto
@@ -332,7 +332,16 @@ class ContactsRepositoryImplTest {
 
     @Test
     fun `should return right pageSize when getUserContacts is called and response contains data`() = runTest {
-        val page1Contacts = createSamplePagedData(
+        val page1Contacts = createPagedDataDto(
+            data = List(10) { i ->
+                ContactDto(
+                    firstName = "Page1",
+                    lastName = "User$i",
+                    phoneNumber = "010000000$i",
+                    isMenaUser = false,
+                    imageUrl = null
+                )
+            },
             pageNumber = 1,
             pageSize = 10,
             totalItems = 15,
