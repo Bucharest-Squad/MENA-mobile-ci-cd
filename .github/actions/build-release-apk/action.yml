@@ -52,12 +52,25 @@ runs:
       run: chmod +x ./gradlew
       shell: bash
 
+    - name: get version code and version name
+      shell: bash
+      run:
+        VERSION_MAJOR=$(grep VERSION_MAJOR gradle.properties | cut -d'=' -f2 | xargs)
+        VERSION_MINOR=$(grep VERSION_MINOR gradle.properties | cut -d'=' -f2 | xargs)
+        RUN_NUMBER=${{ github.run_number }}
+        
+        VERSION_CODE=$(( VERSION_MAJOR * 10000 + VERSION_MINOR * 100 + RUN_NUMBER ))
+        APK_VERSION=${VERSION_MAJOR}.${VERSION_MINOR}.${RUN_NUMBER}
+        
+        echo "APK_VERSION=$APK_VERSION" >> $GITHUB_ENV
+        echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_ENV
+
     - name: Version Bump
       uses: chkfung/android-version-actions@v1.2.3
       with:
         gradlePath: composeApp/build.gradle.kts
-        versionCode: ${{ github.run_number }}
-        versionName: 1.0.${{ github.run_number }}
+        versionCode: ${{ env.VERSION_CODE }}
+        versionName: ${{ env.APK_VERSION }}
 
     - name: convert build type to lowercase
       id: convert
@@ -82,6 +95,8 @@ runs:
         BUILD_TOOLS_VERSION: "35.0.0"
 
     - name: Set signed APK path to env
+      env:
+        APK_VERSION: ${{ env.APK_VERSION }}
       run: |
         if [[ "${{ inputs.build-type }}" == "Production" ]]; then
           VERSION_NAME="Mena"
@@ -89,9 +104,7 @@ runs:
           VERSION_NAME="Mena-${{ inputs.build-type }}"
         fi
         
-        VERSION_MAJOR=$(grep VERSION_MAJOR gradle.properties | cut -d'=' -f2 | xargs)
-        VERSION_MINOR=$(grep VERSION_MINOR gradle.properties | cut -d'=' -f2 | xargs)
-        APK_NAME="${VERSION_NAME}-v${VERSION_MAJOR}.${VERSION_MINOR}.${{ github.run_number }}"
+        APK_NAME="${VERSION_NAME}-v${APK_VERSION}"
         
         mv composeApp/build/outputs/apk/${{ steps.convert.outputs.build_type_lower }}/release/composeApp-${{ steps.convert.outputs.build_type_lower }}-release-unsigned-signed.apk \
            composeApp/build/outputs/apk/${{ steps.convert.outputs.build_type_lower }}/release/$APK_NAME.apk

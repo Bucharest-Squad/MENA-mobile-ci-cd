@@ -38,8 +38,8 @@ jobs:
           slack_token: ${{ secrets.SLACK_BOT_TOKEN }}
           channel_id: ${{ secrets.SLACK_PRODUCTION_CHANNEL_ID }}
           file_path: ${{ env.SIGNED_APK_PATH }}
-          file_name: "app-release-${{ github.run_number }}.apk"
+          file_name: "${{ env.APK_NAME }}.apk"
           initial_comment: |
             📲 *New Production APK Build Released*
-            *Version:* `1.0.${{ github.run_number }}`
+            *Version:* `${{env.APK_VERSION}}`
             *File:* `${{ env.APK_NAME }}`
