@@ -14,7 +14,6 @@ junit = "4.13.2"
 
 #kotlin
 kotlin = "2.2.10"
-kotlin-coroutines-core = "1.10.2"
 kotlinxDatetime = "0.7.1"
 navigationCompose = "2.9.0-rc02"
 ksp = "2.2.10-RC2-2.0.2"
@@ -23,6 +22,7 @@ koin-annotations = "2.1.0"
 kotlinx-serialization = "1.6.3"
 ktor = "3.2.3"
 datastorePreferences = "1.1.7"
+kotlinxCoroutinesCore = "1.10.2"
 coilCompose = "3.0.0"
 paging = "3.4.0-alpha04"
 contacts-provider = "1.1.12"
@@ -30,6 +30,7 @@ moko = "0.18.0"
 pagingComposeCommon = "3.3.0-alpha02-0.4.0"
 room = "2.8.0"
 sqlite = "2.6.0"
+pagingRuntime = "3.3.6"
 
 #Test
 mokkery = "2.10.0"
@@ -77,9 +78,10 @@ moko-permissions-compose = { module = "dev.icerock.moko:permissions-compose", ve
 
 
 # Testing
-test-kotlin-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlin-coroutines-core" }
+test-kotlin-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesCore" }
 test-turbine = { module = "app.cash.turbine:turbine", version.ref = "test-turbine" }
 assertk = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assertk" }
+androidx-paging-testing = { module = "androidx.paging:paging-testing", version.ref = "pagingRuntime" }
 
 #ktor
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
@@ -110,6 +112,7 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 room = { id = "androidx.room", version.ref = "room" }
 mokkery = { id = "dev.mokkery", version.ref = "mokkery" }
+
 
 [bundles]
 ktor = [
