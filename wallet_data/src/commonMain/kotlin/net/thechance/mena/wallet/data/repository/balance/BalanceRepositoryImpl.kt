@@ -13,10 +13,11 @@ class BalanceRepositoryImpl(
 
     override suspend fun getBalance(): Double {
         return safeApiCall<BalanceDto> {
-            networkClient.get("${WALLET_PATH}/balance")
+            networkClient.get(BALANCE_PATH)
         }.balance
     }
+
     private companion object {
-        const val WALLET_PATH = "wallet"
+        const val BALANCE_PATH = "wallet/balance"
     }
 }
