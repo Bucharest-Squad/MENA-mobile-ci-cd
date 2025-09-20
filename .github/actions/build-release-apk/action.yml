@@ -54,7 +54,7 @@ runs:
 
     - name: get version code and version name
       shell: bash
-      run:
+      run: |
         VERSION_MAJOR=$(grep VERSION_MAJOR gradle.properties | cut -d'=' -f2 | xargs)
         VERSION_MINOR=$(grep VERSION_MINOR gradle.properties | cut -d'=' -f2 | xargs)
         RUN_NUMBER=${{ github.run_number }}
