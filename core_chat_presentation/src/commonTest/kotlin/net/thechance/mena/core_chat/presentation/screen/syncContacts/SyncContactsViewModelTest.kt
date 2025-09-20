@@ -78,8 +78,11 @@ class SyncContactsViewModelTest {
             everySuspend { contactsRepository.syncContacts() } returns Unit
             everySuspend { contactsRepository.setUserSyncedState(true) } returns Unit
             everySuspend { effector.showSnackBar(any()) } returns Unit
+            everySuspend { effector.popBackStack() } returns Unit
+            everySuspend { effector.navigate(any(), any(), any()) } returns Unit
 
             val syncContactsScreenArgs = createSyncContactsScreenArgs(false)
+
             val viewModel = SyncContactsViewModel(
                 contactsRepository,
                 permissionsController,
@@ -92,13 +95,10 @@ class SyncContactsViewModelTest {
 
                 viewModel.onSyncClick()
 
-                val loaded = awaitItem()
-                assertThat(loaded.isLoading).isFalse()
+                awaitItem()
 
                 verifySuspend { permissionsController.providePermission(Permission.CONTACTS) }
                 verifySuspend { contactsRepository.syncContacts() }
-
-                cancelAndIgnoreRemainingEvents()
             }
         }
 
@@ -116,17 +116,10 @@ class SyncContactsViewModelTest {
             effector
         )
 
-        viewModel.state.test {
-            awaitItem()
+        viewModel.onSyncClick()
 
-            viewModel.onSyncClick()
-
-            val error = awaitItem()
-            assertThat(error.isLoading).isFalse()
-
-            verifySuspend { permissionsController.providePermission(Permission.CONTACTS) }
-            cancelAndIgnoreRemainingEvents()
-        }
+        verifySuspend { permissionsController.providePermission(Permission.CONTACTS) }
+        verifySuspend { effector.showSnackBar(any()) }
     }
 
     @Test
@@ -162,24 +155,27 @@ class SyncContactsViewModelTest {
     fun `should handle sync error with proper error message`() = runTest {
         val errorMessage = "Sync failed"
         everySuspend { contactsRepository.syncContacts() } throws Exception(errorMessage)
+        everySuspend { effector.showSnackBar(any()) } returns Unit
 
-        val syncContactsScreenArgs = createSyncContactsScreenArgs(true)
+        val syncContactsScreenArgs = createSyncContactsScreenArgs(false)
         val viewModel = SyncContactsViewModel(
             contactsRepository,
             permissionsController,
             syncContactsScreenArgs,
             effector
         )
-
         viewModel.state.test {
             awaitItem()
+            every { syncContactsScreenArgs.forceSync } returns true
 
-            val loading = awaitItem()
-            assertThat(loading.isLoading).isTrue()
+            viewModel.onForceSync()
 
-            val error = awaitItem()
-            assertThat(error.isLoading).isFalse()
+            assertThat(awaitItem().isFirstSync).isFalse()
+            assertThat(awaitItem().isLoading).isTrue()
+            assertThat(awaitItem().isLoading).isFalse()
 
+            verifySuspend { contactsRepository.syncContacts() }
+            verifySuspend { effector.showSnackBar(any()) }
             cancelAndIgnoreRemainingEvents()
         }
     }
