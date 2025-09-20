@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.text.KeyboardOptions
@@ -15,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -68,6 +70,12 @@ class LoginScreen : BaseScreen<
         state: LoginScreenUIState,
         listener: LoginScreenInteractionListener,
     ) {
+        val keyboardController = LocalSoftwareKeyboardController.current
+        LaunchedEffect(state.showCountryBottomSheet) {
+            if (state.showCountryBottomSheet)
+                keyboardController?.hide()
+        }
+
         Scaffold(
             overlays = {
                 bottomSheet(state.showCountryBottomSheet) {
@@ -149,6 +157,7 @@ class LoginScreen : BaseScreen<
                             .padding(bottom = 12.dp)
                     )
                     AuthPrompt(
+                        modifier = Modifier.imePadding(),
                         message = stringResource(Res.string.register_prompt),
                         actionLabel = stringResource(Res.string.register_now),
                         onActionClick = listener::onRegisterClicked
