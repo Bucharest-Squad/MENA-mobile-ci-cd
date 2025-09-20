@@ -91,7 +91,6 @@ runs:
         
         VERSION_MAJOR=$(grep VERSION_MAJOR gradle.properties | cut -d'=' -f2 | xargs)
         VERSION_MINOR=$(grep VERSION_MINOR gradle.properties | cut -d'=' -f2 | xargs)
-        
         APK_NAME="${VERSION_NAME}-v${VERSION_MAJOR}.${VERSION_MINOR}.${{ github.run_number }}"
         
         mv composeApp/build/outputs/apk/${{ steps.convert.outputs.build_type_lower }}/release/composeApp-${{ steps.convert.outputs.build_type_lower }}-release-unsigned-signed.apk \
