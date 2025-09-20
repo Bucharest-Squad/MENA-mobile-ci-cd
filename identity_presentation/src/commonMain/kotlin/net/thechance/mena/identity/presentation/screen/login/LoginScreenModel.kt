@@ -22,7 +22,7 @@ class LoginScreenModel(
             function = {
                 loginUseCase.login(
                     state.value.countryPickerUIState.currentCountry.callingCode,
-                    state.value.phoneNumber,
+                    state.value.phoneNumber.removePrefix("0"),
                     state.value.password
                 )
             },
@@ -39,6 +39,15 @@ class LoginScreenModel(
                 }
             }
         )
+    }
+
+    private fun changeIsLoginEnabled() {
+        updateState {
+            val countryCode = countryPickerUIState.currentCountry.callingCode
+            val mobileNumberValid = loginUseCase.isMobileNumberValid(countryCode, phoneNumber)
+            val passwordValid = loginUseCase.isPasswordValid(password)
+            copy(isLoginEnabled = passwordValid && mobileNumberValid)
+        }
     }
 
     override fun onRegisterClicked() {
@@ -62,10 +71,12 @@ class LoginScreenModel(
 
     override fun onPhoneChanged(phone: String) {
         updateState { copy(phoneNumber = phone) }
+        changeIsLoginEnabled()
     }
 
     override fun onPasswordChanged(password: String) {
         updateState { copy(password = password) }
+        changeIsLoginEnabled()
     }
 
     override fun onPasswordVisibilityToggled() {
@@ -107,6 +118,7 @@ class LoginScreenModel(
                 )
             )
         }
+        changeIsLoginEnabled()
     }
 
     override fun onDismissBottomSheet() {
