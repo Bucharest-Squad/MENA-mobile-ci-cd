@@ -4,21 +4,29 @@ import androidx.paging.PagingData
 import androidx.paging.PagingSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
+import mena.core_chat_presentation.generated.resources.Res
+import mena.core_chat_presentation.generated.resources.could_not_load_the_contacts
+import mena.core_chat_presentation.generated.resources.something_went_wrong
 import net.thechance.mena.core_chat.domain.entity.Contact
 import net.thechance.mena.core_chat.domain.exception.ChatException
 import net.thechance.mena.core_chat.domain.repository.ContactsRepository
 import net.thechance.mena.core_chat.presentation.components.SnackBarData
+import net.thechance.mena.core_chat.presentation.navigation.ChatDetailsRoute
+import net.thechance.mena.core_chat.presentation.navigation.ChatEffector
+import net.thechance.mena.core_chat.presentation.navigation.SyncContactsRoute
 import net.thechance.mena.core_chat.presentation.shared.BasePagingSource
 import net.thechance.mena.core_chat.presentation.shared.BaseViewModel
 
 class ContactsViewModel(
     private val contactsRepository: ContactsRepository,
-) : BaseViewModel<ContactsScreenState, ContactsScreenEffect>(ContactsScreenState()),
+    effector: ChatEffector
+) : BaseViewModel<ContactsScreenState>(ContactsScreenState(), effector),
     ContactsScreenInteractionListener {
 
     init {
         loadContacts()
     }
+
     private fun loadContacts() {
         tryToCollect(
             collect = ::loadContactsOperation,
@@ -43,30 +51,24 @@ class ContactsViewModel(
     }
 
     override fun onBackClick() {
-        emitEffect(ContactsScreenEffect.NavigateBack)
+        popBackStack()
     }
 
     override fun onResyncClick() {
-        emitEffect(ContactsScreenEffect.NavigateToSyncContacts)
-    }
-
-    override fun onSnackBarDismiss() {
-        updateState { it.copy(snackBarData = null) }
+        navigate(SyncContactsRoute(forceSync = true))
     }
 
     override fun onContactClick(contactId: Int) {
-        emitEffect(ContactsScreenEffect.NavigateToChatScreen(contactId))
+        navigate(ChatDetailsRoute(contactId = contactId))
     }
 
     private fun onDataLoadError(e: Throwable) {
-        updateState {
-            it.copy(
-                snackBarData = SnackBarData(
-                    title = "Something went wrong",
-                    message = e.message ?: "Unknown error",
-                )
+        showSnackBar(
+            SnackBarData(
+                title = Res.string.something_went_wrong,
+                message = Res.string.could_not_load_the_contacts,
             )
-        }
+        )
     }
 
     private fun createContactsPagingSource(onError: ((ChatException) -> Unit)? = ::onDataLoadError)

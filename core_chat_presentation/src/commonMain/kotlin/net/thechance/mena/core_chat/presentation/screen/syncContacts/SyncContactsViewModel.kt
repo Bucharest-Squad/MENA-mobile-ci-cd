@@ -1,23 +1,37 @@
 package net.thechance.mena.core_chat.presentation.screen.syncContacts
 
+import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.toRoute
 import dev.icerock.moko.permissions.DeniedAlwaysException
 import dev.icerock.moko.permissions.DeniedException
 import dev.icerock.moko.permissions.Permission
 import dev.icerock.moko.permissions.PermissionsController
+import mena.core_chat_presentation.generated.resources.Res
+import mena.core_chat_presentation.generated.resources.contacts_permission_required_message
+import mena.core_chat_presentation.generated.resources.permission_denied_title
+import mena.core_chat_presentation.generated.resources.something_went_wrong
+import mena.core_chat_presentation.generated.resources.could_not_sync_contacts_message
 import net.thechance.mena.core_chat.domain.repository.ContactsRepository
 import net.thechance.mena.core_chat.presentation.components.SnackBarData
+import net.thechance.mena.core_chat.presentation.navigation.ChatEffector
+import net.thechance.mena.core_chat.presentation.navigation.ContactsRoute
 import net.thechance.mena.core_chat.presentation.shared.BaseViewModel
 import net.thechance.mena.core_chat.presentation.utils.openAppSettings
 
 class SyncContactsViewModel(
     private val contactsRepository: ContactsRepository,
-    private val permissionsController: PermissionsController
-) : BaseViewModel<SyncContactsState, SyncContactsScreenEffect>(SyncContactsState()),
+    private val permissionsController: PermissionsController,
+    private val syncContactsScreenArgs: SyncContactsScreenArgs,
+    effector: ChatEffector
+) : BaseViewModel<SyncContactsState>(SyncContactsState(), effector),
     SyncContactsScreenInteractionListener {
 
+    init {
+        onForceSync()
+    }
 
-    override fun onForceSync(forceSync: Boolean) {
-        if (forceSync) {
+    fun onForceSync() {
+        if (syncContactsScreenArgs.forceSync) {
             updateState { it.copy(isFirstSync = false) }
             syncContacts()
         } else {
@@ -26,7 +40,7 @@ class SyncContactsViewModel(
     }
 
     override fun onBackClick() {
-        emitEffect(SyncContactsScreenEffect.NavigateBack)
+        popBackStack()
     }
 
     override fun onSyncClick() {
@@ -40,26 +54,30 @@ class SyncContactsViewModel(
     private fun handlePermissionError(throwable: Throwable) {
         when (throwable) {
             is DeniedAlwaysException -> {
-                updateState { it.copy(
-                    isLoading = false,
-                    deniedPermanently = true,
-                    snackBarData = SnackBarData(
-                        title = "Permission denied",
-                        message = "Contacts permission is required to sync contacts",
-                    )
-                ) }
-            }
-            is DeniedException -> {
                 updateState {
                     it.copy(
                         isLoading = false,
-                        snackBarData = SnackBarData(
-                            title = "Permission denied",
-                            message = "Contacts permission is required to sync contacts",
-                        )
+                        deniedPermanently = true,
                     )
                 }
+                showSnackBar(
+                    snackBarData = SnackBarData(
+                        title = Res.string.permission_denied_title,
+                        message = Res.string.contacts_permission_required_message,
+                    )
+                )
             }
+
+            is DeniedException -> {
+                updateState { it.copy(isLoading = false) }
+                showSnackBar(
+                    SnackBarData(
+                        title = Res.string.permission_denied_title,
+                        message = Res.string.contacts_permission_required_message,
+                    )
+                )
+            }
+
             else -> onError(throwable)
         }
     }
@@ -85,13 +103,10 @@ class SyncContactsViewModel(
         )
     }
 
-    override fun onSnackBarDismiss() {
-        updateState { it.copy(snackBarData = null) }
-    }
-
     override fun onGoToSettingsClick() {
         openAppSettings()
     }
+
 
     private fun syncContacts() {
         tryToExecute(
@@ -105,9 +120,10 @@ class SyncContactsViewModel(
     private suspend fun onSyncContactsSuccess() {
         if (state.value.isFirstSync) {
             contactsRepository.setUserSyncedState(true)
-            emitEffect(SyncContactsScreenEffect.NavigateToContacts)
+            popBackStack()
+            navigate(ContactsRoute)
         } else {
-            emitEffect(SyncContactsScreenEffect.NavigateBackWithResult)
+            popBackStack("is_sync_success" to true)
         }
     }
 
@@ -115,12 +131,14 @@ class SyncContactsViewModel(
         updateState {
             it.copy(
                 isLoading = false,
-                snackBarData = SnackBarData(
-                    title = "Something went wrong",
-                    message = throwable.message ?: "Unknown error",
-                )
             )
         }
+        showSnackBar(
+            SnackBarData(
+                title = Res.string.something_went_wrong,
+                message = Res.string.could_not_sync_contacts_message,
+            )
+        )
     }
 }
 

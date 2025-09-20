@@ -3,7 +3,6 @@ package net.thechance.mena.core_chat.presentation.screen.syncContacts
 import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.isFalse
-import assertk.assertions.isNotNull
 import assertk.assertions.isTrue
 import dev.icerock.moko.permissions.DeniedAlwaysException
 import dev.icerock.moko.permissions.DeniedException
@@ -11,97 +10,132 @@ import dev.icerock.moko.permissions.Permission
 import dev.icerock.moko.permissions.PermissionsController
 import dev.mokkery.answering.returns
 import dev.mokkery.answering.throws
+import dev.mokkery.every
 import dev.mokkery.everySuspend
+import dev.mokkery.matcher.any
 import dev.mokkery.mock
-import dev.mokkery.verify
 import dev.mokkery.verifySuspend
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import net.thechance.mena.core_chat.domain.repository.ContactsRepository
+import net.thechance.mena.core_chat.presentation.navigation.ChatEffector
 import kotlin.test.Test
 
 class SyncContactsViewModelTest {
 
     private val contactsRepository = mock<ContactsRepository>()
     private val permissionsController = mock<PermissionsController>()
+    private val effector = mock<ChatEffector>()
+
+    private fun createSyncContactsScreenArgs(forceSyncParam: Boolean): SyncContactsScreenArgs {
+        return mock {
+            every { forceSync } returns forceSyncParam
+        }
+    }
 
     @Test
-    fun `should set isFirstSync to false and call syncContacts when onForceSync is true`() = runTest {
+    fun `should set isFirstSync to false and call syncContacts when forceSync is true`() = runTest {
         everySuspend { contactsRepository.syncContacts() } returns Unit
         everySuspend { contactsRepository.setUserSyncedState(true) } returns Unit
+        everySuspend { effector.showSnackBar(any()) } returns Unit
+        everySuspend { effector.popBackStack(any()) } returns Unit
 
-        val viewModel = SyncContactsViewModel(contactsRepository, permissionsController)
+        val syncContactsScreenArgs = createSyncContactsScreenArgs(true)
+        val viewModel = SyncContactsViewModel(
+            contactsRepository,
+            permissionsController,
+            syncContactsScreenArgs,
+            effector
+        )
 
-        viewModel.onForceSync(true)
         val result = viewModel.state.first()
 
-        print(result.isFirstSync)
         assertThat(result.isFirstSync).isFalse()
         verifySuspend { contactsRepository.syncContacts() }
     }
 
     @Test
-    fun `should set isFirstSync to true and showSyncView when onForceSync is false`() = runTest {
-        val viewModel = SyncContactsViewModel(contactsRepository, permissionsController)
+    fun `should set isFirstSync to true and showSyncView when forceSync is false`() = runTest {
+        val syncContactsScreenArgs = createSyncContactsScreenArgs(false)
+        val viewModel = SyncContactsViewModel(
+            contactsRepository,
+            permissionsController,
+            syncContactsScreenArgs,
+            effector
+        )
 
-        viewModel.onForceSync(false)
         val result = viewModel.state.first()
 
         assertThat(result.isFirstSync).isTrue()
-        verify {
-            result.showSyncView
-            result.isLoading.not()
-        }
+        assertThat(result.showSyncView).isTrue()
+        assertThat(result.isLoading).isFalse()
     }
 
     @Test
-    fun `should request permission and sync contacts when onSyncClick is called successfully`() = runTest {
-        everySuspend { permissionsController.providePermission(Permission.CONTACTS) } returns Unit
-        everySuspend { contactsRepository.syncContacts() } returns Unit
-        everySuspend { contactsRepository.setUserSyncedState(true) } returns Unit
+    fun `should request permission and sync contacts when onSyncClick is called successfully`() =
+        runTest {
+            everySuspend { permissionsController.providePermission(Permission.CONTACTS) } returns Unit
+            everySuspend { contactsRepository.syncContacts() } returns Unit
+            everySuspend { contactsRepository.setUserSyncedState(true) } returns Unit
+            everySuspend { effector.showSnackBar(any()) } returns Unit
+            everySuspend { effector.popBackStack() } returns Unit
+            everySuspend { effector.navigate(any(), any(), any()) } returns Unit
 
-        val viewModel = SyncContactsViewModel(contactsRepository, permissionsController)
+            val syncContactsScreenArgs = createSyncContactsScreenArgs(false)
 
-        viewModel.state.test {
-            awaitItem()
+            val viewModel = SyncContactsViewModel(
+                contactsRepository,
+                permissionsController,
+                syncContactsScreenArgs,
+                effector
+            )
 
-            viewModel.onSyncClick()
+            viewModel.state.test {
+                awaitItem()
 
-            val loaded = awaitItem()
-            verify { loaded.isLoading }.equals(false)
+                viewModel.onSyncClick()
 
-            verifySuspend { permissionsController.providePermission(Permission.CONTACTS) }
-            verifySuspend { contactsRepository.syncContacts() }
+                awaitItem()
 
-            cancelAndIgnoreRemainingEvents()
+                verifySuspend { permissionsController.providePermission(Permission.CONTACTS) }
+                verifySuspend { contactsRepository.syncContacts() }
+            }
         }
-    }
 
     @Test
     fun `should handle DeniedException when permission is denied`() = runTest {
-        everySuspend { permissionsController.providePermission(Permission.CONTACTS) } throws DeniedException(Permission.CONTACTS)
-        val viewModel = SyncContactsViewModel(contactsRepository, permissionsController)
+        everySuspend { permissionsController.providePermission(Permission.CONTACTS) } throws DeniedException(
+            Permission.CONTACTS
+        )
+        everySuspend { effector.showSnackBar(any()) } returns Unit
+        val syncContactsScreenArgs = createSyncContactsScreenArgs(false)
+        val viewModel = SyncContactsViewModel(
+            contactsRepository,
+            permissionsController,
+            syncContactsScreenArgs,
+            effector
+        )
 
-        viewModel.state.test {
-            awaitItem()
+        viewModel.onSyncClick()
 
-            viewModel.onSyncClick()
-
-            val error = awaitItem()
-            verify { error.isLoading }.equals(false)
-            verify { error.snackBarData?.title }.equals("Permission denied")
-            verify { error.snackBarData?.message }.equals("Contacts permission is required to sync contacts")
-
-            verifySuspend { permissionsController.providePermission(Permission.CONTACTS) }
-            cancelAndIgnoreRemainingEvents()
-        }
+        verifySuspend { permissionsController.providePermission(Permission.CONTACTS) }
+        verifySuspend { effector.showSnackBar(any()) }
     }
 
     @Test
     fun `should handle DeniedAlwaysException when permission is permanently denied`() = runTest {
-        everySuspend { permissionsController.providePermission(Permission.CONTACTS) } throws DeniedAlwaysException(Permission.CONTACTS)
+        everySuspend { permissionsController.providePermission(Permission.CONTACTS) } throws DeniedAlwaysException(
+            Permission.CONTACTS
+        )
+        everySuspend { effector.showSnackBar(any()) } returns Unit
 
-        val viewModel = SyncContactsViewModel(contactsRepository, permissionsController)
+        val syncContactsScreenArgs = createSyncContactsScreenArgs(false)
+        val viewModel = SyncContactsViewModel(
+            contactsRepository,
+            permissionsController,
+            syncContactsScreenArgs,
+            effector
+        )
 
         viewModel.state.test {
             awaitItem()
@@ -109,85 +143,39 @@ class SyncContactsViewModelTest {
             viewModel.onSyncClick()
 
             val error = awaitItem()
-            verify { error.isLoading }.equals(false)
-            verify { error.deniedPermanently }.equals(true)
-            verify { error.snackBarData?.title }.equals("Permission denied")
-            verify { error.snackBarData?.message }.equals("Contacts permission is required to sync contacts")
+            assertThat(error.isLoading).isFalse()
+            assertThat(error.deniedPermanently).isTrue()
 
             verifySuspend { permissionsController.providePermission(Permission.CONTACTS) }
             cancelAndIgnoreRemainingEvents()
         }
     }
-
-    @Test
-    fun `should clear snackBarData when onSnackBarDismiss is called`() = runTest {
-        everySuspend { permissionsController.providePermission(Permission.CONTACTS) } throws DeniedException(Permission.CONTACTS)
-        val viewModel = SyncContactsViewModel(contactsRepository, permissionsController)
-
-        viewModel.state.test {
-            awaitItem()
-
-            viewModel.onSyncClick()
-
-            val stateWithSnackBar = awaitItem()
-            assertThat(stateWithSnackBar.snackBarData).isNotNull()
-
-            viewModel.onSnackBarDismiss()
-
-            val result = awaitItem()
-
-            verify { result.snackBarData }.equals(null)
-            cancelAndIgnoreRemainingEvents()
-        }
-    }
-
 
     @Test
     fun `should handle sync error with proper error message`() = runTest {
         val errorMessage = "Sync failed"
         everySuspend { contactsRepository.syncContacts() } throws Exception(errorMessage)
+        everySuspend { effector.showSnackBar(any()) } returns Unit
 
-        val viewModel = SyncContactsViewModel(contactsRepository, permissionsController)
-
+        val syncContactsScreenArgs = createSyncContactsScreenArgs(false)
+        val viewModel = SyncContactsViewModel(
+            contactsRepository,
+            permissionsController,
+            syncContactsScreenArgs,
+            effector
+        )
         viewModel.state.test {
             awaitItem()
+            every { syncContactsScreenArgs.forceSync } returns true
 
-            viewModel.onForceSync(true)
+            viewModel.onForceSync()
 
-            val loading = awaitItem()
-            assertThat(loading.isLoading).isTrue()
+            assertThat(awaitItem().isFirstSync).isFalse()
+            assertThat(awaitItem().isLoading).isTrue()
+            assertThat(awaitItem().isLoading).isFalse()
 
-            val error = awaitItem()
-
-
-            verify { error.isLoading }.equals(false)
-            verify { error.snackBarData?.title }.equals("Something went wrong")
-            verify { error.snackBarData?.message }.equals(errorMessage)
-
-            cancelAndIgnoreRemainingEvents()
-        }
-    }
-
-    @Test
-    fun `should handle sync error with unknown error when message is null`() = runTest {
-        everySuspend { contactsRepository.syncContacts() } throws Exception()
-
-        val viewModel = SyncContactsViewModel(contactsRepository, permissionsController)
-
-        viewModel.state.test {
-            awaitItem()
-
-            viewModel.onForceSync(true)
-
-            val loading = awaitItem()
-            assertThat(loading.isLoading).isTrue()
-
-            val error = awaitItem()
-
-            verify { error.isLoading }.equals(false)
-            verify { error.snackBarData?.title }.equals("Something went wrong")
-            verify { error.snackBarData?.message }.equals("Unknown error")
-
+            verifySuspend { contactsRepository.syncContacts() }
+            verifySuspend { effector.showSnackBar(any()) }
             cancelAndIgnoreRemainingEvents()
         }
     }

@@ -1,4 +1,4 @@
-package net.thechance.mena.core_chat.presentation.utils
+package net.thechance.mena.core_chat.presentation.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -11,14 +11,9 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.withContext
 
 @Composable
-fun <T> EffectHandler(
-    effects: Flow<T>,
-    key1: Any? = null,
-    key2: Any? = null,
-    onEffect: suspend (T) -> Unit
-) {
+fun <T> EffectHandler(effects: Flow<T>, key1: Any? = null, key2: Any? = null, onEffect: (T) -> Unit) {
     val lifecycleOwner = LocalLifecycleOwner.current
-    LaunchedEffect(lifecycleOwner.lifecycle, key1, key2) {
+    LaunchedEffect(key1 = lifecycleOwner.lifecycle, key1, key2) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
             withContext(Dispatchers.Main.immediate) {
                 effects.collectLatest(onEffect)
