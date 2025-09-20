@@ -44,6 +44,9 @@ kotlin {
             //ktor
             implementation(libs.ktor.client.darwin)
         }
+        jvmMain.dependencies {
+            //ktor
+            implementation(libs.ktor.client.okhttp)        }
     }
     sourceSets.named("commonMain").configure {
         kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
