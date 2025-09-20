@@ -4,6 +4,7 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.kover)
 }
 
 kotlin {
@@ -27,43 +28,54 @@ kotlin {
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
         }
-
-        jvmTest.dependencies {
-            implementation(libs.bundles.jvm.test)
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
         }
     }
-
 }
 
-val generateBuildConfig by tasks.registering {
-    val outputDir = layout.buildDirectory.dir("generated/buildConfig")
+jvmTest.dependencies {
+    implementation(libs.bundles.jvm.test)
+    kover.reports {
+        verify {
+            rule {
+                minBound(80)
+            }
+        }
 
-    val props = Properties().apply {
-        load(rootProject.file("local.properties").inputStream())
     }
 
-    val baseUrl = props["BASE_URL"] ?:
-    throw IllegalStateException("BASE_URL not found in local.properties")
+    val generateBuildConfig by tasks.registering {
+        val outputDir = layout.buildDirectory.dir("generated/buildConfig")
 
-    outputs.dir(outputDir)
+        val props = Properties().apply {
+            load(rootProject.file("local.properties").inputStream())
+        }
 
-    doLast {
-        val file = outputDir.get().file("BuildConfig.kt").asFile
-        file.parentFile.mkdirs()
-        file.writeText(
-            """
+        val baseUrl = props["BASE_URL"]
+            ?: throw IllegalStateException("BASE_URL not found in local.properties")
+
+        outputs.dir(outputDir)
+
+        doLast {
+            val file = outputDir.get().file("BuildConfig.kt").asFile
+            file.parentFile.mkdirs()
+            file.writeText(
+                """
             object BuildConfig {
                 const val BASE_URL: String = "$baseUrl"
             }
             """.trimIndent()
-        )
+            )
+        }
+    }
+
+    kotlin.sourceSets["commonMain"].kotlin.srcDir(
+        layout.buildDirectory.dir("generated/buildConfig")
+    )
+
+    tasks.withType<KotlinCompile>().configureEach {
+        dependsOn(generateBuildConfig)
     }
 }
 
-kotlin.sourceSets["commonMain"].kotlin.srcDir(
-    layout.buildDirectory.dir("generated/buildConfig")
-)
-
-tasks.withType<KotlinCompile>().configureEach {
-    dependsOn(generateBuildConfig)
-}

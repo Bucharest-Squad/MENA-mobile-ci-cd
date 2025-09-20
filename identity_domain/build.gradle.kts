@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.kover)
 }
 
 kotlin {
@@ -15,6 +16,17 @@ kotlin {
 
         jvmTest.dependencies {
             implementation(libs.bundles.jvm.test)
+        }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+        }
+    }
+}
+
+kover.reports {
+    verify {
+        rule {
+            minBound(80)
         }
     }
 }

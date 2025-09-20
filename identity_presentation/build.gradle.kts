@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.kover)
 }
 
 kotlin {
@@ -47,6 +48,9 @@ kotlin {
         iosMain.dependencies {
 
         }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+        }
     }
 }
 
@@ -56,5 +60,19 @@ android {
 
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
+    }
+}
+
+kover.reports {
+    verify {
+        rule {
+            minBound(80)
+        }
+    }
+
+    filters {
+        excludes {
+            packages("mena.identity_presentation.generated.resources*")
+        }
     }
 }
