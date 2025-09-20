@@ -24,7 +24,12 @@ class ContactMappersTest {
     @Test
     fun `toPagedListOfContacts should map contacts and mark as last page when PageNumber equals TotalPages`() {
         val dto = createPagedDataDto(
-            data = listOf(createContactDto(firstName = "John", phone = "123")),
+            data = listOf(
+                createContactDto(
+                firstName = "Bilal",
+                phone = "123"
+            )
+            ),
             pageNumber = 5,
             totalItems = 1,
             totalPages = 5
@@ -53,7 +58,13 @@ class ContactMappersTest {
     @Test
     fun `toPagedListOfContacts should set totalItems to 0 when TotalItems is null`() {
         val dto = createPagedDataDto(
-            data = listOf(createContactDto("Alice", "Smith", "789")),
+            data = listOf(
+                createContactDto(
+                firstName = "Bilal",
+                lastName = "Azzam",
+                phone = "789"
+            )
+            ),
             pageNumber = 1,
             totalItems = null,
             totalPages = 5
@@ -106,12 +117,18 @@ class ContactMappersTest {
 
     @Test
     fun `toDomain should map all fields correctly when Fields are non null`() {
-        val dto = createContactDto("Jane", "Doe", "456", true, "url")
+        val dto = createContactDto(
+            firstName = "Bilal",
+            lastName = "Azzam",
+            phone = "456",
+            isMenaUser = true,
+            imageUrl = "url"
+        )
 
         val contact = dto.toDomain()
 
-        assertThat(contact.firstName).isEqualTo("Jane")
-        assertThat(contact.lastName).isEqualTo("Doe")
+        assertThat(contact.firstName).isEqualTo("Bilal")
+        assertThat(contact.lastName).isEqualTo("Azzam")
         assertThat(contact.phone).isEqualTo("456")
         assertThat(contact.isMenaUser).isTrue()
         assertThat(contact.imageUrl).isEqualTo("url")

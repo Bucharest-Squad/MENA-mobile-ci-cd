@@ -1,4 +1,4 @@
-package net.thechance.mena.core_chat.data.contacts.network
+package net.thechance.mena.core_chat.data.network
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
@@ -25,26 +25,25 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.Url
 import io.ktor.utils.io.InternalAPI
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.test.runTest
-import net.thechance.mena.core_chat.data.network.createHttpClient
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 
-class HttpClientFactoryTest {
+@OptIn(InternalAPI::class)
+class CreateHttpClientTest {
 
     private val mockEngine = mock<HttpClientEngine>()
     private lateinit var mockFactory: HttpClientEngineFactory<HttpClientEngineConfig>
 
-    @OptIn(InternalAPI::class)
     @BeforeTest
     fun setUp() {
         every { mockEngine.coroutineContext } returns EmptyCoroutineContext
-        every { mockEngine.dispatcher } returns Dispatchers.Default
+        every { mockEngine.dispatcher } returns Dispatchers.IO
         every { mockEngine.close() } returns Unit
         every { mockEngine.config } returns HttpClientEngineConfig()
 
-        // 👇 This is the missing piece
         every { mockEngine.install(any()) } returns Unit
 
         mockFactory = mock {
@@ -79,48 +78,11 @@ class HttpClientFactoryTest {
 
     @Test
     fun `createHttpClient should set baseUrl in default request`() = runTest {
-        var capturedUrl: Url? = null
+        var baseUrl: Url? = null
 
         val engineFactory = MockEngine.config {
             addHandler { request ->
-                capturedUrl = request.url
-                respondOk()
-            }
-        }
-
-        val client = createHttpClient("https://example.com", engineFactory)
-
-        client.get("/test") // triggers request
-
-        assertThat(capturedUrl.toString()).isEqualTo("https://example.com/test")
-    }
-
-    @Test
-    fun `createHttpClient should set default ContentType to application json`() = runTest {
-        var capturedContentType: ContentType? = null
-
-        val engineFactory = MockEngine.config {
-            addHandler { request ->
-                capturedContentType = request.body.contentType
-                respondOk()
-            }
-        }
-
-        val client = createHttpClient("https://example.com", engineFactory)
-
-        client.post("/test") { setBody("{}") }
-
-        assertThat(capturedContentType).isEqualTo(ContentType.Application.Json)
-    }
-
-
-    @Test
-    fun `createHttpClient should set Accept header to application json`() = runTest {
-        var capturedAccept: String? = null
-
-        val engineFactory = MockEngine.config {
-            addHandler { request ->
-                capturedAccept = request.headers[HttpHeaders.Accept]
+                baseUrl = request.url
                 respondOk()
             }
         }
@@ -129,7 +91,44 @@ class HttpClientFactoryTest {
 
         client.get("/test")
 
-        assertThat(capturedAccept).isEqualTo(ContentType.Application.Json.toString())
+        assertThat(baseUrl.toString()).isEqualTo("https://example.com/test")
+    }
+
+    @Test
+    fun `createHttpClient should set default ContentType to application json`() = runTest {
+        var contentType: ContentType? = null
+
+        val engineFactory = MockEngine.config {
+            addHandler { request ->
+                contentType = request.body.contentType
+                respondOk()
+            }
+        }
+
+        val client = createHttpClient("https://example.com", engineFactory)
+
+        client.post("/test") { setBody("{}") }
+
+        assertThat(contentType).isEqualTo(ContentType.Application.Json)
+    }
+
+
+    @Test
+    fun `createHttpClient should set Accept header to application json`() = runTest {
+        var acceptHeader: String? = null
+
+        val engineFactory = MockEngine.config {
+            addHandler { request ->
+                acceptHeader = request.headers[HttpHeaders.Accept]
+                respondOk()
+            }
+        }
+
+        val client = createHttpClient("https://example.com", engineFactory)
+
+        client.get("/test")
+
+        assertThat(acceptHeader).isEqualTo(ContentType.Application.Json.toString())
     }
 
 }
