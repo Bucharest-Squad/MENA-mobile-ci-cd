@@ -2,7 +2,7 @@ package net.thechance.mena.identity.data.datasource
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.plugins.ServerResponseException
+import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.request.url
@@ -34,15 +34,15 @@ private suspend inline fun <reified T, reified R> HttpClient.postJson(
     requestDto: T,
     path: String
 ): R {
-    val post = this.post {
+    val response = this.post {
         url(path)
         contentType(ContentType.Application.Json)
         setBody(requestDto)
     }
 
-    if (post.status != HttpStatusCode.OK) {
-        throw ServerResponseException(post, post.body())
+    if (response.status != HttpStatusCode.OK) {
+        throw ClientRequestException(response, response.body())
     }
 
-    return post.body()
+    return response.body()
 }
