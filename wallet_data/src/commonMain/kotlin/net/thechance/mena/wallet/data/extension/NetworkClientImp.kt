@@ -1,4 +1,4 @@
-package net.thechance.mena.wallet.data.exceptions
+package net.thechance.mena.wallet.data.extension
 
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngineConfig
@@ -24,33 +24,33 @@ import org.koin.core.annotation.Single
 expect val platformHttpClientEngineFactory: HttpClientEngineFactory<HttpClientEngineConfig>
 
 @Single
-class NetworkClient {
+class NetworkClientImp: NetworkClient {
     private var client: HttpClient = buildClient()
 
-    suspend fun get(
+    override suspend fun get(
         urlString: String,
-        block: HttpRequestBuilder.() -> Unit = {}
+        block: HttpRequestBuilder.() -> Unit
     ): HttpResponse {
         return client.get(urlString, block)
     }
 
-    suspend fun post(
+    override suspend fun post(
         urlString: String,
-        block: HttpRequestBuilder.() -> Unit = {}
+        block: HttpRequestBuilder.() -> Unit
     ): HttpResponse {
         return client.post(urlString, block)
     }
 
-    suspend fun put(
+    override suspend fun put(
         urlString: String,
-        block: HttpRequestBuilder.() -> Unit = {}
+        block: HttpRequestBuilder.() -> Unit
     ): HttpResponse {
         return client.put(urlString, block)
     }
 
-    suspend fun delete(
+    override suspend fun delete(
         urlString: String,
-        block: HttpRequestBuilder.() -> Unit = {}
+        block: HttpRequestBuilder.() -> Unit
     ): HttpResponse {
         return client.delete(urlString, block)
     }
