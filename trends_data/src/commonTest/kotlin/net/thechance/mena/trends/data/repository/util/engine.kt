@@ -15,12 +15,43 @@ import io.ktor.http.headersOf
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import net.thechance.mena.trends.data.repository.CategoryRepositoryImpl
+import net.thechance.mena.trends.data.repository.ReelsRepositoryImpl
 import net.thechance.mena.trends.data.util.NetworkConstants.CATEGORY
 import net.thechance.mena.trends.data.util.NetworkConstants.INTERESTS
 import net.thechance.mena.trends.data.util.NetworkConstants.TRENDS
 
 val jsonSerialization = Json { ignoreUnknownKeys = true }
 val jsonHeaders = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+
+fun createReelsRepository(
+    getReels: (suspend MockRequestHandleScope.() -> HttpResponseData)? = null,
+    deleteReel: (suspend MockRequestHandleScope.(id: String) -> HttpResponseData)? = null,
+): ReelsRepositoryImpl {
+    return ReelsRepositoryImpl(createReelsHttpClient(getReels, deleteReel))
+}
+
+fun createReelsHttpClient(
+    getReels: (suspend MockRequestHandleScope.() -> HttpResponseData)? = null,
+    deleteReel: (suspend MockRequestHandleScope.(id: String) -> HttpResponseData)? = null,
+): HttpClient {
+    return HttpClient(MockEngine { request ->
+        when {
+            request.url.encodedPath== "/trends/reels" && request.method.value == "GET" -> {
+                getReels?.invoke(this) ?: getReelsResponse()
+            }
+            request.url.encodedPath == "/trends/reels/1" && request.method.value == "DELETE" -> {
+                deleteReel?.invoke(this, "1") ?: deleteReelResponse("1")
+            }
+
+            else -> respond("", HttpStatusCode.BadRequest,
+                jsonHeaders
+            )
+        }
+    }) {
+        install(ContentNegotiation) { json(jsonSerialization) }
+        install(DefaultRequest) { contentType(ContentType.Application.Json) }
+    }
+}
 
 internal fun createCategoryRepository(
     getAllCategories: (suspend MockRequestHandleScope.() -> HttpResponseData)? = null,
