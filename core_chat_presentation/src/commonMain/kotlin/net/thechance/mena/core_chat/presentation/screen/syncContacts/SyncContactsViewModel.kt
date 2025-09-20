@@ -15,26 +15,23 @@ import net.thechance.mena.core_chat.domain.repository.ContactsRepository
 import net.thechance.mena.core_chat.presentation.components.SnackBarData
 import net.thechance.mena.core_chat.presentation.navigation.ChatEffector
 import net.thechance.mena.core_chat.presentation.navigation.ContactsRoute
-import net.thechance.mena.core_chat.presentation.navigation.SyncContactsRoute
 import net.thechance.mena.core_chat.presentation.shared.BaseViewModel
 import net.thechance.mena.core_chat.presentation.utils.openAppSettings
 
 class SyncContactsViewModel(
     private val contactsRepository: ContactsRepository,
     private val permissionsController: PermissionsController,
-    savedStateHandle: SavedStateHandle,
+    private val syncContactsScreenArgs: SyncContactsScreenArgs,
     effector: ChatEffector
 ) : BaseViewModel<SyncContactsState>(SyncContactsState(), effector),
     SyncContactsScreenInteractionListener {
-
-    private val forceSync: Boolean = savedStateHandle.toRoute<SyncContactsRoute>().forceSync
 
     init {
         onForceSync()
     }
 
     fun onForceSync() {
-        if (forceSync) {
+        if (syncContactsScreenArgs.forceSync) {
             updateState { it.copy(isFirstSync = false) }
             syncContacts()
         } else {
