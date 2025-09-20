@@ -16,7 +16,6 @@ import net.thechance.mena.core_chat.domain.model.PagedData
 import net.thechance.mena.core_chat.domain.repository.ContactsRepository
 import kotlin.test.Test
 import kotlin.test.assertEquals
-
 class ContactsViewModelTest {
     private val contactsRepository = mock<ContactsRepository>()
 
