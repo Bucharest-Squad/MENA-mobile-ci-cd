@@ -22,7 +22,7 @@ class LoginScreenModel(
             function = {
                 loginUseCase.login(
                     state.value.countryPickerUIState.currentCountry.callingCode,
-                    state.value.phoneNumber,
+                    state.value.phoneNumber.removePrefix("0"),
                     state.value.password
                 )
             },
