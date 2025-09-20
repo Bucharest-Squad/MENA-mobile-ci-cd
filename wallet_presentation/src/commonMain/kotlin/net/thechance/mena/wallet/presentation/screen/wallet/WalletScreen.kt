@@ -18,8 +18,8 @@ import mena.wallet_presentation.generated.resources.my_wallet
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.wallet.presentation.base.UiState
-import net.thechance.mena.wallet.presentation.component.Scaffold
 import net.thechance.mena.wallet.presentation.component.SnackBarContainer
+import net.thechance.mena.wallet.presentation.component.WalletScaffold
 import net.thechance.mena.wallet.presentation.screen.wallet.component.BalanceCard
 import net.thechance.mena.wallet.presentation.utils.ObserveAsEffect
 import org.jetbrains.compose.resources.painterResource
@@ -49,7 +49,7 @@ private fun WalletContent(
     state: WalletScreenState,
     interactionListener: WalletInteractionListener
 ) {
-    Scaffold(
+    WalletScaffold(
         modifier = Modifier.statusBarsPadding(),
         topBar = {
             AppBar(
