@@ -59,17 +59,15 @@ runs:
         VERSION_MINOR=$(grep VERSION_MINOR gradle.properties | cut -d'=' -f2 | xargs)
         RUN_NUMBER=${{ github.run_number }}
         
-        VERSION_CODE=$(( VERSION_MAJOR * 10000 + VERSION_MINOR * 100 + RUN_NUMBER ))
         APK_VERSION=${VERSION_MAJOR}.${VERSION_MINOR}.${RUN_NUMBER}
         
         echo "APK_VERSION=$APK_VERSION" >> $GITHUB_ENV
-        echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_ENV
 
     - name: Version Bump
       uses: chkfung/android-version-actions@v1.2.3
       with:
         gradlePath: composeApp/build.gradle.kts
-        versionCode: ${{ env.VERSION_CODE }}
+        versionCode: ${{ github.run_number }}
         versionName: ${{ env.APK_VERSION }}
 
     - name: convert build type to lowercase
