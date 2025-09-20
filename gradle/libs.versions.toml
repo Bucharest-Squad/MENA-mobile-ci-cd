@@ -13,13 +13,16 @@ coilCompose = "3.3.0"
 composeMultiplatform = "1.8.2"
 junit = "4.13.2"
 kotlin = "2.2.10"
+koverVersion = "0.9.1"
 kotlinxDatetime = "0.7.1"
 navigationCompose = "2.9.0-rc02"
-ksp = "2.2.10-RC2-2.0.2"
+ksp = "2.2.10-2.0.2"
 koin-core = "4.1.0"
 koin-annotations = "2.1.0"
 kotlinx-serialization = "1.6.3"
 ktor = "3.2.3"
+room = "2.8.0"
+sqlite = "2.6.0"
 resources = "0.25.0"
 pagingRuntime = "3.3.6"
 pagingCompose = "3.4.0-alpha04"
@@ -72,14 +75,22 @@ ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "k
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktor" }
 
+# Room
+androidx-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+androidx-room-sqlite-wrapper = { module = "androidx.room:room-sqlite-wrapper", version.ref = "room" }
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "composeMultiplatform" }
 composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "koverVersion" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+room = { id = "androidx.room", version.ref = "room" }
 mokkery = { id = "dev.mokkery", version.ref = "mokkery" }
 
 [bundles]

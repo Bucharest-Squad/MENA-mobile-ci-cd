@@ -4,12 +4,14 @@ import kotlin.jvm.java
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.kover)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlinx.serialization)
 }
 
 kotlin {
+    jvm()
     androidTarget {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
@@ -30,6 +32,9 @@ kotlin {
             implementation(libs.kotlinx.datetime)
             implementation(libs.bundles.ktor)
         }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+        }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
         }
@@ -37,7 +42,6 @@ kotlin {
             implementation(libs.bundles.test)
         }
     }
-
     sourceSets.named("commonMain").configure {
         kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
     }
@@ -63,5 +67,13 @@ android {
 
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
+    }
+}
+
+kover.reports {
+    verify {
+        rule {
+            minBound(0)
+        }
     }
 }

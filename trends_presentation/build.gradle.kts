@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.kover)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.mokkery)
@@ -65,8 +66,10 @@ kotlin {
             implementation(libs.test.turbine)
             implementation(libs.koin.test)
         }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+        }
     }
-
     sourceSets.named("commonMain").configure {
         kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
     }
@@ -93,5 +96,19 @@ android {
 
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
+    }
+}
+
+kover.reports {
+    verify {
+        rule {
+            minBound(0)
+        }
+    }
+
+    filters {
+        excludes {
+            packages("mena.trends_presentation.generated.resources*")
+        }
     }
 }
