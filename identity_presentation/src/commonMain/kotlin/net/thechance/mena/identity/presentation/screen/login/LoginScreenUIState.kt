@@ -9,8 +9,6 @@ data class LoginScreenUIState(
     val showCountryBottomSheet:Boolean = false,
     val isLoading: Boolean = false,
     val errorMessage:String? = null,
-    val countryPickerUIState: CountryPickerUIState = CountryPickerUIState()
-){
-    val isLoginEnabled: Boolean
-        get() = phoneNumber.isNotBlank() && password.isNotBlank()
-}
+    val isLoginEnabled: Boolean = false,
+    val countryPickerUIState: CountryPickerUIState = CountryPickerUIState(),
+)

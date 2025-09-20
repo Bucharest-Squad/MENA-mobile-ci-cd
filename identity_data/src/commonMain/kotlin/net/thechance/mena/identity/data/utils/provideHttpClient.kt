@@ -1,5 +1,6 @@
 package net.thechance.mena.identity.data.utils
 
+import BuildConfig
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.api.createClientPlugin
@@ -43,7 +44,6 @@ fun provideHttpClient(
                     ignoreUnknownKeys = true
                 })
         }
-
         install(authInterceptor(localDataSource))
         install(Logging) {
             logger = Logger.SIMPLE
