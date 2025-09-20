@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.kover)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.mockkery)
@@ -41,12 +42,22 @@ kotlin {
             implementation(libs.bundles.geoCoder)
             implementation(libs.mokkery.core)
         }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+        }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
         }
     }
 }
 
+kover.reports {
+    verify {
+        rule {
+            minBound(80)
+        }
+    }
+}
 android {
     namespace = "net.thechance.mena.dukan.data"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
