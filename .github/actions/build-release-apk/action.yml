@@ -49,8 +49,8 @@ runs:
         echo "BASE_URL_${UPPER_BUILD_TYPE}=${{ inputs.base-url }}" >> local.properties
 
     - name: Make gradlew executable
-      run: chmod +x ./gradlew
       shell: bash
+      run: chmod +x ./gradlew
 
     - name: get version code and version name
       shell: bash
@@ -74,14 +74,14 @@ runs:
 
     - name: convert build type to lowercase
       id: convert
+      shell: bash
       run: |
         BUILD_TYPE_LOWER=$(echo "${{ inputs.build-type }}" | tr '[:upper:]' '[:lower:]')
         echo "build_type_lower=$BUILD_TYPE_LOWER" >> $GITHUB_OUTPUT
-      shell: bash
 
     - name: Generate unsigned APK
-      run: ./gradlew :composeApp:assemble${{ inputs.build-type }}Release --build-cache -x test -x lint
       shell: bash
+      run: ./gradlew :composeApp:assemble${{ inputs.build-type }}Release --build-cache -x test -x lint
 
     - name: Sign APK
       uses: r0adkll/sign-android-release@v1
@@ -95,6 +95,7 @@ runs:
         BUILD_TOOLS_VERSION: "35.0.0"
 
     - name: Set signed APK path to env
+      shell: bash
       run: |
         if [[ "${{ inputs.build-type }}" == "Production" ]]; then
           VERSION_NAME="Mena"
@@ -103,10 +104,12 @@ runs:
         fi
         
         APK_NAME="${VERSION_NAME}-v${APK_VERSION}"
+        echo "APK_NAME is: $APK_NAME"
         
-        mv composeApp/build/outputs/apk/${{ steps.convert.outputs.build_type_lower }}/release/composeApp-${{ steps.convert.outputs.build_type_lower }}-release-unsigned-signed.apk \
-           composeApp/build/outputs/apk/${{ steps.convert.outputs.build_type_lower }}/release/$APK_NAME.apk
+        $RELEASE_DIRECTORY=composeApp/build/outputs/apk/${{ steps.convert.outputs.build_type_lower }}/release
+        
+        mv $RELEASE_DIRECTORY/composeApp-${{ steps.convert.outputs.build_type_lower }}-release-unsigned-signed.apk \
+           $RELEASE_DIRECTORY/release/$APK_NAME.apk
         
         echo "APK_NAME=$APK_NAME" >> $GITHUB_ENV
-        echo "SIGNED_APK_PATH=composeApp/build/outputs/apk/${{ steps.convert.outputs.build_type_lower }}/release/$APK_NAME.apk" >> $GITHUB_ENV
-      shell: bash
+        echo "SIGNED_APK_PATH=$RELEASE_DIRECTORY/$APK_NAME.apk" >> $GITHUB_ENV
