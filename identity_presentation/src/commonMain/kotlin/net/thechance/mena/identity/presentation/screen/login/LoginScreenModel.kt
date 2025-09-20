@@ -25,7 +25,7 @@ class LoginScreenModel(
         )
     }
 
-    private fun onLogin(): suspend () -> Unit = {
+    private suspend fun onLogin() {
         loginUseCase.login(
             state.value.countryPickerUIState.currentCountry.callingCode,
             state.value.phoneNumber,
