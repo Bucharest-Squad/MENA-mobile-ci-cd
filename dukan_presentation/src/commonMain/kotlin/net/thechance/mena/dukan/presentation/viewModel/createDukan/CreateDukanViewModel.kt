@@ -58,16 +58,12 @@ class CreateDukanViewModel(
 
     override fun onStyleClicked(style: Dukan.Style) = updateState { copy(selectedStyle = style) }
 
-    fun updateCreateButtonState() {
+    private fun updateCreateButtonState(): Boolean {
         val state = state.value
-        if (state.selectedStyle != null && state.selectedColor != null) {
-            updateState {
-                copy(isButtonEnabled = true)
-            }
+        return if (state.selectedStyle != null && state.selectedColor != null) {
+            true
         } else {
-            updateState {
-                copy(isButtonEnabled = false)
-            }
+            false
         }
     }
 
@@ -301,7 +297,10 @@ class CreateDukanViewModel(
     }
 
     private fun limitNameLength(name: String): String {
-        return if (name.length > MAX_NAME_LENGTH) name.take(MAX_NAME_LENGTH) else name
+        return if (name.length > MAX_NAME_LENGTH)
+            name.trim().take(MAX_NAME_LENGTH)
+        else
+            name.trim()
     }
 
     private fun handleNameValidationResult(isTaken: Boolean) {
@@ -331,7 +330,7 @@ class CreateDukanViewModel(
             CreateDukanStep.BASIC_INFORMATION -> isBasicInformationStepValid(currentState)
             CreateDukanStep.SELECT_IMAGE -> currentState.croppedImage != null
             CreateDukanStep.SELECT_LOCATION -> isLocationValid(currentState)
-            CreateDukanStep.SELECT_STYLE -> true
+            CreateDukanStep.SELECT_STYLE -> updateCreateButtonState()
         }
         updateState { this.copy(isButtonEnabled = isNextButtonEnabled) }
     }
