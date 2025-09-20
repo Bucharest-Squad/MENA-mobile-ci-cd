@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.kover)
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.mokkery)
 }
@@ -89,6 +90,21 @@ android {
         minSdk = libs.versions.android.minSdk.get().toInt()
     }
 }
+
 dependencies {
     debugImplementation(compose.uiTooling)
+}
+
+kover.reports {
+    verify {
+        rule {
+            minBound(80)
+        }
+    }
+
+    filters {
+        excludes {
+            packages("mena.core_chat_presentation.generated.resources*")
+        }
+    }
 }
