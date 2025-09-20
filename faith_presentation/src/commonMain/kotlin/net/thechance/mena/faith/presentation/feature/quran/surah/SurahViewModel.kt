@@ -1,36 +1,33 @@
 package net.thechance.mena.faith.presentation.feature.quran.surah
 
-import net.thechance.mena.faith.domain.entity.Ayah
 import net.thechance.mena.faith.domain.repository.QuranRepository
 import net.thechance.mena.faith.presentation.base.BaseViewModel
+import net.thechance.mena.faith.presentation.base.SnackBarState
+import net.thechance.mena.faith.presentation.util.ClipboardManager
 
 class SurahViewModel(
     surahId: Int,
     surahName: String,
-    private val repository: QuranRepository
-): BaseViewModel<SurahScreenState, SurahScreenEffect>(
+    private val quranRepository: QuranRepository,
+    private val clipboardManager: ClipboardManager
+) : BaseViewModel<SurahScreenState, SurahScreenEffect>(
     initialState = SurahScreenState(surahId = surahId, surahName = surahName)
 ), SurahInteractionListener {
 
     init {
-            loadSurahData(surahId)
+        loadSurahData(surahId)
     }
+
     private fun loadSurahData(surahId: Int) {
         tryToExecute(
-            execute = { repository.getAyatOfSurah(surahId) },
+            execute = { quranRepository.getAyatOfSurah(surahId) },
             onStart = { updateState { it.copy(isLoading = true) } },
-            onSuccess = {  ayat ->
-                updateState {
-                    it.copy(ayatOfSurah = mapAyatToUiStates(ayat))
-                }
+            onSuccess = { ayat ->
+                updateState { it.copy(ayatOfSurah = ayat) }
             },
             onFinally = { updateState { it.copy(isLoading = false) } }
         )
     }
-
-    private fun mapAyatToUiStates(ayat: List<Ayah>): List<SurahScreenState.AyahUiState> =
-        ayat.map { ayah -> ayah.toUiState() }
-
 
     override fun onAyahLongPress(ayahContent: String, ayahIndex: Int) {
         updateState {
@@ -40,6 +37,23 @@ class SurahViewModel(
                 selectedAyahIndex = ayahIndex,
             )
         }
+    }
+
+    override fun onCopyClick(ayahContent: String) {
+        tryToExecute(
+            execute = { clipboardManager.copy(ayahContent) },
+            onSuccess = {
+                showSuccessSnackBar()
+                updateState {
+                    it.copy(
+                        isAyahActionButtonsVisible = false,
+                        selectedAyahIndex = null,
+                        selectedAyah = ayahContent
+                    )
+                }
+            },
+            onError = { showErrorSnackBar() }
+        )
     }
 
     override fun onDismissActionButtons() {
@@ -72,5 +86,19 @@ class SurahViewModel(
             )
         }
         sendEffect(SurahScreenEffect.ShareAyah(ayahContent))
+    }
+
+    private fun showSuccessSnackBar() {
+        showSnackBar(
+            message = "Copied message successfully",
+            status = SnackBarState.Status.Success,
+        )
+    }
+
+    private fun showErrorSnackBar() {
+        showSnackBar(
+            message = "Copied message Failed",
+            status = SnackBarState.Status.Error,
+        )
     }
 }

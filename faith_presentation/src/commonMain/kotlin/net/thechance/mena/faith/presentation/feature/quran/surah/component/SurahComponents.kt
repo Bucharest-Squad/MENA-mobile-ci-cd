@@ -29,13 +29,13 @@ import mena.faith_presentation.generated.resources.bismillah
 import mena.faith_presentation.generated.resources.ic_arrow_left
 import mena.faith_presentation.generated.resources.ic_bismillah
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
-import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
-import net.thechance.mena.designsystem.presentation.component.image.MenaImage
+import net.thechance.mena.designsystem.presentation.component.icon.Icon
+import net.thechance.mena.designsystem.presentation.component.image.Image
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import net.thechance.mena.faith.domain.entity.Ayah
 import net.thechance.mena.faith.presentation.designSystem.theme.quran
 import net.thechance.mena.faith.presentation.feature.quran.surah.SurahInteractionListener
 import net.thechance.mena.faith.presentation.feature.quran.surah.SurahScreenState
-import net.thechance.mena.faith.presentation.util.ClipboardManager
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -47,7 +47,7 @@ internal fun SurahAppBar(
 ) {
     AppBar(
         leadingContent = {
-            MenaIcon(
+            Icon(
                 painter = painterResource(Res.drawable.ic_arrow_left),
                 contentDescription = stringResource(Res.string.arrow_left)
             )
@@ -65,7 +65,7 @@ internal fun BasmalaHeader(
     selectedAyahIndex: Int?,
     onDismissActionButtons: () -> Unit
 ) {
-    MenaImage(
+    Image(
         painter = painterResource(Res.drawable.ic_bismillah),
         contentDescription = stringResource(Res.string.bismillah),
         modifier = Modifier
@@ -85,7 +85,6 @@ internal fun BasmalaHeader(
 internal fun AnimatedAyahActionButtons(
     state: SurahScreenState,
     listener: SurahInteractionListener,
-    clipboardManager: ClipboardManager,
     modifier: Modifier = Modifier
 ) {
 
@@ -99,7 +98,7 @@ internal fun AnimatedAyahActionButtons(
             val selectedAyah = state.selectedAyahIndex?.let { state.ayatOfSurah[it] }
             AyahActionButtons(
                 onBookmarkClick = { listener.onBookmarkClick(selectedAyah?.number ?: 0) },
-                onCopyClick = { clipboardManager.copy(state.selectedAyah) },
+                onCopyClick = { listener.onCopyClick(ayahContent = state.selectedAyah) },
                 onShareClick = { listener.onShareClick(state.selectedAyah) }
             )
         }
@@ -116,7 +115,7 @@ private fun isValidAyahSelection(state: SurahScreenState): Boolean {
 internal fun AyatContent(
     annotatedText: AnnotatedString,
     state: SurahScreenState,
-    ayat: List<SurahScreenState.AyahUiState>,
+    ayat: List<Ayah>,
     listener: SurahInteractionListener
 ) {
     var textLayoutResult by remember {
@@ -159,7 +158,7 @@ private fun getAyahTextStyle() = Theme.typography.quran.large.copy(
      offset: Offset,
      textLayoutResult: TextLayoutResult?,
      annotatedText: AnnotatedString,
-     ayat: List<SurahScreenState.AyahUiState>,
+     ayat: List<Ayah>,
      listener: SurahInteractionListener
 ) {
     textLayoutResult?.let { layoutResult ->
