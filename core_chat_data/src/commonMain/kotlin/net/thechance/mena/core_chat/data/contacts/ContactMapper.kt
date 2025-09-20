@@ -31,7 +31,7 @@ fun ContactDto.toDomain(): Contact {
     )
 }
 
-private fun DeviceContact.toListOfContactCreationRequestDto(): List<ContactCreationRequestDto> {
+fun DeviceContact.toListOfContactCreationRequestDto(): List<ContactCreationRequestDto> {
     return phoneNumbers.map { phone ->
         ContactCreationRequestDto(
             firstName = firstName.orEmpty(),
