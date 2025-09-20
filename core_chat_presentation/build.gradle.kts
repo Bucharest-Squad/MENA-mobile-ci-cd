@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.mokkery)
 }
 
 kotlin {
@@ -70,7 +71,14 @@ kotlin {
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
-
+        }
+        commonTest.dependencies {
+            dependencies {
+                implementation(libs.kotlin.test)
+                implementation(libs.assertk)
+                implementation(libs.test.kotlin.coroutines)
+                implementation(libs.test.turbine)
+            }
         }
     }
 }
