@@ -6,41 +6,50 @@ import net.thechance.mena.core_chat.data.shared.dto.PagedDataDto
 import com.bilalazzam.contacts_provider.Contact as DeviceContact
 
 
-val sampleDeviceContact = DeviceContact(
+val sampleDeviceContact = createDeviceContact(
     id = "1",
     firstName = "Bilal",
     lastName = "Azzam",
     phoneNumbers = listOf("01026388780")
 )
 
-val sampleContactDto = ContactDto(
+val sampleContactDto = createContactDto(
     firstName = "Bilal",
     lastName = "Azzam",
-    phoneNumber = "01026388780",
+    phone = "01026388780",
     isMenaUser = true,
     imageUrl = "http://example.com/image.jpg"
 )
 
 val sampleContact = sampleContactDto.toDomain()
 
-fun createSamplePagedData(
-    pageNumber: Int = 1,
-    pageSize: Int = 10,
-    totalItems: Int = 15,
-    totalPages: Int = 2
-    ) =
-    PagedDataDto(
-        data = List(pageSize) { i ->
-            ContactDto(
-                firstName = "Page$pageNumber",
-                lastName = "User$i",
-                phoneNumber = "010000000$i",
-                isMenaUser = false,
-                imageUrl = null
-            )
-        },
+fun createPagedDataDto(
+    data: List<ContactDto>? = null,
+    pageNumber: Int? = 1,
+    pageSize: Int? = 10,
+    totalItems: Int? = 15,
+    totalPages: Int? = 2
+    ) = PagedDataDto(
+        data = data,
         pageNumber = pageNumber,
         pageSize = pageSize,
         totalItems = totalItems,
         totalPages = totalPages
     )
+
+    fun createContactDto(
+        firstName: String? = null,
+        lastName: String? = null,
+        phone: String? = null,
+        isMenaUser: Boolean? = null,
+        imageUrl: String? = null
+    ) = ContactDto(firstName, lastName, phone, isMenaUser, imageUrl)
+
+    fun createDeviceContact(
+        id: String = "1",
+        firstName: String? = "A",
+        lastName: String? = "B",
+        phoneNumbers: List<String> = emptyList()
+    ) = DeviceContact(id, firstName, lastName, phoneNumbers)
+
+
