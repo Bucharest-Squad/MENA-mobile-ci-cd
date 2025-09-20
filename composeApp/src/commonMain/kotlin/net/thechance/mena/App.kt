@@ -12,6 +12,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun App() {
     MenaTheme {
         Navigator(screen = LoginScreen()) { navigator ->
+            SetStatusBarIconsDark()
             FadeTransition(navigator)
         }
     }
