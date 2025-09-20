@@ -1,10 +1,9 @@
 package net.thechance.mena.wallet.presentation.screen.wallet.component
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.spring
-import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -13,6 +12,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,6 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.takeOrElse
 import kotlinx.coroutines.delay
@@ -44,8 +45,6 @@ import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.wallet.presentation.base.UiState
-import net.thechance.mena.wallet.presentation.base.UiState.Idle.isError
-import net.thechance.mena.wallet.presentation.base.UiState.Idle.isLoading
 import net.thechance.mena.wallet.presentation.base.UiState.Idle.isSuccess
 import net.thechance.mena.wallet.presentation.utils.formatBalance
 import net.thechance.mena.wallet.presentation.utils.noRippleClickable
@@ -107,22 +106,23 @@ private fun AnimatedCoinImage(
         isCoinAnimationFinished = isBalanceLoaded
     }
 
-    AnimatedVisibility(
-        visible = isCoinAnimationFinished,
-        enter = slideInVertically(
-            animationSpec = spring(
-                dampingRatio = Spring.DampingRatioLowBouncy,
-                stiffness = Spring.StiffnessVeryLow
-            )
-        ) { it },
-        modifier = modifier
-    ) {
+    val offsetY by animateIntAsState(
+        targetValue = if (isCoinAnimationFinished) 0 else 300,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioLowBouncy,
+            stiffness = Spring.StiffnessVeryLow
+        ),
+        label = "coin_slide_up"
+    )
+
+    if (isCoinAnimationFinished) {
         Image(
             painter = painterResource(Res.drawable.img_silver),
             contentDescription = stringResource(Res.string.silver_coin),
-            modifier = Modifier
+            modifier = modifier
                 .padding(top = 8.dp)
                 .size(200.dp)
+                .offset { IntOffset(0, offsetY) }
         )
     }
 }
@@ -173,7 +173,9 @@ private fun BalanceContent(
 ) {
     val density = LocalDensity.current
     val balanceTextStyle = Theme.typography.headline.medium
-    val balanceTextHeight = balanceTextStyle.lineHeight.takeOrElse { balanceTextStyle.fontSize }.toDp(density)
+    val balanceTextHeight = remember {
+        balanceTextStyle.lineHeight.takeOrElse { balanceTextStyle.fontSize }.toDp(density)
+    }
 
     Crossfade(
         targetState = balance,

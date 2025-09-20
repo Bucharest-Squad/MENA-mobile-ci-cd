@@ -13,7 +13,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -50,18 +52,26 @@ fun ThreeDotsLoadingIndicator(
         label = "colorOffset"
     )
 
+    val currentColors by remember {
+        derivedStateOf {
+            val offset = colorOffset.toInt()
+            List(colorCount) { index ->
+                val colorIndex = (colorCount - offset + index) % colorCount
+                colors[colorIndex]
+            }
+        }
+    }
+
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(spacing, Alignment.CenterHorizontally),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        repeat(colorCount) { index ->
-            val colorIndex = (colorCount - colorOffset.toInt() + index) % colorCount
-
+        currentColors.forEachIndexed { index, color ->
             Box(
                 modifier = Modifier
                     .size(dotSize)
-                    .background(color = colors[colorIndex], shape = CircleShape)
+                    .background(color = color, shape = CircleShape)
             )
         }
     }
