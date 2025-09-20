@@ -1,9 +1,4 @@
-import org.gradle.kotlin.dsl.invoke
-import org.gradle.kotlin.dsl.kotlin
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
-
-
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -12,8 +7,6 @@ plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.mokkery)
-
-
 }
 
 kotlin {
@@ -78,14 +71,14 @@ kotlin {
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
-
+        }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+            implementation(libs.assertk)
+            implementation(libs.test.kotlin.coroutines)
+            implementation(libs.test.turbine)
         }
     }
-    sourceSets.commonTest.dependencies {
-        implementation(libs.kotlin.test)
-        implementation(libs.assertk)
-        implementation(libs.test.kotlin.coroutines)
-        implementation(libs.test.turbine)    }
 }
 
 android {

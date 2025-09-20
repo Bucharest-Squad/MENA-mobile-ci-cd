@@ -29,7 +29,7 @@ kotlin {
             implementation(libs.kotlin.test.annotations.common)
             implementation(libs.ktor.client.mock)
             implementation(libs.assertk)
-            implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.test.kotlin.coroutines)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
