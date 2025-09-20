@@ -1,6 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
-import kotlin.jvm.java
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -10,6 +9,7 @@ plugins {
     alias(libs.plugins.kover)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.mockkery)
 }
 
 kotlin {
@@ -53,6 +53,10 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.turbine)
+            implementation(kotlin("test-annotations-common"))
+            implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.mokkery.core)
         }
         iosMain.dependencies {
 
@@ -97,8 +101,8 @@ kover.reports {
     }
 
     filters {
-        excludes {
-            packages("mena.wallet_presentation.generated.resources*")
+        includes {
+            classes("net.thechance.mena.wallet.presentation.*.*ViewModel")
         }
     }
 }
