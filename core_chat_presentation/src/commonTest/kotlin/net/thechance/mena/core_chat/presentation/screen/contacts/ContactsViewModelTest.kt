@@ -16,6 +16,8 @@ import net.thechance.mena.core_chat.domain.model.PagedData
 import net.thechance.mena.core_chat.domain.repository.ContactsRepository
 import kotlin.test.Test
 import kotlin.test.assertEquals
+
+
 class ContactsViewModelTest {
     private val contactsRepository = mock<ContactsRepository>()
 
@@ -61,18 +63,19 @@ class ContactsViewModelTest {
     }
 
     @Test
-    fun `onRefreshContacts should handle empty list when repository returns no contacts`() = runTest {
-        everySuspend { contactsRepository.getUserContacts(any(), any()) } returns PagedData(
-            data = emptyList(),
-            totalItems = 0,
-            isLastPage = true
-        )
-        viewModel.onRefreshContacts()
-        viewModel.state.test {
-            val item = awaitItem()
-            assertThat(item).isNotNull()
+    fun `onRefreshContacts should handle empty list when repository returns no contacts`() =
+        runTest {
+            everySuspend { contactsRepository.getUserContacts(any(), any()) } returns PagedData(
+                data = emptyList(),
+                totalItems = 0,
+                isLastPage = true
+            )
+            viewModel.onRefreshContacts()
+            viewModel.state.test {
+                val item = awaitItem()
+                assertThat(item).isNotNull()
+            }
         }
-    }
 
     @Test
     fun `onBackClick should emit NavigateBack when invoked`() = runTest {
@@ -93,13 +96,14 @@ class ContactsViewModelTest {
     }
 
     @Test
-    fun `onContactClick should emit NavigateToChatScreen when valid contactId is passed`() = runTest {
-        viewModel.effect.test {
-            viewModel.onContactClick(1)
-            val item = awaitItem()
-            assertEquals(ContactsScreenEffect.NavigateToChatScreen(1), item)
+    fun `onContactClick should emit NavigateToChatScreen when valid contactId is passed`() =
+        runTest {
+            viewModel.effect.test {
+                viewModel.onContactClick(1)
+                val item = awaitItem()
+                assertEquals(ContactsScreenEffect.NavigateToChatScreen(1), item)
+            }
         }
-    }
 
     @Test
     fun `onSnackBarDismiss should set snackBarData to null when invoked after error`() = runTest {
@@ -114,7 +118,8 @@ class ContactsViewModelTest {
             cancelAndIgnoreRemainingEvents()
         }
     }
-    companion object{
+
+    companion object {
         val expectedContact = Contact(
             firstName = "John",
             lastName = "Doe",
