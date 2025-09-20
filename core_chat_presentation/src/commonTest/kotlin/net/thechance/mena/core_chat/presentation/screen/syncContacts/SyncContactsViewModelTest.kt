@@ -12,6 +12,7 @@ import dev.mokkery.answering.returns
 import dev.mokkery.answering.throws
 import dev.mokkery.every
 import dev.mokkery.everySuspend
+import dev.mokkery.matcher.any
 import dev.mokkery.mock
 import dev.mokkery.verifySuspend
 import kotlinx.coroutines.flow.first
@@ -36,6 +37,8 @@ class SyncContactsViewModelTest {
     fun `should set isFirstSync to false and call syncContacts when forceSync is true`() = runTest {
         everySuspend { contactsRepository.syncContacts() } returns Unit
         everySuspend { contactsRepository.setUserSyncedState(true) } returns Unit
+        everySuspend { effector.showSnackBar(any()) } returns Unit
+        everySuspend { effector.popBackStack(any()) } returns Unit
 
         val syncContactsScreenArgs = createSyncContactsScreenArgs(true)
         val viewModel = SyncContactsViewModel(
@@ -74,6 +77,7 @@ class SyncContactsViewModelTest {
             everySuspend { permissionsController.providePermission(Permission.CONTACTS) } returns Unit
             everySuspend { contactsRepository.syncContacts() } returns Unit
             everySuspend { contactsRepository.setUserSyncedState(true) } returns Unit
+            everySuspend { effector.showSnackBar(any()) } returns Unit
 
             val syncContactsScreenArgs = createSyncContactsScreenArgs(false)
             val viewModel = SyncContactsViewModel(
@@ -103,6 +107,7 @@ class SyncContactsViewModelTest {
         everySuspend { permissionsController.providePermission(Permission.CONTACTS) } throws DeniedException(
             Permission.CONTACTS
         )
+        everySuspend { effector.showSnackBar(any()) } returns Unit
         val syncContactsScreenArgs = createSyncContactsScreenArgs(false)
         val viewModel = SyncContactsViewModel(
             contactsRepository,
@@ -129,6 +134,7 @@ class SyncContactsViewModelTest {
         everySuspend { permissionsController.providePermission(Permission.CONTACTS) } throws DeniedAlwaysException(
             Permission.CONTACTS
         )
+        everySuspend { effector.showSnackBar(any()) } returns Unit
 
         val syncContactsScreenArgs = createSyncContactsScreenArgs(false)
         val viewModel = SyncContactsViewModel(
