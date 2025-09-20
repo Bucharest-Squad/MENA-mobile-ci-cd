@@ -30,6 +30,18 @@ abstract class BaseScreenModel<S, E>(initialState: S) : ScreenModel {
     private val _effect = MutableSharedFlow<E>()
     val effect = _effect.asSharedFlow().throttleFirst(500).mapNotNull { it }
 
+    protected fun tryToExecute(
+        function: suspend () -> Unit,
+        onSuccess: () -> Unit,
+        onError: (ErrorState) -> Unit,
+        inScope: CoroutineScope = viewModelScope,
+    ): Job {
+        return runWithErrorCheck(onError, inScope) {
+            function()
+            onSuccess()
+        }
+    }
+
     protected fun <T> tryToExecute(
         function: suspend () -> T,
         onSuccess: (T) -> Unit,
