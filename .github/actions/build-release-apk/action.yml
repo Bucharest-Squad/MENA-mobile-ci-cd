@@ -97,6 +97,8 @@ runs:
     - name: Set signed APK path to env
       shell: bash
       run: |
+        RELEASE_DIRECTORY="composeApp/build/outputs/apk/${{ steps.convert.outputs.build_type_lower }}/release"
+        
         if [[ "${{ inputs.build-type }}" == "Production" ]]; then
           VERSION_NAME="Mena"
         else
@@ -105,11 +107,9 @@ runs:
         
         APK_NAME="${VERSION_NAME}-v${APK_VERSION}"
         echo "APK_NAME is: $APK_NAME"
-        
-        $RELEASE_DIRECTORY=composeApp/build/outputs/apk/${{ steps.convert.outputs.build_type_lower }}/release
-        
-        mv $RELEASE_DIRECTORY/composeApp-${{ steps.convert.outputs.build_type_lower }}-release-unsigned-signed.apk \
-           $RELEASE_DIRECTORY/release/$APK_NAME.apk
+              
+        mv "$RELEASE_DIRECTORY/composeApp-${{ steps.convert.outputs.build_type_lower }}-release-unsigned-signed.apk" \
+        "$RELEASE_DIRECTORY/$APK_NAME.apk"
         
         echo "APK_NAME=$APK_NAME" >> $GITHUB_ENV
         echo "SIGNED_APK_PATH=$RELEASE_DIRECTORY/$APK_NAME.apk" >> $GITHUB_ENV
