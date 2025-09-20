@@ -57,7 +57,7 @@ class NetworkClient {
 
     private fun buildClient(): HttpClient {
         return HttpClient(platformHttpClientEngineFactory) {
-            defaultRequest { url(LOCAL_BASE_URL) }
+            defaultRequest { url(BASE_URL) }
 
             install(Logging) { level = LogLevel.ALL }
 
@@ -76,7 +76,8 @@ class NetworkClient {
                 bearer {
                     loadTokens {
                         BearerTokens(
-                            accessToken = ACCESS_TOKEN,
+                            //TODO: Add token
+                            accessToken = "",
                             refreshToken = ""
                         )
                     }
@@ -93,8 +94,6 @@ class NetworkClient {
 
     companion object {
         private const val BASE_URL = "https://mena-dev.the-chance.net/"
-        private const val LOCAL_BASE_URL = "http://10.0.2.2:8080/"
-        val ACCESS_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzOGMxNWY2MS1kNW"
         private const val TIME_OUT_INTERVAL_MILLI = 15_000L
     }
 }
