@@ -6,6 +6,8 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
+    alias(libs.plugins.kotlinx.serialization)
+
 }
 
 kotlin {
@@ -19,17 +21,24 @@ kotlin {
             implementation(libs.androidx.room.sqlite.wrapper)
         }
         commonMain.dependencies {
+            implementation(compose.runtime)
             implementation(libs.koin.core)
             implementation(projects.faithDomain)
             implementation(compose.components.resources)
             implementation(libs.androidx.room.runtime)
             implementation(libs.androidx.sqlite.bundled)
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.bundles.ktor)
             api(libs.koin.core)
-            implementation(compose.runtime)
+            implementation(libs.napier)
+
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+        }
+
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
         }
     }
 }
@@ -39,6 +48,7 @@ kover.reports {
         rule {
             minBound(0)
         }
+
     }
 }
 
