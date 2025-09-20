@@ -1,6 +1,5 @@
 package net.thechance.mena.identity.data.utils
 
-import BuildConfig
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.api.createClientPlugin
@@ -20,8 +19,10 @@ fun authInterceptor(
 ) = createClientPlugin("AuthInterceptor") {
 
     onRequest { request, _ ->
-        localDataSource.getAccessToken().let { token ->
-            request.headers.append(HttpHeaders.Authorization, "Bearer $token")
+        if (!request.url.toString().contains("login")) {
+            localDataSource.getAccessToken().let { token ->
+                request.headers.append(HttpHeaders.Authorization, "Bearer $token")
+            }
         }
     }
 }
@@ -42,6 +43,7 @@ fun provideHttpClient(
                     ignoreUnknownKeys = true
                 })
         }
+
         install(authInterceptor(localDataSource))
         install(Logging) {
             logger = Logger.SIMPLE
