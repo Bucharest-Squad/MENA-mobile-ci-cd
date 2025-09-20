@@ -24,18 +24,18 @@ ktor = "3.2.3"
 room = "2.8.0"
 sqlite = "2.6.0"
 resources = "0.25.0"
-pagingRuntime = "3.3.6"
-pagingCompose = "3.4.0-alpha04"
+paging-compose-version = "3.3.0-alpha02-0.5.1"
 kotlinx-coroutines-test = "1.7.3"
 assertk = "0.28.1"
 mokkery = "2.10.0"
 test-turbine = "1.2.1"
 
 [libraries]
-androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "pagingCompose" }
-androidx-paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "pagingRuntime" }
+androidx-paging-compose = { module = "app.cash.paging:paging-compose-common", version.ref = "paging-compose-version" }
+androidx-paging-runtime = { module = "app.cash.paging:paging-common", version.ref = "paging-compose-version" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
-coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilCompose" }
+coil-network-ktor3 = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coilCompose" }
+
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { module = "junit:junit", version.ref = "junit" }

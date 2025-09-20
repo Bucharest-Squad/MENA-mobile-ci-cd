@@ -18,7 +18,6 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-    jvm()
     listOf(
         iosArm64(),
         iosSimulatorArm64()
@@ -33,6 +32,7 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.coil.network.ktor3)
         }
         commonMain.dependencies {
             implementation(projects.trendsDomain)
@@ -51,7 +51,6 @@ kotlin {
             api(libs.koin.annotations)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.coil.compose)
-            implementation(libs.coil.network.okhttp)
             implementation(libs.androidx.paging.runtime)
             implementation(libs.androidx.paging.compose)
             implementation(libs.resources)
