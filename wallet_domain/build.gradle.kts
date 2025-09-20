@@ -3,6 +3,7 @@ import kotlin.jvm.java
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.kover)
     alias(libs.plugins.ksp)
 }
 
@@ -13,9 +14,11 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            //koin
             implementation(libs.koin.core)
             api(libs.koin.annotations)
+        }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
         }
     }
     sourceSets.named("commonMain").configure {
@@ -34,5 +37,13 @@ dependencies {
 project.tasks.withType(KotlinCompilationTask::class.java).configureEach {
     if(name != "kspCommonMainKotlinMetadata") {
         dependsOn("kspCommonMainKotlinMetadata")
+    }
+}
+
+kover.reports {
+    verify {
+        rule {
+            minBound(80)
+        }
     }
 }

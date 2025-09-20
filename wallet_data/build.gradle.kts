@@ -4,6 +4,7 @@ import kotlin.jvm.java
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.kover)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.ksp)
@@ -15,6 +16,7 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
+    jvm()
     iosArm64()
     iosSimulatorArm64()
 
@@ -27,13 +29,15 @@ kotlin {
         }
         commonMain.dependencies {
             implementation(projects.walletDomain)
-
             //ktor
             implementation(libs.bundles.ktor)
 
             //Koin
             implementation(libs.koin.core)
             api(libs.koin.annotations)
+        }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
         }
         iosMain.dependencies {
 
@@ -66,5 +70,13 @@ android {
 
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
+    }
+}
+
+kover.reports {
+    verify {
+        rule {
+            minBound(80)
+        }
     }
 }

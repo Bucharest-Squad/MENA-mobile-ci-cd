@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.kover)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlinx.serialization)
 }
@@ -50,6 +51,9 @@ kotlin {
             api(libs.koin.annotations)
             implementation(libs.kotlinx.serialization.json)
         }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+        }
         iosMain.dependencies {
 
         }
@@ -83,4 +87,18 @@ android {
     }
 
     sourceSets["main"].resources.srcDirs("src/commonMain/resources")
+}
+
+kover.reports {
+    verify {
+        rule {
+            minBound(80)
+        }
+    }
+
+    filters {
+        excludes {
+            packages("mena.wallet_presentation.generated.resources*")
+        }
+    }
 }
