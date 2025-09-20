@@ -52,7 +52,7 @@ runs:
       shell: bash
       run: chmod +x ./gradlew
 
-    - name: get version code and version name
+    - name: Get Version Code and Name
       shell: bash
       run: |
         VERSION_MAJOR=$(grep VERSION_MAJOR gradle.properties | cut -d'=' -f2 | xargs)
@@ -106,7 +106,6 @@ runs:
         fi
         
         APK_NAME="${VERSION_NAME}-v${APK_VERSION}"
-        echo "APK_NAME is: $APK_NAME"
               
         mv "$RELEASE_DIRECTORY/composeApp-${{ steps.convert.outputs.build_type_lower }}-release-unsigned-signed.apk" \
         "$RELEASE_DIRECTORY/$APK_NAME.apk"
