@@ -73,10 +73,12 @@ kotlin {
             implementation(libs.ktor.client.darwin)
         }
         commonTest.dependencies {
-            implementation(libs.kotlin.test)
-            implementation(libs.assertk)
-            implementation(libs.test.kotlin.coroutines)
-            implementation(libs.test.turbine)
+            dependencies {
+                implementation(libs.kotlin.test)
+                implementation(libs.assertk)
+                implementation(libs.test.kotlin.coroutines)
+                implementation(libs.test.turbine)
+            }
         }
     }
 }
