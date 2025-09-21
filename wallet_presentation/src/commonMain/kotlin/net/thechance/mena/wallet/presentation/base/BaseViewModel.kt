@@ -35,8 +35,8 @@ abstract class BaseViewModel<STATE, EFFECT>(initialState: STATE) : ViewModel() {
 
     protected fun <T> tryToExecute(
         callee: suspend () -> T,
-        onSuccess: (suspend (T) -> Unit)? = null,
-        onError: (suspend (Throwable) -> Unit)? = null,
+        onSuccess: (suspend (T) -> Unit),
+        onError: (suspend (Throwable) -> Unit),
         onStart: (suspend () -> Unit)? = null,
         onFinish: (suspend () -> Unit)? = null,
         dispatcher: CoroutineDispatcher = Dispatchers.IO,
