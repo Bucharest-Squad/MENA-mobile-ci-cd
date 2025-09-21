@@ -1,4 +1,4 @@
-package net.thechance.mena.wallet.data.utils
+package net.thechance.mena.wallet.data.extension
 
 import io.ktor.client.engine.HttpClientEngineConfig
 import io.ktor.client.engine.HttpClientEngineFactory

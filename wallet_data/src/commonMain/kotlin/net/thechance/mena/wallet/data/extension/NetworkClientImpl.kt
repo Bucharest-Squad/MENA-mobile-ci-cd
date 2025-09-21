@@ -24,8 +24,9 @@ import org.koin.core.annotation.Single
 expect val platformHttpClientEngineFactory: HttpClientEngineFactory<HttpClientEngineConfig>
 
 @Single
-class NetworkClientImp: NetworkClient {
-    private var client: HttpClient = buildClient()
+class NetworkClientImpl(
+    private val client: HttpClient = buildClient()
+): NetworkClient {
 
     override suspend fun get(
         urlString: String,
@@ -55,45 +56,45 @@ class NetworkClientImp: NetworkClient {
         return client.delete(urlString, block)
     }
 
-    private fun buildClient(): HttpClient {
-        return HttpClient(platformHttpClientEngineFactory) {
-            defaultRequest { url(BASE_URL) }
+    companion object {
+        private fun buildClient(): HttpClient {
+            return HttpClient(platformHttpClientEngineFactory) {
+                defaultRequest { url(BASE_URL) }
 
-            install(Logging) { level = LogLevel.ALL }
+                install(Logging) { level = LogLevel.ALL }
 
-            install(ContentNegotiation) {
-                json(
-                    Json {
-                        prettyPrint = true
-                        isLenient = true
-                        ignoreUnknownKeys = true
-                        encodeDefaults = true
-                    }
-                )
-            }
+                install(ContentNegotiation) {
+                    json(
+                        Json {
+                            prettyPrint = true
+                            isLenient = true
+                            ignoreUnknownKeys = true
+                            encodeDefaults = true
+                        }
+                    )
+                }
 
-            install(plugin = Auth) {
-                bearer {
-                    loadTokens {
-                        BearerTokens(
-                            //TODO: Add token
-                            accessToken = "",
-                            refreshToken = ""
-                        )
+                install(plugin = Auth) {
+                    bearer {
+                        loadTokens {
+                            BearerTokens(
+                                //TODO: Add token
+                                accessToken = "",
+                                refreshToken = ""
+                            )
+                        }
                     }
                 }
-            }
 
-            install(HttpTimeout) {
-                requestTimeoutMillis = TIME_OUT_INTERVAL_MILLI
-                connectTimeoutMillis = TIME_OUT_INTERVAL_MILLI
-                socketTimeoutMillis = TIME_OUT_INTERVAL_MILLI
+                install(HttpTimeout) {
+                    requestTimeoutMillis = TIME_OUT_INTERVAL_MILLI
+                    connectTimeoutMillis = TIME_OUT_INTERVAL_MILLI
+                    socketTimeoutMillis = TIME_OUT_INTERVAL_MILLI
+                }
             }
         }
-    }
-
-    companion object {
         private const val BASE_URL = "https://mena-dev.the-chance.net/"
         private const val TIME_OUT_INTERVAL_MILLI = 15_000L
     }
+
 }
