@@ -44,6 +44,7 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.bundles.geoCoder)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
@@ -59,7 +60,12 @@ kover.reports {
     }
     filters {
         excludes {
-            classes("**.di.**", "**.util.**", "**.dto.**", "**.MobileGeocoderWrapper.**")
+            classes(
+                "**.di.**",
+                "**.util.**",
+                "**.dto.**",
+                "net.thechance.mena.dukan.data.repository.location.MobileGeocoderWrapper"
+            )
         }
     }
 }

@@ -3,10 +3,12 @@ package net.thechance.mena.dukan.presentation.viewModel.createDukan
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import app.cash.turbine.test
+import com.attafitamim.krop.core.images.ImageSrc
 import dev.mokkery.MockMode
 import dev.mokkery.answering.calls
 import dev.mokkery.answering.returns
 import dev.mokkery.everySuspend
+import dev.mokkery.matcher.any
 import dev.mokkery.mock
 import io.github.dellisd.spatialk.geojson.Position
 import kotlinx.coroutines.Dispatchers
@@ -24,6 +26,8 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -40,6 +44,8 @@ class CreateDukanViewModelTest {
         everySuspend { dukanRepository.getDukanStyles() } returns fakeDukanStyle()
         everySuspend { dukanRepository.getDukanColors() } returns fakeDukanColor()
         everySuspend { dukanRepository.getCategories() } returns fakeCategories()
+        everySuspend { dukanRepository.isDukanNameTaken(any()) } returns false
+
 
         createDukanViewModel = CreateDukanViewModel(
             dukanRepository,
@@ -739,15 +745,78 @@ class CreateDukanViewModelTest {
 
     @Test
     fun `onDismissSnackBar SHOULD work when snack bar is already hidden`() = runTest {
-        // Given
         createDukanViewModel.updateState { copy(showSnackBar = false) }
 
-        // When
         createDukanViewModel.onDismissSnackBar()
 
-        // Then
         val showSnackBar = createDukanViewModel.state.value.showSnackBar
         assertFalse(showSnackBar)
+    }
+
+    @Test
+    fun `onBackClicked SHOULD emit NavigateBack WHEN current step is BASIC_INFORMATION`() =
+        runTest {
+            createDukanViewModel.onBackClicked()
+
+            createDukanViewModel.effect.test {
+                assertEquals(CreateDukanEffect.NavigateBack, awaitItem())
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `onClickUploadImage SHOULD set selectedImage and enable cropping`() = runTest {
+        val mockImage = mock<ImageSrc>()
+        createDukanViewModel.onClickUploadImage(mockImage)
+
+        createDukanViewModel.state.test {
+            val state = awaitItem()
+            assertNotNull(state.selectedImage)
+            assertTrue(state.isImageBeingCropped)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `onDismissSnackBar SHOULD set showSnackBar false`() = runTest {
+        createDukanViewModel.updateState { copy(showSnackBar = true) }
+
+        createDukanViewModel.onDismissSnackBar()
+
+        createDukanViewModel.state.test {
+            val state = awaitItem()
+            assertFalse(state.showSnackBar)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `checkNameUniqueness SHOULD show snackbar WHEN name taken`() = runTest {
+        everySuspend { dukanRepository.isDukanNameTaken(any()) } returns true
+        createDukanViewModel.onNameChanged("Test")
+        createDukanViewModel.onCategorySelected(fakeCategories()[0].toUiState())
+
+        createDukanViewModel.onButtonClicked()
+
+        createDukanViewModel.state.test {
+            val state = awaitItem()
+            assertEquals(CreateDukanUiState.CreateDukanStep.BASIC_INFORMATION, state.currentStep)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `onCancelCrop SHOULD clear selectedImage and disable cropping`() = runTest {
+
+        val fakeImageSrc = mock<ImageSrc>()
+        createDukanViewModel.onClickUploadImage(fakeImageSrc)
+
+        createDukanViewModel.onCancelCrop()
+
+        val state = createDukanViewModel.state.value
+        assertNull(state.selectedImage)
+        assertFalse(state.isImageBeingCropped)
+        assertFalse(state.isButtonEnabled)
     }
 }
 
