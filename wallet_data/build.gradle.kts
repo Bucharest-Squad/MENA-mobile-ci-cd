@@ -22,7 +22,6 @@ kotlin {
     sourceSets {
         androidMain.dependencies {
             //ktor
-            implementation(libs.ktor.client.android)
             implementation(libs.ktor.client.okhttp)
 
         }
