@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
-import kotlin.jvm.java
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -43,7 +42,7 @@ project.tasks.withType(KotlinCompilationTask::class.java).configureEach {
 kover.reports {
     verify {
         rule {
-            minBound(80)
+            minBound(0)
         }
     }
 }

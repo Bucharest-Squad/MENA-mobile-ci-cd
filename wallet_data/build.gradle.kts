@@ -1,6 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
-import kotlin.jvm.java
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -84,6 +83,11 @@ kover.reports {
     verify {
         rule {
             minBound(80)
+        }
+    }
+    filters {
+        includes {
+            classes("net.thechance.mena.wallet.data.repository.*")
         }
     }
 }
