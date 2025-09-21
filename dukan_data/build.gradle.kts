@@ -57,6 +57,11 @@ kover.reports {
             minBound(80)
         }
     }
+    filters {
+        excludes {
+            classes("**.di.**", "**.util.**")
+        }
+    }
 }
 android {
     namespace = "net.thechance.mena.dukan.data"
