@@ -47,7 +47,7 @@ kover.reports {
     }
     filters {
         excludes {
-            classes("**.di.**","**.exceptions.**", "**.repository.**")
+            classes("**.di.**","**.exceptions.**", "**.repository.**", "**.generated.**")
         }
     }
 }
