@@ -16,7 +16,6 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-    jvm()
     iosArm64()
     iosSimulatorArm64()
 
