@@ -4,6 +4,7 @@ import kotlinx.coroutines.test.runTest
 import net.thechance.mena.dukan.domain.entity.Category
 import net.thechance.mena.dukan.domain.entity.Color
 import net.thechance.mena.dukan.domain.entity.Dukan
+import net.thechance.mena.dukan.domain.entity.MyDukanStatus
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -11,6 +12,47 @@ import kotlin.test.assertTrue
 
 class DukanRepositoryImplTest {
     private val repository = createDukanRepository()
+
+    @Test
+    fun `createDukan calls the correct endpoint`() = runTest {
+        var called = false
+        val repo = createDukanRepository(
+            createResponse = {
+                called = true
+                defaultCreateResponse()
+            }
+        )
+
+        repo.createDukan(
+            Dukan(
+                id = "123",
+                name = "Test Dukan",
+                color = Color("Red", "#FF0000"),
+                style = Dukan.Style.WIDE_IMAGE,
+                imageUrl = "",
+                categories = emptySet<Category>(),
+                coordinates = Dukan.Coordinates(0.0, 0.0),
+                address = "",
+                status = Dukan.Status.PENDING
+            )
+        )
+
+        assertTrue(called)
+    }
+
+    @Test
+    fun `getMyDukanStatus returns mapped status`() = runTest {
+        val repo = createDukanRepository(
+            statusResponse = { defaultStatusResponse() }
+        )
+
+        val status = repo.getMyDukanStatus()
+
+        assertEquals(
+            MyDukanStatus(Dukan.Status.PENDING, "Active"),
+            status
+        )
+    }
 
     @Test
     fun `getCategories returns mapped categories`() = runTest {

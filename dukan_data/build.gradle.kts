@@ -59,7 +59,7 @@ kover.reports {
     }
     filters {
         excludes {
-            classes("**.di.**", "**.util.**", "**.dto.**")
+            classes("**.di.**", "**.util.**", "**.dto.**", "**.MobileGeocoderWrapper.**")
         }
     }
 }

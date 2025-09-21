@@ -75,7 +75,7 @@ fun MockRequestHandleScope.defaultColorsResponse() = respond(
 fun MockRequestHandleScope.defaultStatusResponse() = respond(
     content = jsonSerialization.encodeToString(
         MyDukanStatusDto.serializer(),
-        MyDukanStatusDto("ACTIVE", "Active")
+        MyDukanStatusDto("PENDING", "Active")
     ),
     status = HttpStatusCode.OK,
     headers = jsonHeaders
