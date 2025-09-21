@@ -113,10 +113,11 @@ fun ScaffoldScope.BottomSheet(
 
     LaunchedEffect(dragState.targetValue) {
         if (dragState.targetValue == BottomSheetValue.HIDDEN) {
-            dragState.animateTo(BottomSheetValue.HIDDEN, tween(250))
-                .also {
-                    onDismissRequest()
-                }
+            try {
+                dragState.animateTo(BottomSheetValue.HIDDEN, tween(250))
+            } finally {
+                onDismissRequest()
+            }
         }
     }
 
