@@ -9,7 +9,7 @@ import net.thechance.mena.trends.data.repository.util.createCategoryRepository
 import net.thechance.mena.trends.data.repository.util.mockCategories
 import kotlin.test.Test
 
-class CategoryRepositoryImplTest {
+internal class CategoryRepositoryImplTest {
 
     private var repository = createCategoryRepository()
 

@@ -10,7 +10,7 @@ import net.thechance.mena.trends.data.repository.util.deleteReelResponse
 import net.thechance.mena.trends.data.repository.util.fakeReelList
 import kotlin.test.Test
 
-class ReelRepositoryImplTest {
+internal class ReelRepositoryImplTest {
 
     private var repository = createReelsRepository()
 

@@ -4,6 +4,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal data class CategoryResponseDto(
+internal data class CategoriesResponse(
     @SerialName("data") val categories: List<CategoryDto>? = null
 )

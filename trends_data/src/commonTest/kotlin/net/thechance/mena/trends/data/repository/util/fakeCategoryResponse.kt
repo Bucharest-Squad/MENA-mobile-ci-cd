@@ -4,7 +4,7 @@ import io.ktor.client.engine.mock.MockRequestHandleScope
 import io.ktor.client.engine.mock.respond
 import io.ktor.http.HttpStatusCode
 import net.thechance.mena.trends.data.dto.CategoryDto
-import net.thechance.mena.trends.data.dto.CategoryResponseDto
+import net.thechance.mena.trends.data.dto.CategoriesResponse
 import net.thechance.mena.trends.data.dto.SubmitInterestsRequestDto
 import net.thechance.mena.trends.data.dto.UserStatusResponse
 
@@ -13,10 +13,10 @@ internal val mockCategories = listOf(
     CategoryDto("uuid 2", "tech", "🖥️")
 )
 
-fun MockRequestHandleScope.getAllCategoriesResponse() = respond(
+internal fun MockRequestHandleScope.getAllCategoriesResponse() = respond(
     content = jsonSerialization.encodeToString(
-        CategoryResponseDto.serializer(),
-        CategoryResponseDto(
+        CategoriesResponse.serializer(),
+        CategoriesResponse(
             listOf(
                 CategoryDto("uuid 1", "Sport", "⚽"),
                 CategoryDto("uuid 2", "tech", "🖥️")
@@ -27,7 +27,7 @@ fun MockRequestHandleScope.getAllCategoriesResponse() = respond(
     headers = jsonHeaders
 )
 
-fun MockRequestHandleScope.isCategoriesAlreadySelectedByUser() = respond(
+internal fun MockRequestHandleScope.isCategoriesAlreadySelectedByUser() = respond(
     content = jsonSerialization.encodeToString(
         UserStatusResponse.serializer(),
         UserStatusResponse(true)
@@ -36,7 +36,7 @@ fun MockRequestHandleScope.isCategoriesAlreadySelectedByUser() = respond(
     headers = jsonHeaders
 )
 
-fun MockRequestHandleScope.updateInterestsResponse() = respond(
+internal fun MockRequestHandleScope.updateInterestsResponse() = respond(
     content = jsonSerialization.encodeToString(
         SubmitInterestsRequestDto.serializer(),
         SubmitInterestsRequestDto(listOf("uuid 1", "uuid 2"))

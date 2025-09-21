@@ -16,21 +16,21 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import net.thechance.mena.trends.data.repository.CategoryRepositoryImpl
 import net.thechance.mena.trends.data.repository.ReelsRepositoryImpl
-import net.thechance.mena.trends.data.util.NetworkConstants.CATEGORY
-import net.thechance.mena.trends.data.util.NetworkConstants.INTERESTS
-import net.thechance.mena.trends.data.util.NetworkConstants.TRENDS
+import net.thechance.mena.trends.data.util.NetworkConstants.CATEGORIES_ENDPOINT
+import net.thechance.mena.trends.data.util.NetworkConstants.INTERESTS_ENDPOINT
+import net.thechance.mena.trends.data.util.NetworkConstants.TRENDS_PATH
 
 val jsonSerialization = Json { ignoreUnknownKeys = true }
 val jsonHeaders = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString())
 
-fun createReelsRepository(
+internal fun createReelsRepository(
     getReels: (suspend MockRequestHandleScope.() -> HttpResponseData)? = null,
     deleteReel: (suspend MockRequestHandleScope.(id: String) -> HttpResponseData)? = null,
 ): ReelsRepositoryImpl {
     return ReelsRepositoryImpl(createReelsHttpClient(getReels, deleteReel))
 }
 
-fun createReelsHttpClient(
+internal fun createReelsHttpClient(
     getReels: (suspend MockRequestHandleScope.() -> HttpResponseData)? = null,
     deleteReel: (suspend MockRequestHandleScope.(id: String) -> HttpResponseData)? = null,
 ): HttpClient {
@@ -67,7 +67,7 @@ internal fun createCategoryRepository(
     )
 }
 
-fun createHttpClient(
+internal fun createHttpClient(
     getAllCategories: (suspend MockRequestHandleScope.() -> HttpResponseData)? = null,
     isCategoriesAlreadySelectedByUser: (suspend MockRequestHandleScope.() -> HttpResponseData)? = null,
     updateInterests: (suspend MockRequestHandleScope.() -> HttpResponseData)? = null,
@@ -75,15 +75,15 @@ fun createHttpClient(
     return HttpClient(
         MockEngine { request ->
             when (request.url.encodedPath) {
-                "/$TRENDS/$CATEGORY", -> {
+                "/$TRENDS_PATH/$CATEGORIES_ENDPOINT", -> {
                     getAllCategories?.invoke(this) ?: getAllCategoriesResponse()
                 }
 
-                "/$TRENDS/user/categories/status" -> {
+                "/$TRENDS_PATH/user/categories/status" -> {
                     isCategoriesAlreadySelectedByUser?.invoke(this) ?: isCategoriesAlreadySelectedByUser()
                 }
 
-                "/$TRENDS/$INTERESTS" -> updateInterests?.invoke(this) ?: updateInterestsResponse()
+                "/$TRENDS_PATH/$INTERESTS_ENDPOINT" -> updateInterests?.invoke(this) ?: updateInterestsResponse()
 
                 else -> respond("", HttpStatusCode.BadRequest, jsonHeaders)
             }

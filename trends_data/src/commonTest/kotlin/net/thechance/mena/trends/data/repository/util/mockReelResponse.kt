@@ -28,7 +28,7 @@ internal val fakeReelDtoList = RemotePaginationResponse(
     totalResults = 1
 )
 
-val fakeReelList = (fakeReelDtoList.results?.map(ReelDto::toEntity) ?: emptyList() )
+internal val fakeReelList = (fakeReelDtoList.results?.map(ReelDto::toEntity) ?: emptyList() )
 
 internal fun MockRequestHandleScope.getReelsResponse(
     reels: List<ReelDto> = fakeReelDtoList.results?: emptyList()
@@ -45,7 +45,7 @@ internal fun MockRequestHandleScope.getReelsResponse(
     headers =  jsonHeaders
 )
 
-fun MockRequestHandleScope.deleteReelResponse(
+internal fun MockRequestHandleScope.deleteReelResponse(
     id: String,
     status: HttpStatusCode = HttpStatusCode.OK
 ) = respond(

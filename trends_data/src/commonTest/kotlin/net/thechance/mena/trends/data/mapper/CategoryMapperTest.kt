@@ -7,7 +7,7 @@ import assertk.assertions.isNull
 import net.thechance.mena.trends.data.dto.CategoryDto
 import kotlin.test.Test
 
-class CategoryMapperTest {
+internal class CategoryMapperTest {
 
     @Test
     fun `categoryDto toEntity() should map correctly`() {
