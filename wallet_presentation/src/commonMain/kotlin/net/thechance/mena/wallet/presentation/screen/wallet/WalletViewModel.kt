@@ -1,5 +1,8 @@
 package net.thechance.mena.wallet.presentation.screen.wallet
 
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.delay
 import mena.wallet_presentation.generated.resources.Res
 import mena.wallet_presentation.generated.resources.balance_fetch_error_description
@@ -14,7 +17,8 @@ import org.koin.core.annotation.Provided
 
 @KoinViewModel
 class WalletViewModel(
-    @Provided private val balanceRepository: BalanceRepository
+    @Provided private val balanceRepository: BalanceRepository,
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : BaseViewModel<WalletScreenState, WalletEffect>(WalletScreenState()), WalletInteractionListener {
 
     init {
@@ -26,7 +30,8 @@ class WalletViewModel(
             onStart = ::onGetBalanceStart,
             callee = { balanceRepository.getBalance() },
             onSuccess = ::onGetBalanceSuccess,
-            onError = ::onGetBalanceError
+            onError = ::onGetBalanceError,
+            dispatcher = ioDispatcher
         )
     }
 
