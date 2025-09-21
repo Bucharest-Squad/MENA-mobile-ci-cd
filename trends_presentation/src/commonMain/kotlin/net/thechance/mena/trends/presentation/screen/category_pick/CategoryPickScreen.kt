@@ -15,6 +15,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -22,13 +23,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import mena.trends_presentation.generated.resources.Res
 import mena.trends_presentation.generated.resources.choose_interests
 import mena.trends_presentation.generated.resources.help_text
 import mena.trends_presentation.generated.resources.next
 import net.thechance.mena.designsystem.presentation.component.button.Button
-import net.thechance.mena.designsystem.presentation.component.text.MenaText
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.trends.presentation.navigation.LocalNavController
 import net.thechance.mena.trends.presentation.navigation.Route
@@ -76,7 +75,7 @@ private fun CategoryPickScreenContent(
                     .verticalScroll(rememberScrollState())
             ) {
                 Spacer(modifier = Modifier.height(72.dp))
-                MenaText(
+                Text(
                     text = stringResource(Res.string.choose_interests),
                     style = Theme.typography.title.medium,
                     color = Theme.colorScheme.shadePrimary,
@@ -88,7 +87,7 @@ private fun CategoryPickScreenContent(
                         )
                 )
 
-                MenaText(
+                Text(
                     text = stringResource(Res.string.help_text),
                     style = Theme.typography.body.small,
                     color = Theme.colorScheme.shadeSecondary,
@@ -164,7 +163,7 @@ private fun NextButton(
         contentColor = Theme.colorScheme.primary.onPrimary,
         disabledContentColor = Theme.colorScheme.primary.onPrimary.copy(alpha = 0.5f),
     ) { contentColor ->
-        MenaText(
+        Text(
             text = stringResource(Res.string.next),
             color = contentColor,
             style = Theme.typography.label.medium,

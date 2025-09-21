@@ -9,15 +9,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -49,9 +45,10 @@ import mena.trends_presentation.generated.resources.success_delete_message
 import mena.trends_presentation.generated.resources.success_delete_title
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.dialog.Dialog
-import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
-import net.thechance.mena.designsystem.presentation.component.image.MenaImage
-import net.thechance.mena.designsystem.presentation.component.text.MenaText
+import net.thechance.mena.designsystem.presentation.component.icon.Icon
+import net.thechance.mena.designsystem.presentation.component.image.Image
+import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
+import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.trends.presentation.navigation.LocalNavController
@@ -89,86 +86,93 @@ private fun UserReelScreenContent(
     state: UserReelState,
     listener: UserReelInteractionListener
 ) {
-    Box(modifier = Modifier.fillMaxSize()) {
+    Scaffold(
+        overlays = {
+            dialog(isVisible = state.isConfirmationDialogVisible) {
+                Dialog(
+                    title = stringResource(Res.string.delete_reel),
+                    message = stringResource(Res.string.confirmation_message),
+                    buttonText = stringResource(Res.string.delete),
+                    dismissOnBackPress = true,
+                    dismissOnClickOutside = true,
+                    onDismiss = { listener.onDismissConfirmationDialog() },
+                    onActionClick = { listener.onConfirmDeleteClick() },
+                    onCancelClick = { listener.onDismissConfirmationDialog() },
+                    dialogCornerShape = RoundedCornerShape(12.dp),
+                    cancelBackgroundShape = RoundedCornerShape(50),
+                    contentPadding = PaddingValues(16.dp)
+                )
+            }
 
-        Dialog(
-            visible = state.isConfirmationDialogVisible,
-            title = stringResource(Res.string.delete_reel),
-            message = stringResource(Res.string.confirmation_message),
-            buttonText = stringResource(Res.string.delete),
-            dismissOnBackPress = true,
-            dismissOnClickOutside = true,
-            onDismiss = { listener.onDismissConfirmationDialog() },
-            onActionClick = { listener.onConfirmDeleteClick() },
-            onCancelClick = { listener.onDismissConfirmationDialog() },
-            modifier = Modifier.align(Alignment.Center).zIndex(3f),
-            dialogCornerShape = RoundedCornerShape(12.dp),
-            cancelBackgroundShape = RoundedCornerShape(50),
-            contentPadding = PaddingValues(16.dp)
-        )
+            dialog(state.isReelDeleted == true && state.error == null) {
+                Dialog(
+                    title = stringResource(Res.string.success_delete_title),
+                    message = stringResource(Res.string.success_delete_message),
+                    buttonText = "",
+                    dismissOnBackPress = true,
+                    dismissOnClickOutside = true,
+                    onDismiss = {
+                        listener.onDismissSuccessDialog()
+                        listener.onBackClick()
+                    },
+                    onCancelClick = {
+                        listener.onDismissSuccessDialog()
+                        listener.onBackClick()
+                    },
+                    dialogCornerShape = RoundedCornerShape(12.dp),
+                    cancelBackgroundShape = RoundedCornerShape(50),
+                    contentPadding = PaddingValues(16.dp)
+                )
+            }
 
-        Dialog(
-            visible = state.isReelDeleted == true && state.error == null,
-            title = stringResource(Res.string.success_delete_title),
-            message = stringResource(Res.string.success_delete_message),
-            buttonText = "",
-            dismissOnBackPress = true,
-            dismissOnClickOutside = true,
-            onDismiss = {
-                listener.onDismissSuccessDialog()
-                listener.onBackClick()
-            },
-            onCancelClick = {
-                listener.onDismissSuccessDialog()
-                listener.onBackClick()
-            },
-            modifier = Modifier.align(Alignment.Center).zIndex(3f),
-            dialogCornerShape = RoundedCornerShape(12.dp),
-            cancelBackgroundShape = RoundedCornerShape(50),
-            contentPadding = PaddingValues(16.dp)
-        )
+            dialog(state.error != null) {
+                Dialog(
+                    title = stringResource(Res.string.fail_delete_title),
+                    message = stringResource(Res.string.fail_delete_message),
+                    buttonText = "",
+                    dismissOnBackPress = true,
+                    dismissOnClickOutside = true,
+                    onDismiss = { listener.onDismissErrorDialog() },
+                    onCancelClick = { listener.onDismissErrorDialog() },
+                    dialogCornerShape = RoundedCornerShape(12.dp),
+                    cancelBackgroundShape = RoundedCornerShape(50),
+                    contentPadding = PaddingValues(16.dp)
+                )
+            }
+        },
+    ) {
 
-        Dialog(
-            visible = state.error != null,
-            title = stringResource(Res.string.fail_delete_title),
-            message = stringResource(Res.string.fail_delete_message),
-            buttonText = "",
-            dismissOnBackPress = true,
-            dismissOnClickOutside = true,
-            onDismiss = { listener.onDismissErrorDialog() },
-            onCancelClick = { listener.onDismissErrorDialog() },
-            modifier = Modifier.align(Alignment.Center).zIndex(3f),
-            dialogCornerShape = RoundedCornerShape(12.dp),
-            cancelBackgroundShape = RoundedCornerShape(50),
-            contentPadding = PaddingValues(16.dp)
-        )
+        Box(modifier = Modifier.fillMaxSize()) {
 
-        RunningVideoPlaceHolder()
+            TopAppBar(
+                onBackClick = { listener.onBackClick() },
+                modifier = Modifier.zIndex(2f),
+            )
 
-        TopAppBar(onBackClick = listener::onBackClick)
+            RunningVideoPlaceHolder()
 
-        UsersReAct(
-            viewCount = state.viewsCount.toString(),
-            likeCount = state.likesCount.toString(),
-            onDeleteClick = listener::onDeleteClick,
-            modifier = Modifier.align(Alignment.BottomEnd)
-                .padding(end = Theme.spacing._16, bottom = 140.dp)
-        )
+            UsersReAct(
+                viewCount = state.viewsCount.toString(),
+                likeCount = state.likesCount.toString(),
+                onDeleteClick = listener::onDeleteClick,
+                modifier = Modifier.align(Alignment.BottomEnd)
+                    .padding(end = Theme.spacing._16, bottom = 140.dp)
+            )
 
-        PublisherDetails(
-            userName = state.username,
-            timeOfPublish = state.createdAt,
-            description = state.description,
-            avatar = state.thumbnail,
-            modifier = Modifier.align(Alignment.BottomCenter),
-            isDescriptionExpanded = state.isDescriptionExpanded,
-            onDescriptionClick = listener::onDescriptionClick
-        )
+            PublisherDetails(
+                userName = state.username,
+                timeOfPublish = state.createdAt,
+                description = state.description,
+                avatar = state.thumbnail,
+                modifier = Modifier.align(Alignment.BottomCenter),
+                isDescriptionExpanded = state.isDescriptionExpanded,
+                onDescriptionClick = listener::onDescriptionClick
+            )
 
-        Box(
-            modifier = Modifier.fillMaxWidth().height(height = 118.dp).gradientShadow()
-                .align(Alignment.BottomCenter)
-        )
+            Box(
+                modifier = Modifier.fillMaxWidth().height(height = 118.dp).gradientShadow()
+            )
+        }
     }
 }
 
@@ -181,15 +185,14 @@ private fun TopAppBar(
         title = "",
         modifier = modifier
             .fillMaxWidth()
-            .height(height = 96.dp)
             .gradientShadow()
-            .padding(horizontal = Theme.spacing._16).padding(
-                top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding() + 8.dp
-            )
-            .requiredHeight(height = 56.dp),
+            .padding(horizontal = Theme.spacing._16).padding(top = 8.dp),
         contentPadding = PaddingValues(0.dp),
         leadingContent = {
-            MenaIcon(painter = painterResource(resource = Res.drawable.ic_arrow_left))
+            Icon(
+                painter = painterResource(resource = Res.drawable.ic_arrow_left),
+                contentDescription = "Back Icon",
+            )
         },
         onLeadingClick = { onBackClick() }
     )
@@ -218,22 +221,23 @@ private fun PublisherDetails(
                 .padding(top = Theme.spacing._8)
         ) {
 
-            MenaImage(
+            Image(
                 painter = rememberAsyncImagePainter(avatar),
                 modifier = Modifier.size(size = 40.dp).clip(shape = CircleShape)
                     .border(shape = CircleShape, width = 0.5.dp, color = Theme.colorScheme.stroke),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop,
+                contentDescription = "avatar image"
             )
 
             Column(Modifier.padding(bottom = Theme.spacing._16)) {
-                MenaText(
+                Text(
                     text = userName,
                     color = Theme.colorScheme.primary.onPrimary,
                     style = Theme.typography.label.medium,
                     modifier = Modifier.padding(vertical = Theme.spacing._2)
                 )
 
-                MenaText(
+                Text(
                     text = timeOfPublish,
                     color = Theme.colorScheme.shadeTertiary,
                     style = Theme.typography.label.small
@@ -242,7 +246,7 @@ private fun PublisherDetails(
         }
 
         if (description.isNotBlank()) {
-            MenaText(
+            Text(
                 text = description,
                 modifier = Modifier
                     .animateContentSize()
@@ -298,7 +302,7 @@ private fun ReActIcon(
     onClick: () -> Unit = {}
 ) {
     Column(modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-        MenaIcon(
+        Icon(
             painter = icon,
             contentDescription = stringResource(Res.string.react),
             modifier = Modifier
@@ -306,7 +310,7 @@ private fun ReActIcon(
                 .clickable { onClick() },
             tint = Theme.colorScheme.shadeTertiary
         )
-        MenaText(
+        Text(
             text = label,
             style = Theme.typography.label.small,
             color = Theme.colorScheme.shadeTertiary,

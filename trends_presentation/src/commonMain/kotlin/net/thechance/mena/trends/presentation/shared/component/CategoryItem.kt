@@ -17,7 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import net.thechance.mena.designsystem.presentation.component.button.radioButton.RadioButton
-import net.thechance.mena.designsystem.presentation.component.text.MenaText
+import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.trends.presentation.shared.component.modifier.noRippleClickable
@@ -47,15 +47,15 @@ internal fun CategoryItem(
             horizontalArrangement = Arrangement.spacedBy(Theme.spacing._4),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            MenaText(
+            Text(
                 text = category.value.emoji,
                 style = Theme.typography.label.extraSmall,
                 fontSize = 14.sp
             )
-            MenaText(
+            Text(
                 text = category.value.name,
                 color = textColor,
-                style = Theme.typography.label.extraSmall // TODO: Should be Label/XSmall
+                style = Theme.typography.label.extraSmall
             )
         }
         RadioButton(

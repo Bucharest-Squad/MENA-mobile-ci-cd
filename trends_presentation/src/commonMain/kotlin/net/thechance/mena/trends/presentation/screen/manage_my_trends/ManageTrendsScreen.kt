@@ -28,9 +28,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemKey
+import app.cash.paging.compose.LazyPagingItems
+import app.cash.paging.compose.collectAsLazyPagingItems
+import app.cash.paging.compose.itemKey
 import coil3.compose.AsyncImage
 import mena.trends_presentation.generated.resources.Res
 import mena.trends_presentation.generated.resources.back_arrow
@@ -41,9 +41,9 @@ import mena.trends_presentation.generated.resources.my_trends
 import mena.trends_presentation.generated.resources.profile_image_desc
 import mena.trends_presentation.generated.resources.trend_image_desc
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
-import net.thechance.mena.designsystem.presentation.component.icon.MenaIcon
+import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.segment.Segment
-import net.thechance.mena.designsystem.presentation.component.text.MenaText
+import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.trends.presentation.navigation.LocalNavController
 import net.thechance.mena.trends.presentation.navigation.Route
@@ -95,7 +95,7 @@ private fun ManageTrendsScreenContent(
         AppBar(
             onLeadingClick = { listener.onBackClick() },
             leadingContent = {
-                MenaIcon(
+                Icon(
                     painter = painterResource(Res.drawable.ic_arrow_left),
                     contentDescription = stringResource(Res.string.back_arrow)
                 )
@@ -118,7 +118,7 @@ private fun ManageTrendsScreenContent(
                     .align(Alignment.CenterHorizontally),
                 contentScale = ContentScale.Crop,
             )
-            MenaText(
+            Text(
                 text = state.userName,
                 style = Theme.typography.label.medium,
                 modifier = Modifier
@@ -184,7 +184,7 @@ private fun SegmentSection(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    MenaText(text = "No favorites yet", style = Theme.typography.body.small)
+                    Text(text = "No favorites yet", style = Theme.typography.body.small)
                 }
             }
         }
