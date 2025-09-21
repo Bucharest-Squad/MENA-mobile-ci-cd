@@ -9,6 +9,7 @@ plugins {
 
 kotlin {
     jvm()
+    iosX64()
     iosArm64()
     iosSimulatorArm64()
 
@@ -21,7 +22,6 @@ kotlin {
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.koin.core)
             implementation(libs.ktor.client.logging)
-            implementation(libs.ktor.client.auth)
             implementation(libs.multiplatform.settings)
             implementation(libs.ktor.client.cio)
         }
@@ -31,51 +31,52 @@ kotlin {
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
-    }
-}
 
-jvmTest.dependencies {
-    implementation(libs.bundles.jvm.test)
-    kover.reports {
-        verify {
-            rule {
-                minBound(80)
+
+        jvmTest.dependencies {
+            implementation(libs.bundles.jvm.test)
+            kover.reports {
+                verify {
+                    rule {
+                        minBound(80)
+                    }
+                }
+
             }
         }
 
-    }
+        val generateBuildConfig by tasks.registering {
+            val outputDir = layout.buildDirectory.dir("generated/buildConfig")
 
-    val generateBuildConfig by tasks.registering {
-        val outputDir = layout.buildDirectory.dir("generated/buildConfig")
+            val props = Properties().apply {
+                load(rootProject.file("local.properties").inputStream())
+            }
 
-        val props = Properties().apply {
-            load(rootProject.file("local.properties").inputStream())
-        }
+            val baseUrl = props["BASE_URL"]
+                ?: throw IllegalStateException("BASE_URL not found in local.properties")
 
-        val baseUrl = props["BASE_URL"]
-            ?: throw IllegalStateException("BASE_URL not found in local.properties")
+            outputs.dir(outputDir)
 
-        outputs.dir(outputDir)
-
-        doLast {
-            val file = outputDir.get().file("BuildConfig.kt").asFile
-            file.parentFile.mkdirs()
-            file.writeText(
-                """
+            doLast {
+                val file = outputDir.get().file("BuildConfig.kt").asFile
+                file.parentFile.mkdirs()
+                file.writeText(
+                    """
             object BuildConfig {
                 const val BASE_URL: String = "$baseUrl"
             }
             """.trimIndent()
-            )
+                )
+            }
         }
-    }
 
-    kotlin.sourceSets["commonMain"].kotlin.srcDir(
-        layout.buildDirectory.dir("generated/buildConfig")
-    )
+        kotlin.sourceSets["commonMain"].kotlin.srcDir(
+            layout.buildDirectory.dir("generated/buildConfig")
+        )
 
-    tasks.withType<KotlinCompile>().configureEach {
-        dependsOn(generateBuildConfig)
+        tasks.withType<KotlinCompile>().configureEach {
+            dependsOn(generateBuildConfig)
+        }
     }
 }
 
