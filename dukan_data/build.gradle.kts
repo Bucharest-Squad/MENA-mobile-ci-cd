@@ -59,7 +59,7 @@ kover.reports {
     }
     filters {
         excludes {
-            classes("**.di.**", "**.util.**")
+            classes("**.di.**", "**.util.**", "**.dto.**")
         }
     }
 }

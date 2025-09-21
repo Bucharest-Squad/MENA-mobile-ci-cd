@@ -29,8 +29,7 @@ kotlin {
     }
 
     cocoapods {
-        summary =
-            "DukanPresentation — internal KMP maps module for Dukan. Contains iOS-compatible map composables and shared location logic used across mobile modules."
+        summary = "DukanPresentation — internal KMP maps module for Dukan. Contains iOS-compatible map composables and shared location logic used across mobile modules."
         homepage = "https://github.com/TheChance101/MENA-mobile"
         version = "1.0"
         ios.deploymentTarget = "15.4"
@@ -108,7 +107,8 @@ kover.reports {
                 "**.navigation.**",
                 "**.screen.**",
                 "**.util.**",
-                "**.viewModel.cropImage.**")
+                "**.viewModel.cropImage.**"
+            )
         }
     }
 }
