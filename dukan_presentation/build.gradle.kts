@@ -101,6 +101,11 @@ kover.reports {
     filters {
         excludes {
             packages("mena.dukan_presentation.generated.resources*")
+            packages("mena.dukan_presentation.component")
+            packages("mena.dukan_presentation.di")
+            packages("mena.dukan_presentation.navigation")
+            packages("mena.dukan_presentation.screen")
+            packages("mena.dukan_presentation.util")
         }
     }
 }
