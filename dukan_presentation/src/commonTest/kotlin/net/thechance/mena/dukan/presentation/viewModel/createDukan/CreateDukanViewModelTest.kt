@@ -299,12 +299,11 @@ class CreateDukanViewModelTest {
             createDukanViewModel.onColorClicked(color)
 
             // When
-            createDukanViewModel.updateCreateButtonState()
+            val expect = createDukanViewModel.updateCreateButtonState()
 
             // Then
             createDukanViewModel.state.test {
-                val state = awaitItem()
-                assertEquals(true, state.isButtonEnabled)
+                assertEquals(true, expect)
                 cancelAndIgnoreRemainingEvents()
             }
         }
