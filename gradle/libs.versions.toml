@@ -65,7 +65,7 @@ koin-ksp-compiler = { module = "io.insert-koin:koin-ksp-compiler", version.ref =
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine"}
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
 mokkery-core = { module = "dev.mokkery:mokkery-core", version.ref = "mokkery" }
-
+ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktor" }
 
 # Room
 androidx-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
@@ -84,6 +84,7 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 room = { id = "androidx.room", version.ref = "room" }
 mockkery = {id="dev.mokkery",version.ref = "mokkery"}
+
 
 [bundles]
 ktor = [
