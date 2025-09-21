@@ -60,6 +60,8 @@ androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx
 junit = { module = "junit:junit", version.ref = "junit" }
 ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
 mokkery = { module = "com.github.lupuuss:Mokkery", version.ref = "mokkery" }
+mokkery-core = { module = "dev.mokkery:mokkery-core", version.ref = "mokkeryVersion" }
+mokkery-runtime = { module = "dev.mokkery:mokkery-runtime", version.ref = "mokkeryVersion" }
 multiplatform-settings = { module = "com.russhwolf:multiplatform-settings-no-arg", version.ref = "multiplatformSettings" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 assertk = { module = "com.willowtreeapps.assertk:assertk-jvm", version.ref = "assertk" }
@@ -113,7 +115,7 @@ jvm-test = [
 ]
 common-test = [
     "kotlin-test",
-    "dev-mokkery",
+    "mokkery-core",
     "turbine",
     "kotlinx-coroutines-test"
 ]

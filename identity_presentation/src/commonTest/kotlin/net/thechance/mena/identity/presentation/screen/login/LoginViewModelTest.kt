@@ -2,28 +2,49 @@ package net.thechance.mena.identity.presentation.screen.login
 
 
 import app.cash.turbine.test
+import dev.mokkery.MockMode
 import dev.mokkery.answering.returns
 import dev.mokkery.answering.throws
 import dev.mokkery.everySuspend
 import dev.mokkery.mock
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
 import net.thechance.mena.identity.domain.exception.InvalidCredentialsException
 import net.thechance.mena.identity.domain.useCase.LoginUseCase
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
+@OptIn(ExperimentalCoroutinesApi::class)
+
 class LoginViewModelTest {
 
-    val useCase: LoginUseCase = mock()
-    val viewModel = LoginScreenModel(useCase)
+    var useCase: LoginUseCase = mock<LoginUseCase>(mode = MockMode.autofill)
+    var viewModel = LoginScreenModel(useCase)
+
+    private val testDispatcher = StandardTestDispatcher()
+
+    @BeforeTest
+    fun setUp() {
+        Dispatchers.setMain(testDispatcher)
+    }
+    @AfterTest
+    fun tearDown() {
+        Dispatchers.resetMain()
+    }
 
     @Test
     fun`should navigate to home screen when login success`()= runTest{
-        //Given
+
         everySuspend { useCase.login("+20", "1100661617","12345678") } returns Unit
-        //When
+
         viewModel.login()
-        //Then
+
         viewModel.effect.test {
             val effect = awaitItem()
             assertTrue { effect is LoginScreenUIEffect.NavigateToHome }
@@ -34,15 +55,16 @@ class LoginViewModelTest {
 
     @Test
     fun `should show invalid credentials message when user does not exist`()= runTest{
-        //Given
+
+
         val countryCode = "+20"
         val mobileNumber = "1100661617"
         val password = "12345678"
         val errorMessage = "Invalid credentials. Please check your phone number and password."
         everySuspend { useCase.login(countryCode, mobileNumber, password) } throws InvalidCredentialsException(countryCode, mobileNumber)
-        //When
+
         viewModel.login()
-        //Then
+
         viewModel.state.test {
             val state = awaitItem()
             assertTrue { state.errorMessage == errorMessage }
@@ -53,11 +75,12 @@ class LoginViewModelTest {
 
     @Test
     fun`should change phone number when user type on phone number text field`()= runTest{
-        //Given
+
+
         val phoneNumber = "1100661617"
-        //When
+
         viewModel.onPhoneChanged(phoneNumber)
-        //Then
+
         viewModel.state.test {
             val state = awaitItem()
             assertTrue { state.phoneNumber == phoneNumber }
@@ -67,11 +90,12 @@ class LoginViewModelTest {
 
      @Test
     fun`should change password when user type on password text field`()= runTest{
-        //Given
+
+
         val password = "12345678"
-        //When
+
         viewModel.onPasswordChanged(password)
-        //Then
+
         viewModel.state.test {
             val state = awaitItem()
             assertTrue { state.password == password }
@@ -95,15 +119,17 @@ class LoginViewModelTest {
     @Test
     fun `should login button is enabled when phone number and password are valid` () = runTest {
         val countryCode = "+20"
-        val phoneNumber = "1100661617"
+        val phoneNumber = "01100661617"
         val password = "12345678"
+        viewModel.onPhoneCodeChanged(countryCode)
+        viewModel.onPhoneChanged(phoneNumber)
+        viewModel.onPasswordChanged(password)
+
+
 
         viewModel.state.test {
-            viewModel.onPhoneCodeChanged(countryCode)
-            viewModel.onPhoneChanged(phoneNumber)
-            viewModel.onPasswordChanged(password)
-
-            val state = awaitItem()
+           val state = awaitItem()
+            print(state)
             assertTrue { state.isLoginEnabled }
             cancelAndIgnoreRemainingEvents()
         }
@@ -173,10 +199,10 @@ class LoginViewModelTest {
 
     @Test
     fun`should change password visibility when user click on password visibility button`() = runTest {
-        //When
+
         viewModel.onPasswordVisibilityToggled()
 
-        //Then
+
         viewModel.state.test {
             val state = awaitItem()
             assertTrue { state.isPasswordVisible }
@@ -187,11 +213,12 @@ class LoginViewModelTest {
 
     @Test
     fun`should navigate to forget password screen when user click on forget password button`()= runTest{
-        //When
+
         viewModel.onForgotPasswordClicked()
-        //Then
+
         viewModel.effect.test {
             val effect = awaitItem()
+            print(effect)
             assertTrue { effect is LoginScreenUIEffect.NavigateToForgotPassword }
             cancelAndIgnoreRemainingEvents()
         }
@@ -199,9 +226,9 @@ class LoginViewModelTest {
 
     @Test
     fun`should navigate to register screen when user click on register button`()= runTest{
-        //When
+
         viewModel.onRegisterClicked()
-        //Then
+
         viewModel.effect.test {
             val effect = awaitItem()
             assertTrue { effect is LoginScreenUIEffect.NavigateToRegister }
