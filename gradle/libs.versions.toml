@@ -34,6 +34,7 @@ map-libra = "0.11.1"
 compass = "2.4.0"
 
 [libraries]
+
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { module = "junit:junit", version.ref = "junit" }
@@ -66,6 +67,8 @@ ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "k
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
 ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktor" }
+ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
+ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 
 # Testing
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine"}
@@ -114,10 +117,12 @@ cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotli
 mockkery = {id="dev.mokkery",version.ref = "mokkery"}
 room = { id = "androidx.room", version.ref = "room" }
 
+
 [bundles]
 ktor = [
     "ktor-client-core",
     "ktor-client-content-negotiation",
+    "ktor-client-auth",
     "ktor-client-logging",
     "ktor-serialization-kotlinx-json"
 ]
