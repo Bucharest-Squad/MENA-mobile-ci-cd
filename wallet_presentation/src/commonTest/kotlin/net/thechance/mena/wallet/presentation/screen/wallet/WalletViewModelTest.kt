@@ -49,6 +49,7 @@ class WalletViewModelTest {
         }
 
         val viewModel = WalletViewModel(balanceRepository)
+        advanceUntilIdle()
 
         viewModel.state.test {
             val initialState = awaitItem()
