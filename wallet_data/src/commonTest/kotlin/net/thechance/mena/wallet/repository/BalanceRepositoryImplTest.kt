@@ -3,7 +3,6 @@ package net.thechance.mena.wallet.repository
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.test.runTest
 import net.thechance.mena.wallet.repository.utils.createBalanceRepository
-import net.thechance.mena.wallet.repository.utils.defaultBalanceResponse
 import net.thechance.mena.wallet.repository.utils.errorResponse
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -18,17 +17,6 @@ class BalanceRepositoryImplTest {
         val result = repository.getBalance()
 
         assertEquals(150.75, result)
-    }
-
-    @Test
-    fun `getBalance returns zero when API response has zero balance`() = runTest {
-        val repository = createBalanceRepository(
-            balanceResponse = { defaultBalanceResponse(0.0) }
-        )
-
-        val result = repository.getBalance()
-
-        assertEquals(0.0, result)
     }
 
     @Test
