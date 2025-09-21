@@ -66,8 +66,6 @@ class LoginScreenModel(
         updateState { copy(showCountryBottomSheet = true) }
     }
 
-    override fun onPhoneCodeChanged(phoneCode: String) {
-    }
 
     override fun onPhoneChanged(phone: String) {
         updateState { copy(phoneNumber = phone) }

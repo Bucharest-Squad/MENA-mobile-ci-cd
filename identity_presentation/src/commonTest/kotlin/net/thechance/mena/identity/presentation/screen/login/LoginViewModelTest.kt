@@ -1,11 +1,12 @@
 package net.thechance.mena.identity.presentation.screen.login
 
-
 import app.cash.turbine.test
 import dev.mokkery.MockMode
 import dev.mokkery.answering.returns
 import dev.mokkery.answering.throws
+import dev.mokkery.every
 import dev.mokkery.everySuspend
+import dev.mokkery.matcher.any
 import dev.mokkery.mock
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -13,8 +14,9 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import net.thechance.mena.identity.domain.exception.InvalidCredentialsException
+import net.thechance.mena.identity.domain.exception.InvalidMobileNumberException
 import net.thechance.mena.identity.domain.useCase.LoginUseCase
+import net.thechance.mena.identity.presentation.countryPicker.menaCountries.MenaCountry
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -24,58 +26,61 @@ import kotlin.test.assertTrue
 
 class LoginViewModelTest {
 
-    var useCase: LoginUseCase = mock<LoginUseCase>(mode = MockMode.autofill)
-    var viewModel = LoginScreenModel(useCase)
+    private lateinit var useCase: LoginUseCase
+    private lateinit var viewModel: LoginScreenModel
 
     private val testDispatcher = StandardTestDispatcher()
 
     @BeforeTest
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
+        useCase = mock(mode = MockMode.autofill)
+        viewModel = LoginScreenModel(useCase)
     }
+
     @AfterTest
     fun tearDown() {
         Dispatchers.resetMain()
     }
 
-    @Test
-    fun`should navigate to home screen when login success`()= runTest{
+    private fun setupValidCountry() {
+        viewModel.onSelectCountryItem(selectedCountry)
+        viewModel.onClickConfirmButton()
+    }
 
-        everySuspend { useCase.login("+20", "1100661617","12345678") } returns Unit
+    @Test
+    fun `should navigate to home screen when login success`() = runTest {
+
+        everySuspend { useCase.login("+20", "1100661617", "12345678") } returns Unit
 
         viewModel.login()
 
         viewModel.effect.test {
             val effect = awaitItem()
             assertTrue { effect is LoginScreenUIEffect.NavigateToHome }
-            cancelAndIgnoreRemainingEvents()
+                cancelAndConsumeRemainingEvents()
         }
 
     }
 
     @Test
-    fun `should show invalid credentials message when user does not exist`()= runTest{
+    fun `should show invalid mobile number message when mobile number is wrong`() = runTest {
 
-
-        val countryCode = "+20"
-        val mobileNumber = "1100661617"
-        val password = "12345678"
-        val errorMessage = "Invalid credentials. Please check your phone number and password."
-        everySuspend { useCase.login(countryCode, mobileNumber, password) } throws InvalidCredentialsException(countryCode, mobileNumber)
+        val errorMessage = "Invalid mobile number"
+        everySuspend { useCase.login(any(), any(), any()) } throws InvalidMobileNumberException("11006600171")
 
         viewModel.login()
 
         viewModel.state.test {
             val state = awaitItem()
             assertTrue { state.errorMessage == errorMessage }
-            cancelAndIgnoreRemainingEvents()
+                cancelAndConsumeRemainingEvents()
         }
 
     }
 
     @Test
-    fun`should change phone number when user type on phone number text field`()= runTest{
-
+    fun `should change phone number when user type on phone number text field`() = runTest {
 
         val phoneNumber = "1100661617"
 
@@ -84,13 +89,12 @@ class LoginViewModelTest {
         viewModel.state.test {
             val state = awaitItem()
             assertTrue { state.phoneNumber == phoneNumber }
-            cancelAndIgnoreRemainingEvents()
+                cancelAndConsumeRemainingEvents()
         }
     }
 
-     @Test
-    fun`should change password when user type on password text field`()= runTest{
-
+    @Test
+    fun `should change password when user type on password text field`() = runTest {
 
         val password = "12345678"
 
@@ -99,144 +103,140 @@ class LoginViewModelTest {
         viewModel.state.test {
             val state = awaitItem()
             assertTrue { state.password == password }
-            cancelAndIgnoreRemainingEvents()
+                cancelAndConsumeRemainingEvents()
         }
     }
 
     @Test
-    fun `should change country code when user select country code from country code dialog`()= runTest{
-        val countryCode = "+20"
+    fun `should change country code when user select country code from country code dialog`() = runTest {
 
-        viewModel.onPhoneCodeChanged(countryCode)
+            setupValidCountry()
 
-        viewModel.state.test {
-            val state = awaitItem()
-            assertTrue { state.countryPickerUIState.currentCountry.callingCode == countryCode }
-            cancelAndIgnoreRemainingEvents()
+            viewModel.state.test {
+                val state = awaitItem()
+                assertTrue { state.countryPickerUIState.currentCountry == selectedCountry }
+                    cancelAndConsumeRemainingEvents()
+            }
         }
-    }
 
     @Test
-    fun `should login button is enabled when phone number and password are valid` () = runTest {
-        val countryCode = "+20"
+    fun `should login button is enabled when phone number and password are valid`() = runTest {
+
         val phoneNumber = "01100661617"
         val password = "12345678"
-        viewModel.onPhoneCodeChanged(countryCode)
+        every { useCase.isMobileNumberValid(any(), any()) } returns true
+        every { useCase.isPasswordValid(any()) } returns true
+
+        setupValidCountry()
         viewModel.onPhoneChanged(phoneNumber)
         viewModel.onPasswordChanged(password)
 
-
-
         viewModel.state.test {
-           val state = awaitItem()
+            val state = awaitItem()
             print(state)
             assertTrue { state.isLoginEnabled }
-            cancelAndIgnoreRemainingEvents()
+                cancelAndConsumeRemainingEvents()
         }
     }
 
     @Test
-    fun `should login button is disabled when phone number is empty` () = runTest {
+    fun `should login button is disabled when phone number is empty`() = runTest {
         val password = "12345678"
 
-        viewModel.state.test {
-            viewModel.onPasswordChanged(password)
+        viewModel.onPasswordChanged(password)
 
+        viewModel.state.test {
             val state = awaitItem()
             assertTrue { !state.isLoginEnabled }
-            cancelAndIgnoreRemainingEvents()
+                cancelAndConsumeRemainingEvents()
         }
     }
 
     @Test
-    fun `should login button is disabled when password is empty` () = runTest {
+    fun `should login button is disabled when password is empty`() = runTest {
         val phoneNumber = "1100661617"
-        val countryCode = "+20"
+
+        viewModel.onSelectCountryItem(selectedCountry)
+        viewModel.onClickConfirmButton()
+        viewModel.onPhoneChanged(phoneNumber)
 
         viewModel.state.test {
-            viewModel.onPhoneCodeChanged(countryCode)
-            viewModel.onPhoneChanged(phoneNumber)
 
             val state = awaitItem()
             assertTrue { !state.isLoginEnabled }
-            cancelAndIgnoreRemainingEvents()
+                cancelAndConsumeRemainingEvents()
         }
     }
 
     @Test
-    fun `should login button is disabled when password length is less than 8 characters` () = runTest {
-        val phoneNumber = "1100661617"
-        val countryCode = "+20"
-        val password = "1234"
+    fun `should login button is disabled when password length is less than 8 characters`() = runTest {
+            val phoneNumber = "1100661617"
+            val password = "1234"
 
-        viewModel.state.test {
-            viewModel.onPhoneCodeChanged(countryCode)
-            viewModel.onPhoneChanged(phoneNumber)
-            viewModel.onPasswordChanged(password)
-
-            val state = awaitItem()
-            assertTrue { !state.isLoginEnabled }
-            cancelAndIgnoreRemainingEvents()
-        }
-    }
-
-    @Test
-    fun `should login button is disabled when phone number does not match  country code` () = runTest {
-        val phoneNumber = "11006616"
-        val countryCode = "+20"
-        val password = "12345678"
-
-        viewModel.state.test {
-            viewModel.onPhoneCodeChanged(countryCode)
+            setupValidCountry()
             viewModel.onPhoneChanged(phoneNumber)
             viewModel.onPasswordChanged(password)
 
-            val state = awaitItem()
-            assertTrue { !state.isLoginEnabled }
-            cancelAndIgnoreRemainingEvents()
-        }
-    }
-
-    @Test
-    fun`should change password visibility when user click on password visibility button`() = runTest {
-
-        viewModel.onPasswordVisibilityToggled()
-
-
-        viewModel.state.test {
-            val state = awaitItem()
-            assertTrue { state.isPasswordVisible }
-            cancelAndIgnoreRemainingEvents()
+            viewModel.state.test {
+                val state = awaitItem()
+                assertTrue { !state.isLoginEnabled }
+                    cancelAndConsumeRemainingEvents()
+            }
         }
 
-    }
+    @Test
+    fun `should login button is disabled when phone number does not match  country code`() = runTest {
+            val phoneNumber = "11006616"
+            val password = "12345678"
+
+            setupValidCountry()
+            viewModel.onPhoneChanged(phoneNumber)
+            viewModel.onPasswordChanged(password)
+
+            viewModel.state.test {
+                val state = awaitItem()
+                assertTrue { !state.isLoginEnabled }
+                    cancelAndConsumeRemainingEvents()
+            }
+        }
 
     @Test
-    fun`should navigate to forget password screen when user click on forget password button`()= runTest{
+    fun `should change password visibility when user click on password visibility button`() = runTest {
 
-        viewModel.onForgotPasswordClicked()
+            viewModel.onPasswordVisibilityToggled()
 
+            viewModel.state.test {
+                val state = awaitItem()
+                assertTrue { state.isPasswordVisible }
+                    cancelAndConsumeRemainingEvents()
+            }
+
+        }
+
+    @Test
+    fun `should navigate to forget password screen when user click on forget password button`() = runTest {
+
+            viewModel.effect.test {
+                viewModel.onForgotPasswordClicked()
+                val effect = awaitItem()
+                assertTrue { effect is LoginScreenUIEffect.NavigateToForgotPassword }
+                    cancelAndConsumeRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `should navigate to register screen when user click on register button`() = runTest {
         viewModel.effect.test {
-            val effect = awaitItem()
-            print(effect)
-            assertTrue { effect is LoginScreenUIEffect.NavigateToForgotPassword }
-            cancelAndIgnoreRemainingEvents()
-        }
-    }
-
-    @Test
-    fun`should navigate to register screen when user click on register button`()= runTest{
-
-        viewModel.onRegisterClicked()
-
-        viewModel.effect.test {
+            viewModel.onRegisterClicked()
             val effect = awaitItem()
             assertTrue { effect is LoginScreenUIEffect.NavigateToRegister }
-            cancelAndIgnoreRemainingEvents()
+                cancelAndConsumeRemainingEvents()
         }
     }
 
 
-
+    companion object {
+        val selectedCountry: MenaCountry = MenaCountry.EGYPT
+    }
 
 }

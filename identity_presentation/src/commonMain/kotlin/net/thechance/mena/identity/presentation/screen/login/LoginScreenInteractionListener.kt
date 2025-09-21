@@ -10,7 +10,6 @@ interface LoginScreenInteractionListener : BaseInteractionListener {
     fun onLoginClicked()
     fun onPhoneCodeClicked()
 
-    fun onPhoneCodeChanged(phoneCode: String)
     fun onPhoneChanged(phone: String)
     fun onPasswordChanged(password: String)
 
