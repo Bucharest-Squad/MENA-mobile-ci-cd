@@ -10,10 +10,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
-import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.dukan.domain.entity.Category
-import net.thechance.mena.dukan.domain.entity.Color
 import net.thechance.mena.dukan.domain.entity.Dukan
 import net.thechance.mena.dukan.domain.entity.MyDukanStatus
 import net.thechance.mena.dukan.domain.exceptions.DukanNotFoundException
@@ -22,7 +18,6 @@ import net.thechance.mena.dukan.presentation.viewModel.mainScreen.MainEffect
 import net.thechance.mena.dukan.presentation.viewModel.mainScreen.MainScreenUiState
 import net.thechance.mena.dukan.presentation.viewModel.mainScreen.MainScreenUiState.DukanStatusUi
 import net.thechance.mena.dukan.presentation.viewModel.mainScreen.MainViewModel
-import net.thechance.mena.dukan.presentation.viewModel.mainScreen.toUiState
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -83,9 +78,9 @@ class MainViewModelTest {
         }
 
     @Test
-    fun `When getMyDukanStatus returns null then the MainViewModelUiState should update ErrorMessage`() =
+    fun `When getMyDukanStatus throws DukanNotFoundException the MainViewModelUiState should set ErrorMessage to null`() =
         runTest(testDispatcher) {
-            everySuspend { dukanRepository.getMyDukanStatus() } returns null
+            everySuspend { dukanRepository.getMyDukanStatus() } throws DukanNotFoundException()
 
             val mainViewModel = MainViewModel(
                 dukanRepository = dukanRepository,
@@ -93,9 +88,8 @@ class MainViewModelTest {
             )
 
             mainViewModel.state.test {
-                awaitItem()
-                val secondEmit = awaitItem()
-                assertEquals("Dukan not found", secondEmit.errorMessage)
+                val result = awaitItem()
+                assertEquals(null, result.errorMessage)
                 cancelAndIgnoreRemainingEvents()
             }
         }
