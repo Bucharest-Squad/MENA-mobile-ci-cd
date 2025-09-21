@@ -4,13 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -28,6 +24,7 @@ import mena.trends_presentation.generated.resources.choose_interests
 import mena.trends_presentation.generated.resources.help_text
 import mena.trends_presentation.generated.resources.next
 import net.thechance.mena.designsystem.presentation.component.button.Button
+import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.trends.presentation.navigation.LocalNavController
 import net.thechance.mena.trends.presentation.navigation.Route
@@ -62,19 +59,20 @@ private fun CategoryPickScreenContent(
     listener: CategoryPickInteractionListener,
 ) {
     if (state.isLoading.not()) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Theme.colorScheme.background.surface)
-                .statusBarsPadding()
-                .navigationBarsPadding()
+        Scaffold(
+            bottomBar = {
+                NextButton(
+                    onNextClick = listener::onNextClick,
+                    isButtonEnabled = state.isNextButtonEnabled(),
+                    isButtonLoading = state.isNextButtonLoading,
+                )
+            }
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
             ) {
-                Spacer(modifier = Modifier.height(72.dp))
                 Text(
                     text = stringResource(Res.string.choose_interests),
                     style = Theme.typography.title.medium,
@@ -83,7 +81,8 @@ private fun CategoryPickScreenContent(
                         .padding(
                             bottom = Theme.spacing._4,
                             start = Theme.spacing._16,
-                            end = Theme.spacing._16
+                            end = Theme.spacing._16,
+                            top = 72.dp
                         )
                 )
 
@@ -118,23 +117,9 @@ private fun CategoryPickScreenContent(
                     }
                 }
             }
-
-            NextButton(
-                onNextClick = listener::onNextClick,
-                isButtonEnabled = state.isNextButtonEnabled(),
-                isButtonLoading = state.isNextButtonLoading,
-                modifier = Modifier.align(Alignment.BottomCenter)
-            )
         }
     } else {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Theme.colorScheme.background.surface.copy(alpha = 0.7f)),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator()
-        }
+        LoadingProgressBar()
     }
 }
 
@@ -174,5 +159,17 @@ private fun NextButton(
                     horizontal = Theme.spacing._24
                 )
         )
+    }
+}
+
+@Composable
+private fun LoadingProgressBar() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Theme.colorScheme.background.surface),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator()
     }
 }

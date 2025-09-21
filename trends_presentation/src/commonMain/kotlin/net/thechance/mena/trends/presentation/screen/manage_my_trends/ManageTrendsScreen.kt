@@ -6,10 +6,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -20,14 +18,13 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.collectAsLazyPagingItems
 import app.cash.paging.compose.itemKey
@@ -42,11 +39,13 @@ import mena.trends_presentation.generated.resources.profile_image_desc
 import mena.trends_presentation.generated.resources.trend_image_desc
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
+import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.component.segment.Segment
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.trends.presentation.navigation.LocalNavController
 import net.thechance.mena.trends.presentation.navigation.Route
+import net.thechance.mena.trends.presentation.shared.util.ObserveAsEffect
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -55,22 +54,16 @@ import org.koin.compose.viewmodel.koinViewModel
 internal fun ManageTrendsScreen(
     viewModel: ManageTrendsViewModel = koinViewModel()
 ) {
-    val state by viewModel.state.collectAsState()
+    val state by viewModel.state.collectAsStateWithLifecycle()
     val navController = LocalNavController.current
 
-    LaunchedEffect(Unit) {
-        viewModel.effect.collect { effect ->
-            when (effect) {
-                is ManageTrendsUiEffect.NavigateBack -> navController.navigateUp()
-
-                is ManageTrendsUiEffect.NavigateToTrend ->
-                    navController.navigate(Route.ReelDetails(effect.reelId))
+    ObserveAsEffect(viewModel.effect) { effect ->
+        when (effect) {
+            is ManageTrendsUiEffect.NavigateBack -> navController.navigateUp()
+            is ManageTrendsUiEffect.NavigateToTrend -> {
+                navController.navigate(Route.ReelDetails(effect.reelId))
             }
         }
-    }
-
-    LaunchedEffect(Unit) {
-        viewModel.getReels()
     }
 
     ManageTrendsScreenContent(
@@ -86,23 +79,20 @@ private fun ManageTrendsScreenContent(
 ) {
     val reels = state.reels.collectAsLazyPagingItems()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Theme.colorScheme.background.surface),
+    Scaffold(
+        topBar = {
+            AppBar(
+                onLeadingClick = listener::onBackClick,
+                leadingContent = {
+                    Icon(
+                        painter = painterResource(Res.drawable.ic_arrow_left),
+                        contentDescription = stringResource(Res.string.back_arrow)
+                    )
+                },
+                title = stringResource(Res.string.manage_trends_title),
+            )
+        }
     ) {
-        Spacer(Modifier.height(8.dp))
-        AppBar(
-            onLeadingClick = { listener.onBackClick() },
-            leadingContent = {
-                Icon(
-                    painter = painterResource(Res.drawable.ic_arrow_left),
-                    contentDescription = stringResource(Res.string.back_arrow)
-                )
-            },
-            title = stringResource(Res.string.manage_trends_title),
-        )
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -128,9 +118,7 @@ private fun ManageTrendsScreenContent(
             SegmentSection(
                 reels = reels,
                 onTrendClick = listener::onReelItemClick,
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth(),
+                modifier = Modifier.weight(1f).fillMaxWidth(),
                 trendsTitle = stringResource(Res.string.my_trends),
                 favoriteTitle = stringResource(Res.string.favorite)
             )

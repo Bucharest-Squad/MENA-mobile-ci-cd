@@ -1,7 +1,6 @@
 package net.thechance.mena.trends.presentation.screen.user_reel
 
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,17 +16,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.rememberAsyncImagePainter
 import mena.trends_presentation.generated.resources.Res
@@ -52,6 +48,7 @@ import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.trends.presentation.navigation.LocalNavController
+import net.thechance.mena.trends.presentation.shared.util.ObserveAsEffect
 import net.thechance.mena.trends.presentation.shared.util.gradientShadow
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -62,25 +59,22 @@ import org.koin.compose.viewmodel.koinViewModel
 internal fun UserReelScreen(
     viewModel: UserReelViewModel = koinViewModel()
 ) {
-
     val state by viewModel.state.collectAsStateWithLifecycle()
-
     val navController = LocalNavController.current
+
+    ObserveAsEffect(viewModel.effect) { effect ->
+        when (effect) {
+            UserReelEffect.NavigateBack -> navController.popBackStack()
+        }
+    }
 
     UserReelScreenContent(
         state = state,
         listener = viewModel
     )
-
-    LaunchedEffect(Unit) {
-        viewModel.effect.collect { effect ->
-            when (effect) {
-                UserReelEffect.NavigateBack -> navController.popBackStack()
-            }
-        }
-    }
 }
 
+// TODO: That Screen Should be improved later when implementing video player
 @Composable
 private fun UserReelScreenContent(
     state: UserReelState,
@@ -140,22 +134,15 @@ private fun UserReelScreenContent(
                 )
             }
         },
+        topBar = { TopAppBar(onBackClick = listener::onBackClick) }
     ) {
-
         Box(modifier = Modifier.fillMaxSize()) {
-
-            TopAppBar(
-                onBackClick = { listener.onBackClick() },
-                modifier = Modifier.zIndex(2f),
-            )
-
-            RunningVideoPlaceHolder()
-
             UsersReAct(
                 viewCount = state.viewsCount.toString(),
                 likeCount = state.likesCount.toString(),
                 onDeleteClick = listener::onDeleteClick,
-                modifier = Modifier.align(Alignment.BottomEnd)
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
                     .padding(end = Theme.spacing._16, bottom = 140.dp)
             )
 
@@ -257,11 +244,6 @@ private fun PublisherDetails(
             )
         }
     }
-}
-
-@Composable
-private fun RunningVideoPlaceHolder() {
-    Box(Modifier.background(Color.Black).fillMaxSize())
 }
 
 @Composable
