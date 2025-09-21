@@ -70,6 +70,7 @@ kotlin {
             }
         }
 
+
         kotlin.sourceSets["commonMain"].kotlin.srcDir(
             layout.buildDirectory.dir("generated/buildConfig")
         )
