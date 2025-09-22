@@ -20,8 +20,10 @@ fun authInterceptor(
 ) = createClientPlugin("AuthInterceptor") {
 
     onRequest { request, _ ->
-        localDataSource.getAccessToken().let { token ->
-            request.headers.append(HttpHeaders.Authorization, "Bearer $token")
+        if (!request.url.toString().contains("login")) {
+            localDataSource.getAccessToken().let { token ->
+                request.headers.append(HttpHeaders.Authorization, "Bearer $token")
+            }
         }
     }
 }

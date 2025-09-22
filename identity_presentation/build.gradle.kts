@@ -11,8 +11,6 @@ plugins {
 }
 
 kotlin {
-
-
     androidTarget {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
@@ -20,6 +18,7 @@ kotlin {
     }
 
     listOf(
+        iosX64(),
         iosArm64(),
         iosSimulatorArm64()
     ).forEach { iosTarget ->
@@ -30,13 +29,12 @@ kotlin {
     }
 
     sourceSets {
-         androidMain.dependencies {
+        androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
-         }
-
+        }
         commonMain.dependencies {
             implementation(projects.identityDomain)
             implementation(projects.designSystem)
@@ -46,7 +44,6 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
-
             implementation(libs.bundles.koin)
             implementation(libs.bundles.voyager)
         }
@@ -67,5 +64,19 @@ android {
 
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
+    }
+}
+
+kover.reports {
+    verify {
+        rule {
+            minBound(80)
+        }
+    }
+
+    filters {
+        excludes {
+            packages("mena.identity_presentation.generated.resources*")
+        }
     }
 }

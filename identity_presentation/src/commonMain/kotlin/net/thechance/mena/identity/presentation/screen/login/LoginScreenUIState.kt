@@ -11,6 +11,4 @@ data class LoginScreenUIState(
     val errorMessage:String? = null,
     val isLoginEnabled: Boolean = false,
     val countryPickerUIState: CountryPickerUIState = CountryPickerUIState()
-){
-
-}
+)

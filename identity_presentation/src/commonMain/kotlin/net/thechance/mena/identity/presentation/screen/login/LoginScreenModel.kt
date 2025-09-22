@@ -2,8 +2,9 @@ package net.thechance.mena.identity.presentation.screen.login
 
 import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.coroutines.CoroutineScope
-import net.thechance.mena.identity.presentation.base.BaseScreenModel
 import net.thechance.mena.identity.domain.useCase.LoginUseCase
+import net.thechance.mena.identity.presentation.base.BaseScreenModel
+import net.thechance.mena.identity.presentation.base.ErrorState
 import net.thechance.mena.identity.presentation.countryPicker.menaCountries.MenaCountry
 import net.thechance.mena.identity.presentation.countryPicker.selectByCountry
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
@@ -19,27 +20,35 @@ class LoginScreenModel(
     override fun onLoginClicked() {
         updateState { copy(isLoading = true, errorMessage = null) }
         tryToExecute(
-            function = {
-                loginUseCase.login(
-                    state.value.countryPickerUIState.currentCountry.callingCode,
-                    state.value.phoneNumber.removePrefix("0"),
-                    state.value.password
-                )
-            },
-            onSuccess = {
-                updateState { copy(isLoading = false) }
-                sendNewEffect(LoginScreenUIEffect.NavigateToHome)
-            },
-            onError = { errorState ->
-                updateState {
-                    copy(
-                        isLoading = false,
-                        errorMessage = mapErrorToMessage(errorState)
-                    )
-                }
-            }
+            function = ::onLogin,
+            onSuccess = ::onLoginSuccess,
+            onError = ::onErrorAccrue
         )
     }
+
+    private suspend fun onLogin() {
+        loginUseCase.login(
+            state.value.countryPickerUIState.currentCountry.callingCode,
+            state.value.phoneNumber,
+            state.value.password
+        )
+    }
+
+    private fun onLoginSuccess() {
+        updateState { copy(isLoading = false) }
+        sendNewEffect(LoginScreenUIEffect.NavigateToHome)
+    }
+
+    private fun onErrorAccrue(errorState: ErrorState) {
+        updateState {
+            copy(
+                isLoading = false,
+                errorMessage = mapErrorToMessage(errorState)
+            )
+        }
+    }
+
+
 
     private fun changeIsLoginEnabled() {
         updateState {
@@ -80,7 +89,6 @@ class LoginScreenModel(
     override fun clearErrorMessage() {
         updateState { copy(errorMessage = null) }
     }
-
 
 
     override fun onSelectCountryItem(country: MenaCountry) {

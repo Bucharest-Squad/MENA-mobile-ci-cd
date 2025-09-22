@@ -4,10 +4,12 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.kover)
 }
 
 kotlin {
     jvm()
+    iosX64()
     iosArm64()
     iosSimulatorArm64()
 
@@ -27,12 +29,21 @@ kotlin {
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
         }
-
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+        }
         jvmTest.dependencies {
             implementation(libs.bundles.jvm.test)
         }
     }
+}
 
+kover.reports {
+    verify {
+        rule {
+            minBound(80)
+        }
+    }
 }
 
 val generateBuildConfig by tasks.registering {
@@ -42,8 +53,8 @@ val generateBuildConfig by tasks.registering {
         load(rootProject.file("local.properties").inputStream())
     }
 
-    val baseUrl = props["BASE_URL"] ?:
-    throw IllegalStateException("BASE_URL not found in local.properties")
+    val baseUrl = props["BASE_URL"]
+        ?: throw IllegalStateException("BASE_URL not found in local.properties")
 
     outputs.dir(outputDir)
 
