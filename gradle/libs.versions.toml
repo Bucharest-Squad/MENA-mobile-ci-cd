@@ -73,8 +73,8 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines-test" }
 kotlin-test-annotations-common = { module = "org.jetbrains.kotlin:kotlin-test-annotations-common", version.ref = "kotlin" }
 assertk = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assertk" }
-turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine"}
-mockk = { module = "io.mockk:mockk-common", version.ref = "mockk" }
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mokkery-core = { module = "dev.mokkery:mokkery-core", version.ref = "mockkery" }
 koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin-core" }
 
@@ -147,9 +147,10 @@ kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref =
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "koverVersion" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-room = { id = "androidx.room", version.ref = "room" }
-mockkery = { id = "dev.mokkery", version.ref = "mockkery" }
 cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
+mockkery = { id = "dev.mokkery", version.ref = "mockkery" }
+room = { id = "androidx.room", version.ref = "room" }
+
 
 [bundles]
 jvm-test = [
@@ -171,7 +172,7 @@ ktor = [
     "ktor-client-content-negotiation",
     "ktor-client-auth",
     "ktor-client-logging",
-    "ktor-serialization-kotlinx-json",
+    "ktor-serialization-kotlinx-json"
 ]
 
 test = [

@@ -23,6 +23,9 @@ kotlin {
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
         }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+        }
         jvmTest.dependencies {
             implementation(libs.bundles.jvm.test)
         }
