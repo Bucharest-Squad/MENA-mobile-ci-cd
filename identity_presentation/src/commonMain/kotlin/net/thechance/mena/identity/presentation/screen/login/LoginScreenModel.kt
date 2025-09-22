@@ -16,7 +16,7 @@ class LoginScreenModel(
         get() = screenModelScope
 
 
-    fun login() {
+    override fun onLoginClicked() {
         updateState { copy(isLoading = true, errorMessage = null) }
         tryToExecute(
             function = {
@@ -58,10 +58,6 @@ class LoginScreenModel(
         sendNewEffect(LoginScreenUIEffect.NavigateToForgotPassword)
     }
 
-    override fun onLoginClicked() {
-        login()
-    }
-
     override fun onPhoneCodeClicked() {
         updateState { copy(showCountryBottomSheet = true) }
     }
@@ -85,13 +81,6 @@ class LoginScreenModel(
         updateState { copy(errorMessage = null) }
     }
 
-    override fun onClickCountryPicker() {
-        updateState {
-            copy(
-                showCountryBottomSheet = true
-            )
-        }
-    }
 
 
     override fun onSelectCountryItem(country: MenaCountry) {

@@ -6,6 +6,8 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.devMokkery)
+    alias(libs.plugins.kover)
+
 }
 
 kotlin {

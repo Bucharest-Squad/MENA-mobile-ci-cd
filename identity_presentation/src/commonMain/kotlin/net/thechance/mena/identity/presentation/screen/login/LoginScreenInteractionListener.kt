@@ -16,7 +16,6 @@ interface LoginScreenInteractionListener : BaseInteractionListener {
     fun onPasswordVisibilityToggled()
     fun clearErrorMessage()
 
-    fun onClickCountryPicker()
     fun onSelectCountryItem(country: MenaCountry)
     fun onClickConfirmButton()
     fun onDismissBottomSheet()
