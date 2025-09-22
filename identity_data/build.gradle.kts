@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.Properties
 
 plugins {
@@ -56,33 +55,6 @@ kover.reports {
     }
 }
 
-val generateBuildConfig by tasks.register("generateEnvironmentXcconfig") {
-    val developmentUrl = localProperties.getProperty("BASE_URL_DEVELOPMENT", "")
-    val stagingUrl = localProperties.getProperty("BASE_URL_STAGING", "")
-    val productionUrl = localProperties.getProperty("BASE_URL_PRODUCTION", "")
-    val buildType = providers.environmentVariable("CONFIGURATION").orNull ?: ""
-
-    val baseUrl = when {
-        buildType.endsWith("Staging", ignoreCase = true) -> stagingUrl
-        buildType.endsWith("Production", ignoreCase = true) -> productionUrl
-        else -> developmentUrl
-    }
-
-    val outputFileProperty =
-        project.layout.buildDirectory.file("generated/ios/environment.xcconfig")
-
-    doLast {
-        val outputFile = outputFileProperty.get().asFile
-        outputFile.parentFile.mkdirs()
-        outputFile.writeText("BASE_URL=$baseUrl")
-        println("Generated environment.xcconfig")
-    }
-}
-
 kotlin.sourceSets["commonMain"].kotlin.srcDir(
     layout.buildDirectory.dir("generated/buildConfig")
 )
-
-tasks.withType<KotlinCompile>().configureEach {
-    dependsOn(generateBuildConfig)
-}

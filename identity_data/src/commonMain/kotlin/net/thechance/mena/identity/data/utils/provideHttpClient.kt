@@ -1,6 +1,5 @@
 package net.thechance.mena.identity.data.utils
 
-import BuildConfig
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.api.createClientPlugin
@@ -30,13 +29,13 @@ fun authInterceptor(
 
 fun provideHttpClient(
     engine: HttpClientEngine,
-    localDataSource: LocalDataSource
-
+    localDataSource: LocalDataSource,
+    baseUrl: String,
 ): HttpClient {
 
     return HttpClient(engine) {
         defaultRequest {
-            url(BuildConfig.BASE_URL)
+            url(baseUrl)
         }
         install(ContentNegotiation) {
             json(
