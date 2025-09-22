@@ -29,4 +29,8 @@ kover.reports {
             minBound(80)
         }
     }
+
+    filters.excludes {
+        packages("*.di", "*.entity", "*.exception")
+    }
 }

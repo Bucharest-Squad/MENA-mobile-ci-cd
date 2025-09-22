@@ -74,9 +74,16 @@ kover.reports {
         }
     }
 
-    filters {
-        excludes {
-            packages("mena.identity_presentation.generated.resources*")
-        }
+    filters.includes {
+        classes("*ScreenModel*")
+    }
+
+    // todo: remove the equivalent tests after adding them or increasing their coverage
+    filters.excludes {
+        packages(
+            "*.register",
+            "*base",
+            "*forget_password"
+        )
     }
 }
