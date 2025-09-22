@@ -5,7 +5,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.androidLibrary)
-    alias(libs.plugins.devMokkery)
+    alias(libs.plugins.mockkery)
     alias(libs.plugins.kover)
 
 }
