@@ -1,5 +1,6 @@
 package net.thechance.mena
 
+import net.thechance.mena.di.networkModule
 import net.thechance.mena.identity.data.di.IdentityPlatformModule
 import net.thechance.mena.identity.data.di.identityDataModule
 import net.thechance.mena.identity.domain.di.domainModule
@@ -10,6 +11,9 @@ import org.koin.dsl.KoinAppDeclaration
 fun initKoin(config: KoinAppDeclaration? = null) {
     startKoin {
         config?.invoke(this)
+        val appModules = listOf(
+            networkModule
+        )
         val identityModules = listOf(
             identityScreensModule,
             domainModule,
@@ -18,7 +22,7 @@ fun initKoin(config: KoinAppDeclaration? = null) {
         )
 
         modules(
-            modules = identityModules // todo  + chatModules + dukanModules
+            modules = appModules + identityModules // todo  + chatModules + dukanModules
         )
     }
 }

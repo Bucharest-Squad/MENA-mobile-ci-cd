@@ -11,6 +11,7 @@ import net.thechance.mena.identity.data.utils.provideHttpClient
 import net.thechance.mena.identity.domain.repository.AuthenticationRepository
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
@@ -18,7 +19,13 @@ expect val IdentityPlatformModule: Module
 val identityDataModule = module {
     single { CIO.create() }
     singleOf(::Settings)
-    singleOf(::provideHttpClient)
+    single {
+        provideHttpClient(
+            engine = get(),
+            localDataSource = get(),
+            baseUrl = get<String>(named("baseUrl")),
+        )
+    }
     singleOf(::LocalDataSourceImpl) bind LocalDataSource::class
     singleOf(::AuthenticationRepositoryImpl) bind AuthenticationRepository::class
     singleOf(::AuthRemoteDataSourceImpl) bind AuthRemoteDataSource::class
