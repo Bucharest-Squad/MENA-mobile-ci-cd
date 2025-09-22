@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -24,7 +22,9 @@ import mena.trends_presentation.generated.resources.choose_interests
 import mena.trends_presentation.generated.resources.help_text
 import mena.trends_presentation.generated.resources.next
 import net.thechance.mena.designsystem.presentation.component.button.Button
+import net.thechance.mena.designsystem.presentation.component.indicator.DotsProgressIndicator
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
+import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.trends.presentation.navigation.LocalNavController
 import net.thechance.mena.trends.presentation.navigation.Route
@@ -170,6 +170,6 @@ private fun LoadingProgressBar() {
             .background(Theme.colorScheme.background.surface),
         contentAlignment = Alignment.Center
     ) {
-        CircularProgressIndicator()
+        DotsProgressIndicator()
     }
 }

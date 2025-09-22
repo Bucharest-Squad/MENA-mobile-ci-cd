@@ -7,14 +7,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import net.thechance.mena.designsystem.presentation.component.button.Button
+import net.thechance.mena.designsystem.presentation.component.indicator.DotsProgressIndicator
+import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.trends.presentation.navigation.LocalNavController
 import net.thechance.mena.trends.presentation.navigation.Route
@@ -72,13 +72,13 @@ private fun MainContainerScreenContent(
                 Button(
                     onClick = onClickCategory,
                 ) {
-                    Text("Category")
+                    Text("Category" , style = Theme.typography.title.medium)
                 }
 
                 Button(
                     onClick = onClickManageTrends,
                 ) {
-                    Text("Mange Reels")
+                    Text("Mange Reels", style = Theme.typography.title.medium)
                 }
             }
         }
@@ -89,7 +89,7 @@ private fun MainContainerScreenContent(
                 .background(Theme.colorScheme.background.surface.copy(alpha = 0.7f)),
             contentAlignment = Alignment.Center
         ) {
-            CircularProgressIndicator()
+            DotsProgressIndicator()
         }
     }
 }
