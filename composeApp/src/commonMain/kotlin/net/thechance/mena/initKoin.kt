@@ -1,7 +1,7 @@
 package net.thechance.mena
 
-import net.thechance.mena.identity.data.di.identityDataModule
 import net.thechance.mena.identity.data.di.IdentityPlatformModule
+import net.thechance.mena.identity.data.di.identityDataModule
 import net.thechance.mena.identity.domain.di.domainModule
 import net.thechance.mena.identity.presentation.di.identityScreensModule
 import org.koin.core.context.startKoin

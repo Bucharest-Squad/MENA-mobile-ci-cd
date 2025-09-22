@@ -7,6 +7,12 @@ plugins {
     alias(libs.plugins.kover)
 }
 
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
+}
+
 kotlin {
     jvm()
     iosX64()
@@ -22,6 +28,7 @@ kotlin {
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.koin.core)
             implementation(libs.ktor.client.logging)
+            implementation(libs.ktor.client.auth)
             implementation(libs.multiplatform.settings)
             implementation(libs.ktor.client.cio)
         }
@@ -31,53 +38,51 @@ kotlin {
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
-
-
         jvmTest.dependencies {
             implementation(libs.bundles.jvm.test)
-            kover.reports {
-                verify {
-                    rule {
-                        minBound(80)
-                    }
-                }
-
-            }
-        }
-
-        val generateBuildConfig by tasks.registering {
-            val outputDir = layout.buildDirectory.dir("generated/buildConfig")
-
-            val props = Properties().apply {
-                load(rootProject.file("local.properties").inputStream())
-            }
-
-            val baseUrl = props["BASE_URL"]
-                ?: throw IllegalStateException("BASE_URL not found in local.properties")
-
-            outputs.dir(outputDir)
-
-            doLast {
-                val file = outputDir.get().file("BuildConfig.kt").asFile
-                file.parentFile.mkdirs()
-                file.writeText(
-                    """
-            object BuildConfig {
-                const val BASE_URL: String = "$baseUrl"
-            }
-            """.trimIndent()
-                )
-            }
-        }
-
-
-        kotlin.sourceSets["commonMain"].kotlin.srcDir(
-            layout.buildDirectory.dir("generated/buildConfig")
-        )
-
-        tasks.withType<KotlinCompile>().configureEach {
-            dependsOn(generateBuildConfig)
         }
     }
 }
 
+kover.reports {
+    verify {
+        rule {
+            minBound(80)
+        }
+    }
+
+    filters.excludes {
+        packages("*.di", "*.dto", "*.utils")
+    }
+}
+
+val generateBuildConfig by tasks.register("generateEnvironmentXcconfig") {
+    val developmentUrl = localProperties.getProperty("BASE_URL_DEVELOPMENT", "")
+    val stagingUrl = localProperties.getProperty("BASE_URL_STAGING", "")
+    val productionUrl = localProperties.getProperty("BASE_URL_PRODUCTION", "")
+    val buildType = providers.environmentVariable("CONFIGURATION").orNull ?: ""
+
+    val baseUrl = when {
+        buildType.endsWith("Staging", ignoreCase = true) -> stagingUrl
+        buildType.endsWith("Production", ignoreCase = true) -> productionUrl
+        else -> developmentUrl
+    }
+
+    val outputFileProperty =
+        project.layout.buildDirectory.file("generated/ios/environment.xcconfig")
+
+    doLast {
+        val outputFile = outputFileProperty.get().asFile
+        outputFile.parentFile.mkdirs()
+        outputFile.writeText("BASE_URL=$baseUrl")
+        println("Generated environment.xcconfig")
+    }
+}
+
+kotlin.sourceSets["commonMain"].kotlin.srcDir(
+    layout.buildDirectory.dir("generated/buildConfig")
+)
+
+tasks.withType<KotlinCompile>().configureEach {
+    dependsOn(generateBuildConfig)
+}

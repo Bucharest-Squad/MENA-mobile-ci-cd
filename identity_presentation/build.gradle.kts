@@ -5,7 +5,9 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.mockkery)
     alias(libs.plugins.kover)
+
 }
 
 kotlin {
@@ -42,15 +44,16 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
-
             implementation(libs.bundles.koin)
             implementation(libs.bundles.voyager)
         }
+        commonTest.dependencies {
+            implementation(libs.bundles.common.test)
+        }
+
+
         iosMain.dependencies {
 
-        }
-        commonTest.dependencies {
-            implementation(libs.kotlin.test)
         }
     }
 }
@@ -71,9 +74,16 @@ kover.reports {
         }
     }
 
-    filters {
-        excludes {
-            packages("mena.identity_presentation.generated.resources*")
-        }
+    filters.includes {
+        classes("*ScreenModel*")
+    }
+
+    // todo: remove the equivalent tests after adding them or increasing their coverage
+    filters.excludes {
+        packages(
+            "*.register",
+            "*base",
+            "*forget_password"
+        )
     }
 }

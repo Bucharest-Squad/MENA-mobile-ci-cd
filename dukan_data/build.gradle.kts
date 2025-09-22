@@ -69,6 +69,7 @@ kover.reports {
         }
     }
 }
+
 android {
     namespace = "net.thechance.mena.dukan.data"
     compileSdk = libs.versions.android.compileSdk.get().toInt()

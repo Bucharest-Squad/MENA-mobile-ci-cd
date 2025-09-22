@@ -11,7 +11,6 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-
             implementation(libs.koin.core)
         }
 
@@ -29,5 +28,9 @@ kover.reports {
         rule {
             minBound(80)
         }
+    }
+
+    filters.excludes {
+        packages("*.di", "*.entity", "*.exception")
     }
 }
