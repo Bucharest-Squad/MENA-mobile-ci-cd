@@ -143,7 +143,8 @@ jvm-test = [
     "junit",
     "mockk",
     "assertk",
-    "kotlinx-coroutines-test"
+    "kotlinx-coroutines-test",
+    "ktor-client-mock"
 ]
 common-test = [
     "kotlin-test",
