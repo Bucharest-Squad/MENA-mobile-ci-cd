@@ -16,7 +16,8 @@ class LoginScreenModel(
     override val viewModelScope: CoroutineScope
         get() = screenModelScope
 
-    fun login() {
+
+    override fun onLoginClicked() {
         updateState { copy(isLoading = true, errorMessage = null) }
         tryToExecute(
             function = ::onLogin,
@@ -47,6 +48,8 @@ class LoginScreenModel(
         }
     }
 
+
+
     private fun changeIsLoginEnabled() {
         updateState {
             val countryCode = countryPickerUIState.currentCountry.callingCode
@@ -64,16 +67,10 @@ class LoginScreenModel(
         sendNewEffect(LoginScreenUIEffect.NavigateToForgotPassword)
     }
 
-    override fun onLoginClicked() {
-        login()
-    }
-
     override fun onPhoneCodeClicked() {
         updateState { copy(showCountryBottomSheet = true) }
     }
 
-    override fun onPhoneCodeChanged(phoneCode: String) {
-    }
 
     override fun onPhoneChanged(phone: String) {
         updateState { copy(phoneNumber = phone) }
@@ -93,13 +90,6 @@ class LoginScreenModel(
         updateState { copy(errorMessage = null) }
     }
 
-    override fun onClickCountryPicker() {
-        updateState {
-            copy(
-                showCountryBottomSheet = true
-            )
-        }
-    }
 
     override fun onSelectCountryItem(country: MenaCountry) {
         updateState {

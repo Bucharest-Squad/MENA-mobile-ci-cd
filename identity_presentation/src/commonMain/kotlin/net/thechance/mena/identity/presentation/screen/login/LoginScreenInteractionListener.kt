@@ -10,14 +10,12 @@ interface LoginScreenInteractionListener : BaseInteractionListener {
     fun onLoginClicked()
     fun onPhoneCodeClicked()
 
-    fun onPhoneCodeChanged(phoneCode: String)
     fun onPhoneChanged(phone: String)
     fun onPasswordChanged(password: String)
 
     fun onPasswordVisibilityToggled()
     fun clearErrorMessage()
 
-    fun onClickCountryPicker()
     fun onSelectCountryItem(country: MenaCountry)
     fun onClickConfirmButton()
     fun onDismissBottomSheet()

@@ -5,7 +5,9 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.devMokkery)
     alias(libs.plugins.kover)
+
 }
 
 kotlin {
@@ -45,11 +47,13 @@ kotlin {
             implementation(libs.bundles.koin)
             implementation(libs.bundles.voyager)
         }
+        commonTest.dependencies {
+            implementation(libs.bundles.common.test)
+        }
+
+
         iosMain.dependencies {
 
-        }
-        commonTest.dependencies {
-            implementation(libs.kotlin.test)
         }
     }
 }
