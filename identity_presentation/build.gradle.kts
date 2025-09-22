@@ -38,6 +38,7 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.identityDomain)
             implementation(projects.designSystem)
+
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
@@ -49,11 +50,6 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(libs.bundles.common.test)
-        }
-
-
-        iosMain.dependencies {
-
         }
     }
 }
