@@ -9,7 +9,7 @@ plugins {
     alias(libs.plugins.kover)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlinx.serialization)
-    alias(libs.plugins.mokkery)
+    alias(libs.plugins.mockkery)
 }
 
 kotlin {
@@ -60,9 +60,9 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
-            implementation(libs.kotlin.coroutines.test)
+            implementation(libs.kotlinx.coroutines.test)
             implementation(libs.assertk)
-            implementation(libs.test.turbine)
+            implementation(libs.turbine)
             implementation(libs.koin.test)
         }
         commonTest.dependencies {

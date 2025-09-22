@@ -27,7 +27,7 @@ resources = "0.25.0"
 paging-compose-version = "3.3.0-alpha02-0.5.1"
 kotlinx-coroutines-test = "1.10.2"
 assertk = "0.28.1"
-mokkery = "2.10.0"
+mockkery = "2.10.0"
 turbine = "1.2.1"
 mockk = "1.14.0"
 filekit = "0.11.0"
@@ -68,7 +68,7 @@ kotlin-test-annotations-common = { module = "org.jetbrains.kotlin:kotlin-test-an
 assertk = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assertk" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine"}
 mockk = { module = "io.mockk:mockk-common", version.ref = "mockk" }
-mokkery-core = { module = "dev.mokkery:mokkery-core", version.ref = "mokkery" }
+mokkery-core = { module = "dev.mokkery:mokkery-core", version.ref = "mockkery" }
 koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin-core" }
 
 # Koin
@@ -128,7 +128,7 @@ kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "koverVersion" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 room = { id = "androidx.room", version.ref = "room" }
-mokkery = { id = "dev.mokkery", version.ref = "mokkery" }
+mockkery = { id = "dev.mokkery", version.ref = "mockkery" }
 cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
 
 [bundles]
