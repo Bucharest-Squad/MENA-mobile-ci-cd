@@ -13,6 +13,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.cash.paging.compose.collectAsLazyPagingItems
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.contacts_title
@@ -31,7 +32,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun ContactsScreen(viewModel: ContactsViewModel = koinViewModel()) {
 
-    val state by viewModel.state.collectAsState()
+    val state by viewModel.state.collectAsStateWithLifecycle()
     val navController = LocalNavController.current
 
     val stateFlow = navController.currentBackStackEntry
@@ -89,7 +90,7 @@ private fun ContactsContent(
             trailingContent = {
                 AppBarOptionContainer(
                     badgeColor = Theme.colorScheme.primary.primary,
-                    onClick = interactionListener::onResyncClick
+                    onClick = interactionListener::onReSyncClick
                 ) {
                     Icon(
                         painter = painterResource(Res.drawable.ic_resync),

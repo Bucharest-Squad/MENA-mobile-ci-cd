@@ -10,8 +10,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -27,13 +29,24 @@ import org.koin.compose.koinInject
 import kotlin.collections.component1
 import kotlin.collections.component2
 
+val LocalNavController = staticCompositionLocalOf<NavController> {
+    error("No NavController provided")
+}
+
 @Composable
 fun ChatNavHost(
     chatEffector: ChatEffector = koinInject(),
 ) {
 
     val navController = rememberNavController()
-    var snackBarDataState by remember { mutableStateOf(SnackBarData(title = Res.string.empty, message = Res.string.empty)) }
+    var snackBarDataState by remember {
+        mutableStateOf(
+            SnackBarData(
+                title = Res.string.empty,
+                message = Res.string.empty
+            )
+        )
+    }
     var isSnackBarVisible by remember { mutableStateOf(false) }
 
     EffectHandler(chatEffector.chatEffect) { effect ->

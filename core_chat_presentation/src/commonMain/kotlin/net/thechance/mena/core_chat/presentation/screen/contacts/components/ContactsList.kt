@@ -30,7 +30,7 @@ import mena.core_chat_presentation.generated.resources.refresh_contacts_message
 import mena.core_chat_presentation.generated.resources.something_went_wrong
 import net.thechance.mena.core_chat.presentation.components.ErrorView
 import net.thechance.mena.core_chat.presentation.screen.contacts.ContactListInteractionListener
-import net.thechance.mena.core_chat.presentation.screen.contacts.ContactUi
+import net.thechance.mena.core_chat.presentation.screen.contacts.ContactUiState
 import net.thechance.mena.core_chat.presentation.screen.syncContacts.components.PhoneIcon
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.text.Text
@@ -40,7 +40,7 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun ContactsList(
-    contacts: LazyPagingItems<ContactUi>,
+    contacts: LazyPagingItems<ContactUiState>,
     listener: ContactListInteractionListener
 ) {
     AnimatedContent(

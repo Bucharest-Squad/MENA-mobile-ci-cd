@@ -99,7 +99,7 @@ class ContactsViewModelTest {
         
         everySuspend { effector.navigate(any(), any(), any()) } returns Unit
 
-        viewModel.onResyncClick()
+        viewModel.onReSyncClick()
         
         advanceUntilIdle()
 
