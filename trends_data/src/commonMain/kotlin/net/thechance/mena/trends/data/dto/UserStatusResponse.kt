@@ -5,5 +5,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 internal data class UserStatusResponse(
-    @SerialName("value") val value: Boolean? = null
+    @SerialName("hasCategory") val hasCategory: Boolean? = null
 )

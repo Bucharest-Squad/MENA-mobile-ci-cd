@@ -32,7 +32,7 @@ internal class CategoryRepositoryImpl(
     override suspend fun isCategoriesAlreadySelectedByUser(): Boolean {
         return safeApiCall<UserStatusResponse> {
             httpClient.get("/$TRENDS_PATH/$USER_STATUS_ENDPOINT")
-        }.value ?: false
+        }.hasCategory ?: false
     }
 
     override suspend fun updateUserInterestedCategories(categoriesIds: List<String>) {
