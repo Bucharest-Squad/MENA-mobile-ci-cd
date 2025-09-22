@@ -6,3 +6,4 @@ class DukanNotFoundException(message: String = "Dukan Not Found") : DukanExcepti
 class DukanNameTakenException(message: String = "Dukan Name Taken") : DukanException(message)
 class NoInternetException(message: String = "No Internet") : DukanException(message)
 class ShelfNameTakenException(message: String = "Shelf Name Taken") : DukanException(message)
+class ProductNameTakenException(message: String = "Product Name Taken") : DukanException(message)
