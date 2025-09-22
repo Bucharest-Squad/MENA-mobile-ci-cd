@@ -7,6 +7,12 @@ plugins {
     alias(libs.plugins.kover)
 }
 
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
+}
+
 kotlin {
     jvm()
     iosX64()
@@ -50,28 +56,26 @@ kover.reports {
     }
 }
 
-val generateBuildConfig by tasks.registering {
-    val outputDir = layout.buildDirectory.dir("generated/buildConfig")
+val generateBuildConfig by tasks.register("generateEnvironmentXcconfig") {
+    val developmentUrl = localProperties.getProperty("BASE_URL_DEVELOPMENT", "")
+    val stagingUrl = localProperties.getProperty("BASE_URL_STAGING", "")
+    val productionUrl = localProperties.getProperty("BASE_URL_PRODUCTION", "")
+    val buildType = providers.environmentVariable("CONFIGURATION").orNull ?: ""
 
-    val props = Properties().apply {
-        load(rootProject.file("local.properties").inputStream())
+    val baseUrl = when {
+        buildType.endsWith("Staging", ignoreCase = true) -> stagingUrl
+        buildType.endsWith("Production", ignoreCase = true) -> productionUrl
+        else -> developmentUrl
     }
 
-    val baseUrl = props["BASE_URL"]
-        ?: throw IllegalStateException("BASE_URL not found in local.properties")
-
-    outputs.dir(outputDir)
+    val outputFileProperty =
+        project.layout.buildDirectory.file("generated/ios/environment.xcconfig")
 
     doLast {
-        val file = outputDir.get().file("BuildConfig.kt").asFile
-        file.parentFile.mkdirs()
-        file.writeText(
-            """
-            object BuildConfig {
-                const val BASE_URL: String = "$baseUrl"
-            }
-            """.trimIndent()
-        )
+        val outputFile = outputFileProperty.get().asFile
+        outputFile.parentFile.mkdirs()
+        outputFile.writeText("BASE_URL=$baseUrl")
+        println("Generated environment.xcconfig")
     }
 }
 
