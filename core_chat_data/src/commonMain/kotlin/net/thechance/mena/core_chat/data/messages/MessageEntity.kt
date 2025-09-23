@@ -10,14 +10,11 @@ data class MessageEntity(
     val text: String,
     val timestamp: Long,
     val status: MessageStatus,
-    val clientId: String,
-    val serverId: String? = null
 )
 
 enum class MessageStatus {
     SENDING,
     SENT,
-    DELIVERED,
     READ,
     FAILED
 }
