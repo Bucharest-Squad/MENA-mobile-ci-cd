@@ -16,6 +16,7 @@ import net.thechance.mena.core_chat.presentation.navigation.ChatEffector
 import net.thechance.mena.core_chat.presentation.navigation.SyncContactsRoute
 import net.thechance.mena.core_chat.presentation.shared.BasePagingSource
 import net.thechance.mena.core_chat.presentation.shared.BaseViewModel
+import net.thechance.mena.core_chat.presentation.utils.UiText
 
 class ContactsViewModel(
     private val contactsRepository: ContactsRepository,
@@ -65,8 +66,8 @@ class ContactsViewModel(
     private fun onDataLoadError(e: Throwable) {
         showSnackBar(
             SnackBarData(
-                title = Res.string.something_went_wrong,
-                message = Res.string.could_not_load_the_contacts,
+                title = UiText.StringRes(Res.string.something_went_wrong),
+                message = UiText.StringRes(Res.string.could_not_load_the_contacts),
             )
         )
     }
