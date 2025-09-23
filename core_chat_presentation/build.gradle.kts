@@ -63,6 +63,7 @@ kotlin {
             // Paging 3
             implementation(libs.paging.compose.common)
             implementation(libs.paging.common)
+
             // Koin
             implementation(libs.bundles.koin.compose)
 
