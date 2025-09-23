@@ -6,20 +6,21 @@ import dev.icerock.moko.permissions.Permission
 import dev.icerock.moko.permissions.PermissionsController
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.contacts_permission_required_message
+import mena.core_chat_presentation.generated.resources.could_not_sync_contacts_message
 import mena.core_chat_presentation.generated.resources.permission_denied_title
 import mena.core_chat_presentation.generated.resources.something_went_wrong
-import mena.core_chat_presentation.generated.resources.could_not_sync_contacts_message
 import net.thechance.mena.core_chat.domain.repository.ContactsRepository
 import net.thechance.mena.core_chat.presentation.components.SnackBarData
 import net.thechance.mena.core_chat.presentation.navigation.ChatEffector
 import net.thechance.mena.core_chat.presentation.navigation.ContactsRoute
 import net.thechance.mena.core_chat.presentation.shared.BaseViewModel
-import net.thechance.mena.core_chat.presentation.utils.openAppSettings
+import net.thechance.mena.core_chat.presentation.utils.SettingsOpener
 
 class SyncContactsViewModel(
     private val contactsRepository: ContactsRepository,
     private val permissionsController: PermissionsController,
     private val syncContactsScreenArgs: SyncContactsScreenArgs,
+    private val settingsOpener: SettingsOpener,
     effector: ChatEffector
 ) : BaseViewModel<SyncContactsScreenState>(SyncContactsScreenState(), effector),
     SyncContactsInteractionListener {
@@ -102,7 +103,7 @@ class SyncContactsViewModel(
     }
 
     override fun onGoToSettingsClick() {
-        openAppSettings()
+        settingsOpener.openSettings()
     }
 
 
