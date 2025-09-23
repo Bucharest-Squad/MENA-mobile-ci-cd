@@ -4,6 +4,8 @@ plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kover)
     alias(libs.plugins.mokkery)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
 }
 
 kotlin {
@@ -21,7 +23,6 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.contacts.provider)
             implementation(libs.koin.core)
-
             implementation(libs.bundles.ktor)
             implementation(libs.androidx.datastore.preferences)
 
@@ -47,7 +48,13 @@ android {
         minSdk = libs.versions.android.minSdk.get().toInt()
     }
 }
+room {
+    schemaDirectory("$projectDir/schemas")
+}
 
+dependencies {
+    ksp(libs.androidx.room.compiler)
+}
 kover.reports {
     verify {
         rule {
