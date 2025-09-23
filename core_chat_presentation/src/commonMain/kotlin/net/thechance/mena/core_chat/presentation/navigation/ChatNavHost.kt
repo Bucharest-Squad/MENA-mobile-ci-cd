@@ -17,8 +17,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import mena.core_chat_presentation.generated.resources.Res
-import mena.core_chat_presentation.generated.resources.empty
 import net.thechance.mena.core_chat.presentation.components.AnimatedSnackBarHost
 import net.thechance.mena.core_chat.presentation.components.SnackBarData
 import net.thechance.mena.core_chat.presentation.screen.chats.ChatsScreen
@@ -26,8 +24,7 @@ import net.thechance.mena.core_chat.presentation.screen.contacts.ContactsScreen
 import net.thechance.mena.core_chat.presentation.screen.syncContacts.SyncContactsScreen
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.koin.compose.koinInject
-import kotlin.collections.component1
-import kotlin.collections.component2
+import net.thechance.mena.core_chat.presentation.utils.UiText
 
 val LocalNavController = staticCompositionLocalOf<NavController> {
     error("No NavController provided")
@@ -41,10 +38,7 @@ fun ChatNavHost(
     val navController = rememberNavController()
     var snackBarDataState by remember {
         mutableStateOf(
-            SnackBarData(
-                title = Res.string.empty,
-                message = Res.string.empty
-            )
+            SnackBarData(title = UiText.DynamicString(), message = UiText.DynamicString())
         )
     }
     var isSnackBarVisible by remember { mutableStateOf(false) }

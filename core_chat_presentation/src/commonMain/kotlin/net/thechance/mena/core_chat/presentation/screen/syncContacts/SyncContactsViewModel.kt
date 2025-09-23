@@ -14,6 +14,7 @@ import net.thechance.mena.core_chat.presentation.components.SnackBarData
 import net.thechance.mena.core_chat.presentation.navigation.ChatEffector
 import net.thechance.mena.core_chat.presentation.navigation.ContactsRoute
 import net.thechance.mena.core_chat.presentation.shared.BaseViewModel
+import net.thechance.mena.core_chat.presentation.utils.UiText
 import net.thechance.mena.core_chat.presentation.utils.openAppSettings
 
 class SyncContactsViewModel(
@@ -60,8 +61,8 @@ class SyncContactsViewModel(
                 }
                 showSnackBar(
                     snackBarData = SnackBarData(
-                        title = Res.string.permission_denied_title,
-                        message = Res.string.contacts_permission_required_message,
+                        title = UiText.StringRes(Res.string.permission_denied_title),
+                        message = UiText.StringRes(Res.string.contacts_permission_required_message),
                     )
                 )
             }
@@ -70,8 +71,8 @@ class SyncContactsViewModel(
                 updateState { it.copy(isLoading = false) }
                 showSnackBar(
                     SnackBarData(
-                        title = Res.string.permission_denied_title,
-                        message = Res.string.contacts_permission_required_message,
+                        title = UiText.StringRes(Res.string.permission_denied_title),
+                        message = UiText.StringRes(Res.string.contacts_permission_required_message),
                     )
                 )
             }
@@ -133,8 +134,8 @@ class SyncContactsViewModel(
         }
         showSnackBar(
             SnackBarData(
-                title = Res.string.something_went_wrong,
-                message = Res.string.could_not_sync_contacts_message,
+                title = UiText.StringRes(Res.string.something_went_wrong),
+                message = UiText.StringRes(Res.string.could_not_sync_contacts_message),
             )
         )
     }
