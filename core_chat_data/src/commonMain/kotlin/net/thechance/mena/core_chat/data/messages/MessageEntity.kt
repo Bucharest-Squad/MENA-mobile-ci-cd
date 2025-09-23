@@ -9,6 +9,7 @@ data class MessageEntity(
     val senderId: String,
     val text: String,
     val timestamp: Long,
+    val chatId: Long,
     val status: MessageStatus,
 )
 
