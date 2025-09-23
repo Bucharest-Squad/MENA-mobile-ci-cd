@@ -35,14 +35,14 @@ class ContactsViewModel(
         )
     }
 
-    private fun loadContactsOperation(): Flow<PagingData<ContactUi>> {
+    private fun loadContactsOperation(): Flow<PagingData<ContactUiState>> {
         return createPagingFlow(
             pagingSourceFactory = { createContactsPagingSource() },
             mapper = Contact::toUiModel
         )
     }
 
-    private fun onLoadContactsSuccess(pagingData: PagingData<ContactUi>?) {
+    private fun onLoadContactsSuccess(pagingData: PagingData<ContactUiState>?) {
         updateState { it.copy(contacts = flowOf(pagingData ?: PagingData.empty())) }
     }
 
@@ -54,7 +54,7 @@ class ContactsViewModel(
         popBackStack()
     }
 
-    override fun onResyncClick() {
+    override fun onReSyncClick() {
         navigate(SyncContactsRoute(forceSync = true))
     }
 

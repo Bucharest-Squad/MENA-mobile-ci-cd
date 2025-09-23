@@ -2,7 +2,7 @@ package net.thechance.mena.core_chat.presentation.screen.contacts
 
 interface ContactsScreenInteractionListener : ContactListInteractionListener{
     fun onBackClick()
-    fun onResyncClick()
+    fun onReSyncClick()
 }
 
 interface ContactListInteractionListener{

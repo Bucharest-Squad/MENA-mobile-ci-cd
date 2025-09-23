@@ -1,7 +1,5 @@
 package net.thechance.mena.core_chat.presentation.screen.syncContacts
 
-import androidx.lifecycle.SavedStateHandle
-import androidx.navigation.toRoute
 import dev.icerock.moko.permissions.DeniedAlwaysException
 import dev.icerock.moko.permissions.DeniedException
 import dev.icerock.moko.permissions.Permission
@@ -23,8 +21,8 @@ class SyncContactsViewModel(
     private val permissionsController: PermissionsController,
     private val syncContactsScreenArgs: SyncContactsScreenArgs,
     effector: ChatEffector
-) : BaseViewModel<SyncContactsState>(SyncContactsState(), effector),
-    SyncContactsScreenInteractionListener {
+) : BaseViewModel<SyncContactsScreenState>(SyncContactsScreenState(), effector),
+    SyncContactsInteractionListener {
 
     init {
         onForceSync()

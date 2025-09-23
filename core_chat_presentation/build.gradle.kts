@@ -103,8 +103,11 @@ kover.reports {
     }
 
     filters {
-        excludes {
-            packages("mena.core_chat_presentation.generated.resources*")
+        includes {
+            classes(
+                "*SyncContactsViewModel*",
+                "*ContactsViewModel*",
+            )
         }
     }
 }

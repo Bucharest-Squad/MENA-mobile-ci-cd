@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -21,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.icerock.moko.permissions.compose.BindEffect
 import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
 import mena.core_chat_presentation.generated.resources.Res
@@ -48,7 +48,7 @@ fun SyncContactsScreen() {
     val viewModel: SyncContactsViewModel = koinViewModel { parametersOf(controller) }
     BindEffect(controller)
 
-    val state by viewModel.state.collectAsState()
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         viewModel.checkPermissions()
@@ -63,8 +63,8 @@ fun SyncContactsScreen() {
 
 @Composable
 private fun SyncContactsContent(
-    state: SyncContactsState,
-    interactionListener: SyncContactsScreenInteractionListener,
+    state: SyncContactsScreenState,
+    interactionListener: SyncContactsInteractionListener,
 ) {
     Column(
         modifier = Modifier.fillMaxSize()
@@ -125,9 +125,9 @@ private fun SyncContactsContent(
 private fun SyncContactsScreenPreview() {
     MenaTheme {
         SyncContactsContent(
-            state = SyncContactsState(showSyncView = true, isLoading = false),
+            state = SyncContactsScreenState(showSyncView = true, isLoading = false),
             interactionListener = object :
-                SyncContactsScreenInteractionListener {
+                SyncContactsInteractionListener {
                 override fun onBackClick() {}
                 override fun onSyncClick() {}
                 override fun onGoToSettingsClick(){}
