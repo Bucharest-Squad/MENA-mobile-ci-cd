@@ -12,13 +12,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import kotlinx.coroutines.delay
+import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.ic_warning
+import net.thechance.mena.core_chat.presentation.utils.UiText
+import net.thechance.mena.core_chat.presentation.utils.asString
 import net.thechance.mena.designsystem.presentation.component.snackbar.SnackBar
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
-import mena.core_chat_presentation.generated.resources.Res
-import org.jetbrains.compose.resources.StringResource
-import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun AnimatedSnackBarHost(
@@ -45,15 +45,15 @@ fun AnimatedSnackBarHost(
                 indication = null,
                 interactionSource = null
             ),
-            title = stringResource(data.title),
-            message = stringResource(data.message),
+            title = data.title.asString(),
+            message = data.message.asString(),
             leadingIcon = painterResource(Res.drawable.ic_warning),
         )
     }
 }
 
 data class SnackBarData(
-    val title: StringResource,
-    val message: StringResource,
+    val title: UiText,
+    val message: UiText,
     val duration: Long = 2500
 )
