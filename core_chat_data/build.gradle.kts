@@ -17,6 +17,8 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.ktor.client.android)
             implementation(libs.ktor.client.okhttp)
+            implementation(libs.androidx.room.sqlite.wrapper)
+
         }
         commonMain.dependencies {
             implementation(projects.coreChatDomain)
@@ -25,7 +27,8 @@ kotlin {
             implementation(libs.koin.core)
             implementation(libs.bundles.ktor)
             implementation(libs.androidx.datastore.preferences)
-
+            implementation(libs.androidx.room.runtime)
+            implementation(libs.androidx.sqlite.bundled)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
