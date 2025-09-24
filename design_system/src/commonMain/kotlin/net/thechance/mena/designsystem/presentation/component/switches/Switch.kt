@@ -41,13 +41,13 @@ fun Switch(
 ) {
     val transition = updateTransition(isChecked)
     val containerColor by transition.animateColor(
-        targetValueByState = { isChecked ->
-            if (isChecked) onContainerColor else offContainerColor
+        targetValueByState = { checked ->
+            if (checked) onContainerColor else offContainerColor
         }
     )
     val contentColor by transition.animateColor(
-        targetValueByState = { isChecked ->
-            if (isChecked) onContentColor else offContentColor
+        targetValueByState = { checked ->
+            if (checked) onContentColor else offContentColor
         }
     )
     val disabledContainerColor =
