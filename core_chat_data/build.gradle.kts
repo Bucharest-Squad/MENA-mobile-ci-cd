@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kover)
-    alias(libs.plugins.mokkery)
+    alias(libs.plugins.mockkery)
 }
 
 kotlin {
@@ -31,7 +31,7 @@ kotlin {
             implementation(libs.kotlin.test.annotations.common)
             implementation(libs.ktor.client.mock)
             implementation(libs.assertk)
-            implementation(libs.test.kotlin.coroutines)
+            implementation(libs.kotlinx.coroutines.test)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
