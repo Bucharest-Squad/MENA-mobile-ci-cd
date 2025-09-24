@@ -52,7 +52,6 @@ fun SyncContactsScreen() {
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         viewModel.checkPermissions()
-        viewModel.onForceSync()
     }
 
     SyncContactsContent(

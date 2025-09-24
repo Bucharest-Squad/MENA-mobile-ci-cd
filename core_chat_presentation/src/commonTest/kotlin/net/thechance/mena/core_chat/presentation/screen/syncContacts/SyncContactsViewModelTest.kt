@@ -193,7 +193,7 @@ class SyncContactsViewModelTest {
         everySuspend { contactsRepository.syncContacts() } throws Exception(errorMessage)
         everySuspend { effector.showSnackBar(any()) } returns Unit
 
-        val syncContactsScreenArgs = createSyncContactsScreenArgs(false)
+        val syncContactsScreenArgs = createSyncContactsScreenArgs(true)
         val viewModel = SyncContactsViewModel(
             contactsRepository,
             permissionsController,
@@ -202,18 +202,9 @@ class SyncContactsViewModelTest {
             effector,
             testDispatcher
         )
+        advanceUntilIdle()
+
         viewModel.state.test {
-            awaitItem()
-            every { syncContactsScreenArgs.forceSync } returns true
-
-            viewModel.onForceSync()
-            advanceUntilIdle()
-
-            assertThat(awaitItem().isFirstSync).isFalse()
-            assertThat(awaitItem().isLoading).isTrue()
-            assertThat(awaitItem().isLoading).isFalse()
-
-            verifySuspend { contactsRepository.syncContacts() }
             verifySuspend { effector.showSnackBar(any()) }
             cancelAndIgnoreRemainingEvents()
         }

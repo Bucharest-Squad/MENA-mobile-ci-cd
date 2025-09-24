@@ -22,14 +22,9 @@ import androidx.paging.LoadState
 import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.itemKey
 import mena.core_chat_presentation.generated.resources.Res
-import mena.core_chat_presentation.generated.resources.could_not_load_contacts
 import mena.core_chat_presentation.generated.resources.ic_warning
-import mena.core_chat_presentation.generated.resources.loading
 import mena.core_chat_presentation.generated.resources.no_contacts_message
 import mena.core_chat_presentation.generated.resources.refresh_contacts_message
-import mena.core_chat_presentation.generated.resources.something_went_wrong
-import net.thechance.mena.core_chat.presentation.components.ErrorView
-import net.thechance.mena.core_chat.presentation.screen.contacts.ContactListInteractionListener
 import net.thechance.mena.core_chat.presentation.screen.contacts.ContactUiState
 import net.thechance.mena.core_chat.presentation.screen.syncContacts.components.PhoneIcon
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
@@ -41,27 +36,15 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun ContactsList(
     contacts: LazyPagingItems<ContactUiState>,
-    listener: ContactListInteractionListener
+    onContactClick: (Int) -> Unit,
 ) {
     AnimatedContent(
         targetState = Pair((contacts.itemCount == 0), contacts.loadState.refresh),
         modifier = Modifier.fillMaxSize().padding(horizontal = Theme.spacing._16),
+        contentAlignment = Alignment.Center
     ) { (isEmpty, loadState) ->
-        if (isEmpty && loadState is LoadState.Error) {
-            ErrorView(
-                title = stringResource(Res.string.something_went_wrong),
-                message = stringResource(Res.string.could_not_load_contacts),
-                onRetry = listener::onRefreshContacts
-            )
-        } else if (isEmpty && loadState != LoadState.Loading) {
-            EmptyContactsColumn()
-        } else if (loadState is LoadState.Loading) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ){
-                Text(text = stringResource(Res.string.loading), style = Theme.typography.title.small)
-            }
+        if (isEmpty && loadState != LoadState.Loading) {
+            EmptyContactsView()
         } else {
             LazyColumn(
                 modifier = Modifier.fillMaxWidth(),
@@ -75,10 +58,7 @@ fun ContactsList(
                     val contact = contacts[index]
 
                     contact?.let {
-                        ContactItem(
-                            contact = it,
-                            onContactClick = { /*listener.onContactClick(contact.id)*/ },
-                        )
+                        ContactItem(contact = it, onContactClick = { onContactClick(index) })
                     }
                 }
             }
@@ -87,7 +67,7 @@ fun ContactsList(
 }
 
 @Composable
-private fun EmptyContactsColumn() {
+private fun EmptyContactsView() {
     Column(
         modifier = Modifier.fillMaxSize()
             .padding(horizontal = Theme.spacing._24),
@@ -105,7 +85,7 @@ private fun EmptyContactsColumn() {
                 modifier = Modifier.size(28.6.dp)
                     .then(
                         if (LocalLayoutDirection.current == LayoutDirection.Rtl) {
-                            Modifier.align (Alignment.TopStart).offset(y = 23.dp, x = 3.dp)
+                            Modifier.align(Alignment.TopStart).offset(y = 23.dp, x = 3.dp)
                         } else {
                             Modifier.align(Alignment.TopEnd).offset(y = 23.dp, x = (-3).dp)
                         }

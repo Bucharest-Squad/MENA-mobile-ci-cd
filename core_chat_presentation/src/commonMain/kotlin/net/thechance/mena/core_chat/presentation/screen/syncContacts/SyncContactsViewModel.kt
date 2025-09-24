@@ -35,7 +35,7 @@ class SyncContactsViewModel(
         onForceSync()
     }
 
-    fun onForceSync() {
+    private fun onForceSync() {
         if (syncContactsScreenArgs.forceSync) {
             updateState { it.copy(isFirstSync = false) }
             syncContacts()

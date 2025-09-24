@@ -1,5 +1,8 @@
 package net.thechance.mena.core_chat.presentation.di
 
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import net.thechance.mena.core_chat.presentation.navigation.ChatEffector
 import net.thechance.mena.core_chat.presentation.navigation.ChatEffectorImpl
@@ -19,6 +22,7 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 internal val viewModelModule = module {
+    single<CoroutineDispatcher> { Dispatchers.IO }
     viewModelOf(::ChatsViewModel)
     viewModelOf(::ContactsViewModel)
     viewModel { (isSyncSuccess: MutableStateFlow<Boolean>) ->
