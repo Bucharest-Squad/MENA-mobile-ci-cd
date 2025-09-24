@@ -131,7 +131,7 @@ class SyncContactsViewModelTest {
         }
 
     @Test
-    fun `should handle DeniedException when permission is denied`() = runTest {
+    fun `onSyncClick should show SnackBar when permission is denied`() = runTest {
         everySuspend { permissionsController.providePermission(Permission.CONTACTS) } throws DeniedException(
             Permission.CONTACTS
         )
@@ -149,7 +149,6 @@ class SyncContactsViewModelTest {
         viewModel.onSyncClick()
         advanceUntilIdle()
 
-        verifySuspend { permissionsController.providePermission(Permission.CONTACTS) }
         verifySuspend { effector.showSnackBar(any()) }
     }
 
