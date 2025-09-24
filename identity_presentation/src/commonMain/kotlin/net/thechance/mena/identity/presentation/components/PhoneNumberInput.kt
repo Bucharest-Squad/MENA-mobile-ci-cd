@@ -1,4 +1,4 @@
-package net.thechance.mena.identity.presentation.screen.components
+package net.thechance.mena.identity.presentation.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -14,7 +14,7 @@ import mena.identity_presentation.generated.resources.Res
 import mena.identity_presentation.generated.resources.ic_phone
 import net.thechance.mena.designsystem.presentation.component.textField.MobileNumberLeadingContent
 import net.thechance.mena.designsystem.presentation.component.textField.MobileNumberTextField
-import net.thechance.mena.identity.presentation.screen.components.util.LengthBasedPhoneVisualTransformation
+import net.thechance.mena.identity.presentation.components.util.LengthBasedPhoneVisualTransformation
 import org.jetbrains.compose.resources.painterResource
 
 @Composable

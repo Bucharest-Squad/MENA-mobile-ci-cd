@@ -1,4 +1,4 @@
-package net.thechance.mena.identity.presentation.screen.components.util
+package net.thechance.mena.identity.presentation.components.util
 
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.OffsetMapping
