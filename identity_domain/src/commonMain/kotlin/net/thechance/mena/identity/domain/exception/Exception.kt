@@ -10,7 +10,9 @@ class InvalidMobileNumberException(
     mobileNumber: String
 ) : AuthenticationException("mobile number: $mobileNumber doesn't match validation")
 
-class UserIsBlockedException : AuthenticationException("user with mobile number: has many login retries")
+class UserIsBlockedException : AuthenticationException(
+    "user with mobile number: has many login retries"
+)
 
 class InvalidPasswordException : AuthenticationException(
     "password doesn't match validations"
@@ -19,5 +21,6 @@ class InvalidPasswordException : AuthenticationException(
 class InvalidCredentialsException : AuthenticationException(
     "user with mobile number, doesn't exist or password is incorrect"
 )
+
 class UnknownException : AuthenticationException("Unknown Exception")
 class UnAuthorizedException : AuthenticationException("user has no access to application")

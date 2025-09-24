@@ -18,7 +18,7 @@ class LoginScreenModel(
 
 
     override fun onLoginClicked() {
-        updateState { copy(isLoading = true, errorMessage = null) }
+        updateState { copy(isLoading = true, errorMessage = "Test KLJSD") }
         tryToExecute(
             function = ::onLogin,
             onSuccess = ::onLoginSuccess,

@@ -20,6 +20,7 @@ import net.thechance.mena.identity.presentation.countryPicker.menaCountries.Mena
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
+import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -81,8 +82,7 @@ class LoginViewModelTest {
 
         viewModel.state.test {
             val state = awaitItem()
-            print(state.errorMessage)
-            assertTrue { state.errorMessage == errorMessage }
+            assertIs<String>(state.errorMessage, errorMessage)
             cancelAndConsumeRemainingEvents()
         }
 
@@ -117,7 +117,8 @@ class LoginViewModelTest {
     }
 
     @Test
-    fun `should change country code when user select country code from country code dialog`() = runTest {
+    fun `should change country code when user select country code from country code dialog`() =
+        runTest {
 
             setupValidCountry()
 
@@ -177,7 +178,8 @@ class LoginViewModelTest {
     }
 
     @Test
-    fun `should login button is disabled when password length is less than 8 characters`() = runTest {
+    fun `should login button is disabled when password length is less than 8 characters`() =
+        runTest {
             val phoneNumber = "1100661617"
             val password = "1234"
 
@@ -193,7 +195,8 @@ class LoginViewModelTest {
         }
 
     @Test
-    fun `should login button is disabled when phone number does not match  country code`() = runTest {
+    fun `should login button is disabled when phone number does not match  country code`() =
+        runTest {
             val phoneNumber = "11006616"
             val password = "12345678"
 
@@ -209,7 +212,8 @@ class LoginViewModelTest {
         }
 
     @Test
-    fun `should change password visibility when user click on password visibility button`() = runTest {
+    fun `should change password visibility when user click on password visibility button`() =
+        runTest {
 
             viewModel.onPasswordVisibilityToggled()
 
@@ -222,7 +226,8 @@ class LoginViewModelTest {
         }
 
     @Test
-    fun `should navigate to forget password screen when user click on forget password button`() = runTest {
+    fun `should navigate to forget password screen when user click on forget password button`() =
+        runTest {
 
             viewModel.effect.test {
                 viewModel.onForgotPasswordClicked()

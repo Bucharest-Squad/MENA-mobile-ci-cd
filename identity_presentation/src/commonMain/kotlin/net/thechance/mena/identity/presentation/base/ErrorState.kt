@@ -31,9 +31,7 @@ fun handelAuthorizationException(
         is InvalidMobileNumberException -> onError(ErrorState.InvalidMobileNumber)
         is InvalidPasswordException -> onError(ErrorState.InvalidPassword)
         is UserIsBlockedException -> onError(ErrorState.UserIsBlockedException)
-        is InvalidCredentialsException -> onError(
-            ErrorState.WrongPassword(exception.message ?: "")
-        )
+        is InvalidCredentialsException -> onError(ErrorState.WrongPassword(exception.message ?: ""))
         else -> onError(ErrorState.SomethingWentWrong(exception.message))
     }
 }

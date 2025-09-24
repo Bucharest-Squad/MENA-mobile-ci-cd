@@ -87,6 +87,7 @@ abstract class BaseScreenModel<S, E>(initialState: S) : ScreenModel {
             try {
                 function()
             } catch (exception: AuthenticationException) {
+                exception.printStackTrace()
                 handelAuthorizationException(exception, onError)
             } catch (exception: Exception) {
                 exception.printStackTrace()
