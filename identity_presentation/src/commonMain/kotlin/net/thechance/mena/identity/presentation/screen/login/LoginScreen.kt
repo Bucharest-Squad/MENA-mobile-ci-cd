@@ -134,6 +134,7 @@ class LoginScreen : BaseScreen<
                             else Res.drawable.ic_close_eye
                         ),
                         leadingIcon = painterResource(Res.drawable.ic_lock),
+                        showTrailingDivider = false,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                         modifier = Modifier.fillMaxWidth(),
                         visualTransformation = if (state.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),

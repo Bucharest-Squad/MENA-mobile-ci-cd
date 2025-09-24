@@ -47,6 +47,7 @@ fun AuthScreenContainer(
                             Theme.colorScheme.background.surface,
                             Theme.colorScheme.background.surface,
                             Theme.colorScheme.background.surface.copy(alpha = 0.6f),
+                            Theme.colorScheme.background.surface.copy(alpha = 0.2f),
                         )
                     )
                 )
