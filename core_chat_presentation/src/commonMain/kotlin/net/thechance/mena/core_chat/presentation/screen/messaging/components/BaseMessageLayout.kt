@@ -35,7 +35,8 @@ fun BaseMessageLayout(
     showMessageInfo: Boolean,
     modifier: Modifier = Modifier,
     chatAvatarUrl: String? = null,
-    content: @Composable () -> Unit
+    onFailClick: () -> Unit = {},
+    content: @Composable () -> Unit,
 ) {
     val messageBackground = if (message.isMine)
         Theme.colorScheme.background.surfaceLow
@@ -117,6 +118,7 @@ fun BaseMessageLayout(
                 messageTime = message.time,
                 messageStatus = message.status,
                 messageIsMine = message.isMine,
+                onFailClick = onFailClick,
                 modifier = Modifier
                     .align(messageInfoAlignment)
                     .padding(start = messagePaddingStart, end = messagePaddingEnd, bottom = Theme.spacing._16)
@@ -143,7 +145,6 @@ private fun PreviewBaseMessageLayout() {
                     ""
                 ),
                 showMessageInfo = true,
-                modifier = Modifier
             ) {
                 Text(
                     text = "Hello,\nBilal",

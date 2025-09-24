@@ -27,12 +27,14 @@ fun TextMessageItem(
     chatAvatarUrl: String? = null,
     showMessageInfo: Boolean,
     modifier: Modifier = Modifier,
+    onFailClick: () -> Unit = {},
     onClick: () -> Unit = {}
 ) {
     BaseMessageLayout(
         message = message,
         showMessageInfo = showMessageInfo,
         chatAvatarUrl = chatAvatarUrl,
+        onFailClick = onFailClick,
         modifier = modifier
     ) {
         Text(

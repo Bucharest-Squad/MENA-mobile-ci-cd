@@ -3,6 +3,7 @@
 package net.thechance.mena.core_chat.presentation.screen.messaging.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -35,6 +36,7 @@ fun MessageInfo(
     messageTime: LocalDateTime,
     messageStatus: MessageStatus,
     messageIsMine: Boolean,
+    onFailClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val messageInfoColor = if (messageStatus == MessageStatus.FAILED)
@@ -89,7 +91,9 @@ fun MessageInfo(
                         painter = painterResource(Res.drawable.ic_close_circle),
                         contentDescription = "Failed",
                         tint = messageInfoColor,
-                        modifier = Modifier.size(16.dp)
+                        modifier = Modifier
+                            .size(16.dp)
+                            .clickable(onClick = onFailClick)
                     )
                 }
             }
