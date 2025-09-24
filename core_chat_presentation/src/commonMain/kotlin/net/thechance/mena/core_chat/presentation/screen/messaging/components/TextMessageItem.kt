@@ -24,14 +24,14 @@ import kotlin.time.ExperimentalTime
 @Composable
 fun TextMessageItem(
     message: TextMessageUiState,
-    showSenderAvatar: Boolean,
+    chatAvatarUrl: String? = null,
     showMessageInfo: Boolean,
     modifier: Modifier = Modifier
 ) {
     BaseMessageLayout(
         message = message,
         showMessageInfo = showMessageInfo,
-        showSenderAvatar = showSenderAvatar,
+        chatAvatarUrl = chatAvatarUrl,
         modifier = modifier
     ) {
         Text(
@@ -57,14 +57,11 @@ private fun PreviewTextMessageItem() {
                 message = TextMessageUiState(
                     "0",
                     "1",
-                    "https://avatars.githubusercontent.com/u/75501067?v=4",
-                    "2",
                     Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
                     MessageStatus.READ,
                     false,
                     "Hello Bilal"
                 ),
-                showSenderAvatar = true,
                 showMessageInfo = true,
             )
 

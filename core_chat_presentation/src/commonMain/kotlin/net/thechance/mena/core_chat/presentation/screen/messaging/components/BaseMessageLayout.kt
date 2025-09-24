@@ -32,15 +32,17 @@ import kotlin.time.ExperimentalTime
 @Composable
 fun BaseMessageLayout(
     message: MessageUiState,
-    showSenderAvatar: Boolean,
     showMessageInfo: Boolean,
     modifier: Modifier = Modifier,
+    chatAvatarUrl: String? = null,
     content: @Composable () -> Unit
 ) {
     val messageBackground = if (message.isMine)
         Theme.colorScheme.background.surfaceLow
     else
         Theme.colorScheme.brand.brandVariant
+
+    val showSenderAvatar = chatAvatarUrl != null
 
     val messagePadding = if (message.isMine)
         Theme.spacing._24
@@ -81,7 +83,7 @@ fun BaseMessageLayout(
                     modifier = Modifier
                         .size(Theme.spacing._24)
                         .clip(CircleShape),
-                    model = message.senderAvatarUrl,
+                    model = chatAvatarUrl,
                     contentScale = ContentScale.Crop,
                     contentDescription = "Sender Avatar",
                 )
@@ -129,16 +131,12 @@ private fun PreviewBaseMessageLayout() {
                 message = TextMessageUiState(
                     "0",
                     "1",
-                    "https://avatars.githubusercontent.com/u/75501067?v=4",
-                    "2",
                     Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
                     MessageStatus.READ,
                     false,
-
                     ""
                 ),
                 showMessageInfo = true,
-                showSenderAvatar = true,
                 modifier = Modifier
             ) {
                 Text(
