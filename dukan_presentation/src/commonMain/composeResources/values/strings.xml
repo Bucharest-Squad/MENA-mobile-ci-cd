@@ -44,4 +44,10 @@
     <string name="dukan_request_pending">Creating your dukan %s request is pending now</string>
 
     <string name="dukan_waiting_approval">Waiting until it be approved and add your shelves directly!</string>
+    <string name="create_shelf">Create shelf</string>
+    <string name="title">Title</string>
+    <string name="shelf_title">Shelf title</string>
+    <string name="create_button">Create</string>
+    <string name="shelf_name_validation">Shelf name can only contain letters, spaces, and ‘-’</string>
+
 </resources>
