@@ -16,13 +16,22 @@ import dev.mokkery.matcher.any
 import dev.mokkery.matcher.varargs.anyVarargs
 import dev.mokkery.mock
 import dev.mokkery.verifySuspend
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
 import net.thechance.mena.core_chat.domain.repository.ContactsRepository
 import net.thechance.mena.core_chat.presentation.navigation.ChatEffector
 import net.thechance.mena.core_chat.presentation.utils.SettingsOpener
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class SyncContactsViewModelTest {
 
     private val contactsRepository = mock<ContactsRepository>()
@@ -30,11 +39,24 @@ class SyncContactsViewModelTest {
     private val settingsOpener = mock<SettingsOpener>()
     private val effector = mock<ChatEffector>()
 
+    private val testDispatcher = StandardTestDispatcher()
+
     private fun createSyncContactsScreenArgs(forceSyncParam: Boolean): SyncContactsScreenArgs {
         return mock {
             every { forceSync } returns forceSyncParam
         }
     }
+
+    @BeforeTest
+    fun setUp() {
+        Dispatchers.setMain(testDispatcher)
+    }
+
+    @AfterTest
+    fun tearDown() {
+        Dispatchers.resetMain()
+    }
+
 
     @Test
     fun `should set isFirstSync to false and call syncContacts when forceSync is true`() = runTest {
@@ -51,7 +73,7 @@ class SyncContactsViewModelTest {
             settingsOpener,
             effector
         )
-
+        advanceUntilIdle()
         val result = viewModel.state.first()
 
         assertThat(result.isFirstSync).isFalse()
@@ -68,7 +90,7 @@ class SyncContactsViewModelTest {
             settingsOpener,
             effector
         )
-
+        advanceUntilIdle()
         val result = viewModel.state.first()
 
         assertThat(result.isFirstSync).isTrue()
@@ -178,6 +200,7 @@ class SyncContactsViewModelTest {
             every { syncContactsScreenArgs.forceSync } returns true
 
             viewModel.onForceSync()
+            advanceUntilIdle()
 
             assertThat(awaitItem().isFirstSync).isFalse()
             assertThat(awaitItem().isLoading).isTrue()
@@ -205,8 +228,10 @@ class SyncContactsViewModelTest {
             settingsOpener,
             effector
         )
+        advanceUntilIdle()
 
         viewModel.onBackClick()
+        advanceUntilIdle()
 
         verifySuspend { effector.popBackStack() }
     }
@@ -225,6 +250,7 @@ class SyncContactsViewModelTest {
                 settingsOpener,
                 effector
             )
+            advanceUntilIdle()
 
             viewModel.state.test {
                 awaitItem()
@@ -252,7 +278,7 @@ class SyncContactsViewModelTest {
             settingsOpener,
             effector
         )
-
+        advanceUntilIdle()
         viewModel.onGoToSettingsClick()
 
         verifySuspend { settingsOpener.openSettings() }

@@ -4,6 +4,9 @@ import dev.icerock.moko.permissions.DeniedAlwaysException
 import dev.icerock.moko.permissions.DeniedException
 import dev.icerock.moko.permissions.Permission
 import dev.icerock.moko.permissions.PermissionsController
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.contacts_permission_required_message
 import mena.core_chat_presentation.generated.resources.could_not_sync_contacts_message
@@ -22,8 +25,9 @@ class SyncContactsViewModel(
     private val permissionsController: PermissionsController,
     private val syncContactsScreenArgs: SyncContactsScreenArgs,
     private val settingsOpener: SettingsOpener,
-    effector: ChatEffector
-) : BaseViewModel<SyncContactsScreenState>(SyncContactsScreenState(), effector),
+    effector: ChatEffector,
+    dispatcher: CoroutineDispatcher = Dispatchers.IO,
+) : BaseViewModel<SyncContactsScreenState>(SyncContactsScreenState(), effector, dispatcher),
     SyncContactsInteractionListener {
 
     init {

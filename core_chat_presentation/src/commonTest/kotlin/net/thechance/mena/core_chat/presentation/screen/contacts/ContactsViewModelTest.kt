@@ -10,19 +10,37 @@ import dev.mokkery.everySuspend
 import dev.mokkery.matcher.any
 import dev.mokkery.mock
 import dev.mokkery.verifySuspend
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
 import net.thechance.mena.core_chat.domain.entity.Contact
 import net.thechance.mena.core_chat.domain.model.PagedData
 import net.thechance.mena.core_chat.domain.repository.ContactsRepository
 import net.thechance.mena.core_chat.presentation.navigation.ChatEffector
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 
 class ContactsViewModelTest {
     private val contactsRepository = mock<ContactsRepository>()
     private val effector = mock<ChatEffector>()
+
+    private val testDispatcher = StandardTestDispatcher()
+
+    @BeforeTest
+    fun setUp() {
+        Dispatchers.setMain(testDispatcher)
+    }
+
+    @AfterTest
+    fun tearDown() {
+        Dispatchers.resetMain()
+    }
 
     @Test
     fun `init should load contacts successfully when viewModel is created`() = runTest {
@@ -33,6 +51,7 @@ class ContactsViewModelTest {
         )
 
         val viewModel = ContactsViewModel(contactsRepository, effector)
+        advanceUntilIdle()
 
         viewModel.state.test {
             val state = awaitItem()
@@ -49,10 +68,11 @@ class ContactsViewModelTest {
             totalItems = 1,
             isLastPage = true
         )
-        
         val viewModel = ContactsViewModel(contactsRepository, effector)
+        advanceUntilIdle()
 
         viewModel.onRefreshContacts()
+        advanceUntilIdle()
 
         viewModel.state.test {
             val state = awaitItem()
@@ -62,66 +82,63 @@ class ContactsViewModelTest {
     }
 
     @Test
-    fun `onRefreshContacts should handle empty list when repository returns no contacts`() = runTest {
-        everySuspend { contactsRepository.getUserContacts(any(), any()) } returns PagedData(
-            data = emptyList(),
-            totalItems = 0,
-            isLastPage = true
-        )
-        
-        val viewModel = ContactsViewModel(contactsRepository, effector)
+    fun `onRefreshContacts should handle empty list when repository returns no contacts`() =
+        runTest {
+            everySuspend { contactsRepository.getUserContacts(any(), any()) } returns PagedData(
+                data = emptyList(),
+                totalItems = 0,
+                isLastPage = true
+            )
+            val viewModel = ContactsViewModel(contactsRepository, effector)
+            advanceUntilIdle()
 
-        viewModel.onRefreshContacts()
+            viewModel.onRefreshContacts()
+            advanceUntilIdle()
 
-        viewModel.state.test {
-            val item = awaitItem()
-            assertThat(item).isNotNull()
-            cancelAndIgnoreRemainingEvents()
+            viewModel.state.test {
+                val item = awaitItem()
+                assertThat(item).isNotNull()
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-    }
 
     @Test
     fun `onBackClick should call popBackStack when invoked`() = runTest {
-        val viewModel = ContactsViewModel(contactsRepository, effector)
-        
         everySuspend { effector.popBackStack() } returns Unit
+        val viewModel = ContactsViewModel(contactsRepository, effector)
+        advanceUntilIdle()
 
         viewModel.onBackClick()
+        advanceUntilIdle()
 
-        verifySuspend { 
+        verifySuspend {
             effector.popBackStack()
         }
     }
 
     @Test
     fun `onResyncClick should navigate to sync contacts when invoked`() = runTest {
-        val viewModel = ContactsViewModel(contactsRepository, effector)
-        
         everySuspend { effector.navigate(any(), any(), any()) } returns Unit
-
-        viewModel.onReSyncClick()
-        
+        val viewModel = ContactsViewModel(contactsRepository, effector)
         advanceUntilIdle()
 
-        verifySuspend {
-            effector.navigate(any(), any(), any())
-        }
+        viewModel.onReSyncClick()
+        advanceUntilIdle()
+
+        verifySuspend { effector.navigate(any(), any(), any()) }
     }
 
     @Test
-    fun `onContactClick should navigate to chat screen when valid contactId is passed`() = runTest {
-        val viewModel = ContactsViewModel(contactsRepository, effector)
-        val contactId = 1
-        
+    fun `onContactClick should navigate to chat screen when called`() = runTest {
         everySuspend { effector.navigate(any(), any(), any()) } returns Unit
-
-        viewModel.onContactClick(contactId)
-        
+        val viewModel = ContactsViewModel(contactsRepository, effector)
         advanceUntilIdle()
 
-        verifySuspend {
-            effector.navigate(any(), any(), any())
-        }
+
+        viewModel.onContactClick(1)
+        advanceUntilIdle()
+
+        verifySuspend { effector.navigate(any(), any(), any()) }
     }
 
     companion object {

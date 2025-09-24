@@ -2,6 +2,9 @@ package net.thechance.mena.core_chat.presentation.screen.contacts
 
 import androidx.paging.PagingData
 import androidx.paging.PagingSource
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import mena.core_chat_presentation.generated.resources.Res
@@ -20,8 +23,9 @@ import net.thechance.mena.core_chat.presentation.utils.UiText
 
 class ContactsViewModel(
     private val contactsRepository: ContactsRepository,
-    effector: ChatEffector
-) : BaseViewModel<ContactsScreenState>(ContactsScreenState(), effector),
+    effector: ChatEffector,
+    dispatcher: CoroutineDispatcher = Dispatchers.IO,
+) : BaseViewModel<ContactsScreenState>(ContactsScreenState(), effector, dispatcher),
     ContactsScreenInteractionListener {
 
     init {
