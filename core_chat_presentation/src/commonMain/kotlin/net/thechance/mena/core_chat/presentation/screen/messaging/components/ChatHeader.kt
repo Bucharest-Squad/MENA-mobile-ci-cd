@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.ic_arrow_left
 import mena.core_chat_presentation.generated.resources.menu
@@ -27,7 +26,10 @@ fun ChatHeader(
 ) {
     Box(modifier.background(Theme.colorScheme.background.surfaceLow).statusBarsPadding()) {
         AppBar(
-            contentPadding = PaddingValues(horizontal = Theme.spacing._16, vertical = Theme.spacing._8),
+            contentPadding = PaddingValues(
+                horizontal = Theme.spacing._16,
+                vertical = Theme.spacing._8
+            ),
             leadingContent = {
                 Icon(
                     painter = painterResource(Res.drawable.ic_arrow_left),

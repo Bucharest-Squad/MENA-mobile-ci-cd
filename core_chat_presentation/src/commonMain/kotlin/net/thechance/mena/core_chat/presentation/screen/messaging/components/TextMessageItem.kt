@@ -3,6 +3,7 @@
 package net.thechance.mena.core_chat.presentation.screen.messaging.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -25,7 +26,8 @@ fun TextMessageItem(
     message: TextMessageUiState,
     chatAvatarUrl: String? = null,
     showMessageInfo: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {}
 ) {
     BaseMessageLayout(
         message = message,
@@ -35,7 +37,8 @@ fun TextMessageItem(
     ) {
         Text(
             text = message.text,
-            style = Theme.typography.body.small
+            style = Theme.typography.body.small,
+            modifier = Modifier.clickable(onClick = onClick)
         )
     }
 }

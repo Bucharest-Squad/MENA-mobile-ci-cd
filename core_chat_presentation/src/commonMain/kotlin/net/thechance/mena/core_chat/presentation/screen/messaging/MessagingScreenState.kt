@@ -2,12 +2,14 @@
 package net.thechance.mena.core_chat.presentation.screen.messaging
 
 import kotlinx.datetime.LocalDateTime
+import net.thechance.mena.core_chat.presentation.utils.markLastInSeries
 import net.thechance.mena.core_chat.presentation.utils.minusMinutes
 import net.thechance.mena.core_chat.presentation.utils.now
+import net.thechance.mena.core_chat.presentation.utils.withDateSeparators
 
 data class MessagingScreenState(
     val chat: ChatUiState = dummyChat,
-    val messages: List<MarkedMessageUiState> = dummyMessages.markLastInSeries(),
+    val chatListItems: List<ChatListItem> = dummyMessages.markLastInSeries().withDateSeparators(),
     val inputMessage: String = "bbbb"
 )
 
@@ -186,7 +188,7 @@ val dummyMessages = listOf(
     TextMessageUiState(
         id = "old_b2",
         senderId = "bilal",
-        time = LocalDateTime.now().minusMinutes(79),
+        time = LocalDateTime.now().minusMinutes(1350),
         status = MessageStatus.READ,
         isMine = false,
         text = "Are you there?"
@@ -194,7 +196,7 @@ val dummyMessages = listOf(
     TextMessageUiState(
         id = "old_b3",
         senderId = "bilal",
-        time = LocalDateTime.now().minusMinutes(78),
+        time = LocalDateTime.now().minusMinutes(1400),
         status = MessageStatus.READ,
         isMine = false,
         text = "I just wanted to ask something real quick."
@@ -203,7 +205,7 @@ val dummyMessages = listOf(
     TextMessageUiState(
         id = "old_n1",
         senderId = "noor",
-        time = LocalDateTime.now().minusMinutes(77),
+        time = LocalDateTime.now().minusMinutes(2800),
         status = MessageStatus.READ,
         isMine = true,
         text = "Hey Bilal 👋 just saw your messages."
@@ -211,7 +213,7 @@ val dummyMessages = listOf(
     TextMessageUiState(
         id = "old_n2",
         senderId = "noor",
-        time = LocalDateTime.now().minusMinutes(76),
+        time = LocalDateTime.now().minusMinutes(2870),
         status = MessageStatus.READ,
         isMine = true,
         text = "Sorry, I was away from my phone."
@@ -219,7 +221,7 @@ val dummyMessages = listOf(
     TextMessageUiState(
         id = "old_n3",
         senderId = "noor",
-        time = LocalDateTime.now().minusMinutes(75),
+        time = LocalDateTime.now().minusMinutes(2880),
         status = MessageStatus.READ,
         isMine = true,
         text = "What’s up?"

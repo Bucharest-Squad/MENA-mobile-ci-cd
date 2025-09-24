@@ -12,23 +12,46 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import net.thechance.mena.core_chat.presentation.screen.messaging.components.ChatHeader
 import net.thechance.mena.core_chat.presentation.screen.messaging.components.ChatInputBar
 import net.thechance.mena.core_chat.presentation.screen.messaging.components.TextMessageItem
+import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun MessagingScreen() {
-    MessagingScreenContent()
+    var state by remember { mutableStateOf(MessagingScreenState()) }
+    MessagingScreenContent(state) { messageId ->
+        state = state.copy(
+            chatListItems = state.chatListItems.map { item ->
+                if (item is ChatListItem.Message && item.data.message.id == messageId) {
+                    item.copy(
+                        data = item.data.copy(
+                            showMessageInfo = !item.data.showMessageInfo
+                        )
+                    )
+                } else {
+                    item
+                }
+            }
+        )
+    }
+
 
 }
 
 @Composable
 fun MessagingScreenContent(
-    state: MessagingScreenState = MessagingScreenState()
+    state: MessagingScreenState = MessagingScreenState(),
+    onMessageClick: (String) -> Unit = {}
 ) {
     Column(
         modifier = Modifier
@@ -51,31 +74,50 @@ fun MessagingScreenContent(
                 .weight(1f)
                 .padding(horizontal = Theme.spacing._12),
             reverseLayout = true,
-            contentPadding = PaddingValues(
-                top = Theme.spacing._4
-            )
+            contentPadding = PaddingValues(top = Theme.spacing._4)
         ) {
             items(
-                items = state.messages,
-                key = { it.message.id },
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = if (it.message.isMine) {
-                        Arrangement.End
-                    } else {
-                        Arrangement.Start
+                items = state.chatListItems,
+                key = {
+                    when (it) {
+                        is ChatListItem.DateSeparator -> "header-${it.label}"
+                        is ChatListItem.Message -> it.data.message.id
                     }
-                ) {
-                    TextMessageItem(
-                        message = it.message as TextMessageUiState,
-                        chatAvatarUrl = if (it.isMarkedLastInSeries) state.chat.avatarUrl else null,
-                        showMessageInfo = it.isMarkedLastInSeries
-                    )
+                }
+            ) { item ->
+                when (item) {
+                    is ChatListItem.DateSeparator -> {
+                        Text(
+                            text = item.label,
+                            style = Theme.typography.label.small,
+                            color = Theme.colorScheme.shadeTertiary,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = Theme.spacing._8),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+
+                    is ChatListItem.Message -> {
+                        val markedMessage = item.data
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = if (markedMessage.message.isMine) Arrangement.End else Arrangement.Start
+                        ) {
+                            TextMessageItem(
+                                message = markedMessage.message as TextMessageUiState, // temporal casting until more MessageTypes involved
+                                chatAvatarUrl = if (markedMessage.isMarkedLastInSeries) state.chat.avatarUrl else null,
+                                showMessageInfo = markedMessage.isMarkedLastInSeries || markedMessage.showMessageInfo,
+                                onClick = {
+                                    onMessageClick(markedMessage.message.id)
+                                }
+                            )
+                        }
+                    }
                 }
             }
         }
+
 
 
         ChatInputBar(

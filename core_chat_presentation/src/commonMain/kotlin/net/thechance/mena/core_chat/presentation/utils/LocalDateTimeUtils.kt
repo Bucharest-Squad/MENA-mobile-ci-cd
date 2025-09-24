@@ -2,8 +2,11 @@
 
 package net.thechance.mena.core_chat.presentation.utils
 
+import kotlinx.datetime.DatePeriod
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.minus
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Clock
@@ -22,4 +25,8 @@ fun LocalDateTime.minusMinutes(
     return this.toInstant(timeZone)
         .minus(minutes.minutes)
         .toLocalDateTime(timeZone)
+}
+
+fun LocalDate.minusDays(days: Int): LocalDate {
+    return this.minus(DatePeriod(days = days))
 }
