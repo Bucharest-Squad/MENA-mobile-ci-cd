@@ -14,7 +14,7 @@ class ChatsViewModel(
     fun onNewChatClicked() {
         tryToExecute(
             onStart = { updateState { it.copy(isLoading = false) } },
-            execute = { contactsRepository.getUserSyncedState() },
+            execute = { contactsRepository.getSyncStatus() },
             onSuccess = { isSynced ->
                 updateState { it.copy(isSynced = isSynced, isLoading = false) }
                 if (isSynced) {

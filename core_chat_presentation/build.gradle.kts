@@ -47,12 +47,10 @@ kotlin {
 
             //coil
             implementation(libs.coil.compose)
+            implementation(libs.coil.network.ktor3)
 
             //data time
             implementation(libs.kotlinx.datetime)
-
-            //implementation(libs.coil.compose.core)
-            implementation(libs.coil.network.ktor3)
 
             // Serialization
             implementation(libs.kotlinx.serialization.json)

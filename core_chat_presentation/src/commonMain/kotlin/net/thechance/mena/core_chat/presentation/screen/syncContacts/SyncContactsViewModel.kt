@@ -62,7 +62,7 @@ class SyncContactsViewModel(
                 updateState {
                     it.copy(
                         isLoading = false,
-                        deniedPermanently = true,
+                        isPermissionDeniedPermanently = true,
                     )
                 }
                 showSnackBar(
@@ -90,7 +90,7 @@ class SyncContactsViewModel(
     private fun onContactsPermissionGranted() {
         updateState {
             it.copy(
-                deniedPermanently = false,
+                isPermissionDeniedPermanently = false,
                 showSyncView = true
             )
         }
@@ -124,7 +124,7 @@ class SyncContactsViewModel(
 
     private suspend fun onSyncContactsSuccess() {
         if (state.value.isFirstSync) {
-            contactsRepository.setUserSyncedState(true)
+            contactsRepository.setSyncStatus(true)
             popBackStack()
             navigate(ContactsRoute)
         } else {

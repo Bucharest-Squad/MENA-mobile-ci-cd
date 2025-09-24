@@ -10,7 +10,6 @@ import com.bilalazzam.contacts_provider.ContactField.LAST_NAME
 import com.bilalazzam.contacts_provider.ContactField.PHONE_NUMBERS
 import com.bilalazzam.contacts_provider.ContactsProvider
 import io.ktor.client.HttpClient
-import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
@@ -68,7 +67,7 @@ class ContactsRepositoryImpl(
         )
     }
 
-    override suspend fun getUserSyncedState(): Boolean {
+    override suspend fun getSyncStatus(): Boolean {
         return tryCall(
             defaultException = { DataStoreException("error with data store", it) }) {
             dataStore.data.map {
@@ -77,7 +76,7 @@ class ContactsRepositoryImpl(
         }
     }
 
-    override suspend fun setUserSyncedState(state: Boolean) {
+    override suspend fun setSyncStatus(state: Boolean) {
         return tryCall(
             defaultException = { DataStoreException("error with data store", it) }) {
             dataStore.edit { preferences ->

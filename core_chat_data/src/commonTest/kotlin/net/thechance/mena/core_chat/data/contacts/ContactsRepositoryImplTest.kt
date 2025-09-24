@@ -204,130 +204,130 @@ class ContactsRepositoryImplTest {
         }
 
     @Test
-    fun `should return false when getUserSyncedState is called and state is not set`() = runTest {
+    fun `should return false when getSyncStatus is called and state is not set`() = runTest {
 
-        val result = repository.getUserSyncedState()
+        val result = repository.getSyncStatus()
 
 
         assertThat(result).isFalse()
     }
 
     @Test
-    fun `should return true when getUserSyncedState is called and state is true`() = runTest {
+    fun `should return true when getSyncStatus is called and state is true`() = runTest {
 
-        mockDataStore.setUserSyncedState(true)
+        mockDataStore.setSyncStatus(true)
 
 
-        val result = repository.getUserSyncedState()
+        val result = repository.getSyncStatus()
 
 
         assertThat(result).isTrue()
     }
 
     @Test
-    fun `should return false when getUserSyncedState is called and state is false`() = runTest {
+    fun `should return false when getSyncStatus is called and state is false`() = runTest {
 
-        mockDataStore.setUserSyncedState(false)
+        mockDataStore.setSyncStatus(false)
 
 
-        val result = repository.getUserSyncedState()
+        val result = repository.getSyncStatus()
 
 
         assertThat(result).isFalse()
     }
 
     @Test
-    fun `should throw DataStoreException when getUserSyncedState encounters error`() = runTest {
+    fun `should throw DataStoreException when getSyncStatus encounters error`() = runTest {
 
         mockDataStore.throwOnRead = true
 
 
         assertFailsWith<DataStoreException> {
-            repository.getUserSyncedState()
+            repository.getSyncStatus()
         }
     }
 
     @Test
-    fun `should set user synced state to true when setUserSyncedState is called with true`() =
+    fun `should set user synced state to true when setSyncStatus is called with true`() =
         runTest {
 
-            repository.setUserSyncedState(true)
+            repository.setSyncStatus(true)
 
 
-            assertThat(mockDataStore.getUserSyncedState()).isTrue()
+            assertThat(mockDataStore.getSyncStatus()).isTrue()
         }
 
     @Test
-    fun `should set user synced state to false when setUserSyncedState is called with false`() =
+    fun `should set user synced state to false when setSyncStatus is called with false`() =
         runTest {
 
-            repository.setUserSyncedState(false)
+            repository.setSyncStatus(false)
 
 
-            assertThat(mockDataStore.getUserSyncedState()).isFalse()
+            assertThat(mockDataStore.getSyncStatus()).isFalse()
         }
 
     @Test
-    fun `should throw DataStoreException when setUserSyncedState encounters error`() = runTest {
+    fun `should throw DataStoreException when setSyncStatus encounters error`() = runTest {
 
         mockDataStore.throwOnUpdate = true
 
 
         assertFailsWith<DataStoreException> {
-            repository.setUserSyncedState(true)
+            repository.setSyncStatus(true)
         }
     }
 
     @Test
-    fun `should return true when getUserSyncedState is set to true`() = runTest {
+    fun `should return true when getSyncStatus is set to true`() = runTest {
 
-        mockDataStore.setUserSyncedState(true)
+        mockDataStore.setSyncStatus(true)
 
 
-        val result = repository.getUserSyncedState()
+        val result = repository.getSyncStatus()
 
 
         assertThat(result).isTrue()
     }
 
     @Test
-    fun `should return false when getUserSyncedState is set to false`() = runTest {
+    fun `should return false when getSyncStatus is set to false`() = runTest {
 
-        mockDataStore.setUserSyncedState(false)
-
-
-        val result = repository.getUserSyncedState()
+        mockDataStore.setSyncStatus(false)
 
 
-        assertThat(result).isFalse()
-    }
-
-    @Test
-    fun `should return false when getUserSyncedState is not set`() = runTest {
-
-        val result = repository.getUserSyncedState()
+        val result = repository.getSyncStatus()
 
 
         assertThat(result).isFalse()
     }
 
     @Test
-    fun `should set synced state to true when setUserSyncedState is called with true`() = runTest {
+    fun `should return false when getSyncStatus is not set`() = runTest {
 
-        repository.setUserSyncedState(true)
+        val result = repository.getSyncStatus()
 
 
-        assertThat(mockDataStore.getUserSyncedState()).isTrue()
+        assertThat(result).isFalse()
     }
 
     @Test
-    fun `should set synced state to false when setUserSyncedState is called with false`() =
+    fun `should set synced state to true when setSyncStatus is called with true`() = runTest {
+
+        repository.setSyncStatus(true)
+
+
+        assertThat(mockDataStore.getSyncStatus()).isTrue()
+    }
+
+    @Test
+    fun `should set synced state to false when setSyncStatus is called with false`() =
         runTest {
 
-            repository.setUserSyncedState(false)
+            repository.setSyncStatus(false)
 
 
-            assertThat(mockDataStore.getUserSyncedState()).isFalse()
+            assertThat(mockDataStore.getSyncStatus()).isFalse()
         }
 
     @Test
