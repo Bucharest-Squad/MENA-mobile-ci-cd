@@ -71,7 +71,8 @@ class SyncContactsViewModelTest {
             permissionsController,
             syncContactsScreenArgs,
             settingsOpener,
-            effector
+            effector,
+            testDispatcher
         )
         advanceUntilIdle()
         val result = viewModel.state.first()
@@ -88,7 +89,8 @@ class SyncContactsViewModelTest {
             permissionsController,
             syncContactsScreenArgs,
             settingsOpener,
-            effector
+            effector,
+            testDispatcher
         )
         advanceUntilIdle()
         val result = viewModel.state.first()
@@ -115,7 +117,8 @@ class SyncContactsViewModelTest {
                 permissionsController,
                 syncContactsScreenArgs,
                 settingsOpener,
-                effector
+                effector,
+                testDispatcher
             )
 
             viewModel.state.test {
@@ -142,7 +145,8 @@ class SyncContactsViewModelTest {
             permissionsController,
             syncContactsScreenArgs,
             settingsOpener,
-            effector
+            effector,
+            testDispatcher
         )
         advanceUntilIdle()
 
@@ -165,7 +169,8 @@ class SyncContactsViewModelTest {
             permissionsController,
             syncContactsScreenArgs,
             settingsOpener,
-            effector
+            effector,
+            testDispatcher
         )
 
         viewModel.state.test {
@@ -194,7 +199,8 @@ class SyncContactsViewModelTest {
             permissionsController,
             syncContactsScreenArgs,
             settingsOpener,
-            effector
+            effector,
+            testDispatcher
         )
         viewModel.state.test {
             awaitItem()
@@ -227,7 +233,8 @@ class SyncContactsViewModelTest {
             permissionsController,
             syncContactsScreenArgs,
             settingsOpener,
-            effector
+            effector,
+            testDispatcher
         )
         advanceUntilIdle()
 
@@ -249,7 +256,8 @@ class SyncContactsViewModelTest {
                 permissionsController,
                 syncContactsScreenArgs,
                 settingsOpener,
-                effector
+                effector,
+                testDispatcher
             )
             advanceUntilIdle()
 
@@ -277,7 +285,8 @@ class SyncContactsViewModelTest {
             permissionsController,
             syncContactsScreenArgs,
             settingsOpener,
-            effector
+            effector,
+            testDispatcher
         )
         advanceUntilIdle()
         viewModel.onGoToSettingsClick()
