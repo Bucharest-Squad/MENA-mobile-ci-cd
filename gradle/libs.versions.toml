@@ -37,7 +37,7 @@ map-libra = "0.11.1"
 # GeoCoder
 compass = "2.4.0"
 androidx-datastore = "1.1.7"
-contacts-provider = "1.1.12"
+contacts-provider = "1.1.13"
 moko = "0.18.0"
 
 [libraries]
