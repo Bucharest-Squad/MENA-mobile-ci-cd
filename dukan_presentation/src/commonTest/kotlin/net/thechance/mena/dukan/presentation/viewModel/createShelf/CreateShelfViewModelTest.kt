@@ -71,7 +71,7 @@ class CreateShelfViewModelTest {
             skipItems(1)
             val state = awaitItem()
             assertTrue(state.showSnackBar)
-            assertEquals("Invalid shelf name", state.snackBarMessage)
+            assertEquals(CreateShelfUiState.SnackBarType.INVALID_NAME, state.snackBarType)
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -88,7 +88,7 @@ class CreateShelfViewModelTest {
 
             val state = createShelfViewModel.state.value
             assertTrue(state.showSnackBar)
-            assertEquals("Shelf name already exists", state.snackBarMessage)
+            assertEquals(CreateShelfUiState.SnackBarType.NAME_EXISTS, state.snackBarType)
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -104,7 +104,7 @@ class CreateShelfViewModelTest {
 
             val state = createShelfViewModel.state.value
             assertTrue(state.showSnackBar)
-            assertEquals("Failed to create shelf", state.snackBarMessage)
+            assertEquals(CreateShelfUiState.SnackBarType.CREATE_FAILED, state.snackBarType)
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -112,11 +112,11 @@ class CreateShelfViewModelTest {
     @Test
     fun `onDismissSnackBar SHOULD hide snack bar`() = runTest {
         createShelfViewModel.state.test {
-            createShelfViewModel.showSnackBar("Message")
+            createShelfViewModel.showSnackBar(CreateShelfUiState.SnackBarType.INVALID_NAME)
             createShelfViewModel.onDismissSnackBar()
             val state = awaitItem()
             assertFalse(state.showSnackBar)
-            assertEquals("", state.snackBarMessage)
+            assertEquals(CreateShelfUiState.SnackBarType.NONE, state.snackBarType)
             cancelAndIgnoreRemainingEvents()
         }
     }

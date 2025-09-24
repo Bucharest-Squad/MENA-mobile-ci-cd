@@ -18,7 +18,9 @@ import mena.dukan_presentation.generated.resources.Res
 import mena.dukan_presentation.generated.resources.back_arrow
 import mena.dukan_presentation.generated.resources.create
 import mena.dukan_presentation.generated.resources.create_shelf
+import mena.dukan_presentation.generated.resources.failed_to_create_shelf
 import mena.dukan_presentation.generated.resources.ic_arrow_left
+import mena.dukan_presentation.generated.resources.shelf_name_is_already_exist
 import mena.dukan_presentation.generated.resources.shelf_name_validation
 import mena.dukan_presentation.generated.resources.shelf_title
 import mena.dukan_presentation.generated.resources.title
@@ -123,15 +125,26 @@ fun CreateShelfContent(
                 )
             }
             item {
+                val snackMessage = when (state.snackBarType) {
+                    CreateShelfUiState.SnackBarType.INVALID_NAME ->
+                        stringResource(Res.string.shelf_name_validation)
+                    CreateShelfUiState.SnackBarType.NAME_EXISTS ->
+                        stringResource(Res.string.shelf_name_is_already_exist)
+                    CreateShelfUiState.SnackBarType.CREATE_FAILED ->
+                        stringResource(Res.string.failed_to_create_shelf)
+                    else -> ""
+                }
+
                 SnackBar(
                     snackBarUiState = SnackBarUiState(
                         snackBarType = SnackBarType.ERROR,
-                        message = state.snackBarMessage
+                        message = snackMessage
                     ),
                     isVisible = state.showSnackBar,
                     onDismiss = interactionListener::onDismissSnackBar
                 )
             }
+
         }
 
         PrimaryButton(

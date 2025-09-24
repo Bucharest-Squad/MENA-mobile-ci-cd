@@ -33,7 +33,7 @@ class CreateShelfViewModel(
     override fun onCreateButtonClicked() {
         val title = state.value.shelfTitle
         if (!validTitleRegex.matches(title) || title.isBlank()) {
-            showSnackBar("Invalid shelf name")
+            showSnackBar(CreateShelfUiState.SnackBarType.INVALID_NAME)
             return
         }
 
@@ -53,22 +53,33 @@ class CreateShelfViewModel(
                 if (isCreated) {
                     emitEffect(CreateShelfEffect.NavigateBack)
                 } else {
-                    showSnackBar("Shelf name already exists")
+                    showSnackBar(CreateShelfUiState.SnackBarType.NAME_EXISTS)
                 }
             },
             onError = {
                 updateState { copy(isLoading = false) }
-                showSnackBar("Failed to create shelf")
+                showSnackBar(CreateShelfUiState.SnackBarType.CREATE_FAILED)
             }
         )
     }
 
+
     override fun onDismissSnackBar() {
-        updateState { copy(showSnackBar = false, snackBarMessage = "") }
+        updateState {
+            copy(
+                showSnackBar = false,
+                snackBarType = CreateShelfUiState.SnackBarType.NONE
+            )
+        }
     }
 
-    fun showSnackBar(message: String) {
-        updateState { copy(showSnackBar = true, snackBarMessage = message) }
+    fun showSnackBar(snackBarType: CreateShelfUiState.SnackBarType) {
+        updateState {
+            copy(
+                showSnackBar = true,
+                snackBarType = snackBarType
+            )
+        }
     }
 
     private val validTitleRegex = Regex("^[\\p{L}\\s-]+$")
