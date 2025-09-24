@@ -16,17 +16,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
+import kotlinx.datetime.LocalDateTime
 import net.thechance.mena.core_chat.presentation.screen.messaging.MessageStatus
 import net.thechance.mena.core_chat.presentation.screen.messaging.MessageUiState
 import net.thechance.mena.core_chat.presentation.screen.messaging.TextMessageUiState
+import net.thechance.mena.core_chat.presentation.utils.now
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 @Composable
@@ -44,12 +44,16 @@ fun BaseMessageLayout(
 
     val showSenderAvatar = chatAvatarUrl != null
 
-    val messagePadding = if (message.isMine)
+    val messagePaddingStart = if (message.isMine)
         Theme.spacing._24
     else if (showSenderAvatar)
         Theme.spacing._8
     else
         Theme.spacing._32
+
+    val messagePaddingEnd = if (message.isMine) 0.dp else Theme.spacing._8
+
+    val messagePaddingBottom = if (showMessageInfo) 0.dp else  Theme.spacing._2
 
     val messageShape = if (message.isMine)
         RoundedCornerShape(
@@ -66,13 +70,14 @@ fun BaseMessageLayout(
             bottomEnd = Theme.radius.md
         )
 
-    val messageTimeAlignment = if (message.isMine)
+    val messageInfoAlignment = if (message.isMine)
         Alignment.Start
     else
         Alignment.End
 
     Column(
-        modifier = modifier,
+        modifier = modifier
+            .padding(bottom = messagePaddingBottom),
         verticalArrangement = Arrangement.spacedBy(Theme.spacing._2),
     ) {
         Row(
@@ -91,7 +96,7 @@ fun BaseMessageLayout(
 
             Box(
                 modifier = Modifier
-                    .padding(start = messagePadding)
+                    .padding(start = messagePaddingStart, end = messagePaddingEnd)
                     .clip(messageShape)
                     .background(
                         color = messageBackground,
@@ -111,9 +116,10 @@ fun BaseMessageLayout(
             MessageInfo(
                 messageTime = message.time,
                 messageStatus = message.status,
+                messageIsMine = message.isMine,
                 modifier = Modifier
-                    .align(messageTimeAlignment)
-                    .padding(start = messagePadding)
+                    .align(messageInfoAlignment)
+                    .padding(start = messagePaddingStart, end = messagePaddingEnd, bottom = Theme.spacing._16)
             )
         }
     }
@@ -131,7 +137,7 @@ private fun PreviewBaseMessageLayout() {
                 message = TextMessageUiState(
                     "0",
                     "1",
-                    Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
+                    LocalDateTime.now(),
                     MessageStatus.READ,
                     false,
                     ""

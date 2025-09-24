@@ -50,7 +50,7 @@ fun ChatInputBar(
     modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = modifier.fillMaxWidth().padding(16.dp),
+        modifier = modifier.fillMaxWidth().padding(Theme.spacing._16),
         horizontalArrangement = Arrangement.spacedBy(2.dp),
     ) {
         Row(

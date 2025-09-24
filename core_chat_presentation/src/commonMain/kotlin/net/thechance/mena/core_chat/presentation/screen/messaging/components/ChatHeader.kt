@@ -3,6 +3,7 @@ package net.thechance.mena.core_chat.presentation.screen.messaging.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -24,7 +25,7 @@ fun ChatHeader(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Box(modifier.background(Theme.colorScheme.background.surfaceLow)) {
+    Box(modifier.background(Theme.colorScheme.background.surfaceLow).statusBarsPadding()) {
         AppBar(
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
             leadingContent = {

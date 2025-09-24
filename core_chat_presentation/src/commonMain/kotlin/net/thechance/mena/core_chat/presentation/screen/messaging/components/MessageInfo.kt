@@ -13,14 +13,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.ic_close_circle
 import mena.core_chat_presentation.generated.resources.ic_message_read
 import mena.core_chat_presentation.generated.resources.ic_message_sent
 import net.thechance.mena.core_chat.presentation.screen.messaging.MessageStatus
 import net.thechance.mena.core_chat.presentation.utils.formatAsTime
+import net.thechance.mena.core_chat.presentation.utils.now
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.indicator.DotsProgressIndicator
 import net.thechance.mena.designsystem.presentation.component.text.Text
@@ -28,7 +27,6 @@ import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 
@@ -36,6 +34,7 @@ import kotlin.time.ExperimentalTime
 fun MessageInfo(
     messageTime: LocalDateTime,
     messageStatus: MessageStatus,
+    messageIsMine: Boolean,
     modifier: Modifier = Modifier
 ) {
     val messageInfoColor = if (messageStatus == MessageStatus.FAILED)
@@ -54,43 +53,45 @@ fun MessageInfo(
             color = messageInfoColor
         )
 
-        when (messageStatus) {
-            MessageStatus.SENDING -> {
-                DotsProgressIndicator(
-                    numberOfDots = 3,
-                    colors = listOf(
-                        Theme.colorScheme.stroke,
-                        Theme.colorScheme.shadeTertiary,
-                        Theme.colorScheme.primary.primary
+        if (messageIsMine) {
+            when (messageStatus) {
+                MessageStatus.SENDING -> {
+                    DotsProgressIndicator(
+                        numberOfDots = 3,
+                        colors = listOf(
+                            Theme.colorScheme.stroke,
+                            Theme.colorScheme.shadeTertiary,
+                            Theme.colorScheme.primary.primary
+                        )
                     )
-                )
-            }
+                }
 
-            MessageStatus.SENT -> {
-                Icon(
-                    painter = painterResource(Res.drawable.ic_message_sent),
-                    contentDescription = "Sent",
-                    tint = messageInfoColor,
-                    modifier = Modifier.size(16.dp)
-                )
-            }
+                MessageStatus.SENT -> {
+                    Icon(
+                        painter = painterResource(Res.drawable.ic_message_sent),
+                        contentDescription = "Sent",
+                        tint = messageInfoColor,
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
 
-            MessageStatus.READ -> {
-                Icon(
-                    painter = painterResource(Res.drawable.ic_message_read),
-                    contentDescription = "Read",
-                    tint = messageInfoColor,
-                    modifier = Modifier.size(16.dp)
-                )
-            }
+                MessageStatus.READ -> {
+                    Icon(
+                        painter = painterResource(Res.drawable.ic_message_read),
+                        contentDescription = "Read",
+                        tint = messageInfoColor,
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
 
-            MessageStatus.FAILED -> {
-                Icon(
-                    painter = painterResource(Res.drawable.ic_close_circle),
-                    contentDescription = "Failed",
-                    tint = messageInfoColor,
-                    modifier = Modifier.size(16.dp)
-                )
+                MessageStatus.FAILED -> {
+                    Icon(
+                        painter = painterResource(Res.drawable.ic_close_circle),
+                        contentDescription = "Failed",
+                        tint = messageInfoColor,
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
             }
         }
     }
@@ -108,9 +109,9 @@ private fun PreviewReadMessageInfo() {
             contentAlignment = Alignment.BottomStart
         ) {
             MessageInfo(
-                modifier = Modifier,
-                messageTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
-                messageStatus = MessageStatus.READ
+                messageTime = LocalDateTime.now(),
+                messageStatus = MessageStatus.READ,
+                messageIsMine = true
             )
         }
     }
@@ -127,9 +128,9 @@ private fun PreviewSentMessageInfo() {
             contentAlignment = Alignment.BottomStart
         ) {
             MessageInfo(
-                modifier = Modifier,
-                messageTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
-                messageStatus = MessageStatus.SENT
+                messageTime = LocalDateTime.now(),
+                messageStatus = MessageStatus.SENT,
+                messageIsMine = true
             )
         }
     }
@@ -146,9 +147,9 @@ private fun PreviewFailedMessageInfo() {
             contentAlignment = Alignment.BottomStart
         ) {
             MessageInfo(
-                modifier = Modifier,
-                messageTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
-                messageStatus = MessageStatus.FAILED
+                messageTime = LocalDateTime.now(),
+                messageStatus = MessageStatus.FAILED,
+                messageIsMine = true
             )
         }
     }
@@ -165,9 +166,9 @@ private fun PreviewSendingMessageInfo() {
             contentAlignment = Alignment.BottomStart
         ) {
             MessageInfo(
-                modifier = Modifier,
-                messageTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
-                messageStatus = MessageStatus.SENDING
+                messageTime = LocalDateTime.now(),
+                messageStatus = MessageStatus.SENDING,
+                messageIsMine = true
             )
         }
     }

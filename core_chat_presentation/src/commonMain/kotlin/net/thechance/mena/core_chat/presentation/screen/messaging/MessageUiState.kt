@@ -17,6 +17,11 @@ enum class MessageStatus {
     FAILED
 }
 
+data class MarkedMessageUiState(
+    val message: MessageUiState,
+    val isMarkedLastInSeries: Boolean
+)
+
 data class TextMessageUiState(
     override val id: String,
     override val senderId: String,
@@ -31,3 +36,13 @@ data class TextMessageUiState(
     status,
     isMine
 )
+
+fun List<MessageUiState>.markLastInSeries(): List<MarkedMessageUiState> {
+    return this.mapIndexed { index, message ->
+        val nextSender = this.getOrNull(index - 1)?.senderId
+        val isLastInSeries = nextSender == null || nextSender != message.senderId
+
+        MarkedMessageUiState(message, isLastInSeries)
+    }
+}
+

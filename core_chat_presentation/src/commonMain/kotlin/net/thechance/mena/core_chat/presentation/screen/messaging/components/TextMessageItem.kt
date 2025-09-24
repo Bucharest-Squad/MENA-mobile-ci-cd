@@ -10,15 +10,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
+import kotlinx.datetime.LocalDateTime
 import net.thechance.mena.core_chat.presentation.screen.messaging.MessageStatus
 import net.thechance.mena.core_chat.presentation.screen.messaging.TextMessageUiState
+import net.thechance.mena.core_chat.presentation.utils.now
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 @Composable
@@ -57,7 +56,7 @@ private fun PreviewTextMessageItem() {
                 message = TextMessageUiState(
                     "0",
                     "1",
-                    Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
+                    LocalDateTime.now(),
                     MessageStatus.READ,
                     false,
                     "Hello Bilal"

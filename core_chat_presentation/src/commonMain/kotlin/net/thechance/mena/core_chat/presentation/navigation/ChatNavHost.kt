@@ -23,6 +23,7 @@ import net.thechance.mena.core_chat.presentation.components.AnimatedSnackBarHost
 import net.thechance.mena.core_chat.presentation.components.SnackBarData
 import net.thechance.mena.core_chat.presentation.screen.chats.ChatsScreen
 import net.thechance.mena.core_chat.presentation.screen.contacts.ContactsScreen
+import net.thechance.mena.core_chat.presentation.screen.messaging.MessagingScreen
 import net.thechance.mena.core_chat.presentation.screen.syncContacts.SyncContactsScreen
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.koin.compose.koinInject
@@ -80,11 +81,12 @@ fun ChatNavHost(
             NavHost(
                 modifier = Modifier.fillMaxSize(),
                 navController = navController,
-                startDestination = ChatsRoute,
+                startDestination = MessagingRoute(0),
             ) {
                 composable<ChatsRoute> { ChatsScreen() }
                 composable<ContactsRoute> { ContactsScreen() }
                 composable<SyncContactsRoute> { SyncContactsScreen() }
+                composable<MessagingRoute> { MessagingScreen() }
             }
         }
 
