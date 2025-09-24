@@ -12,7 +12,9 @@ import dev.mokkery.mock
 import dev.mokkery.verifySuspend
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
@@ -29,6 +31,10 @@ import kotlin.test.Test
 class ContactsViewModelTest {
     private val contactsRepository = mock<ContactsRepository>()
     private val effector = mock<ChatEffector>()
+    private val isSyncSuccessState: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    private val contactsScreenArgs: ContactsScreenArgsImpl =
+        ContactsScreenArgsImpl(isSyncSuccessState)
+
 
     private val testDispatcher = StandardTestDispatcher()
 
@@ -43,6 +49,26 @@ class ContactsViewModelTest {
     }
 
     @Test
+    fun `init should call load contacts when the user resync successfully`() = runTest {
+        everySuspend { contactsRepository.getUserContacts(any(), any()) } returns PagedData(
+            data = listOf(expectedContact),
+            totalItems = 1,
+            isLastPage = true
+        )
+
+        val viewModel = ContactsViewModel(contactsRepository, contactsScreenArgs, effector)
+        isSyncSuccessState.update { true }
+
+        viewModel.state.test {
+            val state = awaitItem()
+            val contacts = state.contacts.first()
+            assertThat(contacts).isNotNull()
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+
+    @Test
     fun `init should load contacts successfully when viewModel is created`() = runTest {
         everySuspend { contactsRepository.getUserContacts(any(), any()) } returns PagedData(
             data = listOf(expectedContact),
@@ -50,8 +76,7 @@ class ContactsViewModelTest {
             isLastPage = true
         )
 
-        val viewModel = ContactsViewModel(contactsRepository, effector)
-        advanceUntilIdle()
+        val viewModel = ContactsViewModel(contactsRepository, contactsScreenArgs, effector)
 
         viewModel.state.test {
             val state = awaitItem()
@@ -68,7 +93,7 @@ class ContactsViewModelTest {
             totalItems = 1,
             isLastPage = true
         )
-        val viewModel = ContactsViewModel(contactsRepository, effector)
+        val viewModel = ContactsViewModel(contactsRepository, contactsScreenArgs, effector)
         advanceUntilIdle()
 
         viewModel.onRefreshContacts()
@@ -89,7 +114,7 @@ class ContactsViewModelTest {
                 totalItems = 0,
                 isLastPage = true
             )
-            val viewModel = ContactsViewModel(contactsRepository, effector)
+            val viewModel = ContactsViewModel(contactsRepository, contactsScreenArgs, effector)
             advanceUntilIdle()
 
             viewModel.onRefreshContacts()
@@ -105,7 +130,7 @@ class ContactsViewModelTest {
     @Test
     fun `onBackClick should call popBackStack when invoked`() = runTest {
         everySuspend { effector.popBackStack() } returns Unit
-        val viewModel = ContactsViewModel(contactsRepository, effector)
+        val viewModel = ContactsViewModel(contactsRepository, contactsScreenArgs, effector)
         advanceUntilIdle()
 
         viewModel.onBackClick()
@@ -119,7 +144,7 @@ class ContactsViewModelTest {
     @Test
     fun `onResyncClick should navigate to sync contacts when invoked`() = runTest {
         everySuspend { effector.navigate(any(), any(), any()) } returns Unit
-        val viewModel = ContactsViewModel(contactsRepository, effector)
+        val viewModel = ContactsViewModel(contactsRepository, contactsScreenArgs, effector)
         advanceUntilIdle()
 
         viewModel.onReSyncClick()
@@ -131,7 +156,7 @@ class ContactsViewModelTest {
     @Test
     fun `onContactClick should navigate to chat screen when called`() = runTest {
         everySuspend { effector.navigate(any(), any(), any()) } returns Unit
-        val viewModel = ContactsViewModel(contactsRepository, effector)
+        val viewModel = ContactsViewModel(contactsRepository, contactsScreenArgs, effector)
         advanceUntilIdle()
 
 
