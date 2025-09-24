@@ -61,7 +61,7 @@ fun MessagingScreenContent(
         topBar = {
             ChatHeader(
                 chatName = state.chat.name,
-                onMenuClick = { },
+                onMenuClick = { showChatActionsDialog = true },
                 onBackClick = { },
                 modifier = Modifier
                     .fillMaxWidth()
