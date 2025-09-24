@@ -16,8 +16,14 @@ interface MessageDao {
     fun getAllMessages(): Flow<List<MessageEntity>>
 
     @Query("SELECT * FROM MessageEntity WHERE chat_id = :chatId ORDER BY timestamp ASC")
-    fun getMessagesByChat(chatId: Long): Flow<List<MessageEntity>>
+    fun getMessagesByChat(chatId: String): Flow<List<MessageEntity>>
 
     @Query("UPDATE MessageEntity SET message_status = :status WHERE id = :id")
-    suspend fun updateMessageStatus(id: Long, status: MessageStatus)
+    suspend fun updateMessageStatus(id: String, status: MessageStatus)
+
+    @Query("DELETE FROM MessageEntity WHERE id = :id")
+    suspend fun deleteMessage(id: String)
+
+    @Query("DELETE FROM MessageEntity WHERE id in (:ids)")
+    suspend fun deleteAllMessages(ids: List<String>)
 }

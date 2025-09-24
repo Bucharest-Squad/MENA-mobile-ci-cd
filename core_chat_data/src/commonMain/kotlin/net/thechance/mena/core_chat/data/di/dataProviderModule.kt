@@ -5,7 +5,6 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.room.RoomDatabase
 import com.bilalazzam.contacts_provider.ContactsProvider
 import net.thechance.mena.core_chat.data.database.ChatDatabase
-import net.thechance.mena.core_chat.data.database.dao.ChatDao
 import net.thechance.mena.core_chat.data.database.dao.MessageDao
 import net.thechance.mena.core_chat.data.database.getChatDatabase
 import org.koin.core.scope.Scope
@@ -17,7 +16,6 @@ internal val dataProviderModule = module {
     single { getDatabaseBuilder() }
 
     single<ChatDatabase> { getChatDatabase(get()) }
-    single<ChatDao> { get<ChatDatabase>().getChatDao() }
     single<MessageDao> { get<ChatDatabase>().getMessageDao() }
 }
 

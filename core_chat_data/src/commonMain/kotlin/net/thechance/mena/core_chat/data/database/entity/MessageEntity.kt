@@ -1,8 +1,11 @@
+@file:OptIn(ExperimentalTime::class)
+
 package net.thechance.mena.core_chat.data.database.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlin.time.ExperimentalTime
 
 @Entity
 data class MessageEntity(
