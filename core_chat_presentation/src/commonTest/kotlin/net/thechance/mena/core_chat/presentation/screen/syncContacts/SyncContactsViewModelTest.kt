@@ -144,8 +144,10 @@ class SyncContactsViewModelTest {
             settingsOpener,
             effector
         )
+        advanceUntilIdle()
 
         viewModel.onSyncClick()
+        advanceUntilIdle()
 
         verifySuspend { permissionsController.providePermission(Permission.CONTACTS) }
         verifySuspend { effector.showSnackBar(any()) }
