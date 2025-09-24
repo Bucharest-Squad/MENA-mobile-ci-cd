@@ -26,9 +26,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import mena.core_chat_presentation.generated.resources.Res
+import mena.core_chat_presentation.generated.resources.add
 import mena.core_chat_presentation.generated.resources.message_holder
 import mena.core_chat_presentation.generated.resources.mic
-import mena.core_chat_presentation.generated.resources.add
 import mena.core_chat_presentation.generated.resources.telegram
 import net.thechance.mena.designsystem.presentation.component.button.FabButton
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
@@ -51,14 +51,16 @@ fun ChatInputBar(
 ) {
     Row(
         modifier = modifier.fillMaxWidth().padding(Theme.spacing._16),
-        horizontalArrangement = Arrangement.spacedBy(2.dp),
+        horizontalArrangement = Arrangement.spacedBy(Theme.spacing._2),
     ) {
         Row(
-            modifier = Modifier.background(
-                shape = RoundedCornerShape(Theme.radius.md),
-                color = Theme.colorScheme.background.surfaceLow
-            ).padding(end = 12.dp).defaultMinSize(minHeight = 48.dp).weight(1f),
-            horizontalArrangement = Arrangement.spacedBy(2.dp),
+            modifier = Modifier
+                .background(
+                    shape = RoundedCornerShape(Theme.radius.md),
+                    color = Theme.colorScheme.background.surfaceLow
+                )
+                .padding(end = Theme.spacing._12).defaultMinSize(minHeight = 48.dp).weight(1f),
+            horizontalArrangement = Arrangement.spacedBy(Theme.spacing._2),
             verticalAlignment = Alignment.CenterVertically
         ) {
             MultiLineTextField(

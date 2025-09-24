@@ -27,7 +27,7 @@ fun ChatHeader(
 ) {
     Box(modifier.background(Theme.colorScheme.background.surfaceLow).statusBarsPadding()) {
         AppBar(
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+            contentPadding = PaddingValues(horizontal = Theme.spacing._16, vertical = Theme.spacing._8),
             leadingContent = {
                 Icon(
                     painter = painterResource(Res.drawable.ic_arrow_left),
@@ -43,7 +43,8 @@ fun ChatHeader(
                         contentDescription = null
                     )
                 }
-            })
+            }
+        )
     }
 }
 
