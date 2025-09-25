@@ -2,6 +2,7 @@ package net.thechance.mena.trends.presentation.shared.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -15,7 +16,6 @@ import mena.trends_presentation.generated.resources.Res
 import mena.trends_presentation.generated.resources.ic_edit
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.trends.presentation.shared.component.modifier.noRippleClickable
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -26,7 +26,7 @@ internal fun EditButton(
 ){
     Box(
         modifier = modifier
-            .noRippleClickable(
+            .clickable(
                 enabled = isClickEnabled,
                 onClick = onClick
             )
