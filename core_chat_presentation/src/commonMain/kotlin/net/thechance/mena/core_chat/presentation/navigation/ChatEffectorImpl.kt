@@ -1,8 +1,11 @@
 package net.thechance.mena.core_chat.presentation.navigation
 
 import androidx.navigation.NavOptions
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import net.thechance.mena.core_chat.presentation.components.SnackBarData
@@ -10,10 +13,14 @@ import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 class ChatEffectorImpl() : ChatEffector {
-    private val _chatEffect = Channel<ChatEffect>(Channel.BUFFERED)
-    override val chatEffect = _chatEffect.receiveAsFlow()
+    private val _chatEffect = MutableSharedFlow<ChatEffect>()
+    override val chatEffect = _chatEffect.asSharedFlow()
     private val mutex = Mutex()
     private var lastNavigateTime = 0L
+
+    override val popBackStackArgsFlow: Flow<Map<String, Any>> =
+        chatEffect.filterIsInstance<ChatEffect.PopBackStack>()
+            .map { it.arguments }
 
     @OptIn(ExperimentalTime::class)
     override suspend fun navigate(route: ChatRoute, navOptions: NavOptions?, forceNavigate: Boolean) {
@@ -21,7 +28,7 @@ class ChatEffectorImpl() : ChatEffector {
             val now = Clock.System.now().toEpochMilliseconds()
             if (forceNavigate || now - lastNavigateTime >= EFFECT_DEBOUNCE_MS) {
                 lastNavigateTime = now
-                _chatEffect.send(
+                _chatEffect.emit(
                     ChatEffect.Navigate(route = route, navOptions = navOptions)
                 )
             }
@@ -29,11 +36,15 @@ class ChatEffectorImpl() : ChatEffector {
     }
 
     override suspend fun popBackStack(vararg arguments: Pair<String, Any>) {
-        _chatEffect.send(ChatEffect.PopBackStack(arguments.toMap()))
+        _chatEffect.emit(ChatEffect.PopBackStack(arguments.toMap()))
+    }
+
+    override suspend fun setNavigationArgs(vararg arguments: Pair<String, Any>) {
+        _chatEffect.emit(ChatEffect.SetNavigationArgs(arguments.toMap()))
     }
 
     override suspend fun showSnackBar(snackBarData: SnackBarData) {
-        _chatEffect.send(ChatEffect.ShowSnackBar(snackBarData))
+        _chatEffect.emit(ChatEffect.ShowSnackBar(snackBarData))
     }
 
     companion object {

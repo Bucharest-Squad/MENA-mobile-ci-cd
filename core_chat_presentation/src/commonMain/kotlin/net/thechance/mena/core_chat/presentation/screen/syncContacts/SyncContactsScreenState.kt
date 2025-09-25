@@ -5,4 +5,5 @@ data class SyncContactsScreenState(
     val showSyncView: Boolean = false,
     val isFirstSync: Boolean = false,
     val isPermissionDeniedPermanently: Boolean = false,
+    val isOpenSettingsCalled: Boolean = false,
 )

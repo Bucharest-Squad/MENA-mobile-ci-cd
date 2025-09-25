@@ -45,7 +45,7 @@ class ContactsRepositoryImplTest {
     @Test
     fun `should return paged contacts when getUserContacts is called successfully`() = runTest {
 
-        val result = repository.getUserContacts(pageNumber = 1, pageSize = 10)
+        val result = repository.getUserContacts(pageNumber = 1)
 
         assertThat(result.data).isEqualTo(
             listOf(
@@ -75,7 +75,7 @@ class ContactsRepositoryImplTest {
         )
 
 
-        val result = repository.getUserContacts(pageNumber = 1, pageSize = 10)
+        val result = repository.getUserContacts(pageNumber = 1)
 
 
         assertThat(result.data).isEmpty()
@@ -96,7 +96,7 @@ class ContactsRepositoryImplTest {
             )
 
             assertFailsWith<UnAuthorizedException> {
-                repository.getUserContacts(pageNumber = 1, pageSize = 10)
+                repository.getUserContacts(pageNumber = 1)
             }
         }
 
@@ -115,7 +115,7 @@ class ContactsRepositoryImplTest {
 
 
         assertFailsWith<UnknownException> {
-            repository.getUserContacts(pageNumber = 1, pageSize = 10)
+            repository.getUserContacts(pageNumber = 1)
         }
     }
 
@@ -133,7 +133,7 @@ class ContactsRepositoryImplTest {
 
 
             assertFailsWith<ContactsFetchFailedException> {
-                repository.getUserContacts(pageNumber = 1, pageSize = 10)
+                repository.getUserContacts(pageNumber = 1)
             }
         }
 
@@ -358,7 +358,7 @@ class ContactsRepositoryImplTest {
             }
         )
 
-        val result = repository.getUserContacts(pageNumber = 1, pageSize = 10)
+        val result = repository.getUserContacts(pageNumber = 1)
 
         assertThat(result.data).isEqualTo(page1Contacts.data?.map { it.toDomain() })
     }
@@ -381,7 +381,7 @@ class ContactsRepositoryImplTest {
             }
         )
 
-        val result = repository.getUserContacts(pageNumber = 3, pageSize = 10)
+        val result = repository.getUserContacts(pageNumber = 3)
 
         assertThat(result.data).isEmpty()
     }

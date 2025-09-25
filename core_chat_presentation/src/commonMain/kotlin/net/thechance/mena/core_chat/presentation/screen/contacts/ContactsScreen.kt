@@ -26,8 +26,6 @@ import mena.core_chat_presentation.generated.resources.ic_resync
 import mena.core_chat_presentation.generated.resources.loading
 import mena.core_chat_presentation.generated.resources.something_went_wrong
 import net.thechance.mena.core_chat.presentation.components.ErrorView
-import net.thechance.mena.core_chat.presentation.navigation.LocalNavController
-import net.thechance.mena.core_chat.presentation.screen.contacts.ContactsScreenArgsImpl.Companion.IS_SYNC_SUCCESS
 import net.thechance.mena.core_chat.presentation.screen.contacts.components.ContactsList
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBarOptionContainer
@@ -37,23 +35,9 @@ import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.parameter.parametersOf
 
 @Composable
-fun ContactsScreen() {
-    val navController = LocalNavController.current
-    val backStackEntry = navController.currentBackStackEntry!!
-
-    val viewModel: ContactsViewModel = koinViewModel(
-        parameters = {
-            parametersOf(
-                backStackEntry.savedStateHandle.getMutableStateFlow(
-                    IS_SYNC_SUCCESS,
-                    false
-                )
-            )
-        }
-    )
+fun ContactsScreen(viewModel: ContactsViewModel = koinViewModel()) {
 
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -117,8 +101,11 @@ private fun ContactsContent(
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
-                    ){
-                        Text(text = stringResource(Res.string.loading), style = Theme.typography.title.small)
+                    ) {
+                        Text(
+                            text = stringResource(Res.string.loading),
+                            style = Theme.typography.title.small
+                        )
                     }
                 }
 

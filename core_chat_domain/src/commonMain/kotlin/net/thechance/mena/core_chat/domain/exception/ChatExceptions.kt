@@ -19,10 +19,5 @@ class UnknownException(logMessage: String? = null, cause: Throwable? = null) :
 
 class DataStoreException(logMessage: String, cause: Throwable? = null) :
     ChatException(logMessage, cause)
-
-// Chat-Specific
-class ChatNotFoundException(logMessage: String, cause: Throwable? = null) :
-    ChatException(logMessage, cause)
-
-class SenderNotFoundException(logMessage: String, cause: Throwable? = null) :
-    ChatException(logMessage, cause)
+class SendMessageFailedException(logMessage: String, cause: Throwable? = null) :
+        ChatException(logMessage, cause)
