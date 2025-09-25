@@ -30,8 +30,6 @@ import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.dukan.presentation.navigation.LocalNavController
 import net.thechance.mena.dukan.presentation.screen.createDukan.content.component.SnackBar
-import net.thechance.mena.dukan.presentation.screen.createDukan.content.component.SnackBarType
-import net.thechance.mena.dukan.presentation.screen.createDukan.content.component.SnackBarUiState
 import net.thechance.mena.dukan.presentation.util.ObserveAsEffect
 import net.thechance.mena.dukan.presentation.util.OnSystemBackPressed
 import net.thechance.mena.dukan.presentation.util.stubPreviews.PreviewCreateShelfInteractionListener
@@ -120,15 +118,13 @@ private fun CreateShelfContent(
                 )
             }
         }
-        SnackBar(
-            snackBarUiState = SnackBarUiState(
-                snackBarType = SnackBarType.ERROR,
-                message = state.snackBarMessage.orEmpty()
-            ),
-            isVisible = state.showSnackBar,
-            onDismiss = interactionListener::onDismissSnackBar
-        )
-
+        state.snackBarState?.let {
+            SnackBar(
+                snackBarUiState = state.snackBarState,
+                isVisible = state.showSnackBar,
+                onDismiss = interactionListener::onDismissSnackBar
+            )
+        }
         PrimaryButton(
             modifier = Modifier
                 .align(Alignment.BottomCenter)

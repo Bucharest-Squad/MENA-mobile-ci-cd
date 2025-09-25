@@ -13,6 +13,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import net.thechance.mena.dukan.domain.entity.Shelf
 import net.thechance.mena.dukan.domain.repository.ShelfRepository
+import net.thechance.mena.dukan.presentation.screen.createDukan.content.component.SnackBarType
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -73,7 +74,7 @@ class CreateShelfViewModelTest {
             val state = awaitItem()
 
             assertTrue(state.showSnackBar)
-            assertEquals(CreateShelfUiState.SnackBarType.ERROR, state.snackBarType)
+            assertEquals(SnackBarType.ERROR, state.snackBarState?.snackBarType)
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -89,7 +90,7 @@ class CreateShelfViewModelTest {
 
         val state = createShelfViewModel.state.value
         assertTrue(state.showSnackBar)
-        assertEquals(CreateShelfUiState.SnackBarType.ERROR, state.snackBarType)
+        assertEquals(SnackBarType.ERROR, state.snackBarState?.snackBarType)
     }
 
     @Test
@@ -102,21 +103,20 @@ class CreateShelfViewModelTest {
 
         val state = createShelfViewModel.state.value
         assertTrue(state.showSnackBar)
-        assertEquals(CreateShelfUiState.SnackBarType.ERROR, state.snackBarType)
+        assertEquals(SnackBarType.ERROR, state.snackBarState?.snackBarType)
     }
 
     @Test
     fun `onDismissSnackBar SHOULD hide snack bar`() = runTest {
         createShelfViewModel.showSnackBar(
             message = "Invalid shelf",
-            type = CreateShelfUiState.SnackBarType.ERROR
+            type = SnackBarType.ERROR
         )
 
         createShelfViewModel.onDismissSnackBar()
 
         val state = createShelfViewModel.state.value
         assertFalse(state.showSnackBar)
-        assertEquals(CreateShelfUiState.SnackBarType.NONE, state.snackBarType)
-        assertEquals(null, state.snackBarMessage)
+        assertEquals(null, state.snackBarState)
     }
 }

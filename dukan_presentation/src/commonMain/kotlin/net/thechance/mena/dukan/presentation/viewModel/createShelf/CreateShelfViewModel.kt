@@ -5,6 +5,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import net.thechance.mena.dukan.domain.entity.Shelf
 import net.thechance.mena.dukan.domain.repository.ShelfRepository
+import net.thechance.mena.dukan.presentation.screen.createDukan.content.component.SnackBarType
+import net.thechance.mena.dukan.presentation.screen.createDukan.content.component.SnackBarUiState
 import net.thechance.mena.dukan.presentation.viewModel.base.BaseViewModel
 
 class CreateShelfViewModel(
@@ -70,7 +72,7 @@ class CreateShelfViewModel(
         if (isCreated) {
             showSnackBar(
                 "Shelf created successfully",
-                CreateShelfUiState.SnackBarType.SUCCESS
+                SnackBarType.SUCCESS
             )
             emitEffect(CreateShelfEffect.NavigateBack)
         } else {
@@ -87,21 +89,22 @@ class CreateShelfViewModel(
         updateState {
             copy(
                 showSnackBar = false,
-                snackBarMessage = null,
-                snackBarType = CreateShelfUiState.SnackBarType.NONE
+                snackBarState = null
             )
         }
     }
 
     fun showSnackBar(
         message: String,
-        type: CreateShelfUiState.SnackBarType = CreateShelfUiState.SnackBarType.ERROR
+        type: SnackBarType = SnackBarType.ERROR
     ) {
         updateState {
             copy(
                 showSnackBar = true,
-                snackBarMessage = message,
-                snackBarType = type
+                snackBarState = SnackBarUiState(
+                    snackBarType = type,
+                    message = message
+                )
             )
         }
     }
