@@ -29,6 +29,7 @@ import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.progressBar.ProgressBar
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import net.thechance.mena.trends.presentation.shared.model.VideoState
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -184,8 +185,4 @@ fun VideoLoadingCardItem(
             }
         }
     }
-}
-
-enum class VideoState {
-    Loading, Error, Success
 }
