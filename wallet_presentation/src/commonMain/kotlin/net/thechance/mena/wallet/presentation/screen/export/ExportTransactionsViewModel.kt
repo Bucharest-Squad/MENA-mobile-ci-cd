@@ -3,11 +3,14 @@ package net.thechance.mena.wallet.presentation.screen.export
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import net.thechance.mena.wallet.domain.repository.ExportTransactionsRepository
 import net.thechance.mena.wallet.presentation.base.BaseViewModel
 import org.koin.android.annotation.KoinViewModel
+import org.koin.core.annotation.Provided
 
 @KoinViewModel
 class ExportTransactionsViewModel(
+    @Provided private val exportTransactionsRepository: ExportTransactionsRepository,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : BaseViewModel<ExportTransactionsState, ExportTransactionsEffect>(
     ExportTransactionsState()
@@ -17,7 +20,15 @@ class ExportTransactionsViewModel(
     }
 
     override fun onAllTransactionsClicked() {
-        updateState { oldState->
+        tryToExecute(
+            onStart = {},
+            callee = { exportTransactionsRepository.getAllTransactions() },
+            onSuccess = {},
+            onError = {},
+            onFinish = {},
+            dispatcher = ioDispatcher
+        )
+        updateState { oldState ->
             oldState.copy(
                 isAllTransactionsCardSelected = true
             )
@@ -25,11 +36,20 @@ class ExportTransactionsViewModel(
     }
 
     override fun onCustomFilteringClicked() {
-        updateState { oldState->
+        tryToExecute(
+            onStart = {},
+            callee = { exportTransactionsRepository.getFilteredTransactions() },
+            onSuccess = {},
+            onError = {},
+            onFinish = {},
+            dispatcher = ioDispatcher
+        )
+        updateState { oldState ->
             oldState.copy(
                 isCustomFilterCardSelected = true
             )
-        }    }
+        }
+    }
 
     override fun onViewAndShareClicked() {
         TODO("Not yet implemented")
