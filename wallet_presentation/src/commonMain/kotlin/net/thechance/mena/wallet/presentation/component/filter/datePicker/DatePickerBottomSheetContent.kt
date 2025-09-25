@@ -8,11 +8,9 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import mena.wallet_presentation.generated.resources.Res
 import mena.wallet_presentation.generated.resources.back_button
@@ -20,10 +18,8 @@ import mena.wallet_presentation.generated.resources.ic_arrow_left
 import mena.wallet_presentation.generated.resources.pick
 import mena.wallet_presentation.generated.resources.pick_start_date
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
-import net.thechance.mena.designsystem.presentation.component.button.Button
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
-import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.wallet.presentation.component.filter.datePicker.DateConstants.MIN_YEAR
