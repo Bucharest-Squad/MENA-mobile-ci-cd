@@ -5,6 +5,7 @@ import kotlinx.datetime.LocalDateTime
 abstract class MessageUiState(
     open val id: String,
     open val senderId: String,
+    open val chatId: String,
     open val time: LocalDateTime,
     open val status: MessageStatus,
     open val isMine: Boolean
@@ -24,8 +25,9 @@ data class MarkedMessageUiState(
 )
 
 data class TextMessageUiState(
-    override val id: String,
-    override val senderId: String,
+    override val id: String = "",
+    override val senderId: String = "",
+    override val chatId: String = "",
     override val time: LocalDateTime,
     override val status: MessageStatus,
     override val isMine: Boolean,
@@ -33,6 +35,7 @@ data class TextMessageUiState(
 ): MessageUiState(
     id,
     senderId,
+    chatId,
     time,
     status,
     isMine

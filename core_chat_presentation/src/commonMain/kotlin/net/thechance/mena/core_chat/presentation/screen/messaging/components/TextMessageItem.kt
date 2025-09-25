@@ -64,10 +64,10 @@ private fun PreviewTextMessageItem() {
                 message = TextMessageUiState(
                     "0",
                     "1",
-                    LocalDateTime.now(),
-                    MessageStatus.READ,
-                    false,
-                    "Hello Bilal"
+                    time = LocalDateTime.now(),
+                    status = MessageStatus.READ,
+                    isMine = false,
+                    text = "Hello Bilal"
                 ),
                 showMessageInfo = true,
                 isMarkedLastInSeries = true

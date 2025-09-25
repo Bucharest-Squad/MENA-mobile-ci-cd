@@ -1,16 +1,22 @@
-
 package net.thechance.mena.core_chat.presentation.screen.messaging
 
 import kotlinx.datetime.LocalDateTime
-import net.thechance.mena.core_chat.presentation.utils.markLastInSeries
 import net.thechance.mena.core_chat.presentation.utils.minusMinutes
 import net.thechance.mena.core_chat.presentation.utils.now
-import net.thechance.mena.core_chat.presentation.utils.withDateSeparators
 
 data class MessagingScreenState(
-    val chat: ChatUiState = dummyChat,
-    val chatListItems: List<ChatListItem> = dummyMessages.markLastInSeries().withDateSeparators(),
-    val inputMessage: String = "bbbb"
+    val chat: ChatUiState = ChatUiState(),
+    val inputMessage: String = "",
+    val chatListItems: List<ChatListItem> = emptyList(),
+    val uiMessages: List<MessageUiState> = emptyList(),
+
+    val userId: String = "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb", // temp until login
+
+    val isChatActionsDialogVisible: Boolean = false,
+    val isDeleteChatDialogVisible: Boolean = false,
+    val isResendMessageDialogVisible: Boolean = false,
+
+    val failedMessageToReSend: MessageUiState? = null
 )
 
 //dummies
@@ -227,7 +233,6 @@ val dummyMessages = listOf(
         text = "What’s up?"
     )
 )
-
 
 
 val dummyChat = ChatUiState(

@@ -146,10 +146,10 @@ private fun PreviewBaseMessageLayout() {
                 message = TextMessageUiState(
                     "0",
                     "1",
-                    LocalDateTime.now(),
-                    MessageStatus.READ,
-                    false,
-                    ""
+                    time = LocalDateTime.now(),
+                    status = MessageStatus.READ,
+                    isMine = false,
+                    text = ""
                 ),
                 showMessageInfo = true,
                 isMarkedLastInSeries = true

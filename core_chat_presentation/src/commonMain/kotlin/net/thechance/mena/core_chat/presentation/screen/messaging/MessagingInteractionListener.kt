@@ -11,14 +11,15 @@ interface MessagingInteractionListener {
 
     //messages
     fun onMessageClick(messageId: String)
-    fun onFailedMessageClick(messageId: String)
+    fun onFailedMessageClick(message: TextMessageUiState)
 
     // resend dialog
-    fun onResendMessageClick(messageId: String)
+    fun onResendMessageClick()
+    fun onDeleteMessageClick()
     fun onDismissResendMessageDialog()
 
     //chat actions dialog
-    fun onChatActionsDialogDismiss()
+    fun onDismissChatActionsDialog()
     fun onDeleteChatClick()
 
     //delete chat dialog
