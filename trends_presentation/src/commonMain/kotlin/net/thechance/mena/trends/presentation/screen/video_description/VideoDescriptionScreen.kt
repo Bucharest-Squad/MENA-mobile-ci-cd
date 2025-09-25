@@ -72,7 +72,7 @@ internal fun VideoDescriptionScreen(
 
 @Composable
 private fun VideoDescriptionContent(
-    state: VideoDescriptionState,
+    state: VideoDescriptionScreenState,
     listener: VideoDescriptionInteractionListener,
 ) {
     val charactersLimitColor by animateColorAsState(
@@ -111,8 +111,8 @@ private fun VideoDescriptionContent(
                 maxNumberOfCharacters = state.maxNumberOfCharacters,
                 currentNumberOfCharactersColor = charactersLimitColor,
                 modifier = Modifier
-                    .height(250.dp)
                     .padding(top = Theme.spacing._24, start = Theme.spacing._16, end = Theme.spacing._16)
+                    .height(187.dp)
                     .clip(shape = RoundedCornerShape(Theme.radius.md))
                     .background(Theme.colorScheme.background.surfaceLow)
             )
@@ -194,7 +194,7 @@ private fun DescriptionBox(
 private fun VideoDescriptionScreenPreview() {
     MenaTheme{
         VideoDescriptionContent(
-            state = VideoDescriptionState(),
+            state = VideoDescriptionScreenState(),
             listener = object : VideoDescriptionInteractionListener {
                 override fun onBackClick() {}
                 override fun onNextClick() {}
