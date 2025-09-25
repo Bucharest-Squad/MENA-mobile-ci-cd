@@ -68,10 +68,12 @@ class CreateShelfViewModelTest {
     fun `onCreateButtonClicked SHOULD show snack bar when title is blank`() = runTest {
         createShelfViewModel.state.test {
             createShelfViewModel.onCreateButtonClicked()
+
             skipItems(1)
             val state = awaitItem()
+
             assertTrue(state.showSnackBar)
-            assertEquals(CreateShelfUiState.SnackBarType.INVALID_NAME, state.snackBarType)
+            assertEquals(CreateShelfUiState.SnackBarType.ERROR, state.snackBarType)
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -81,43 +83,40 @@ class CreateShelfViewModelTest {
         val existingShelf = Shelf(id = "1", name = "Existing", dukanId = "")
         everySuspend { shelfRepository.getMyDukanShelves() } returns listOf(existingShelf)
 
-        createShelfViewModel.state.test {
-            createShelfViewModel.onTitleChanged("Existing")
-            createShelfViewModel.onCreateButtonClicked()
-            testDispatcher.scheduler.advanceUntilIdle()
+        createShelfViewModel.onTitleChanged("Existing")
+        createShelfViewModel.onCreateButtonClicked()
+        testDispatcher.scheduler.advanceUntilIdle()
 
-            val state = createShelfViewModel.state.value
-            assertTrue(state.showSnackBar)
-            assertEquals(CreateShelfUiState.SnackBarType.NAME_EXISTS, state.snackBarType)
-            cancelAndIgnoreRemainingEvents()
-        }
+        val state = createShelfViewModel.state.value
+        assertTrue(state.showSnackBar)
+        assertEquals(CreateShelfUiState.SnackBarType.ERROR, state.snackBarType)
     }
 
     @Test
     fun `onCreateButtonClicked SHOULD show snack bar on repository error`() = runTest {
         everySuspend { shelfRepository.getMyDukanShelves() } throws RuntimeException("fail")
 
-        createShelfViewModel.state.test {
-            createShelfViewModel.onTitleChanged("ErrorShelf")
-            createShelfViewModel.onCreateButtonClicked()
-            testDispatcher.scheduler.advanceUntilIdle()
+        createShelfViewModel.onTitleChanged("ErrorShelf")
+        createShelfViewModel.onCreateButtonClicked()
+        testDispatcher.scheduler.advanceUntilIdle()
 
-            val state = createShelfViewModel.state.value
-            assertTrue(state.showSnackBar)
-            assertEquals(CreateShelfUiState.SnackBarType.CREATE_FAILED, state.snackBarType)
-            cancelAndIgnoreRemainingEvents()
-        }
+        val state = createShelfViewModel.state.value
+        assertTrue(state.showSnackBar)
+        assertEquals(CreateShelfUiState.SnackBarType.ERROR, state.snackBarType)
     }
 
     @Test
     fun `onDismissSnackBar SHOULD hide snack bar`() = runTest {
-        createShelfViewModel.state.test {
-            createShelfViewModel.showSnackBar(CreateShelfUiState.SnackBarType.INVALID_NAME)
-            createShelfViewModel.onDismissSnackBar()
-            val state = awaitItem()
-            assertFalse(state.showSnackBar)
-            assertEquals(CreateShelfUiState.SnackBarType.NONE, state.snackBarType)
-            cancelAndIgnoreRemainingEvents()
-        }
+        createShelfViewModel.showSnackBar(
+            message = "Invalid shelf",
+            type = CreateShelfUiState.SnackBarType.ERROR
+        )
+
+        createShelfViewModel.onDismissSnackBar()
+
+        val state = createShelfViewModel.state.value
+        assertFalse(state.showSnackBar)
+        assertEquals(CreateShelfUiState.SnackBarType.NONE, state.snackBarType)
+        assertEquals(null, state.snackBarMessage)
     }
 }

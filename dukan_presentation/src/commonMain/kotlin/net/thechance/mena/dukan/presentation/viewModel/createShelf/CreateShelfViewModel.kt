@@ -33,7 +33,7 @@ class CreateShelfViewModel(
     override fun onCreateButtonClicked() {
         val title = state.value.shelfTitle
         if (!validTitleRegex.matches(title) || title.isBlank()) {
-            showSnackBar(CreateShelfUiState.SnackBarType.INVALID_NAME)
+            showSnackBar("Shelf name is invalid")
             return
         }
 
@@ -51,36 +51,46 @@ class CreateShelfViewModel(
             onSuccess = { isCreated ->
                 updateState { copy(isLoading = false) }
                 if (isCreated) {
+                    showSnackBar(
+                        "Shelf created successfully",
+                        CreateShelfUiState.SnackBarType.SUCCESS
+                    )
                     emitEffect(CreateShelfEffect.NavigateBack)
                 } else {
-                    showSnackBar(CreateShelfUiState.SnackBarType.NAME_EXISTS)
+                    showSnackBar("Shelf name already exists")
                 }
             },
             onError = {
                 updateState { copy(isLoading = false) }
-                showSnackBar(CreateShelfUiState.SnackBarType.CREATE_FAILED)
+                showSnackBar("Failed to create shelf")
             }
         )
     }
-
 
     override fun onDismissSnackBar() {
         updateState {
             copy(
                 showSnackBar = false,
+                snackBarMessage = null,
                 snackBarType = CreateShelfUiState.SnackBarType.NONE
             )
         }
     }
 
-    fun showSnackBar(snackBarType: CreateShelfUiState.SnackBarType) {
+     fun showSnackBar(
+        message: String,
+        type: CreateShelfUiState.SnackBarType = CreateShelfUiState.SnackBarType.ERROR
+    ) {
         updateState {
             copy(
                 showSnackBar = true,
-                snackBarType = snackBarType
+                snackBarMessage = message,
+                snackBarType = type
             )
         }
     }
 
-    private val validTitleRegex = Regex("^[\\p{L}\\s-]+$")
+    companion object {
+        private val validTitleRegex = Regex("^[\\p{L}\\s-]+$")
+    }
 }
