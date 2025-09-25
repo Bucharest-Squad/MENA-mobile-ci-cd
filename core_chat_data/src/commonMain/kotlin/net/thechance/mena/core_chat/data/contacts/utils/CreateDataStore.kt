@@ -1,4 +1,4 @@
-package net.thechance.mena.core_chat.data.utils
+package net.thechance.mena.core_chat.data.contacts.utils
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory

@@ -5,8 +5,8 @@ import androidx.datastore.preferences.core.Preferences
 import com.bilalazzam.contacts_provider.ContactsProvider
 import com.bilalazzam.contacts_provider.ContactsProviderFactory
 import kotlinx.cinterop.ExperimentalForeignApi
-import net.thechance.mena.core_chat.data.utils.createDataStore
-import net.thechance.mena.core_chat.data.utils.dataStoreName
+import net.thechance.mena.core_chat.data.contacts.utils.createDataStore
+import net.thechance.mena.core_chat.data.contacts.utils.dataStoreName
 import org.koin.core.scope.Scope
 import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
