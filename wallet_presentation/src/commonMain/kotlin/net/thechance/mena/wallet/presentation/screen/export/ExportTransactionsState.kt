@@ -1,4 +1,8 @@
 package net.thechance.mena.wallet.presentation.screen.export
 
-class ExportTransactionsState {
-}
+import net.thechance.mena.wallet.presentation.base.SnackBarState
+
+data class ExportTransactionsState (
+    val snackBar: SnackBarState = SnackBarState()
+
+)
