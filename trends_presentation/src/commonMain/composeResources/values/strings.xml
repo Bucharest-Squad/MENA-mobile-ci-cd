@@ -39,4 +39,10 @@
 
 
 
+    <string name="upload_failed">Upload failed</string>
+    <string name="loading">Loading</string>
+    <string name="success">Success</string>
+    <string name="retry">Retry</string>
+    <string name="error">Error</string>
+    <string name="thumbnail">Thumbnail</string>
 </resources>
