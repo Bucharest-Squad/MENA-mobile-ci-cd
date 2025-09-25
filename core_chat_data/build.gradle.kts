@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kover)
-    alias(libs.plugins.mokkery)
+    alias(libs.plugins.mockkery)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
 }
