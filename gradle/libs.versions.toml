@@ -137,7 +137,8 @@ ktor = [
     "ktor-client-content-negotiation",
     "ktor-client-auth",
     "ktor-client-logging",
-    "ktor-serialization-kotlinx-json"
+    "ktor-serialization-kotlinx-json",
+    "ktor-client-auth"
 ]
 
 test = [
