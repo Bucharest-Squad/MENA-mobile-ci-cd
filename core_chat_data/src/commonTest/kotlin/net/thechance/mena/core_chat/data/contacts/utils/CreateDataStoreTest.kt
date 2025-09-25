@@ -14,7 +14,7 @@ class DataStoreFactoryTest {
 
     @Test
     fun `createDataStore should create usable DataStore when valid path provided`() = runBlocking {
-        val dataStore: DataStore<Preferences> = createDataStore { DATA_STORE_PATH }
+        val dataStore: DataStore<Preferences> = createDataStore{DATA_STORE_PATH}
 
         assertNotNull(dataStore)
 

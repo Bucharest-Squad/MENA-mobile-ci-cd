@@ -24,6 +24,7 @@ kotlin {
 
             implementation(libs.bundles.ktor)
             implementation(libs.androidx.datastore.preferences)
+
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
