@@ -7,7 +7,7 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import net.thechance.mena.trends.presentation.shared.util.save_state.CustomSaveState
+import net.thechance.mena.trends.presentation.utils.FakeVideoDescriptionArgs
 import net.thechance.mena.trends.presentation.utils.largeNewDescription
 import net.thechance.mena.trends.presentation.utils.smallNewDescription
 import kotlin.test.AfterTest
@@ -24,7 +24,7 @@ class VideoDescriptionViewModelTest {
     @BeforeTest
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-        viewModel = VideoDescriptionViewModel(CustomSaveState())
+        viewModel = VideoDescriptionViewModel(FakeVideoDescriptionArgs())
     }
 
     @Test
