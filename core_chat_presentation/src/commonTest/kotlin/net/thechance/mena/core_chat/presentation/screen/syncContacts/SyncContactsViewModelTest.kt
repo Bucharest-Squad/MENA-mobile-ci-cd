@@ -18,6 +18,7 @@ import dev.mokkery.mock
 import dev.mokkery.verifySuspend
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -50,6 +51,8 @@ class SyncContactsViewModelTest {
     @BeforeTest
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
+        val fakeFlow = MutableSharedFlow<Map<String, Any>>(replay = 1)
+        every { effector.popBackStackArgsFlow } returns fakeFlow
     }
 
     @AfterTest
@@ -61,7 +64,7 @@ class SyncContactsViewModelTest {
     @Test
     fun `should set isFirstSync to false and call syncContacts when forceSync is true`() = runTest {
         everySuspend { contactsRepository.syncContacts() } returns Unit
-        everySuspend { contactsRepository.setUserSyncedState(true) } returns Unit
+        everySuspend { contactsRepository.setSyncStatus(true) } returns Unit
         everySuspend { effector.showSnackBar(any()) } returns Unit
         everySuspend { effector.popBackStack(any()) } returns Unit
 
@@ -105,7 +108,7 @@ class SyncContactsViewModelTest {
         runTest {
             everySuspend { permissionsController.providePermission(Permission.CONTACTS) } returns Unit
             everySuspend { contactsRepository.syncContacts() } returns Unit
-            everySuspend { contactsRepository.setUserSyncedState(true) } returns Unit
+            everySuspend { contactsRepository.setSyncStatus(true) } returns Unit
             everySuspend { effector.showSnackBar(any()) } returns Unit
             everySuspend { effector.popBackStack() } returns Unit
             everySuspend { effector.navigate(any(), any(), any()) } returns Unit
@@ -180,7 +183,7 @@ class SyncContactsViewModelTest {
 
             val error = awaitItem()
             assertThat(error.isLoading).isFalse()
-            assertThat(error.deniedPermanently).isTrue()
+            assertThat(error.isPermissionDeniedPermanently).isTrue()
 
             verifySuspend { permissionsController.providePermission(Permission.CONTACTS) }
             cancelAndIgnoreRemainingEvents()
@@ -214,7 +217,7 @@ class SyncContactsViewModelTest {
     @Test
     fun `onBackClick should pop back stack when called`() = runTest {
         everySuspend { contactsRepository.syncContacts() } returns Unit
-        everySuspend { contactsRepository.setUserSyncedState(true) } returns Unit
+        everySuspend { contactsRepository.setSyncStatus(true) } returns Unit
         everySuspend { effector.showSnackBar(any()) } returns Unit
         everySuspend { effector.popBackStack(*anyVarargs()) } returns Unit
 
@@ -256,7 +259,7 @@ class SyncContactsViewModelTest {
                 awaitItem()
                 viewModel.checkPermissions()
                 val state = awaitItem()
-                assertThat(state.deniedPermanently).isFalse()
+                assertThat(state.isPermissionDeniedPermanently).isFalse()
                 assertThat(state.showSyncView).isTrue()
                 verifySuspend { contactsRepository.syncContacts() }
                 cancelAndIgnoreRemainingEvents()
@@ -266,7 +269,7 @@ class SyncContactsViewModelTest {
     @Test
     fun `onGoToSettingsClick should call openAppSettings when called`() = runTest {
         everySuspend { contactsRepository.syncContacts() } returns Unit
-        everySuspend { contactsRepository.setUserSyncedState(true) } returns Unit
+        everySuspend { contactsRepository.setSyncStatus(true) } returns Unit
         everySuspend { effector.showSnackBar(any()) } returns Unit
         everySuspend { settingsOpener.openSettings() } returns Unit
 

@@ -16,7 +16,7 @@ import net.thechance.mena.core_chat.domain.repository.ContactsRepository
 import net.thechance.mena.core_chat.presentation.components.SnackBarData
 import net.thechance.mena.core_chat.presentation.navigation.ChatEffector
 import net.thechance.mena.core_chat.presentation.navigation.ContactsRoute
-import net.thechance.mena.core_chat.presentation.screen.contacts.ContactsScreenArgsImpl.Companion.IS_SYNC_SUCCESS
+import net.thechance.mena.core_chat.presentation.navigation.NavigationConstants.IS_SYNC_SUCCESS
 import net.thechance.mena.core_chat.presentation.shared.BaseViewModel
 import net.thechance.mena.core_chat.presentation.utils.SettingsOpener
 import net.thechance.mena.core_chat.presentation.utils.UiText
@@ -62,7 +62,7 @@ class SyncContactsViewModel(
                 updateState {
                     it.copy(
                         isLoading = false,
-                        deniedPermanently = true,
+                        isPermissionDeniedPermanently = true,
                     )
                 }
                 showSnackBar(
@@ -90,7 +90,7 @@ class SyncContactsViewModel(
     private fun onContactsPermissionGranted() {
         updateState {
             it.copy(
-                deniedPermanently = false,
+                isPermissionDeniedPermanently = false,
                 showSyncView = true
             )
         }
@@ -99,6 +99,7 @@ class SyncContactsViewModel(
 
     fun checkPermissions() {
         tryToExecute(
+            onStart = { updateState { it.copy(isOpenSettingsCalled = false) } },
             execute = { permissionsController.isPermissionGranted(Permission.CONTACTS) },
             onSuccess = { granted ->
                 if (granted) {
@@ -110,6 +111,7 @@ class SyncContactsViewModel(
 
     override fun onGoToSettingsClick() {
         settingsOpener.openSettings()
+        updateState { it.copy(isOpenSettingsCalled = true) }
     }
 
 
@@ -124,7 +126,7 @@ class SyncContactsViewModel(
 
     private suspend fun onSyncContactsSuccess() {
         if (state.value.isFirstSync) {
-            contactsRepository.setUserSyncedState(true)
+            contactsRepository.setSyncStatus(true)
             popBackStack()
             navigate(ContactsRoute)
         } else {

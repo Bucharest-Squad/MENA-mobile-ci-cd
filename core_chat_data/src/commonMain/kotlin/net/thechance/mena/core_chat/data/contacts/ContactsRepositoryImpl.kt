@@ -10,7 +10,6 @@ import com.bilalazzam.contacts_provider.ContactField.LAST_NAME
 import com.bilalazzam.contacts_provider.ContactField.PHONE_NUMBERS
 import com.bilalazzam.contacts_provider.ContactsProvider
 import io.ktor.client.HttpClient
-import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
@@ -38,14 +37,14 @@ class ContactsRepositoryImpl(
     private val dataStore: DataStore<Preferences>
 ) : ContactsRepository, BaseRepository {
 
-    override suspend fun getUserContacts(pageNumber: Int, pageSize: Int): PagedData<Contact> {
+    override suspend fun getUserContacts(pageNumber: Int): PagedData<Contact> {
         return tryNetworkCall<PagedDataDto<ContactDto>>(
             defaultException = { ContactsFetchFailedException("Couldn't get user contacts", it) },
             bodyType = typeInfo<PagedDataDto<ContactDto>>()
         ) {
             client.get(CONTACTS_ENDPOINT) {
-                parameter(PAGE_NUMBER, pageNumber)
-                parameter(PAGE_SIZE, pageSize)
+                parameter(PAGE_NUMBER_PARAMETER, pageNumber)
+                parameter(PAGE_SIZE_PARAMETER, PAGE_SIZE)
             }
         }.toPagedListOfContacts()
     }
@@ -68,7 +67,7 @@ class ContactsRepositoryImpl(
         )
     }
 
-    override suspend fun getUserSyncedState(): Boolean {
+    override suspend fun getSyncStatus(): Boolean {
         return tryCall(
             defaultException = { DataStoreException("error with data store", it) }) {
             dataStore.data.map {
@@ -77,7 +76,7 @@ class ContactsRepositoryImpl(
         }
     }
 
-    override suspend fun setUserSyncedState(state: Boolean) {
+    override suspend fun setSyncStatus(state: Boolean) {
         return tryCall(
             defaultException = { DataStoreException("error with data store", it) }) {
             dataStore.edit { preferences ->
@@ -88,7 +87,8 @@ class ContactsRepositoryImpl(
 
     private companion object {
         val USER_SYNCED_STATE_KEY = booleanPreferencesKey("user_synced_state_key")
-        const val PAGE_SIZE = "size"
-        const val PAGE_NUMBER = "page"
+        const val PAGE_NUMBER_PARAMETER = "page"
+        const val PAGE_SIZE_PARAMETER = "size"
+        const val PAGE_SIZE = 20
     }
 }

@@ -8,7 +8,7 @@ import net.thechance.mena.core_chat.domain.model.PagedData
 
 class BasePagingSource<T : Any>(
     private val onError: ((ChatException) -> Unit)? = null,
-    private val fetchItems: suspend (page: Int, pageSize: Int) -> PagedData<T>
+    private val fetchItems: suspend (page: Int) -> PagedData<T>
 ) : PagingSource<Int, T>() {
 
     override fun getRefreshKey(state: PagingState<Int, T>): Int? {
@@ -20,9 +20,9 @@ class BasePagingSource<T : Any>(
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, T> {
         val page = params.key ?: STARTING_PAGE_INDEX
-        val pageSize = params.loadSize
+
         return try {
-            val pagedData = fetchItems(page, pageSize)
+            val pagedData = fetchItems(page)
             LoadResult.Page(
                 data = pagedData.data,
                 prevKey = if (page == STARTING_PAGE_INDEX) null else page.minus(1),

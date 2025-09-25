@@ -39,6 +39,8 @@ open class BaseViewModel<S>(
     private val _state = MutableStateFlow(initialState)
     val state = _state.asStateFlow()
 
+    protected val popBackStackArgsFlow = effector.popBackStackArgsFlow
+
     protected fun navigate(
         route: ChatRoute,
         navOptions: NavOptions? = null,
@@ -47,6 +49,9 @@ open class BaseViewModel<S>(
         viewModelScope.launch {
             effector.navigate(route = route, navOptions = navOptions, forceNavigate = forceNavigate)
         }
+
+    protected fun setNavigationArgs(vararg arguments: Pair<String, Any>) =
+        viewModelScope.launch { effector.setNavigationArgs(*arguments) }
 
     protected fun popBackStack(vararg arguments: Pair<String, Any>) =
         viewModelScope.launch { effector.popBackStack(*arguments) }

@@ -51,6 +51,8 @@ fun SyncContactsScreen() {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        if (!state.isOpenSettingsCalled) return@LifecycleEventEffect
+
         viewModel.checkPermissions()
     }
 
@@ -73,7 +75,10 @@ private fun SyncContactsContent(
     ) {
         AppBar(
             title = stringResource(Res.string.sync_contacts),
-            contentPadding = PaddingValues(horizontal = Theme.spacing._12, vertical = Theme.spacing._8),
+            contentPadding = PaddingValues(
+                horizontal = Theme.spacing._12,
+                vertical = Theme.spacing._8
+            ),
             leadingContent = {
                 Icon(
                     painter = painterResource(Res.drawable.ic_arrow_left),
@@ -85,7 +90,7 @@ private fun SyncContactsContent(
             onLeadingClick = interactionListener::onBackClick,
         )
         AnimatedContent(
-            targetState = state.deniedPermanently,
+            targetState = state.isPermissionDeniedPermanently,
             label = "contacts_content_animation",
             modifier = Modifier
                 .weight(1f)
@@ -104,9 +109,11 @@ private fun SyncContactsContent(
                             modifier = Modifier.padding(top = Theme.spacing._12)
                         )
                     }
+
                     state.showSyncView && state.isLoading -> {
                         ContactsSyncingView(modifier = Modifier.padding(top = Theme.spacing._24))
                     }
+
                     state.showSyncView -> {
                         NoContactsSyncView(
                             modifier = Modifier.padding(top = Theme.spacing._12),
@@ -129,7 +136,7 @@ private fun SyncContactsScreenPreview() {
                 SyncContactsInteractionListener {
                 override fun onBackClick() {}
                 override fun onSyncClick() {}
-                override fun onGoToSettingsClick(){}
+                override fun onGoToSettingsClick() {}
             }
         )
     }
