@@ -99,6 +99,7 @@ class SyncContactsViewModel(
 
     fun checkPermissions() {
         tryToExecute(
+            onStart = { updateState { it.copy(isOpenSettingsCalled = false) } },
             execute = { permissionsController.isPermissionGranted(Permission.CONTACTS) },
             onSuccess = { granted ->
                 if (granted) {
@@ -110,6 +111,7 @@ class SyncContactsViewModel(
 
     override fun onGoToSettingsClick() {
         settingsOpener.openSettings()
+        updateState { it.copy(isOpenSettingsCalled = true) }
     }
 
 
