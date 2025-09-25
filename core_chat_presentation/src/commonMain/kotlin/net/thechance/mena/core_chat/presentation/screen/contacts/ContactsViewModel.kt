@@ -95,8 +95,8 @@ class ContactsViewModel(
             : PagingSource<Int, Contact> {
         return BasePagingSource(
             onError = onError,
-            fetchItems = { page, pageSize ->
-                contactsRepository.getUserContacts(page, pageSize)
+            fetchItems = { page ->
+                contactsRepository.getUserContacts(page)
             }
         )
     }

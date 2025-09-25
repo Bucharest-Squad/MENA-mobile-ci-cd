@@ -41,7 +41,7 @@ class ContactsViewModelTest {
     @BeforeTest
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
-
+        everySuspend { effector.setNavigationArgs(any()) } returns Unit
         val fakeFlow = MutableSharedFlow<Map<String, Any>>(replay = 1)
         every { effector.popBackStackArgsFlow } returns fakeFlow
     }
@@ -53,7 +53,7 @@ class ContactsViewModelTest {
 
     @Test
     fun `init should call load contacts when the user resync successfully`() = runTest {
-        everySuspend { contactsRepository.getUserContacts(any(), any()) } returns PagedData(
+        everySuspend { contactsRepository.getUserContacts(any()) } returns PagedData(
             data = listOf(expectedContact),
             totalItems = 1,
             isLastPage = true
@@ -73,7 +73,7 @@ class ContactsViewModelTest {
 
     @Test
     fun `init should load contacts successfully when viewModel is created`() = runTest {
-        everySuspend { contactsRepository.getUserContacts(any(), any()) } returns PagedData(
+        everySuspend { contactsRepository.getUserContacts(any()) } returns PagedData(
             data = listOf(expectedContact),
             totalItems = 1,
             isLastPage = true
@@ -91,7 +91,7 @@ class ContactsViewModelTest {
 
     @Test
     fun `onRefreshContacts should load expected contact when repository returns data`() = runTest {
-        everySuspend { contactsRepository.getUserContacts(any(), any()) } returns PagedData(
+        everySuspend { contactsRepository.getUserContacts(any()) } returns PagedData(
             data = listOf(expectedContact),
             totalItems = 1,
             isLastPage = true
@@ -112,7 +112,7 @@ class ContactsViewModelTest {
     @Test
     fun `onRefreshContacts should handle empty list when repository returns no contacts`() =
         runTest {
-            everySuspend { contactsRepository.getUserContacts(any(), any()) } returns PagedData(
+            everySuspend { contactsRepository.getUserContacts(any()) } returns PagedData(
                 data = emptyList(),
                 totalItems = 0,
                 isLastPage = true

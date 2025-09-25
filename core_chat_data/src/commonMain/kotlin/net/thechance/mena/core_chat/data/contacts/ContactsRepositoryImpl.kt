@@ -37,14 +37,14 @@ class ContactsRepositoryImpl(
     private val dataStore: DataStore<Preferences>
 ) : ContactsRepository, BaseRepository {
 
-    override suspend fun getUserContacts(pageNumber: Int, pageSize: Int): PagedData<Contact> {
+    override suspend fun getUserContacts(pageNumber: Int): PagedData<Contact> {
         return tryNetworkCall<PagedDataDto<ContactDto>>(
             defaultException = { ContactsFetchFailedException("Couldn't get user contacts", it) },
             bodyType = typeInfo<PagedDataDto<ContactDto>>()
         ) {
             client.get(CONTACTS_ENDPOINT) {
-                parameter(PAGE_NUMBER, pageNumber)
-                parameter(PAGE_SIZE, pageSize)
+                parameter(PAGE_NUMBER_PARAMETER, pageNumber)
+                parameter(PAGE_SIZE_PARAMETER, PAGE_SIZE)
             }
         }.toPagedListOfContacts()
     }
@@ -87,7 +87,8 @@ class ContactsRepositoryImpl(
 
     private companion object {
         val USER_SYNCED_STATE_KEY = booleanPreferencesKey("user_synced_state_key")
-        const val PAGE_SIZE = "size"
-        const val PAGE_NUMBER = "page"
+        const val PAGE_NUMBER_PARAMETER = "page"
+        const val PAGE_SIZE_PARAMETER = "size"
+        const val PAGE_SIZE = 20
     }
 }

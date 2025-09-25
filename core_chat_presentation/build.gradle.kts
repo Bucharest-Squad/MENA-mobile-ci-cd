@@ -104,7 +104,7 @@ kover.reports {
     filters {
         includes {
             classes(
-                "*SyncContactsViewModel*",
+                "*ViewModel*",
                 "*ContactsViewModel*",
             )
         }
