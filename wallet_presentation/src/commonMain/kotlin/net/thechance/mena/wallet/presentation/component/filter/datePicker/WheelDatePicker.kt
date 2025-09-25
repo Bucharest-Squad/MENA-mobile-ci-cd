@@ -183,6 +183,7 @@ private fun VerticalPicker(
                     ((state.currentPage - page) + state.currentPageOffsetFraction).absoluteValue
                 }
             }
+            val alpha = (1f - (pageOffset * 0.5f)).coerceAtLeast(0.1f)
 
             val baseStyle = Theme.typography.body.large
             val distance = abs(state.currentPage - page)
@@ -199,22 +200,9 @@ private fun VerticalPicker(
                     style = baseStyle.copy(fontSize = fontSize),
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Start,
-                    color = Theme.colorScheme.shadePrimary
+                    color = Theme.colorScheme.shadePrimary.copy(alpha = alpha)
                 )
             }
         }
-        Box(
-            modifier = Modifier
-                .matchParentSize()
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            Color(0xE6F2F4F7),
-                            Color.Transparent,
-                            Color(0xFFF2F4F7)
-                        )
-                    )
-                )
-        )
     }
 }
