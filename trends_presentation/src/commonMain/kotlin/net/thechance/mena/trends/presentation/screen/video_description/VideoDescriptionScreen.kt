@@ -41,6 +41,7 @@ import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.component.textField.MultiLineTextField
+import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.trends.presentation.navigation.LocalNavController
 import net.thechance.mena.trends.presentation.shared.util.ObserveAsEffect
@@ -73,7 +74,6 @@ internal fun VideoDescriptionScreen(
 private fun VideoDescriptionContent(
     state: VideoDescriptionState,
     listener: VideoDescriptionInteractionListener,
-    modifier: Modifier = Modifier,
 ) {
     val charactersLimitColor by animateColorAsState(
         targetValue =
@@ -88,7 +88,7 @@ private fun VideoDescriptionContent(
         topBar = { DescriptionAppBar(onBackClick = listener::onBackClick) }
     ) {
         Column(
-            modifier = modifier.fillMaxSize().imePadding().verticalScroll(rememberScrollState()),
+            modifier = Modifier.fillMaxSize().imePadding().verticalScroll(rememberScrollState()),
         ) {
             Text(
                 text = stringResource(Res.string.add_video_description_title),
@@ -192,12 +192,14 @@ private fun DescriptionBox(
 @Preview
 @Composable
 private fun VideoDescriptionScreenPreview() {
-    VideoDescriptionContent(
-        state = VideoDescriptionState(),
-        listener = object : VideoDescriptionInteractionListener {
-            override fun onBackClick() {}
-            override fun onNextClick() {}
-            override fun onDescriptionChanged(newValue: String) {}
-        }
-    )
+    MenaTheme{
+        VideoDescriptionContent(
+            state = VideoDescriptionState(),
+            listener = object : VideoDescriptionInteractionListener {
+                override fun onBackClick() {}
+                override fun onNextClick() {}
+                override fun onDescriptionChanged(newValue: String) {}
+            }
+        )
+    }
 }
