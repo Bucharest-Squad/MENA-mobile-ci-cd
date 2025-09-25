@@ -1,18 +1,5 @@
 package net.thechance.mena.trends.presentation.utils
 
-import net.thechance.mena.trends.presentation.shared.util.CustomSaveStateHandle
-import org.koin.core.annotation.Single
-
-@Single(binds = [CustomSaveStateHandle::class])
-class MockCustomSaveStateHandle : CustomSaveStateHandle {
-    private val map = mutableMapOf<String, Any?>()
-
-    override fun <T> get(key: String): T? = map[key] as? T
-    override fun <T> set(key: String, value: T) {
-        map[key] = value
-    }
-}
-
 
 const val largeNewDescription = "Once upon a time, there was a young girl who loved reading more than anything in the world. Every day after school, she would sit quietly in a cozy corner of the park, open her favorite book, and dive into countless stories filled with adventures, mysteries, and fascinating characters. She didn’t care about what others around her were doing, as she was completely immersed in her literary worlds. Over time, she began dreaming of becoming a great writer herself, creating stories that could inspire, entertain, and bring joy to readers everywhere. Each new word she wrote filled her with excitement and pride because she could express her thoughts, feelings, and imagination freely.\n" +
         "\n" +

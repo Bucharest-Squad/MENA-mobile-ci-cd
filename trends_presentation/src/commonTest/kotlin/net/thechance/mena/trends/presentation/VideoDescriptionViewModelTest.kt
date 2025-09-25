@@ -9,7 +9,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import net.thechance.mena.trends.presentation.screen.video_description.VideoDescriptionEffect
 import net.thechance.mena.trends.presentation.screen.video_description.VideoDescriptionViewModel
-import net.thechance.mena.trends.presentation.utils.MockCustomSaveStateHandle
+import net.thechance.mena.trends.presentation.shared.util.save_state.CustomSaveState
 import net.thechance.mena.trends.presentation.utils.largeNewDescription
 import net.thechance.mena.trends.presentation.utils.smallNewDescription
 import kotlin.test.AfterTest
@@ -27,7 +27,7 @@ class VideoDescriptionViewModelTest {
     @BeforeTest
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-        viewModel = VideoDescriptionViewModel(MockCustomSaveStateHandle())
+        viewModel = VideoDescriptionViewModel(CustomSaveState())
     }
 
     @Test
