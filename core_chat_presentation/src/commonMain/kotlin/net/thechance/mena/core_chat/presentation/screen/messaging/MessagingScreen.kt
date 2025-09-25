@@ -81,11 +81,11 @@ fun MessagingScreenContent(
         },
         overlays = {
             dialog(showChatActionsDialog) {
-
+                // todo
             }
 
             dialog(showDeleteChatDialog) {
-
+                // todo
             }
 
             dialog(showResendMessageDialog) {
@@ -99,7 +99,8 @@ fun MessagingScreenContent(
     ) {
         LazyColumn(
             modifier = Modifier
-                .fillMaxSize(),
+                .fillMaxSize()
+                .padding(horizontal = Theme.spacing._12),
             reverseLayout = true,
             contentPadding = PaddingValues(top = Theme.spacing._4)
         ) {
