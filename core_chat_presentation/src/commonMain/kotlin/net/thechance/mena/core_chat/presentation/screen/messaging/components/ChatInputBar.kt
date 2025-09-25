@@ -44,10 +44,10 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun ChatInputBar(
     userInput: String,
     onTextChange: (String) -> Unit,
-    onAttachButtonClick: () -> Unit,
     onSendButtonClick: () -> Unit,
-    onVoiceRecordClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onVoiceRecordClick: () -> Unit = {},
+    onAttachButtonClick: () -> Unit = {}
 ) {
     Row(
         modifier = modifier.fillMaxWidth().padding(Theme.spacing._16),
@@ -132,9 +132,9 @@ private fun AttachButton(onClick: () -> Unit) {
 fun ChatInputBarPreview() {
     MenaTheme {
         Column {
-            ChatInputBar("", {}, {}, {}, {})
-            ChatInputBar("Hi Noor", {}, {}, {}, {})
-            ChatInputBar(" 1 \n 2 \n 3 \n 4 \n 5 \n 6", {}, {}, {}, {})
+            ChatInputBar("", {}, {})
+            ChatInputBar("Hi Noor", {}, {})
+            ChatInputBar(" 1 \n 2 \n 3 \n 4 \n 5 \n 6", {}, {})
         }
     }
 }

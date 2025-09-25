@@ -71,9 +71,7 @@ fun MessagingScreenContent(
             ChatInputBar(
                 userInput = state.inputMessage,
                 onTextChange = { },
-                onAttachButtonClick = { },
                 onSendButtonClick = { },
-                onVoiceRecordClick = { },
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(Theme.colorScheme.background.surface)
