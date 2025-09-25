@@ -20,12 +20,12 @@ import mena.trends_presentation.generated.resources.arrow_reload_horizontal
 import mena.trends_presentation.generated.resources.error
 import mena.trends_presentation.generated.resources.ic_cancel
 import mena.trends_presentation.generated.resources.ic_delete
+import mena.trends_presentation.generated.resources.ic_video
 import mena.trends_presentation.generated.resources.loading
 import mena.trends_presentation.generated.resources.retry
 import mena.trends_presentation.generated.resources.success
 import mena.trends_presentation.generated.resources.thumbnail
 import mena.trends_presentation.generated.resources.upload_failed
-import mena.trends_presentation.generated.resources.video_02
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.progressBar.ProgressBar
 import net.thechance.mena.designsystem.presentation.component.text.Text
@@ -66,7 +66,7 @@ fun VideoLoadingCardItem(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    painter = painterResource(Res.drawable.video_02),
+                    painter = painterResource(Res.drawable.ic_video),
                     contentDescription = stringResource(Res.string.thumbnail),
                     tint = Theme.colorScheme.brand.brand,
                     modifier = Modifier.size(Theme.spacing._24)
