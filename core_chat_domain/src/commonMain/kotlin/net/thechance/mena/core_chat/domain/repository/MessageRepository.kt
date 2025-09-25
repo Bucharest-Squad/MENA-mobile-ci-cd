@@ -9,5 +9,5 @@ interface MessageRepository {
     fun sendMessage(message: Message)
     fun loadMessages(chatId: Uuid): List<Message>
     fun markMessagesAsRead(chatId: Uuid)
-    fun subscribeToMessages(chatId: Uuid)
+    fun subscribeToMessages(chatId: Uuid):List<Message>
 }
