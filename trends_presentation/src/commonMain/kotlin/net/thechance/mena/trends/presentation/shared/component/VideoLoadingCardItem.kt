@@ -28,18 +28,16 @@ import mena.trends_presentation.generated.resources.upload_failed
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.progressBar.ProgressBar
 import net.thechance.mena.designsystem.presentation.component.text.Text
-import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun VideoLoadingCardItem(
     title: String,
     sizeText: String = "",
-    state: ItemState,
-    progress: Float? = null,
+    state: VideoState,
+    //TODO progress: Float? = null,
     modifier: Modifier = Modifier,
     onCancel: () -> Unit = {},
     onRetry: () -> Unit = {},
@@ -85,7 +83,7 @@ fun VideoLoadingCardItem(
                 )
 
                 when (state) {
-                    ItemState.Loading -> {
+                    VideoState.Loading -> {
                         Text(
                             text = sizeText,
                             color = Theme.colorScheme.shadeSecondary,
@@ -107,7 +105,7 @@ fun VideoLoadingCardItem(
                         )
                     }
 
-                    ItemState.Success -> {
+                    VideoState.Success -> {
                         Text(
                             text = sizeText,
                             color = Theme.colorScheme.shadeSecondary,
@@ -116,7 +114,7 @@ fun VideoLoadingCardItem(
                         )
                     }
 
-                    ItemState.Error -> {
+                    VideoState.Error -> {
                         Text(
                             text = stringResource(Res.string.upload_failed),
                             color = Theme.colorScheme.border.error,
@@ -132,7 +130,7 @@ fun VideoLoadingCardItem(
         }
 
         when (state) {
-            ItemState.Loading -> {
+            VideoState.Loading -> {
                 Row(modifier = Modifier.padding(top = Theme.spacing._12)) {
                     Icon(
                         painter = painterResource(Res.drawable.ic_cancel),
@@ -145,7 +143,7 @@ fun VideoLoadingCardItem(
                 }
             }
 
-            ItemState.Error -> {
+            VideoState.Error -> {
                 Row(
                     modifier = Modifier.padding(top = Theme.spacing._24),
                     horizontalArrangement = Arrangement.spacedBy(Theme.spacing._16),
@@ -170,7 +168,7 @@ fun VideoLoadingCardItem(
                 }
             }
 
-            ItemState.Success -> {
+            VideoState.Success -> {
                 Row(
                     modifier = Modifier.padding(top = Theme.spacing._24)
                 ) {
@@ -188,21 +186,6 @@ fun VideoLoadingCardItem(
     }
 }
 
-
-enum class ItemState {
+enum class VideoState {
     Loading, Error, Success
-}
-
-@Preview()
-@Composable
-fun VideoLoadingCardItemLoadingPreview() {
-    MenaTheme  {
-        VideoLoadingCardItem(
-            title = "Uploading video...",
-            sizeText = "20 MB",
-            state = ItemState.Loading,
-            progress = 0.5f, // or null if you want indeterminate
-            modifier = Modifier.padding(16.dp)
-        )
-    }
 }
