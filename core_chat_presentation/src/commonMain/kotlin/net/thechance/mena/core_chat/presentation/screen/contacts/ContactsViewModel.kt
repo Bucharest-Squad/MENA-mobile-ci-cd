@@ -1,6 +1,5 @@
 package net.thechance.mena.core_chat.presentation.screen.contacts
 
-import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.PagingSource
 import kotlinx.coroutines.CoroutineDispatcher
@@ -8,7 +7,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.launch
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.could_not_load_the_contacts
 import mena.core_chat_presentation.generated.resources.something_went_wrong
@@ -18,6 +16,7 @@ import net.thechance.mena.core_chat.domain.repository.ContactsRepository
 import net.thechance.mena.core_chat.presentation.components.SnackBarData
 import net.thechance.mena.core_chat.presentation.navigation.ChatDetailsRoute
 import net.thechance.mena.core_chat.presentation.navigation.ChatEffector
+import net.thechance.mena.core_chat.presentation.navigation.NavigationConstants.IS_SYNC_SUCCESS
 import net.thechance.mena.core_chat.presentation.navigation.SyncContactsRoute
 import net.thechance.mena.core_chat.presentation.shared.BasePagingSource
 import net.thechance.mena.core_chat.presentation.shared.BaseViewModel
@@ -25,7 +24,6 @@ import net.thechance.mena.core_chat.presentation.utils.UiText
 
 class ContactsViewModel(
     private val contactsRepository: ContactsRepository,
-    private val contactsScreenArgs: ContactsScreenArgs,
     effector: ChatEffector,
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : BaseViewModel<ContactsScreenState>(ContactsScreenState(), effector, dispatcher),
@@ -37,15 +35,18 @@ class ContactsViewModel(
     }
 
     private fun observeSyncSuccess() {
-        viewModelScope.launch {
-            contactsScreenArgs.getSyncSuccessState().collect { success ->
+        tryToCollect(
+            collect = { popBackStackArgsFlow },
+            onCollect = { args ->
+                val success = args?.get(IS_SYNC_SUCCESS) as? Boolean ?: return@tryToCollect
                 if (success) {
                     onRefreshContacts()
-                    contactsScreenArgs.setIsSyncSuccessToFalse()
+                    setNavigationArgs(IS_SYNC_SUCCESS to false)
                 }
             }
-        }
+        )
     }
+
     private fun loadContacts() {
         tryToCollect(
             collect = ::loadContactsOperation,

@@ -18,6 +18,7 @@ import dev.mokkery.mock
 import dev.mokkery.verifySuspend
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -50,6 +51,8 @@ class SyncContactsViewModelTest {
     @BeforeTest
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
+        val fakeFlow = MutableSharedFlow<Map<String, Any>>(replay = 1)
+        every { effector.popBackStackArgsFlow } returns fakeFlow
     }
 
     @AfterTest
