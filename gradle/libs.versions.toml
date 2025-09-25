@@ -207,6 +207,12 @@ filekit = [
 
 geoCoder = ["compass-geocoder", "compass-geocoder-mobile"]
 
+koin-compose = [
+    "koin-core",
+    "koin-compose",
+    "koin-compose-viewmodel",
+]
+
 koin = [
     "koin-core",
     "koin-compose",
