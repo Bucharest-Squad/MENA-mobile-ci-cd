@@ -25,12 +25,14 @@ fun TextField(
     enabled: Boolean = true,
     readOnly: Boolean = false,
     isError: Boolean = false,
+    showTrailingDivider: Boolean = true,
     errorMessage: String? = null,
     shape: Shape = RoundedCornerShape(Theme.radius.md),
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     focusRequester: FocusRequester = FocusRequester(),
     onFocusChanged: (Boolean) -> Unit = {},
+    onTrailingIconClick: (() -> Unit)? = null,
     visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
     BasicTextField(
@@ -44,6 +46,7 @@ fun TextField(
         enabled = enabled,
         readOnly = readOnly,
         isError = isError,
+        showTrailingDivider = showTrailingDivider,
         errorMessage = errorMessage,
         shape = shape,
         keyboardOptions = keyboardOptions,
@@ -51,6 +54,7 @@ fun TextField(
         visualTransformation = visualTransformation,
         focusRequester = focusRequester,
         onFocusChanged = onFocusChanged,
-        modifier = modifier
+        modifier = modifier,
+        onTrailingIconClick = onTrailingIconClick
     )
 }
