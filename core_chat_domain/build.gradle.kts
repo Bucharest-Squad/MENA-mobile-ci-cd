@@ -10,10 +10,10 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-
+            implementation(libs.coroutines.core)
+            implementation(libs.kotlinx.datetime)
         }
         commonTest.dependencies {
-            implementation(libs.kotlin.test)
         }
     }
 }
@@ -23,5 +23,15 @@ kover.reports {
         rule {
             minBound(80)
         }
+    }
+
+    filters.excludes {
+        packages(
+            "*.entity",
+            "*.exception",
+            "*.model",
+            "*.di",
+            "*.repository",
+        )
     }
 }

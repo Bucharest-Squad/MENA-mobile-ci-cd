@@ -1,9 +1,14 @@
 package net.thechance.mena.core_chat.presentation.screen.contacts
 
+import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.PagingSource
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.could_not_load_the_contacts
 import mena.core_chat_presentation.generated.resources.something_went_wrong
@@ -16,17 +21,31 @@ import net.thechance.mena.core_chat.presentation.navigation.ChatEffector
 import net.thechance.mena.core_chat.presentation.navigation.SyncContactsRoute
 import net.thechance.mena.core_chat.presentation.shared.BasePagingSource
 import net.thechance.mena.core_chat.presentation.shared.BaseViewModel
+import net.thechance.mena.core_chat.presentation.utils.UiText
 
 class ContactsViewModel(
     private val contactsRepository: ContactsRepository,
-    effector: ChatEffector
-) : BaseViewModel<ContactsScreenState>(ContactsScreenState(), effector),
+    private val contactsScreenArgs: ContactsScreenArgs,
+    effector: ChatEffector,
+    dispatcher: CoroutineDispatcher = Dispatchers.IO,
+) : BaseViewModel<ContactsScreenState>(ContactsScreenState(), effector, dispatcher),
     ContactsScreenInteractionListener {
 
     init {
+        observeSyncSuccess()
         loadContacts()
     }
 
+    private fun observeSyncSuccess() {
+        viewModelScope.launch {
+            contactsScreenArgs.getSyncSuccessState().collect { success ->
+                if (success) {
+                    onRefreshContacts()
+                    contactsScreenArgs.setIsSyncSuccessToFalse()
+                }
+            }
+        }
+    }
     private fun loadContacts() {
         tryToCollect(
             collect = ::loadContactsOperation,
@@ -65,8 +84,8 @@ class ContactsViewModel(
     private fun onDataLoadError(e: Throwable) {
         showSnackBar(
             SnackBarData(
-                title = Res.string.something_went_wrong,
-                message = Res.string.could_not_load_the_contacts,
+                title = UiText.StringRes(Res.string.something_went_wrong),
+                message = UiText.StringRes(Res.string.could_not_load_the_contacts),
             )
         )
     }

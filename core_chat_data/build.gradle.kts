@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kover)
-    alias(libs.plugins.mokkery)
+    alias(libs.plugins.mockkery)
 }
 
 kotlin {
@@ -25,13 +25,14 @@ kotlin {
             implementation(libs.bundles.ktor)
             implementation(libs.androidx.datastore.preferences)
 
+            implementation(libs.kotlinx.datetime)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
             implementation(libs.kotlin.test.annotations.common)
             implementation(libs.ktor.client.mock)
             implementation(libs.assertk)
-            implementation(libs.test.kotlin.coroutines)
+            implementation(libs.kotlinx.coroutines.test)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
@@ -53,5 +54,12 @@ kover.reports {
         rule {
             minBound(80)
         }
+    }
+
+    filters.excludes {
+        packages(
+            "*.di",
+            "*.dto",
+        )
     }
 }

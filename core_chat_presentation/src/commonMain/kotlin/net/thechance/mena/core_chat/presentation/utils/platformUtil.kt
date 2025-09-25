@@ -1,7 +1,13 @@
 package net.thechance.mena.core_chat.presentation.utils
 
-/**
- * Created by Aziza Helmy on 19/09/2025.
- */
+interface SettingsOpener {
+    fun openSettings()
+}
+
+class SettingsOpenerImpl : SettingsOpener {
+    override fun openSettings() {
+        openAppSettings()
+    }
+}
 
 expect fun openAppSettings()

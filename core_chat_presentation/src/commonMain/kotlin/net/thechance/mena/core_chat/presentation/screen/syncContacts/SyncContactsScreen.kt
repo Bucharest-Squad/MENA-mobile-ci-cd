@@ -52,7 +52,6 @@ fun SyncContactsScreen() {
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         viewModel.checkPermissions()
-        viewModel.onForceSync()
     }
 
     SyncContactsContent(
@@ -86,7 +85,7 @@ private fun SyncContactsContent(
             onLeadingClick = interactionListener::onBackClick,
         )
         AnimatedContent(
-            targetState = state.deniedPermanently,
+            targetState = state.isPermissionDeniedPermanently,
             label = "contacts_content_animation",
             modifier = Modifier
                 .weight(1f)

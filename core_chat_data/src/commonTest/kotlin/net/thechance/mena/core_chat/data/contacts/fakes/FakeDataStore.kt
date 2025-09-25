@@ -34,11 +34,11 @@ class FakeDataStore(
         return newValue
     }
 
-    suspend fun getUserSyncedState(): Boolean {
+    suspend fun getSyncStatus(): Boolean {
         return data.first()[USER_SYNCED_STATE_KEY] ?: false
     }
 
-    suspend fun setUserSyncedState(state: Boolean) {
+    suspend fun setSyncStatus(state: Boolean) {
         updateData { prefs ->
             prefs.toMutablePreferences().apply {
                 this[USER_SYNCED_STATE_KEY] = state

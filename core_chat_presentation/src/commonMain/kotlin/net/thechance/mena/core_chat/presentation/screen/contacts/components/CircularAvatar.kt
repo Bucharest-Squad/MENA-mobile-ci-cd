@@ -28,9 +28,7 @@ fun CircularAvatar(
         modifier = modifier
             .size(size)
             .clip(CircleShape)
-            .background(
-                color = Theme.colorScheme.background.surfaceLow
-            ),
+            .background(color = Theme.colorScheme.background.surfaceLow),
         contentAlignment = Alignment.Center
     ) {
         Icon(
@@ -38,7 +36,7 @@ fun CircularAvatar(
             contentDescription = null,
         )
 
-        if (contactImageUri.isNullOrBlank().not()) {
+        if (!contactImageUri.isNullOrBlank()) {
             AsyncImage(
                 modifier = Modifier.fillMaxSize(),
                 model = contactImageUri,

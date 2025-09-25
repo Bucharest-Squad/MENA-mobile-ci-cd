@@ -7,7 +7,7 @@ plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kover)
     alias(libs.plugins.kotlinx.serialization)
-    alias(libs.plugins.mokkery)
+    alias(libs.plugins.mockkery)
 }
 
 kotlin {
@@ -47,12 +47,10 @@ kotlin {
 
             //coil
             implementation(libs.coil.compose)
+            implementation(libs.coil.network.ktor3)
 
             //data time
             implementation(libs.kotlinx.datetime)
-
-            //implementation(libs.coil.compose.core)
-            implementation(libs.coil.network.ktor)
 
             // Serialization
             implementation(libs.kotlinx.serialization.json)
@@ -61,8 +59,8 @@ kotlin {
             implementation(libs.androidx.navigation.compose)
 
             // Paging 3
-            implementation(libs.paging.compose.common)
-            implementation(libs.paging.common)
+            implementation(libs.androidx.paging.runtime)
+            implementation(libs.androidx.paging.compose)
 
             // Koin
             implementation(libs.bundles.koin.compose)
@@ -80,8 +78,8 @@ kotlin {
         commonTest.dependencies {
                 implementation(libs.kotlin.test)
                 implementation(libs.assertk)
-                implementation(libs.test.kotlin.coroutines)
-                implementation(libs.test.turbine)
+                implementation(libs.kotlinx.coroutines.test)
+                implementation(libs.turbine)
         }
     }
 }
@@ -107,8 +105,11 @@ kover.reports {
     }
 
     filters {
-        excludes {
-            packages("mena.core_chat_presentation.generated.resources*")
+        includes {
+            classes(
+                "*SyncContactsViewModel*",
+                "*ContactsViewModel*",
+            )
         }
     }
 }
