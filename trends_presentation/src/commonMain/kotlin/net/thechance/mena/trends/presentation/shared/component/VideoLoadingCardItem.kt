@@ -3,7 +3,6 @@ package net.thechance.mena.trends.presentation.shared.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,9 +28,11 @@ import mena.trends_presentation.generated.resources.upload_failed
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.progressBar.ProgressBar
 import net.thechance.mena.designsystem.presentation.component.text.Text
+import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun VideoLoadingCardItem(
@@ -58,20 +59,17 @@ fun VideoLoadingCardItem(
                 .weight(1f),
             verticalAlignment = Alignment.Top
         ) {
-            Box(
+
+            Icon(
+                painter = painterResource(Res.drawable.ic_video),
+                contentDescription = stringResource(Res.string.thumbnail),
+                tint = Theme.colorScheme.brand.brand,
                 modifier = Modifier
                     .size(40.dp)
                     .clip(RoundedCornerShape(Theme.radius.md))
-                    .background(Theme.colorScheme.brand.brandVariant),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    painter = painterResource(Res.drawable.ic_video),
-                    contentDescription = stringResource(Res.string.thumbnail),
-                    tint = Theme.colorScheme.brand.brand,
-                    modifier = Modifier.size(Theme.spacing._24)
-                )
-            }
+                    .background(Theme.colorScheme.brand.brandVariant)
+                    .padding(Theme.spacing._8)
+            )
 
             Column(
                 modifier = Modifier.padding(bottom = Theme.spacing._12),
@@ -193,4 +191,18 @@ fun VideoLoadingCardItem(
 
 enum class ItemState {
     Loading, Error, Success
+}
+
+@Preview()
+@Composable
+fun VideoLoadingCardItemLoadingPreview() {
+    MenaTheme  {
+        VideoLoadingCardItem(
+            title = "Uploading video...",
+            sizeText = "20 MB",
+            state = ItemState.Loading,
+            progress = 0.5f, // or null if you want indeterminate
+            modifier = Modifier.padding(16.dp)
+        )
+    }
 }
