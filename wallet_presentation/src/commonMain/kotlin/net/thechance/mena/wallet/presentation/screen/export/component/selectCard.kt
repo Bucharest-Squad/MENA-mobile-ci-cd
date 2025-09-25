@@ -24,7 +24,7 @@ fun SelectCard(
     modifier: Modifier = Modifier,
     cardText: String,
     isSelected: Boolean = false,
-    isEnabled: Boolean = false,
+    isRadioButtonEnabled: Boolean = false,
     onCardSelected: () -> Unit = {}
 ) {
     val backgroundColor = if (isSelected) Theme.colorScheme.brand.brandVariant
@@ -50,7 +50,7 @@ fun SelectCard(
         RadioButton(
             isSelected = isSelected,
             onClick = {onCardSelected},
-            isEnabled = isEnabled
+            isEnabled = isRadioButtonEnabled
         )
         Text(
             text = cardText,
@@ -69,7 +69,7 @@ private fun SelectCardPreview() {
         SelectCard(
             cardText = "All Transactions",
             isSelected = true,
-            isEnabled = true
+            isRadioButtonEnabled = true
         )
     }
 }

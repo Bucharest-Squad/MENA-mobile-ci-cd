@@ -68,7 +68,7 @@ private fun ExportTransactionScreenContent(
                 SelectCard(
                     cardText = "Custom Filtering",
                     isSelected = true,
-                    isEnabled = true
+                    isRadioButtonEnabled = true
                 )
                 Spacer(modifier = Modifier.weight(1f))
 
