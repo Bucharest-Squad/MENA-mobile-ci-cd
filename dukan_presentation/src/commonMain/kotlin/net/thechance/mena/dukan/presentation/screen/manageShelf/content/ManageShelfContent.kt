@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import mena.dukan_presentation.generated.resources.Res
@@ -23,10 +22,12 @@ import mena.dukan_presentation.generated.resources.title
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBarOptionContainer
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
+import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.component.textField.TextField
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.dukan.presentation.util.OnSystemBackPressed
+import net.thechance.mena.dukan.presentation.util.stubPreviews.PreviewManageShelfInteractionListener
 import net.thechance.mena.dukan.presentation.viewModel.manageShelf.ManageShelfInteractionListener
 import net.thechance.mena.dukan.presentation.viewModel.manageShelf.ManageShelfUiState
 import org.jetbrains.compose.resources.painterResource
@@ -67,7 +68,7 @@ fun ManageShelfContent(
                         content = {
                             Image(
                                 painter = painterResource(Res.drawable.ic_delete),
-                                contentDescription = null,
+                                contentDescription = stringResource(Res.string.delete_icon),
                             )
                         }
                     )
@@ -81,10 +82,9 @@ fun ManageShelfContent(
                 text = stringResource(Res.string.title),
                 style = Theme.typography.title.small,
                 color = Theme.colorScheme.shadePrimary,
-                modifier = Modifier.padding(
-                    horizontal = Theme.spacing._16,
-                    vertical = Theme.spacing._16
-                )
+                modifier = Modifier
+                    .padding(horizontal = Theme.spacing._16)
+                    .padding(top = Theme.spacing._16)
             )
             TextField(
                 value = state.shelfTitle,
@@ -108,16 +108,13 @@ fun ManageShelfContent(
     }
 }
 
-@Preview()
+@Preview
 @Composable
 private fun MyScreenPreview() {
     MenaTheme {
         ManageShelfContent(
             state = ManageShelfUiState(shelfTitle = "Clothes"),
-            listener = object : ManageShelfInteractionListener {
-                override fun onBackClicked() {}
-                override fun onDeleteClicked() {}
-            }
+            listener = PreviewManageShelfInteractionListener
         )
     }
 }

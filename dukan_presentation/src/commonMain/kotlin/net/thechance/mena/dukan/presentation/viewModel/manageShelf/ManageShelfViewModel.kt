@@ -13,11 +13,11 @@ class ManageShelfViewModel(
 ) : BaseViewModel<ManageShelfUiState, ManageShelfEffect>(
     initialState = ManageShelfUiState(), defaultDispatcher = defaultDispatcher
 ), ManageShelfInteractionListener {
+    val shelfId: String = requireNotNull(savedStateHandle[ManageShelfArgs.shelfId])
 
     init {
-        val shelfId: String = requireNotNull(savedStateHandle[ManageShelfArgs.shelfId])
-        val shelfTitle: String = requireNotNull(savedStateHandle[ManageShelfArgs.shelfTitle])
-        updateState { copy(shelfId = shelfId, shelfTitle = shelfTitle) }
+        val shelfTitle: String = savedStateHandle[ManageShelfArgs.shelfTitle] ?: ""
+        updateState { copy(shelfTitle = shelfTitle) }
     }
 
     override fun onBackClicked() {
@@ -25,6 +25,6 @@ class ManageShelfViewModel(
     }
 
     override fun onDeleteClicked() {
-        emitEffect(ManageShelfEffect.DeleteShelf(state.value.shelfId))
+        emitEffect(ManageShelfEffect.DeleteShelf(shelfId))
     }
 }
