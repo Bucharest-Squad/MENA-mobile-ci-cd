@@ -85,19 +85,21 @@ private fun ExportTransactionScreenContent(
             {
                 SelectCard(
                     cardText = "All Transactions",
+                    onCardSelected = interactionListener::onAllTransactionsClicked,
+                    isSelected = state.isAllTransactionsCardSelected,
                     modifier = Modifier.padding(bottom = 12.dp)
                 )
                 SelectCard(
                     cardText = "Custom Filtering",
-                    isSelected = true,
-                    isRadioButtonEnabled = true
+                    isSelected = state.isCustomFilterCardSelected,
+                    onCardSelected = interactionListener::onCustomFilteringClicked,
                 )
                 Spacer(modifier = Modifier.weight(1f))
 
                 OutlinedButton(
                     text = "View & Share",
                     trailingIcon = painterResource(Res.drawable.share),
-                    onClick = {},
+                    onClick = interactionListener::onViewAndShareClicked,
                     contentPadding = PaddingValues(
                         vertical = 13.dp
                     ),
@@ -108,7 +110,7 @@ private fun ExportTransactionScreenContent(
                 PrimaryButton(
                     text = "Download",
                     trailingIcon = painterResource(Res.drawable.download),
-                    onClick = {},
+                    onClick = interactionListener::onDownloadClicked,
                     contentPadding = PaddingValues(
                         vertical = 13.dp
                     ),
@@ -123,7 +125,7 @@ private fun ExportTransactionScreenContent(
 
 private fun onExportTransactionsEffect(effect: ExportTransactionsEffect) {
     when (effect) {
-        is ExportTransactionsEffect.NavigateBack -> {//TODO}
+        is ExportTransactionsEffect.NavigateBack -> {/* TODO("Handle navigation back") */
         }
     }
 }
@@ -136,6 +138,10 @@ private fun ExportTransactionScreenPreview() {
             state = ExportTransactionsState(),
             interactionListener = object : ExportTransactionsListener {
                 override fun onBackClicked() {}
+                override fun onAllTransactionsClicked() {}
+                override fun onCustomFilteringClicked() {}
+                override fun onViewAndShareClicked() {}
+                override fun onDownloadClicked() {}
             }
         )
     }
