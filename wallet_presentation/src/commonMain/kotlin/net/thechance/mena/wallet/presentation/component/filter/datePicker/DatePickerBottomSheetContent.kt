@@ -21,6 +21,7 @@ import mena.wallet_presentation.generated.resources.pick
 import mena.wallet_presentation.generated.resources.pick_start_date
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.button.Button
+import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
@@ -66,47 +67,22 @@ fun DatePickerBottomSheetContent(
                 .align(Alignment.CenterHorizontally)
         )
 
-        PickButton(
-            onPickClick = {
+        PrimaryButton(
+            text = stringResource(Res.string.pick),
+            contentPadding = PaddingValues(horizontal = Theme.spacing._24, vertical = 13.dp),
+            onClick = {
                 val day = dayPagerState.currentPage + 1
                 val month = monthPagerState.currentPage + 1
                 val year = MIN_YEAR + yearPagerState.currentPage
                 onPickClick(day, month, year)
             },
-            modifier = Modifier.fillMaxWidth()
-        )
-    }
-}
-
-@Composable
-fun PickButton(
-    onPickClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Button(
-        onClick = onPickClick,
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(bottom = Theme.spacing._8),
-        shape = RoundedCornerShape(Theme.radius.md),
-        containerColor = Theme.colorScheme.primary.primary,
-        contentColor = Theme.colorScheme.primary.onPrimary,
-    ) { contentColor ->
-        Text(
-            text = stringResource(Res.string.pick),
-            color = contentColor,
-            style = Theme.typography.label.medium,
-            textAlign = TextAlign.Center,
             modifier = Modifier
-                .padding(
-                    vertical = 13.dp,
-                    horizontal = Theme.spacing._24
-                )
+                .padding(bottom = Theme.spacing._8)
+                .fillMaxWidth()
         )
+
     }
 }
-
-
 
 @Preview()
 @Composable
