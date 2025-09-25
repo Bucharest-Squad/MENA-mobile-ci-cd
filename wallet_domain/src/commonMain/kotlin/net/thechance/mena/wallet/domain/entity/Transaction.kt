@@ -4,7 +4,7 @@ data class Transaction(
     val id: String,
     val createdAt: String,
     val amount: Double,
-    val status: TransactionStatus?,
+    val status: TransactionStatus,
     val senderId: String,
     val senderName: String,
     val receiverId: String,
@@ -19,5 +19,6 @@ enum class TransactionType {
 }
 enum class TransactionStatus{
     SUCCESS,
-    FAIL
+    FAIL,
+    ALL
 }
