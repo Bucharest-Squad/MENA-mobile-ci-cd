@@ -9,7 +9,7 @@ import org.koin.core.annotation.Provided
 @KoinViewModel
 internal class VideoDescriptionViewModel(
     @Provided customSaveStateHandleHandle: CustomSaveState,
-) : BaseViewModel<VideoDescriptionState, VideoDescriptionEffect>(initialState = VideoDescriptionState()),
+) : BaseViewModel<VideoDescriptionScreenState, VideoDescriptionEffect>(initialState = VideoDescriptionScreenState()),
     VideoDescriptionInteractionListener {
 
     val trendId = customSaveStateHandleHandle.get<String>(TREND_ID).toString()
