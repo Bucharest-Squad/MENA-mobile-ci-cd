@@ -13,7 +13,6 @@ kotlin {
 
         }
         commonTest.dependencies {
-            implementation(libs.kotlin.test)
         }
     }
 }
@@ -23,5 +22,15 @@ kover.reports {
         rule {
             minBound(80)
         }
+    }
+
+    filters.excludes {
+        packages(
+            "*.entity",
+            "*.exception",
+            "*.model",
+            "*.di",
+            "*.repository",
+        )
     }
 }
