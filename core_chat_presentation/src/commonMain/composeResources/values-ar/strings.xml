@@ -23,5 +23,7 @@
     <string name="permission_denied_title">تم رفض الإذن</string>
     <string name="contacts_permission_required_message">إذن جهات الاتصال مطلوب لمزامنة جهات الاتصال</string>
     <string name="could_not_sync_contacts_message">تعذر مزامنة جهات الاتصال</string>
-
+    <string name="delete">حذف</string>
+    <string name="delete_chat">حذف المحادثة</string>
+    <string name="confirm_delete_chat_message">هل أنت متأكد من حذف هذه المحادثة؟</string>
 </resources>

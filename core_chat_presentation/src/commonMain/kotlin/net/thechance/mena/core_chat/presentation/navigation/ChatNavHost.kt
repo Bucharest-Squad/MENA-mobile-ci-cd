@@ -75,7 +75,7 @@ fun ChatNavHost(
             NavHost(
                 modifier = Modifier.fillMaxSize(),
                 navController = navController,
-                startDestination = MessagingRoute(0),
+                startDestination = MessagingRoute("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), // temporal chat id
             ) {
                 composable<ChatsRoute> { ChatsScreen() }
                 composable<ContactsRoute> { ContactsScreen() }

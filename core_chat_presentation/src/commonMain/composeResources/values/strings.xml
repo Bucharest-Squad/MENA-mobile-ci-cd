@@ -23,5 +23,8 @@
     <string name="permission_denied_title">Permission Denied</string>
     <string name="contacts_permission_required_message">Contacts permission is required to sync contacts</string>
     <string name="could_not_sync_contacts_message">Could not sync contacts</string>
+    <string name="delete">Delete</string>
+    <string name="delete_chat">Delete Chat</string>
+    <string name="confirm_delete_chat_message">Are you sure you want to delete this shelf?</string>
 
 </resources>
