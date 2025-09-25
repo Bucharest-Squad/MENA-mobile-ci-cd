@@ -108,7 +108,7 @@ private fun VideoDescriptionContent(
                 value = state.description,
                 onValueChanged = { listener.onDescriptionChanged(it) },
                 currentNumberOfCharacters = state.currentNumberOfCharacters,
-                maxNumnerOfCharacters = state.maxNumberOfCharacters,
+                maxNumberOfCharacters = state.maxNumberOfCharacters,
                 currentNumberOfCharactersColor = charactersLimitColor,
                 modifier = Modifier
                     .height(250.dp)
@@ -158,7 +158,7 @@ private fun DescriptionBox(
     value: String,
     onValueChanged: (String) -> Unit,
     currentNumberOfCharacters: Int,
-    maxNumnerOfCharacters: Int,
+    maxNumberOfCharacters: Int,
     currentNumberOfCharactersColor: Color,
     modifier: Modifier = Modifier
 ) {
@@ -180,7 +180,7 @@ private fun DescriptionBox(
             text = stringResource(
                 Res.string.characters,
                 currentNumberOfCharacters,
-                maxNumnerOfCharacters
+                maxNumberOfCharacters
             ),
             style = Theme.typography.label.small,
             color = currentNumberOfCharactersColor,
