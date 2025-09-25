@@ -10,8 +10,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import mena.wallet_presentation.generated.resources.Res
 import mena.wallet_presentation.generated.resources.back_button
 import mena.wallet_presentation.generated.resources.download
@@ -24,14 +26,34 @@ import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.wallet.presentation.component.SnackBarContainer
 import net.thechance.mena.wallet.presentation.component.WalletScaffold
 import net.thechance.mena.wallet.presentation.screen.export.component.SelectCard
+import net.thechance.mena.wallet.presentation.utils.ObserveAsEffect
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.viewmodel.koinViewModel
 
+@Composable
+fun ExportTransactionScreen(
+    viewModel: ExportTransactionsViewModel = koinViewModel()
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
+    ObserveAsEffect(
+        effect = viewModel.uiEffect,
+        onEffect = ::onExportTransactionsEffect
+    )
+
+    ExportTransactionScreenContent(
+        state = state,
+        interactionListener = viewModel
+    )
+
+}
 
 @Composable
 private fun ExportTransactionScreenContent(
-    state: ExportTransactionsState
+    state: ExportTransactionsState,
+    interactionListener: ExportTransactionsListener
 ) {
 
     WalletScaffold(
@@ -46,7 +68,7 @@ private fun ExportTransactionScreenContent(
                         contentDescription = stringResource(Res.string.back_button)
                     )
                 },
-                onLeadingClick = {},
+                onLeadingClick = { interactionListener::onBackClicked },
             )
         },
         snackBar = {
@@ -99,12 +121,22 @@ private fun ExportTransactionScreenContent(
     }
 }
 
+private fun onExportTransactionsEffect(effect: ExportTransactionsEffect) {
+    when (effect) {
+        is ExportTransactionsEffect.NavigateBack -> {//TODO}
+        }
+    }
+}
+
 @Composable
 @Preview
 private fun ExportTransactionScreenPreview() {
     MenaTheme {
         ExportTransactionScreenContent(
-            state = ExportTransactionsState()
+            state = ExportTransactionsState(),
+            interactionListener = object : ExportTransactionsListener {
+                override fun onBackClicked() {}
+            }
         )
     }
 }
