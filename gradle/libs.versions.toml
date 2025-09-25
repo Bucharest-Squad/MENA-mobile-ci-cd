@@ -15,7 +15,6 @@ androidx-testExt = "1.3.0"
 coil = "3.3.0"
 composeMultiplatform = "1.8.2"
 junit = "4.13.2"
-kotlinxCoroutinesTest = "1.10.2"
 mockk = "1.14.0"
 turbine = "1.2.1"
 kotlin = "2.2.10"
@@ -157,7 +156,7 @@ kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "koverVersion" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
-mockkery = {id="dev.mokkery",version.ref = "mokkery"}
+mockkery = {id="dev.mokkery",version.ref = "mockkery"}
 room = { id = "androidx.room", version.ref = "room" }
 
 
