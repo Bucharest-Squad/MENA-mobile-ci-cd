@@ -5,12 +5,12 @@ data class CreateShelfUiState(
     val isCreateButtonEnabled: Boolean = false,
     val isLoading: Boolean = false,
     val showSnackBar: Boolean = false,
+    val snackBarMessage: String? = null,
     val snackBarType: SnackBarType = SnackBarType.NONE,
-){
+) {
     enum class SnackBarType {
         NONE,
-        INVALID_NAME,
-        NAME_EXISTS,
-        CREATE_FAILED
+        ERROR,
+        SUCCESS
     }
 }
