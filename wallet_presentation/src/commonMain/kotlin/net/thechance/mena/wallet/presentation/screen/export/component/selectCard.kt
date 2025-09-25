@@ -1,0 +1,86 @@
+package net.thechance.mena.wallet.presentation.screen.export.component
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.unit.dp
+import net.thechance.mena.designsystem.presentation.component.button.radioButton.RadioButton
+import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
+import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import org.jetbrains.compose.ui.tooling.preview.Preview
+
+@Composable
+fun SelectCard(
+    modifier: Modifier = Modifier,
+    cardText: String,
+    isSelected: Boolean = false,
+    isEnabled: Boolean = false,
+    onCardSelected: () -> Unit = {}
+) {
+    val backgroundColor = if (isSelected) Theme.colorScheme.brand.brandVariant
+    else Theme.colorScheme.background.surfaceLow
+    Row(
+        modifier = modifier
+            .clip(RoundedCornerShape(Theme.radius.md))
+            .clickable(onClick = onCardSelected)
+            .fillMaxWidth()
+            .background(
+                color = backgroundColor,
+                shape = RoundedCornerShape(Theme.radius.md)
+            )
+            .border(
+                if (isSelected) 1.dp else 0.dp,
+                color = Theme.colorScheme.stroke,
+                shape = RoundedCornerShape(Theme.radius.md)
+            )
+            .padding(vertical = 19.dp, horizontal = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        RadioButton(
+            isSelected = isSelected,
+            onClick = {onCardSelected},
+            isEnabled = isEnabled
+        )
+        Text(
+            text = cardText,
+            color = Theme.colorScheme.shadePrimary,
+            style = Theme.typography.body.small,
+            modifier = Modifier
+                .weight(1f)
+        )
+    }
+}
+
+@Composable
+@Preview
+private fun SelectCardPreview() {
+    MenaTheme {
+        SelectCard(
+            cardText = "All Transactions",
+            isSelected = true,
+            isEnabled = true
+        )
+    }
+}
+
+@Composable
+@Preview
+private fun SelectCardFalsePreview() {
+    MenaTheme {
+        SelectCard(
+            cardText = "All Transactions",
+            isSelected = false
+        )
+    }
+}
