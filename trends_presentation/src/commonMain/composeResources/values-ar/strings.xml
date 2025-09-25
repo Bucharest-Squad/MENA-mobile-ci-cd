@@ -27,4 +27,8 @@
     <string name="error_no_internet">تعذر الاتصال، برجاء التحقق من اتصالك بالانترنت</string>
     <string name="error_generic">حدث خطأ، حاول مجددًا لاحقًا</string>
     <string name="error_request_timeout">استغرق الأمر وقتًا طويلًا، حاول مجددًا</string>
+
+    <!--    Publish Trend-->
+    <string name="upload_your_video">ارفع الفيديو الخاص بك</string>
+    <string name="available_video_format">MP4، MOV حتى 100 ميجابايت</string>
 </resources>

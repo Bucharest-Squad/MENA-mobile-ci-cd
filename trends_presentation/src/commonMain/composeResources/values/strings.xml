@@ -27,4 +27,8 @@
     <string name="error_no_internet">Could not connect, please check your internet connection</string>
     <string name="error_generic">Something went wrong, please try again later</string>
     <string name="error_request_timeout">Request timed out, please try again later</string>
+
+<!--    Publish Trend-->
+    <string name="upload_your_video">Upload your video</string>
+    <string name="available_video_format">MP4, MOV up to 100MB</string>
 </resources>
