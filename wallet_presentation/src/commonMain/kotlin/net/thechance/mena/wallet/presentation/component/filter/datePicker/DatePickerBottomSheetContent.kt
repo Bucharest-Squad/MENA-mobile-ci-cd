@@ -22,13 +22,14 @@ import net.thechance.mena.designsystem.presentation.component.button.PrimaryButt
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.wallet.presentation.component.filter.datePicker.DateConstants.MIN_YEAR
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun DatePickerBottomSheetContent(
+fun DatePickerBottomSheet(
+    minYear: Int,
+    maxYear: Int,
     onPickClick: (Int, Int, Int) -> Unit,
     onDismiss: () -> Unit,
     dayPagerState: PagerState,
@@ -42,7 +43,7 @@ fun DatePickerBottomSheetContent(
             .fillMaxWidth()
     ) {
         AppBar(
-            title = stringResource(Res.string.pick_start_date),
+            title = stringResource(Res.string.pick_start_date), /* TODO write title suitable for type of date picker (start or end)*/
             titleColor = Theme.colorScheme.shadePrimary,
             contentPadding = PaddingValues(horizontal = 0.dp, vertical = 0.dp),
             leadingContent = {
@@ -58,6 +59,8 @@ fun DatePickerBottomSheetContent(
             dayPagerState = dayPagerState,
             monthPagerState = monthPagerState,
             yearPagerState = yearPagerState,
+            minYear = minYear,
+            maxYear = maxYear,
             modifier = Modifier.fillMaxWidth()
                 .padding(vertical = Theme.spacing._16)
                 .align(Alignment.CenterHorizontally)
@@ -69,7 +72,7 @@ fun DatePickerBottomSheetContent(
             onClick = {
                 val day = dayPagerState.currentPage + 1
                 val month = monthPagerState.currentPage + 1
-                val year = MIN_YEAR + yearPagerState.currentPage
+                val year = minYear + yearPagerState.currentPage
                 onPickClick(day, month, year)
             },
             modifier = Modifier
@@ -88,12 +91,14 @@ fun DatePickerBottomSheetContentPreview() {
     val yearPagerState = rememberPagerState(initialPage = 0, pageCount = { 12 })
 
     MenaTheme {
-        DatePickerBottomSheetContent(
+        DatePickerBottomSheet(
             onPickClick = { _, _, _ -> },
             onDismiss = {},
             dayPagerState = dayPagerState,
             monthPagerState = monthPagerState,
-            yearPagerState = yearPagerState
+            yearPagerState = yearPagerState,
+            minYear = 2021,
+            maxYear = 2025
         )
     }
 }
