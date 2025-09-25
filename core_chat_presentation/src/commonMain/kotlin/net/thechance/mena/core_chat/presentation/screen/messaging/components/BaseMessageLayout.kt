@@ -2,6 +2,7 @@
 
 package net.thechance.mena.core_chat.presentation.screen.messaging.components
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,6 +34,7 @@ import kotlin.time.ExperimentalTime
 fun BaseMessageLayout(
     message: MessageUiState,
     showMessageInfo: Boolean,
+    isMarkedLastInSeries: Boolean,
     modifier: Modifier = Modifier,
     chatAvatarUrl: String? = null,
     onFailClick: () -> Unit = {},
@@ -54,22 +56,24 @@ fun BaseMessageLayout(
 
     val messagePaddingEnd = if (message.isMine) 0.dp else Theme.spacing._8
 
-    val messagePaddingBottom = if (showMessageInfo) 0.dp else  Theme.spacing._2
+    val messagePaddingBottom = if (showMessageInfo || isMarkedLastInSeries) 0.dp else  Theme.spacing._2
 
-    val messageShape = if (message.isMine)
+    val messageShape = if (message.isMine && isMarkedLastInSeries)
         RoundedCornerShape(
             topStart = Theme.radius.md,
             topEnd = Theme.radius.md,
             bottomStart = Theme.radius.md,
             bottomEnd = Theme.radius.xxs
         )
-    else
+    else if (!message.isMine && isMarkedLastInSeries)
         RoundedCornerShape(
             topStart = Theme.radius.md,
             topEnd = Theme.radius.md,
             bottomStart = Theme.radius.xxs,
             bottomEnd = Theme.radius.md
         )
+    else
+        RoundedCornerShape(size = Theme.radius.md)
 
     val messageInfoAlignment = if (message.isMine)
         Alignment.Start
@@ -112,8 +116,11 @@ fun BaseMessageLayout(
             }
 
         }
-
-        if (showMessageInfo) {
+        AnimatedVisibility(
+            visible = showMessageInfo || isMarkedLastInSeries,
+            modifier = Modifier
+                .align(messageInfoAlignment)
+        ) {
             MessageInfo(
                 messageTime = message.time,
                 messageStatus = message.status,
@@ -145,6 +152,7 @@ private fun PreviewBaseMessageLayout() {
                     ""
                 ),
                 showMessageInfo = true,
+                isMarkedLastInSeries = true
             ) {
                 Text(
                     text = "Hello,\nBilal",

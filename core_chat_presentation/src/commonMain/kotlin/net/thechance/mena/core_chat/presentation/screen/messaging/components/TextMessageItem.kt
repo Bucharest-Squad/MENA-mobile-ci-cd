@@ -26,6 +26,7 @@ fun TextMessageItem(
     message: TextMessageUiState,
     chatAvatarUrl: String? = null,
     showMessageInfo: Boolean,
+    isMarkedLastInSeries: Boolean,
     modifier: Modifier = Modifier,
     onFailClick: () -> Unit = {},
     onClick: () -> Unit = {}
@@ -33,6 +34,7 @@ fun TextMessageItem(
     BaseMessageLayout(
         message = message,
         showMessageInfo = showMessageInfo,
+        isMarkedLastInSeries = isMarkedLastInSeries,
         chatAvatarUrl = chatAvatarUrl,
         onFailClick = onFailClick,
         modifier = modifier
@@ -40,6 +42,7 @@ fun TextMessageItem(
         Text(
             text = message.text,
             style = Theme.typography.body.small,
+            color = Theme.colorScheme.shadeSecondary,
             modifier = Modifier.clickable(onClick = onClick)
         )
     }

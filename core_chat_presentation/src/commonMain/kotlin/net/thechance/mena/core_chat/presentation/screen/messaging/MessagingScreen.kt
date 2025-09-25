@@ -36,29 +36,13 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun MessagingScreen() {
     var state by remember { mutableStateOf(MessagingScreenState()) }
-    MessagingScreenContent(state) { messageId -> // temp until handling the view model
-        state = state.copy(
-            chatListItems = state.chatListItems.map { item ->
-                if (item is ChatListItem.Message && item.data.message.id == messageId) {
-                    item.copy(
-                        data = item.data.copy(
-                            showMessageInfo = !item.data.showMessageInfo
-                        )
-                    )
-                } else {
-                    item
-                }
-            }
-        )
-    }
-
+    MessagingScreenContent(state)
 
 }
 
 @Composable
 fun MessagingScreenContent(
-    state: MessagingScreenState = MessagingScreenState(),
-    onMessageClick: (String) -> Unit = {}
+    state: MessagingScreenState = MessagingScreenState()
 ) {
     var showChatActionsDialog by remember { mutableStateOf(false) }
     var showResendMessageDialog by remember { mutableStateOf(false) }
@@ -149,9 +133,10 @@ fun MessagingScreenContent(
                             TextMessageItem(
                                 message = markedMessage.message as TextMessageUiState, // temporal casting until more MessageTypes involved
                                 chatAvatarUrl = if (markedMessage.isMarkedLastInSeries) state.chat.avatarUrl else null,
-                                showMessageInfo = markedMessage.isMarkedLastInSeries || markedMessage.showMessageInfo,
+                                showMessageInfo = markedMessage.showMessageInfo,
+                                isMarkedLastInSeries = markedMessage.isMarkedLastInSeries,
                                 onClick = {
-                                    onMessageClick(markedMessage.message.id)
+                                    /* TODO */
                                 },
                                 onFailClick = {
                                     showResendMessageDialog = true
