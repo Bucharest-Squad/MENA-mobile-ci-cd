@@ -47,6 +47,7 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.bundles.koin)
             implementation(libs.bundles.voyager)
+            implementation(libs.bundles.coil)
         }
         commonTest.dependencies {
             implementation(libs.bundles.common.test)
