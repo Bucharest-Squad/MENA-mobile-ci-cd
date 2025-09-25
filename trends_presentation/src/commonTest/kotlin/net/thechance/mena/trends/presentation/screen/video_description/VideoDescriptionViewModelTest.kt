@@ -1,13 +1,16 @@
 package net.thechance.mena.trends.presentation.screen.video_description
 
 import app.cash.turbine.test
+import dev.mokkery.answering.returns
+import dev.mokkery.every
+import dev.mokkery.mock
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import net.thechance.mena.trends.presentation.utils.FakeVideoDescriptionArgs
+import net.thechance.mena.trends.presentation.screen.video_description.args.VideoDescriptionArgs
 import net.thechance.mena.trends.presentation.utils.largeNewDescription
 import net.thechance.mena.trends.presentation.utils.smallNewDescription
 import kotlin.test.AfterTest
@@ -21,10 +24,13 @@ class VideoDescriptionViewModelTest {
     private val testDispatcher = StandardTestDispatcher()
     private lateinit var viewModel: VideoDescriptionViewModel
 
+    private val videoDescriptionArgs = mock<VideoDescriptionArgs>()
+
     @BeforeTest
     fun setup() {
+        every { videoDescriptionArgs.trendId } returns "trendId"
         Dispatchers.setMain(testDispatcher)
-        viewModel = VideoDescriptionViewModel(FakeVideoDescriptionArgs())
+        viewModel = VideoDescriptionViewModel(videoDescriptionArgs)
     }
 
     @Test

@@ -1,7 +1,5 @@
 package net.thechance.mena.trends.presentation.utils
 
-import net.thechance.mena.trends.presentation.screen.video_description.args.VideoDescriptionArgs
-
 
 const val largeNewDescription = "Once upon a time, there was a young girl who loved reading more than anything in the world. Every day after school, she would sit quietly in a cozy corner of the park, open her favorite book, and dive into countless stories filled with adventures, mysteries, and fascinating characters. She didn’t care about what others around her were doing, as she was completely immersed in her literary worlds. Over time, she began dreaming of becoming a great writer herself, creating stories that could inspire, entertain, and bring joy to readers everywhere. Each new word she wrote filled her with excitement and pride because she could express her thoughts, feelings, and imagination freely.\n" +
         "\n" +
@@ -14,9 +12,3 @@ const val largeNewDescription = "Once upon a time, there was a young girl who lo
         "Even when she grew older, she never stopped writing. She would wake up early in the morning, brew a cup of tea, and sit at her desk, letting her thoughts flow freely onto paper. Each day brought new ideas, new characters, and new adventures waiting to be told. Her love for literature never faded, and she shared it with everyone around her. She realized that words were not just letters on a page, but bridges to understanding, imagination, and connection. Her heart was full of stories, and her mind was a universe of possibilities, all waiting to be discovered by curious readers like her."
 
 const val smallNewDescription = "New Description"
-
-
-class FakeVideoDescriptionArgs(
-    override val trendId: String = "fakeTrendId"
-) : VideoDescriptionArgs
-
