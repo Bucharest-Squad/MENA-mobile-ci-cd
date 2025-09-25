@@ -10,6 +10,7 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
+import net.thechance.mena.identity.data.datasource.localDataSource.LocalDataSourceImpl
 import org.junit.Test
 
 class LocalDataSourceImplTest {

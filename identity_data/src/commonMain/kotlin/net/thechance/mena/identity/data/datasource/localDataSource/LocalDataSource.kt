@@ -1,4 +1,4 @@
-package net.thechance.mena.identity.data.datasource
+package net.thechance.mena.identity.data.datasource.localDataSource
 
 interface LocalDataSource {
     fun saveAccessToken(accessToken: String)

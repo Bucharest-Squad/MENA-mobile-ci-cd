@@ -2,10 +2,12 @@ package net.thechance.mena.identity.data.di
 
 import com.russhwolf.settings.Settings
 import io.ktor.client.engine.cio.CIO
-import net.thechance.mena.identity.data.datasource.AuthRemoteDataSource
-import net.thechance.mena.identity.data.datasource.AuthRemoteDataSourceImpl
-import net.thechance.mena.identity.data.datasource.LocalDataSource
-import net.thechance.mena.identity.data.datasource.LocalDataSourceImpl
+import net.thechance.mena.identity.data.datasource.remoteDataSource.auth.AuthRemoteDataSource
+import net.thechance.mena.identity.data.datasource.remoteDataSource.auth.AuthRemoteDataSourceImpl
+import net.thechance.mena.identity.data.datasource.localDataSource.LocalDataSource
+import net.thechance.mena.identity.data.datasource.localDataSource.LocalDataSourceImpl
+import net.thechance.mena.identity.data.datasource.remoteDataSource.profile.ProfileRemoteDataSource
+import net.thechance.mena.identity.data.datasource.remoteDataSource.profile.ProfileRemoteDataSourceImpl
 import net.thechance.mena.identity.data.repository.AuthenticationRepositoryImpl
 import net.thechance.mena.identity.data.utils.provideHttpClient
 import net.thechance.mena.identity.domain.repository.AuthenticationRepository
@@ -29,4 +31,5 @@ val identityDataModule = module {
     singleOf(::LocalDataSourceImpl) bind LocalDataSource::class
     singleOf(::AuthenticationRepositoryImpl) bind AuthenticationRepository::class
     singleOf(::AuthRemoteDataSourceImpl) bind AuthRemoteDataSource::class
+    singleOf(::ProfileRemoteDataSourceImpl) bind ProfileRemoteDataSource::class
 }

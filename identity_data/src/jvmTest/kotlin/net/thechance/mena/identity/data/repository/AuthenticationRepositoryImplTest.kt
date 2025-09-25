@@ -10,8 +10,8 @@ import io.mockk.every
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.test.runTest
-import net.thechance.mena.identity.data.datasource.AuthRemoteDataSource
-import net.thechance.mena.identity.data.datasource.LocalDataSource
+import net.thechance.mena.identity.data.datasource.remoteDataSource.auth.AuthRemoteDataSource
+import net.thechance.mena.identity.data.datasource.localDataSource.LocalDataSource
 import net.thechance.mena.identity.data.dto.auth.LoginRequestDto
 import net.thechance.mena.identity.data.dto.auth.LoginResponseDto
 import net.thechance.mena.identity.data.dto.auth.RefreshRequestDto

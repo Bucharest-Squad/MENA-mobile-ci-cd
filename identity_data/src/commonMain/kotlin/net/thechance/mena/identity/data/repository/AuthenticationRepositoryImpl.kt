@@ -1,7 +1,7 @@
 package net.thechance.mena.identity.data.repository
 
-import net.thechance.mena.identity.data.datasource.AuthRemoteDataSource
-import net.thechance.mena.identity.data.datasource.LocalDataSource
+import net.thechance.mena.identity.data.datasource.remoteDataSource.auth.AuthRemoteDataSource
+import net.thechance.mena.identity.data.datasource.localDataSource.LocalDataSource
 import net.thechance.mena.identity.data.dto.auth.LoginRequestDto
 import net.thechance.mena.identity.data.dto.auth.LoginResponseDto
 import net.thechance.mena.identity.data.dto.auth.RefreshRequestDto

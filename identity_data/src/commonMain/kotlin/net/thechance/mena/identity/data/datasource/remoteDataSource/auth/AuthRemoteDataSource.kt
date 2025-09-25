@@ -1,4 +1,4 @@
-package net.thechance.mena.identity.data.datasource
+package net.thechance.mena.identity.data.datasource.remoteDataSource.auth
 
 import net.thechance.mena.identity.data.dto.auth.LoginRequestDto
 import net.thechance.mena.identity.data.dto.auth.LoginResponseDto

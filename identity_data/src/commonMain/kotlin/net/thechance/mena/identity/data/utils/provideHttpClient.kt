@@ -12,7 +12,7 @@ import io.ktor.client.plugins.logging.SIMPLE
 import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
-import net.thechance.mena.identity.data.datasource.LocalDataSource
+import net.thechance.mena.identity.data.datasource.localDataSource.LocalDataSource
 
 fun authInterceptor(
     localDataSource: LocalDataSource
