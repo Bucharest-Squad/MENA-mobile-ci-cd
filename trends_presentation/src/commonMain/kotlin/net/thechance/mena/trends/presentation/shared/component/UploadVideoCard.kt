@@ -93,7 +93,7 @@ internal fun UploadVideoCard(
             if (hasThumbnail){
                 Image(
                     painter = thumbnail,
-                    contentDescription = null,
+                    contentDescription = "Uploaded video thumbnail",
                     modifier = Modifier.fillMaxWidth(),
                     contentScale = ContentScale.Crop
                 )

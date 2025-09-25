@@ -43,7 +43,7 @@ internal fun EditButton(
     ){
         Icon(
             painter = painterResource(Res.drawable.ic_edit),
-            contentDescription = null,
+            contentDescription = "Edit button icon",
             modifier = Modifier.size(20.dp),
             tint = Color.Unspecified
         )
