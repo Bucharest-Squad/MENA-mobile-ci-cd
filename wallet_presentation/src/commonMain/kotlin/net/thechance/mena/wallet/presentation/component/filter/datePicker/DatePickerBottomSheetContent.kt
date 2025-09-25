@@ -7,9 +7,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,14 +21,19 @@ import mena.wallet_presentation.generated.resources.pick
 import mena.wallet_presentation.generated.resources.pick_start_date
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.button.Button
+import net.thechance.mena.designsystem.presentation.component.icon.Icon
+import net.thechance.mena.designsystem.presentation.component.text.Text
+import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.wallet.presentation.component.filter.datePicker.DateConstants.MIN_YEAR
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun DatePickerBottomSheetContent(
     onPickClick: (Int, Int, Int) -> Unit,
+    onDismiss: () -> Unit,
     dayPagerState: PagerState,
     monthPagerState: PagerState,
     yearPagerState: PagerState,
@@ -50,7 +54,7 @@ fun DatePickerBottomSheetContent(
                     contentDescription = stringResource(Res.string.back_button)
                 )
             },
-            onLeadingClick = {/*TODO make listener function to handle navigating back*/ },
+            onLeadingClick = onDismiss,
         )
 
         WheelDatePicker(
@@ -101,5 +105,27 @@ fun PickButton(
         )
     }
 }
+
+
+
+@Preview()
+@Composable
+fun DatePickerBottomSheetContentPreview() {
+    val dayPagerState = rememberPagerState(initialPage = 0, pageCount = { 31 })
+    val monthPagerState = rememberPagerState(initialPage = 0, pageCount = { 12 })
+    val yearPagerState = rememberPagerState(initialPage = 0, pageCount = { 12 })
+
+    MenaTheme {
+        DatePickerBottomSheetContent(
+            onPickClick = { _, _, _ -> },
+            onDismiss = {},
+            dayPagerState = dayPagerState,
+            monthPagerState = monthPagerState,
+            yearPagerState = yearPagerState
+        )
+    }
+}
+
+
 
 
