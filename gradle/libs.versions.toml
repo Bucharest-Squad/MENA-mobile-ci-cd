@@ -39,6 +39,9 @@ krop = "0.2.0"
 map-libra = "0.11.1"
 # GeoCoder
 compass = "2.4.0"
+androidx-datastore = "1.1.7"
+contacts-provider = "1.1.13"
+moko = "0.18.0"
 voyager = "1.1.0-beta03"
 koin = "4.0.0"
 multiplatformSettings = "1.3.0"
@@ -137,6 +140,11 @@ maplibre-compose = { module = "org.maplibre.compose:maplibre-compose", version.r
 # GeoCoder
 compass-geocoder = { module = "dev.jordond.compass:geocoder", version.ref = "compass" }
 compass-geocoder-mobile = { module = "dev.jordond.compass:geocoder-mobile", version.ref = "compass" }
+
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "androidx-datastore" }
+moko-permissions = { module = "dev.icerock.moko:permissions", version.ref = "moko" }
+moko-permissions-compose = { module = "dev.icerock.moko:permissions-compose", version.ref = "moko" }
+contacts-provider = { module = "io.github.dev-bilal-azzam:contacts-provider", version.ref = "contacts-provider" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
