@@ -74,7 +74,7 @@ class VideoDescriptionViewModelTest {
 
         viewModel.effect.test {
             val effect = awaitItem()
-            assertTrue(effect is VideoDescriptionEffect.NavigateToNext)
+            assertTrue(effect is VideoDescriptionEffect.NavigateToSelectCategories)
         }
     }
 

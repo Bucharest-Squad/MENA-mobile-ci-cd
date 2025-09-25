@@ -19,7 +19,7 @@ internal class VideoDescriptionViewModel(
     }
 
     override fun onNextClick() {
-        sendEffect(VideoDescriptionEffect.NavigateToNext(state.value.description, trendId))
+        sendEffect(VideoDescriptionEffect.NavigateToSelectCategories(state.value.description, trendId))
     }
 
     override fun onDescriptionChanged(newValue: String) {

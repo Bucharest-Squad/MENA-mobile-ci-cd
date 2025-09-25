@@ -60,7 +60,7 @@ internal fun VideoDescriptionScreen(
     ObserveAsEffect(viewModel.effect) { effect ->
         when (effect) {
             is VideoDescriptionEffect.NavigateBack -> navController.navigateUp()
-            is VideoDescriptionEffect.NavigateToNext -> {} ///TODO navigate to category screen
+            is VideoDescriptionEffect.NavigateToSelectCategories -> {} ///TODO navigate to category screen
         }
     }
 
