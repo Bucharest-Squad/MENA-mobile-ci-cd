@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import mena.trends_presentation.generated.resources.Res
 import mena.trends_presentation.generated.resources.available_video_format
 import mena.trends_presentation.generated.resources.ic_trend_upload
-import mena.trends_presentation.generated.resources.test_pic
 import mena.trends_presentation.generated.resources.upload_your_video
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.image.Image
