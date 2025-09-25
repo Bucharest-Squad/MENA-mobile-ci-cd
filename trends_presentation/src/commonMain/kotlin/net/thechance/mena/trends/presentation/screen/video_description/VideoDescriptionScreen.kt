@@ -94,14 +94,14 @@ private fun VideoDescriptionContent(
                 text = stringResource(Res.string.add_video_description_title),
                 style = Theme.typography.title.small,
                 color = Theme.colorScheme.shadePrimary,
-                modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp)
+                modifier = Modifier.padding(top = Theme.spacing._16, start = Theme.spacing._16, end = Theme.spacing._16)
             )
 
             Text(
                 text = stringResource(Res.string.add_video_description_subtitle),
                 style = Theme.typography.label.small,
                 color = Theme.colorScheme.shadeSecondary,
-                modifier = Modifier.padding(top = 4.dp, start = 16.dp, end = 16.dp)
+                modifier = Modifier.padding(top = Theme.spacing._4, start = Theme.spacing._16, end = Theme.spacing._16)
             )
 
             DescriptionBox(
@@ -112,7 +112,7 @@ private fun VideoDescriptionContent(
                 currentNumberOfCharactersColor = charactersLimitColor,
                 modifier = Modifier
                     .height(250.dp)
-                    .padding(top = 24.dp, start = 16.dp, end = 16.dp)
+                    .padding(top = Theme.spacing._24, start = Theme.spacing._16, end = Theme.spacing._16)
                     .clip(shape = RoundedCornerShape(Theme.radius.md))
                     .background(Theme.colorScheme.background.surfaceLow)
             )
@@ -122,9 +122,9 @@ private fun VideoDescriptionContent(
             PrimaryButton(
                 text = stringResource(Res.string.next),
                 onClick = listener::onNextClick,
-                contentPadding = PaddingValues(vertical = 8.dp),
+                contentPadding = PaddingValues(vertical = Theme.spacing._8),
                 isEnabled = state.isButtonEnabled,
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 16.dp)
+                modifier = Modifier.fillMaxWidth().padding(horizontal = Theme.spacing._16, vertical = Theme.spacing._16)
                     .height(48.dp)
             )
         }
@@ -184,7 +184,7 @@ private fun DescriptionBox(
             ),
             style = Theme.typography.label.small,
             color = currentNumberOfCharactersColor,
-            modifier = Modifier.align(Alignment.BottomEnd).padding(12.dp)
+            modifier = Modifier.align(Alignment.BottomEnd).padding(Theme.spacing._12)
         )
     }
 }
