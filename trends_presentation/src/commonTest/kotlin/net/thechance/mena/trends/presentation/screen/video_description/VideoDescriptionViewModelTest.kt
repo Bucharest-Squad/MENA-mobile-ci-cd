@@ -1,4 +1,4 @@
-package net.thechance.mena.trends.presentation
+package net.thechance.mena.trends.presentation.screen.video_description
 
 import app.cash.turbine.test
 import kotlinx.coroutines.Dispatchers
@@ -7,8 +7,6 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import net.thechance.mena.trends.presentation.screen.video_description.VideoDescriptionEffect
-import net.thechance.mena.trends.presentation.screen.video_description.VideoDescriptionViewModel
 import net.thechance.mena.trends.presentation.shared.util.save_state.CustomSaveState
 import net.thechance.mena.trends.presentation.utils.largeNewDescription
 import net.thechance.mena.trends.presentation.utils.smallNewDescription
@@ -16,7 +14,6 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertTrue
-
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class VideoDescriptionViewModelTest {
