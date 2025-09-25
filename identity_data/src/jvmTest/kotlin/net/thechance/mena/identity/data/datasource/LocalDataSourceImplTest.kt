@@ -10,13 +10,13 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
-import net.thechance.mena.identity.data.datasource.localDataSource.LocalDataSourceImpl
+import net.thechance.mena.identity.data.datasource.localDataSource.UserLocalDataSourceImpl
 import org.junit.Test
 
 class LocalDataSourceImplTest {
 
     private val mockSettings: Settings = mockk(relaxed = true)
-    private val localDataSource: LocalDataSourceImpl = LocalDataSourceImpl(mockSettings)
+    private val localDataSource: UserLocalDataSourceImpl = UserLocalDataSourceImpl(mockSettings)
 
     @Test
     fun `saveAccessToken should store token in settings`() {
@@ -28,34 +28,34 @@ class LocalDataSourceImplTest {
         localDataSource.saveAccessToken(accessToken)
 
         // Then
-        verify { mockSettings.putString(LocalDataSourceImpl.ACCESS_TOKEN, accessToken) }
+        verify { mockSettings.putString(UserLocalDataSourceImpl.ACCESS_TOKEN, accessToken) }
     }
 
     @Test
     fun `getAccessToken should return stored token from settings`() {
         // Given
         val expectedToken = "stored_access_token"
-        every { mockSettings.getString(LocalDataSourceImpl.ACCESS_TOKEN, "") } returns expectedToken
+        every { mockSettings.getString(UserLocalDataSourceImpl.ACCESS_TOKEN, "") } returns expectedToken
 
         // When
         val result = localDataSource.getAccessToken()
 
         // Then
         assertThat(result).isEqualTo(result)
-        verify { mockSettings.getString(LocalDataSourceImpl.ACCESS_TOKEN, "") }
+        verify { mockSettings.getString(UserLocalDataSourceImpl.ACCESS_TOKEN, "") }
     }
 
     @Test
     fun `getAccessToken should return empty string when no token stored`() {
         // Given
-        every { mockSettings.getString(LocalDataSourceImpl.ACCESS_TOKEN, "") } returns ""
+        every { mockSettings.getString(UserLocalDataSourceImpl.ACCESS_TOKEN, "") } returns ""
 
         // When
         val result = localDataSource.getAccessToken()
 
         // Then
         assertThat(result).isEmpty()
-        verify { mockSettings.getString(LocalDataSourceImpl.ACCESS_TOKEN, "") }
+        verify { mockSettings.getString(UserLocalDataSourceImpl.ACCESS_TOKEN, "") }
     }
 
     @Test
@@ -68,7 +68,7 @@ class LocalDataSourceImplTest {
         localDataSource.saveRefreshToken(refreshToken)
 
         // Then
-        verify { mockSettings.putString(LocalDataSourceImpl.REFRESH_TOKEN, refreshToken) }
+        verify { mockSettings.putString(UserLocalDataSourceImpl.REFRESH_TOKEN, refreshToken) }
     }
 
     @Test
@@ -77,7 +77,7 @@ class LocalDataSourceImplTest {
         val expectedToken = "stored_refresh_token"
         every {
             mockSettings.getString(
-                LocalDataSourceImpl.REFRESH_TOKEN,
+                UserLocalDataSourceImpl.REFRESH_TOKEN,
                 ""
             )
         } returns expectedToken
@@ -87,19 +87,19 @@ class LocalDataSourceImplTest {
 
         // Then
         assertThat(result).isEqualTo(expectedToken)
-        verify { mockSettings.getString(LocalDataSourceImpl.REFRESH_TOKEN, "") }
+        verify { mockSettings.getString(UserLocalDataSourceImpl.REFRESH_TOKEN, "") }
     }
 
     @Test
     fun `getRefreshToken should return empty string when no token stored`() {
         // Given
-        every { mockSettings.getString(LocalDataSourceImpl.REFRESH_TOKEN, "") } returns ""
+        every { mockSettings.getString(UserLocalDataSourceImpl.REFRESH_TOKEN, "") } returns ""
 
         // When
         val result = localDataSource.getRefreshToken()
 
         // Then
         assertThat(result).isEmpty()
-        verify { mockSettings.getString(LocalDataSourceImpl.REFRESH_TOKEN, "") }
+        verify { mockSettings.getString(UserLocalDataSourceImpl.REFRESH_TOKEN, "") }
     }
 }

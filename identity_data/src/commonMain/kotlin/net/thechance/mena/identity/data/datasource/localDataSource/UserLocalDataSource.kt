@@ -1,6 +1,8 @@
 package net.thechance.mena.identity.data.datasource.localDataSource
 
-interface LocalDataSource {
+import net.thechance.mena.identity.domain.model.UserInfo
+
+interface UserLocalDataSource {
     fun saveAccessToken(accessToken: String)
 
     fun getAccessToken(): String
@@ -9,4 +11,7 @@ interface LocalDataSource {
 
     fun getRefreshToken(): String
 
+    fun saveUserInfo(userInfo: UserInfo)
+
+    fun getUserInfo(): UserInfo?
 }

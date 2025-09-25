@@ -5,12 +5,12 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ProfileResponseDto(
-    @SerialName("first_name")
+    @SerialName("firstName")
     val firstName: String,
-    @SerialName("last_name")
+    @SerialName("lastName")
     val lastName: String,
-    @SerialName("image_url")
-    val imageUrl: String,
+    @SerialName("profileImageUrl")
+    val profileImageUrl: String,
     @SerialName("username")
     val username: String,
 )

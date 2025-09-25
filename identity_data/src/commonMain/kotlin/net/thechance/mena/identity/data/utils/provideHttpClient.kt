@@ -12,15 +12,15 @@ import io.ktor.client.plugins.logging.SIMPLE
 import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
-import net.thechance.mena.identity.data.datasource.localDataSource.LocalDataSource
+import net.thechance.mena.identity.data.datasource.localDataSource.UserLocalDataSource
 
 fun authInterceptor(
-    localDataSource: LocalDataSource
+    userLocalDataSource: UserLocalDataSource
 ) = createClientPlugin("AuthInterceptor") {
 
     onRequest { request, _ ->
         if (!request.url.toString().contains("login")) {
-            localDataSource.getAccessToken().let { token ->
+            userLocalDataSource.getAccessToken().let { token ->
                 request.headers.append(HttpHeaders.Authorization, "Bearer $token")
             }
         }
@@ -29,7 +29,7 @@ fun authInterceptor(
 
 fun provideHttpClient(
     engine: HttpClientEngine,
-    localDataSource: LocalDataSource,
+    userLocalDataSource: UserLocalDataSource,
     baseUrl: String,
 ): HttpClient {
 
@@ -43,7 +43,7 @@ fun provideHttpClient(
                     ignoreUnknownKeys = true
                 })
         }
-        install(authInterceptor(localDataSource))
+        install(authInterceptor(userLocalDataSource))
         install(Logging) {
             logger = Logger.SIMPLE
             level = LogLevel.ALL

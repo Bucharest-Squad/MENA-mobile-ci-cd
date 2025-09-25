@@ -4,6 +4,8 @@ import net.thechance.mena.identity.domain.model.UserInfo
 
 interface ProfileRepository {
 
-    suspend fun getUserInfo():UserInfo
+    suspend fun fetchUserInfo():UserInfo
+
+    suspend fun getUserInfoFromLocal(): UserInfo?
 
 }

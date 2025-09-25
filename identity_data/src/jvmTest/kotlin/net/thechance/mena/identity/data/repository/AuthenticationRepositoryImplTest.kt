@@ -10,8 +10,8 @@ import io.mockk.every
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.test.runTest
-import net.thechance.mena.identity.data.datasource.remoteDataSource.auth.AuthRemoteDataSource
-import net.thechance.mena.identity.data.datasource.localDataSource.LocalDataSource
+import net.thechance.mena.identity.data.datasource.remoteDataSource.UserRemoteDataSource
+import net.thechance.mena.identity.data.datasource.localDataSource.UserLocalDataSource
 import net.thechance.mena.identity.data.dto.auth.LoginRequestDto
 import net.thechance.mena.identity.data.dto.auth.LoginResponseDto
 import net.thechance.mena.identity.data.dto.auth.RefreshRequestDto
@@ -23,10 +23,10 @@ import org.junit.Test
 
 class AuthenticationRepositoryImplTest {
 
-    private val authRemoteDataSource = mockk<AuthRemoteDataSource>()
-    private val localDataSource = mockk<LocalDataSource>(relaxed = true)
+    private val userRemoteDataSource = mockk<UserRemoteDataSource>()
+    private val userLocalDataSource = mockk<UserLocalDataSource>(relaxed = true)
     private val authenticationRepository = AuthenticationRepositoryImpl(
-        authRemoteDataSource, localDataSource
+        userRemoteDataSource, userLocalDataSource
     )
 
     @Test
@@ -34,14 +34,14 @@ class AuthenticationRepositoryImplTest {
         val mobileNumber = "0123456789"
         val passWord = "testpassword"
         val countryCoed = "+20"
-        coEvery { authRemoteDataSource.login(any()) } returns fakeLoginResponse
+        coEvery { userRemoteDataSource.login(any()) } returns fakeLoginResponse
 
         // When
         authenticationRepository.login(countryCoed, mobileNumber, passWord)
 
         // Then
         coVerify {
-            authRemoteDataSource.login(
+            userRemoteDataSource.login(
                 LoginRequestDto(
                     countryCoed + mobileNumber,
                     passWord
@@ -56,13 +56,13 @@ class AuthenticationRepositoryImplTest {
         val mobileNumber = "0123456789"
         val passWord = "testpassword"
         val countryCoed = "+20"
-        coEvery { authRemoteDataSource.login(any()) } returns fakeLoginResponse
+        coEvery { userRemoteDataSource.login(any()) } returns fakeLoginResponse
 
         // When
         authenticationRepository.login(countryCoed, mobileNumber, passWord)
 
         // Then
-        coVerify { localDataSource.saveAccessToken(fakeLoginResponse.accessToken) }
+        coVerify { userLocalDataSource.saveAccessToken(fakeLoginResponse.accessToken) }
     }
 
     @Test
@@ -71,52 +71,52 @@ class AuthenticationRepositoryImplTest {
         val mobileNumber = "0123456789"
         val passWord = "testpassword"
         val countryCoed = "+20"
-        coEvery { authRemoteDataSource.login(any()) } returns fakeLoginResponse
+        coEvery { userRemoteDataSource.login(any()) } returns fakeLoginResponse
 
         // When
         authenticationRepository.login(countryCoed, mobileNumber, passWord)
 
         // Then
-        coVerify { localDataSource.saveRefreshToken(fakeLoginResponse.refreshToken) }
+        coVerify { userLocalDataSource.saveRefreshToken(fakeLoginResponse.refreshToken) }
     }
 
     @Test
     fun `getToken should save access token after successful refresh`() = runTest {
         // Given
         val oldRefreshToken = "old_refresh_token"
-        coEvery { localDataSource.getRefreshToken() } returns oldRefreshToken
-        coEvery { authRemoteDataSource.refreshToken(RefreshRequestDto(oldRefreshToken)) } returns fakeLoginResponse
-        coEvery { localDataSource.getAccessToken() } returns "invalid_or_expired_token"
+        coEvery { userLocalDataSource.getRefreshToken() } returns oldRefreshToken
+        coEvery { userRemoteDataSource.refreshToken(RefreshRequestDto(oldRefreshToken)) } returns fakeLoginResponse
+        coEvery { userLocalDataSource.getAccessToken() } returns "invalid_or_expired_token"
 
         // When
         authenticationRepository.refreshAccessToken()
 
         // Then
-        coVerify { localDataSource.saveAccessToken(fakeLoginResponse.accessToken) }
+        coVerify { userLocalDataSource.saveAccessToken(fakeLoginResponse.accessToken) }
     }
 
     @Test
     fun `getToken should save refresh token after successful refresh`() = runTest {
         // Given
         val oldRefreshToken = "old_refresh_token"
-        coEvery { localDataSource.getRefreshToken() } returns oldRefreshToken
-        coEvery { authRemoteDataSource.refreshToken(RefreshRequestDto(oldRefreshToken)) } returns fakeLoginResponse
-        coEvery { localDataSource.getAccessToken() } returns "invalid_or_expired_token"
+        coEvery { userLocalDataSource.getRefreshToken() } returns oldRefreshToken
+        coEvery { userRemoteDataSource.refreshToken(RefreshRequestDto(oldRefreshToken)) } returns fakeLoginResponse
+        coEvery { userLocalDataSource.getAccessToken() } returns "invalid_or_expired_token"
 
         // When
         authenticationRepository.refreshAccessToken()
 
         // Then
-        coVerify { localDataSource.saveRefreshToken(fakeLoginResponse.refreshToken) }
+        coVerify { userLocalDataSource.saveRefreshToken(fakeLoginResponse.refreshToken) }
     }
 
     @Test
     fun `getToken should return new access token after successful refresh`() = runTest {
         // Given
         val oldRefreshToken = "old_refresh_token"
-        coEvery { localDataSource.getRefreshToken() } returns oldRefreshToken
-        coEvery { authRemoteDataSource.refreshToken(RefreshRequestDto(oldRefreshToken)) } returns fakeLoginResponse
-        coEvery { localDataSource.getAccessToken() } returns fakeLoginResponse.accessToken
+        coEvery { userLocalDataSource.getRefreshToken() } returns oldRefreshToken
+        coEvery { userRemoteDataSource.refreshToken(RefreshRequestDto(oldRefreshToken)) } returns fakeLoginResponse
+        coEvery { userLocalDataSource.getAccessToken() } returns fakeLoginResponse.accessToken
 
         // When
         val result = authenticationRepository.getAccessToken()
@@ -134,7 +134,7 @@ class AuthenticationRepositoryImplTest {
             },
             cachedResponseText = "Unauthorized"
         )
-        coEvery { authRemoteDataSource.login(any()) } throws clientException
+        coEvery { userRemoteDataSource.login(any()) } throws clientException
 
         // When & Then
         assertFailure {
@@ -151,7 +151,7 @@ class AuthenticationRepositoryImplTest {
             },
             cachedResponseText = "Not Found"
         )
-        coEvery { authRemoteDataSource.login(any()) } throws clientException
+        coEvery { userRemoteDataSource.login(any()) } throws clientException
 
         // When & Then
         assertFailure {
@@ -169,7 +169,7 @@ class AuthenticationRepositoryImplTest {
             },
             cachedResponseText = "Forbidden"
         )
-        coEvery { authRemoteDataSource.login(any()) } throws clientException
+        coEvery { userRemoteDataSource.login(any()) } throws clientException
 
         // When & Then
         assertFailure {
@@ -187,7 +187,7 @@ class AuthenticationRepositoryImplTest {
             },
             cachedResponseText = "Unauthorized"
         )
-        coEvery { authRemoteDataSource.refreshToken(any()) } throws clientException
+        coEvery { userRemoteDataSource.refreshToken(any()) } throws clientException
 
         // When & Then
         assertFailure {
@@ -204,7 +204,7 @@ class AuthenticationRepositoryImplTest {
             },
             cachedResponseText = "Internal Server Error"
         )
-        coEvery { authRemoteDataSource.login(any()) } throws clientException
+        coEvery { userRemoteDataSource.login(any()) } throws clientException
 
         assertFailure {
             authenticationRepository.login("+20", "01234567", "password123")

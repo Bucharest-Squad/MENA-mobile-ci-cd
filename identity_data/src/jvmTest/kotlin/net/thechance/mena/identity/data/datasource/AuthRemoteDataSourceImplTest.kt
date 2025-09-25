@@ -13,7 +13,7 @@ import io.ktor.serialization.kotlinx.json.json
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
-import net.thechance.mena.identity.data.datasource.remoteDataSource.auth.AuthRemoteDataSourceImpl
+import net.thechance.mena.identity.data.datasource.remoteDataSource.UserRemoteDataSourceImpl
 import net.thechance.mena.identity.data.dto.auth.LoginRequestDto
 import net.thechance.mena.identity.data.dto.auth.LoginResponseDto
 import net.thechance.mena.identity.data.dto.auth.RefreshRequestDto
@@ -25,11 +25,11 @@ import kotlin.test.assertFailsWith
 class AuthRemoteDataSourceImplTest {
 
     private val client: HttpClient = mockk(relaxed = true)
-    private lateinit var remoteDataSource: AuthRemoteDataSourceImpl
+    private lateinit var remoteDataSource: UserRemoteDataSourceImpl
 
     @BeforeTest
     fun setUp() {
-        remoteDataSource = AuthRemoteDataSourceImpl(client)
+        remoteDataSource = UserRemoteDataSourceImpl(client)
     }
 
 
@@ -47,7 +47,7 @@ class AuthRemoteDataSourceImplTest {
         val client = HttpClient(mockEngine) {
             install(ContentNegotiation) { json() }
         }
-        remoteDataSource = AuthRemoteDataSourceImpl(client)
+        remoteDataSource = UserRemoteDataSourceImpl(client)
         // When
         val actual = remoteDataSource.login(LoginRequestDto("110061617", "12345678"))
 
@@ -69,7 +69,7 @@ class AuthRemoteDataSourceImplTest {
         val client = HttpClient(mockEngine) {
             install(ContentNegotiation) { json() }
         }
-        remoteDataSource = AuthRemoteDataSourceImpl(client)
+        remoteDataSource = UserRemoteDataSourceImpl(client)
         //When & Then
         assertFailsWith<ClientRequestException> {
             remoteDataSource.login(LoginRequestDto("110061617", "12345678"))
@@ -90,7 +90,7 @@ class AuthRemoteDataSourceImplTest {
         val client = HttpClient(mockEngine){
             install(ContentNegotiation){ json() }
         }
-        remoteDataSource = AuthRemoteDataSourceImpl(client)
+        remoteDataSource = UserRemoteDataSourceImpl(client)
         //When
         val actual  = remoteDataSource.refreshToken(RefreshRequestDto("fake_refresh_token"))
         //Then
@@ -111,7 +111,7 @@ class AuthRemoteDataSourceImplTest {
         val client = HttpClient(mockEngine) {
             install(ContentNegotiation) { json() }
         }
-        remoteDataSource = AuthRemoteDataSourceImpl(client)
+        remoteDataSource = UserRemoteDataSourceImpl(client)
         //When & Then
         assertFailsWith<ClientRequestException> {
             remoteDataSource.refreshToken(RefreshRequestDto("fake_refresh_token"))

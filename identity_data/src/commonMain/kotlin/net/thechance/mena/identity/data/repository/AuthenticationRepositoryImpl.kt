@@ -1,7 +1,7 @@
 package net.thechance.mena.identity.data.repository
 
-import net.thechance.mena.identity.data.datasource.remoteDataSource.auth.AuthRemoteDataSource
-import net.thechance.mena.identity.data.datasource.localDataSource.LocalDataSource
+import net.thechance.mena.identity.data.datasource.remoteDataSource.UserRemoteDataSource
+import net.thechance.mena.identity.data.datasource.localDataSource.UserLocalDataSource
 import net.thechance.mena.identity.data.dto.auth.LoginRequestDto
 import net.thechance.mena.identity.data.dto.auth.LoginResponseDto
 import net.thechance.mena.identity.data.dto.auth.RefreshRequestDto
@@ -9,8 +9,8 @@ import net.thechance.mena.identity.data.utils.safeWrapper
 import net.thechance.mena.identity.domain.repository.AuthenticationRepository
 
 class AuthenticationRepositoryImpl(
-    private val remoteAuthService: AuthRemoteDataSource,
-    private val localDataSource: LocalDataSource,
+    private val remoteAuthService: UserRemoteDataSource,
+    private val userLocalDataSource: UserLocalDataSource,
 ) : AuthenticationRepository {
     override suspend fun login(countryCode: String, number: String, password: String) {
         return safeWrapper {
@@ -22,18 +22,18 @@ class AuthenticationRepositoryImpl(
 
     override suspend fun refreshAccessToken(): String {
         val refreshResponse = safeWrapper {
-            remoteAuthService.refreshToken(RefreshRequestDto(localDataSource.getRefreshToken()))
+            remoteAuthService.refreshToken(RefreshRequestDto(userLocalDataSource.getRefreshToken()))
         }
         saveAuthTokens(refreshResponse)
-        return localDataSource.getAccessToken()
+        return userLocalDataSource.getAccessToken()
     }
 
     override suspend fun getAccessToken(): String {
-        return localDataSource.getAccessToken()
+        return userLocalDataSource.getAccessToken()
     }
 
     private fun saveAuthTokens(loginResponseDto: LoginResponseDto) {
-        localDataSource.saveAccessToken(loginResponseDto.accessToken)
-        localDataSource.saveRefreshToken(loginResponseDto.refreshToken)
+        userLocalDataSource.saveAccessToken(loginResponseDto.accessToken)
+        userLocalDataSource.saveRefreshToken(loginResponseDto.refreshToken)
     }
 }

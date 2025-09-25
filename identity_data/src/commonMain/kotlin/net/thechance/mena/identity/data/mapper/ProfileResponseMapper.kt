@@ -9,7 +9,7 @@ fun ProfileResponseDto.toUserInfo(): UserInfo{
     return UserInfo(
         firstName = this.firstName,
         lastName  = this.lastName,
-        imageUrl  = this.imageUrl,
+        profileImageUrl  = this.profileImageUrl,
         username  = this.username
     )
 
