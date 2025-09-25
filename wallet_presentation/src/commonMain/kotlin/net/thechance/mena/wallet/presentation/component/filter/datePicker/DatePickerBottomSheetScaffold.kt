@@ -56,6 +56,7 @@ fun DatePickerBottomSheetScaffold() {
                                 onPickClick = { day, month, year ->
                                     /*TODO make listener function to save the date and close the bottom sheet*/
                                 },
+                                onDismiss = { isSheetVisible = false }
                             )
                         }
                     }
@@ -66,5 +67,3 @@ fun DatePickerBottomSheetScaffold() {
         /*TODO integrate with the main screen*/
     }
 }
-
-
