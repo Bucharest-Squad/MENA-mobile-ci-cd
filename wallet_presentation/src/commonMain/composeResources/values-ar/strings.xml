@@ -6,5 +6,7 @@
     <string name="reload">أعد المحاولة</string>
     <string name="couldnt_load_tap_to_retry">فشل التحميل، اضغط لإعادة المحاولة</string>
     <string name="error">خطأ</string>
+    <string name="filter_transaction_error_title">لا توجد نتائج مطابقة للفلاتر</string>
+    <string name="filter_transaction_error_description">قم بتغيير الفلاتر أو إعادة تعيينها لاستكشاف جميع المعاملات</string>
     <string name="balance_fetch_error_description">حدث خطأ أثناء تحميل رصيدك</string>
 </resources>
