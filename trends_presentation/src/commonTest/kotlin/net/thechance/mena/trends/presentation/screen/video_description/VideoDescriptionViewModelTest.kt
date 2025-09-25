@@ -23,7 +23,6 @@ class VideoDescriptionViewModelTest {
 
     private val testDispatcher = StandardTestDispatcher()
     private lateinit var viewModel: VideoDescriptionViewModel
-
     private val videoDescriptionArgs = mock<VideoDescriptionArgs>()
 
     @BeforeTest
