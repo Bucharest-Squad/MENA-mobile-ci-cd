@@ -70,6 +70,7 @@ private fun PreviewTextMessageItem() {
                     "Hello Bilal"
                 ),
                 showMessageInfo = true,
+                isMarkedLastInSeries = true
             )
 
 
