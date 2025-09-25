@@ -47,21 +47,21 @@ fun VideoLoadingCardItem(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(Theme.spacing._12))
             .background(Theme.colorScheme.primary.onPrimary)
-            .padding(horizontal = 12.dp),
+            .padding(horizontal = Theme.spacing._12),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Row(
             modifier = Modifier
-                .padding(top = 12.dp)
+                .padding(top = Theme.spacing._12)
                 .weight(1f),
             verticalAlignment = Alignment.Top
         ) {
             Box(
                 modifier = Modifier
                     .size(40.dp)
-                    .clip(RoundedCornerShape(12.dp))
+                    .clip(RoundedCornerShape(Theme.radius.md))
                     .background(Theme.colorScheme.brand.brandVariant),
                 contentAlignment = Alignment.Center
             ) {
@@ -69,19 +69,21 @@ fun VideoLoadingCardItem(
                     painter = painterResource(Res.drawable.video_02),
                     contentDescription = stringResource(Res.string.thumbnail),
                     tint = Theme.colorScheme.brand.brand,
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(Theme.spacing._24)
                 )
             }
 
             Column(
-                modifier = Modifier
-                    .padding(bottom = 12.dp),
+                modifier = Modifier.padding(bottom = Theme.spacing._12),
             ) {
                 Text(
                     text = title,
                     style = Theme.typography.label.medium,
                     color = Theme.colorScheme.primary.primary,
-                    modifier = Modifier.padding(start = 8.dp, bottom = 4.dp)
+                    modifier = Modifier.padding(
+                        start = Theme.spacing._8,
+                        bottom = Theme.spacing._4
+                    )
                 )
 
                 when (state) {
@@ -90,12 +92,18 @@ fun VideoLoadingCardItem(
                             text = sizeText,
                             color = Theme.colorScheme.shadeSecondary,
                             style = Theme.typography.label.extraSmall,
-                            modifier = Modifier.padding(start = 8.dp, bottom = 4.dp)
+                            modifier = Modifier.padding(
+                                start = Theme.spacing._8,
+                                bottom = Theme.spacing._4
+                            )
                         )
-                        //TODO we will handle it after talk with infra team
+                        //TODO handle after infra talk
                         ProgressBar(
                             modifier = Modifier
-                                .padding(start = 8.dp, end = 12.dp)
+                                .padding(
+                                    start = Theme.spacing._8,
+                                    end = Theme.spacing._12
+                                )
                                 .fillMaxWidth(),
                             color = Theme.colorScheme.brand.brand
                         )
@@ -106,7 +114,7 @@ fun VideoLoadingCardItem(
                             text = sizeText,
                             color = Theme.colorScheme.shadeSecondary,
                             style = Theme.typography.label.extraSmall,
-                            modifier = Modifier.padding(start = 8.dp)
+                            modifier = Modifier.padding(start = Theme.spacing._8)
                         )
                     }
 
@@ -115,7 +123,10 @@ fun VideoLoadingCardItem(
                             text = stringResource(Res.string.upload_failed),
                             color = Theme.colorScheme.border.error,
                             style = Theme.typography.label.extraSmall,
-                            modifier = Modifier.padding(start = 8.dp, end = 8.dp)
+                            modifier = Modifier.padding(
+                                start = Theme.spacing._8,
+                                end = Theme.spacing._8
+                            )
                         )
                     }
                 }
@@ -124,13 +135,13 @@ fun VideoLoadingCardItem(
 
         when (state) {
             ItemState.Loading -> {
-                Row(modifier = Modifier.padding(top = 12.dp)) {
+                Row(modifier = Modifier.padding(top = Theme.spacing._12)) {
                     Icon(
                         painter = painterResource(Res.drawable.ic_cancel),
                         contentDescription = stringResource(Res.string.loading),
                         tint = Theme.colorScheme.shadeSecondary,
                         modifier = Modifier
-                            .size(16.dp)
+                            .size(Theme.spacing._16)
                             .clickable { onCancel() }
                     )
                 }
@@ -138,8 +149,8 @@ fun VideoLoadingCardItem(
 
             ItemState.Error -> {
                 Row(
-                    modifier = Modifier.padding(top = 25.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    modifier = Modifier.padding(top = Theme.spacing._24),
+                    horizontalArrangement = Arrangement.spacedBy(Theme.spacing._16),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
@@ -147,7 +158,7 @@ fun VideoLoadingCardItem(
                         contentDescription = stringResource(Res.string.error),
                         tint = Theme.colorScheme.shadeSecondary,
                         modifier = Modifier
-                            .size(16.dp)
+                            .size(Theme.spacing._16)
                             .clickable { onDelete() }
                     )
                     Icon(
@@ -155,7 +166,7 @@ fun VideoLoadingCardItem(
                         contentDescription = stringResource(Res.string.retry),
                         tint = Theme.colorScheme.shadeSecondary,
                         modifier = Modifier
-                            .size(16.dp)
+                            .size(Theme.spacing._16)
                             .clickable { onRetry() }
                     )
                 }
@@ -163,14 +174,14 @@ fun VideoLoadingCardItem(
 
             ItemState.Success -> {
                 Row(
-                    modifier = Modifier.padding(top = 25.dp)
+                    modifier = Modifier.padding(top = Theme.spacing._24)
                 ) {
                     Icon(
                         painter = painterResource(Res.drawable.ic_delete),
                         contentDescription = stringResource(Res.string.success),
                         tint = Theme.colorScheme.shadeSecondary,
                         modifier = Modifier
-                            .size(16.dp)
+                            .size(Theme.spacing._16)
                             .clickable { onDelete() }
                     )
                 }
@@ -178,6 +189,7 @@ fun VideoLoadingCardItem(
         }
     }
 }
+
 
 enum class ItemState {
     Loading, Error, Success
