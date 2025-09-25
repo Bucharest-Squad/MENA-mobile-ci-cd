@@ -3,7 +3,11 @@ package net.thechance.mena.core_chat.presentation.screen.messaging.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -12,13 +16,15 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.style.TextAlign
-import mena.core_chat_presentation.generated.resources.*
-import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.designsystem.presentation.component.icon.Icon
+import mena.core_chat_presentation.generated.resources.Res
+import mena.core_chat_presentation.generated.resources.actions
+import mena.core_chat_presentation.generated.resources.delete
+import mena.core_chat_presentation.generated.resources.delete_message
+import mena.core_chat_presentation.generated.resources.re_send
+import mena.core_chat_presentation.generated.resources.refresh
 import net.thechance.mena.designsystem.presentation.component.text.Text
+import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
