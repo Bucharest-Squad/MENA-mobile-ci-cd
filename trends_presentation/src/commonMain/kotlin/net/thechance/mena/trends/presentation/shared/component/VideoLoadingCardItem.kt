@@ -28,23 +28,20 @@ import mena.trends_presentation.generated.resources.upload_failed
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.progressBar.ProgressBar
 import net.thechance.mena.designsystem.presentation.component.text.Text
-import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import net.thechance.mena.trends.presentation.shared.model.VideoAction
 import net.thechance.mena.trends.presentation.shared.model.VideoUploadingState
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun VideoLoadingCardItem(
     modifier: Modifier = Modifier,
     title: String,
     videoSize: String,
-    state: VideoUploadingState,
+    videoState: VideoUploadingState,
     progress: Float,
-    onCancel: () -> Unit,
-    onRetry: () -> Unit,
-    onDelete: () -> Unit
+    onAction: (VideoAction) -> Unit
 ) {
     Row(
         modifier = modifier
@@ -54,83 +51,15 @@ fun VideoLoadingCardItem(
             .padding(horizontal = Theme.spacing._12),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Row(
-            modifier = Modifier
-                .padding(top = Theme.spacing._12)
-                .weight(1f),
-            verticalAlignment = Alignment.Top
-        ) {
-            Icon(
-                painter = painterResource(Res.drawable.ic_video),
-                contentDescription = stringResource(Res.string.thumbnail),
-                tint = Theme.colorScheme.brand.brand,
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(RoundedCornerShape(Theme.radius.md))
-                    .background(Theme.colorScheme.brand.brandVariant)
-                    .padding(Theme.spacing._8)
-            )
+        VideoInfoSection(
+            title = title,
+            videoSize = videoSize,
+            videoState = videoState,
+            progress = progress,
+            modifier = Modifier.weight(1f)
+        )
 
-            Column(
-                modifier = Modifier.padding(bottom = Theme.spacing._12),
-            ) {
-                Text(
-                    text = title,
-                    style = Theme.typography.label.medium,
-                    color = Theme.colorScheme.primary.primary,
-                    modifier = Modifier.padding(
-                        start = Theme.spacing._8,
-                        bottom = Theme.spacing._4
-                    )
-                )
-
-                when (state) {
-                    VideoUploadingState.Loading -> {
-                        Text(
-                            text = videoSize,
-                            color = Theme.colorScheme.shadeSecondary,
-                            style = Theme.typography.label.extraSmall,
-                            modifier = Modifier.padding(
-                                start = Theme.spacing._8,
-                                bottom = Theme.spacing._4
-                            )
-                        )
-                        ProgressBar(
-                            modifier = Modifier
-                                .padding(
-                                    start = Theme.spacing._8,
-                                    end = Theme.spacing._12
-                                )
-                                .fillMaxWidth(),
-                            color = Theme.colorScheme.brand.brand
-                        )
-                    }
-
-                    VideoUploadingState.Success -> {
-                        Text(
-                            text = videoSize,
-                            color = Theme.colorScheme.shadeSecondary,
-                            style = Theme.typography.label.extraSmall,
-                            modifier = Modifier.padding(start = Theme.spacing._8)
-                        )
-                    }
-
-                    VideoUploadingState.Error -> {
-                        Text(
-                            text = stringResource(Res.string.upload_failed),
-                            color = Theme.colorScheme.border.error,
-                            style = Theme.typography.label.extraSmall,
-                            modifier = Modifier.padding(
-                                start = Theme.spacing._8,
-                                end = Theme.spacing._8
-                            )
-                        )
-                    }
-                }
-            }
-        }
-
-        when (state) {
+        when (videoState) {
             VideoUploadingState.Loading -> {
                 Icon(
                     painter = painterResource(Res.drawable.ic_cancel),
@@ -139,7 +68,7 @@ fun VideoLoadingCardItem(
                     modifier = Modifier
                         .padding(top = Theme.spacing._12)
                         .size(Theme.spacing._16)
-                        .clickable { onCancel() }
+                        .clickable { onAction(VideoAction.Cancel) }
                 )
             }
 
@@ -155,7 +84,7 @@ fun VideoLoadingCardItem(
                         tint = Theme.colorScheme.shadeSecondary,
                         modifier = Modifier
                             .size(Theme.spacing._16)
-                            .clickable { onDelete() }
+                            .clickable { onAction(VideoAction.Delete) }
                     )
                     Icon(
                         painter = painterResource(Res.drawable.arrow_reload_horizontal),
@@ -163,7 +92,7 @@ fun VideoLoadingCardItem(
                         tint = Theme.colorScheme.shadeSecondary,
                         modifier = Modifier
                             .size(Theme.spacing._16)
-                            .clickable { onRetry() }
+                            .clickable { onAction(VideoAction.Retry) }
                     )
                 }
             }
@@ -176,8 +105,92 @@ fun VideoLoadingCardItem(
                     modifier = Modifier
                         .padding(top = Theme.spacing._24)
                         .size(Theme.spacing._16)
-                        .clickable { onDelete() }
+                        .clickable { onAction(VideoAction.Delete) }
                 )
+            }
+        }
+    }
+}
+
+@Composable
+private fun VideoInfoSection(
+    modifier: Modifier = Modifier,
+    title: String,
+    videoSize: String,
+    videoState: VideoUploadingState,
+    progress: Float,
+) {
+    Row(
+        modifier = modifier
+            .padding(top = Theme.spacing._12),
+        verticalAlignment = Alignment.Top
+    ) {
+        Icon(
+            painter = painterResource(Res.drawable.ic_video),
+            contentDescription = stringResource(Res.string.thumbnail),
+            tint = Theme.colorScheme.brand.brand,
+            modifier = Modifier
+                .size(40.dp)
+                .clip(RoundedCornerShape(Theme.radius.md))
+                .background(Theme.colorScheme.brand.brandVariant)
+                .padding(Theme.spacing._8)
+        )
+
+        Column(
+            modifier = Modifier.padding(bottom = Theme.spacing._12)
+        ) {
+            Text(
+                text = title,
+                style = Theme.typography.label.medium,
+                color = Theme.colorScheme.primary.primary,
+                modifier = Modifier.padding(
+                    start = Theme.spacing._8,
+                    bottom = Theme.spacing._4
+                )
+            )
+
+            when (videoState) {
+                VideoUploadingState.Loading -> {
+                    Text(
+                        text = videoSize,
+                        color = Theme.colorScheme.shadeSecondary,
+                        style = Theme.typography.label.extraSmall,
+                        modifier = Modifier.padding(
+                            start = Theme.spacing._8,
+                            bottom = Theme.spacing._4
+                        )
+                    )
+                    ProgressBar(
+                        modifier = Modifier
+                            .padding(
+                                start = Theme.spacing._8,
+                                end = Theme.spacing._12
+                            )
+                            .fillMaxWidth(),
+                        color = Theme.colorScheme.brand.brand
+                    )
+                }
+
+                VideoUploadingState.Success -> {
+                    Text(
+                        text = videoSize,
+                        color = Theme.colorScheme.shadeSecondary,
+                        style = Theme.typography.label.extraSmall,
+                        modifier = Modifier.padding(start = Theme.spacing._8)
+                    )
+                }
+
+                VideoUploadingState.Error -> {
+                    Text(
+                        text = stringResource(Res.string.upload_failed),
+                        color = Theme.colorScheme.border.error,
+                        style = Theme.typography.label.extraSmall,
+                        modifier = Modifier.padding(
+                            start = Theme.spacing._8,
+                            end = Theme.spacing._8
+                        )
+                    )
+                }
             }
         }
     }
