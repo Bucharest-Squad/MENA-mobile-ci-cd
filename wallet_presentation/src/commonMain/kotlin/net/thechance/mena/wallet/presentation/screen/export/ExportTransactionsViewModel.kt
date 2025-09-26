@@ -8,12 +8,14 @@ import mena.wallet_presentation.generated.resources.Res
 import mena.wallet_presentation.generated.resources.download_complete
 import mena.wallet_presentation.generated.resources.download_failed
 import mena.wallet_presentation.generated.resources.download_success
+import mena.wallet_presentation.generated.resources.downloading_started
 import mena.wallet_presentation.generated.resources.something_went_wrong
 import net.thechance.mena.wallet.domain.exceptions.NoInternetException
 import net.thechance.mena.wallet.domain.exceptions.UnknownException
 import net.thechance.mena.wallet.domain.repository.ExportTransactionsRepository
 import net.thechance.mena.wallet.presentation.base.BaseViewModel
 import net.thechance.mena.wallet.presentation.base.SnackBarState
+import net.thechance.mena.wallet.presentation.screen.export.component.CustomToastState
 import org.jetbrains.compose.resources.StringResource
 import org.koin.android.annotation.KoinViewModel
 import org.koin.core.annotation.Provided
@@ -54,10 +56,11 @@ class ExportTransactionsViewModel(
             onStart = {
                 updateState { oldState ->
                     oldState.copy(
-                        isDownloadLoading = true
+                        isDownloadLoading = true,
+                        isViewAndShearDisabled = false
                     )
-                    //TODO Show Toast for 2 seconds
                 }
+                showToast(messageRes = Res.string.downloading_started)
             },
             callee = {
                 if (currentState.isCustomFilterCardSelected) {
@@ -70,10 +73,11 @@ class ExportTransactionsViewModel(
                 //TODO save file into device
                 updateState { oldState ->
                     oldState.copy(
-                        isDownloadLoading = false
+                        isDownloadLoading = false,
+                        isViewAndShearDisabled = true
                     )
                 }
-                ShowSnackBar(
+                showSnackBar(
                     titleRes = Res.string.download_complete,
                     messageRes = Res.string.download_success,
                     isSuccess = true
@@ -83,7 +87,8 @@ class ExportTransactionsViewModel(
             onError = { error ->
                 updateState { oldState ->
                     oldState.copy(
-                        isDownloadLoading = false
+                        isDownloadLoading = false,
+                        isViewAndShearDisabled = true
                     )
                 }
                 when (error) {
@@ -95,8 +100,9 @@ class ExportTransactionsViewModel(
                             )
                         }
                     }
+
                     is UnknownException -> {
-                        ShowSnackBar(
+                        showSnackBar(
                             titleRes = Res.string.download_failed,
                             messageRes = Res.string.something_went_wrong,
                             isSuccess = false
@@ -109,7 +115,7 @@ class ExportTransactionsViewModel(
         )
     }
 
-    private suspend fun ShowSnackBar(
+    private suspend fun showSnackBar(
         titleRes: StringResource,
         messageRes: StringResource,
         isSuccess: Boolean,
@@ -133,6 +139,32 @@ class ExportTransactionsViewModel(
         updateState { oldState ->
             oldState.copy(
                 snackBar = oldState.snackBar.copy(
+                    isVisible = false
+                )
+            )
+        }
+    }
+
+    private suspend fun showToast(
+        messageRes: StringResource,
+        durationMillis: Long = 2000L
+    ) {
+        updateState { oldState ->
+            oldState.copy(
+                toast = CustomToastState(
+                    isVisible = true,
+                    messageRes = messageRes
+                )
+            )
+        }
+        delay(durationMillis)
+        hideToast()
+    }
+
+    private fun hideToast() {
+        updateState { oldState ->
+            oldState.copy(
+                toast = oldState.toast.copy(
                     isVisible = false
                 )
             )

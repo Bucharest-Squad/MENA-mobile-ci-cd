@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -29,6 +30,7 @@ import net.thechance.mena.designsystem.presentation.component.button.PrimaryButt
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.wallet.presentation.component.SnackBarContainer
 import net.thechance.mena.wallet.presentation.component.WalletScaffold
+import net.thechance.mena.wallet.presentation.screen.export.component.CustomToast
 import net.thechance.mena.wallet.presentation.screen.export.component.SelectCard
 import net.thechance.mena.wallet.presentation.utils.ObserveAsEffect
 import org.jetbrains.compose.resources.painterResource
@@ -79,7 +81,7 @@ private fun ExportTransactionScreenContent(
             SnackBarContainer(snackBarState = state.snackBar)
         }
     ) {
-        Box() {
+        Box {
             Column(
                 modifier = Modifier
                     .fillMaxHeight()
@@ -104,6 +106,7 @@ private fun ExportTransactionScreenContent(
                     text = stringResource(Res.string.view_and_share),
                     trailingIcon = painterResource(Res.drawable.share),
                     onClick = interactionListener::onViewAndShareClicked,
+                    isEnabled = state.isViewAndShearDisabled,
                     contentPadding = PaddingValues(
                         vertical = 13.dp
                     ),
@@ -115,6 +118,7 @@ private fun ExportTransactionScreenContent(
                     text = stringResource(Res.string.download),
                     trailingIcon = painterResource(Res.drawable.download),
                     onClick = interactionListener::onDownloadClicked,
+                    isLoading = state.isDownloadLoading,
                     contentPadding = PaddingValues(
                         vertical = 13.dp
                     ),
@@ -123,6 +127,11 @@ private fun ExportTransactionScreenContent(
                         .padding(bottom = 16.dp)
                 )
             }
+            CustomToast(
+                toastState = state.toast,
+                modifier = Modifier
+                    .align(Alignment.Center)
+            )
         }
     }
 }
