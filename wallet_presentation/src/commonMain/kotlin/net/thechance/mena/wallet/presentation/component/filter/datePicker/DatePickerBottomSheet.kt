@@ -43,6 +43,8 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import mena.wallet_presentation.generated.resources.Res
 import mena.wallet_presentation.generated.resources.back_button
 import mena.wallet_presentation.generated.resources.ic_arrow_left
@@ -62,12 +64,15 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.math.abs
 import kotlin.math.absoluteValue
+import kotlinx.datetime.Clock
 
 @Composable
 fun DatePickerBottomSheet(
     title: String = stringResource(Res.string.pick_start_date),
-    minYear: Int,
-    maxYear: Int,
+    minYear: Int = 2000,
+    maxYear: Int =  Clock.System.now()
+        .toLocalDateTime(TimeZone.currentSystemDefault())
+        .year,
     onPickClick: (Int, Int, Int) -> Unit,
     onDismiss: () -> Unit,
 ) {
