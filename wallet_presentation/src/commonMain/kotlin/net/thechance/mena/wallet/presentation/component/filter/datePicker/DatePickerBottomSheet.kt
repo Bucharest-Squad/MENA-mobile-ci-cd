@@ -64,10 +64,30 @@ fun DatePickerBottomSheet(
     maxYear: Int,
     onPickClick: (Int, Int, Int) -> Unit,
     onDismiss: () -> Unit,
-    dayPagerState: PagerState,
-    monthPagerState: PagerState,
-    yearPagerState: PagerState,
 ) {
+    val monthPagerState = rememberPagerState(initialPage = 0, pageCount = { 12 })
+    val yearPagerState = rememberPagerState(
+        initialPage =  2025 - 2020,
+        pageCount = { 2025 - 2020 + 1 }
+    )
+
+    val currentMonth = monthPagerState.currentPage + 1
+    val currentYear = yearPagerState.currentPage + 2020
+    val daysInMonth = remember(currentMonth, currentYear) {
+        getNumberOfDaysInMonth(currentYear, currentMonth)
+    }
+
+    val dayPagerState = rememberPagerState(
+        initialPage = 0,
+        pageCount = { daysInMonth }
+    )
+
+    LaunchedEffect(daysInMonth) {
+        if (dayPagerState.currentPage >= daysInMonth) {
+            dayPagerState.scrollToPage(daysInMonth - 1)
+        }
+    }
+
     Column(
         modifier = Modifier
             .navigationBarsPadding()
@@ -278,17 +298,11 @@ private fun VerticalPicker(
 @Preview
 @Composable
 private fun DatePickerBottomSheetContentPreview() {
-    val dayPagerState = rememberPagerState(initialPage = 0, pageCount = { 31 })
-    val monthPagerState = rememberPagerState(initialPage = 0, pageCount = { 12 })
-    val yearPagerState = rememberPagerState(initialPage = 4, pageCount = { 5 })
 
     MenaTheme {
         DatePickerBottomSheet(
             onPickClick = { _, _, _ -> },
             onDismiss = {},
-            dayPagerState = dayPagerState,
-            monthPagerState = monthPagerState,
-            yearPagerState = yearPagerState,
             minYear = 2021,
             maxYear = 2025
         )
