@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.ic_arrow_left
-import mena.core_chat_presentation.generated.resources.menu
+import mena.core_chat_presentation.generated.resources.ic_menu
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBarOptionContainer
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
@@ -40,7 +40,7 @@ fun ChatHeader(
             trailingContent = {
                 AppBarOptionContainer(onClick = onMenuClick) {
                     Icon(
-                        painter = painterResource(Res.drawable.menu),
+                        painter = painterResource(Res.drawable.ic_menu),
                         contentDescription = null
                     )
                 }

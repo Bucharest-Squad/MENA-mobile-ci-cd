@@ -19,10 +19,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.actions
-import mena.core_chat_presentation.generated.resources.delete
 import mena.core_chat_presentation.generated.resources.delete_message
+import mena.core_chat_presentation.generated.resources.ic_delete
 import mena.core_chat_presentation.generated.resources.re_send
-import mena.core_chat_presentation.generated.resources.refresh
+import mena.core_chat_presentation.generated.resources.ic_refresh
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
@@ -99,14 +99,14 @@ private fun DialogContent(
 
             // Resend row
             ActionMenuItem(
-                icon = painterResource(Res.drawable.refresh),
+                icon = painterResource(Res.drawable.ic_refresh),
                 text = stringResource(Res.string.re_send),
                 onClick = onResendClick
             )
 
             // Delete row
             ActionMenuItem(
-                icon = painterResource(Res.drawable.delete),
+                icon = painterResource(Res.drawable.ic_delete),
                 text = stringResource(Res.string.delete_message),
                 contentColor = Theme.colorScheme.error,
                 onClick = onDeleteMessageClick

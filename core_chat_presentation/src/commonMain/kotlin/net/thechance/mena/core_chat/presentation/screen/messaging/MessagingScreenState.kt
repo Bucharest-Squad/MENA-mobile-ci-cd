@@ -1,3 +1,4 @@
+
 package net.thechance.mena.core_chat.presentation.screen.messaging
 
 import kotlinx.datetime.LocalDateTime
@@ -25,7 +26,7 @@ val dummyMessages = listOf(
     TextMessageUiState(
         id = "20",
         senderId = "noor",
-        time = LocalDateTime.now().minusMinutes(2),
+        sendTime = LocalDateTime.now().minusMinutes(2),
         status = MessageStatus.SENDING,
         isMine = true,
         text = "Uploading now… please wait a sec ⏳"
@@ -33,7 +34,7 @@ val dummyMessages = listOf(
     TextMessageUiState(
         id = "19",
         senderId = "bilal",
-        time = LocalDateTime.now().minusMinutes(5),
+        sendTime = LocalDateTime.now().minusMinutes(5),
         status = MessageStatus.READ,
         isMine = false,
         text = "Argh, my internet dropped right when I was sending the file. Typical! 😤"
@@ -41,7 +42,7 @@ val dummyMessages = listOf(
     TextMessageUiState(
         id = "18",
         senderId = "noor",
-        time = LocalDateTime.now().minusMinutes(7),
+        sendTime = LocalDateTime.now().minusMinutes(7),
         status = MessageStatus.FAILED,
         isMine = true,
         text = "Haha, no worries. Happens to me all the time."
@@ -49,7 +50,7 @@ val dummyMessages = listOf(
     TextMessageUiState(
         id = "17",
         senderId = "bilal",
-        time = LocalDateTime.now().minusMinutes(10),
+        sendTime = LocalDateTime.now().minusMinutes(10),
         status = MessageStatus.SENT,
         isMine = false,
         text = "Quick question—are you free this weekend? I was thinking maybe we could finally test the prototype together."
@@ -57,7 +58,7 @@ val dummyMessages = listOf(
     TextMessageUiState(
         id = "16",
         senderId = "noor",
-        time = LocalDateTime.now().minusMinutes(12),
+        sendTime = LocalDateTime.now().minusMinutes(12),
         status = MessageStatus.SENT,
         isMine = true,
         text = "Yes! I’d love that. Honestly, I’ve been waiting to see how it looks in action after all these months of development."
@@ -65,7 +66,7 @@ val dummyMessages = listOf(
     TextMessageUiState(
         id = "15",
         senderId = "bilal",
-        time = LocalDateTime.now().minusMinutes(15),
+        sendTime = LocalDateTime.now().minusMinutes(15),
         status = MessageStatus.READ,
         isMine = false,
         text = "Perfect 👌"
@@ -73,7 +74,7 @@ val dummyMessages = listOf(
     TextMessageUiState(
         id = "14",
         senderId = "noor",
-        time = LocalDateTime.now().minusMinutes(17),
+        sendTime = LocalDateTime.now().minusMinutes(17),
         status = MessageStatus.READ,
         isMine = true,
         text = "By the way, I remembered something funny from last year. Remember that bug where every single button in the app turned red? 😂 We freaked out thinking the database was corrupted."
@@ -81,7 +82,7 @@ val dummyMessages = listOf(
     TextMessageUiState(
         id = "13",
         senderId = "bilal",
-        time = LocalDateTime.now().minusMinutes(20),
+        sendTime = LocalDateTime.now().minusMinutes(20),
         status = MessageStatus.READ,
         isMine = false,
         text = "Hahaha oh my god, yes. I still have a screenshot of that somewhere. I called it ‘The Red Wedding’ of our app. 😅"
@@ -89,7 +90,7 @@ val dummyMessages = listOf(
     TextMessageUiState(
         id = "12",
         senderId = "noor",
-        time = LocalDateTime.now().minusMinutes(22),
+        sendTime = LocalDateTime.now().minusMinutes(22),
         status = MessageStatus.READ,
         isMine = true,
         text = "😂😂 Stop, I’m dying. You really should make a blooper reel of all our funniest dev moments."
@@ -97,7 +98,7 @@ val dummyMessages = listOf(
     TextMessageUiState(
         id = "11",
         senderId = "bilal",
-        time = LocalDateTime.now().minusMinutes(25),
+        sendTime = LocalDateTime.now().minusMinutes(25),
         status = MessageStatus.READ,
         isMine = false,
         text = "Not a bad idea, actually. Could be a fun lightning talk for the next dev meetup."
@@ -105,7 +106,7 @@ val dummyMessages = listOf(
     TextMessageUiState(
         id = "10",
         senderId = "noor",
-        time = LocalDateTime.now().minusMinutes(28),
+        sendTime = LocalDateTime.now().minusMinutes(28),
         status = MessageStatus.READ,
         isMine = true,
         text = "Yessss, do it!"
@@ -113,7 +114,7 @@ val dummyMessages = listOf(
     TextMessageUiState(
         id = "9",
         senderId = "bilal",
-        time = LocalDateTime.now().minusMinutes(30),
+        sendTime = LocalDateTime.now().minusMinutes(30),
         status = MessageStatus.READ,
         isMine = false,
         text = "Anyway, speaking of meetups—did you ever hear back from that recruiter? You mentioned you had an interview lined up."
@@ -121,7 +122,7 @@ val dummyMessages = listOf(
     TextMessageUiState(
         id = "8",
         senderId = "noor",
-        time = LocalDateTime.now().minusMinutes(33),
+        sendTime = LocalDateTime.now().minusMinutes(33),
         status = MessageStatus.READ,
         isMine = true,
         text = "Oh yeah, that! It went surprisingly well. The questions were tough, but I managed to talk through my thought process instead of panicking. I think they liked that."
@@ -129,7 +130,7 @@ val dummyMessages = listOf(
     TextMessageUiState(
         id = "7",
         senderId = "bilal",
-        time = LocalDateTime.now().minusMinutes(35),
+        sendTime = LocalDateTime.now().minusMinutes(35),
         status = MessageStatus.READ,
         isMine = false,
         text = "That’s the way to do it 👏 They care more about how you think than just the final answer."
@@ -137,7 +138,7 @@ val dummyMessages = listOf(
     TextMessageUiState(
         id = "6",
         senderId = "noor",
-        time = LocalDateTime.now().minusMinutes(37),
+        sendTime = LocalDateTime.now().minusMinutes(37),
         status = MessageStatus.READ,
         isMine = true,
         text = "True true. Fingers crossed 🤞"
@@ -145,7 +146,7 @@ val dummyMessages = listOf(
     TextMessageUiState(
         id = "5",
         senderId = "bilal",
-        time = LocalDateTime.now().minusMinutes(40),
+        sendTime = LocalDateTime.now().minusMinutes(40),
         status = MessageStatus.READ,
         isMine = false,
         text = "You’ll crush it, I know you will."
@@ -153,7 +154,7 @@ val dummyMessages = listOf(
     TextMessageUiState(
         id = "4",
         senderId = "noor",
-        time = LocalDateTime.now().minusMinutes(43),
+        sendTime = LocalDateTime.now().minusMinutes(43),
         status = MessageStatus.READ,
         isMine = true,
         text = "Awww thanks 😊"
@@ -161,7 +162,7 @@ val dummyMessages = listOf(
     TextMessageUiState(
         id = "3",
         senderId = "bilal",
-        time = LocalDateTime.now().minusMinutes(45),
+        sendTime = LocalDateTime.now().minusMinutes(45),
         status = MessageStatus.READ,
         isMine = false,
         text = "Just speaking facts 😎"
@@ -169,7 +170,7 @@ val dummyMessages = listOf(
     TextMessageUiState(
         id = "2",
         senderId = "noor",
-        time = LocalDateTime.now().minusMinutes(47),
+        sendTime = LocalDateTime.now().minusMinutes(47),
         status = MessageStatus.READ,
         isMine = true,
         text = "Haha okay okay, Mr. Confidence."
@@ -177,7 +178,7 @@ val dummyMessages = listOf(
     TextMessageUiState(
         id = "1",
         senderId = "bilal",
-        time = LocalDateTime.now().minusMinutes(50),
+        sendTime = LocalDateTime.now().minusMinutes(50),
         status = MessageStatus.READ,
         isMine = false,
         text = "What can I say, I’m on a roll today."
@@ -186,7 +187,7 @@ val dummyMessages = listOf(
     TextMessageUiState(
         id = "old_b1",
         senderId = "bilal",
-        time = LocalDateTime.now().minusMinutes(80),
+        sendTime = LocalDateTime.now().minusMinutes(80),
         status = MessageStatus.READ,
         isMine = false,
         text = "Hey"
@@ -194,7 +195,7 @@ val dummyMessages = listOf(
     TextMessageUiState(
         id = "old_b2",
         senderId = "bilal",
-        time = LocalDateTime.now().minusMinutes(1350),
+        sendTime = LocalDateTime.now().minusMinutes(1350),
         status = MessageStatus.READ,
         isMine = false,
         text = "Are you there?"
@@ -202,7 +203,7 @@ val dummyMessages = listOf(
     TextMessageUiState(
         id = "old_b3",
         senderId = "bilal",
-        time = LocalDateTime.now().minusMinutes(1400),
+        sendTime = LocalDateTime.now().minusMinutes(1400),
         status = MessageStatus.READ,
         isMine = false,
         text = "I just wanted to ask something real quick."
@@ -211,7 +212,7 @@ val dummyMessages = listOf(
     TextMessageUiState(
         id = "old_n1",
         senderId = "noor",
-        time = LocalDateTime.now().minusMinutes(2800),
+        sendTime = LocalDateTime.now().minusMinutes(2800),
         status = MessageStatus.READ,
         isMine = true,
         text = "Hey Bilal 👋 just saw your messages."
@@ -219,7 +220,7 @@ val dummyMessages = listOf(
     TextMessageUiState(
         id = "old_n2",
         senderId = "noor",
-        time = LocalDateTime.now().minusMinutes(2870),
+        sendTime = LocalDateTime.now().minusMinutes(2870),
         status = MessageStatus.READ,
         isMine = true,
         text = "Sorry, I was away from my phone."
@@ -227,7 +228,7 @@ val dummyMessages = listOf(
     TextMessageUiState(
         id = "old_n3",
         senderId = "noor",
-        time = LocalDateTime.now().minusMinutes(2880),
+        sendTime = LocalDateTime.now().minusMinutes(2880),
         status = MessageStatus.READ,
         isMine = true,
         text = "What’s up?"

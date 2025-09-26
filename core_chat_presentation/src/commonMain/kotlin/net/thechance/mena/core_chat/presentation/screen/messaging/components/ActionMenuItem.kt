@@ -13,8 +13,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import mena.core_chat_presentation.generated.resources.Res
-import mena.core_chat_presentation.generated.resources.delete
 import mena.core_chat_presentation.generated.resources.delete_message
+import mena.core_chat_presentation.generated.resources.ic_delete
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
@@ -64,7 +64,7 @@ private fun PreviewActionMenuItem() {
 
     MenaTheme {
         ActionMenuItem(
-            icon = painterResource(Res.drawable.delete),
+            icon = painterResource(Res.drawable.ic_delete),
             text = stringResource(Res.string.delete_message),
             contentColor = Theme.colorScheme.error
         )

@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import mena.core_chat_presentation.generated.resources.Res
-import mena.core_chat_presentation.generated.resources.cancel
+import mena.core_chat_presentation.generated.resources.ic_cancel
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
@@ -22,7 +22,7 @@ fun CancelIcon(
     modifier: Modifier = Modifier
 ) {
     Icon(
-        painter = painterResource(Res.drawable.cancel),
+        painter = painterResource(Res.drawable.ic_cancel),
         contentDescription = null,
         modifier = modifier
             .padding(start = Theme.spacing._12, top = Theme.spacing._12)

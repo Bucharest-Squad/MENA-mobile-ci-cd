@@ -26,10 +26,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import mena.core_chat_presentation.generated.resources.Res
-import mena.core_chat_presentation.generated.resources.add
+import mena.core_chat_presentation.generated.resources.ic_add
 import mena.core_chat_presentation.generated.resources.message_holder
-import mena.core_chat_presentation.generated.resources.mic
-import mena.core_chat_presentation.generated.resources.telegram
+import mena.core_chat_presentation.generated.resources.ic_mic
+import mena.core_chat_presentation.generated.resources.ic_telegram
 import net.thechance.mena.designsystem.presentation.component.button.FabButton
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.textField.MultiLineTextField
@@ -64,9 +64,9 @@ fun ChatInputBar(
             verticalAlignment = Alignment.CenterVertically
         ) {
             MultiLineTextField(
-                userInput,
-                onTextChange,
-                stringResource(Res.string.message_holder),
+                value = userInput,
+                onValueChanged = onTextChange,
+                hint = stringResource(Res.string.message_holder),
                 modifier = Modifier.weight(1f),
                 minLines = 1,
                 maxLines = 5
@@ -83,7 +83,7 @@ fun ChatInputBar(
                 )
             ) {
                 Icon(
-                    painter = painterResource(Res.drawable.mic),
+                    painter = painterResource(Res.drawable.ic_mic),
                     contentDescription = null,
                     modifier = Modifier.size(20.dp).clickable(
                         onClick = onVoiceRecordClick, indication = null,
@@ -97,7 +97,7 @@ fun ChatInputBar(
                 AttachButton(onAttachButtonClick)
             else
                 FabButton(
-                    painter = painterResource(Res.drawable.telegram),
+                    painter = painterResource(Res.drawable.ic_telegram),
                     modifier = Modifier.size(52.dp, 48.dp),
                     onClick = onSendButtonClick,
                     iconSize = 20.dp
@@ -119,7 +119,7 @@ private fun AttachButton(onClick: () -> Unit) {
         contentAlignment = Alignment.Center
     ) {
         Icon(
-            painter = painterResource(Res.drawable.add),
+            painter = painterResource(Res.drawable.ic_add),
             contentDescription = null,
             modifier = Modifier.size(20.dp)
         )
