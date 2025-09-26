@@ -14,7 +14,9 @@ androidx-lifecycle = "2.9.3"
 androidx-testExt = "1.3.0"
 coil = "3.3.0"
 composeMultiplatform = "1.8.2"
+jetbrainsKotlinxDatetime = "0.5.0"
 junit = "4.13.2"
+kermit = "2.0.8"
 kotlin = "2.2.10"
 koverVersion = "0.9.1"
 kotlinxDatetime = "0.7.1"
@@ -39,6 +41,9 @@ krop = "0.2.0"
 map-libra = "0.11.1"
 # GeoCoder
 compass = "2.4.0"
+androidx-datastore = "1.1.7"
+contacts-provider = "1.1.13"
+moko = "0.18.0"
 voyager = "1.1.0-beta03"
 koin = "4.0.0"
 multiplatformSettings = "1.3.0"
@@ -53,6 +58,7 @@ coil-compose-core = { module = "io.coil-kt.coil3:coil-compose-core", version.ref
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 coil-network-ktor3 = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
 
+kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin-core" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
@@ -139,6 +145,11 @@ maplibre-compose = { module = "org.maplibre.compose:maplibre-compose", version.r
 compass-geocoder = { module = "dev.jordond.compass:geocoder", version.ref = "compass" }
 compass-geocoder-mobile = { module = "dev.jordond.compass:geocoder-mobile", version.ref = "compass" }
 
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "androidx-datastore" }
+moko-permissions = { module = "dev.icerock.moko:permissions", version.ref = "moko" }
+moko-permissions-compose = { module = "dev.icerock.moko:permissions-compose", version.ref = "moko" }
+contacts-provider = { module = "io.github.dev-bilal-azzam:contacts-provider", version.ref = "contacts-provider" }
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
@@ -199,6 +210,12 @@ filekit = [
 ]
 
 geoCoder = ["compass-geocoder", "compass-geocoder-mobile"]
+
+koin-compose = [
+    "koin-core",
+    "koin-compose",
+    "koin-compose-viewmodel",
+]
 
 koin = [
     "koin-core",
