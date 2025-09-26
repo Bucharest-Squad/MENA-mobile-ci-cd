@@ -83,12 +83,12 @@ fun DatePickerBottomSheet(
     }
 }
 
-@Preview()
+@Preview
 @Composable
-fun DatePickerBottomSheetContentPreview() {
+private fun DatePickerBottomSheetContentPreview() {
     val dayPagerState = rememberPagerState(initialPage = 0, pageCount = { 31 })
     val monthPagerState = rememberPagerState(initialPage = 0, pageCount = { 12 })
-    val yearPagerState = rememberPagerState(initialPage = 0, pageCount = { 12 })
+    val yearPagerState = rememberPagerState(initialPage = 4, pageCount = { 5 })
 
     MenaTheme {
         DatePickerBottomSheet(
