@@ -38,8 +38,7 @@ fun StateMessage(
     ) {
         Image(
             modifier = imageModifier
-                .padding(bottom = 12.dp)
-                .size(width = 112.dp, height = 115.dp),
+                .padding(bottom = 12.dp),
             painter = image,
             contentDescription = title
         )
