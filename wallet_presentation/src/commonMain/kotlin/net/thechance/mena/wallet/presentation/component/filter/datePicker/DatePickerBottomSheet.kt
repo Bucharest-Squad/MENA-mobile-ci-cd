@@ -43,15 +43,11 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import mena.wallet_presentation.generated.resources.Res
 import mena.wallet_presentation.generated.resources.back_button
 import mena.wallet_presentation.generated.resources.ic_arrow_left
 import mena.wallet_presentation.generated.resources.pick
 import mena.wallet_presentation.generated.resources.pick_start_date
-import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
-import net.thechance.mena.designsystem.presentation.component.appBar.AppBarOptionContainer
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.text.Text
@@ -64,21 +60,23 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.math.abs
 import kotlin.math.absoluteValue
-import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 @Composable
 fun DatePickerBottomSheet(
     title: String = stringResource(Res.string.pick_start_date),
     minYear: Int = 2000,
-    maxYear: Int =  Clock.System.now()
-        .toLocalDateTime(TimeZone.currentSystemDefault())
-        .year,
+    maxYear: Int = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).year,
     onPickClick: (Int, Int, Int) -> Unit,
     onDismiss: () -> Unit,
 ) {
     val monthPagerState = rememberPagerState(initialPage = 0, pageCount = { 12 })
     val yearPagerState = rememberPagerState(
-        initialPage =  maxYear - minYear,
+        initialPage = maxYear - minYear,
         pageCount = { maxYear - minYear + 1 }
     )
 
@@ -107,10 +105,10 @@ fun DatePickerBottomSheet(
             .padding(Theme.spacing._16)
     ) {
 
-       BottomSheetTopBar(
-           onDismiss = onDismiss,
-           title = title
-       )
+        BottomSheetTopBar(
+            onDismiss = onDismiss,
+            title = title
+        )
 
         WheelDatePicker(
             dayPagerState = dayPagerState,
@@ -143,7 +141,7 @@ fun DatePickerBottomSheet(
 @Composable
 private fun BottomSheetTopBar(
     modifier: Modifier = Modifier,
-    onDismiss: () -> Unit ,
+    onDismiss: () -> Unit,
     title: String
 ) {
     Row(
@@ -151,7 +149,7 @@ private fun BottomSheetTopBar(
         horizontalArrangement = Arrangement.spacedBy(Theme.spacing._12),
         modifier = modifier
             .fillMaxWidth()
-            .padding(PaddingValues(horizontal = 0.dp, vertical = 0.dp),)
+            .padding(PaddingValues(horizontal = 0.dp, vertical = 0.dp))
     ) {
         Box(
             modifier = Modifier.size(40.dp)
@@ -160,9 +158,12 @@ private fun BottomSheetTopBar(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Theme.colorScheme.background.surfaceLow, RoundedCornerShape(Theme.radius.md))
+                    .background(
+                        Theme.colorScheme.background.surfaceLow,
+                        RoundedCornerShape(Theme.radius.md)
+                    )
                     .clip(RoundedCornerShape(Theme.radius.md))
-                    .clickable{onDismiss}
+                    .clickable { onDismiss }
                     .padding(10.dp)
             ) {
                 Icon(

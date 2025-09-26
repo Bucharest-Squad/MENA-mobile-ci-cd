@@ -1,6 +1,6 @@
 package net.thechance.mena.wallet.presentation.utils
 
-import androidx.compose.runtime.Composable
+import kotlinx.datetime.YearMonth
 import mena.wallet_presentation.generated.resources.Res
 import mena.wallet_presentation.generated.resources.month_april
 import mena.wallet_presentation.generated.resources.month_august
@@ -15,21 +15,10 @@ import mena.wallet_presentation.generated.resources.month_november
 import mena.wallet_presentation.generated.resources.month_october
 import mena.wallet_presentation.generated.resources.month_september
 import org.jetbrains.compose.resources.StringResource
-import org.jetbrains.compose.resources.stringResource
 
 fun getNumberOfDaysInMonth(year: Int, month: Int): Int {
-    return when (month) {
-        1, 3, 5, 7, 8, 10, 12 -> 31
-        4, 6, 9, 11 -> 30
-        2 -> if (isLeapYear(year)) 29 else 28
-        else -> throw IllegalArgumentException("Invalid month number: $month")
-    }
+    return YearMonth(year, month).numberOfDays
 }
-
-private fun isLeapYear(year: Int): Boolean {
-    return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)
-}
-
 
 enum class AppMonth(val number: Int, val res: StringResource) {
     January(1, Res.string.month_january),
