@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -13,7 +12,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import mena.wallet_presentation.generated.resources.Res
-import mena.wallet_presentation.generated.resources.ic_filter_error
+import mena.wallet_presentation.generated.resources.ic_filter
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
@@ -63,7 +62,7 @@ fun StateMessage(
 private fun StateMessagePreview() {
     MenaTheme{
             StateMessage(
-                image = painterResource(Res.drawable.ic_filter_error),
+                image = painterResource(Res.drawable.ic_filter),
                 title = "Error Title",
                 description = "This is a detailed description of the error."
             )
