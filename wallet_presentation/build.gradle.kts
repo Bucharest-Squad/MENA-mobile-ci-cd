@@ -95,7 +95,6 @@ android {
     sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 }
 
-
 kover.reports {
     verify {
         rule {
