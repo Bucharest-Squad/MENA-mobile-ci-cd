@@ -93,8 +93,7 @@ private fun TransactionTypesRow(
             Chip(
                 text = stringResource(type.labelRes),
                 isSelected = selectedTypes?.contains(type) == true,
-                onClick = { onTypeSelected(type) },
-                isEnabled = true
+                onClick = { onTypeSelected(type) }
             )
         }
     }
@@ -115,8 +114,7 @@ private fun TransactionStatusRow(
                 isSelected = selectedStatus == status,
                 onClick = {
                     onStatusSelected(status)
-                },
-                isEnabled = true
+                }
             )
         }
     }
@@ -144,8 +142,7 @@ fun DateRangePicker(
             label = stringResource(Res.string.to),
             value = toDate,
             onClick = onToClick,
-            modifier = Modifier
-                .weight(1f)
+            modifier = Modifier.weight(1f)
         )
     }
 }
@@ -191,8 +188,8 @@ private fun FilterContentPreview() {
             FilterContent(
                 selectedTypes = setOf(FilterType.SENT, FilterType.ONLINE_PURCHASE),
                 selectedStatus = FilterStatus.ALL,
-                fromDate = "2025-09-01",
-                toDate = "2025-09-30",
+                fromDate = "2025/09/01",
+                toDate = "2025/09/30",
                 onFromClick = { },
                 onToClick = { }
             )
