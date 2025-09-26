@@ -14,6 +14,7 @@ import mena.wallet_presentation.generated.resources.month_may
 import mena.wallet_presentation.generated.resources.month_november
 import mena.wallet_presentation.generated.resources.month_october
 import mena.wallet_presentation.generated.resources.month_september
+import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 
 fun getNumberOfDaysInMonth(year: Int, month: Int): Int {
@@ -29,21 +30,18 @@ private fun isLeapYear(year: Int): Boolean {
     return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)
 }
 
-@Composable
-fun getMonthName(month: Int): String {
-    return when (month) {
-        1 -> stringResource(Res.string.month_january)
-        2 -> stringResource(Res.string.month_february)
-        3 -> stringResource(Res.string.month_march)
-        4 -> stringResource(Res.string.month_april)
-        5 -> stringResource(Res.string.month_may)
-        6 -> stringResource(Res.string.month_june)
-        7 -> stringResource(Res.string.month_july)
-        8 -> stringResource(Res.string.month_august)
-        9 -> stringResource(Res.string.month_september)
-        10 -> stringResource(Res.string.month_october)
-        11 -> stringResource(Res.string.month_november)
-        12 -> stringResource(Res.string.month_december)
-        else -> throw IllegalArgumentException("Invalid month number: $month")
-    }
+
+enum class AppMonth(val number: Int, val res: StringResource) {
+    January(1, Res.string.month_january),
+    February(2, Res.string.month_february),
+    March(3, Res.string.month_march),
+    April(4, Res.string.month_april),
+    May(5, Res.string.month_may),
+    June(6, Res.string.month_june),
+    July(7, Res.string.month_july),
+    August(8, Res.string.month_august),
+    September(9, Res.string.month_september),
+    October(10, Res.string.month_october),
+    November(11, Res.string.month_november),
+    December(12, Res.string.month_december)
 }
