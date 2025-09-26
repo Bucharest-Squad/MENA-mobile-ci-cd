@@ -2,29 +2,26 @@ package net.thechance.mena.core_chat.presentation.screen.messaging
 
 interface MessagingInteractionListener: ChatInteractionListener, MessageListInteractionListener {
 
-    fun onBackClick()
-    fun onMenuClick()
+    fun onBackClicked()
+    fun onMenuClicked()
 
-    fun onChatActionsDialogDismiss()
+    fun onChatActionsDialogDismissed()
 
-    fun onInputMessageChange(value: String)
-    fun onSendMessageClick()
+    fun onInputMessageChanged(value: String)
+    fun onSendMessageClicked()
 }
 
 interface ChatInteractionListener {
-
-    fun onDeleteChatClick()
-    fun onDismissDeleteChatDialog()
+    fun onDeleteChatClicked()
+    fun onDeleteChatDialogDismissed()
     fun onConfirmDeleteChat()
 }
 
-
 interface MessageListInteractionListener {
+    fun onMessageClicked(messageId: String)
 
-    fun onMessageClick(messageId: String)
+    fun onFailedMessageClicked(messageId: String)
 
-    fun onFailedMessageClick(messageId: String)
-
-    fun onResendMessageClick(messageId: String)
-    fun onDismissResendMessageDialog()
+    fun onResendMessageClicked(messageId: String)
+    fun onResendMessageDialogDismissed()
 }
