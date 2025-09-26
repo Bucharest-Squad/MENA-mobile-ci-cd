@@ -4,16 +4,19 @@ import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.pager.PageSize
@@ -22,6 +25,7 @@ import androidx.compose.foundation.pager.PagerSnapDistance
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -31,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
@@ -44,6 +49,7 @@ import mena.wallet_presentation.generated.resources.ic_arrow_left
 import mena.wallet_presentation.generated.resources.pick
 import mena.wallet_presentation.generated.resources.pick_start_date
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
+import net.thechance.mena.designsystem.presentation.component.appBar.AppBarOptionContainer
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.text.Text
@@ -95,18 +101,11 @@ fun DatePickerBottomSheet(
             .fillMaxWidth()
             .padding(Theme.spacing._16)
     ) {
-        AppBar(
-            title = title,
-            titleColor = Theme.colorScheme.shadePrimary,
-            contentPadding = PaddingValues(horizontal = 0.dp, vertical = 0.dp),
-            leadingContent = {
-                Icon(
-                    painter = painterResource(Res.drawable.ic_arrow_left),
-                    contentDescription = stringResource(Res.string.back_button)
-                )
-            },
-            onLeadingClick = onDismiss,
-        )
+
+       BottomSheetTopBar(
+           onDismiss = onDismiss,
+           title = title
+       )
 
         WheelDatePicker(
             dayPagerState = dayPagerState,
@@ -133,6 +132,46 @@ fun DatePickerBottomSheet(
                 .fillMaxWidth()
         )
 
+    }
+}
+
+@Composable
+private fun BottomSheetTopBar(
+    modifier: Modifier = Modifier,
+    onDismiss: () -> Unit ,
+    title: String
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(Theme.spacing._12),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(PaddingValues(horizontal = 0.dp, vertical = 0.dp),)
+    ) {
+        Box(
+            modifier = Modifier.size(40.dp)
+        ) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Theme.colorScheme.background.surfaceLow, RoundedCornerShape(Theme.radius.md))
+                    .clip(RoundedCornerShape(Theme.radius.md))
+                    .clickable{onDismiss}
+                    .padding(10.dp)
+            ) {
+                Icon(
+                    painter = painterResource(Res.drawable.ic_arrow_left),
+                    contentDescription = stringResource(Res.string.back_button)
+                )
+            }
+        }
+        Text(
+            text = title,
+            color = Theme.colorScheme.shadePrimary,
+            style = Theme.typography.title.small,
+            modifier = Modifier.weight(1f)
+        )
     }
 }
 
