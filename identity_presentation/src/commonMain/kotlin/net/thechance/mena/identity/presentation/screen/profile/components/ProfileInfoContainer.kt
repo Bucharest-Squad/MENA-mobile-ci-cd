@@ -11,6 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -32,40 +34,54 @@ fun ProfileInfoContainer(
     userName: String,
     modifier: Modifier = Modifier,
 ) {
+
     Column(
         modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         Box(
             modifier = Modifier
                 .size(88.dp)
-                .clip(CircleShape)
-                .background(
-                    Theme.colorScheme.stroke, shape = CircleShape
+                .shadow(
+                    elevation = 8.dp,
+                    shape = CircleShape,
+                    ambientColor = Color(0x0F111D2E),
+                    spotColor = Color(0x0F111D2E)
                 )
+                .clip(CircleShape)
+                .background(Theme.colorScheme.stroke)
         )
         {
-            AsyncImage(
-                modifier = Modifier
-                    .padding(1.dp)
-                    .fillMaxSize()
-                    .clip(CircleShape),
-                model = profilePicture,
-                contentScale = ContentScale.Crop,
-                contentDescription = stringResource(Res.string.profile_profile_picture_content_description),
-                placeholder = painterResource(Res.drawable.ic_share),
-            )
             Box(
                 modifier = Modifier
-                    .padding(end = 15.dp, bottom = 3.dp)
-                    .align(Alignment.BottomEnd)
-                    .size(10.dp)
+                    .size(88.dp)
                     .clip(CircleShape)
-                    .background(Theme.colorScheme.stroke)
-                    .padding(1.dp)
-                    .clip(CircleShape)
-                    .background(Theme.colorScheme.success)
+                    .background(
+                        Theme.colorScheme.stroke, shape = CircleShape
+                    )
             )
+            {
+                AsyncImage(
+                    modifier = Modifier
+                        .padding(1.dp)
+                        .fillMaxSize()
+                        .clip(CircleShape),
+                    model = profilePicture,
+                    contentScale = ContentScale.Crop,
+                    contentDescription = stringResource(Res.string.profile_profile_picture_content_description),
+                    placeholder = painterResource(Res.drawable.ic_share),
+                )
+                Box(
+                    modifier = Modifier
+                        .padding(end = 15.dp, bottom = 3.dp)
+                        .align(Alignment.BottomEnd)
+                        .size(10.dp)
+                        .clip(CircleShape)
+                        .background(Theme.colorScheme.stroke)
+                        .padding(1.dp)
+                        .clip(CircleShape)
+                        .background(Theme.colorScheme.success)
+                )
+            }
         }
         Text(
             text = fullName,
@@ -83,6 +99,7 @@ fun ProfileInfoContainer(
         )
     }
 }
+
 
 @Preview()
 @Composable

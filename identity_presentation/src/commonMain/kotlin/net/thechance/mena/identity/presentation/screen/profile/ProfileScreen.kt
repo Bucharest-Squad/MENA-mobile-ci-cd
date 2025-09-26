@@ -59,7 +59,6 @@ class ProfileScreen :
     ) {
         Scaffold(overlays = {
             bottomSheet(
-
                 isVisible = state.showShareBottomSheet
             ) {
                 BottomSheet(
