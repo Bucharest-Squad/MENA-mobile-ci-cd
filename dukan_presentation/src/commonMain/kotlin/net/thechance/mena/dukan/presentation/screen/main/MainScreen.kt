@@ -34,7 +34,8 @@ fun MainScreen(
             MainEffect.NavigateToAddDukanScreen -> navController.navigate(DukanRoute.CreateDukanScreenRoute)
             MainEffect.NavigateToPendingDukanScreen -> navController.navigate(
                 DukanRoute.PendingScreenRoute(
-                    state.value.dukanState.name
+                    state.value.dukanState.name,
+                    dukanStatus = state.value.dukanState.status.name
                 )
             )
         }

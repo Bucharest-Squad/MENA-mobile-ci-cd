@@ -1,6 +1,10 @@
 package net.thechance.mena.dukan.presentation.screen.pendingDukan
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -11,14 +15,23 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import mena.dukan_presentation.generated.resources.*
+import mena.dukan_presentation.generated.resources.Res
+import mena.dukan_presentation.generated.resources.approved_dukan
+import mena.dukan_presentation.generated.resources.creating_shelf
+import mena.dukan_presentation.generated.resources.dukan_approved_now
+import mena.dukan_presentation.generated.resources.dukan_blur
+import mena.dukan_presentation.generated.resources.dukan_pending
+import mena.dukan_presentation.generated.resources.dukan_request_pending
+import mena.dukan_presentation.generated.resources.dukan_waiting_approval
 import net.thechance.mena.designsystem.presentation.component.image.Image
 import net.thechance.mena.designsystem.presentation.component.text.Text
+import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.dukan.presentation.component.AnnotatedText
 import net.thechance.mena.dukan.presentation.viewModel.mainScreen.MainScreenUiState
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun DukanStatusContent(
@@ -34,7 +47,6 @@ fun DukanStatusContent(
         MainScreenUiState.DukanStatusUi.None -> {}
 
         MainScreenUiState.DukanStatusUi.Approved -> ApprovedContent(
-            dukanName = dukanState.name,
             modifier = modifier
         )
     }
@@ -57,14 +69,17 @@ private fun PendingContent(
     ) {
         item("pending") {
             Box(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = modifier.fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
                     painter = painterResource(Res.drawable.dukan_blur),
                     contentDescription = "dukan_pending_blur",
-                    modifier = Modifier
-                        .blur(30.dp, BlurredEdgeTreatment.Unbounded)
+                    modifier = modifier
+                        .blur(
+                            radius = 30.dp,
+                            edgeTreatment = BlurredEdgeTreatment.Unbounded
+                        )
                         .offset(y = 20.dp)
                         .align(Alignment.BottomCenter)
                 )
@@ -77,14 +92,14 @@ private fun PendingContent(
             AnnotatedText(
                 text = titleText,
                 style = TextStyle(textAlign = TextAlign.Center),
-                modifier = Modifier.padding(top = Theme.spacing._12)
+                modifier = modifier.padding(top = Theme.spacing._12)
             )
 
             Text(
                 stringResource(Res.string.dukan_waiting_approval),
                 style = Theme.typography.body.small,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(Theme.spacing._2)
+                modifier = modifier.padding(Theme.spacing._2)
             )
         }
     }
@@ -92,7 +107,6 @@ private fun PendingContent(
 
 @Composable
 private fun ApprovedContent(
-    dukanName: String,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -101,15 +115,39 @@ private fun ApprovedContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         item("approved") {
-            Image(
-                painter = painterResource(Res.drawable.dukan_approved),
-                contentDescription = "dukan_approved"
-            )
+            Box(
+                modifier = modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = painterResource(Res.drawable.dukan_blur),
+                    contentDescription = "dukan_pending_blur",
+                    modifier = modifier
+                        .blur(
+                            radius = 30.dp,
+                            edgeTreatment = BlurredEdgeTreatment.Unbounded
+                        )
+                        .offset(y = 20.dp)
+                        .align(Alignment.BottomCenter)
+                )
+                Image(
+                    painter = painterResource(Res.drawable.approved_dukan),
+                    contentDescription = "dukan_approved",
+                )
+            }
+
             Text(
-                text = "create dukan request it approved now",
-                style = Theme.typography.title.medium,
+                text = stringResource(Res.string.dukan_approved_now),
+                style = Theme.typography.title.small,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(top = Theme.spacing._12)
+                modifier = modifier.padding(top = Theme.spacing._12)
+            )
+
+            Text(
+                text = stringResource(Res.string.creating_shelf),
+                style = Theme.typography.body.small,
+                textAlign = TextAlign.Center,
+                modifier = modifier.padding(Theme.spacing._2)
             )
         }
     }
@@ -129,5 +167,32 @@ private fun buildPendingDukanTitle(
     }
     withStyle(Theme.typography.title.small.toSpanStyle()) {
         append(parts.getOrElse(1) { "" })
+    }
+}
+
+
+@Preview
+@Composable
+private fun PendingDukanScreenPreview() {
+    MenaTheme {
+        DukanStatusContent(
+            dukanState = MainScreenUiState.DukanState(
+                name = "My Dukan",
+                status = MainScreenUiState.DukanStatusUi.Pending
+            )
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun ApprovedDukanScreenPreview() {
+    MenaTheme {
+        DukanStatusContent(
+            dukanState =
+                MainScreenUiState.DukanState(
+                    status = MainScreenUiState.DukanStatusUi.Approved
+                )
+        )
     }
 }
