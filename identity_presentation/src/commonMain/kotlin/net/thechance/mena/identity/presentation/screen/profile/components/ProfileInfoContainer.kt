@@ -3,7 +3,6 @@ package net.thechance.mena.identity.presentation.screen.profile.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -19,8 +18,6 @@ import coil3.compose.AsyncImage
 import mena.identity_presentation.generated.resources.Res
 import mena.identity_presentation.generated.resources.ic_share
 import mena.identity_presentation.generated.resources.profile_profile_picture_content_description
-import mena.identity_presentation.generated.resources.profile_title
-import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
@@ -43,16 +40,16 @@ fun ProfileInfoContainer(
             modifier = Modifier
                 .size(88.dp)
                 .clip(CircleShape)
-                .background(Theme.colorScheme.stroke
-    , shape = CircleShape)
+                .background(
+                    Theme.colorScheme.stroke, shape = CircleShape
                 )
-         {
+        )
+        {
             AsyncImage(
                 modifier = Modifier
                     .padding(1.dp)
                     .fillMaxSize()
-                    .clip(CircleShape)
-                    ,
+                    .clip(CircleShape),
                 model = profilePicture,
                 contentScale = ContentScale.Crop,
                 contentDescription = stringResource(Res.string.profile_profile_picture_content_description),

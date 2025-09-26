@@ -137,4 +137,25 @@ class ProfileViewModelTest {
             assertEquals(false, updatedState.showLanguageDialog)
         }
     }
+
+    @Test
+    fun `should update state to hide share bottom sheet when onDismissBottomSheet`() = runTest {
+        viewModel.state.test {
+            viewModel.onDismissBottomSheet()
+            testDispatcher.scheduler.advanceUntilIdle()
+            val updatedState = awaitItem()
+            assertEquals(false, updatedState.showShareBottomSheet)
+        }
+    }
+
+    @Test
+    fun `should update state to hide theme dialog when onDismissThemeDialog`() = runTest {
+        viewModel.state.test {
+            viewModel.onDismissThemeDialog()
+            testDispatcher.scheduler.advanceUntilIdle()
+            val updatedState = awaitItem()
+            assertEquals(false, updatedState.showThemeDialog)
+        }
+    }
 }
+
