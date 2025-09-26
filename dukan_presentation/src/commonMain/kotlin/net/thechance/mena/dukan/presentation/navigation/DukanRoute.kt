@@ -17,4 +17,7 @@ sealed interface DukanRoute {
         val dukanName: String,
         val dukanStatus: String
     ) : DukanRoute
+
+    @Serializable
+    data class ManageShelfScreenRoute(val shelfId: String, val shelfTitle: String) : DukanRoute
 }

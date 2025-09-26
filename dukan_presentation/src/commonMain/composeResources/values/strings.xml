@@ -44,6 +44,7 @@
     <string name="dukan_request_pending">Creating your dukan %s request is pending now</string>
 
     <string name="dukan_waiting_approval">Waiting until it be approved and add your shelves directly!</string>
+    <string name="manage_shelf">Manage shelf</string>
     <string name="create_shelf">Create shelf</string>
     <string name="title">Title</string>
     <string name="shelf_title">Shelf title</string>
@@ -53,5 +54,6 @@
     <string name="failed_to_create_shelf">Failed to create shelf</string>
     <string name="dukan_approved_now">create dukan request is approved now</string>
     <string name="creating_shelf">Start creating your shelf and products by clicking on create button below</string>
+    <string name="delete_icon">Delete Icon</string>
 
 </resources>
