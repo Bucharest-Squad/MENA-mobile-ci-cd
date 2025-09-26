@@ -106,7 +106,7 @@ kover.reports {
             classes("net.thechance.mena.wallet.presentation.*.*ViewModel")
         }
         excludes {
-            classes("net.thechance.mena.wallet.presentation.*.*component*")
+            classes("**.di.**", "**.generated.**","**.component.**")
         }
 
     }
