@@ -7,7 +7,7 @@ import net.thechance.mena.core_chat.presentation.utils.now
 data class MessagingScreenState(
     val chat: ChatUiState = dummyChat,
     val chatListItems: List<ChatListItem> = dummyMessages.markLastInSeries().withDateSeparators(),
-    val inputMessage: String = "bbbb"
+    val inputMessage: String = ""
 )
 
 //dummies

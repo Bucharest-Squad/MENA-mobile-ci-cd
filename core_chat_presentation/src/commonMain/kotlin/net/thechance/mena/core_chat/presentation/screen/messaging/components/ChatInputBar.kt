@@ -64,9 +64,9 @@ fun ChatInputBar(
             verticalAlignment = Alignment.CenterVertically
         ) {
             MultiLineTextField(
-                userInput,
-                onTextChange,
-                stringResource(Res.string.message_holder),
+                value = userInput,
+                onValueChanged = onTextChange,
+                hint = stringResource(Res.string.message_holder),
                 modifier = Modifier.weight(1f),
                 minLines = 1,
                 maxLines = 5
