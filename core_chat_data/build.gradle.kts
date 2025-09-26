@@ -62,9 +62,7 @@ dependencies {
 
 kover.reports {
     verify {
-        rule {
-            minBound(80)
-        }
+        rule { minBound(80) }
     }
 
     filters.excludes {
