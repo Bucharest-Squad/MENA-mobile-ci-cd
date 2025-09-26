@@ -6,6 +6,7 @@ import kotlinx.datetime.LocalDateTime
 import net.thechance.mena.core_chat.domain.entity.Chat
 import net.thechance.mena.core_chat.domain.entity.Message
 import net.thechance.mena.core_chat.domain.entity.MessageStatus
+import net.thechance.mena.core_chat.domain.exception.NotMenaMemberException
 import net.thechance.mena.core_chat.domain.repository.ChatRepository
 import kotlin.time.ExperimentalTime
 import kotlin.uuid.ExperimentalUuidApi
@@ -83,5 +84,22 @@ class MockChatRepository : ChatRepository {
 
     override suspend fun getChatById(chatId: Uuid): Chat {
         return chats.getOrPut(chatId) { Chat(chatId, null, "Mock Chat $chatId") }
+    }
+
+    override suspend fun getChatByContactId(userId: Uuid): Chat {
+        val chatId = messages.entries
+            .firstOrNull { (_, msgs) ->
+                msgs.any { it.senderId == userId }
+            }?.key
+        val contactMenaMemberId = Uuid.parse("cccccccc-dddd-cccc-cccc-cccccccccccc")
+
+        if (userId == contactMenaMemberId) return Chat(
+            Uuid.random(),
+            "https://picsum.photos/201",
+            "First Time Chat"
+        )
+
+        return chatId?.let { chats[it] }
+            ?: throw NotMenaMemberException(logMessage = "Can not get Chat for non MENA member")
     }
 }
