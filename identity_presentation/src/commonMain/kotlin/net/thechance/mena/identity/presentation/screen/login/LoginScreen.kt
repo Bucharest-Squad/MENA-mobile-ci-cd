@@ -45,11 +45,11 @@ import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.component.textField.TextField
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.identity.presentation.base.BaseScreen
-import net.thechance.mena.identity.presentation.countryPicker.CountryPicker
-import net.thechance.mena.identity.presentation.screen.components.AuthPrompt
-import net.thechance.mena.identity.presentation.screen.components.AuthScreenContainer
-import net.thechance.mena.identity.presentation.screen.components.PageDescription
-import net.thechance.mena.identity.presentation.screen.components.PhoneNumberInput
+import net.thechance.mena.identity.presentation.bottomSheet.countryPicker.CountryPicker
+import net.thechance.mena.identity.presentation.components.AuthPrompt
+import net.thechance.mena.identity.presentation.components.AuthScreenContainer
+import net.thechance.mena.identity.presentation.components.PageDescription
+import net.thechance.mena.identity.presentation.components.PhoneNumberInput
 import net.thechance.mena.identity.presentation.screen.forget_password.ForgetPasswordScreen
 import net.thechance.mena.identity.presentation.screen.register.RegisterScreen
 import org.jetbrains.compose.resources.painterResource
@@ -93,10 +93,8 @@ class LoginScreen : BaseScreen<
                 modifier = Modifier
                     .fillMaxSize()
                     .systemBarsPadding()
-            )
-            {
+            ) {
                 AuthScreenContainer {
-
                     PageDescription(
                         title = stringResource(Res.string.welcome_back),
                         subtitle = stringResource(Res.string.login_prompt),
@@ -200,7 +198,6 @@ class LoginScreen : BaseScreen<
             is LoginScreenUIEffect.NavigateToRegister -> navigator.push(RegisterScreen())
             LoginScreenUIEffect.NavigateToForgotPassword -> navigator.push(ForgetPasswordScreen())
             LoginScreenUIEffect.NavigateToHome -> navigator.push(ForgetPasswordScreen())
-
         }
     }
 }
