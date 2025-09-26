@@ -16,7 +16,6 @@ kotlin {
             implementation(libs.koin.core)
             api(libs.koin.annotations)
             implementation(libs.kotlinx.datetime)
-            implementation(libs.kermit)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

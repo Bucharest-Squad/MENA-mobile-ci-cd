@@ -54,7 +54,6 @@ kotlin {
             implementation(libs.androidx.paging.compose)
             implementation(libs.resources)
             implementation(libs.kermit)
-
         }
         iosMain.dependencies {
 
