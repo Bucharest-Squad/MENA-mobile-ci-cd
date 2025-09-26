@@ -28,10 +28,12 @@ import mena.trends_presentation.generated.resources.upload_failed
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.progressBar.ProgressBar
 import net.thechance.mena.designsystem.presentation.component.text.Text
+import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.trends.presentation.shared.model.VideoUploadingState
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun VideoLoadingCardItem(
@@ -132,21 +134,21 @@ fun VideoLoadingCardItem(
 
         when (state) {
             VideoUploadingState.Loading -> {
-                Row(modifier = Modifier.padding(top = Theme.spacing._12)) {
-                    Icon(
-                        painter = painterResource(Res.drawable.ic_cancel),
-                        contentDescription = stringResource(Res.string.loading),
-                        tint = Theme.colorScheme.shadeSecondary,
-                        modifier = Modifier
-                            .size(Theme.spacing._16)
-                            .clickable { onCancel() }
-                    )
-                }
+                Icon(
+                    painter = painterResource(Res.drawable.ic_cancel),
+                    contentDescription = stringResource(Res.string.loading),
+                    tint = Theme.colorScheme.shadeSecondary,
+                    modifier = Modifier
+                        .padding(top = Theme.spacing._12)
+                        .size(Theme.spacing._16)
+                        .clickable { onCancel() }
+                )
             }
 
             VideoUploadingState.Error -> {
                 Row(
-                    modifier = Modifier.padding(top = Theme.spacing._24),
+                    modifier = Modifier
+                        .padding(top = Theme.spacing._24),
                     horizontalArrangement = Arrangement.spacedBy(Theme.spacing._16),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -170,18 +172,15 @@ fun VideoLoadingCardItem(
             }
 
             VideoUploadingState.Success -> {
-                Row(
-                    modifier = Modifier.padding(top = Theme.spacing._24)
-                ) {
-                    Icon(
-                        painter = painterResource(Res.drawable.ic_delete),
-                        contentDescription = stringResource(Res.string.success),
-                        tint = Theme.colorScheme.shadeSecondary,
-                        modifier = Modifier
-                            .size(Theme.spacing._16)
-                            .clickable { onDelete() }
-                    )
-                }
+                Icon(
+                    painter = painterResource(Res.drawable.ic_delete),
+                    contentDescription = stringResource(Res.string.success),
+                    tint = Theme.colorScheme.shadeSecondary,
+                    modifier = Modifier
+                        .padding(top = Theme.spacing._24)
+                        .size(Theme.spacing._16)
+                        .clickable { onDelete() }
+                )
             }
         }
     }
