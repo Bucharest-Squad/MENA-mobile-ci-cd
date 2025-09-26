@@ -1,4 +1,4 @@
-plugins {
+plugins{
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.androidLibrary)
@@ -69,6 +69,17 @@ kover.reports {
         packages(
             "*.di",
             "*.dto",
+        )
+       classes(
+            "*.*Database*",
+            "*.*DatabaseConstructor*",
+            "*.*Converter*",
+            "*.*Dao*",
+            "*.*Entity*",
+            "*.*MessageStatus*"
+        )
+        annotatedBy(
+            "androidx.room.*"
         )
     }
 }

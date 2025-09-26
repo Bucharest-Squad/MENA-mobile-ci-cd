@@ -9,7 +9,7 @@ import kotlin.time.ExperimentalTime
 
 @Entity
 data class MessageEntity(
-    @PrimaryKey(autoGenerate = true) val id: String,
+    @PrimaryKey(autoGenerate = true) val id: Long,
     @ColumnInfo(name = "sender_id") val senderId: String,
     @ColumnInfo(name = "message_text") val text: String,
     @ColumnInfo(name = "timestamp") val timestamp: Long,
