@@ -1,8 +1,8 @@
 package net.thechance.mena.wallet.domain.entity
-
+import kotlinx.datetime.LocalDate
 data class Transaction(
     val id: String,
-    val createdAt: String,
+    val createdAt:String ,
     val amount: Double,
     val status: TransactionStatus,
     val senderId: String,
@@ -19,6 +19,5 @@ enum class TransactionType {
 }
 enum class TransactionStatus{
     SUCCESS,
-    FAIL,
-    ALL
+    FAIL
 }
