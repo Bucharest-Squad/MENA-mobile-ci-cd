@@ -37,7 +37,6 @@ fun ChatList(
             }
         ) { item ->
             val isLastItem = items.indexOf(item) == 0
-            println("$isLastItem -> $item")
             val paddingBottom = if (isLastItem)
                 0.dp
             else if (item is ChatListItem.Message && (item.data.isMarkedLastInSeries || item.data.showMessageInfo))

@@ -143,7 +143,7 @@ private fun PreviewBaseMessageLayout() {
                 message = TextMessageUiState(
                     "0",
                     "1",
-                    time = LocalDateTime.now(),
+                    sendTime = LocalDateTime.now(),
                     status = MessageStatus.READ,
                     isMine = false,
                     text = ""

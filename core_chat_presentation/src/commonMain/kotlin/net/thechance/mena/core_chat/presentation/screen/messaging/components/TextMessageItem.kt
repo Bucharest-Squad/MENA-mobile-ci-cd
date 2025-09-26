@@ -62,9 +62,9 @@ private fun PreviewTextMessageItem() {
             TextMessageItem(
                 modifier = Modifier,
                 message = TextMessageUiState(
-                    "0",
-                    "1",
-                    time = LocalDateTime.now(),
+                    id = "0",
+                    senderId = "1",
+                    sendTime = LocalDateTime.now(),
                     status = MessageStatus.READ,
                     isMine = false,
                     text = "Hello Bilal"

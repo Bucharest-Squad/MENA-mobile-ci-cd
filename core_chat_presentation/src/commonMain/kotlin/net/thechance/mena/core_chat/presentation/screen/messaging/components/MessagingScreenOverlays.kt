@@ -34,7 +34,8 @@ fun ScaffoldScope.messagingScreenOverlays(
             message = stringResource(Res.string.confirm_delete_chat_message),
             buttonText = stringResource(Res.string.delete),
             onActionClick = onConfirmDeleteChatClick,
-            onDismiss = onDismissDeleteChatDialog
+            onDismiss = onDismissDeleteChatDialog,
+            onCancelClick = onDismissDeleteChatDialog
         )
     }
 

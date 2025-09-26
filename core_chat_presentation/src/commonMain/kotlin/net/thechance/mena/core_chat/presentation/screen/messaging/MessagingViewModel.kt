@@ -10,7 +10,7 @@ import mena.core_chat_presentation.generated.resources.error
 import mena.core_chat_presentation.generated.resources.error_cant_get_messages
 import mena.core_chat_presentation.generated.resources.error_cant_subscribe_to_new_messages
 import net.thechance.mena.core_chat.domain.entity.Message
-import net.thechance.mena.core_chat.domain.repository.MessageRepository
+import net.thechance.mena.core_chat.domain.repository.ChatRepository
 import net.thechance.mena.core_chat.presentation.components.SnackBarData
 import net.thechance.mena.core_chat.presentation.navigation.ChatEffector
 import net.thechance.mena.core_chat.presentation.navigation.MessagingRoute
@@ -22,7 +22,7 @@ import kotlin.uuid.Uuid
 
 
 class MessagingViewModel(
-    private val repository: MessageRepository,
+    private val repository: ChatRepository,
     savedStateHandle: SavedStateHandle,
     effector: ChatEffector,
 ) : BaseViewModel<MessagingScreenState>(MessagingScreenState(), effector),
@@ -71,31 +71,35 @@ class MessagingViewModel(
         updateState { s ->
             val newMessages = s.uiMessages + uiMessage
             s.copy(
-                uiMessages = newMessages,
+                uiMessages = newMessages.sortedByDescending { it.sendTime },
                 inputMessage = "",
                 chatListItems = buildListItems(newMessages)
             )
         }
 
         tryToExecute(
-            onSuccess = {
-                updateState { s ->
-                    val updated = s.uiMessages.map {
-                        if (it.id == uiMessage.id) (it as TextMessageUiState).copy(status = MessageStatus.SENT) else it
-                    }
-                    s.copy(uiMessages = updated, chatListItems = buildListItems(updated))
-                }
-            },
-            onError = {
-                updateState { s ->
-                    val updated = s.uiMessages.map {
-                        if (it.id == uiMessage.id) (it as TextMessageUiState).copy(status = MessageStatus.FAILED) else it
-                    }
-                    s.copy(uiMessages = updated, chatListItems = buildListItems(updated))
-                }
-            },
+            onSuccess = { onSendMessageSuccess(uiMessage) },
+            onError = { onSendMessageError(uiMessage) },
             execute = { repository.sendMessage(uiMessage.toEntity()) }
         )
+    }
+
+    private fun onSendMessageSuccess(uiMessage: MessageUiState) {
+        updateState { s ->
+            val updated = s.uiMessages.map {
+                if (it.id == uiMessage.id) (it as TextMessageUiState).copy(status = MessageStatus.SENT) else it
+            }.sortedByDescending { it.sendTime }
+            s.copy(uiMessages = updated, chatListItems = buildListItems(updated))
+        }
+    }
+
+    private fun onSendMessageError(uiMessage: MessageUiState) {
+        updateState { s ->
+            val updated = s.uiMessages.map {
+                if (it.id == uiMessage.id) (it as TextMessageUiState).copy(status = MessageStatus.FAILED) else it
+            }.sortedByDescending { it.sendTime }
+            s.copy(uiMessages = updated, chatListItems = buildListItems(updated))
+        }
     }
 
     override fun onMessageClick(messageId: String) {
@@ -129,7 +133,7 @@ class MessagingViewModel(
     override fun onDeleteFailedMessageClick() {
         state.value.failedMessageToReSend?.let { failedMessage ->
             updateState { s ->
-                val updatedMessages = s.uiMessages.filterNot { it.id == failedMessage.id }
+                val updatedMessages = s.uiMessages.filterNot { it.id == failedMessage.id }.sortedByDescending { it.sendTime }
                 s.copy(
                     uiMessages = updatedMessages,
                     chatListItems = buildListItems(updatedMessages),
@@ -147,7 +151,7 @@ class MessagingViewModel(
             updateState { s ->
                 val updated = s.uiMessages.map {
                     if (it.id == message.id) (it as TextMessageUiState).copy(status = MessageStatus.SENDING) else it
-                }
+                }.sortedByDescending { it.sendTime }
                 s.copy(uiMessages = updated, chatListItems = buildListItems(updated))
             }
 
@@ -163,7 +167,7 @@ class MessagingViewModel(
         updateState { s ->
             val updated = s.uiMessages.map {
                 if (it.id == message.id) (it as TextMessageUiState).copy(status = MessageStatus.SENT) else it
-            }
+            }.sortedByDescending { it.sendTime }
             s.copy(uiMessages = updated, chatListItems = buildListItems(updated))
         }
     }
@@ -172,7 +176,7 @@ class MessagingViewModel(
         updateState { s ->
             val updated = s.uiMessages.map {
                 if (it.id == message.id) (it as TextMessageUiState).copy(status = MessageStatus.FAILED) else it
-            }
+            }.sortedByDescending { it.sendTime }
             s.copy(uiMessages = updated, chatListItems = buildListItems(updated))
         }
     }
@@ -194,13 +198,12 @@ class MessagingViewModel(
     }
 
     private fun getChat(chatId: String) {
-        // todo get chat from repository
-        // temp chat
-        val chat = ChatUiState(
-            id = chatId,
-            name = "Noor"
+
+        tryToExecute(
+            onSuccess = { updateState { s -> s.copy(chat = it.toUi()) } },
+            execute = { repository.getChatById(Uuid.parse(chatId)) }
         )
-        updateState { s -> s.copy(chat = chat) }
+
     }
 
     private fun loadChatHistory(chatId: String) {
@@ -214,7 +217,7 @@ class MessagingViewModel(
     }
 
     private fun onLoadChatHistorySuccess(messages: List<Message>) {
-        val uiMessages = messages.map { it.toUi(state.value.userId) }
+        val uiMessages = messages.map { it.toUi(state.value.userId) }.sortedByDescending { it.sendTime }
         updateState { s ->
             s.copy(
                 uiMessages = uiMessages,
@@ -234,20 +237,19 @@ class MessagingViewModel(
 
     private fun subscribeToNewMessages(chatId: String) {
         // todo should be flow
-        tryToExecute(
-            execute = {
+        tryToCollect(
+            onCollect = ::onSubscribeToNewMessagesSuccess,
+            onError = ::onSubscribeToNewMessagesError,
+            collect = {
                 repository.subscribeToMessages(Uuid.parse(chatId))
-            },
-            onSuccess = ::onSubscribeToNewMessagesSuccess,
-            onError = ::onSubscribeToNewMessagesError
+            }
         )
     }
 
-    private fun onSubscribeToNewMessagesSuccess(newBatch: List<Message>) {
-        if (newBatch.isNotEmpty()) {
-            val incomingUi = newBatch.map { it.toUi(state.value.userId) }
+    private fun onSubscribeToNewMessagesSuccess(newMessage: Message?) {
+        newMessage?.toUi(state.value.userId)?.let { incomingUi ->
             updateState { s ->
-                val merged = (s.uiMessages + incomingUi).distinctBy { it.id }
+                val merged = (s.uiMessages + incomingUi).distinctBy { it.id }.sortedByDescending { it.sendTime }
                 s.copy(uiMessages = merged, chatListItems = buildListItems(merged))
             }
         }
@@ -264,7 +266,7 @@ class MessagingViewModel(
 
 
     private fun buildListItems(uiMessages: List<MessageUiState>): List<ChatListItem> {
-        val marked = uiMessages.markLastInSeries()
+        val marked = uiMessages.sortedByDescending { it.sendTime }.markLastInSeries()
         return marked.withDateSeparators()
     }
 
