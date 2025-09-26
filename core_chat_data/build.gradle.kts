@@ -68,10 +68,7 @@ kover.reports {
     }
 
     filters.excludes {
-        packages(
-            "*.di",
-            "*.dto",
-        )
+        packages("*.di", "*.dto")
        classes(
             "*.*Database*",
             "*.*DatabaseConstructor*",
@@ -80,8 +77,6 @@ kover.reports {
             "*.*Entity*",
             "*.*MessageStatus*"
         )
-        annotatedBy(
-            "androidx.room.*"
-        )
+        annotatedBy("androidx.room.*")
     }
 }
