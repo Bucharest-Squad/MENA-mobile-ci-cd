@@ -122,7 +122,7 @@ fun BaseMessageLayout(
                 .align(messageInfoAlignment)
         ) {
             MessageInfo(
-                messageTime = message.time,
+                messageTime = message.sendTime,
                 messageStatus = message.status,
                 messageIsMine = message.isMine,
                 onFailClick = onFailClick,
