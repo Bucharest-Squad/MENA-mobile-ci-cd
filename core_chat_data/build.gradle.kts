@@ -24,6 +24,7 @@ kotlin {
 
             implementation(libs.bundles.ktor)
             implementation(libs.androidx.datastore.preferences)
+            implementation(libs.kotlinx.datetime)
 
         }
         commonTest.dependencies {
