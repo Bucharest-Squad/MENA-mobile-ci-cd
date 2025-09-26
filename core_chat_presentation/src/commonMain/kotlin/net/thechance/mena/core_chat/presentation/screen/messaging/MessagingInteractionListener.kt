@@ -5,7 +5,7 @@ interface MessagingInteractionListener: ChatInteractionListener, MessageListInte
     fun onBackClick()
     fun onMenuClick()
 
-    fun onChatActionsDialogDismiss()
+    fun onDismissChatActionsDialog()
 
     fun onInputMessageChange(value: String)
     fun onSendMessageClick()
@@ -23,8 +23,9 @@ interface MessageListInteractionListener {
 
     fun onMessageClick(messageId: String)
 
-    fun onFailedMessageClick(messageId: String)
+    fun onFailedMessageClick(message: MessageUiState)
 
-    fun onResendMessageClick(messageId: String)
+    fun onDeleteFailedMessageClick()
+    fun onResendMessageClick()
     fun onDismissResendMessageDialog()
 }
