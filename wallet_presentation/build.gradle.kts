@@ -70,8 +70,8 @@ kotlin {
 }
 
 ksp {
-    arg("KOIN_USE_COMPOSE_VIEWMODEL", "true")
-    arg("KOIN_CONFIG_CHECK", "true")
+    arg("KOIN_USE_COMPOSE_VIEWMODEL","true")
+    arg("KOIN_CONFIG_CHECK","true")
 }
 
 dependencies {
@@ -79,7 +79,7 @@ dependencies {
 }
 
 project.tasks.withType(KotlinCompilationTask::class.java).configureEach {
-    if (name != "kspCommonMainKotlinMetadata") {
+    if(name != "kspCommonMainKotlinMetadata") {
         dependsOn("kspCommonMainKotlinMetadata")
     }
 }
@@ -94,6 +94,8 @@ android {
 
     sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 }
+
+
 kover.reports {
     verify {
         rule {
@@ -105,9 +107,5 @@ kover.reports {
         includes {
             classes("net.thechance.mena.wallet.presentation.*.*ViewModel")
         }
-        excludes {
-            classes("**.di.**", "**.generated.**","**.component.**")
-        }
-
     }
 }
