@@ -73,12 +73,12 @@ fun DatePickerBottomSheet(
 ) {
     val monthPagerState = rememberPagerState(initialPage = 0, pageCount = { 12 })
     val yearPagerState = rememberPagerState(
-        initialPage =  2025 - 2020,
-        pageCount = { 2025 - 2020 + 1 }
+        initialPage =  maxYear - minYear,
+        pageCount = { maxYear - minYear + 1 }
     )
 
     val currentMonth = monthPagerState.currentPage + 1
-    val currentYear = yearPagerState.currentPage + 2020
+    val currentYear = yearPagerState.currentPage + minYear
     val daysInMonth = remember(currentMonth, currentYear) {
         getNumberOfDaysInMonth(currentYear, currentMonth)
     }
