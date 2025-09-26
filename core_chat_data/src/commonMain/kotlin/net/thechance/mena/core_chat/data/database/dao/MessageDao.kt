@@ -23,7 +23,4 @@ interface MessageDao {
 
     @Query("DELETE FROM MessageEntity WHERE id = :id")
     suspend fun deleteMessage(id: String)
-
-    @Query("DELETE FROM MessageEntity WHERE id in (:ids)")
-    suspend fun deleteAllMessages(ids: List<String>)
 }
