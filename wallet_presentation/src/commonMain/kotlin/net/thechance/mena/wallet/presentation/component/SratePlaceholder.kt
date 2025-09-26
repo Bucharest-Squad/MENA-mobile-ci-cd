@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,25 +25,24 @@ fun StatePlaceholder(
     title: String,
     description: String,
     modifier: Modifier = Modifier,
-    imageModifier: Modifier = Modifier,
-    horizontalAlignment: Alignment.Horizontal = Alignment.CenterHorizontally,
-    verticalArrangement: Arrangement.Vertical = Arrangement.Center,
 ) {
     Column(
         modifier = modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp),
-        horizontalAlignment = horizontalAlignment,
-        verticalArrangement = verticalArrangement
+        horizontalAlignment=Alignment.CenterHorizontally,
+        verticalArrangement=Arrangement.Center,
     ) {
         Image(
-            modifier = imageModifier
+            modifier = Modifier
+                .size(128.dp)
                 .padding(bottom = 12.dp),
             painter = image,
             contentDescription = title
         )
         Text(
-            modifier = Modifier.padding(bottom = 8.dp),
+            modifier = Modifier
+                .padding(bottom = 8.dp),
             text = title,
             color = Theme.colorScheme.shadePrimary,
             style = Theme.typography.title.small,
@@ -59,7 +59,7 @@ fun StatePlaceholder(
 
 @Preview
 @Composable
-private fun StateMessagePreview() {
+private fun StatePlaceholderPreview() {
     MenaTheme{
             StatePlaceholder(
                 image = painterResource(Res.drawable.ic_filter),
