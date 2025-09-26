@@ -37,12 +37,10 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 internal fun UploadVideoCard(
     modifier: Modifier = Modifier,
     thumbnail: Painter? = null,
-    isClickEnabled: Boolean = true,
+    isEnabled: Boolean = true,
     onCardClick: () -> Unit = {},
     onEditClick: () -> Unit = {}
 ) {
-
-    val hasThumbnail = thumbnail != null
 
     Box(
         modifier = modifier
@@ -55,13 +53,12 @@ internal fun UploadVideoCard(
                     RoundedCornerShape(Theme.radius.xl))
                 .background(color = Theme.colorScheme.background.surfaceLow)
                 .then(
-                    if (hasThumbnail) Modifier
-                    else Modifier.dashedBorder(
-                        color = Theme.colorScheme.brand.brand, cornerRadius = Theme.radius.xl
-                    )
+                    thumbnail?.let {
+                        Modifier.dashedBorder(color = Theme.colorScheme.brand.brand, cornerRadius = Theme.radius.xl)
+                    } ?: Modifier
                 )
                 .noRippleClickable(
-                    enabled = isClickEnabled,
+                    enabled = isEnabled,
                     onClick = onCardClick
                 ),
             contentAlignment = Alignment.Center
@@ -90,7 +87,7 @@ internal fun UploadVideoCard(
                     color = Theme.colorScheme.shadeSecondary
                 )
             }
-            if (hasThumbnail){
+            thumbnail?.let{
                 Image(
                     painter = thumbnail,
                     contentDescription = "Uploaded video thumbnail",
@@ -99,12 +96,12 @@ internal fun UploadVideoCard(
                 )
             }
         }
-        if (hasThumbnail){
+        thumbnail?.let{
             EditButton(
                 modifier = Modifier
                     .offset(y = 16.dp)
                     .align(Alignment.BottomCenter),
-                isClickEnabled = hasThumbnail,
+                isClickEnabled =  thumbnail != null,
                 onClick = onEditClick
             )
         }
