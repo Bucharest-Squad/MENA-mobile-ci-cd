@@ -8,6 +8,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import net.thechance.mena.dukan.presentation.screen.createDukan.CreateDukanScreen
 import net.thechance.mena.dukan.presentation.screen.main.MainScreen
+import net.thechance.mena.dukan.presentation.screen.manageShelf.ManageShelfScreen
 import net.thechance.mena.dukan.presentation.screen.pendingDukan.PendingDukanScreen
 
 @Composable
@@ -37,6 +38,9 @@ fun DukanNavHost() {
                     dukanName = route.dukanName,
                     onBackClick = { navController.popBackStack() }
                 )
+            }
+            composable<DukanRoute.ManageShelfScreenRoute> {
+                ManageShelfScreen()
             }
         }
     }
