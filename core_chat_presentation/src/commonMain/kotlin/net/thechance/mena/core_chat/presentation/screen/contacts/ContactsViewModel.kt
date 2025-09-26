@@ -14,6 +14,7 @@ import net.thechance.mena.core_chat.domain.entity.Contact
 import net.thechance.mena.core_chat.domain.exception.ChatException
 import net.thechance.mena.core_chat.domain.repository.ContactsRepository
 import net.thechance.mena.core_chat.presentation.components.SnackBarData
+import net.thechance.mena.core_chat.presentation.navigation.MessagingRoute
 import net.thechance.mena.core_chat.presentation.navigation.ChatEffector
 import net.thechance.mena.core_chat.presentation.navigation.MessagingRoute
 import net.thechance.mena.core_chat.presentation.navigation.NavigationConstants.IS_SYNC_SUCCESS

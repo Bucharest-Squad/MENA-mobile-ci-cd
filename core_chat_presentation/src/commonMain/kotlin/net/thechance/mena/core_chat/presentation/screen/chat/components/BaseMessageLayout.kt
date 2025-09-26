@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalTime::class)
 
-package net.thechance.mena.core_chat.presentation.screen.messaging.components
+package net.thechance.mena.core_chat.presentation.screen.chat.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -20,9 +20,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import kotlinx.datetime.LocalDateTime
-import net.thechance.mena.core_chat.presentation.screen.messaging.MessageStatus
-import net.thechance.mena.core_chat.presentation.screen.messaging.MessageUiState
-import net.thechance.mena.core_chat.presentation.screen.messaging.TextMessageUiState
+import net.thechance.mena.core_chat.presentation.screen.chat.MessageStatus
+import net.thechance.mena.core_chat.presentation.screen.chat.MessageUiState
+import net.thechance.mena.core_chat.presentation.screen.chat.TextMessageUiState
 import net.thechance.mena.core_chat.presentation.utils.now
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme

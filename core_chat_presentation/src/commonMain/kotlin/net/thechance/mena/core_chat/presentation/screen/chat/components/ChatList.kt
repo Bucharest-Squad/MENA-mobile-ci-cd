@@ -1,4 +1,4 @@
-package net.thechance.mena.core_chat.presentation.screen.messaging.components
+package net.thechance.mena.core_chat.presentation.screen.chat.components
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,9 +8,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import net.thechance.mena.core_chat.presentation.screen.messaging.ChatListItem
-import net.thechance.mena.core_chat.presentation.screen.messaging.ChatUiState
-import net.thechance.mena.core_chat.presentation.screen.messaging.MessageUiState
+import net.thechance.mena.core_chat.presentation.screen.chat.ChatListItem
+import net.thechance.mena.core_chat.presentation.screen.chat.ChatUiState
+import net.thechance.mena.core_chat.presentation.screen.chat.MessageUiState
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 
 @Composable
