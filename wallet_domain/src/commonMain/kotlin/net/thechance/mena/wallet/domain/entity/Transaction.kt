@@ -2,7 +2,7 @@ package net.thechance.mena.wallet.domain.entity
 import kotlinx.datetime.LocalDate
 data class Transaction(
     val id: String,
-    val createdAt:String ,
+    val createdAt:LocalDate,
     val amount: Double,
     val status: TransactionStatus,
     val senderId: String,
