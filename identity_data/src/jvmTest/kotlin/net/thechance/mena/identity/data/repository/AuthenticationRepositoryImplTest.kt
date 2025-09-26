@@ -15,6 +15,7 @@ import net.thechance.mena.identity.data.datasource.localDataSource.UserLocalData
 import net.thechance.mena.identity.data.dto.auth.LoginRequestDto
 import net.thechance.mena.identity.data.dto.auth.LoginResponseDto
 import net.thechance.mena.identity.data.dto.auth.RefreshRequestDto
+import net.thechance.mena.identity.data.dto.profile.ProfileResponseDto
 import net.thechance.mena.identity.domain.exception.InvalidCredentialsException
 import net.thechance.mena.identity.domain.exception.UnAuthorizedException
 import net.thechance.mena.identity.domain.exception.UnknownException

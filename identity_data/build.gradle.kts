@@ -13,7 +13,6 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.identityDomain)
-
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.bundles.ktor)
             implementation(libs.ktor.client.cio)

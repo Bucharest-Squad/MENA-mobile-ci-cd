@@ -1,5 +1,6 @@
 package net.thechance.mena.identity.data.repository
 
+import kotlinx.coroutines.flow.Flow
 import net.thechance.mena.identity.data.datasource.localDataSource.UserLocalDataSource
 import net.thechance.mena.identity.data.datasource.remoteDataSource.UserRemoteDataSource
 import net.thechance.mena.identity.data.mapper.toUserInfo
@@ -22,7 +23,7 @@ class ProfileRepositoryImpl(
         return userInfo
     }
 
-    override suspend fun getUserInfoFromLocal(): UserInfo? {
+    override suspend fun getUserInfoFromLocal(): UserInfo?{
         return localDataSource.getUserInfo()
     }
 

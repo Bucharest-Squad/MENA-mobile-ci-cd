@@ -11,7 +11,7 @@ interface UserLocalDataSource {
 
     fun getRefreshToken(): String
 
-    fun saveUserInfo(userInfo: UserInfo)
+    fun saveUserInfo(user: UserInfo)
 
     fun getUserInfo(): UserInfo?
 }

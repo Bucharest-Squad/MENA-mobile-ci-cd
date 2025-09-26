@@ -17,12 +17,13 @@ import net.thechance.mena.identity.data.datasource.remoteDataSource.UserRemoteDa
 import net.thechance.mena.identity.data.dto.auth.LoginRequestDto
 import net.thechance.mena.identity.data.dto.auth.LoginResponseDto
 import net.thechance.mena.identity.data.dto.auth.RefreshRequestDto
+import net.thechance.mena.identity.data.dto.profile.ProfileResponseDto
 import org.junit.Test
 import kotlin.test.BeforeTest
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
-class AuthRemoteDataSourceImplTest {
+class RemoteDataSourceImplTest {
 
     private val client: HttpClient = mockk(relaxed = true)
     private lateinit var remoteDataSource: UserRemoteDataSourceImpl
@@ -117,9 +118,58 @@ class AuthRemoteDataSourceImplTest {
             remoteDataSource.refreshToken(RefreshRequestDto("fake_refresh_token"))
         }
     }
+
+    @Test
+    fun `getUserInfo should return response when status is 200`() = runTest {
+        val mockEngine = MockEngine { _ ->
+            respond(
+                content = Json.encodeToString(fakeProfileResponse),
+                status = HttpStatusCode.OK,
+                headers = headersOf(
+                    HttpHeaders.ContentType, ContentType.Application.Json.toString()
+                )
+            )
+        }
+        val client = HttpClient(mockEngine) {
+            install(ContentNegotiation) { json() }
+        }
+        remoteDataSource = UserRemoteDataSourceImpl(client)
+
+        val actual = remoteDataSource.getUserInfo()
+
+        assertEquals(fakeProfileResponse, actual)
+    }
+
+    @Test
+    fun `getUserInfo should throw ClientRequestException when status is not 200`() = runTest {
+        val mockEngine = MockEngine { _ ->
+            respond(
+                content = "Unauthorized",
+                status = HttpStatusCode.Unauthorized,
+                headers = headersOf(
+                    HttpHeaders.ContentType, ContentType.Application.Json.toString()
+                )
+            )
+        }
+        val client = HttpClient(mockEngine) {
+            install(ContentNegotiation) { json() }
+        }
+        remoteDataSource = UserRemoteDataSourceImpl(client)
+        //When & Then
+        assertFailsWith<ClientRequestException> {
+            remoteDataSource.getUserInfo()
+        }
+    }
+
     companion object {
         private val fakeLoginResponse = LoginResponseDto(
             accessToken = "fake_access_token", refreshToken = "fake_refresh_token"
+        )
+        val fakeProfileResponse = ProfileResponseDto(
+            firstName = "The",
+            lastName = "Chance",
+            username = "TheChance@test.com",
+            profileImageUrl = ""
         )
 
     }

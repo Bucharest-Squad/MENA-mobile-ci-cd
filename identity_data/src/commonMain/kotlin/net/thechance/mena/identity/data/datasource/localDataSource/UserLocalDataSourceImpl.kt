@@ -2,12 +2,17 @@ package net.thechance.mena.identity.data.datasource.localDataSource
 
 import com.russhwolf.settings.Settings
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.serialization.json.Json
 import net.thechance.mena.identity.domain.model.UserInfo
+import kotlinx.coroutines.flow.flow
 
 class UserLocalDataSourceImpl(
     private val settings: Settings
 ) : UserLocalDataSource {
+
+    private val json = Json { ignoreUnknownKeys = true }
+
+
     override fun saveAccessToken(accessToken: String) {
         settings.putString(ACCESS_TOKEN, accessToken)
     }
@@ -24,29 +29,23 @@ class UserLocalDataSourceImpl(
         return settings.getString(REFRESH_TOKEN, "")
     }
 
-    override fun saveUserInfo(userInfo: UserInfo) {
-        settings.putString(FIRSTNAME, userInfo.firstName)
-        settings.putString(LASTNAME, userInfo.lastName)
-        settings.putString(PROFILE_IMAGE_URL, userInfo.profileImageUrl)
-        settings.putString(USERNAME, userInfo.username)
+
+    override fun saveUserInfo(user: UserInfo) {
+        val userJson = json.encodeToString(user)
+        settings.putString(USER_KEY , userJson)
     }
 
-    override fun getUserInfo(): UserInfo?=
-        UserInfo(
-                settings.getString(FIRSTNAME, ""),
-                settings.getString(LASTNAME, ""),
-                settings.getString(PROFILE_IMAGE_URL, ""),
-                settings.getString(USERNAME, "")
-            )
+    override fun getUserInfo(): UserInfo? {
+        val userJson = settings.getStringOrNull(USER_KEY)
+        return userJson?.let{ runCatching { json.decodeFromString<UserInfo>(it) }.getOrNull() }
+    }
 
 
 
     companion object {
         const val ACCESS_TOKEN = "access_token"
         const val REFRESH_TOKEN = "refresh_token"
-        const val FIRSTNAME = "first_name"
-        const val LASTNAME = "last_name"
-        const val PROFILE_IMAGE_URL = "profile_image_url"
-        const val USERNAME = "username"
+        const val USER_KEY = "user"
+
     }
 }
