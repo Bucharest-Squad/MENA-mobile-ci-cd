@@ -28,6 +28,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun DatePickerBottomSheet(
+    title: String = stringResource(Res.string.pick_start_date),
     minYear: Int,
     maxYear: Int,
     onPickClick: (Int, Int, Int) -> Unit,
@@ -43,7 +44,7 @@ fun DatePickerBottomSheet(
             .fillMaxWidth()
     ) {
         AppBar(
-            title = stringResource(Res.string.pick_start_date), /* TODO write title suitable for type of date picker (start or end)*/
+            title = title,
             titleColor = Theme.colorScheme.shadePrimary,
             contentPadding = PaddingValues(horizontal = 0.dp, vertical = 0.dp),
             leadingContent = {
