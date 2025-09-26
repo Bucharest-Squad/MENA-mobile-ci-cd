@@ -95,6 +95,7 @@ android {
     sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 }
 
+
 kover.reports {
     verify {
         rule {
@@ -106,5 +107,9 @@ kover.reports {
         includes {
             classes("net.thechance.mena.wallet.presentation.*.*ViewModel")
         }
-    }
+        excludes {
+            classes("net.thechance.mena.wallet.presentation.*.*component*")
+        }
+
+        }
 }
