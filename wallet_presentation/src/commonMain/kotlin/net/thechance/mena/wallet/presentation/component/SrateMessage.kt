@@ -19,7 +19,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun StateMessage(
+fun StatePlaceholder(
     image: Painter,
     title: String,
     description: String,
@@ -61,7 +61,7 @@ fun StateMessage(
 @Composable
 private fun StateMessagePreview() {
     MenaTheme{
-            StateMessage(
+            StatePlaceholder(
                 image = painterResource(Res.drawable.ic_filter),
                 title = "Error Title",
                 description = "This is a detailed description of the error."
