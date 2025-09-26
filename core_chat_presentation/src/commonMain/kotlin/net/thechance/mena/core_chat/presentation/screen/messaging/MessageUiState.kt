@@ -2,6 +2,7 @@ package net.thechance.mena.core_chat.presentation.screen.messaging
 
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
+import net.thechance.mena.core_chat.presentation.utils.format
 import net.thechance.mena.core_chat.presentation.utils.minusDays
 import net.thechance.mena.core_chat.presentation.utils.now
 
@@ -79,7 +80,7 @@ fun List<MarkedMessageUiState>.withDateSeparators(
             val label = when (messageDate) {
                 today -> todayLabel
                 yesterday -> yesterdayLabel
-                else -> messageDate.toString()
+                else -> messageDate.format()
             }
             result.add(ChatListItem.DateSeparator(label))
             lastDate = messageDate

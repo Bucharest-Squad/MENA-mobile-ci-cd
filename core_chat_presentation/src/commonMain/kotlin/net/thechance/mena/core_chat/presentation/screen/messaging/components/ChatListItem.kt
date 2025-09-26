@@ -19,7 +19,8 @@ fun ChatListItem(
     item: ChatListItem,
     chat: ChatUiState,
     onMessageClick: (String) -> Unit,
-    onFailedMessageClick: (MessageUiState) -> Unit
+    onFailedMessageClick: (MessageUiState) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     when (item) {
         is ChatListItem.DateSeparator -> {
@@ -46,7 +47,8 @@ fun ChatListItem(
                     showMessageInfo = markedMessage.showMessageInfo,
                     isMarkedLastInSeries = markedMessage.isMarkedLastInSeries,
                     onClick = { onMessageClick(markedMessage.message.id) },
-                    onFailClick = { onFailedMessageClick(markedMessage.message) }
+                    onFailClick = { onFailedMessageClick(markedMessage.message) },
+                    modifier = modifier
                 )
             }
         }

@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import net.thechance.mena.core_chat.presentation.screen.messaging.ChatListItem
 import net.thechance.mena.core_chat.presentation.screen.messaging.ChatUiState
 import net.thechance.mena.core_chat.presentation.screen.messaging.MessageUiState
@@ -24,7 +25,7 @@ fun ChatList(
             .fillMaxSize()
             .padding(horizontal = Theme.spacing._12),
         reverseLayout = true,
-        contentPadding = PaddingValues(top = Theme.spacing._4)
+        contentPadding = PaddingValues(top = Theme.spacing._16)
     ) {
         items(
             items = items,
@@ -35,11 +36,20 @@ fun ChatList(
                 }
             }
         ) { item ->
+            val isLastItem = items.indexOf(item) == 0
+            println("$isLastItem -> $item")
+            val paddingBottom = if (isLastItem)
+                0.dp
+            else if (item is ChatListItem.Message && (item.data.isMarkedLastInSeries || item.data.showMessageInfo))
+                Theme.spacing._16
+            else
+                Theme.spacing._2
             ChatListItem(
                 item = item,
                 chat = chat,
                 onMessageClick = onMessageClick,
-                onFailedMessageClick = onFailedMessageClick
+                onFailedMessageClick = onFailedMessageClick,
+                modifier = Modifier.padding(bottom = paddingBottom)
             )
         }
     }

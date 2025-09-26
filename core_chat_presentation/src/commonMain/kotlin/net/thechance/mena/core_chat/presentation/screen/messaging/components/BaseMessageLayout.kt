@@ -56,8 +56,6 @@ fun BaseMessageLayout(
 
     val messagePaddingEnd = if (message.isMine) 0.dp else Theme.spacing._8
 
-    val messagePaddingBottom = if (showMessageInfo || isMarkedLastInSeries) 0.dp else  Theme.spacing._2
-
     val messageShape = if (message.isMine && isMarkedLastInSeries)
         RoundedCornerShape(
             topStart = Theme.radius.md,
@@ -81,8 +79,7 @@ fun BaseMessageLayout(
         Alignment.End
 
     Column(
-        modifier = modifier
-            .padding(bottom = messagePaddingBottom),
+        modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(Theme.spacing._2),
     ) {
         Row(
@@ -128,7 +125,7 @@ fun BaseMessageLayout(
                 onFailClick = onFailClick,
                 modifier = Modifier
                     .align(messageInfoAlignment)
-                    .padding(start = messagePaddingStart, end = messagePaddingEnd, bottom = Theme.spacing._16)
+                    .padding(start = messagePaddingStart, end = messagePaddingEnd)
             )
         }
     }
