@@ -32,6 +32,9 @@ class AuthenticationRepositoryImpl(
         return localDataSource.getAccessToken()
     }
 
+    override suspend fun resetPassword(token: String, newPassword: String) {
+    }
+
     private fun saveAuthTokens(loginResponseDto: LoginResponseDto) {
         localDataSource.saveAccessToken(loginResponseDto.accessToken)
         localDataSource.saveRefreshToken(loginResponseDto.refreshToken)
