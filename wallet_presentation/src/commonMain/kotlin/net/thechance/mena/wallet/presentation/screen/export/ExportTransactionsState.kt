@@ -6,4 +6,6 @@ data class ExportTransactionsState(
     val snackBar: SnackBarState = SnackBarState(),
     val isCustomFilterCardSelected: Boolean = false,
     val isAllTransactionsCardSelected: Boolean = false,
+    val isDownloadLoading: Boolean = false,
+    val noInternetConnection: Boolean = false,
 )
