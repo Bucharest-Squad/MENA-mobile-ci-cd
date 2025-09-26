@@ -14,9 +14,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import mena.wallet_presentation.generated.resources.Res
+import mena.wallet_presentation.generated.resources.all_transactions
+import mena.wallet_presentation.generated.resources.custom_filtering
 import net.thechance.mena.designsystem.presentation.component.button.radioButton.RadioButton
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -66,7 +70,7 @@ fun SelectCard(
 private fun SelectCardPreview() {
     MenaTheme {
         SelectCard(
-            cardText = "All Transactions",
+            cardText = stringResource(Res.string.all_transactions),
             isSelected = true,
         )
     }
@@ -77,7 +81,7 @@ private fun SelectCardPreview() {
 private fun SelectCardFalsePreview() {
     MenaTheme {
         SelectCard(
-            cardText = "All Transactions",
+            cardText = stringResource(Res.string.custom_filtering),
             isSelected = false
         )
     }

@@ -15,10 +15,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import mena.wallet_presentation.generated.resources.Res
+import mena.wallet_presentation.generated.resources.all_transactions
 import mena.wallet_presentation.generated.resources.back_button
+import mena.wallet_presentation.generated.resources.custom_filtering
 import mena.wallet_presentation.generated.resources.download
+import mena.wallet_presentation.generated.resources.export_transactions
 import mena.wallet_presentation.generated.resources.ic_arrow_left
 import mena.wallet_presentation.generated.resources.share
+import mena.wallet_presentation.generated.resources.view_and_share
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.button.OutlinedButton
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
@@ -60,7 +64,7 @@ private fun ExportTransactionScreenContent(
         modifier = Modifier.statusBarsPadding(),
         topBar = {
             AppBar(
-                title = "Export Transactions",
+                title = stringResource(Res.string.export_transactions),
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                 leadingContent = {
                     Icon(
@@ -84,20 +88,20 @@ private fun ExportTransactionScreenContent(
             )
             {
                 SelectCard(
-                    cardText = "All Transactions",
+                    cardText = stringResource(Res.string.all_transactions),
                     onCardSelected = interactionListener::onAllTransactionsClicked,
                     isSelected = state.isAllTransactionsCardSelected,
                     modifier = Modifier.padding(bottom = 12.dp)
                 )
                 SelectCard(
-                    cardText = "Custom Filtering",
+                    cardText = stringResource(Res.string.custom_filtering),
                     isSelected = state.isCustomFilterCardSelected,
                     onCardSelected = interactionListener::onCustomFilteringClicked,
                 )
                 Spacer(modifier = Modifier.weight(1f))
 
                 OutlinedButton(
-                    text = "View & Share",
+                    text = stringResource(Res.string.view_and_share),
                     trailingIcon = painterResource(Res.drawable.share),
                     onClick = interactionListener::onViewAndShareClicked,
                     contentPadding = PaddingValues(
@@ -108,7 +112,7 @@ private fun ExportTransactionScreenContent(
                         .padding(bottom = 12.dp)
                 )
                 PrimaryButton(
-                    text = "Download",
+                    text = stringResource(Res.string.download),
                     trailingIcon = painterResource(Res.drawable.download),
                     onClick = interactionListener::onDownloadClicked,
                     contentPadding = PaddingValues(
