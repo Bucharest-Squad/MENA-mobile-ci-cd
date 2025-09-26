@@ -13,9 +13,9 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 abstract class MessageUiState(
-    open val id: String = "",
-    open val senderId: String = "",
-    open val chatId: String = "",
+    open val id: String,
+    open val senderId: String,
+    open val chatId: String,
     open val sendTime: LocalDateTime,
     open val status: MessageStatus,
     open val isMine: Boolean
@@ -35,9 +35,9 @@ data class MarkedMessageUiState(
 )
 
 data class TextMessageUiState(
-    override val id: String,
-    override val senderId: String,
-    override val chatId: String,
+    override val id: String = "",
+    override val senderId: String = "",
+    override val chatId: String = "",
     override val sendTime: LocalDateTime,
     override val status: MessageStatus,
     override val isMine: Boolean,
