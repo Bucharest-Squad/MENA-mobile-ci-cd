@@ -1,4 +1,4 @@
-package net.thechance.mena.core_chat.presentation.screen.messaging
+package net.thechance.mena.core_chat.presentation.screen.chat
 
 data class ChatUiState(
     val id: String = "",

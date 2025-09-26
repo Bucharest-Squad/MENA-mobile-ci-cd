@@ -1,6 +1,4 @@
-@file:OptIn(ExperimentalComposeUiApi::class)
-
-package net.thechance.mena.core_chat.presentation.screen.messaging.components
+package net.thechance.mena.core_chat.presentation.screen.chat.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,22 +21,23 @@ import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.actions
 import mena.core_chat_presentation.generated.resources.delete_message
 import mena.core_chat_presentation.generated.resources.ic_delete
+import mena.core_chat_presentation.generated.resources.re_send
+import mena.core_chat_presentation.generated.resources.ic_refresh
 import net.thechance.mena.designsystem.presentation.component.text.Text
-import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun ChatActionsDialog(
-    modifier: Modifier = Modifier,
-    onDeleteChatClick: () -> Unit,
+fun ResendMessageDialog(
+    onDeleteMessageClick: () -> Unit,
+    onResendClick: () -> Unit,
     scrimColor: Color = Theme.colorScheme.primary.primary.copy(0.55f),
     onDismiss: () -> Unit
 ) {
     Box(
-        modifier = modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
     ) {
         Box(
@@ -53,7 +52,8 @@ fun ChatActionsDialog(
         )
 
         DialogContent(
-            onDeleteChatClick = onDeleteChatClick,
+            onDeleteMessageClick = onDeleteMessageClick,
+            onResendClick = onResendClick,
             onCancelClick = onDismiss
         )
 
@@ -65,7 +65,8 @@ fun ChatActionsDialog(
 
 @Composable
 private fun DialogContent(
-    onDeleteChatClick: () -> Unit,
+    onDeleteMessageClick: () -> Unit,
+    onResendClick: () -> Unit,
     onCancelClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -96,26 +97,20 @@ private fun DialogContent(
                 modifier = Modifier.fillMaxWidth()
             )
 
+            // Resend row
+            ActionMenuItem(
+                icon = painterResource(Res.drawable.ic_refresh),
+                text = stringResource(Res.string.re_send),
+                onClick = onResendClick
+            )
+
             // Delete row
             ActionMenuItem(
                 icon = painterResource(Res.drawable.ic_delete),
                 text = stringResource(Res.string.delete_message),
                 contentColor = Theme.colorScheme.error,
-                onClick = onDeleteChatClick
+                onClick = onDeleteMessageClick
             )
         }
-    }
-}
-
-@Composable
-@Preview()
-private fun PreviewChatActionsDialog() {
-
-    MenaTheme {
-        ChatActionsDialog(
-            modifier = Modifier,
-            onDeleteChatClick = {},
-            onDismiss = {}
-        )
     }
 }

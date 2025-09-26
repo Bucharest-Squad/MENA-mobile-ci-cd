@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalTime::class)
 
-package net.thechance.mena.core_chat.presentation.screen.messaging.components
+package net.thechance.mena.core_chat.presentation.screen.chat.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,7 +18,7 @@ import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.ic_close_circle
 import mena.core_chat_presentation.generated.resources.ic_message_read
 import mena.core_chat_presentation.generated.resources.ic_message_sent
-import net.thechance.mena.core_chat.presentation.screen.messaging.MessageStatus
+import net.thechance.mena.core_chat.presentation.screen.chat.MessageStatus
 import net.thechance.mena.core_chat.presentation.utils.formatAsTime
 import net.thechance.mena.core_chat.presentation.utils.now
 import net.thechance.mena.designsystem.presentation.component.icon.Icon

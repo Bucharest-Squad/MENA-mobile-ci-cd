@@ -1,4 +1,4 @@
-package net.thechance.mena.core_chat.presentation.screen.messaging.components
+package net.thechance.mena.core_chat.presentation.screen.chat.components
 
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.confirm_delete_chat_message

@@ -1,4 +1,4 @@
-package net.thechance.mena.core_chat.presentation.screen.messaging.components
+package net.thechance.mena.core_chat.presentation.screen.chat.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -7,10 +7,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import net.thechance.mena.core_chat.presentation.screen.messaging.ChatListItem
-import net.thechance.mena.core_chat.presentation.screen.messaging.ChatUiState
-import net.thechance.mena.core_chat.presentation.screen.messaging.MessageUiState
-import net.thechance.mena.core_chat.presentation.screen.messaging.TextMessageUiState
+import net.thechance.mena.core_chat.presentation.screen.chat.ChatListItem
+import net.thechance.mena.core_chat.presentation.screen.chat.ChatUiState
+import net.thechance.mena.core_chat.presentation.screen.chat.MessageUiState
+import net.thechance.mena.core_chat.presentation.screen.chat.TextMessageUiState
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 

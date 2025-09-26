@@ -1,6 +1,6 @@
-package net.thechance.mena.core_chat.presentation.screen.messaging
+package net.thechance.mena.core_chat.presentation.screen.chat
 
-interface MessagingInteractionListener: ChatInteractionListener, MessageListInteractionListener {
+interface ChatInteractionListener : MessageListInteractionListener {
 
     fun onBackClicked()
     fun onMenuClicked()
@@ -9,9 +9,7 @@ interface MessagingInteractionListener: ChatInteractionListener, MessageListInte
 
     fun onInputMessageChanged(value: String)
     fun onSendMessageClicked()
-}
 
-interface ChatInteractionListener {
     fun onDeleteChatClicked()
     fun onDeleteChatDialogDismissed()
     fun onConfirmDeleteChat()

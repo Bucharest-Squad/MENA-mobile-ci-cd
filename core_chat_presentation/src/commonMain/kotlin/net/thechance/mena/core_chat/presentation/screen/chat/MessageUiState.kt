@@ -1,4 +1,4 @@
-package net.thechance.mena.core_chat.presentation.screen.messaging
+package net.thechance.mena.core_chat.presentation.screen.chat
 
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime

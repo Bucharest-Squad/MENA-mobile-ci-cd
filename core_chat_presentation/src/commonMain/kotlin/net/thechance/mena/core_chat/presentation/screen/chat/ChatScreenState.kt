@@ -1,10 +1,10 @@
-package net.thechance.mena.core_chat.presentation.screen.messaging
+package net.thechance.mena.core_chat.presentation.screen.chat
 
 import kotlinx.datetime.LocalDateTime
 import net.thechance.mena.core_chat.presentation.utils.minusMinutes
 import net.thechance.mena.core_chat.presentation.utils.now
 
-data class MessagingScreenState(
+data class ChatScreenState(
     val chat: ChatUiState = dummyChat,
     val chatListItems: List<ChatListItem> = dummyMessages.markLastInSeries().withDateSeparators(),
     val inputMessage: String = ""

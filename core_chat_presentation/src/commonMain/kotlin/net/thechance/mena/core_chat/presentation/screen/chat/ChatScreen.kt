@@ -1,4 +1,4 @@
-package net.thechance.mena.core_chat.presentation.screen.messaging
+package net.thechance.mena.core_chat.presentation.screen.chat
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -8,19 +8,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import net.thechance.mena.core_chat.presentation.screen.messaging.components.ChatHeader
-import net.thechance.mena.core_chat.presentation.screen.messaging.components.ChatInputBar
-import net.thechance.mena.core_chat.presentation.screen.messaging.components.ChatList
-import net.thechance.mena.core_chat.presentation.screen.messaging.components.messagingScreenOverlays
+import net.thechance.mena.core_chat.presentation.screen.chat.components.ChatHeader
+import net.thechance.mena.core_chat.presentation.screen.chat.components.ChatInputBar
+import net.thechance.mena.core_chat.presentation.screen.chat.components.ChatList
+import net.thechance.mena.core_chat.presentation.screen.chat.components.messagingScreenOverlays
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun MessagingScreen() {
-    var state by remember { mutableStateOf(MessagingScreenState()) }
-    MessagingScreenContent(state) { messageId -> // temp until handling the view model
+fun ChatScreen() {
+    var state by remember { mutableStateOf(ChatScreenState()) }
+    ChatScreenContent(state) { messageId -> // temp until handling the view model
         state = state.copy(
             chatListItems = state.chatListItems.map { item ->
                 if (item is ChatListItem.Message && item.data.message.id == messageId) {
@@ -39,8 +39,8 @@ fun MessagingScreen() {
 }
 
 @Composable
-fun MessagingScreenContent(
-    state: MessagingScreenState = MessagingScreenState(),
+fun ChatScreenContent(
+    state: ChatScreenState = ChatScreenState(),
     onMessageClick: (String) -> Unit
 ) {
     var showChatActionsDialog by remember { mutableStateOf(false) }
@@ -93,6 +93,6 @@ fun MessagingScreenContent(
 private fun PreviewMessagingScreenDark() {
 
     MenaTheme {
-        MessagingScreen()
+        ChatScreen()
     }
 }

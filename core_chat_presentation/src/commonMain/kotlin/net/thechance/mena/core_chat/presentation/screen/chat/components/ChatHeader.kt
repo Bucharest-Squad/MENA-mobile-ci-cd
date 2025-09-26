@@ -1,7 +1,6 @@
-package net.thechance.mena.core_chat.presentation.screen.messaging.components
+package net.thechance.mena.core_chat.presentation.screen.chat.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -23,30 +22,29 @@ fun ChatHeader(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Box(modifier.background(Theme.colorScheme.background.surfaceLow)) {
-        AppBar(
-            contentPadding = PaddingValues(
-                horizontal = Theme.spacing._16,
-                vertical = Theme.spacing._8
-            ),
-            leadingContent = {
+    AppBar(
+        contentPadding = PaddingValues(
+            horizontal = Theme.spacing._16,
+            vertical = Theme.spacing._8
+        ),
+        leadingContent = {
+            Icon(
+                painter = painterResource(Res.drawable.ic_arrow_left),
+                contentDescription = null
+            )
+        },
+        onLeadingClick = onBackClick,
+        title = chatName,
+        trailingContent = {
+            AppBarOptionContainer(onClick = onMenuClick) {
                 Icon(
-                    painter = painterResource(Res.drawable.ic_arrow_left),
+                    painter = painterResource(Res.drawable.ic_menu),
                     contentDescription = null
                 )
-            },
-            onLeadingClick = onBackClick,
-            title = chatName,
-            trailingContent = {
-                AppBarOptionContainer(onClick = onMenuClick) {
-                    Icon(
-                        painter = painterResource(Res.drawable.ic_menu),
-                        contentDescription = null
-                    )
-                }
             }
-        )
-    }
+        },
+        modifier = modifier.background(Theme.colorScheme.background.surfaceLow)
+    )
 }
 
 @Preview
