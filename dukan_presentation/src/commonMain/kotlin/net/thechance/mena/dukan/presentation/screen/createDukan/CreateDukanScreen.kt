@@ -9,7 +9,6 @@ import net.thechance.mena.dukan.presentation.screen.createDukan.content.CreateDu
 import net.thechance.mena.dukan.presentation.util.ObserveAsEffect
 import net.thechance.mena.dukan.presentation.viewModel.createDukan.CreateDukanEffect
 import net.thechance.mena.dukan.presentation.viewModel.createDukan.CreateDukanViewModel
-import net.thechance.mena.dukan.presentation.viewModel.mainScreen.MainScreenUiState
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -24,8 +23,7 @@ fun CreateDukanScreen(
             CreateDukanEffect.NavigateBack -> navController.popBackStack()
             is CreateDukanEffect.NavigateToPending -> navController.navigate(
                 DukanRoute.PendingScreenRoute(
-                    effect.name,
-                    dukanStatus = MainScreenUiState.DukanStatusUi.Pending.name
+                    effect.name
                 )
             ) {
                 popUpTo(DukanRoute.MainScreenRoute)

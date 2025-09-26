@@ -10,7 +10,6 @@ import net.thechance.mena.dukan.presentation.screen.createDukan.CreateDukanScree
 import net.thechance.mena.dukan.presentation.screen.main.MainScreen
 import net.thechance.mena.dukan.presentation.screen.manageShelf.ManageShelfScreen
 import net.thechance.mena.dukan.presentation.screen.pendingDukan.PendingDukanScreen
-import net.thechance.mena.dukan.presentation.viewModel.mainScreen.MainScreenUiState
 
 @Composable
 fun DukanNavHost() {
@@ -35,11 +34,9 @@ fun DukanNavHost() {
             composable<DukanRoute.PendingScreenRoute> { backStackEntry ->
                 val route: DukanRoute.PendingScreenRoute =
                     backStackEntry.toRoute()
-                val status = MainScreenUiState.DukanStatusUi.valueOf(route.dukanStatus)
                 PendingDukanScreen(
                     dukanName = route.dukanName,
-                    onBackClick = { navController.popBackStack() },
-                    dukanStatus = status
+                    onBackClick = { navController.popBackStack() }
                 )
             }
             composable<DukanRoute.ManageShelfScreenRoute> {

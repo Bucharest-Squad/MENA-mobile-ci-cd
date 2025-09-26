@@ -51,7 +51,7 @@ fun ImageWithTextContainer(
                 )
                 Image(
                     painter = painterResource(foregroundImageRes),
-                    contentDescription = null
+                    contentDescription = "Foreground image resource"
                 )
             }
 
