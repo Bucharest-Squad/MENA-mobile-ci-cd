@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalUuidApi::class)
 
-package net.thechance.mena.core_chat.presentation.screen.messaging
+package net.thechance.mena.core_chat.presentation.screen.chat
 
 import net.thechance.mena.core_chat.domain.entity.Chat
 import kotlin.uuid.ExperimentalUuidApi

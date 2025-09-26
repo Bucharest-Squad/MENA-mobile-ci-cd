@@ -8,7 +8,7 @@ import net.thechance.mena.designsystem.presentation.component.dialog.Dialog
 import net.thechance.mena.designsystem.presentation.component.scaffold.ScaffoldScope
 import org.jetbrains.compose.resources.stringResource
 
-fun ScaffoldScope.messagingScreenOverlays(
+fun ScaffoldScope.ChatScreenOverlays(
     showChatActionsDialog: Boolean,
     showResendMessageDialog: Boolean,
     showDeleteChatDialog: Boolean,

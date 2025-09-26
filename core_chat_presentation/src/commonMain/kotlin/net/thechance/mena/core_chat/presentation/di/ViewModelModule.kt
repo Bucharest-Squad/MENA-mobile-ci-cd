@@ -9,7 +9,7 @@ import net.thechance.mena.core_chat.presentation.navigation.ChatEffector
 import net.thechance.mena.core_chat.presentation.navigation.ChatEffectorImpl
 import net.thechance.mena.core_chat.presentation.screen.chats.ChatsViewModel
 import net.thechance.mena.core_chat.presentation.screen.contacts.ContactsViewModel
-import net.thechance.mena.core_chat.presentation.screen.messaging.MessagingViewModel
+import net.thechance.mena.core_chat.presentation.screen.chat.ChatViewModel
 import net.thechance.mena.core_chat.presentation.screen.syncContacts.SyncContactsScreenArgs
 import net.thechance.mena.core_chat.presentation.screen.syncContacts.SyncContactsScreenArgsImpl
 import net.thechance.mena.core_chat.presentation.screen.syncContacts.SyncContactsViewModel
@@ -27,7 +27,7 @@ internal val viewModelModule = module {
     viewModelOf(::ChatsViewModel)
     viewModelOf(::ContactsViewModel)
     viewModelOf(::SyncContactsViewModel)
-    viewModelOf(::MessagingViewModel)
+    viewModelOf(::ChatViewModel)
     factoryOf(::SyncContactsScreenArgsImpl) bind SyncContactsScreenArgs::class
     singleOf(::ChatEffectorImpl) bind ChatEffector::class
     factoryOf(::SettingsOpenerImpl) bind SettingsOpener::class

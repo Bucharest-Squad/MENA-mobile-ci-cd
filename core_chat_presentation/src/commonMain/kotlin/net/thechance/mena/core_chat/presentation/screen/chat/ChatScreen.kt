@@ -1,4 +1,4 @@
-package net.thechance.mena.core_chat.presentation.screen.messaging
+package net.thechance.mena.core_chat.presentation.screen.chat
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -6,10 +6,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import net.thechance.mena.core_chat.presentation.screen.messaging.components.ChatHeader
-import net.thechance.mena.core_chat.presentation.screen.messaging.components.ChatInputBar
-import net.thechance.mena.core_chat.presentation.screen.messaging.components.ChatList
-import net.thechance.mena.core_chat.presentation.screen.messaging.components.messagingScreenOverlays
+import net.thechance.mena.core_chat.presentation.screen.chat.components.ChatHeader
+import net.thechance.mena.core_chat.presentation.screen.chat.components.ChatInputBar
+import net.thechance.mena.core_chat.presentation.screen.chat.components.ChatList
+import net.thechance.mena.core_chat.presentation.screen.chat.components.ChatScreenOverlays
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
@@ -17,11 +17,11 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun MessagingScreen(
-    viewModel: MessagingViewModel = koinViewModel()
+fun ChatScreen(
+    viewModel: ChatViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsState()
-    MessagingScreenContent(
+    ChatScreenContent(
         state = state,
         interactions = viewModel
     )
@@ -29,16 +29,16 @@ fun MessagingScreen(
 }
 
 @Composable
-fun MessagingScreenContent(
-    state: MessagingScreenState = MessagingScreenState(),
-    interactions: MessagingInteractionListener
+fun ChatScreenContent(
+    state: ChatScreenState = ChatScreenState(),
+    interactions: ChatInteractionListener
 ) {
     Scaffold(
         topBar = {
             ChatHeader(
                 chatName = state.chat.name,
-                onMenuClick = interactions::onMenuClick,
-                onBackClick = interactions::onBackClick,
+                onMenuClick = interactions::onMenuClicked,
+                onBackClick = interactions::onBackClicked,
                 modifier = Modifier
                     .fillMaxWidth()
             )
@@ -46,33 +46,33 @@ fun MessagingScreenContent(
         bottomBar = {
             ChatInputBar(
                 userInput = state.inputMessage,
-                onTextChange = interactions::onInputMessageChange,
-                onSendButtonClick = interactions::onSendMessageClick,
+                onTextChange = interactions::onInputMessageChanged,
+                onSendButtonClick = interactions::onSendMessageClicked,
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(Theme.colorScheme.background.surface)
             )
         },
         overlays = {
-            messagingScreenOverlays(
+            ChatScreenOverlays(
                 showChatActionsDialog = state.isChatActionsDialogVisible,
                 showResendMessageDialog = state.isResendMessageDialogVisible,
                 showDeleteChatDialog = state.isDeleteChatDialogVisible,
-                onDeleteChatClick = interactions::onDeleteChatClick,
-                onDismissChatActionsDialog = interactions::onDismissChatActionsDialog,
-                onDismissDeleteChatDialog = interactions::onDismissDeleteChatDialog,
-                onDismissResendMessageDialog = interactions::onDismissResendMessageDialog,
+                onDeleteChatClick = interactions::onDeleteChatClicked,
+                onDismissChatActionsDialog = interactions::onChatActionsDialogDismissed,
+                onDismissDeleteChatDialog = interactions::onDeleteChatDialogDismissed,
+                onDismissResendMessageDialog = interactions::onResendMessageDialogDismissed,
                 onConfirmDeleteChatClick = interactions::onConfirmDeleteChat,
-                onDeleteFailedMessageClick = interactions::onDeleteFailedMessageClick,
-                onResendFailedMessageClick = interactions::onResendMessageClick,
+                onDeleteFailedMessageClick = interactions::onDeleteFailedMessageClicked,
+                onResendFailedMessageClick = interactions::onResendMessageClicked,
             )
         }
     ) {
         ChatList(
             items = state.chatListItems,
             chat = state.chat,
-            onMessageClick = interactions::onMessageClick,
-            onFailedMessageClick = interactions::onFailedMessageClick,
+            onMessageClick = interactions::onMessageClicked,
+            onFailedMessageClick = interactions::onFailedMessageClicked,
         )
     }
 }
@@ -82,6 +82,6 @@ fun MessagingScreenContent(
 private fun PreviewMessagingScreenDark() {
 
     MenaTheme {
-        MessagingScreen()
+        ChatScreen()
     }
 }

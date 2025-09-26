@@ -1,16 +1,16 @@
 @file:OptIn(ExperimentalUuidApi::class)
 
-package net.thechance.mena.core_chat.presentation.screen.messaging
+package net.thechance.mena.core_chat.presentation.screen.chat
 
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import net.thechance.mena.core_chat.domain.entity.Message
-import net.thechance.mena.core_chat.domain.entity.MessageStatus as DomainMessageStatus
 import net.thechance.mena.core_chat.presentation.utils.format
 import net.thechance.mena.core_chat.presentation.utils.minusDays
 import net.thechance.mena.core_chat.presentation.utils.now
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
+import net.thechance.mena.core_chat.domain.entity.MessageStatus as DomainMessageStatus
 
 abstract class MessageUiState(
     open val id: String,
@@ -42,7 +42,7 @@ data class TextMessageUiState(
     override val status: MessageStatus,
     override val isMine: Boolean,
     val text: String
-): MessageUiState(
+) : MessageUiState(
     id,
     senderId,
     chatId,

@@ -14,9 +14,8 @@ import net.thechance.mena.core_chat.domain.entity.Contact
 import net.thechance.mena.core_chat.domain.exception.ChatException
 import net.thechance.mena.core_chat.domain.repository.ContactsRepository
 import net.thechance.mena.core_chat.presentation.components.SnackBarData
-import net.thechance.mena.core_chat.presentation.navigation.MessagingRoute
+import net.thechance.mena.core_chat.presentation.navigation.ChatDetailsRoute
 import net.thechance.mena.core_chat.presentation.navigation.ChatEffector
-import net.thechance.mena.core_chat.presentation.navigation.MessagingRoute
 import net.thechance.mena.core_chat.presentation.navigation.NavigationConstants.IS_SYNC_SUCCESS
 import net.thechance.mena.core_chat.presentation.navigation.SyncContactsRoute
 import net.thechance.mena.core_chat.presentation.shared.BasePagingSource
@@ -81,7 +80,7 @@ class ContactsViewModel(
 
     override fun onContactClick(contactId: Int) {
         // todo
-        navigate(MessagingRoute(chatId = contactId.toString()))
+        navigate(ChatDetailsRoute(chatId = contactId.toString()))
     }
 
     private fun onDataLoadError(e: Throwable) {

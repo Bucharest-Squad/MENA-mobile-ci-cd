@@ -1,5 +1,6 @@
 package net.thechance.mena.core_chat.presentation.screen.chat
 
+
 interface ChatInteractionListener : MessageListInteractionListener {
 
     fun onBackClicked()
@@ -18,8 +19,10 @@ interface ChatInteractionListener : MessageListInteractionListener {
 interface MessageListInteractionListener {
     fun onMessageClicked(messageId: String)
 
-    fun onFailedMessageClicked(messageId: String)
+    fun onFailedMessageClicked(message: MessageUiState)
 
-    fun onResendMessageClicked(messageId: String)
+    fun onDeleteFailedMessageClicked()
+
+    fun onResendMessageClicked()
     fun onResendMessageDialogDismissed()
 }
