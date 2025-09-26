@@ -9,6 +9,6 @@ class MessageStatusConverter {
     fun fromMessageStatus(status: MessageStatus): String = status.name
 
     @TypeConverter
-    fun toMessageStatus(status: String): MessageStatus = MessageStatus.valueOf(status)
+    fun toMessageStatus(status: String): MessageStatus = runCatching { MessageStatus.valueOf(status) }.getOrDefault(MessageStatus.FAILED)
 
 }
