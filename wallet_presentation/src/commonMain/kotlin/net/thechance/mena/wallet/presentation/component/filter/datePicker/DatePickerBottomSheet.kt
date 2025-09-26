@@ -73,6 +73,7 @@ fun DatePickerBottomSheet(
             .navigationBarsPadding()
             .background(Theme.colorScheme.background.surface)
             .fillMaxWidth()
+            .padding(Theme.spacing._16)
     ) {
         AppBar(
             title = title,
