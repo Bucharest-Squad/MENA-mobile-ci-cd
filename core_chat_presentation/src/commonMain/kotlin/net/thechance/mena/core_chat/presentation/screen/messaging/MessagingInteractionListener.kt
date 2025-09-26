@@ -21,7 +21,7 @@ interface MessagingInteractionListener {
     fun onChatActionsDialogDismiss()
     fun onDeleteChatClick()
 
-    //delete chat dialog
+    //ic_delete chat dialog
     fun onDismissDeleteChatDialog()
     fun onConfirmDeleteChat()
 }

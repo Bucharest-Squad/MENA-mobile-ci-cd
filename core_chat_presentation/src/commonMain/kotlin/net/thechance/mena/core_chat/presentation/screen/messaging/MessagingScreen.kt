@@ -71,7 +71,7 @@ fun MessagingScreenContent(
         overlays = {
             dialog(showChatActionsDialog) {
                 ChatActionsDialog(
-                    onDeleteChatClick = { /* TODO */},
+                    onDeleteChatClick = { /* TODO */ },
                     onDismiss = { /* TODO */ }
                 )
             }

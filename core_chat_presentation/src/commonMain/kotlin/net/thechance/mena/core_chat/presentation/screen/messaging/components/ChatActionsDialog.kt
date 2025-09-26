@@ -21,8 +21,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.actions
-import mena.core_chat_presentation.generated.resources.delete
 import mena.core_chat_presentation.generated.resources.delete_message
+import mena.core_chat_presentation.generated.resources.ic_delete
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
@@ -98,7 +98,7 @@ private fun DialogContent(
 
             // Delete row
             ActionMenuItem(
-                icon = painterResource(Res.drawable.delete),
+                icon = painterResource(Res.drawable.ic_delete),
                 text = stringResource(Res.string.delete_message),
                 contentColor = Theme.colorScheme.error,
                 onClick = onDeleteChatClick
