@@ -52,15 +52,20 @@ class ProfileScreenModel(
 
     override fun onPrivacyAndPolicyClicked() =
         sendNewEffect(ProfileScreenUIEffect.NavigateToPrivacyAndPolicyScreen)
+
     override fun onContactUsClicked() =
         sendNewEffect(ProfileScreenUIEffect.NavigateContactUsScreen)
+
     override fun onDismissLanguageDialog() =
         updateState { copy(showLanguageDialog = false) }
 
-    override fun onDismissThemeDialog()=
+    override fun onDismissBottomSheet() =
+        updateState { copy(showShareBottomSheet = false) }
+
+    override fun onDismissThemeDialog() =
         updateState { copy(showThemeDialog = false) }
 
-     fun clearErrorMessage() {
+    fun clearErrorMessage() {
         updateState { copy(errorMessage = null) }
     }
 

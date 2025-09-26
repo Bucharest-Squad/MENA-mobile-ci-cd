@@ -36,9 +36,9 @@ fun InviteFriendsCard(onCLick: () -> Unit) {
 
                 )
             )
-        ).clickable { onCLick() }.padding(8.dp),
+        ).clickable { onCLick() }
+            .padding(8.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalAlignment = Alignment.CenterVertically
     ) {
         InviteFriendsIcon()
         Column(

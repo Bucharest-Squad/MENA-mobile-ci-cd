@@ -3,6 +3,7 @@ package net.thechance.mena.identity.presentation.screen.profile.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -18,6 +19,8 @@ import coil3.compose.AsyncImage
 import mena.identity_presentation.generated.resources.Res
 import mena.identity_presentation.generated.resources.ic_share
 import mena.identity_presentation.generated.resources.profile_profile_picture_content_description
+import mena.identity_presentation.generated.resources.profile_title
+import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
@@ -35,12 +38,13 @@ fun ProfileInfoContainer(
     Column(
         modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
         Box(
             modifier = Modifier
                 .size(88.dp)
                 .clip(CircleShape)
                 .background(Theme.colorScheme.stroke
-, shape = CircleShape)
+    , shape = CircleShape)
                 )
          {
             AsyncImage(
@@ -90,7 +94,7 @@ fun PreviewProfileInfoContainer() {
         ProfileInfoContainer(
             profilePicture = "https://images.unsplash.com/photo-1743701168206-bd617221b559?q=80&w=814&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
             fullName = "Mohammed Ahmed Mansour",
-            userName = "@Mohammed_2025"
+            userName = "@Mohammed_2025",
         )
     }
 }

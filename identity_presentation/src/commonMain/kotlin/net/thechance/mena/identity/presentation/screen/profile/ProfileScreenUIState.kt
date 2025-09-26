@@ -8,5 +8,6 @@ data class ProfileScreenUIState(
     val showLanguageDialog:Boolean = false,
     val showThemeDialog:Boolean = false,
     val isLoading: Boolean = false,
+    val isSuccess: Boolean = false,
     val errorMessage:String? = null,
 )

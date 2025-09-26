@@ -25,7 +25,8 @@ fun InviteFriendsIcon() {
             .clip(RoundedCornerShape(Theme.radius.md))
             .background(Theme.colorScheme.background.surfaceLow.copy(alpha = .12f))
             .padding(12.dp)
-            .size(24.dp),
+            .size(24.dp)
+        ,
         painter = painterResource(Res.drawable.ic_invite_friends),
         contentDescription = stringResource(Res.string.profile_invite_friends_icon_content_description),
     )

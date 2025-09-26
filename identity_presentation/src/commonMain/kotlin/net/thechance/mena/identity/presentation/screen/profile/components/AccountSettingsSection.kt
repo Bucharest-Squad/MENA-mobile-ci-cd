@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import mena.identity_presentation.generated.resources.Res
-import mena.identity_presentation.generated.resources.ic_address
+import mena.identity_presentation.generated.resources.ic_addresses
 import mena.identity_presentation.generated.resources.ic_edit_profile_info
 import mena.identity_presentation.generated.resources.ic_password_lock
 import mena.identity_presentation.generated.resources.ic_privacy_settings
@@ -33,7 +33,6 @@ fun AccountSettingsSection(listener: ProfileScreenInteractionListener) {
             text = stringResource(Res.string.profile_account_settings_header),
             style = Theme.typography.label.medium,
             color = Theme.colorScheme.shadeSecondary,
-            textAlign = TextAlign.Center,
         )
         SettingItem(
             title = stringResource(Res.string.profile_edit_profile_info),
@@ -47,7 +46,7 @@ fun AccountSettingsSection(listener: ProfileScreenInteractionListener) {
         )
         SettingItem(
             title = stringResource(Res.string.profile_addresses),
-            leadingIcon = painterResource(Res.drawable.ic_address),
+            leadingIcon = painterResource(Res.drawable.ic_addresses),
             onClick = listener::onAddressesClicked,
         )
         SettingItem(

@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import mena.identity_presentation.generated.resources.Res
-import mena.identity_presentation.generated.resources.ic_edit_profile_info
+import mena.identity_presentation.generated.resources.ic_addresses
 import mena.identity_presentation.generated.resources.profile_edit_profile_icon_content_description
 import mena.identity_presentation.generated.resources.profile_edit_profile_info
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
@@ -32,17 +32,23 @@ fun SettingItem(
     title: String, leadingIcon: Painter, trailingText: String? = null, onClick: () -> Unit
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(Theme.radius.md))
-            .background(Theme.colorScheme.background.surfaceLow).clickable(
+        modifier = Modifier.fillMaxWidth()
+            .clip(RoundedCornerShape(Theme.radius.md))
+            .background(Theme.colorScheme.background.surfaceLow)
+            .clickable(
                 onClick = {
                     onClick()
                 })
-            .padding(12.dp),
+
+        .padding(horizontal = 12.dp)
+                ,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            modifier = Modifier.size(24.dp),
+            modifier = Modifier
+                .padding(vertical = 12.dp)
+                .size(24.dp),
             painter = leadingIcon,
             contentDescription = stringResource(Res.string.profile_edit_profile_icon_content_description),
         )
@@ -70,7 +76,7 @@ fun PreviewSettingItem() {
     MenaTheme {
         SettingItem(
             title = stringResource(Res.string.profile_edit_profile_info),
-            leadingIcon = painterResource(Res.drawable.ic_edit_profile_info),
+            leadingIcon = painterResource(Res.drawable.ic_addresses),
             trailingText = "Optional",
             onClick = {}
         )

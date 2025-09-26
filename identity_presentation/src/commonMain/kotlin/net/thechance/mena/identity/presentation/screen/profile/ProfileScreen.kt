@@ -1,14 +1,18 @@
 package net.thechance.mena.identity.presentation.screen.profile
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
@@ -23,6 +27,8 @@ import mena.identity_presentation.generated.resources.error
 import mena.identity_presentation.generated.resources.ic_close_circle
 import mena.identity_presentation.generated.resources.profile_title
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
+import net.thechance.mena.designsystem.presentation.component.bottomSheet.BottomSheet
+import net.thechance.mena.designsystem.presentation.component.button.NegativeButton
 import net.thechance.mena.designsystem.presentation.component.dialog.Dialog
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.component.snackbar.SnackBar
@@ -53,13 +59,26 @@ class ProfileScreen :
     ) {
         Scaffold(overlays = {
             bottomSheet(
+
                 isVisible = state.showShareBottomSheet
-            ){
-                Box(Modifier.fillMaxSize()){
-                    Text(text = "BOTTOM SHEET NOT YET IMPLEMENTED"
-                    , style = Theme.typography.label.small
-                    )
+            ) {
+                BottomSheet(
+                    onDismissRequest = { listener.onDismissBottomSheet() }
+                ) {
+                    Column(
+                        Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "Invite friends Not Yet Implemented",
+                            style = Theme.typography.label.small
+                        )
+                        NegativeButton(
+                            text = "Dismiss",
+                            onClick = listener::onDismissBottomSheet,
+                        )
+                    }
                 }
+
             }
             dialog(state.showLanguageDialog) {
                 Dialog(
@@ -67,8 +86,10 @@ class ProfileScreen :
                     message = "Not Yet Implemented",
                     buttonText = "OK",
                     onDismiss = listener::onDismissLanguageDialog,
-                    onCancelClick = listener::onDismissLanguageDialog
-                )
+                    onCancelClick = listener::onDismissLanguageDialog,
+                    onActionClick = listener::onDismissLanguageDialog,
+
+                    )
             }
             dialog(state.showThemeDialog) {
                 Dialog(
@@ -76,7 +97,8 @@ class ProfileScreen :
                     message = "Not Yet Implemented",
                     buttonText = "OK",
                     onDismiss = listener::onDismissThemeDialog,
-                    onCancelClick = listener::onDismissThemeDialog
+                    onCancelClick = listener::onDismissThemeDialog,
+                    onActionClick = listener::onDismissThemeDialog,
                 )
             }
         }) {
@@ -88,27 +110,42 @@ class ProfileScreen :
                         .background(Theme.colorScheme.background.surface)
                         .verticalScroll(rememberScrollState())
                         .padding(horizontal = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(24.dp)
-                ) {
+
+                    ) {
                     AppBar(
+                        contentPadding = PaddingValues(horizontal = 0.dp, vertical = 14.dp),
                         title = stringResource(Res.string.profile_title),
                         trailingContent = { ShareIcon(onClick = listener::onShareClicked) }
                     )
-                    ProfileInfoContainer(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .align(Alignment.CenterHorizontally),
-                        profilePicture = "https://images.unsplash.com/photo-1743701168206-bd617221b559?q=80&w=814&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                        fullName = state.fullName,
-                        userName = state.userName,
-                    )
+                    AnimatedVisibility(
+                        // state.isSuccess when implemented
+                        visible = true,
+                        enter = fadeIn(),
+                        exit = fadeOut(),
+                        modifier = Modifier.fillMaxWidth()
+                    )  {
+                        ProfileInfoContainer(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .align(Alignment.CenterHorizontally),
+                            //state.profilePicture
+                            profilePicture = "https://images.unsplash.com/photo-1743701168206-bd617221b559?q=80&w=814&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                            fullName = "Mohammed Ahmed Mansour",//state.fullName
+                            userName = "@Mohammed_2025",//state.userName
+                        )
+                    }
+                    Spacer(Modifier.height(24.dp))
                     InviteFriendsCard(onCLick = listener::onInviteFriendsClicked)
+                    Spacer(Modifier.height(24.dp))
                     AccountSettingsSection(listener)
+                    Spacer(Modifier.height(24.dp))
                     AppSettingsSection(listener)
+                    Spacer(Modifier.height(24.dp))
                     OtherSettingsSection(listener)
                     Text(
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                            .padding(vertical = 16.dp),
+                        modifier = Modifier
+                            .padding(vertical = 16.dp)
+                            .align(Alignment.CenterHorizontally),
                         text = "version 1.0",
                         style = Theme.typography.label.small,
                         color = Theme.colorScheme.shadeSecondary,
@@ -136,11 +173,25 @@ class ProfileScreen :
         effect: ProfileScreenUIEffect, navigator: Navigator
     ) {
         when (effect) {
-            ProfileScreenUIEffect.NavigateEditProfileScreen -> {navigator.push(RegisterScreen())}
-            ProfileScreenUIEffect.NavigateToLocationPickerScreen -> {navigator.push(RegisterScreen())}
-            ProfileScreenUIEffect.NavigateContactUsScreen -> {navigator.push(RegisterScreen())}
-            ProfileScreenUIEffect.NavigateToChangePasswordScreen -> {navigator.push(RegisterScreen())}
-            ProfileScreenUIEffect.NavigateToPrivacyAndPolicyScreen -> {navigator.push(RegisterScreen())}
+            ProfileScreenUIEffect.NavigateEditProfileScreen -> {
+                navigator.push(RegisterScreen())
+            }
+
+            ProfileScreenUIEffect.NavigateToLocationPickerScreen -> {
+                navigator.push(RegisterScreen())
+            }
+
+            ProfileScreenUIEffect.NavigateContactUsScreen -> {
+                navigator.push(RegisterScreen())
+            }
+
+            ProfileScreenUIEffect.NavigateToChangePasswordScreen -> {
+                navigator.push(RegisterScreen())
+            }
+
+            ProfileScreenUIEffect.NavigateToPrivacyAndPolicyScreen -> {
+                navigator.push(RegisterScreen())
+            }
 
         }
     }

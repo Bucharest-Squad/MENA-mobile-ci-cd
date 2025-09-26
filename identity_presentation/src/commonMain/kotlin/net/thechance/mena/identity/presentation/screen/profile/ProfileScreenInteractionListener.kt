@@ -17,6 +17,7 @@ interface ProfileScreenInteractionListener : BaseInteractionListener {
 
     fun onDismissLanguageDialog()
     fun onDismissThemeDialog()
+    fun onDismissBottomSheet()
 
     fun onContactUsClicked()
 
