@@ -37,14 +37,14 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun VideoLoadingCardItem(
-    title: String,
-    videoSize: String = "",
-    state: VideoUploadingState,
-    progress: Float? = null,
     modifier: Modifier = Modifier,
-    onCancel: () -> Unit = {},
-    onRetry: () -> Unit = {},
-    onDelete: () -> Unit = {}
+    title: String,
+    videoSize: String,
+    state: VideoUploadingState,
+    progress: Float,
+    onCancel: () -> Unit,
+    onRetry: () -> Unit,
+    onDelete: () -> Unit
 ) {
     Row(
         modifier = modifier
@@ -60,7 +60,6 @@ fun VideoLoadingCardItem(
                 .weight(1f),
             verticalAlignment = Alignment.Top
         ) {
-
             Icon(
                 painter = painterResource(Res.drawable.ic_video),
                 contentDescription = stringResource(Res.string.thumbnail),
@@ -96,7 +95,6 @@ fun VideoLoadingCardItem(
                                 bottom = Theme.spacing._4
                             )
                         )
-                        //TODO handle after infra talk
                         ProgressBar(
                             modifier = Modifier
                                 .padding(
@@ -147,8 +145,7 @@ fun VideoLoadingCardItem(
 
             VideoUploadingState.Error -> {
                 Row(
-                    modifier = Modifier
-                        .padding(top = Theme.spacing._24),
+                    modifier = Modifier.padding(top = Theme.spacing._24),
                     horizontalArrangement = Arrangement.spacedBy(Theme.spacing._16),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
