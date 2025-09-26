@@ -60,7 +60,7 @@ kover.reports {
         packages(
             "*.di",
             "*.dto",
-            "*.data.chat.MockChatRepository"
+            "*.chat"
         )
     }
 }
