@@ -5,11 +5,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
@@ -28,6 +25,8 @@ import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.component.textField.TextField
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import net.thechance.mena.wallet.presentation.model.FilterStatus
+import net.thechance.mena.wallet.presentation.model.FilterType
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -36,13 +35,17 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun FilterContent(
     selectedTypes: Set<FilterType>? = null,
     selectedStatus: FilterStatus = FilterStatus.ALL,
+    fromDate: String,
+    toDate: String,
     onTypeSelected: (FilterType) -> Unit = {},
-    onStatusSelected: (FilterStatus?) -> Unit = {}
+    onStatusSelected: (FilterStatus) -> Unit = {},
+    onFromClick: () -> Unit,
+    onToClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 16.dp, end = 16.dp)
+            .padding(horizontal = 16.dp)
     ) {
 
         Text(
@@ -51,22 +54,10 @@ fun FilterContent(
             color = Theme.colorScheme.shadePrimary
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
-
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            items(FilterType.entries) { type ->
-                Chip(
-                    text = stringResource(type.labelRes),
-                    isSelected = selectedTypes?.contains(type) == true,
-                    onClick = { onTypeSelected(type) },
-                    isEnabled = true
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
+        TransactionTypesRow(
+            selectedTypes = selectedTypes,
+            onTypeSelected = onTypeSelected
+        )
 
         Text(
             text = stringResource(Res.string.status),
@@ -74,92 +65,136 @@ fun FilterContent(
             color = Theme.colorScheme.shadePrimary
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
+        TransactionStatusRow(
+            selectedStatus = selectedStatus,
+            onStatusSelected = onStatusSelected
+        )
 
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(FilterStatus.entries) { status ->
-                Chip(
-                    text = stringResource(status.labelRes),
-                    isSelected = selectedStatus == status,
-                    onClick = {
-                        onStatusSelected(if (selectedStatus == status) null else status)
-                    },
-                    isEnabled = true
-                )
-            }
-        }
+        DateRangePicker(
+            fromDate = fromDate,
+            toDate = toDate,
+            onFromClick = onFromClick,
+            onToClick = onToClick
+        )
+    }
+}
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Row(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(
-                    text = stringResource(Res.string.from),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Theme.colorScheme.shadePrimary
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                TextField(
-                    value = "",
-                    hint = stringResource(Res.string.select_date),
-                    onValueChanged = {},
-                    readOnly = true,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-
-                        },
-                    trailingIcon = painterResource(Res.drawable.ic_calendar),
-                )
-            }
-
-            Spacer(modifier = Modifier.width(8.dp))
-
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(
-                    text = stringResource(Res.string.to),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Theme.colorScheme.shadePrimary
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                TextField(
-                    value = "",
-                    hint = stringResource(Res.string.select_date),
-                    onValueChanged = {},
-                    readOnly = true,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-
-                        },
-                    trailingIcon = painterResource(Res.drawable.ic_calendar)
-                )
-            }
+@Composable
+private fun TransactionTypesRow(
+    selectedTypes: Set<FilterType>? = null,
+    onTypeSelected: (FilterType) -> Unit = {}
+) {
+    LazyRow(
+        horizontalArrangement = Arrangement
+            .spacedBy(8.dp),
+        modifier = Modifier.padding(top = 12.dp, bottom = 16.dp)
+    ) {
+        items(FilterType.entries) { type ->
+            Chip(
+                text = stringResource(type.labelRes),
+                isSelected = selectedTypes?.contains(type) == true,
+                onClick = { onTypeSelected(type) },
+                isEnabled = true
+            )
         }
     }
 }
 
+@Composable
+private fun TransactionStatusRow(
+    selectedStatus: FilterStatus = FilterStatus.ALL,
+    onStatusSelected: (FilterStatus) -> Unit = {}
+) {
+    LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier.padding(top = 12.dp, bottom = 16.dp)
+    ) {
+        items(FilterStatus.entries) { status ->
+            Chip(
+                text = stringResource(status.labelRes),
+                isSelected = selectedStatus == status,
+                onClick = {
+                    onStatusSelected(status)
+                },
+                isEnabled = true
+            )
+        }
+    }
+}
+
+@Composable
+fun DateRangePicker(
+    fromDate: String,
+    toDate: String,
+    onFromClick: () -> Unit,
+    onToClick: () -> Unit
+) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        DatePickerField(
+            label = stringResource(Res.string.from),
+            value = fromDate,
+            onClick = onFromClick,
+            modifier = Modifier.weight(1f)
+        )
+
+        DatePickerField(
+            label = stringResource(Res.string.to),
+            value = toDate,
+            onClick = onToClick,
+            modifier = Modifier
+                .weight(1f)
+        )
+    }
+}
+
+@Composable
+private fun DatePickerField(
+    label: String,
+    value: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodySmall,
+            color = Theme.colorScheme.shadePrimary
+        )
+
+        TextField(
+            value = value,
+            hint = stringResource(Res.string.select_date),
+            onValueChanged = {},
+            readOnly = true,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp)
+                .clickable { onClick() },
+            trailingIcon = painterResource(Res.drawable.ic_calendar)
+        )
+    }
+}
+
+
 @Preview
 @Composable
-fun Preview() {
+private fun FilterContentPreview() {
     MenaTheme {
         Column(
             Modifier.background(Theme.colorScheme.background.surface)
         ) {
             FilterContent(
-                selectedTypes = setOf(FilterType.SENT, FilterType.ONLINE_PURCHASE)
+                selectedTypes = setOf(FilterType.SENT, FilterType.ONLINE_PURCHASE),
+                selectedStatus = FilterStatus.ALL,
+                fromDate = "2025-09-01",
+                toDate = "2025-09-30",
+                onFromClick = { },
+                onToClick = { }
             )
         }
     }

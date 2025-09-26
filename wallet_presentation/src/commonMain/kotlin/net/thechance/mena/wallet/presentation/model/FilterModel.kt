@@ -1,4 +1,4 @@
-package net.thechance.mena.wallet.presentation.component.filter
+package net.thechance.mena.wallet.presentation.model
 
 import mena.wallet_presentation.generated.resources.Res
 import mena.wallet_presentation.generated.resources.all
