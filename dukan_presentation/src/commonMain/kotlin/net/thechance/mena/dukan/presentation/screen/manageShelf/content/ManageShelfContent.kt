@@ -53,31 +53,7 @@ fun ManageShelfContent(
                 .weight(1f)
                 .verticalScroll(rememberScrollState())
         ) {
-            AppBar(
-                title = stringResource(Res.string.manage_shelf),
-                leadingContent = {
-                    Image(
-                        painter = painterResource(Res.drawable.ic_arrow_left),
-                        contentDescription = stringResource(Res.string.back_arrow)
-                    )
-                },
-                onLeadingClick = listener::onBackClicked,
-                trailingContent = {
-                    AppBarOptionContainer(
-                        onClick = listener::onDeleteClicked,
-                        content = {
-                            Image(
-                                painter = painterResource(Res.drawable.ic_delete),
-                                contentDescription = stringResource(Res.string.delete_icon),
-                            )
-                        }
-                    )
-                },
-                contentPadding = PaddingValues(
-                    horizontal = Theme.spacing._12,
-                    vertical = Theme.spacing._8
-                )
-            )
+            ManageShelfAppBar(listener)
             Text(
                 text = stringResource(Res.string.title),
                 style = Theme.typography.title.small,
@@ -93,7 +69,8 @@ fun ManageShelfContent(
                 modifier = Modifier.padding(
                     horizontal = Theme.spacing._16,
                     vertical = Theme.spacing._4
-                )
+                ),
+                readOnly = true
             )
         }
         PrimaryButton(
@@ -106,6 +83,37 @@ fun ManageShelfContent(
             contentPadding = PaddingValues(vertical = Theme.spacing._12)
         )
     }
+}
+
+@Composable
+private fun ManageShelfAppBar(
+    listener: ManageShelfInteractionListener
+) {
+    AppBar(
+        title = stringResource(Res.string.manage_shelf),
+        leadingContent = {
+            Image(
+                painter = painterResource(Res.drawable.ic_arrow_left),
+                contentDescription = stringResource(Res.string.back_arrow)
+            )
+        },
+        onLeadingClick = listener::onBackClicked,
+        trailingContent = {
+            AppBarOptionContainer(
+                onClick = listener::onDeleteClicked,
+                content = {
+                    Image(
+                        painter = painterResource(Res.drawable.ic_delete),
+                        contentDescription = stringResource(Res.string.delete_icon),
+                    )
+                }
+            )
+        },
+        contentPadding = PaddingValues(
+            horizontal = Theme.spacing._12,
+            vertical = Theme.spacing._8
+        )
+    )
 }
 
 @Preview
