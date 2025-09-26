@@ -29,16 +29,16 @@ import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.progressBar.ProgressBar
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.trends.presentation.shared.model.VideoState
+import net.thechance.mena.trends.presentation.shared.model.VideoUploadingState
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun VideoLoadingCardItem(
     title: String,
-    sizeText: String = "",
-    state: VideoState,
-    //TODO progress: Float? = null,
+    videoSize: String = "",
+    state: VideoUploadingState,
+    progress: Float? = null,
     modifier: Modifier = Modifier,
     onCancel: () -> Unit = {},
     onRetry: () -> Unit = {},
@@ -84,9 +84,9 @@ fun VideoLoadingCardItem(
                 )
 
                 when (state) {
-                    VideoState.Loading -> {
+                    VideoUploadingState.Loading -> {
                         Text(
-                            text = sizeText,
+                            text = videoSize,
                             color = Theme.colorScheme.shadeSecondary,
                             style = Theme.typography.label.extraSmall,
                             modifier = Modifier.padding(
@@ -106,16 +106,16 @@ fun VideoLoadingCardItem(
                         )
                     }
 
-                    VideoState.Success -> {
+                    VideoUploadingState.Success -> {
                         Text(
-                            text = sizeText,
+                            text = videoSize,
                             color = Theme.colorScheme.shadeSecondary,
                             style = Theme.typography.label.extraSmall,
                             modifier = Modifier.padding(start = Theme.spacing._8)
                         )
                     }
 
-                    VideoState.Error -> {
+                    VideoUploadingState.Error -> {
                         Text(
                             text = stringResource(Res.string.upload_failed),
                             color = Theme.colorScheme.border.error,
@@ -131,7 +131,7 @@ fun VideoLoadingCardItem(
         }
 
         when (state) {
-            VideoState.Loading -> {
+            VideoUploadingState.Loading -> {
                 Row(modifier = Modifier.padding(top = Theme.spacing._12)) {
                     Icon(
                         painter = painterResource(Res.drawable.ic_cancel),
@@ -144,7 +144,7 @@ fun VideoLoadingCardItem(
                 }
             }
 
-            VideoState.Error -> {
+            VideoUploadingState.Error -> {
                 Row(
                     modifier = Modifier.padding(top = Theme.spacing._24),
                     horizontalArrangement = Arrangement.spacedBy(Theme.spacing._16),
@@ -169,7 +169,7 @@ fun VideoLoadingCardItem(
                 }
             }
 
-            VideoState.Success -> {
+            VideoUploadingState.Success -> {
                 Row(
                     modifier = Modifier.padding(top = Theme.spacing._24)
                 ) {
