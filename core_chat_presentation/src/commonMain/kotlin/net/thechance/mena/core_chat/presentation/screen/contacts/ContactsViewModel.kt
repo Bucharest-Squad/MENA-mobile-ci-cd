@@ -90,7 +90,7 @@ class ContactsViewModel(
         tryToExecute(
             onSuccess = ::onContactClickSuccess,
             onError = ::onContactClickError,
-            execute = { chatRepository.getChatByContactId(Uuid.parse(contactId)) }
+            execute = { chatRepository.getChatByContactUserId(Uuid.parse(contactId)) }
         )
     }
 
