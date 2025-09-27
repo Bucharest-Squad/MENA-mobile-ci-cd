@@ -7,6 +7,5 @@ fun AyahDto.toAyah() = Ayah(
     number = number,
     surahId = id,
     displayContent = displayContent,
-    plainTextContent = plainTextContent,
-    page = page
+    plainTextContent = plainTextContent
 )
