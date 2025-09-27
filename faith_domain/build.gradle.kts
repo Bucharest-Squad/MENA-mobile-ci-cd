@@ -25,4 +25,13 @@ kover.reports {
             minBound(0)
         }
     }
+
+    filters {
+        excludes {
+            packages(
+                "mena.faith_presentation.generated.resources*",
+                "net.thechance.mena.faith.domain*"
+            )
+        }
+    }
 }

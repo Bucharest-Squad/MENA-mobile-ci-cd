@@ -78,7 +78,9 @@ kover.reports {
 
     filters {
         excludes {
-            packages("mena.faith_presentation.generated.resources*")
+            packages(
+                "net.thechance.mena.faith.presentation.feature.quran.surah.component.*"
+            )
         }
     }
 }

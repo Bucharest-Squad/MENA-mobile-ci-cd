@@ -40,6 +40,16 @@ kover.reports {
             minBound(0)
         }
     }
+
+    filters {
+        excludes {
+            packages(
+                "net.thechance.mena.faith.data.database.*",
+                "net.thechance.mena.faith.data.mapper.*",
+                "net.thechance.mena.faith.data.di.*"
+            )
+        }
+    }
 }
 
 android {
