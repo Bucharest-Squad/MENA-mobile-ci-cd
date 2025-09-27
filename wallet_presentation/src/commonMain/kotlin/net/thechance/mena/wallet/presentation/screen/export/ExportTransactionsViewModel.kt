@@ -19,6 +19,9 @@ import mena.wallet_presentation.generated.resources.download_complete
 import mena.wallet_presentation.generated.resources.download_failed
 import mena.wallet_presentation.generated.resources.download_success
 import mena.wallet_presentation.generated.resources.downloading_started
+import mena.wallet_presentation.generated.resources.error
+import mena.wallet_presentation.generated.resources.error_failed_view
+import mena.wallet_presentation.generated.resources.error_no_transactions
 import mena.wallet_presentation.generated.resources.something_went_wrong
 import net.thechance.mena.wallet.domain.exceptions.NoInternetException
 import net.thechance.mena.wallet.domain.repository.ExportTransactionsRepository
@@ -93,8 +96,19 @@ class ExportTransactionsViewModel(
         }
     }
 
+
     override fun onViewAndShareClicked() {
-        sendEffect(ExportTransactionsEffect.NavigateToViewFileScreen)
+        tryToExecute(
+            onStart = ::onViewAndShareStart,
+            callee = ::generateTransactionsFile,
+            onSuccess = { pdfBytes ->
+                onViewAndShareSuccess(pdfBytes)
+            },
+            onError = { error ->
+                onViewAndShareError(error)
+            },
+            dispatcher = ioDispatcher
+        )
     }
 
     @OptIn(ExperimentalTime::class)
@@ -112,11 +126,63 @@ class ExportTransactionsViewModel(
         )
     }
 
+    private fun onViewAndShareStart() {
+        updateState { oldState ->
+            oldState.copy(
+                isViewAndShareLoading = true,
+                isViewAndDownloadButtonEnabled = false
+            )
+        }
+    }
+
+    private suspend fun onViewAndShareSuccess(pdfBytes: ByteArray) {
+        updateState { oldState ->
+            oldState.copy(
+                isViewAndShareLoading = false,
+                isViewAndDownloadButtonEnabled = true
+            )
+        }
+
+        if (pdfBytes.isEmptyFile()) {
+            showToast(
+                messageRes = Res.string.error_no_transactions
+            )
+        } else {
+            sendEffect(ExportTransactionsEffect.NavigateToViewFileScreen)
+        }
+    }
+
+    private suspend fun onViewAndShareError(error: Throwable) {
+        updateState { oldState ->
+            oldState.copy(
+                isViewAndShareLoading = false,
+                isViewAndDownloadButtonEnabled = true
+            )
+        }
+        when (error) {
+            is NoInternetException -> {
+                updateState { oldState ->
+                    oldState.copy(
+                        noInternetConnection = true
+                    )
+                }
+            }
+
+            else -> {
+                showSnackBar(
+                    titleRes = Res.string.error,
+                    messageRes = Res.string.error_failed_view,
+                    isSuccess = false
+                )
+            }
+        }
+    }
+
     private suspend fun onDownloadStart() {
         updateState { oldState ->
             oldState.copy(
                 isDownloadLoading = true,
-                isViewAndShearEnabled = false
+                isViewAndShareButtonEnabled = false
             )
         }
         showToast(messageRes = Res.string.downloading_started)
@@ -151,7 +217,7 @@ class ExportTransactionsViewModel(
         updateState { oldState ->
             oldState.copy(
                 isDownloadLoading = false,
-                isViewAndShearEnabled = true
+                isViewAndShareButtonEnabled = true
             )
         }
         when (error) {
@@ -174,44 +240,51 @@ class ExportTransactionsViewModel(
     }
 
     private suspend fun saveFile(pdfBytes: ByteArray) {
-        try {
-            val file = FileKit.openFileSaver(
-                suggestedName = "transaction",
-                extension = "pdf"
+        if (pdfBytes.isEmptyFile()) {
+            showToast(
+                messageRes = Res.string.error_no_transactions
             )
-            file?.write(pdfBytes)
+        } else {
+            try {
+                val file = FileKit.openFileSaver(
+                    suggestedName = "transaction",
+                    extension = "pdf"
+                )
+                file?.write(pdfBytes)
 
-            resetDownloadState()
+                resetDownloadState()
 
-            showSnackBar(
-                titleRes = Res.string.download_complete,
-                messageRes = Res.string.download_success,
-                isSuccess = true
-            )
+                showSnackBar(
+                    titleRes = Res.string.download_complete,
+                    messageRes = Res.string.download_success,
+                    isSuccess = true
+                )
 
-        } catch (error: Exception) {
-            resetDownloadState()
-            when (error) {
-                is NoInternetException -> {
-                    updateState { oldState ->
-                        oldState.copy(
-                            noInternetConnection = true
-                        )
+            } catch (error: Exception) {
+                resetDownloadState()
+                when (error) {
+                    is NoInternetException -> {
+                        updateState { oldState ->
+                            oldState.copy(
+                                noInternetConnection = true
+                            )
+                        }
+
                     }
 
+                    else -> {
+                        showSnackBar(
+                            titleRes = Res.string.download_failed,
+                            messageRes = Res.string.something_went_wrong,
+                            isSuccess = false
+                        )
+                    }
                 }
 
-                else -> {
-                    showSnackBar(
-                        titleRes = Res.string.download_failed,
-                        messageRes = Res.string.something_went_wrong,
-                        isSuccess = false
-                    )
-                }
+
             }
-
-
         }
+
     }
 
     private suspend fun showSnackBar(
@@ -273,7 +346,7 @@ class ExportTransactionsViewModel(
         updateState { oldState ->
             oldState.copy(
                 isDownloadLoading = false,
-                isViewAndShearEnabled = true
+                isViewAndShareButtonEnabled = true
             )
         }
     }
@@ -296,4 +369,7 @@ class ExportTransactionsViewModel(
             ?.atStartOfDayIn(TimeZone.currentSystemDefault())
             ?.toLocalDateTime(TimeZone.currentSystemDefault())
     }
+
+    private fun ByteArray.isEmptyFile(): Boolean = this.isEmpty()
+
 }
