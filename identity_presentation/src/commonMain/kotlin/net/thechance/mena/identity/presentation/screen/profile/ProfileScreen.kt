@@ -43,8 +43,11 @@ import net.thechance.mena.identity.presentation.screen.register.RegisterScreen
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
-class ProfileScreen :
-    BaseScreen<ProfileScreenViewModel, ProfileScreenUIState, ProfileScreenUIEffect, ProfileScreenInteractionListener>() {
+class ProfileScreen : BaseScreen<
+        ProfileScreenViewModel,
+        ProfileScreenUIState,
+        ProfileScreenUIEffect,
+        ProfileScreenInteractionListener>() {
     @Composable
     override fun Content() {
         InitScreen(getScreenModel())
@@ -60,7 +63,7 @@ class ProfileScreen :
                 isVisible = state.showShareBottomSheet
             ) {
                 BottomSheet(
-                    onDismissRequest = { listener.onDismissBottomSheet() }
+                    onDismissRequest = listener::onDismissBottomSheet,
                 ) {
                     Column(
                         Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally
@@ -107,7 +110,7 @@ class ProfileScreen :
                         .background(Theme.colorScheme.background.surface)
                         .verticalScroll(rememberScrollState())
                         .padding(horizontal = 16.dp),
-                    ) {
+                ) {
                     AppBar(
                         contentPadding = PaddingValues(horizontal = 0.dp, vertical = 14.dp),
                         title = stringResource(Res.string.profile_title),
@@ -163,7 +166,7 @@ class ProfileScreen :
         effect: ProfileScreenUIEffect, navigator: Navigator
     ) {
         when (effect) {
-            ProfileScreenUIEffect.NavigateEditProfileScreen -> {
+            ProfileScreenUIEffect.NavigateToEditProfileScreen -> {
                 navigator.push(RegisterScreen())
             }
 

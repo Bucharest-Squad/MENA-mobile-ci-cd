@@ -32,10 +32,10 @@ class ProfileScreenViewModel() :
     }
 
     override fun onEditProfileInfoClicked() =
-        sendNewEffect(ProfileScreenUIEffect.NavigateEditProfileScreen)
+        sendNewEffect(ProfileScreenUIEffect.NavigateToEditProfileScreen)
 
     override fun onShareClicked() =
-        sendNewEffect(ProfileScreenUIEffect.NavigateEditProfileScreen)
+        sendNewEffect(ProfileScreenUIEffect.NavigateToEditProfileScreen)
 
     override fun onInviteFriendsClicked() =
         updateState { copy(showShareBottomSheet = true) }

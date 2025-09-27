@@ -36,7 +36,7 @@ class ProfileViewModelTest {
         viewModel.effect.test {
             viewModel.onEditProfileInfoClicked()
             val emittedEffect = awaitItem()
-            assertTrue { emittedEffect is ProfileScreenUIEffect.NavigateEditProfileScreen }
+            assertTrue { emittedEffect is ProfileScreenUIEffect.NavigateToEditProfileScreen }
             cancelAndConsumeRemainingEvents()
 
         }
@@ -47,7 +47,7 @@ class ProfileViewModelTest {
         viewModel.effect.test {
             viewModel.onShareClicked()
             val emittedEffect = awaitItem()
-            assertTrue { emittedEffect is ProfileScreenUIEffect.NavigateEditProfileScreen }
+            assertTrue { emittedEffect is ProfileScreenUIEffect.NavigateToEditProfileScreen }
             cancelAndConsumeRemainingEvents()
 
         }

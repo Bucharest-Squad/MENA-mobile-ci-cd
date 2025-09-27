@@ -38,10 +38,9 @@ fun SettingItem(
             .clickable(
                 onClick = {
                     onClick()
-                })
-
-        .padding(horizontal = 12.dp)
-                ,
+                }
+            )
+            .padding(horizontal = 12.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
