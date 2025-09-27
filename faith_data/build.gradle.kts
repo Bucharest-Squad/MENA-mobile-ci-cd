@@ -44,9 +44,9 @@ kover.reports {
     filters {
         excludes {
             packages(
-                "net.thechance.mena.faith.data.database.*",
-                "net.thechance.mena.faith.data.mapper.*",
-                "net.thechance.mena.faith.data.di.*"
+                "mena.faith.data.database.*",
+                "mena.faith.data.mapper.*",
+                "mena.faith.data.di.*"
             )
         }
     }
