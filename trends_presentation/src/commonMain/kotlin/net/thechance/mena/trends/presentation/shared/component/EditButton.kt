@@ -17,6 +17,7 @@ import mena.trends_presentation.generated.resources.ic_edit
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 internal fun EditButton(
@@ -43,7 +44,7 @@ internal fun EditButton(
     ){
         Icon(
             painter = painterResource(Res.drawable.ic_edit),
-            contentDescription = "Edit button icon",
+            contentDescription = stringResource(Res.string.edit_button_description),
             modifier = Modifier.size(20.dp),
             tint = Color.Unspecified
         )

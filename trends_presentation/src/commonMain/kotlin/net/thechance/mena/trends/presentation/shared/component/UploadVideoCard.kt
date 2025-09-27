@@ -90,7 +90,7 @@ internal fun UploadVideoCard(
             thumbnail?.let{
                 Image(
                     painter = thumbnail,
-                    contentDescription = "Uploaded video thumbnail",
+                    contentDescription = stringResource(Res.string.thumbnail_description),
                     modifier = Modifier.fillMaxWidth(),
                     contentScale = ContentScale.Crop
                 )
