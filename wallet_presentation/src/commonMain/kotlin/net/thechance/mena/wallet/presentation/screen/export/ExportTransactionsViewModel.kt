@@ -1,5 +1,8 @@
 package net.thechance.mena.wallet.presentation.screen.export
 
+import io.github.vinceglb.filekit.FileKit
+import io.github.vinceglb.filekit.dialogs.openFileSaver
+import io.github.vinceglb.filekit.write
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -11,7 +14,6 @@ import mena.wallet_presentation.generated.resources.download_success
 import mena.wallet_presentation.generated.resources.downloading_started
 import mena.wallet_presentation.generated.resources.something_went_wrong
 import net.thechance.mena.wallet.domain.exceptions.NoInternetException
-import net.thechance.mena.wallet.domain.exceptions.UnknownException
 import net.thechance.mena.wallet.domain.repository.ExportTransactionsRepository
 import net.thechance.mena.wallet.presentation.base.BaseViewModel
 import net.thechance.mena.wallet.presentation.base.SnackBarState
@@ -57,38 +59,71 @@ class ExportTransactionsViewModel(
                 updateState { oldState ->
                     oldState.copy(
                         isDownloadLoading = true,
-                        isViewAndShearDisabled = false
+                        isViewAndShearEnabled = false
                     )
                 }
                 showToast(messageRes = Res.string.downloading_started)
             },
             callee = {
                 if (currentState.isCustomFilterCardSelected) {
-                    exportTransactionsRepository.getFilteredTransactions(/*TODO take 4 params to apply filter*/)
+                    exportTransactionsRepository.getFilteredTransactionsFile(/*TODO take 4 params to apply filter*/)
                 } else {
-                    exportTransactionsRepository.getAllTransactions()
+                    exportTransactionsRepository.getAllTransactionsFile()
                 }
             },
-            onSuccess = {
+            onSuccess = { pdfBytes ->
                 //TODO save file into device
-                updateState { oldState ->
-                    oldState.copy(
-                        isDownloadLoading = false,
-                        isViewAndShearDisabled = true
+                try {
+                    val file = FileKit.openFileSaver(
+                        suggestedName = "transaction",
+                        extension = "pdf"
                     )
-                }
-                showSnackBar(
-                    titleRes = Res.string.download_complete,
-                    messageRes = Res.string.download_success,
-                    isSuccess = true
-                )
+                    if (file != null) {
+                        file.write(pdfBytes)
+                    }
 
+                    updateState { oldState ->
+                        oldState.copy(
+                            isDownloadLoading = false,
+                            isViewAndShearEnabled = true
+                        )
+                    }
+                    showSnackBar(
+                        titleRes = Res.string.download_complete,
+                        messageRes = Res.string.download_success,
+                        isSuccess = true
+                    )
+
+                } catch (error: Exception) {
+                    println(error)
+                    updateState { oldState ->
+                        oldState.copy(
+                            isDownloadLoading = false,
+                            isViewAndShearEnabled = true
+                        )
+                    }
+                    when (error) {
+                        is NoInternetException -> {
+
+                        }
+
+                        else -> {
+                            showSnackBar(
+                                titleRes = Res.string.download_failed,
+                                messageRes = Res.string.something_went_wrong,
+                                isSuccess = false
+                            )
+                        }
+                    }
+
+
+                }
             },
             onError = { error ->
                 updateState { oldState ->
                     oldState.copy(
                         isDownloadLoading = false,
-                        isViewAndShearDisabled = true
+                        isViewAndShearEnabled = true
                     )
                 }
                 when (error) {
@@ -101,7 +136,7 @@ class ExportTransactionsViewModel(
                         }
                     }
 
-                    is UnknownException -> {
+                    else -> {
                         showSnackBar(
                             titleRes = Res.string.download_failed,
                             messageRes = Res.string.something_went_wrong,
