@@ -7,6 +7,13 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.delay
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atStartOfDayIn
+import kotlinx.datetime.format.DateTimeFormat
+import kotlinx.datetime.format.char
+import kotlinx.datetime.toLocalDateTime
 import mena.wallet_presentation.generated.resources.Res
 import mena.wallet_presentation.generated.resources.download_complete
 import mena.wallet_presentation.generated.resources.download_failed
@@ -23,6 +30,8 @@ import net.thechance.mena.wallet.presentation.screen.export.component.CustomToas
 import org.jetbrains.compose.resources.StringResource
 import org.koin.android.annotation.KoinViewModel
 import org.koin.core.annotation.Provided
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 @KoinViewModel
 class ExportTransactionsViewModel(
@@ -80,7 +89,7 @@ class ExportTransactionsViewModel(
     override fun onToDateClicked() {
         //TODO Here the DatePicker opens and stores the result in state.endDate
         updateState { oldState ->
-            oldState.copy(startDate = "2025/09/27")
+            oldState.copy(endDate = "2025/09/27")
         }
     }
 
@@ -88,36 +97,57 @@ class ExportTransactionsViewModel(
         //TODO navigate to view screen
     }
 
+    @OptIn(ExperimentalTime::class)
     override fun onDownloadClicked() {
         tryToExecute(
-            onStart = {
-                updateState { oldState ->
-                    oldState.copy(
-                        isDownloadLoading = true,
-                        isViewAndShearEnabled = false
-                    )
-                }
-                showToast(messageRes = Res.string.downloading_started)
-            },
-            callee = {
-                if (currentState.isCustomFilterCardSelected) {
-                    exportTransactionsRepository.getAllTransactionsFile()
-                } else {
-                    exportTransactionsRepository.getAllTransactionsFile()
-                }
-            },
-
+            onStart = ::onDownloadStart,
+            callee = ::generateTransactionsFile,
             onSuccess = { pdfBytes ->
                 saveFile(pdfBytes)
             },
             onError = { error ->
-                handelOnDownloadError(error)
+                handleDownloadError(error)
             },
             dispatcher = ioDispatcher
         )
     }
 
-    private suspend fun handelOnDownloadError(error: Throwable) {
+    private suspend fun onDownloadStart() {
+        updateState { oldState ->
+            oldState.copy(
+                isDownloadLoading = true,
+                isViewAndShearEnabled = false
+            )
+        }
+        showToast(messageRes = Res.string.downloading_started)
+    }
+
+    @OptIn(ExperimentalTime::class)
+    private suspend fun generateTransactionsFile(): ByteArray {
+        return if (currentState.isCustomFilterCardSelected) {
+            val formatter = LocalDate.Format {
+                year(); char('/'); monthNumber(); char('/'); dayOfMonth()
+            }
+            val startDateTime: LocalDateTime? =
+                currentState.startDate.toStartOfDayLocalDateTime(formatter)
+
+            val endDateTime: LocalDateTime = currentState.endDate
+                .toStartOfDayLocalDateTime(formatter)
+                ?: Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+
+            exportTransactionsRepository.getFilteredTransactionsFile(
+                type = currentState.selectedTransactionsTypes?.map { it.toDomain() }
+                    ?.toSet(),
+                status = currentState.selectedTransactionsStatus.toDomain(),
+                startDate = startDateTime,
+                endDate = endDateTime
+            )
+        } else {
+            exportTransactionsRepository.getAllTransactionsFile()
+        }
+    }
+
+    private suspend fun handleDownloadError(error: Throwable) {
         updateState { oldState ->
             oldState.copy(
                 isDownloadLoading = false,
@@ -151,12 +181,8 @@ class ExportTransactionsViewModel(
             )
             file?.write(pdfBytes)
 
-            updateState { oldState ->
-                oldState.copy(
-                    isDownloadLoading = false,
-                    isViewAndShearEnabled = true
-                )
-            }
+            resetDownloadState()
+
             showSnackBar(
                 titleRes = Res.string.download_complete,
                 messageRes = Res.string.download_success,
@@ -164,12 +190,7 @@ class ExportTransactionsViewModel(
             )
 
         } catch (error: Exception) {
-            updateState { oldState ->
-                oldState.copy(
-                    isDownloadLoading = false,
-                    isViewAndShearEnabled = true
-                )
-            }
+            resetDownloadState()
             when (error) {
                 is NoInternetException -> {
                     updateState { oldState ->
@@ -209,8 +230,7 @@ class ExportTransactionsViewModel(
                 )
             )
         }
-        delay(durationMillis)
-        hideSnackBar()
+        autoHideSnackBar(durationMillis)
     }
 
     private fun hideSnackBar() {
@@ -235,7 +255,7 @@ class ExportTransactionsViewModel(
                 )
             )
         }
-        delay(durationMillis)
+        autoHideToast(durationMillis)
         hideToast()
     }
 
@@ -247,5 +267,33 @@ class ExportTransactionsViewModel(
                 )
             )
         }
+    }
+
+    private fun resetDownloadState() {
+        updateState { oldState ->
+            oldState.copy(
+                isDownloadLoading = false,
+                isViewAndShearEnabled = true
+            )
+        }
+    }
+
+    private suspend fun autoHideSnackBar(durationMillis: Long) {
+        delay(durationMillis)
+        hideSnackBar()
+    }
+
+    private suspend fun autoHideToast(durationMillis: Long) {
+        delay(durationMillis)
+        hideToast()
+    }
+
+    @OptIn(ExperimentalTime::class)
+    private fun String?.toStartOfDayLocalDateTime(formatter: DateTimeFormat<LocalDate>): LocalDateTime? {
+        return this
+            ?.takeIf { it.isNotEmpty() }
+            ?.let { LocalDate.parse(it, formatter) }
+            ?.atStartOfDayIn(TimeZone.currentSystemDefault())
+            ?.toLocalDateTime(TimeZone.currentSystemDefault())
     }
 }
