@@ -12,7 +12,7 @@ import kotlinx.coroutines.test.runTest
 import net.thechance.mena.identity.data.datasource.localDataSource.UserLocalDataSource
 import net.thechance.mena.identity.data.datasource.remoteDataSource.UserRemoteDataSource
 import net.thechance.mena.identity.data.dto.profile.ProfileResponseDto
-import net.thechance.mena.identity.data.mapper.toUserInfo
+import net.thechance.mena.identity.data.mapper.toDomain
 import net.thechance.mena.identity.domain.exception.InvalidCredentialsException
 import net.thechance.mena.identity.domain.exception.UnAuthorizedException
 import net.thechance.mena.identity.domain.exception.UnknownException
@@ -45,7 +45,7 @@ class ProfileRepositoryImplTest {
 
         val actual = profileRepositoryImpl.fetchUserInfo()
 
-        assertEquals(actual,fakeProfileResponse.toUserInfo())
+        assertEquals(actual,fakeProfileResponse.toDomain())
     }
 
     @Test
@@ -104,7 +104,7 @@ class ProfileRepositoryImplTest {
 
         coVerify {
             userLocalDataSource.saveUserInfo(
-                fakeProfileResponse.toUserInfo()
+                fakeProfileResponse.toDomain()
             )
         }
     }

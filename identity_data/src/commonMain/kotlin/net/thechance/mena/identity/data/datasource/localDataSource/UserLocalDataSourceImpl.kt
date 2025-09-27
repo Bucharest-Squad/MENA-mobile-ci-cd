@@ -5,6 +5,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.json.Json
 import net.thechance.mena.identity.domain.model.UserInfo
 import kotlinx.coroutines.flow.flow
+import net.thechance.mena.identity.data.dto.profile.ProfileResponseDto
+import net.thechance.mena.identity.data.mapper.toDomain
+import net.thechance.mena.identity.data.mapper.toDto
 
 class UserLocalDataSourceImpl(
     private val settings: Settings
@@ -31,13 +34,13 @@ class UserLocalDataSourceImpl(
 
 
     override fun saveUserInfo(user: UserInfo) {
-        val userJson = json.encodeToString(user)
+        val userJson = json.encodeToString(user.toDto())
         settings.putString(USER_KEY , userJson)
     }
 
     override fun getUserInfo(): UserInfo? {
         val userJson = settings.getStringOrNull(USER_KEY)
-        return userJson?.let{ runCatching { json.decodeFromString<UserInfo>(it) }.getOrNull() }
+        return userJson?.let{ runCatching { json.decodeFromString<ProfileResponseDto>(it).toDomain()}.getOrNull() }
     }
 
 

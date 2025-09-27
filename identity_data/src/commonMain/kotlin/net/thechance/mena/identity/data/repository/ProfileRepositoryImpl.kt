@@ -1,9 +1,8 @@
 package net.thechance.mena.identity.data.repository
 
-import kotlinx.coroutines.flow.Flow
 import net.thechance.mena.identity.data.datasource.localDataSource.UserLocalDataSource
 import net.thechance.mena.identity.data.datasource.remoteDataSource.UserRemoteDataSource
-import net.thechance.mena.identity.data.mapper.toUserInfo
+import net.thechance.mena.identity.data.mapper.toDomain
 import net.thechance.mena.identity.data.utils.safeWrapper
 import net.thechance.mena.identity.domain.model.UserInfo
 import net.thechance.mena.identity.domain.repository.ProfileRepository
@@ -17,7 +16,7 @@ class ProfileRepositoryImpl(
 
     override suspend fun fetchUserInfo(): UserInfo {
         val userInfo = safeWrapper {
-            remoteDataSource.getUserInfo().toUserInfo()
+            remoteDataSource.getUserInfo().toDomain()
         }
         saveUserInfo(userInfo)
         return userInfo

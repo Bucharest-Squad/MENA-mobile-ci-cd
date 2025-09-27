@@ -12,7 +12,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.serialization.json.Json
 import net.thechance.mena.identity.data.datasource.localDataSource.UserLocalDataSourceImpl
-import net.thechance.mena.identity.data.datasource.remoteDataSource.UserRemoteDataSourceImpl
+import net.thechance.mena.identity.data.mapper.toDto
 import net.thechance.mena.identity.domain.model.UserInfo
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -116,7 +116,7 @@ class LocalDataSourceImplTest {
     @Test
     fun`getUserInfo should return stored user info from settings when user exists`() {
 
-        val encoded = json.encodeToString(fakeUser)
+        val encoded = json.encodeToString(fakeUser.toDto())
         every { mockSettings.getStringOrNull(UserLocalDataSourceImpl.USER_KEY) } returns encoded
 
         val actual = localDataSource.getUserInfo()
@@ -133,7 +133,7 @@ class LocalDataSourceImplTest {
     @Test
     fun`getUserInfo should return null from settings when user does not exist`() {
 
-        val encoded = json.encodeToString(fakeUser)
+        val encoded = json.encodeToString(fakeUser.toDto())
         every { mockSettings.getStringOrNull(UserLocalDataSourceImpl.USER_KEY) } returns null
 
         val actual = localDataSource.getUserInfo()
@@ -144,7 +144,7 @@ class LocalDataSourceImplTest {
 
     @Test
     fun `saveUserInfo should store user in settings`(){
-        val encoded = json.encodeToString(fakeUser)
+        val encoded = json.encodeToString(fakeUser.toDto())
 
         localDataSource.saveUserInfo(fakeUser)
 

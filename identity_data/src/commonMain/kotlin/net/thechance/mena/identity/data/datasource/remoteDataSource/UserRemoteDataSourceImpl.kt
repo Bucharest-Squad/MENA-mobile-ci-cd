@@ -27,7 +27,7 @@ class UserRemoteDataSourceImpl(
     companion object {
         const val LOGIN = "identity/login"
         const val REFRESH = "identity/refresh"
-        const val PROFILE = "profile"
+        const val PROFILE = "profile/me"
 
     }
 }
