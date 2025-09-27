@@ -37,7 +37,7 @@ fun ChatScreenContent(
         topBar = {
             ChatHeader(
                 chatName = state.chat.name,
-                onMenuClick = interactions::onMenuClicked,
+                onMenuClick = {},
                 onBackClick = interactions::onBackClicked,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -55,14 +55,8 @@ fun ChatScreenContent(
         },
         overlays = {
             ChatScreenOverlays(
-                showChatActionsDialog = state.isChatActionsDialogVisible,
                 showResendMessageDialog = state.isResendMessageDialogVisible,
-                showDeleteChatDialog = state.isDeleteChatDialogVisible,
-                onDeleteChatClick = interactions::onDeleteChatClicked,
-                onDismissChatActionsDialog = interactions::onChatActionsDialogDismissed,
-                onDismissDeleteChatDialog = interactions::onDeleteChatDialogDismissed,
                 onDismissResendMessageDialog = interactions::onResendMessageDialogDismissed,
-                onConfirmDeleteChatClick = interactions::onConfirmDeleteChat,
                 onDeleteFailedMessageClick = interactions::onDeleteFailedMessageClicked,
                 onResendFailedMessageClick = interactions::onResendMessageClicked,
             )

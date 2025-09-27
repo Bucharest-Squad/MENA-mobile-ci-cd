@@ -42,10 +42,6 @@ class  ChatViewModel(
         popBackStack()
     }
 
-    override fun onMenuClicked() {
-        updateState { it.copy(isChatActionsDialogVisible = true) }
-    }
-
     override fun onInputMessageChanged(value: String) {
         updateState { it.copy(inputMessage = value) }
     }
@@ -187,17 +183,6 @@ class  ChatViewModel(
         updateState { it.copy(isResendMessageDialogVisible = false) }
     }
 
-    override fun onChatActionsDialogDismissed() {
-        updateState { it.copy(isChatActionsDialogVisible = false) }
-    }
-
-    override fun onDeleteChatClicked() {
-        updateState { it.copy(isDeleteChatDialogVisible = true) }
-    }
-
-    override fun onDeleteChatDialogDismissed() {
-        updateState { it.copy(isDeleteChatDialogVisible = false) }
-    }
 
     private fun getChat(chatId: String) {
 
@@ -272,10 +257,5 @@ class  ChatViewModel(
     private fun buildListItems(uiMessages: List<MessageUiState>): List<ChatListItem> {
         val marked = uiMessages.sortedByDescending { it.sendTime }.markLastInSeries()
         return marked.withDateSeparators()
-    }
-
-
-    override fun onConfirmDeleteChat() {
-        // TODO: actual delete next sprint
     }
 }
