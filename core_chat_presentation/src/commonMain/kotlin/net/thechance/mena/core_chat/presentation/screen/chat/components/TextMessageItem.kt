@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalTime::class)
+@file:OptIn(ExperimentalTime::class, ExperimentalUuidApi::class)
 
 package net.thechance.mena.core_chat.presentation.screen.chat.components
 
@@ -20,6 +20,8 @@ import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.time.ExperimentalTime
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 @Composable
 fun TextMessageItem(
@@ -62,8 +64,8 @@ private fun PreviewTextMessageItem() {
             TextMessageItem(
                 modifier = Modifier,
                 message = TextMessageUiState(
-                    id = "0",
-                    senderId = "1",
+                    id = Uuid.random(),
+                    senderId = Uuid.random(),
                     sendTime = LocalDateTime.now(),
                     status = MessageStatusUiState.READ,
                     isMine = false,

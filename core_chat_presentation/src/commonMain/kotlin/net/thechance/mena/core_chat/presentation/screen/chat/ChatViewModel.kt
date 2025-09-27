@@ -21,12 +21,12 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 
-class  ChatViewModel(
+class ChatViewModel(
     private val repository: ChatRepository,
-    chatArgs : ChatArgs,
+    chatArgs: ChatArgs,
     effector: ChatEffector,
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO
-) : BaseViewModel<ChatScreenState>(ChatScreenState(), effector,defaultDispatcher),
+) : BaseViewModel<ChatScreenState>(ChatScreenState(), effector, defaultDispatcher),
     ChatInteractionListener {
 
     init {
@@ -52,10 +52,8 @@ class  ChatViewModel(
         val text = state.value.inputMessage.trim()
         if (text.isEmpty()) return
 
-        // create temporary UI message to send
         val now = LocalDateTime.now()
         val uiMessage = TextMessageUiState(
-            id = Uuid.random().toString(),
             senderId = senderId,
             chatId = chatId,
             sendTime = now,
@@ -64,7 +62,6 @@ class  ChatViewModel(
             text = text
         )
 
-        // add to in-memory list to show immediately
         updateState { s ->
             val newMessages = s.uiMessages + uiMessage
             s.copy(
@@ -99,7 +96,7 @@ class  ChatViewModel(
         }
     }
 
-    override fun onMessageClicked(messageId: String) {
+    override fun onMessageClicked(messageId: Uuid) {
         updateState {
             it.copy(
                 chatListItems = it.chatListItems.map { item ->
@@ -145,7 +142,6 @@ class  ChatViewModel(
 
     override fun onResendMessageClicked() {
         state.value.failedMessageToReSend?.let { message ->
-            // mark as SENDING
             updateState { s ->
                 val updated = s.uiMessages.map {
                     if (it.id == message.id) (it as TextMessageUiState).copy(status = MessageStatusUiState.SENDING) else it

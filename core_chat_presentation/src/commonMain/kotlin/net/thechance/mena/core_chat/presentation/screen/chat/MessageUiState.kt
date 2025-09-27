@@ -13,9 +13,9 @@ import kotlin.uuid.Uuid
 import net.thechance.mena.core_chat.domain.entity.MessageStatus as DomainMessageStatus
 
 abstract class MessageUiState(
-    open val id: String,
-    open val senderId: String,
-    open val chatId: String,
+    open val id: Uuid = Uuid.random(),
+    open val senderId: Uuid = Uuid.random(),
+    open val chatId: Uuid = Uuid.random(),
     open val sendTime: LocalDateTime,
     open val status: MessageStatusUiState,
     open val isMine: Boolean,
@@ -35,9 +35,9 @@ data class MarkedMessageUiState(
 )
 
 data class TextMessageUiState(
-    override val id: String = "",
-    override val senderId: String = "",
-    override val chatId: String = "",
+    override val id: Uuid = Uuid.random(),
+    override val senderId: Uuid = Uuid.random(),
+    override val chatId: Uuid = Uuid.random(),
     override val sendTime: LocalDateTime,
     override val status: MessageStatusUiState,
     override val isMine: Boolean,
@@ -110,31 +110,31 @@ fun List<MarkedMessageUiState>.withDateSeparators(
 }
 
 
-fun Message.toUi(currentUserId: String): TextMessageUiState {
+fun Message.toUi(currentUserId: Uuid): TextMessageUiState {
     return TextMessageUiState(
-        id = id.toString(),
-        senderId = senderId.toString(),
-        chatId = chatId.toString(),
+        id = id,
+        senderId = senderId,
+        chatId = chatId,
         sendTime = sendAt,
-        status = status.toUiStatus(),
-        isMine = senderId.toString() == currentUserId,
+        status = status.toUi(),
+        isMine = senderId == currentUserId,
         text = text
     )
 }
 
 fun TextMessageUiState.toEntity(): Message {
     return Message(
-        id = Uuid.parse(id),
-        senderId = Uuid.parse(senderId),
-        chatId = Uuid.parse(chatId),
+        id = id,
+        senderId = senderId,
+        chatId = chatId,
         text = text,
         sendAt = sendTime,
-        status = status.toEntityStatus()
+        status = status.toEntity()
     )
 }
 
 
-private fun DomainMessageStatus.toUiStatus(): MessageStatusUiState {
+private fun DomainMessageStatus.toUi(): MessageStatusUiState {
     return when (this) {
         DomainMessageStatus.LOADING -> MessageStatusUiState.SENDING
         DomainMessageStatus.SENT -> MessageStatusUiState.SENT
@@ -143,7 +143,7 @@ private fun DomainMessageStatus.toUiStatus(): MessageStatusUiState {
     }
 }
 
-private fun MessageStatusUiState.toEntityStatus(): DomainMessageStatus {
+private fun MessageStatusUiState.toEntity(): DomainMessageStatus {
     return when (this) {
         MessageStatusUiState.SENDING -> DomainMessageStatus.LOADING
         MessageStatusUiState.SENT -> DomainMessageStatus.SENT

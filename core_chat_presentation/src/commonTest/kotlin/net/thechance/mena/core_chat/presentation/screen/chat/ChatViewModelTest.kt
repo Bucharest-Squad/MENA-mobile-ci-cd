@@ -42,7 +42,7 @@ import kotlin.test.Test
 class ChatViewModelTest {
     private val repository = mock<ChatRepository>()
     val chatId = Uuid.parse("11111111-1111-1111-1111-111111111111")
-    val currentUserId = "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
+    val currentUserId = Uuid.parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb")
     private val chatArgs = mock<ChatArgs>()
     private val effector = mock<ChatEffector>(MockMode.autofill)
     private lateinit var chatViewModel: ChatViewModel
@@ -153,7 +153,7 @@ class ChatViewModelTest {
         val inputMessage = "hi"
         chatViewModel.updateState {
             chatViewModel.state.value.copy(
-                chat = it.chat.copy(id = chatId.toString()),
+                chat = it.chat.copy(id = chatId),
                 inputMessage = inputMessage
             )
         }
@@ -162,7 +162,7 @@ class ChatViewModelTest {
         chatViewModel.onSendMessageClicked()
         testDispatcher.scheduler.advanceUntilIdle()
 
-        assertThat(chatViewModel.state.value.uiMessages.first().chatId).isEqualTo(chatId.toString())
+        assertThat(chatViewModel.state.value.uiMessages.first().chatId).isEqualTo(chatId)
         assertThat(chatViewModel.state.value.uiMessages.first().senderId).isEqualTo(
             currentUserId
         )
@@ -177,7 +177,7 @@ class ChatViewModelTest {
         val inputMessage = "hi"
         chatViewModel.updateState {
             chatViewModel.state.value.copy(
-                chat = it.chat.copy(id = chatId.toString()),
+                chat = it.chat.copy(id = chatId),
                 inputMessage = inputMessage
             )
         }
@@ -186,7 +186,7 @@ class ChatViewModelTest {
         chatViewModel.onSendMessageClicked()
         testDispatcher.scheduler.advanceUntilIdle()
 
-        assertThat(chatViewModel.state.value.uiMessages.first().chatId).isEqualTo(chatId.toString())
+        assertThat(chatViewModel.state.value.uiMessages.first().chatId).isEqualTo(chatId)
         assertThat(chatViewModel.state.value.uiMessages.first().senderId).isEqualTo(
             currentUserId
         )
@@ -195,7 +195,7 @@ class ChatViewModelTest {
         )
         assertThat(chatViewModel.state.value.inputMessage).isEmpty()
     }
-    
+
 
     @Test
     fun `onDeleteFailedMessageClick should delete the clicked failed message when its call`() {
@@ -274,7 +274,7 @@ class ChatViewModelTest {
         val chatListItem = ChatListItem.Message(markedMessageUiState)
         chatViewModel.updateState { it.copy(chatListItems = listOf(chatListItem)) }
 
-        chatViewModel.onMessageClicked("non-existent-id")
+        chatViewModel.onMessageClicked(currentUserId)
         testDispatcher.scheduler.advanceUntilIdle()
 
         val result = chatViewModel.state.value.chatListItems.first() as ChatListItem.Message
@@ -286,14 +286,14 @@ class ChatViewModelTest {
         listOf(
             Message(
                 Uuid.random(),
-                Uuid.parse(currentUserId),
+                currentUserId,
                 chatId,
                 "Hello, World", LocalDateTime.now(),
                 MessageStatus.SENT
             ),
             Message(
                 Uuid.random(),
-                Uuid.parse(currentUserId),
+                currentUserId,
                 chatId,
                 "Hello, World2", LocalDateTime.now(),
                 MessageStatus.SENT

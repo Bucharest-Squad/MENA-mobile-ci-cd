@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalUuidApi::class)
+
 package net.thechance.mena.core_chat.presentation.screen.chat.components
 
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,12 +16,14 @@ import net.thechance.mena.core_chat.presentation.screen.chat.ChatListItem
 import net.thechance.mena.core_chat.presentation.screen.chat.ChatUiState
 import net.thechance.mena.core_chat.presentation.screen.chat.MessageUiState
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 @Composable
 fun ChatList(
     items: List<ChatListItem>,
     chat: ChatUiState,
-    onMessageClick: (String) -> Unit,
+    onMessageClick: (Uuid) -> Unit,
     onFailedMessageClick: (MessageUiState) -> Unit
 ) {
 
