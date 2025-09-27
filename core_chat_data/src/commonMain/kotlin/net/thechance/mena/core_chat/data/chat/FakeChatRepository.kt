@@ -3,6 +3,8 @@ package net.thechance.mena.core_chat.data.chat
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.datetime.LocalDateTime
+import net.thechance.mena.core_chat.data.chat.utils.minusMinutes
+import net.thechance.mena.core_chat.data.chat.utils.now
 import net.thechance.mena.core_chat.domain.entity.Chat
 import net.thechance.mena.core_chat.domain.entity.Message
 import net.thechance.mena.core_chat.domain.entity.MessageStatus
@@ -13,7 +15,7 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class, ExperimentalTime::class)
-class MockChatRepository : ChatRepository {
+class FakeChatRepository : ChatRepository {
 
     private val chats = mutableMapOf<Uuid, Chat>()
     private val messages = mutableMapOf<Uuid, MutableList<Message>>()
