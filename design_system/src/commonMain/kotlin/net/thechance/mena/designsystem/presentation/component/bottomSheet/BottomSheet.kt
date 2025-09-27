@@ -214,6 +214,7 @@ fun ScaffoldScope.BottomSheet(
         Box(
             modifier = Modifier
                 .background(containerColor)
+                .clickable(false) {}
                 .align(Alignment.BottomCenter)
                 .onGloballyPositioned { coordinates ->
                     referenceHeight = coordinates.size.height
@@ -295,7 +296,7 @@ private fun SimpleBottomSheetPreview() {
 }
 
 @Composable
-fun RowScope.TestList() {
+private fun RowScope.TestList() {
     LazyColumn(modifier = Modifier.weight(1f)) {
         items(30) { index ->
             Text(
