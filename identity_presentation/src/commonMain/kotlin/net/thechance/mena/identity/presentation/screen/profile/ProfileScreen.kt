@@ -9,10 +9,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
@@ -117,29 +115,24 @@ class ProfileScreen :
                         trailingContent = { ShareIcon(onClick = listener::onShareClicked) }
                     )
                     AnimatedVisibility(
-                        // state.isSuccess when implemented
+                        // todo state.isSuccess when implemented
                         visible = true,
                         enter = fadeIn(),
                         exit = fadeOut(),
                         modifier = Modifier.fillMaxWidth()
-                    )  {
+                    ) {
                         ProfileInfoContainer(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .align(Alignment.CenterHorizontally),
-                            //state.profilePicture
-                            profilePicture = "https://images.unsplash.com/photo-1743701168206-bd617221b559?q=80&w=814&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                            profilePicture = "https://i.pinimg.com/736x/b4/d6/e5/b4d6e50449fff312606a05bce43cc4c3.jpg",
                             fullName = "Mohammed Ahmed Mansour",//state.fullName
                             userName = "@Mohammed_2025",//state.userName
                         )
                     }
-                    Spacer(Modifier.height(24.dp))
                     InviteFriendsCard(onCLick = listener::onInviteFriendsClicked)
-                    Spacer(Modifier.height(24.dp))
                     AccountSettingsSection(listener)
-                    Spacer(Modifier.height(24.dp))
                     AppSettingsSection(listener)
-                    Spacer(Modifier.height(24.dp))
                     OtherSettingsSection(listener)
                     Text(
                         modifier = Modifier

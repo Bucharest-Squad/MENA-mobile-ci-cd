@@ -1,9 +1,9 @@
 package net.thechance.mena.identity.presentation.screen.profile.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -11,10 +11,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.draw.dropShadow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import mena.identity_presentation.generated.resources.Res
@@ -34,58 +37,62 @@ fun ProfileInfoContainer(
     userName: String,
     modifier: Modifier = Modifier,
 ) {
-
+    val shadowColor = Color(0x0F111D2E)
     Column(
         modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Box(
-            modifier = Modifier
-                .size(88.dp)
-                .shadow(
-                    elevation = 8.dp,
-                    shape = CircleShape,
-                    ambientColor = Color(0x0F111D2E),
-                    spotColor = Color(0x0F111D2E)
-                )
-                .clip(CircleShape)
-                .background(Theme.colorScheme.stroke)
-        )
-        {
+        Box(modifier = Modifier) {
             Box(
                 modifier = Modifier
-                    .size(88.dp)
-                    .clip(CircleShape)
-                    .background(
-                        Theme.colorScheme.stroke, shape = CircleShape
+                    .border(1.dp, Theme.colorScheme.stroke, CircleShape)
+                    .dropShadow(
+                        shape = CircleShape,
+                        shadow = Shadow(
+                            radius = 8.dp,
+                            spread = 0.dp,
+                            color = shadowColor,
+                            offset = DpOffset(x = 0.dp, 4.dp)
+                        )
                     )
-            )
-            {
+                    .dropShadow(
+                        shape = CircleShape,
+                        shadow = Shadow(
+                            radius = 8.dp,
+                            spread = 0.dp,
+                            color = shadowColor,
+                            offset = DpOffset(x = 4.dp, 0.dp)
+                        )
+                    )
+            ) {
                 AsyncImage(
                     modifier = Modifier
-                        .padding(1.dp)
-                        .fillMaxSize()
+                        .size(88.dp)
                         .clip(CircleShape),
                     model = profilePicture,
                     contentScale = ContentScale.Crop,
                     contentDescription = stringResource(Res.string.profile_profile_picture_content_description),
                     placeholder = painterResource(Res.drawable.ic_share),
                 )
-                Box(
-                    modifier = Modifier
-                        .padding(end = 15.dp, bottom = 3.dp)
-                        .align(Alignment.BottomEnd)
-                        .size(10.dp)
-                        .clip(CircleShape)
-                        .background(Theme.colorScheme.stroke)
-                        .padding(1.dp)
-                        .clip(CircleShape)
-                        .background(Theme.colorScheme.success)
-                )
             }
+
+            Box(
+                modifier = Modifier
+                    .padding(end = 15.dp, bottom = 3.dp)
+                    .align(Alignment.BottomEnd)
+                    .size(10.dp)
+                    .border(1.dp, Theme.colorScheme.stroke, CircleShape)
+                    .background(Theme.colorScheme.success, CircleShape)
+            )
         }
         Text(
             text = fullName,
-            style = Theme.typography.label.medium,
+            style = Theme.typography.label.medium.copy(
+                shadow = androidx.compose.ui.graphics.Shadow(
+                    shadowColor,
+                    Offset(0f, 4f),
+                    4f
+                )
+            ),
             color = Theme.colorScheme.shadePrimary,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(top = 8.dp)
@@ -106,7 +113,7 @@ fun ProfileInfoContainer(
 fun PreviewProfileInfoContainer() {
     MenaTheme {
         ProfileInfoContainer(
-            profilePicture = "https://images.unsplash.com/photo-1743701168206-bd617221b559?q=80&w=814&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            profilePicture = "https://i.pinimg.com/736x/b4/d6/e5/b4d6e50449fff312606a05bce43cc4c3.jpg",
             fullName = "Mohammed Ahmed Mansour",
             userName = "@Mohammed_2025",
         )

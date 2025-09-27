@@ -27,15 +27,19 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun InviteFriendsCard(onCLick: () -> Unit) {
     Row(
-        modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(Theme.radius.lg)).background(
-            brush = Brush.linearGradient(
-                colors = listOf(
-                    Color(0xff051F43),
-                    Theme.colorScheme.brand.brand,
-
+        modifier = Modifier
+            .padding(top = 24.dp)
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(Theme.radius.lg))
+            .background(
+                brush = Brush.linearGradient(
+                    colors = listOf(
+                        Color(0xff051F43),
+                        Theme.colorScheme.brand.brand,
                     )
+                )
             )
-        ).clickable { onCLick() }
+            .clickable { onCLick() }
             .padding(8.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
