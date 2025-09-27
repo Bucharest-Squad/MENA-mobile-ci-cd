@@ -1,4 +1,4 @@
-package net.thechance.mena.core_chat.data.chat
+package net.thechance.mena.core_chat.data.chat.utils
 import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
