@@ -1,39 +1,47 @@
 package net.thechance.mena.identity.data.repository
 
-import net.thechance.mena.identity.data.datasource.AuthRemoteDataSource
-import net.thechance.mena.identity.data.datasource.LocalDataSource
+import com.russhwolf.settings.Settings
+import io.ktor.client.HttpClient
 import net.thechance.mena.identity.data.dto.auth.LoginRequestDto
 import net.thechance.mena.identity.data.dto.auth.LoginResponseDto
 import net.thechance.mena.identity.data.dto.auth.RefreshRequestDto
+import net.thechance.mena.identity.data.utils.postJson
 import net.thechance.mena.identity.data.utils.safeWrapper
 import net.thechance.mena.identity.domain.repository.AuthenticationRepository
 
 class AuthenticationRepositoryImpl(
-    private val remoteAuthService: AuthRemoteDataSource,
-    private val localDataSource: LocalDataSource,
+    private val client: HttpClient,
+    private val settings: Settings
 ) : AuthenticationRepository {
     override suspend fun login(countryCode: String, number: String, password: String) {
         return safeWrapper {
             val mobileNumber = countryCode + number
-            val loginResponse = remoteAuthService.login(LoginRequestDto(mobileNumber, password))
+            val loginResponse: LoginResponseDto = client.postJson(LoginRequestDto(mobileNumber, password), LOGIN)
             saveAuthTokens(loginResponse)
         }
     }
 
     override suspend fun refreshAccessToken(): String {
-        val refreshResponse = safeWrapper {
-            remoteAuthService.refreshToken(RefreshRequestDto(localDataSource.getRefreshToken()))
+        val refreshResponse: LoginResponseDto = safeWrapper {
+            client.postJson(RefreshRequestDto(settings.getString(REFRESH_TOKEN, "")), REFRESH)
         }
         saveAuthTokens(refreshResponse)
-        return localDataSource.getAccessToken()
+        return settings.getString(ACCESS_TOKEN, "")
     }
 
     override suspend fun getAccessToken(): String {
-        return localDataSource.getAccessToken()
+        return settings.getString(ACCESS_TOKEN, "")
     }
 
     private fun saveAuthTokens(loginResponseDto: LoginResponseDto) {
-        localDataSource.saveAccessToken(loginResponseDto.accessToken)
-        localDataSource.saveRefreshToken(loginResponseDto.refreshToken)
+        settings.putString(ACCESS_TOKEN, loginResponseDto.accessToken)
+        settings.putString(REFRESH_TOKEN, loginResponseDto.refreshToken)
+    }
+
+    companion object {
+        const val LOGIN = "identity/login"
+        const val REFRESH = "identity/refresh"
+        const val ACCESS_TOKEN = "access_token"
+        const val REFRESH_TOKEN = "refresh_token"
     }
 }
