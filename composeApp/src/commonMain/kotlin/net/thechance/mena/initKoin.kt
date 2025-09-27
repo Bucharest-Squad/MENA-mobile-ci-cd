@@ -2,6 +2,7 @@ package net.thechance.mena
 
 import net.thechance.mena.di.appModule
 import net.thechance.mena.di.networkModule
+import net.thechance.mena.di.screenModule
 import net.thechance.mena.identity.data.di.IdentityPlatformModule
 import net.thechance.mena.identity.data.di.identityDataModule
 import net.thechance.mena.identity.domain.di.domainModule
@@ -14,6 +15,7 @@ fun initKoin(config: KoinAppDeclaration? = null) {
         config?.invoke(this)
         val appModules = listOf(
             appModule,
+            screenModule,
             networkModule
         )
         val identityModules = listOf(
