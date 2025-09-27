@@ -31,9 +31,7 @@ import net.thechance.mena.identity.domain.exception.UserIsBlockedException
 import org.junit.Test
 import kotlin.test.assertEquals
 
-//TODO: fix all test cases to use client and settings instead of datasources
-// also rename all functions to match the new checks
-// finally split test cases with multiple assertion or verification into multiple test cases
+
 class AuthenticationRepositoryImplTest {
 
     private val client: HttpClient = mockk(relaxed = true)
@@ -104,7 +102,7 @@ class AuthenticationRepositoryImplTest {
     }
 
     @Test
-    fun `login should throw UnAuthorizedException when server returns 401`() = runTest {
+    fun `login() should throw UnAuthorizedException when server returns 401`() = runTest {
 
         val client = mockHttpClientError(HttpStatusCode.Unauthorized)
         authenticationRepository = AuthenticationRepositoryImpl(client, settings)
@@ -115,7 +113,7 @@ class AuthenticationRepositoryImplTest {
     }
 
     @Test
-    fun `login should throw InvalidCredentialsException when server returns 404`() = runTest {
+    fun `login() should throw InvalidCredentialsException when server returns 404`() = runTest {
 
         val client = mockHttpClientError(HttpStatusCode.NotFound)
         authenticationRepository = AuthenticationRepositoryImpl(client, settings)
@@ -127,7 +125,7 @@ class AuthenticationRepositoryImplTest {
     }
 
     @Test
-    fun `login should throw UserIsBlockedException when server returns 403`() = runTest {
+    fun `login() should throw UserIsBlockedException when server returns 403`() = runTest {
 
         val client = mockHttpClientError(HttpStatusCode.Forbidden)
         authenticationRepository = AuthenticationRepositoryImpl(client, settings)
@@ -164,7 +162,7 @@ class AuthenticationRepositoryImplTest {
         }
 
     @Test
-    fun `refreshAccessToken should return stored access token`() = runTest {
+    fun `refreshAccessToken() should return stored access token`() = runTest {
         val client = mockHttpClient(fakeLoginResponse)
         every { settings.getString(ACCESS_TOKEN, "") } returns fakeLoginResponse.accessToken
         authenticationRepository = AuthenticationRepositoryImpl(client, settings)
@@ -175,7 +173,7 @@ class AuthenticationRepositoryImplTest {
     }
 
     @Test
-    fun `refreshAccessTokens should throw UnAuthorizedException when server returns 401`() = runTest {
+    fun `refreshAccessToken() should throw UnAuthorizedException when server returns 401`() = runTest {
 
             val client = mockHttpClientError(HttpStatusCode.Unauthorized)
             authenticationRepository = AuthenticationRepositoryImpl(client, settings)
@@ -186,7 +184,7 @@ class AuthenticationRepositoryImplTest {
         }
 
     @Test
-    fun `getAccessToken should return stored token from settings`() = runTest {
+    fun `getAccessToken() should return stored token from settings`() = runTest {
 
         val expectedToken = fakeLoginResponse.accessToken
         every { settings.getString(ACCESS_TOKEN, "") } returns expectedToken
@@ -198,7 +196,7 @@ class AuthenticationRepositoryImplTest {
     }
 
     @Test
-    fun `getAccessToken should return empty string when no token stored`() = runTest {
+    fun `getAccessToken() should return empty string when no token stored`() = runTest {
         every { settings.getString(ACCESS_TOKEN, "") } returns ""
 
         val result = authenticationRepository.getAccessToken()
