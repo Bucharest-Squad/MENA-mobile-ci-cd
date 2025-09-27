@@ -55,19 +55,36 @@ class ExportTransactionsViewModel(
     }
 
     override fun onTypeSelected(type: FilterType) {
-        TODO("Not yet implemented")
+        updateState { oldState ->
+            val current = oldState.selectedTransactionsTypes ?: emptySet()
+            val newSet = if (current.contains(type)) current - type else current + type
+            oldState.copy(selectedTransactionsTypes = newSet)
+        }
+        println("type $type")
     }
 
     override fun onStatusSelected(status: FilterStatus) {
-        TODO("Not yet implemented")
+        updateState { oldState ->
+            oldState.copy(
+                selectedTransactionsStatus = status
+            )
+        }
+        println("status $status")
     }
 
     override fun onFromDateClicked() {
-        TODO("Not yet implemented")
+        //TODO Here the DatePicker opens and stores the result in state.startDate
+        updateState { oldState ->
+            oldState.copy(startDate = "2025/09/01")
+        }
     }
 
     override fun onToDateClicked() {
-        TODO("Not yet implemented")
+        //TODO Here the DatePicker opens and stores the result in state.endDate
+
+        updateState { oldState ->
+            oldState.copy(startDate = "2025/09/27")
+        }
     }
 
     override fun onViewAndShareClicked() {
