@@ -12,9 +12,9 @@ import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.test.runTest
 import net.thechance.mena.identity.data.datasource.AuthRemoteDataSource
 import net.thechance.mena.identity.data.datasource.LocalDataSource
-import net.thechance.mena.identity.data.dto.auth.LoginRequestDto
-import net.thechance.mena.identity.data.dto.auth.LoginResponseDto
-import net.thechance.mena.identity.data.dto.auth.RefreshRequestDto
+import net.thechance.mena.identity.data.dto.auth.LoginRequest
+import net.thechance.mena.identity.data.dto.auth.AuthenticationResponse
+import net.thechance.mena.identity.data.dto.auth.RefreshRequest
 import net.thechance.mena.identity.domain.exception.InvalidCredentialsException
 import net.thechance.mena.identity.domain.exception.UnAuthorizedException
 import net.thechance.mena.identity.domain.exception.UnknownException
@@ -42,7 +42,7 @@ class AuthenticationRepositoryImplTest {
         // Then
         coVerify {
             authRemoteDataSource.login(
-                LoginRequestDto(
+                LoginRequest(
                     countryCoed + mobileNumber,
                     passWord
                 )
@@ -85,7 +85,7 @@ class AuthenticationRepositoryImplTest {
         // Given
         val oldRefreshToken = "old_refresh_token"
         coEvery { localDataSource.getRefreshToken() } returns oldRefreshToken
-        coEvery { authRemoteDataSource.refreshToken(RefreshRequestDto(oldRefreshToken)) } returns fakeLoginResponse
+        coEvery { authRemoteDataSource.refreshToken(RefreshRequest(oldRefreshToken)) } returns fakeLoginResponse
         coEvery { localDataSource.getAccessToken() } returns "invalid_or_expired_token"
 
         // When
@@ -100,7 +100,7 @@ class AuthenticationRepositoryImplTest {
         // Given
         val oldRefreshToken = "old_refresh_token"
         coEvery { localDataSource.getRefreshToken() } returns oldRefreshToken
-        coEvery { authRemoteDataSource.refreshToken(RefreshRequestDto(oldRefreshToken)) } returns fakeLoginResponse
+        coEvery { authRemoteDataSource.refreshToken(RefreshRequest(oldRefreshToken)) } returns fakeLoginResponse
         coEvery { localDataSource.getAccessToken() } returns "invalid_or_expired_token"
 
         // When
@@ -115,7 +115,7 @@ class AuthenticationRepositoryImplTest {
         // Given
         val oldRefreshToken = "old_refresh_token"
         coEvery { localDataSource.getRefreshToken() } returns oldRefreshToken
-        coEvery { authRemoteDataSource.refreshToken(RefreshRequestDto(oldRefreshToken)) } returns fakeLoginResponse
+        coEvery { authRemoteDataSource.refreshToken(RefreshRequest(oldRefreshToken)) } returns fakeLoginResponse
         coEvery { localDataSource.getAccessToken() } returns fakeLoginResponse.accessToken
 
         // When
@@ -213,7 +213,7 @@ class AuthenticationRepositoryImplTest {
 
 }
 
-val fakeLoginResponse = LoginResponseDto(
+val fakeLoginResponse = AuthenticationResponse(
     accessToken = "fake_access_token",
     refreshToken = "fake_refresh_token"
 )
