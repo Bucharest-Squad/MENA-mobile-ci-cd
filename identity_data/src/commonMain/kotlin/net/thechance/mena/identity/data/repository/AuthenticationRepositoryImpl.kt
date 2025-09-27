@@ -5,7 +5,9 @@ import io.ktor.client.HttpClient
 import net.thechance.mena.identity.data.dto.auth.LoginRequestDto
 import net.thechance.mena.identity.data.dto.auth.AuthenticationResponse
 import net.thechance.mena.identity.data.dto.auth.RefreshRequestDto
+import net.thechance.mena.identity.data.utils.accessToken
 import net.thechance.mena.identity.data.utils.postJson
+import net.thechance.mena.identity.data.utils.refreshToken
 import net.thechance.mena.identity.data.utils.safeWrapper
 import net.thechance.mena.identity.domain.repository.AuthenticationRepository
 
@@ -23,25 +25,24 @@ class AuthenticationRepositoryImpl(
 
     override suspend fun refreshAccessToken(): String {
         val refreshResponse: AuthenticationResponse = safeWrapper {
-            client.postJson(RefreshRequestDto(settings.getString(REFRESH_TOKEN, "")), REFRESH)
+            client.postJson(RefreshRequestDto(settings.refreshToken), REFRESH)
         }
         saveAuthTokens(refreshResponse)
-        return settings.getString(ACCESS_TOKEN, "")
+        return settings.accessToken
     }
 
     override suspend fun getAccessToken(): String {
-        return settings.getString(ACCESS_TOKEN, "")
+        return settings.accessToken
     }
 
-    private fun saveAuthTokens(loginResponseDto: AuthenticationResponse) {
-        settings.putString(ACCESS_TOKEN, loginResponseDto.accessToken)
-        settings.putString(REFRESH_TOKEN, loginResponseDto.refreshToken)
+    private fun saveAuthTokens(authInfo: AuthenticationResponse) {
+        settings.accessToken = authInfo.accessToken
+        settings.refreshToken = authInfo.refreshToken
     }
 
     companion object {
         const val LOGIN = "identity/login"
         const val REFRESH = "identity/refresh"
-        const val ACCESS_TOKEN = "access_token"
-        const val REFRESH_TOKEN = "refresh_token"
+
     }
 }
