@@ -9,16 +9,16 @@ import net.thechance.mena.identity.data.utils.accessToken
 import net.thechance.mena.identity.data.utils.postJson
 import net.thechance.mena.identity.data.utils.refreshToken
 import net.thechance.mena.identity.data.utils.safeWrapper
+import net.thechance.mena.identity.domain.entity.PhoneNumber
 import net.thechance.mena.identity.domain.repository.AuthenticationRepository
 
 class AuthenticationRepositoryImpl(
     private val client: HttpClient,
     private val settings: Settings
 ) : AuthenticationRepository {
-    override suspend fun login(countryCode: String, number: String, password: String) {
+    override suspend fun login(phoneNumber: PhoneNumber, password: String) {
         return safeWrapper {
-            val mobileNumber = countryCode + number
-            val loginResponse: AuthenticationResponse = client.postJson(LoginRequestDto(mobileNumber, password), LOGIN)
+            val loginResponse: AuthenticationResponse = client.postJson(LoginRequestDto(phoneNumber.getFormattedPhoneNumber(), password), LOGIN)
             saveAuthTokens(loginResponse)
         }
     }
