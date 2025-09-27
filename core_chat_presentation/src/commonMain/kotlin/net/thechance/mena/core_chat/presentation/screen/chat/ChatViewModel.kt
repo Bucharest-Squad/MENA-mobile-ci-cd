@@ -224,7 +224,6 @@ class  ChatViewModel(
     }
 
     private fun subscribeToNewMessages(chatId: String) {
-        // todo should be flow
         tryToCollect(
             onCollect = ::onSubscribeToNewMessagesSuccess,
             onError = ::onSubscribeToNewMessagesError,

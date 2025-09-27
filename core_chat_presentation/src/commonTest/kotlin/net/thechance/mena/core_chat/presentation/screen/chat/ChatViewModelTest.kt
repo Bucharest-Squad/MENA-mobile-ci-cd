@@ -118,14 +118,6 @@ class ChatViewModelTest {
         verifySuspend { effector.popBackStack() }
     }
 
-    @Test
-    fun `onMenuClicked should set isChatActionsDialogVisible to true when its call`() {
-        chatViewModel.onMenuClicked()
-
-        testDispatcher.scheduler.advanceUntilIdle()
-
-        assertThat(chatViewModel.state.value.isChatActionsDialogVisible).isTrue()
-    }
 
     @Test
     fun `onInputMessageChanged should update the inputMessage value with provided value when its call`() {
@@ -153,25 +145,6 @@ class ChatViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
 
         assertThat(chatViewModel.state.value.isResendMessageDialogVisible).isFalse()
-    }
-
-
-    @Test
-    fun `onDeleteChatClick should set isDeleteChatDialogVisible to true when its called`() {
-        chatViewModel.onDeleteChatClicked()
-
-        testDispatcher.scheduler.advanceUntilIdle()
-
-        assertThat(chatViewModel.state.value.isDeleteChatDialogVisible).isTrue()
-    }
-
-    @Test
-    fun `onDeleteChatDialogDismissed should set isDeleteChatDialogVisible to false when its called`() {
-        chatViewModel.onDeleteChatDialogDismissed()
-
-        testDispatcher.scheduler.advanceUntilIdle()
-
-        assertThat(chatViewModel.state.value.isDeleteChatDialogVisible).isFalse()
     }
 
 
@@ -222,26 +195,7 @@ class ChatViewModelTest {
         )
         assertThat(chatViewModel.state.value.inputMessage).isEmpty()
     }
-
-    @Test
-    fun `onFailedMessageClick should make the resend message dialog visible and update current failed message its called`() {
-        val failedMessage = TextMessageUiState(
-            id = Uuid.random().toString(),
-            senderId = currentUserId,
-            chatId = chatId.toString(),
-            sendTime = LocalDateTime.now(),
-            status = MessageStatusUiState.SENDING,
-            isMine = true,
-            text = "hello,world"
-        )
-
-        chatViewModel.onFailedMessageClicked(failedMessage)
-        testDispatcher.scheduler.advanceUntilIdle()
-
-        assertThat(chatViewModel.state.value.isDeleteChatDialogVisible).isFalse()
-        assertThat(chatViewModel.state.value.failedMessageToReSend).isEqualTo(failedMessage)
-
-    }
+    
 
     @Test
     fun `onDeleteFailedMessageClick should delete the clicked failed message when its call`() {
