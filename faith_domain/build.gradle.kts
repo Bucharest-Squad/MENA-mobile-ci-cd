@@ -30,7 +30,7 @@ kover.reports {
         excludes {
             packages(
                 "mena.faith_presentation.generated.resources*",
-                "mena.faith.domain*"
+                "net.thechance.mena.faith.domain*"
             )
         }
     }
