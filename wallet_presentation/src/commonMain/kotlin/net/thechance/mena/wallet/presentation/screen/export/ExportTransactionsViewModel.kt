@@ -149,9 +149,7 @@ class ExportTransactionsViewModel(
                 suggestedName = "transaction",
                 extension = "pdf"
             )
-            if (file != null) {
-                file.write(pdfBytes)
-            }
+            file?.write(pdfBytes)
 
             updateState { oldState ->
                 oldState.copy(
