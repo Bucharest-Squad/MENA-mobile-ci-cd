@@ -61,7 +61,7 @@ fun SnackBarContainer(
 
 @Preview
 @Composable
-fun SnackBarContainerFailPreview() {
+private fun SnackBarContainerFailPreview() {
     MenaTheme {
         SnackBarContainer(
             snackBarState = SnackBarState(
@@ -76,7 +76,7 @@ fun SnackBarContainerFailPreview() {
 
 @Preview
 @Composable
-fun SnackBarContainerSuccessPreview() {
+private fun SnackBarContainerSuccessPreview() {
     MenaTheme {
         SnackBarContainer(
             snackBarState = SnackBarState(
