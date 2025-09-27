@@ -16,6 +16,10 @@ if (localPropertiesFile.exists()) {
     localProperties.load(localPropertiesFile.inputStream())
 }
 
+val appVersionName =
+    project.property("VERSION_MAJOR").toString() + "." + project.property("VERSION_MINOR")
+        .toString()
+
 kotlin {
     androidTarget {
         compilerOptions {
@@ -69,7 +73,7 @@ android {
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
-        versionName = "1.0"
+        versionName = appVersionName
     }
     packaging {
         resources {
@@ -224,6 +228,7 @@ tasks.register("generateEnvironmentXcconfig") {
             """
           SLASH = /
           BASE_URL = ${baseUrl.replace("//", "$(SLASH)$(SLASH)")}
+          CFBundleShortVersionString = $appVersionName
         """.trimIndent()
         )
     }
