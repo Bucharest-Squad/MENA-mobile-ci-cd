@@ -1,5 +1,11 @@
 package net.thechance.mena.wallet.presentation.screen.export.component
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -8,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.Modifier.Companion.then
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import mena.wallet_presentation.generated.resources.Res
@@ -17,29 +24,49 @@ import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
+private const val ANIMATION_DURATION = 500
+
 @Composable
 fun CustomToast(
     toastState: CustomToastState,
     modifier: Modifier = Modifier
 ) {
     val toastBackgroundColor = Color(0xB2121212)
-    Box(
-        modifier = modifier
-            .background(
-                color = toastBackgroundColor,
-                shape = RoundedCornerShape(Theme.radius.md)
-            )
-            .padding(vertical = 12.dp, horizontal = 16.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = toastState.messageRes?.let { stringResource(it) } ?: "",
-            style = Theme.typography.body.small,
-            color = Theme.colorScheme.primary.onPrimary
-        )
+    Box(modifier = modifier) {
+        AnimatedVisibility(
+            visible = toastState.isVisible,
+            enter =
+                fadeIn(tween(ANIMATION_DURATION)) +
+                        slideInVertically(
+                            animationSpec = tween(ANIMATION_DURATION),
+                            initialOffsetY = { -it / 2 },
+                        ),
+            exit =
+                fadeOut(tween(ANIMATION_DURATION)) +
+                        slideOutVertically(
+                            animationSpec = tween(ANIMATION_DURATION),
+                            targetOffsetY = { -it / 2 },
+                        ),
+            modifier = Modifier.align(Alignment.Center)
+        ) {
+            Box(
+                modifier = Modifier
+                    .background(
+                        color = toastBackgroundColor,
+                        shape = RoundedCornerShape(Theme.radius.md)
+                    )
+                    .padding(vertical = 12.dp, horizontal = 16.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = toastState.messageRes?.let { stringResource(it) } ?: "",
+                    style = Theme.typography.body.small,
+                    color = Theme.colorScheme.primary.onPrimary
+                )
 
+            }
+        }
     }
-
 }
 
 @Preview
