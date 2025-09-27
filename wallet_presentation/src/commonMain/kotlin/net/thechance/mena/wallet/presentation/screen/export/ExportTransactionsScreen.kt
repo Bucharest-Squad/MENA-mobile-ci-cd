@@ -40,6 +40,7 @@ import net.thechance.mena.wallet.presentation.model.FilterStatus
 import net.thechance.mena.wallet.presentation.model.FilterType
 import net.thechance.mena.wallet.presentation.screen.export.component.CustomToast
 import net.thechance.mena.wallet.presentation.screen.export.component.SelectCard
+import net.thechance.mena.wallet.presentation.screen.export.component.horizontalDivider
 import net.thechance.mena.wallet.presentation.utils.ObserveAsEffect
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -113,17 +114,7 @@ private fun ExportTransactionScreenContent(
                 )
                 {
                     Column {
-                        Box(
-                            modifier = Modifier
-                                .padding(vertical = 24.dp)
-                                .fillMaxWidth()
-                                .height(1.dp)
-                                .background(
-                                    color = Theme.colorScheme.stroke,
-                                    shape = CircleShape
-                                )
-
-                        )
+                        horizontalDivider()
                         FilterContent(
                             selectedTypes = state.selectedTransactionsTypes,
                             selectedStatus = state.selectedTransactionsStatus,
