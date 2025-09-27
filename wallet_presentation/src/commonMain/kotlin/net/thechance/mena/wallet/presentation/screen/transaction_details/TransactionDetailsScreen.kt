@@ -35,7 +35,7 @@ fun TransactionDetailsScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Transaction History Screen\nid = $id",
+            text = "Transaction Details Screen\nid = $id",
             style = Theme.typography.title.large,
             color = Theme.colorScheme.shadePrimary
         )
