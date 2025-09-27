@@ -1,8 +1,8 @@
-package net.thechance.mena.core_chat.api
+package net.thechance.mena.dukan.api
 
 import androidx.compose.runtime.Composable
 
-interface CoreChatApi {
+interface DukanApi {
     @Composable
     fun TabEntry()
 }
