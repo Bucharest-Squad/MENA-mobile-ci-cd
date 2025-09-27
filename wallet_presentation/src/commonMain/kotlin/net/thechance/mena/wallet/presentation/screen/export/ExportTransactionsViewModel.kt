@@ -94,7 +94,7 @@ class ExportTransactionsViewModel(
     }
 
     override fun onViewAndShareClicked() {
-        //TODO navigate to view screen
+        sendEffect(ExportTransactionsEffect.NavigateToViewFileScreen)
     }
 
     @OptIn(ExperimentalTime::class)

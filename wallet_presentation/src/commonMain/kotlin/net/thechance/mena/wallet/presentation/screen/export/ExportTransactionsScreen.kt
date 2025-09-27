@@ -176,6 +176,10 @@ private fun onExportTransactionsEffect(effect: ExportTransactionsEffect) {
     when (effect) {
         is ExportTransactionsEffect.NavigateBack -> {/* TODO("Handle navigation back") */
         }
+
+        is ExportTransactionsEffect.NavigateToViewFileScreen
+            -> {/*TODO("Handle navigation to view file screen ") */
+        }
     }
 }
 
