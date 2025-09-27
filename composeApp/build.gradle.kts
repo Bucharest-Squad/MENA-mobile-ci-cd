@@ -219,8 +219,13 @@ tasks.register("generateEnvironmentXcconfig") {
     doLast {
         val outputFile = outputFileProperty.get().asFile
         outputFile.parentFile.mkdirs()
-        outputFile.writeText("BASE_URL=$baseUrl")
-        println("Generated environment.xcconfig")
+
+        outputFile.writeText(
+            """
+          SLASH = /
+          BASE_URL = ${baseUrl.replace("//", "$(SLASH)$(SLASH)")}
+        """.trimIndent()
+        )
     }
 }
 
