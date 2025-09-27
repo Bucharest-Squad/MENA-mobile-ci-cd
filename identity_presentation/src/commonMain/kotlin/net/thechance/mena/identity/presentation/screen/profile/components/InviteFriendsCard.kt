@@ -5,9 +5,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,6 +23,7 @@ import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import sv.lib.squircleshape.SquircleShape
 
 @Composable
 fun InviteFriendsCard(onCLick: () -> Unit) {
@@ -30,7 +31,7 @@ fun InviteFriendsCard(onCLick: () -> Unit) {
         modifier = Modifier
             .padding(top = 24.dp)
             .fillMaxWidth()
-            .clip(RoundedCornerShape(Theme.radius.lg))
+            .clip(SquircleShape(radius = Theme.radius.lg))
             .background(
                 brush = Brush.linearGradient(
                     colors = listOf(
@@ -45,7 +46,8 @@ fun InviteFriendsCard(onCLick: () -> Unit) {
     ) {
         InviteFriendsIcon()
         Column(
-            modifier = Modifier
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center
         ) {
             Text(
                 text = stringResource(Res.string.profile_invite_friends_title),
@@ -57,7 +59,7 @@ fun InviteFriendsCard(onCLick: () -> Unit) {
             Text(
                 text = stringResource(Res.string.profile_invite_friends_subtitle),
                 style = Theme.typography.label.small,
-                color = Theme.colorScheme.shadeSecondary,
+                color = Theme.colorScheme.primary.onPrimaryBody,
                 textAlign = TextAlign.Center,
             )
         }
