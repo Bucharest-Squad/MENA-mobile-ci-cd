@@ -1,14 +1,17 @@
 package net.thechance.mena.wallet.presentation.screen.export
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material3.Icon
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -27,9 +30,14 @@ import mena.wallet_presentation.generated.resources.view_and_share
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.button.OutlinedButton
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
+import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
+import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.wallet.presentation.component.SnackBarContainer
 import net.thechance.mena.wallet.presentation.component.WalletScaffold
+import net.thechance.mena.wallet.presentation.component.filter.FilterContent
+import net.thechance.mena.wallet.presentation.model.FilterStatus
+import net.thechance.mena.wallet.presentation.model.FilterType
 import net.thechance.mena.wallet.presentation.screen.export.component.CustomToast
 import net.thechance.mena.wallet.presentation.screen.export.component.SelectCard
 import net.thechance.mena.wallet.presentation.utils.ObserveAsEffect
@@ -100,8 +108,36 @@ private fun ExportTransactionScreenContent(
                     isSelected = state.isCustomFilterCardSelected,
                     onCardSelected = interactionListener::onCustomFilteringClicked,
                 )
-                Spacer(modifier = Modifier.weight(1f))
+                AnimatedVisibility(
+                    visible = state.isCustomFilterCardSelected
+                )
+                {
+                    Column {
+                        Box(
+                            modifier = Modifier
+                                .padding(vertical = 24.dp)
+                                .fillMaxWidth()
+                                .height(1.dp)
+                                .background(
+                                    color = Theme.colorScheme.stroke,
+                                    shape = CircleShape
+                                )
 
+                        )
+                        FilterContent(
+                            selectedTypes = state.selectedTransactionsTypes,
+                            selectedStatus = state.selectedTransactionsStatus,
+                            fromDate = state.startDate ?: "",
+                            toDate = state.endDate ?: "",
+                            onTypeSelected = interactionListener::onTypeSelected,
+                            onStatusSelected = interactionListener::onStatusSelected,
+                            onFromClick = interactionListener::onFromDateClicked,
+                            onToClick = interactionListener::onToDateClicked
+                        )
+                    }
+
+                }
+                Spacer(modifier = Modifier.weight(1f))
                 OutlinedButton(
                     text = stringResource(Res.string.view_and_share),
                     trailingIcon = painterResource(Res.drawable.share),
@@ -148,11 +184,17 @@ private fun onExportTransactionsEffect(effect: ExportTransactionsEffect) {
 private fun ExportTransactionScreenPreview() {
     MenaTheme {
         ExportTransactionScreenContent(
-            state = ExportTransactionsState(),
+            state = ExportTransactionsState(
+                isCustomFilterCardSelected = true
+            ),
             interactionListener = object : ExportTransactionsListener {
                 override fun onBackClicked() {}
                 override fun onAllTransactionsClicked() {}
                 override fun onCustomFilteringClicked() {}
+                override fun onTypeSelected(type: FilterType) {}
+                override fun onStatusSelected(status: FilterStatus) {}
+                override fun onFromDateClicked() {}
+                override fun onToDateClicked() {}
                 override fun onViewAndShareClicked() {}
                 override fun onDownloadClicked() {}
             }

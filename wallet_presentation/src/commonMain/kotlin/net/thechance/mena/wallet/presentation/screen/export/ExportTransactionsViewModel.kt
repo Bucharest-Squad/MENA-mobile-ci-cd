@@ -17,6 +17,8 @@ import net.thechance.mena.wallet.domain.exceptions.NoInternetException
 import net.thechance.mena.wallet.domain.repository.ExportTransactionsRepository
 import net.thechance.mena.wallet.presentation.base.BaseViewModel
 import net.thechance.mena.wallet.presentation.base.SnackBarState
+import net.thechance.mena.wallet.presentation.model.FilterStatus
+import net.thechance.mena.wallet.presentation.model.FilterType
 import net.thechance.mena.wallet.presentation.screen.export.component.CustomToastState
 import org.jetbrains.compose.resources.StringResource
 import org.koin.android.annotation.KoinViewModel
@@ -36,7 +38,8 @@ class ExportTransactionsViewModel(
     override fun onAllTransactionsClicked() {
         updateState { oldState ->
             oldState.copy(
-                isAllTransactionsCardSelected = true
+                isAllTransactionsCardSelected = true,
+                isCustomFilterCardSelected = false
             )
         }
     }
@@ -44,9 +47,27 @@ class ExportTransactionsViewModel(
     override fun onCustomFilteringClicked() {
         updateState { oldState ->
             oldState.copy(
-                isCustomFilterCardSelected = true
+                isCustomFilterCardSelected = true,
+                isAllTransactionsCardSelected = false
+
             )
         }
+    }
+
+    override fun onTypeSelected(type: FilterType) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onStatusSelected(status: FilterStatus) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onFromDateClicked() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onToDateClicked() {
+        TODO("Not yet implemented")
     }
 
     override fun onViewAndShareClicked() {
@@ -66,7 +87,7 @@ class ExportTransactionsViewModel(
             },
             callee = {
                 if (currentState.isCustomFilterCardSelected) {
-                    exportTransactionsRepository.getFilteredTransactionsFile(/*TODO take 4 params to apply filter*/)
+                    exportTransactionsRepository.getAllTransactionsFile()
                 } else {
                     exportTransactionsRepository.getAllTransactionsFile()
                 }
