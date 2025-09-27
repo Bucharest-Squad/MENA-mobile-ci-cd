@@ -42,6 +42,8 @@
 		};
 		A9F46D1B423E4AC186F7D8FF /* Configuration */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = Configuration;
 			sourceTree = "<group>";
 		};
