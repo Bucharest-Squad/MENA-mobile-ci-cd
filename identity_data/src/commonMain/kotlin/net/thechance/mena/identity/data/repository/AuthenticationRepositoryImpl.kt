@@ -16,6 +16,7 @@ class AuthenticationRepositoryImpl(
     private val client: HttpClient,
     private val settings: Settings
 ) : AuthenticationRepository {
+
     override suspend fun login(phoneNumber: PhoneNumber, password: String) {
         return safeWrapper {
             val loginResponse: AuthenticationResponse = client.postJson(LoginRequestDto(phoneNumber.getFormattedPhoneNumber(), password), LOGIN)
@@ -29,6 +30,7 @@ class AuthenticationRepositoryImpl(
         }
         saveAuthTokens(refreshResponse)
         return settings.accessToken
+
     }
 
     override suspend fun getAccessToken(): String {
