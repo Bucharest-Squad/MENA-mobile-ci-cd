@@ -4,11 +4,11 @@ import net.thechance.mena.identity.domain.repository.AuthenticationRepository
 
 class AuthorizationService (private val authenticationRepository: AuthenticationRepository){
 
-    suspend fun getAccessToken(){
-        authenticationRepository.getAccessToken()
+    suspend fun getAccessToken(): String {
+        return authenticationRepository.getAccessToken()
     }
 
-    suspend fun refreshToken(){
-        authenticationRepository.refreshAccessToken()
+    suspend fun refreshToken(): String {
+        return authenticationRepository.refreshAccessToken()
     }
 }
