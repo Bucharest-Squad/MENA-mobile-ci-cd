@@ -33,6 +33,8 @@ kotlin {
             //Koin
             implementation(libs.koin.core)
             api(libs.koin.annotations)
+            //datetime
+            implementation(libs.kotlinx.datetime)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -52,7 +54,7 @@ kotlin {
 }
 
 ksp {
-    arg("KOIN_CONFIG_CHECK","true")
+    arg("KOIN_CONFIG_CHECK", "true")
 }
 
 dependencies {
