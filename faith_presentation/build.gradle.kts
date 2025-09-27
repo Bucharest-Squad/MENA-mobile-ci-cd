@@ -35,6 +35,7 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.faithDomain)
             implementation(projects.designSystem)
+            implementation(projects.faithApi)
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.ui)
