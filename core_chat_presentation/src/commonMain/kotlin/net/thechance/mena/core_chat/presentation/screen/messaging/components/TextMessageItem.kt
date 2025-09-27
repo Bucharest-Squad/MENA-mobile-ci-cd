@@ -12,7 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.datetime.LocalDateTime
-import net.thechance.mena.core_chat.presentation.screen.messaging.MessageStatus
+import net.thechance.mena.core_chat.presentation.screen.messaging.MessageStatusUiState
 import net.thechance.mena.core_chat.presentation.screen.messaging.TextMessageUiState
 import net.thechance.mena.core_chat.presentation.utils.now
 import net.thechance.mena.designsystem.presentation.component.text.Text
@@ -65,7 +65,7 @@ private fun PreviewTextMessageItem() {
                     id = "0",
                     senderId = "1",
                     sendTime = LocalDateTime.now(),
-                    status = MessageStatus.READ,
+                    status = MessageStatusUiState.READ,
                     isMine = false,
                     text = "Hello Bilal"
                 ),

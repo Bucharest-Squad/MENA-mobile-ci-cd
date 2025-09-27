@@ -20,7 +20,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import kotlinx.datetime.LocalDateTime
-import net.thechance.mena.core_chat.presentation.screen.messaging.MessageStatus
+import net.thechance.mena.core_chat.presentation.screen.messaging.MessageStatusUiState
 import net.thechance.mena.core_chat.presentation.screen.messaging.MessageUiState
 import net.thechance.mena.core_chat.presentation.screen.messaging.TextMessageUiState
 import net.thechance.mena.core_chat.presentation.utils.now
@@ -144,7 +144,7 @@ private fun PreviewBaseMessageLayout() {
                     "0",
                     "1",
                     sendTime = LocalDateTime.now(),
-                    status = MessageStatus.READ,
+                    status = MessageStatusUiState.READ,
                     isMine = false,
                     text = ""
                 ),

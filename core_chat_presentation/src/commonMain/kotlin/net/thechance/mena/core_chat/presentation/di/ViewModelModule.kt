@@ -9,6 +9,8 @@ import net.thechance.mena.core_chat.presentation.navigation.ChatEffector
 import net.thechance.mena.core_chat.presentation.navigation.ChatEffectorImpl
 import net.thechance.mena.core_chat.presentation.screen.chats.ChatsViewModel
 import net.thechance.mena.core_chat.presentation.screen.contacts.ContactsViewModel
+import net.thechance.mena.core_chat.presentation.screen.messaging.MessagingArgs
+import net.thechance.mena.core_chat.presentation.screen.messaging.MessagingArgsImpl
 import net.thechance.mena.core_chat.presentation.screen.messaging.MessagingViewModel
 import net.thechance.mena.core_chat.presentation.screen.syncContacts.SyncContactsScreenArgs
 import net.thechance.mena.core_chat.presentation.screen.syncContacts.SyncContactsScreenArgsImpl
@@ -31,4 +33,5 @@ internal val viewModelModule = module {
     factoryOf(::SyncContactsScreenArgsImpl) bind SyncContactsScreenArgs::class
     singleOf(::ChatEffectorImpl) bind ChatEffector::class
     factoryOf(::SettingsOpenerImpl) bind SettingsOpener::class
+    factoryOf(::MessagingArgsImpl) bind MessagingArgs::class
 }

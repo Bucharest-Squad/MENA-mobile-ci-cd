@@ -2,8 +2,9 @@
 
 package net.thechance.mena.core_chat.presentation.screen.messaging
 
-import androidx.lifecycle.SavedStateHandle
-import androidx.navigation.toRoute
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.datetime.LocalDateTime
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.error
@@ -13,7 +14,6 @@ import net.thechance.mena.core_chat.domain.entity.Message
 import net.thechance.mena.core_chat.domain.repository.ChatRepository
 import net.thechance.mena.core_chat.presentation.components.SnackBarData
 import net.thechance.mena.core_chat.presentation.navigation.ChatEffector
-import net.thechance.mena.core_chat.presentation.navigation.MessagingRoute
 import net.thechance.mena.core_chat.presentation.shared.BaseViewModel
 import net.thechance.mena.core_chat.presentation.utils.UiText
 import net.thechance.mena.core_chat.presentation.utils.now
@@ -21,15 +21,16 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 
-class MessagingViewModel(
+class  MessagingViewModel(
     private val repository: ChatRepository,
-    savedStateHandle: SavedStateHandle,
+    messagingArgs : MessagingArgs,
     effector: ChatEffector,
-) : BaseViewModel<MessagingScreenState>(MessagingScreenState(), effector),
+    private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO
+) : BaseViewModel<MessagingScreenState>(MessagingScreenState(), effector,defaultDispatcher),
     MessagingInteractionListener {
 
     init {
-        val chatId = savedStateHandle.toRoute<MessagingRoute>().chatId
+        val chatId = messagingArgs.chatId
 
         getChat(chatId)
         loadChatHistory(chatId)
@@ -62,7 +63,7 @@ class MessagingViewModel(
             senderId = senderId,
             chatId = chatId,
             sendTime = now,
-            status = MessageStatus.SENDING,
+            status = MessageStatusUiState.SENDING,
             isMine = true,
             text = text
         )
@@ -87,7 +88,7 @@ class MessagingViewModel(
     private fun onSendMessageSuccess(uiMessage: MessageUiState) {
         updateState { s ->
             val updated = s.uiMessages.map {
-                if (it.id == uiMessage.id) (it as TextMessageUiState).copy(status = MessageStatus.SENT) else it
+                if (it.id == uiMessage.id) (it as TextMessageUiState).copy(status = MessageStatusUiState.SENT) else it
             }.sortedByDescending { it.sendTime }
             s.copy(uiMessages = updated, chatListItems = buildListItems(updated))
         }
@@ -96,7 +97,7 @@ class MessagingViewModel(
     private fun onSendMessageError(uiMessage: MessageUiState) {
         updateState { s ->
             val updated = s.uiMessages.map {
-                if (it.id == uiMessage.id) (it as TextMessageUiState).copy(status = MessageStatus.FAILED) else it
+                if (it.id == uiMessage.id) (it as TextMessageUiState).copy(status = MessageStatusUiState.FAILED) else it
             }.sortedByDescending { it.sendTime }
             s.copy(uiMessages = updated, chatListItems = buildListItems(updated))
         }
@@ -150,7 +151,7 @@ class MessagingViewModel(
             // mark as SENDING
             updateState { s ->
                 val updated = s.uiMessages.map {
-                    if (it.id == message.id) (it as TextMessageUiState).copy(status = MessageStatus.SENDING) else it
+                    if (it.id == message.id) (it as TextMessageUiState).copy(status = MessageStatusUiState.SENDING) else it
                 }.sortedByDescending { it.sendTime }
                 s.copy(uiMessages = updated, chatListItems = buildListItems(updated))
             }
@@ -166,7 +167,7 @@ class MessagingViewModel(
     fun onResendMessageSuccess(message: MessageUiState) {
         updateState { s ->
             val updated = s.uiMessages.map {
-                if (it.id == message.id) (it as TextMessageUiState).copy(status = MessageStatus.SENT) else it
+                if (it.id == message.id) (it as TextMessageUiState).copy(status = MessageStatusUiState.SENT) else it
             }.sortedByDescending { it.sendTime }
             s.copy(uiMessages = updated, chatListItems = buildListItems(updated))
         }
@@ -175,7 +176,7 @@ class MessagingViewModel(
     fun onResendMessageError(message: MessageUiState) {
         updateState { s ->
             val updated = s.uiMessages.map {
-                if (it.id == message.id) (it as TextMessageUiState).copy(status = MessageStatus.FAILED) else it
+                if (it.id == message.id) (it as TextMessageUiState).copy(status = MessageStatusUiState.FAILED) else it
             }.sortedByDescending { it.sendTime }
             s.copy(uiMessages = updated, chatListItems = buildListItems(updated))
         }

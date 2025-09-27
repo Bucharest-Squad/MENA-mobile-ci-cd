@@ -17,11 +17,11 @@ abstract class MessageUiState(
     open val senderId: String,
     open val chatId: String,
     open val sendTime: LocalDateTime,
-    open val status: MessageStatus,
-    open val isMine: Boolean
+    open val status: MessageStatusUiState,
+    open val isMine: Boolean,
 )
 
-enum class MessageStatus {
+enum class MessageStatusUiState {
     SENDING,
     SENT,
     READ,
@@ -39,7 +39,7 @@ data class TextMessageUiState(
     override val senderId: String = "",
     override val chatId: String = "",
     override val sendTime: LocalDateTime,
-    override val status: MessageStatus,
+    override val status: MessageStatusUiState,
     override val isMine: Boolean,
     val text: String
 ): MessageUiState(
@@ -134,20 +134,20 @@ fun TextMessageUiState.toEntity(): Message {
 }
 
 
-private fun DomainMessageStatus.toUiStatus(): MessageStatus {
+private fun DomainMessageStatus.toUiStatus(): MessageStatusUiState {
     return when (this) {
-        DomainMessageStatus.LOADING -> MessageStatus.SENDING
-        DomainMessageStatus.SENT -> MessageStatus.SENT
-        DomainMessageStatus.READ -> MessageStatus.READ
-        DomainMessageStatus.FAILED -> MessageStatus.FAILED
+        DomainMessageStatus.LOADING -> MessageStatusUiState.SENDING
+        DomainMessageStatus.SENT -> MessageStatusUiState.SENT
+        DomainMessageStatus.READ -> MessageStatusUiState.READ
+        DomainMessageStatus.FAILED -> MessageStatusUiState.FAILED
     }
 }
 
-private fun MessageStatus.toEntityStatus(): DomainMessageStatus {
+private fun MessageStatusUiState.toEntityStatus(): DomainMessageStatus {
     return when (this) {
-        MessageStatus.SENDING -> DomainMessageStatus.LOADING
-        MessageStatus.SENT -> DomainMessageStatus.SENT
-        MessageStatus.READ -> DomainMessageStatus.READ
-        MessageStatus.FAILED -> DomainMessageStatus.FAILED
+        MessageStatusUiState.SENDING -> DomainMessageStatus.LOADING
+        MessageStatusUiState.SENT -> DomainMessageStatus.SENT
+        MessageStatusUiState.READ -> DomainMessageStatus.READ
+        MessageStatusUiState.FAILED -> DomainMessageStatus.FAILED
     }
 }
