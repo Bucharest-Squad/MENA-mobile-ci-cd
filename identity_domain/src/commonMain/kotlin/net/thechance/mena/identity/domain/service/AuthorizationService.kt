@@ -1,5 +1,6 @@
 package net.thechance.mena.identity.domain.service
 
+import kotlinx.coroutines.flow.StateFlow
 import net.thechance.mena.identity.domain.repository.AuthenticationRepository
 
 class AuthorizationService (private val authenticationRepository: AuthenticationRepository){
@@ -11,4 +12,6 @@ class AuthorizationService (private val authenticationRepository: Authentication
     suspend fun refreshToken(): String {
         return authenticationRepository.refreshAccessToken()
     }
+
+    fun observeAccessToken(): StateFlow<String> = authenticationRepository.observeTokenChange()
 }
