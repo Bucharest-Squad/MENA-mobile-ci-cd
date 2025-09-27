@@ -11,6 +11,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import mena.dukan_presentation.generated.resources.Res
+import mena.dukan_presentation.generated.resources.back_arrow
 import mena.dukan_presentation.generated.resources.dukan_blur
 import mena.dukan_presentation.generated.resources.dukan_pending
 import mena.dukan_presentation.generated.resources.dukan_request_pending
@@ -43,7 +44,7 @@ fun PendingDukanScreen(
             leadingContent = {
                 Icon(
                     painter = painterResource(Res.drawable.ic_arrow_left),
-                    contentDescription = "left_arrow",
+                    contentDescription = stringResource(Res.string.back_arrow),
                 )
             },
             onLeadingClick = onBackClick

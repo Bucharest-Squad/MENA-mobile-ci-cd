@@ -55,5 +55,7 @@
     <string name="dukan_approved_now">create dukan request is approved now</string>
     <string name="creating_shelf">Start creating your shelf and products by clicking on create button below</string>
     <string name="delete_icon">Delete Icon</string>
+    <string name="foreground_image">Foreground Image</string>
+    <string name="blur_image">Blur Image</string>
 
 </resources>
