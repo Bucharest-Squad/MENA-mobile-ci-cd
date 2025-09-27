@@ -73,7 +73,7 @@ fun ChatNavHost(
         NavHost(
             modifier = Modifier.fillMaxSize(),
             navController = navController,
-            startDestination = ChatsRoute,
+            startDestination = ChatDetailsRoute("11111111-1111-1111-1111-111111111111"),
         ) {
             composable<ChatsRoute> { ChatsScreen() }
             composable<ContactsRoute> { ContactsScreen() }

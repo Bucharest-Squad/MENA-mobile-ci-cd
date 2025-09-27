@@ -5,7 +5,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import net.thechance.mena.core_chat.presentation.screen.chat.ChatListItem
@@ -20,10 +22,19 @@ fun ChatList(
     onMessageClick: (String) -> Unit,
     onFailedMessageClick: (MessageUiState) -> Unit
 ) {
+
+    val chatListState = rememberLazyListState()
+
+    LaunchedEffect(items.size) {
+        if (items.isNotEmpty()) {
+            chatListState.animateScrollToItem(0)
+        }
+    }
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = Theme.spacing._12),
+        state = chatListState,
         reverseLayout = true,
         contentPadding = PaddingValues(top = Theme.spacing._16)
     ) {

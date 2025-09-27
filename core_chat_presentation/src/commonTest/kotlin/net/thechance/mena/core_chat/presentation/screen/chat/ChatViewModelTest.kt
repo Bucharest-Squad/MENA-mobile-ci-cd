@@ -1,4 +1,4 @@
-package net.thechance.mena.core_chat.presentation.screen.messaging
+package net.thechance.mena.core_chat.presentation.screen.chat
 
 import assertk.assertThat
 import assertk.assertions.doesNotContain
@@ -30,12 +30,6 @@ import net.thechance.mena.core_chat.domain.entity.MessageStatus
 import net.thechance.mena.core_chat.domain.repository.ChatRepository
 import net.thechance.mena.core_chat.presentation.components.SnackBarData
 import net.thechance.mena.core_chat.presentation.navigation.ChatEffector
-import net.thechance.mena.core_chat.presentation.screen.chat.ChatArgs
-import net.thechance.mena.core_chat.presentation.screen.chat.ChatViewModel
-import net.thechance.mena.core_chat.presentation.screen.chat.MessageStatusUiState
-import net.thechance.mena.core_chat.presentation.screen.chat.TextMessageUiState
-import net.thechance.mena.core_chat.presentation.screen.chat.toEntity
-import net.thechance.mena.core_chat.presentation.screen.chat.toUi
 import net.thechance.mena.core_chat.presentation.utils.UiText
 import net.thechance.mena.core_chat.presentation.utils.now
 import kotlin.test.AfterTest
@@ -84,12 +78,10 @@ class ChatViewModelTest {
 
         testDispatcher.scheduler.advanceUntilIdle()
 
-        assertThat(chatViewModel.state.value.uiMessages).isEqualTo(messages.map {
-            it.toUi(
-                currentUserId
-            )
-        })
+        assertThat(chatViewModel.state.value.uiMessages)
+            .isEqualTo(messages.map { it.toUi(currentUserId) }.reversed())
     }
+
 
     @Test
     fun `init should send snack bar effect when its loading the messages failed`() {
@@ -294,6 +286,47 @@ class ChatViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
         assertThat(chatViewModel.state.value.uiMessages.first().status).isEqualTo(MessageStatusUiState.FAILED)
     }
+
+    @Test
+    fun `onMessageClicked should toggle showMessageInfo when message with id exists`() {
+        val markedMessageUiState = MarkedMessageUiState(
+            message = messages.first().toUi(currentUserId),
+            isMarkedLastInSeries = false,
+            showMessageInfo = false
+        )
+        val chatListItem = ChatListItem.Message(markedMessageUiState)
+        chatViewModel.updateState { it.copy(chatListItems = listOf(chatListItem)) }
+
+        chatViewModel.onMessageClicked(markedMessageUiState.message.id)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val updatedItem = chatViewModel.state.value.chatListItems.first() as ChatListItem.Message
+        assertThat(updatedItem.data.showMessageInfo).isTrue()
+
+        chatViewModel.onMessageClicked(markedMessageUiState.message.id)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val toggledBack = chatViewModel.state.value.chatListItems.first() as ChatListItem.Message
+        assertThat(toggledBack.data.showMessageInfo).isFalse()
+    }
+
+    @Test
+    fun `onMessageClicked should not change items when message id does not exist`() {
+        val markedMessageUiState = MarkedMessageUiState(
+            message = messages.first().toUi(currentUserId),
+            isMarkedLastInSeries = false,
+            showMessageInfo = false
+        )
+        val chatListItem = ChatListItem.Message(markedMessageUiState)
+        chatViewModel.updateState { it.copy(chatListItems = listOf(chatListItem)) }
+
+        chatViewModel.onMessageClicked("non-existent-id")
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val result = chatViewModel.state.value.chatListItems.first() as ChatListItem.Message
+        assertThat(result).isEqualTo(chatListItem)
+    }
+
 
     private val messages =
         listOf(
