@@ -88,7 +88,7 @@ class FakeChatRepository : ChatRepository {
         return chats.getOrPut(chatId) { Chat(chatId, null, "Mock Chat $chatId") }
     }
 
-    override suspend fun getChatByContactId(userId: Uuid): Chat {
+    override suspend fun getChatByContactUserId(userId: Uuid): Chat {
         val chatId = messages.entries
             .firstOrNull { (_, msgs) ->
                 msgs.any { it.senderId == userId }

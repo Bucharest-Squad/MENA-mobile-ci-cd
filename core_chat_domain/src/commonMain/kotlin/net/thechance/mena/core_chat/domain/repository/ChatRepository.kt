@@ -13,5 +13,5 @@ interface ChatRepository {
     suspend fun markMessagesAsRead(chatId: Uuid)
     fun subscribeToMessages(chatId: Uuid): Flow<Message>
     suspend fun getChatById(chatId: Uuid): Chat
-    suspend fun getChatByContactId(userId : Uuid): Chat
+    suspend fun getChatByContactUserId(userId : Uuid): Chat
 }
