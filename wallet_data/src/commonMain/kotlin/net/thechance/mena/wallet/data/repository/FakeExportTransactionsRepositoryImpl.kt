@@ -2,14 +2,13 @@ package net.thechance.mena.wallet.data.repository
 
 import io.ktor.utils.io.core.toByteArray
 import kotlinx.datetime.LocalDateTime
-import net.thechance.mena.wallet.data.exceptions.safeApiCall
 import net.thechance.mena.wallet.data.extension.NetworkClient
 import net.thechance.mena.wallet.domain.entity.Transaction
 import net.thechance.mena.wallet.domain.repository.ExportTransactionsRepository
 import org.koin.core.annotation.Single
 
 @Single
-class ExportTransactionsRepositoryImpl(
+class FakeExportTransactionsRepositoryImpl(
     private val networkClient: NetworkClient
 ) : ExportTransactionsRepository {
     override suspend fun getFilteredTransactionsFile(
@@ -18,16 +17,12 @@ class ExportTransactionsRepositoryImpl(
         startDate: LocalDateTime?,
         endDate: LocalDateTime?
     ): ByteArray {
-        return safeApiCall {
-            networkClient.post(TRANSACTIONS_PATH)
-        }
+        return generateFakePdfFile()
     }
 
     override suspend fun getAllTransactionsFile(): ByteArray {
-//        return safeApiCall {
-//            networkClient.post(TRANSACTIONS_PATH)
-//        }
-        return generateFakePdfFile()
+
+        return generateEmptyPdfFile()
     }
 
     private companion object {
@@ -68,4 +63,9 @@ class ExportTransactionsRepositoryImpl(
         """.trimIndent()
         return fakeContent.toByteArray()
     }
+
+    private fun generateEmptyPdfFile(): ByteArray {
+        return ByteArray(0)
+    }
+
 }
