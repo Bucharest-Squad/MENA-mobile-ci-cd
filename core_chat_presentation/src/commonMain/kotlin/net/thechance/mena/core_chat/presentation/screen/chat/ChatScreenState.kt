@@ -9,8 +9,6 @@ data class ChatScreenState(
 
     val userId: String = "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb", // temp until login
 
-    val isChatActionsDialogVisible: Boolean = false,
-    val isDeleteChatDialogVisible: Boolean = false,
     val isResendMessageDialogVisible: Boolean = false,
 
     val failedMessageToReSend: MessageUiState? = null
