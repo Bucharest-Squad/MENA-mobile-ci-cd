@@ -14,7 +14,7 @@ import mena.faith_presentation.generated.resources.ic_al_baqarah
 import mena.faith_presentation.generated.resources.ic_al_fatihah
 import net.thechance.mena.faith.domain.entity.Surah
 import net.thechance.mena.faith.domain.repository.QuranRepository
-import org.junit.Test
+import kotlin.test.Test
 import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
