@@ -17,12 +17,12 @@ import kotlin.test.assertTrue
 class ProfileViewModelTest {
 
     private val testDispatcher = StandardTestDispatcher()
-    private lateinit var viewModel: ProfileScreenModel
+    private lateinit var viewModel: ProfileScreenViewModel
 
     @BeforeTest
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
-        viewModel = ProfileScreenModel()
+        viewModel = ProfileScreenViewModel()
     }
 
     @AfterTest

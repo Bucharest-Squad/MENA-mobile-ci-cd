@@ -6,15 +6,20 @@ import net.thechance.mena.identity.presentation.base.BaseScreenModel
 import net.thechance.mena.identity.presentation.base.ErrorState
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
 
-class ProfileScreenModel(
-    //val getProfileInfoUseCase: GetProfileInfoUseCase
-) : BaseScreenModel<ProfileScreenUIState, ProfileScreenUIEffect>(ProfileScreenUIState()),
+class ProfileScreenViewModel() :
+    BaseScreenModel<ProfileScreenUIState, ProfileScreenUIEffect>(ProfileScreenUIState()),
     ProfileScreenInteractionListener {
     override val viewModelScope: CoroutineScope get() = screenModelScope
 
-
     init {
-        //getProfileInfoUserCase()
+        updateState {
+            copy(
+                fullName = "Mohammed Ahmed Mansour",
+                userName = "@Mohammed_2025",
+                profilePicture = "https://i.pinimg.com/736x/b4/d6/e5/b4d6e50449fff312606a05bce43cc4c3.jpg",
+                isSuccess = true,
+            )
+        }
     }
 
     private fun onErrorAccrue(errorState: ErrorState) {
@@ -68,5 +73,4 @@ class ProfileScreenModel(
     fun clearErrorMessage() {
         updateState { copy(errorMessage = null) }
     }
-
 }

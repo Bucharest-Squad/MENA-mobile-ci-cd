@@ -44,7 +44,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 class ProfileScreen :
-    BaseScreen<ProfileScreenModel, ProfileScreenUIState, ProfileScreenUIEffect, ProfileScreenInteractionListener>() {
+    BaseScreen<ProfileScreenViewModel, ProfileScreenUIState, ProfileScreenUIEffect, ProfileScreenInteractionListener>() {
     @Composable
     override fun Content() {
         InitScreen(getScreenModel())
@@ -75,7 +75,6 @@ class ProfileScreen :
                         )
                     }
                 }
-
             }
             dialog(state.showLanguageDialog) {
                 Dialog(
@@ -85,8 +84,7 @@ class ProfileScreen :
                     onDismiss = listener::onDismissLanguageDialog,
                     onCancelClick = listener::onDismissLanguageDialog,
                     onActionClick = listener::onDismissLanguageDialog,
-
-                    )
+                )
             }
             dialog(state.showThemeDialog) {
                 Dialog(
@@ -100,14 +98,15 @@ class ProfileScreen :
             }
         }) {
             Box(
-                modifier = Modifier.fillMaxSize().systemBarsPadding()
+                modifier = Modifier
+                    .fillMaxSize()
+                    .systemBarsPadding()
             ) {
                 Column(
                     Modifier.fillMaxSize()
                         .background(Theme.colorScheme.background.surface)
                         .verticalScroll(rememberScrollState())
                         .padding(horizontal = 16.dp),
-
                     ) {
                     AppBar(
                         contentPadding = PaddingValues(horizontal = 0.dp, vertical = 14.dp),
@@ -115,8 +114,7 @@ class ProfileScreen :
                         trailingContent = { ShareIcon(onClick = listener::onShareClicked) }
                     )
                     AnimatedVisibility(
-                        // todo state.isSuccess when implemented
-                        visible = true,
+                        visible = state.isSuccess,
                         enter = fadeIn(),
                         exit = fadeOut(),
                         modifier = Modifier.fillMaxWidth()
@@ -125,9 +123,9 @@ class ProfileScreen :
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .align(Alignment.CenterHorizontally),
-                            profilePicture = "https://i.pinimg.com/736x/b4/d6/e5/b4d6e50449fff312606a05bce43cc4c3.jpg",
-                            fullName = "Mohammed Ahmed Mansour",//state.fullName
-                            userName = "@Mohammed_2025",//state.userName
+                            profilePicture = state.profilePicture,
+                            fullName = state.fullName,
+                            userName = state.userName,
                         )
                     }
                     InviteFriendsCard(onCLick = listener::onInviteFriendsClicked)
@@ -184,7 +182,6 @@ class ProfileScreen :
             ProfileScreenUIEffect.NavigateToPrivacyAndPolicyScreen -> {
                 navigator.push(RegisterScreen())
             }
-
         }
     }
 }

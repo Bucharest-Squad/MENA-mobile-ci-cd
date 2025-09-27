@@ -20,7 +20,7 @@ import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.identity.presentation.screen.profile.ProfileScreenInteractionListener
-import net.thechance.mena.identity.presentation.screen.profile.ProfileScreenModel
+import net.thechance.mena.identity.presentation.screen.profile.ProfileScreenViewModel
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -63,7 +63,7 @@ fun AccountSettingsSection(listener: ProfileScreenInteractionListener) {
 @Composable
 fun PreviewAccountSettingsSection() {
     MenaTheme {
-        val fakeListener = ProfileScreenModel()
+        val fakeListener = ProfileScreenViewModel()
         AccountSettingsSection(listener = fakeListener)
     }
 }

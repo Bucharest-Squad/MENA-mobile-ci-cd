@@ -28,7 +28,7 @@ import kotlin.test.assertTrue
 class LoginViewModelTest {
 
     private lateinit var useCase: LoginUseCase
-    private lateinit var viewModel: LoginScreenModel
+    private lateinit var viewModel: LoginScreenViewModel
 
     private val testDispatcher = StandardTestDispatcher()
 
@@ -36,7 +36,7 @@ class LoginViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
         useCase = mock(mode = MockMode.autofill)
-        viewModel = LoginScreenModel(useCase)
+        viewModel = LoginScreenViewModel(useCase)
     }
 
     @AfterTest
