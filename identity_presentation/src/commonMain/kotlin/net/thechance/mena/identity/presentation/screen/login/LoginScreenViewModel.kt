@@ -9,7 +9,7 @@ import net.thechance.mena.identity.presentation.bottomSheet.countryPicker.menaCo
 import net.thechance.mena.identity.presentation.bottomSheet.countryPicker.selectByCountry
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
 
-class LoginScreenModel(
+class LoginScreenViewModel(
     val loginUseCase: LoginUseCase
 ) : BaseScreenModel<LoginScreenUIState, LoginScreenUIEffect>(LoginScreenUIState()),
     LoginScreenInteractionListener {
@@ -18,7 +18,7 @@ class LoginScreenModel(
 
 
     override fun onLoginClicked() {
-        updateState { copy(isLoading = true, errorMessage = "Test KLJSD") }
+        updateState { copy(isLoading = true, errorMessage = null) }
         tryToExecute(
             function = ::onLogin,
             onSuccess = ::onLoginSuccess,
@@ -47,7 +47,6 @@ class LoginScreenModel(
             )
         }
     }
-
 
 
     private fun changeIsLoginEnabled() {

@@ -36,6 +36,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
         }
         commonMain.dependencies {
+            implementation(libs.squircle.shape)
             implementation(projects.identityDomain)
             implementation(projects.designSystem)
 
@@ -47,6 +48,7 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.bundles.koin)
             implementation(libs.bundles.voyager)
+            implementation(libs.bundles.coil)
         }
         commonTest.dependencies {
             implementation(libs.bundles.common.test)
