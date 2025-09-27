@@ -1,4 +1,4 @@
-# MENA project test
+# MENA project
 The biggest KMP open-source project to be
 [Under Development]
 ## Branding
