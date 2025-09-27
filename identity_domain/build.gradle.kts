@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.kover)
 }
 
@@ -13,8 +12,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(libs.koin.core)
-            implementation(libs.kotlinx.serialization.json)
-            implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.kotlinx.coroutines.core)
         }
 
         jvmTest.dependencies {

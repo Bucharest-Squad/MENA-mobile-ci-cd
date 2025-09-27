@@ -10,12 +10,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import net.thechance.mena.core_chat.api.CoreChatApi
 import net.thechance.mena.designsystem.presentation.component.bottomNavigation.BottomNavigationBar
 import net.thechance.mena.designsystem.presentation.component.bottomNavigation.BottomNavigationItem
 import net.thechance.mena.dukan.api.DukanApi
 import net.thechance.mena.faith.api.FaithApi
 import net.thechance.mena.identity.api.IdentityFeatureApi
+import net.thechance.mena.identity.domain.service.AuthorizationService
 import net.thechance.mena.trends.api.TrendsApi
 import net.thechance.mena.wallet.api.WalletApi
 import org.koin.compose.koinInject
@@ -23,8 +25,21 @@ import org.koin.compose.koinInject
 
 @Composable
 fun EntryPoint(){
-    var activeFeature: Feature by remember { mutableStateOf(Feature.CHAT) }
+    val identityApi = koinInject<IdentityFeatureApi>()
+    val authorizationService = koinInject<AuthorizationService>()
 
+    //Temp solution to be replaced later
+    val token by authorizationService.observeAccessToken().collectAsStateWithLifecycle()
+    if (token.isNotBlank()) {
+        LoggedInContainer()
+    } else {
+        identityApi.LoginFlow()
+    }
+}
+
+@Composable
+private fun LoggedInContainer(){
+    var activeFeature: Feature by remember { mutableStateOf(Feature.CHAT) }
     Column(Modifier.fillMaxSize()) {
         FeatureContent(activeFeature)
         BottomNavigationBar(onItemClick = { navBarItem ->
