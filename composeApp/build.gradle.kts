@@ -50,6 +50,8 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(projects.designSystem)
             implementation(libs.bundles.voyager)
+            implementation(libs.bundles.koin)
+            implementation(projects.identityApi)
             implementation(projects.identityPresentation)
             implementation(projects.identityData)
             implementation(projects.identityDomain)
