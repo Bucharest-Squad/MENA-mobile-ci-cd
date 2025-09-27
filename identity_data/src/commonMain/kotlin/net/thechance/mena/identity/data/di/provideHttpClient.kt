@@ -13,7 +13,7 @@ import io.ktor.client.plugins.logging.SIMPLE
 import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
-import net.thechance.mena.identity.data.repository.AuthenticationRepositoryImpl.Companion.ACCESS_TOKEN
+import net.thechance.mena.identity.data.utils.accessToken
 
 internal fun provideHttpClient(
     engine: HttpClientEngine,
@@ -46,7 +46,7 @@ private fun authInterceptor(
     onRequest { request, _ ->
         //TODO refactore hardcoded string to whitelist endpoints doesn't require token like register and reset password
         if (!request.url.toString().contains("login")) {
-            settings.getString(ACCESS_TOKEN, "").let { token ->
+            settings.accessToken.let { token ->
                 request.headers.append(HttpHeaders.Authorization, "Bearer $token")
             }
         }
