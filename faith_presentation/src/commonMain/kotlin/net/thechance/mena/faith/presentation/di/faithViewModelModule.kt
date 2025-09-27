@@ -5,7 +5,7 @@ import net.thechance.mena.faith.presentation.feature.quran.surah.SurahViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
-internal val viewModelModule = module {
+internal val faithViewModelModule = module {
     viewModel {
         SurViewModel(
             quranRepository = get()
