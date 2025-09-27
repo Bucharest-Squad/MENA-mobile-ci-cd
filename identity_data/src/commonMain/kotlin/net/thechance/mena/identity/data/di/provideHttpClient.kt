@@ -1,4 +1,4 @@
-package net.thechance.mena.identity.data.utils
+package net.thechance.mena.identity.data.di
 
 import com.russhwolf.settings.Settings
 import io.ktor.client.HttpClient
@@ -14,19 +14,6 @@ import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import net.thechance.mena.identity.data.repository.AuthenticationRepositoryImpl.Companion.ACCESS_TOKEN
-
-fun authInterceptor(
-    settings: Settings
-) = createClientPlugin("AuthInterceptor") {
-
-    onRequest { request, _ ->
-        if (!request.url.toString().contains("login")) {
-            settings.getString(ACCESS_TOKEN, "").let { token ->
-                request.headers.append(HttpHeaders.Authorization, "Bearer $token")
-            }
-        }
-    }
-}
 
 internal fun provideHttpClient(
     engine: HttpClientEngine,
@@ -48,6 +35,20 @@ internal fun provideHttpClient(
         install(Logging) {
             logger = Logger.SIMPLE
             level = LogLevel.ALL
+        }
+    }
+}
+
+private fun authInterceptor(
+    settings: Settings
+) = createClientPlugin("AuthInterceptor") {
+
+    onRequest { request, _ ->
+        //TODO refactore hardcoded string to whitelist endpoints doesn't require token like register and reset password
+        if (!request.url.toString().contains("login")) {
+            settings.getString(ACCESS_TOKEN, "").let { token ->
+                request.headers.append(HttpHeaders.Authorization, "Bearer $token")
+            }
         }
     }
 }

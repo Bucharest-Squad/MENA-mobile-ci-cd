@@ -3,7 +3,6 @@ package net.thechance.mena.identity.data.di
 import com.russhwolf.settings.Settings
 import io.ktor.client.engine.cio.CIO
 import net.thechance.mena.identity.data.repository.AuthenticationRepositoryImpl
-import net.thechance.mena.identity.data.utils.provideHttpClient
 import net.thechance.mena.identity.domain.repository.AuthenticationRepository
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
@@ -24,3 +23,5 @@ val identityDataModule = module {
     }
     singleOf(::AuthenticationRepositoryImpl) bind AuthenticationRepository::class
 }
+
+

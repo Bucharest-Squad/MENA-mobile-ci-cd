@@ -13,9 +13,9 @@ import io.ktor.serialization.kotlinx.json.json
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
-import net.thechance.mena.identity.data.dto.auth.LoginRequest
+import net.thechance.mena.identity.data.dto.auth.LoginRequestDto
 import net.thechance.mena.identity.data.dto.auth.AuthenticationResponse
-import net.thechance.mena.identity.data.dto.auth.RefreshRequest
+import net.thechance.mena.identity.data.dto.auth.RefreshRequestDto
 import org.junit.Test
 import kotlin.test.BeforeTest
 import kotlin.test.assertEquals
@@ -48,7 +48,7 @@ class AuthRemoteDataSourceImplTest {
         }
         remoteDataSource = AuthRemoteDataSourceImpl(client)
         // When
-        val actual = remoteDataSource.login(LoginRequest("110061617", "12345678"))
+        val actual = remoteDataSource.login(LoginRequestDto("110061617", "12345678"))
 
         // Then
         assertEquals(fakeLoginResponse, actual)
@@ -71,7 +71,7 @@ class AuthRemoteDataSourceImplTest {
         remoteDataSource = AuthRemoteDataSourceImpl(client)
         //When & Then
         assertFailsWith<ClientRequestException> {
-            remoteDataSource.login(LoginRequest("110061617", "12345678"))
+            remoteDataSource.login(LoginRequestDto("110061617", "12345678"))
         }
     }
 
@@ -91,7 +91,7 @@ class AuthRemoteDataSourceImplTest {
         }
         remoteDataSource = AuthRemoteDataSourceImpl(client)
         //When
-        val actual  = remoteDataSource.refreshToken(RefreshRequest("fake_refresh_token"))
+        val actual  = remoteDataSource.refreshToken(RefreshRequestDto("fake_refresh_token"))
         //Then
         assertEquals(fakeLoginResponse , actual)
     }
@@ -113,7 +113,7 @@ class AuthRemoteDataSourceImplTest {
         remoteDataSource = AuthRemoteDataSourceImpl(client)
         //When & Then
         assertFailsWith<ClientRequestException> {
-            remoteDataSource.refreshToken(RefreshRequest("fake_refresh_token"))
+            remoteDataSource.refreshToken(RefreshRequestDto("fake_refresh_token"))
         }
     }
     companion object {

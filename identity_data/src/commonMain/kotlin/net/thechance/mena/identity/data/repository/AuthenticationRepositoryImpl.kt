@@ -2,9 +2,9 @@ package net.thechance.mena.identity.data.repository
 
 import com.russhwolf.settings.Settings
 import io.ktor.client.HttpClient
-import net.thechance.mena.identity.data.dto.auth.LoginRequest
+import net.thechance.mena.identity.data.dto.auth.LoginRequestDto
 import net.thechance.mena.identity.data.dto.auth.AuthenticationResponse
-import net.thechance.mena.identity.data.dto.auth.RefreshRequest
+import net.thechance.mena.identity.data.dto.auth.RefreshRequestDto
 import net.thechance.mena.identity.data.utils.postJson
 import net.thechance.mena.identity.data.utils.safeWrapper
 import net.thechance.mena.identity.domain.repository.AuthenticationRepository
@@ -16,14 +16,14 @@ class AuthenticationRepositoryImpl(
     override suspend fun login(countryCode: String, number: String, password: String) {
         return safeWrapper {
             val mobileNumber = countryCode + number
-            val loginResponse: AuthenticationResponse = client.postJson(LoginRequest(mobileNumber, password), LOGIN)
+            val loginResponse: AuthenticationResponse = client.postJson(LoginRequestDto(mobileNumber, password), LOGIN)
             saveAuthTokens(loginResponse)
         }
     }
 
     override suspend fun refreshAccessToken(): String {
         val refreshResponse: AuthenticationResponse = safeWrapper {
-            client.postJson(RefreshRequest(settings.getString(REFRESH_TOKEN, "")), REFRESH)
+            client.postJson(RefreshRequestDto(settings.getString(REFRESH_TOKEN, "")), REFRESH)
         }
         saveAuthTokens(refreshResponse)
         return settings.getString(ACCESS_TOKEN, "")
