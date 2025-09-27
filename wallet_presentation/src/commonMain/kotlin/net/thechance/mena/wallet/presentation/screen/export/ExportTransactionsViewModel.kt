@@ -130,7 +130,7 @@ class ExportTransactionsViewModel(
         updateState { oldState ->
             oldState.copy(
                 isViewAndShareLoading = true,
-                isViewAndDownloadButtonEnabled = false
+                isDownloadButtonEnabled = false
             )
         }
     }
@@ -139,7 +139,7 @@ class ExportTransactionsViewModel(
         updateState { oldState ->
             oldState.copy(
                 isViewAndShareLoading = false,
-                isViewAndDownloadButtonEnabled = true
+                isDownloadButtonEnabled = true
             )
         }
 
@@ -147,6 +147,12 @@ class ExportTransactionsViewModel(
             showToast(
                 messageRes = Res.string.error_no_transactions
             )
+            updateState { oldState ->
+                oldState.copy(
+                    isViewAndShareLoading = false,
+                    isDownloadButtonEnabled = true
+                )
+            }
         } else {
             sendEffect(ExportTransactionsEffect.NavigateToViewFileScreen)
         }
@@ -156,7 +162,7 @@ class ExportTransactionsViewModel(
         updateState { oldState ->
             oldState.copy(
                 isViewAndShareLoading = false,
-                isViewAndDownloadButtonEnabled = true
+                isDownloadButtonEnabled = true
             )
         }
         when (error) {
@@ -244,6 +250,7 @@ class ExportTransactionsViewModel(
             showToast(
                 messageRes = Res.string.error_no_transactions
             )
+            resetDownloadState()
         } else {
             try {
                 val file = FileKit.openFileSaver(
@@ -253,7 +260,6 @@ class ExportTransactionsViewModel(
                 file?.write(pdfBytes)
 
                 resetDownloadState()
-
                 showSnackBar(
                     titleRes = Res.string.download_complete,
                     messageRes = Res.string.download_success,
