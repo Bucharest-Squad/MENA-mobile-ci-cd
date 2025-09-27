@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalUuidApi::class)
 
-package net.thechance.mena.core_chat.presentation.screen.messaging
+package net.thechance.mena.core_chat.presentation.screen.chat
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -13,6 +13,7 @@ import mena.core_chat_presentation.generated.resources.error_cant_subscribe_to_n
 import net.thechance.mena.core_chat.domain.entity.Message
 import net.thechance.mena.core_chat.domain.repository.ChatRepository
 import net.thechance.mena.core_chat.presentation.components.SnackBarData
+import net.thechance.mena.core_chat.presentation.navigation.ChatDetailsRoute
 import net.thechance.mena.core_chat.presentation.navigation.ChatEffector
 import net.thechance.mena.core_chat.presentation.shared.BaseViewModel
 import net.thechance.mena.core_chat.presentation.utils.UiText
@@ -21,13 +22,13 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 
-class  MessagingViewModel(
+class  ChatViewModel(
     private val repository: ChatRepository,
     messagingArgs : MessagingArgs,
     effector: ChatEffector,
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO
-) : BaseViewModel<MessagingScreenState>(MessagingScreenState(), effector,defaultDispatcher),
-    MessagingInteractionListener {
+) : BaseViewModel<ChatScreenState>(ChatScreenState(), effector,defaultDispatcher),
+    ChatInteractionListener {
 
     init {
         val chatId = messagingArgs.chatId
@@ -38,19 +39,19 @@ class  MessagingViewModel(
     }
 
 
-    override fun onBackClick() {
+    override fun onBackClicked() {
         popBackStack()
     }
 
-    override fun onMenuClick() {
+    override fun onMenuClicked() {
         updateState { it.copy(isChatActionsDialogVisible = true) }
     }
 
-    override fun onInputMessageChange(value: String) {
+    override fun onInputMessageChanged(value: String) {
         updateState { it.copy(inputMessage = value) }
     }
 
-    override fun onSendMessageClick() {
+    override fun onSendMessageClicked() {
         val chatId = state.value.chat.id
         val senderId = state.value.userId
         val text = state.value.inputMessage.trim()
@@ -103,7 +104,7 @@ class  MessagingViewModel(
         }
     }
 
-    override fun onMessageClick(messageId: String) {
+    override fun onMessageClicked(messageId: String) {
         updateState {
             it.copy(
                 chatListItems = it.chatListItems.map { item ->
@@ -122,7 +123,7 @@ class  MessagingViewModel(
     }
 
 
-    override fun onFailedMessageClick(message: MessageUiState) {
+    override fun onFailedMessageClicked(message: MessageUiState) {
         updateState {
             it.copy(
                 isResendMessageDialogVisible = true,
@@ -131,10 +132,11 @@ class  MessagingViewModel(
         }
     }
 
-    override fun onDeleteFailedMessageClick() {
+    override fun onDeleteFailedMessageClicked() {
         state.value.failedMessageToReSend?.let { failedMessage ->
             updateState { s ->
-                val updatedMessages = s.uiMessages.filterNot { it.id == failedMessage.id }.sortedByDescending { it.sendTime }
+                val updatedMessages = s.uiMessages.filterNot { it.id == failedMessage.id }
+                    .sortedByDescending { it.sendTime }
                 s.copy(
                     uiMessages = updatedMessages,
                     chatListItems = buildListItems(updatedMessages),
@@ -146,7 +148,7 @@ class  MessagingViewModel(
     }
 
 
-    override fun onResendMessageClick() {
+    override fun onResendMessageClicked() {
         state.value.failedMessageToReSend?.let { message ->
             // mark as SENDING
             updateState { s ->
@@ -182,19 +184,19 @@ class  MessagingViewModel(
         }
     }
 
-    override fun onDismissResendMessageDialog() {
+    override fun onResendMessageDialogDismissed() {
         updateState { it.copy(isResendMessageDialogVisible = false) }
     }
 
-    override fun onDismissChatActionsDialog() {
+    override fun onChatActionsDialogDismissed() {
         updateState { it.copy(isChatActionsDialogVisible = false) }
     }
 
-    override fun onDeleteChatClick() {
+    override fun onDeleteChatClicked() {
         updateState { it.copy(isDeleteChatDialogVisible = true) }
     }
 
-    override fun onDismissDeleteChatDialog() {
+    override fun onDeleteChatDialogDismissed() {
         updateState { it.copy(isDeleteChatDialogVisible = false) }
     }
 
@@ -218,7 +220,8 @@ class  MessagingViewModel(
     }
 
     private fun onLoadChatHistorySuccess(messages: List<Message>) {
-        val uiMessages = messages.map { it.toUi(state.value.userId) }.sortedByDescending { it.sendTime }
+        val uiMessages =
+            messages.map { it.toUi(state.value.userId) }.sortedByDescending { it.sendTime }
         updateState { s ->
             s.copy(
                 uiMessages = uiMessages,
@@ -250,7 +253,8 @@ class  MessagingViewModel(
     private fun onSubscribeToNewMessagesSuccess(newMessage: Message?) {
         newMessage?.toUi(state.value.userId)?.let { incomingUi ->
             updateState { s ->
-                val merged = (s.uiMessages + incomingUi).distinctBy { it.id }.sortedByDescending { it.sendTime }
+                val merged = (s.uiMessages + incomingUi).distinctBy { it.id }
+                    .sortedByDescending { it.sendTime }
                 s.copy(uiMessages = merged, chatListItems = buildListItems(merged))
             }
         }

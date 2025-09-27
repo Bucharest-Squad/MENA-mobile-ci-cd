@@ -1,7 +1,7 @@
-package net.thechance.mena.core_chat.presentation.screen.messaging
+package net.thechance.mena.core_chat.presentation.screen.chat
 
 
-data class MessagingScreenState(
+data class ChatScreenState(
     val chat: ChatUiState = ChatUiState(),
     val inputMessage: String = "",
     val chatListItems: List<ChatListItem> = emptyList(),

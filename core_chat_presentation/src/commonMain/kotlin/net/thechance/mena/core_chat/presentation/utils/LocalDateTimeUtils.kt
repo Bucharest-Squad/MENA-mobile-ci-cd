@@ -11,7 +11,6 @@ import kotlinx.datetime.format.char
 import kotlinx.datetime.minus
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
-import kotlinx.datetime.yearMonth
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.ExperimentalTime
@@ -35,7 +34,6 @@ fun LocalDate.minusDays(days: Int): LocalDate {
 }
 
 
-
 fun LocalDateTime.formatAsTime(): String {
     val timeFormat = LocalDateTime.Format {
         amPmHour()
@@ -50,6 +48,6 @@ fun LocalDateTime.formatAsTime(): String {
 fun LocalDate.format(pattern: String = "dd-MM-yyyy"): String {
     return pattern
         .replace("dd", day.toString().padStart(2, '0'))
-        .replace("MM", yearMonth.toString().padStart(2, '0'))
+        .replace("MM", month.ordinal.toString().padStart(2, '0'))
         .replace("yyyy", year.toString())
 }
