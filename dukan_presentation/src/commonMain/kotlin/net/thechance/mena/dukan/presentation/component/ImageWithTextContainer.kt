@@ -1,10 +1,12 @@
 package net.thechance.mena.dukan.presentation.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -13,7 +15,6 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import mena.dukan_presentation.generated.resources.Res
-import mena.dukan_presentation.generated.resources.blur_image
 import mena.dukan_presentation.generated.resources.foreground_image
 import net.thechance.mena.designsystem.presentation.component.image.Image
 import net.thechance.mena.designsystem.presentation.component.text.Text
@@ -38,15 +39,14 @@ fun ImageWithTextContainer(
             modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
-            Image(
-                painter = painterResource(blurImageRes),
-                contentDescription = stringResource(Res.string.blur_image),
+            Box(
                 modifier = Modifier
-                    .blur(
-                        radius = 30.dp,
-                        edgeTreatment = BlurredEdgeTreatment.Unbounded
+                    .size(20.dp)
+                    .blur(radius = 35.dp, edgeTreatment = BlurredEdgeTreatment.Unbounded)
+                    .background(
+                        color = Theme.colorScheme.primary.primary,
+                        shape = RoundedCornerShape(Theme.radius.full)
                     )
-                    .offset(y = 20.dp)
                     .align(Alignment.BottomCenter)
             )
             Image(
