@@ -60,7 +60,6 @@ class ExportTransactionsViewModel(
             val newSet = if (current.contains(type)) current - type else current + type
             oldState.copy(selectedTransactionsTypes = newSet)
         }
-        println("type $type")
     }
 
     override fun onStatusSelected(status: FilterStatus) {
@@ -69,7 +68,6 @@ class ExportTransactionsViewModel(
                 selectedTransactionsStatus = status
             )
         }
-        println("status $status")
     }
 
     override fun onFromDateClicked() {
@@ -81,14 +79,13 @@ class ExportTransactionsViewModel(
 
     override fun onToDateClicked() {
         //TODO Here the DatePicker opens and stores the result in state.endDate
-
         updateState { oldState ->
             oldState.copy(startDate = "2025/09/27")
         }
     }
 
     override fun onViewAndShareClicked() {
-        TODO("Not yet implemented")
+        //TODO navigate to view screen
     }
 
     override fun onDownloadClicked() {
@@ -109,83 +106,93 @@ class ExportTransactionsViewModel(
                     exportTransactionsRepository.getAllTransactionsFile()
                 }
             },
+
             onSuccess = { pdfBytes ->
-                //TODO save file into device
-                try {
-                    val file = FileKit.openFileSaver(
-                        suggestedName = "transaction",
-                        extension = "pdf"
-                    )
-                    if (file != null) {
-                        file.write(pdfBytes)
-                    }
-
-                    updateState { oldState ->
-                        oldState.copy(
-                            isDownloadLoading = false,
-                            isViewAndShearEnabled = true
-                        )
-                    }
-                    showSnackBar(
-                        titleRes = Res.string.download_complete,
-                        messageRes = Res.string.download_success,
-                        isSuccess = true
-                    )
-
-                } catch (error: Exception) {
-                    println(error)
-                    updateState { oldState ->
-                        oldState.copy(
-                            isDownloadLoading = false,
-                            isViewAndShearEnabled = true
-                        )
-                    }
-                    when (error) {
-                        is NoInternetException -> {
-
-                        }
-
-                        else -> {
-                            showSnackBar(
-                                titleRes = Res.string.download_failed,
-                                messageRes = Res.string.something_went_wrong,
-                                isSuccess = false
-                            )
-                        }
-                    }
-
-
-                }
+                saveFile(pdfBytes)
             },
             onError = { error ->
-                updateState { oldState ->
-                    oldState.copy(
-                        isDownloadLoading = false,
-                        isViewAndShearEnabled = true
-                    )
-                }
-                when (error) {
-                    is NoInternetException -> {
-                        //TODO Show no internet screen state
-                        updateState { oldState ->
-                            oldState.copy(
-                                noInternetConnection = true
-                            )
-                        }
-                    }
-
-                    else -> {
-                        showSnackBar(
-                            titleRes = Res.string.download_failed,
-                            messageRes = Res.string.something_went_wrong,
-                            isSuccess = false
-                        )
-                    }
-                }
+                handelOnDownloadError(error)
             },
-            onFinish = {},
             dispatcher = ioDispatcher
         )
+    }
+
+    private suspend fun handelOnDownloadError(error: Throwable) {
+        updateState { oldState ->
+            oldState.copy(
+                isDownloadLoading = false,
+                isViewAndShearEnabled = true
+            )
+        }
+        when (error) {
+            is NoInternetException -> {
+                updateState { oldState ->
+                    oldState.copy(
+                        noInternetConnection = true
+                    )
+                }
+            }
+
+            else -> {
+                showSnackBar(
+                    titleRes = Res.string.download_failed,
+                    messageRes = Res.string.something_went_wrong,
+                    isSuccess = false
+                )
+            }
+        }
+    }
+
+    private suspend fun saveFile(pdfBytes: ByteArray) {
+        try {
+            val file = FileKit.openFileSaver(
+                suggestedName = "transaction",
+                extension = "pdf"
+            )
+            if (file != null) {
+                file.write(pdfBytes)
+            }
+
+            updateState { oldState ->
+                oldState.copy(
+                    isDownloadLoading = false,
+                    isViewAndShearEnabled = true
+                )
+            }
+            showSnackBar(
+                titleRes = Res.string.download_complete,
+                messageRes = Res.string.download_success,
+                isSuccess = true
+            )
+
+        } catch (error: Exception) {
+            updateState { oldState ->
+                oldState.copy(
+                    isDownloadLoading = false,
+                    isViewAndShearEnabled = true
+                )
+            }
+            when (error) {
+                is NoInternetException -> {
+                    updateState { oldState ->
+                        oldState.copy(
+                            noInternetConnection = true
+                        )
+                    }
+
+                }
+
+                else -> {
+                    showSnackBar(
+                        titleRes = Res.string.download_failed,
+                        messageRes = Res.string.something_went_wrong,
+                        isSuccess = false
+                    )
+                }
+            }
+
+
+        }
     }
 
     private suspend fun showSnackBar(
