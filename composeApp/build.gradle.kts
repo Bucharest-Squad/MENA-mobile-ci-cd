@@ -53,6 +53,9 @@ kotlin {
             implementation(projects.identityPresentation)
             implementation(projects.identityData)
             implementation(projects.identityDomain)
+
+            // File kit
+            implementation(libs.bundles.filekit)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

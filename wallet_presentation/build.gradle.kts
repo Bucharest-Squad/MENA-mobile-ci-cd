@@ -50,6 +50,9 @@ kotlin {
             implementation(libs.koin.compose.viewmodel)
             api(libs.koin.annotations)
             implementation(libs.kotlinx.serialization.json)
+
+            // File kit
+            implementation(libs.bundles.filekit)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
