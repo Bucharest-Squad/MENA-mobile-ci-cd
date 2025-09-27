@@ -106,7 +106,7 @@ private fun ExportTransactionScreenContent(
                     text = stringResource(Res.string.view_and_share),
                     trailingIcon = painterResource(Res.drawable.share),
                     onClick = interactionListener::onViewAndShareClicked,
-                    isEnabled = state.isViewAndShearDisabled,
+                    isEnabled = state.isViewAndShearEnabled,
                     contentPadding = PaddingValues(
                         vertical = 13.dp
                     ),
