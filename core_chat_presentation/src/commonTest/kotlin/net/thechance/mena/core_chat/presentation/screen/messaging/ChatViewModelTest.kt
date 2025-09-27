@@ -30,6 +30,12 @@ import net.thechance.mena.core_chat.domain.entity.MessageStatus
 import net.thechance.mena.core_chat.domain.repository.ChatRepository
 import net.thechance.mena.core_chat.presentation.components.SnackBarData
 import net.thechance.mena.core_chat.presentation.navigation.ChatEffector
+import net.thechance.mena.core_chat.presentation.screen.chat.ChatArgs
+import net.thechance.mena.core_chat.presentation.screen.chat.ChatViewModel
+import net.thechance.mena.core_chat.presentation.screen.chat.MessageStatusUiState
+import net.thechance.mena.core_chat.presentation.screen.chat.TextMessageUiState
+import net.thechance.mena.core_chat.presentation.screen.chat.toEntity
+import net.thechance.mena.core_chat.presentation.screen.chat.toUi
 import net.thechance.mena.core_chat.presentation.utils.UiText
 import net.thechance.mena.core_chat.presentation.utils.now
 import kotlin.test.AfterTest
@@ -39,13 +45,13 @@ import kotlin.uuid.Uuid
 import kotlin.test.Test
 
 @OptIn(ExperimentalUuidApi::class, ExperimentalCoroutinesApi::class)
-class MessagingViewModelTest {
+class ChatViewModelTest {
     private val repository = mock<ChatRepository>()
     val chatId = Uuid.parse("11111111-1111-1111-1111-111111111111")
     val currentUserId = "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
-    private val messagingArgs = mock<MessagingArgs>()
+    private val chatArgs = mock<ChatArgs>()
     private val effector = mock<ChatEffector>(MockMode.autofill)
-    private lateinit var messagingViewModel: MessagingViewModel
+    private lateinit var chatViewModel: ChatViewModel
 
     private val testDispatcher = StandardTestDispatcher()
 
@@ -53,8 +59,8 @@ class MessagingViewModelTest {
     @BeforeTest
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-        every { messagingArgs.chatId } returns chatId.toString()
-        messagingViewModel = MessagingViewModel(repository, messagingArgs, effector, testDispatcher)
+        every { chatArgs.chatId } returns chatId.toString()
+        chatViewModel = ChatViewModel(repository, chatArgs, effector, testDispatcher)
     }
 
     @AfterTest
@@ -69,7 +75,7 @@ class MessagingViewModelTest {
 
         testDispatcher.scheduler.advanceUntilIdle()
 
-        assertThat(messagingViewModel.state.value.chat).isEqualTo(chat.toUi())
+        assertThat(chatViewModel.state.value.chat).isEqualTo(chat.toUi())
     }
 
     @Test
@@ -78,7 +84,7 @@ class MessagingViewModelTest {
 
         testDispatcher.scheduler.advanceUntilIdle()
 
-        assertThat(messagingViewModel.state.value.uiMessages).isEqualTo(messages.map {
+        assertThat(chatViewModel.state.value.uiMessages).isEqualTo(messages.map {
             it.toUi(
                 currentUserId
             )
@@ -107,13 +113,13 @@ class MessagingViewModelTest {
 
         testDispatcher.scheduler.advanceUntilIdle()
 
-        assertThat(messagingViewModel.state.value.uiMessages).isEqualTo(listOf(messages.first().toUi(currentUserId)))
+        assertThat(chatViewModel.state.value.uiMessages).isEqualTo(listOf(messages.first().toUi(currentUserId)))
     }
 
 
     @Test
-    fun `onBackClick should send pop back stack effect when its call`() {
-        messagingViewModel.onBackClick()
+    fun `onBackClicked should send pop back stack effect when its call`() {
+        chatViewModel.onBackClicked()
 
         testDispatcher.scheduler.advanceUntilIdle()
 
@@ -121,116 +127,108 @@ class MessagingViewModelTest {
     }
 
     @Test
-    fun `onMenuClick should set isChatActionsDialogVisible to true when its call`() {
-        messagingViewModel.onMenuClick()
+    fun `onMenuClicked should set isChatActionsDialogVisible to true when its call`() {
+        chatViewModel.onMenuClicked()
 
         testDispatcher.scheduler.advanceUntilIdle()
 
-        assertThat(messagingViewModel.state.value.isChatActionsDialogVisible).isTrue()
+        assertThat(chatViewModel.state.value.isChatActionsDialogVisible).isTrue()
     }
 
     @Test
-    fun `onInputMessageChange should update the inputMessage value with provided value when its call`() {
+    fun `onInputMessageChanged should update the inputMessage value with provided value when its call`() {
         val inputMessage = "Hi Noor"
 
-        messagingViewModel.onInputMessageChange(inputMessage)
+        chatViewModel.onInputMessageChanged(inputMessage)
         testDispatcher.scheduler.advanceUntilIdle()
 
-        assertThat(messagingViewModel.state.value.inputMessage).isEqualTo(inputMessage)
+        assertThat(chatViewModel.state.value.inputMessage).isEqualTo(inputMessage)
     }
 
     @Test
-    fun `onDismissResendMessageDialog should set isResendMessageDialogVisible to false when its call`() {
-        messagingViewModel.onDismissResendMessageDialog()
+    fun `onResendMessageDialogDismissed should set isResendMessageDialogVisible to false when its call`() {
+        chatViewModel.onResendMessageDialogDismissed()
 
         testDispatcher.scheduler.advanceUntilIdle()
 
-        assertThat(messagingViewModel.state.value.isResendMessageDialogVisible).isFalse()
+        assertThat(chatViewModel.state.value.isResendMessageDialogVisible).isFalse()
     }
 
     @Test
-    fun `onDismissChatActionsDialog should set isChatActionsDialogVisible to false when its called`() {
-        messagingViewModel.onDismissChatActionsDialog()
+    fun `onResendMessageDialogDismissed should set isChatActionsDialogVisible to false when its called`() {
+        chatViewModel.onResendMessageDialogDismissed()
 
         testDispatcher.scheduler.advanceUntilIdle()
 
-        assertThat(messagingViewModel.state.value.isResendMessageDialogVisible).isFalse()
+        assertThat(chatViewModel.state.value.isResendMessageDialogVisible).isFalse()
     }
 
 
     @Test
     fun `onDeleteChatClick should set isDeleteChatDialogVisible to true when its called`() {
-        messagingViewModel.onDeleteChatClick()
+        chatViewModel.onDeleteChatClicked()
 
         testDispatcher.scheduler.advanceUntilIdle()
 
-        assertThat(messagingViewModel.state.value.isDeleteChatDialogVisible).isTrue()
+        assertThat(chatViewModel.state.value.isDeleteChatDialogVisible).isTrue()
     }
 
     @Test
-    fun `onDismissDeleteChatDialog should set isDeleteChatDialogVisible to false when its called`() {
-        messagingViewModel.onDismissDeleteChatDialog()
+    fun `onDeleteChatDialogDismissed should set isDeleteChatDialogVisible to false when its called`() {
+        chatViewModel.onDeleteChatDialogDismissed()
 
         testDispatcher.scheduler.advanceUntilIdle()
 
-        assertThat(messagingViewModel.state.value.isDeleteChatDialogVisible).isFalse()
+        assertThat(chatViewModel.state.value.isDeleteChatDialogVisible).isFalse()
     }
 
-    @Test
-    fun `onSendMessageSuccess should set isDeleteChatDialogVisible to false when its called`() {
-        messagingViewModel.onDismissDeleteChatDialog()
-
-        testDispatcher.scheduler.advanceUntilIdle()
-
-        assertThat(messagingViewModel.state.value.isDeleteChatDialogVisible).isFalse()
-    }
 
     @Test
-    fun `onSendMessageClick should update current messages with sent state and reset the user input when its successfully sent `() {
+    fun `onSendMessageClicked should update current messages with sent state and reset the user input when its successfully sent `() {
         val inputMessage = "hi"
-        messagingViewModel.updateState {
-            messagingViewModel.state.value.copy(
+        chatViewModel.updateState {
+            chatViewModel.state.value.copy(
                 chat = it.chat.copy(id = chatId.toString()),
                 inputMessage = inputMessage
             )
         }
         everySuspend { repository.sendMessage(any()) } returns Unit
 
-        messagingViewModel.onSendMessageClick()
+        chatViewModel.onSendMessageClicked()
         testDispatcher.scheduler.advanceUntilIdle()
 
-        assertThat(messagingViewModel.state.value.uiMessages.first().chatId).isEqualTo(chatId.toString())
-        assertThat(messagingViewModel.state.value.uiMessages.first().senderId).isEqualTo(
+        assertThat(chatViewModel.state.value.uiMessages.first().chatId).isEqualTo(chatId.toString())
+        assertThat(chatViewModel.state.value.uiMessages.first().senderId).isEqualTo(
             currentUserId
         )
-        assertThat(messagingViewModel.state.value.uiMessages.first().status).isEqualTo(
+        assertThat(chatViewModel.state.value.uiMessages.first().status).isEqualTo(
             MessageStatusUiState.SENT
         )
-        assertThat(messagingViewModel.state.value.inputMessage).isEmpty()
+        assertThat(chatViewModel.state.value.inputMessage).isEmpty()
     }
 
     @Test
-    fun `onSendMessageClick should update current messages with failed state and reset the user input when its call`() {
+    fun `onSendMessageClicked should update current messages with failed state and reset the user input when its call`() {
         val inputMessage = "hi"
-        messagingViewModel.updateState {
-            messagingViewModel.state.value.copy(
+        chatViewModel.updateState {
+            chatViewModel.state.value.copy(
                 chat = it.chat.copy(id = chatId.toString()),
                 inputMessage = inputMessage
             )
         }
 
 
-        messagingViewModel.onSendMessageClick()
+        chatViewModel.onSendMessageClicked()
         testDispatcher.scheduler.advanceUntilIdle()
 
-        assertThat(messagingViewModel.state.value.uiMessages.first().chatId).isEqualTo(chatId.toString())
-        assertThat(messagingViewModel.state.value.uiMessages.first().senderId).isEqualTo(
+        assertThat(chatViewModel.state.value.uiMessages.first().chatId).isEqualTo(chatId.toString())
+        assertThat(chatViewModel.state.value.uiMessages.first().senderId).isEqualTo(
             currentUserId
         )
-        assertThat(messagingViewModel.state.value.uiMessages.first().status).isEqualTo(
+        assertThat(chatViewModel.state.value.uiMessages.first().status).isEqualTo(
             MessageStatusUiState.FAILED
         )
-        assertThat(messagingViewModel.state.value.inputMessage).isEmpty()
+        assertThat(chatViewModel.state.value.inputMessage).isEmpty()
     }
 
     @Test
@@ -245,56 +243,56 @@ class MessagingViewModelTest {
             text = "hello,world"
         )
 
-        messagingViewModel.onFailedMessageClick(failedMessage)
+        chatViewModel.onFailedMessageClicked(failedMessage)
         testDispatcher.scheduler.advanceUntilIdle()
 
-        assertThat(messagingViewModel.state.value.isDeleteChatDialogVisible).isFalse()
-        assertThat(messagingViewModel.state.value.failedMessageToReSend).isEqualTo(failedMessage)
+        assertThat(chatViewModel.state.value.isDeleteChatDialogVisible).isFalse()
+        assertThat(chatViewModel.state.value.failedMessageToReSend).isEqualTo(failedMessage)
 
     }
 
     @Test
     fun `onDeleteFailedMessageClick should delete the clicked failed message when its call`() {
-        messagingViewModel.updateState { it.copy(
+        chatViewModel.updateState { it.copy(
             failedMessageToReSend = messages.first().toUi(currentUserId),
             uiMessages = listOf(messages.first().toUi(currentUserId))
         ) }
 
-        messagingViewModel.onDeleteFailedMessageClick()
+        chatViewModel.onDeleteFailedMessageClicked()
         testDispatcher.scheduler.advanceUntilIdle()
 
-        assertThat(messagingViewModel.state.value.uiMessages).doesNotContain(messages.first().toUi(currentUserId))
+        assertThat(chatViewModel.state.value.uiMessages).doesNotContain(messages.first().toUi(currentUserId))
     }
 
     @Test
     fun `onResendMessageClick should update the resend message state to sent when resend message success`() {
         val failedMessage = messages.first().toUi(currentUserId)
-        messagingViewModel.updateState { it.copy(
+        chatViewModel.updateState { it.copy(
             failedMessageToReSend = failedMessage,
             uiMessages = listOf(messages.first().toUi(currentUserId))
         ) }
         everySuspend { repository.sendMessage(failedMessage.toEntity()) } returns Unit
 
-        messagingViewModel.onResendMessageClick()
+        chatViewModel.onResendMessageClicked()
 
-        assertThat(messagingViewModel.state.value.uiMessages.first().status).isEqualTo(MessageStatusUiState.SENDING)
+        assertThat(chatViewModel.state.value.uiMessages.first().status).isEqualTo(MessageStatusUiState.SENDING)
         testDispatcher.scheduler.advanceUntilIdle()
-        assertThat(messagingViewModel.state.value.uiMessages.first().status).isEqualTo(MessageStatusUiState.SENT)
+        assertThat(chatViewModel.state.value.uiMessages.first().status).isEqualTo(MessageStatusUiState.SENT)
     }
 
     @Test
     fun `onResendMessageClick should update the resend message state to failed when resend message failed`() {
         val failedMessage = messages.first().toUi(currentUserId)
-        messagingViewModel.updateState { it.copy(
+        chatViewModel.updateState { it.copy(
             failedMessageToReSend = failedMessage,
             uiMessages = listOf(messages.first().toUi(currentUserId))
         ) }
 
-        messagingViewModel.onResendMessageClick()
+        chatViewModel.onResendMessageClicked()
 
-        assertThat(messagingViewModel.state.value.uiMessages.first().status).isEqualTo(MessageStatusUiState.SENDING)
+        assertThat(chatViewModel.state.value.uiMessages.first().status).isEqualTo(MessageStatusUiState.SENDING)
         testDispatcher.scheduler.advanceUntilIdle()
-        assertThat(messagingViewModel.state.value.uiMessages.first().status).isEqualTo(MessageStatusUiState.FAILED)
+        assertThat(chatViewModel.state.value.uiMessages.first().status).isEqualTo(MessageStatusUiState.FAILED)
     }
 
     private val messages =

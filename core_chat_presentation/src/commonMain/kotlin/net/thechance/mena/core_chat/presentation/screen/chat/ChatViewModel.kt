@@ -13,7 +13,6 @@ import mena.core_chat_presentation.generated.resources.error_cant_subscribe_to_n
 import net.thechance.mena.core_chat.domain.entity.Message
 import net.thechance.mena.core_chat.domain.repository.ChatRepository
 import net.thechance.mena.core_chat.presentation.components.SnackBarData
-import net.thechance.mena.core_chat.presentation.navigation.ChatDetailsRoute
 import net.thechance.mena.core_chat.presentation.navigation.ChatEffector
 import net.thechance.mena.core_chat.presentation.shared.BaseViewModel
 import net.thechance.mena.core_chat.presentation.utils.UiText
@@ -24,14 +23,14 @@ import kotlin.uuid.Uuid
 
 class  ChatViewModel(
     private val repository: ChatRepository,
-    messagingArgs : MessagingArgs,
+    chatArgs : ChatArgs,
     effector: ChatEffector,
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : BaseViewModel<ChatScreenState>(ChatScreenState(), effector,defaultDispatcher),
     ChatInteractionListener {
 
     init {
-        val chatId = messagingArgs.chatId
+        val chatId = chatArgs.chatId
 
         getChat(chatId)
         loadChatHistory(chatId)
