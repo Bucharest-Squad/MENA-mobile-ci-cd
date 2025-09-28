@@ -35,7 +35,6 @@ internal fun AyahActionButtons(
     onCopyClick: () -> Unit,
     onShareClick: () -> Unit,
     modifier: Modifier = Modifier
-
     ) {
         Row(
             modifier = modifier.fillMaxWidth()

@@ -47,8 +47,10 @@ kover.reports {
                 "*.database",
                 "*.mapper",
                 "*.di",
-                "*.repository"
             )
+        }
+        includes {
+            packages("*.repository")
         }
     }
 }

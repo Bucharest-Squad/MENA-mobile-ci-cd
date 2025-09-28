@@ -60,6 +60,7 @@ internal fun SurahAppBar(
         )
     )
 }
+
 @Composable
 internal fun BasmalaHeader(
     selectedAyahIndex: Int?,
@@ -119,7 +120,7 @@ internal fun AyatContent(
     listener: SurahInteractionListener
 ) {
     var textLayoutResult by remember {
-        mutableStateOf<TextLayoutResult?>(null )
+        mutableStateOf<TextLayoutResult?>(null)
     }
 
     BasicText(
@@ -150,16 +151,16 @@ internal fun AyatContent(
 
 @Composable
 private fun getAyahTextStyle() = Theme.typography.quran.large.copy(
-        textDirection = TextDirection.Rtl,
-        textAlign = TextAlign.Justify
-    )
+    textDirection = TextDirection.Rtl,
+    textAlign = TextAlign.Justify
+)
 
- private fun handleAyahLongPress(
-     offset: Offset,
-     textLayoutResult: TextLayoutResult?,
-     annotatedText: AnnotatedString,
-     ayat: List<Ayah>,
-     listener: SurahInteractionListener
+private fun handleAyahLongPress(
+    offset: Offset,
+    textLayoutResult: TextLayoutResult?,
+    annotatedText: AnnotatedString,
+    ayat: List<Ayah>,
+    listener: SurahInteractionListener
 ) {
     textLayoutResult?.let { layoutResult ->
         val position = layoutResult.getOffsetForPosition(offset)

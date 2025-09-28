@@ -50,7 +50,6 @@ import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.faith.presentation.base.FaithScaffold
 import net.thechance.mena.faith.presentation.base.ObserveAsEffect
-import net.thechance.mena.faith.presentation.navigation.BookmarksRoute
 import net.thechance.mena.faith.presentation.navigation.LocalNavController
 import net.thechance.mena.faith.presentation.navigation.SurahDetailsRoute
 import org.jetbrains.compose.resources.painterResource
@@ -235,7 +234,7 @@ private fun SurahDetailsRow(
             tint = Theme.colorScheme.shadeSecondary,
             contentDescription = stringResource(resource = Res.string.moshaf_icon),
             modifier = Modifier
-                .size(16.dp)
+                .size(Theme.spacing._16)
                 .padding(end = Theme.spacing._4)
         )
 
