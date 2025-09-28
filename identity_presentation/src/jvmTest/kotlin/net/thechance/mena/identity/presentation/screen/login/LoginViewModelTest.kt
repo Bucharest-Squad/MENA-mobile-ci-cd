@@ -8,7 +8,10 @@ import io.mockk.unmockkAll
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import net.thechance.mena.identity.domain.exception.InvalidMobileNumberException
@@ -24,13 +27,15 @@ import kotlin.test.assertTrue
 
 class LoginViewModelTest {
 
-    private val useCase: LoginUseCase = mockk(relaxed = true)
+    private lateinit var useCase: LoginUseCase
     private lateinit var viewModel: LoginScreenModel
-    private val testDispatcher = StandardTestDispatcher()
+    private lateinit var testDispatcher: TestDispatcher
 
     @Before
     fun setUp() {
+        testDispatcher = StandardTestDispatcher()
         Dispatchers.setMain(testDispatcher)
+        useCase = mockk(relaxed = true)
         viewModel = LoginScreenModel(useCase)
 
     }
@@ -38,7 +43,6 @@ class LoginViewModelTest {
     @After
     fun tearDown() {
         Dispatchers.resetMain()
-        unmockkAll()
     }
 
     private fun setupValidCountry() {
@@ -58,7 +62,7 @@ class LoginViewModelTest {
         viewModel.effect.test {
             val effect = awaitItem()
             assertTrue { effect is LoginScreenUIEffect.NavigateToHome }
-            cancelAndConsumeRemainingEvents()
+            cancelAndIgnoreRemainingEvents()
         }
 
     }
@@ -75,12 +79,12 @@ class LoginViewModelTest {
         viewModel.onLoginClicked()
         testDispatcher.scheduler.advanceUntilIdle()
 
-
         viewModel.state.test {
+
             val state = awaitItem()
-            print("state $state")
             assertEquals(errorMessage,state.errorMessage )
-            cancelAndConsumeRemainingEvents()
+            cancelAndIgnoreRemainingEvents()
+
         }
 
     }
@@ -95,7 +99,7 @@ class LoginViewModelTest {
         viewModel.state.test {
             val state = awaitItem()
             assertTrue { state.phoneNumber == phoneNumber }
-            cancelAndConsumeRemainingEvents()
+            cancelAndIgnoreRemainingEvents()
         }
     }
 
@@ -109,7 +113,7 @@ class LoginViewModelTest {
         viewModel.state.test {
             val state = awaitItem()
             assertTrue { state.password == password }
-            cancelAndConsumeRemainingEvents()
+            cancelAndIgnoreRemainingEvents()
         }
     }
 
@@ -122,7 +126,7 @@ class LoginViewModelTest {
             viewModel.state.test {
                 val state = awaitItem()
                 assertTrue { state.countryPickerUIState.currentCountry == selectedCountry }
-                cancelAndConsumeRemainingEvents()
+                cancelAndIgnoreRemainingEvents()
             }
         }
 
@@ -141,7 +145,7 @@ class LoginViewModelTest {
         viewModel.state.test {
             val state = awaitItem()
             assertTrue { state.isLoginEnabled }
-            cancelAndConsumeRemainingEvents()
+            cancelAndIgnoreRemainingEvents()
         }
     }
 
@@ -154,7 +158,7 @@ class LoginViewModelTest {
         viewModel.state.test {
             val state = awaitItem()
             assertTrue { !state.isLoginEnabled }
-            cancelAndConsumeRemainingEvents()
+            cancelAndIgnoreRemainingEvents()
         }
     }
 
@@ -170,7 +174,7 @@ class LoginViewModelTest {
 
             val state = awaitItem()
             assertTrue { !state.isLoginEnabled }
-            cancelAndConsumeRemainingEvents()
+            cancelAndIgnoreRemainingEvents()
         }
     }
 
@@ -187,7 +191,7 @@ class LoginViewModelTest {
             viewModel.state.test {
                 val state = awaitItem()
                 assertTrue { !state.isLoginEnabled }
-                cancelAndConsumeRemainingEvents()
+                cancelAndIgnoreRemainingEvents()
             }
         }
 
@@ -204,7 +208,7 @@ class LoginViewModelTest {
             viewModel.state.test {
                 val state = awaitItem()
                 assertTrue { !state.isLoginEnabled }
-                cancelAndConsumeRemainingEvents()
+                cancelAndIgnoreRemainingEvents()
             }
         }
 
@@ -217,7 +221,7 @@ class LoginViewModelTest {
             viewModel.state.test {
                 val state = awaitItem()
                 assertTrue { state.isPasswordVisible }
-                cancelAndConsumeRemainingEvents()
+                cancelAndIgnoreRemainingEvents()
             }
 
         }
@@ -230,7 +234,7 @@ class LoginViewModelTest {
                 viewModel.onForgotPasswordClicked()
                 val effect = awaitItem()
                 assertTrue { effect is LoginScreenUIEffect.NavigateToForgotPassword }
-                cancelAndConsumeRemainingEvents()
+                cancelAndIgnoreRemainingEvents()
             }
         }
 
@@ -240,7 +244,7 @@ class LoginViewModelTest {
             viewModel.onRegisterClicked()
             val effect = awaitItem()
             assertTrue { effect is LoginScreenUIEffect.NavigateToRegister }
-            cancelAndConsumeRemainingEvents()
+            cancelAndIgnoreRemainingEvents()
         }
     }
 
@@ -250,7 +254,7 @@ class LoginViewModelTest {
         viewModel.state.test {
             val state = awaitItem()
             assertTrue { state.showCountryBottomSheet }
-            cancelAndConsumeRemainingEvents()
+            cancelAndIgnoreRemainingEvents()
         }
     }
 
@@ -260,7 +264,7 @@ class LoginViewModelTest {
         viewModel.state.test {
             val state = awaitItem()
             assertTrue { !state.showCountryBottomSheet }
-            cancelAndConsumeRemainingEvents()
+            cancelAndIgnoreRemainingEvents()
         }
     }
 
