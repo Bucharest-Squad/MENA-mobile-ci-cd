@@ -11,6 +11,20 @@ jobs:
     uses: ./.github/workflows/detect-changed-modules.yml
     secrets: inherit
 
+  debug-detect-output:
+    name: 🧐 Debug Detect Job Output
+    needs: detect
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Print the outputs from the detect job
+        run: |
+          echo "Output from 'detect' job:"
+          echo "-------------------------------------"
+          echo "has_changes: ${{ needs.detect.outputs.has_changes }}"
+          echo "modules: ${{ needs.detect.outputs.modules }}"
+          echo "-------------------------------------"
+
   test:
     name: Test & Upload Coverage
     needs: detect
