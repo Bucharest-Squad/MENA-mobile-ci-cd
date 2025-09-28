@@ -4,9 +4,9 @@ import net.thechance.mena.faith.data.database.SurahDto
 import net.thechance.mena.faith.domain.entity.Surah
 
 fun SurahDto.toSurah(): Surah {
-    val surahOrder = Surah.SurahOrder.entries.first { it.order == order }
+    val surahOrder = Surah.SurahOrder.entries.first { it.order == number }
     return Surah(
-        id = order,
+        id = number,
         order = surahOrder,
         name = name,
         ayahCount = ayahCount,
