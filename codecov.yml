@@ -3,6 +3,64 @@ coverage:
     project:
       default:
         enabled: no
+
     patch:
-      default:
+      # --- Core Chat ---
+      core_chat_api:
+        target: 80%
+      core_chat_data:
+        target: 70%
+      core_chat_domain:
+        target: 80%
+      core_chat_presentation:
+        target: 80%
+
+      # --- Dukan ---
+      dukan_api:
+        target: 80%
+      dukan_data:
+        target: 80%
+      dukan_domain:
+        target: 80%
+      dukan_presentation:
+        target: 80%
+
+      # --- Faith ---
+      faith_api:
+        target: 80%
+      faith_data:
+        target: 80%
+      faith_domain:
+        target: 80%
+      faith_presentation:
+        target: 80%
+
+      # --- Identity ---
+      identity_api:
+        target: 80%
+      identity_data:
+        target: 80%
+      identity_domain:
+        target: 80%
+      identity_presentation:
+        target: 80%
+
+      # --- Trends ---
+      trends_api:
+        target: 80%
+      trends_data:
+        target: 80%
+      trends_domain:
+        target: 80%
+      trends_presentation:
+        target: 80%
+
+      # --- Wallet ---
+      wallet_api:
+        target: 80%
+      wallet_data:
+        target: 80%
+      wallet_domain:
+        target: 80%
+      wallet_presentation:
         target: 80%
