@@ -1,6 +1,7 @@
 package net.thechance.mena.faith.presentation.feature.quran.surah
 
 import net.thechance.mena.faith.domain.entity.Ayah
+import net.thechance.mena.faith.domain.entity.Surah
 
 data class SurahScreenState(
     val ayatOfSurah: List<Ayah> = emptyList(),
@@ -11,8 +12,5 @@ data class SurahScreenState(
     val selectedAyah: String = "",
     val selectedAyahIndex: Int? = null,
     val isLoading: Boolean = false,
-    val isBasmalaVisible: Boolean = (surahId != AT_TAUBAH_ID)
-
+    val isBasmalaVisible: Boolean = (surahId != Surah.SurahOrder.AtTawbah.order)
 )
-
-private const val AT_TAUBAH_ID = 9
