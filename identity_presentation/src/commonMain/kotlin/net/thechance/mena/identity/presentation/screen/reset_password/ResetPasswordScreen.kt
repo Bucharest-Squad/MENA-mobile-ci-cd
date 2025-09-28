@@ -87,13 +87,17 @@ class ResetPasswordScreen :
                 )
             }) {
             Box(
-                modifier = Modifier.fillMaxSize().background(Theme.colorScheme.background.surface)
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Theme.colorScheme.background.surface)
             ) {
                 Image(
                     painter = painterResource(Res.drawable.login_background),
                     contentDescription = null,
                     contentScale = ContentScale.FillWidth,
-                    modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.BottomCenter)
                 )
 
                 AuthScreenContainer(
@@ -127,7 +131,9 @@ class ResetPasswordScreen :
                         visualTransformation = if (state.isNewPasswordVisible) VisualTransformation.None
                         else PasswordVisualTransformation(),
                         onTrailingIconClick = listener::onNewPasswordVisibilityToggled,
-                        modifier = Modifier.fillMaxWidth().padding(bottom = Theme.spacing._16)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = Theme.spacing._16)
                     )
 
                     Text(
@@ -151,7 +157,9 @@ class ResetPasswordScreen :
                         visualTransformation = if (state.isConfirmPasswordVisible) VisualTransformation.None
                         else PasswordVisualTransformation(),
                         onTrailingIconClick = listener::onConfirmPasswordVisibilityToggled,
-                        modifier = Modifier.fillMaxWidth().padding(bottom = Theme.spacing._8)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = Theme.spacing._8)
                     )
 
                     Spacer(modifier = Modifier.weight(1f))
@@ -162,7 +170,9 @@ class ResetPasswordScreen :
                         isEnabled = state.isResetEnabled,
                         isLoading = state.isLoading,
                         contentPadding = PaddingValues(vertical = Theme.spacing._12),
-                        modifier = Modifier.fillMaxWidth().padding(bottom = Theme.spacing._32)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = Theme.spacing._32)
                     )
                 }
 
@@ -176,7 +186,9 @@ class ResetPasswordScreen :
                         title = stringResource(Res.string.error),
                         message = state.errorMessage ?: "",
                         leadingIcon = painterResource(Res.drawable.ic_close_circle),
-                        modifier = Modifier.fillMaxWidth().padding(top = Theme.spacing._12)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = Theme.spacing._12)
                             .padding(horizontal = Theme.spacing._16)
                     )
                 }
@@ -204,7 +216,8 @@ fun AuthScreenContainer(
     modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit
 ) {
     Column(
-        modifier = modifier.fillMaxWidth(), content = content
+        modifier = modifier.fillMaxWidth(),
+        content = content
     )
 }
 
@@ -217,7 +230,7 @@ val MockState = ResetPasswordScreenUIState(
 
 @Preview
 @Composable
-fun PreviewResetPasswordScreen() {
+private fun PreviewResetPasswordScreen() {
     MenaTheme {
         ResetPasswordScreen().OnRender(
             state = MockState, listener = object : ResetPasswordScreenInteractionListener {
@@ -244,6 +257,7 @@ fun PreviewResetPasswordScreen() {
                 override fun onBackClicked() {
                     TODO("Not yet implemented")
                 }
-            })
+            }
+        )
     }
 }
