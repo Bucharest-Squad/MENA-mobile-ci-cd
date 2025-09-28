@@ -60,7 +60,7 @@ class ExportTransactionsViewModel(
             oldState.copy(
                 isCustomFilterCardSelected = true,
 
-            )
+                )
         }
     }
 
@@ -99,12 +99,8 @@ class ExportTransactionsViewModel(
         tryToExecute(
             onStart = ::onViewAndShareStart,
             callee = ::generateTransactionsFile,
-            onSuccess = { pdfBytes ->
-                onViewAndShareSuccess(pdfBytes)
-            },
-            onError = { error ->
-                onViewAndShareError(error)
-            },
+            onSuccess = { pdfBytes -> onViewAndShareSuccess(pdfBytes) },
+            onError = { error -> onViewAndShareError(error) },
             dispatcher = ioDispatcher
         )
     }
@@ -114,12 +110,8 @@ class ExportTransactionsViewModel(
         tryToExecute(
             onStart = ::onDownloadStart,
             callee = ::generateTransactionsFile,
-            onSuccess = { pdfBytes ->
-                saveFile(pdfBytes)
-            },
-            onError = { error ->
-                handleDownloadError(error)
-            },
+            onSuccess = { pdfBytes -> saveFile(pdfBytes) },
+            onError = { error -> handleDownloadError(error) },
             dispatcher = ioDispatcher
         )
     }
@@ -141,7 +133,7 @@ class ExportTransactionsViewModel(
             )
         }
 
-        if (pdfBytes.isEmptyFile()) {
+        if (pdfBytes.isEmpty()) {
             showToast(
                 messageRes = Res.string.error_no_transactions
             )
@@ -244,7 +236,7 @@ class ExportTransactionsViewModel(
     }
 
     private suspend fun saveFile(pdfBytes: ByteArray) {
-        if (pdfBytes.isEmptyFile()) {
+        if (pdfBytes.isEmpty()) {
             showToast(
                 messageRes = Res.string.error_no_transactions
             )
@@ -307,7 +299,8 @@ class ExportTransactionsViewModel(
                 )
             )
         }
-        autoHideSnackBar(durationMillis)
+        delay(durationMillis)
+        hideSnackBar()
     }
 
     private fun hideSnackBar() {
@@ -332,7 +325,7 @@ class ExportTransactionsViewModel(
                 )
             )
         }
-        autoHideToast(durationMillis)
+        delay(durationMillis)
         hideToast()
     }
 
@@ -355,16 +348,6 @@ class ExportTransactionsViewModel(
         }
     }
 
-    private suspend fun autoHideSnackBar(durationMillis: Long) {
-        delay(durationMillis)
-        hideSnackBar()
-    }
-
-    private suspend fun autoHideToast(durationMillis: Long) {
-        delay(durationMillis)
-        hideToast()
-    }
-
     @OptIn(ExperimentalTime::class)
     private fun String?.toStartOfDayLocalDateTime(formatter: DateTimeFormat<LocalDate>): LocalDateTime? {
         return this
@@ -374,6 +357,5 @@ class ExportTransactionsViewModel(
             ?.toLocalDateTime(TimeZone.currentSystemDefault())
     }
 
-    private fun ByteArray.isEmptyFile(): Boolean = this.isEmpty()
 
 }
