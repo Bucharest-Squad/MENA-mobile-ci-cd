@@ -12,10 +12,11 @@ class TransactionRepositoryImpl(
     override suspend fun getTransactionHistory(transactionFilterParams: TransactionFilterParams?):List<Transaction>?{
         return safeApiCall<List<Transaction>?> {
               networkClient.get("$TRANSACTION_PATH?${transactionFilterParams?.toQueryParams()}")
+
         }
     }
     private companion object {
-        const val TRANSACTION_PATH= "wallet/transaction"
+        const val TRANSACTION_PATH= "wallet/transactions"
     }
     private fun TransactionFilterParams.toQueryParams():String{
         val params = mutableListOf<String>()
