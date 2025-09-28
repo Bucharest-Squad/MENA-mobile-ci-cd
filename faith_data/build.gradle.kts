@@ -46,7 +46,8 @@ kover.reports {
             packages(
                 "*.database",
                 "*.mapper",
-                "*.di"
+                "*.di",
+                "net.thechance.mena.faith.data.repository.QuranRepositoryImpl"
             )
         }
     }
