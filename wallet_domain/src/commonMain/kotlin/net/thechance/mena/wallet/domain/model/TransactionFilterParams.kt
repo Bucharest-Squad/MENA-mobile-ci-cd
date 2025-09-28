@@ -4,7 +4,7 @@ import kotlinx.datetime.LocalDate
 
 data class TransactionFilterParams(
     val type: TransactionType?,
-    val status: TransactionStatus,
+    val status: TransactionStatus?,
     val startDate: LocalDate?,
     val endDate :LocalDate?,
 )
