@@ -9,9 +9,10 @@ import kotlin.uuid.Uuid
 @ExperimentalUuidApi
 interface ChatRepository {
     suspend fun sendMessage(message: Message)
+    suspend fun getOrCreateConversation(receiverId: String): Chat?
     suspend fun loadMessages(chatId: Uuid): List<Message>
     suspend fun markMessagesAsRead(chatId: Uuid)
     fun subscribeToMessages(chatId: Uuid): Flow<Message>
     suspend fun getChatById(chatId: Uuid): Chat
-    suspend fun getChatByContactUserId(userId : Uuid): Chat
+    suspend fun getChatByContactUserId(userId : Uuid): Chat?
 }
