@@ -97,7 +97,8 @@ class ResetPasswordScreen :
                 )
 
                 AuthScreenContainer(
-                    modifier = Modifier.padding(top = Theme.spacing._24)
+                    modifier = Modifier
+                        .padding(top = Theme.spacing._24)
                         .padding(horizontal = Theme.spacing._16)
                 ) {
                     PageDescription(
