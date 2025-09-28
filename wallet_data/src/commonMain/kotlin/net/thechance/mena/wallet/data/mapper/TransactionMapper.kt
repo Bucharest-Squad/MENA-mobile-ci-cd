@@ -21,3 +21,15 @@ fun TransactionDto.toEntity(): Transaction {
     )
 
 }
+@OptIn(ExperimentalUuidApi::class)
+fun Transaction.toDto():TransactionDto{
+    return TransactionDto(
+        id=id.toString(),
+        createdAt=createdAt.toString(),
+        status = status.toString(),
+        senderName = senderName,
+        receiverName = receiverName,
+        amount = amount,
+        type = type.toString()
+    )
+}
