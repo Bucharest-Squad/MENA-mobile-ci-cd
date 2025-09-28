@@ -1,5 +1,6 @@
 package net.thechance.mena.identity.presentation.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,7 +20,6 @@ import mena.identity_presentation.generated.resources.Res
 import mena.identity_presentation.generated.resources.app_name
 import mena.identity_presentation.generated.resources.madimi_one_regular
 import mena.identity_presentation.generated.resources.mena_logo
-import net.thechance.mena.designsystem.presentation.component.image.Image
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource

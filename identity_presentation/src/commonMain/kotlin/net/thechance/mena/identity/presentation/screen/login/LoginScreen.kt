@@ -1,6 +1,5 @@
 package net.thechance.mena.identity.presentation.screen.login
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Box
@@ -162,7 +161,7 @@ class LoginScreen : BaseScreen<
                         onActionClick = listener::onRegisterClicked
                     )
                 }
-                AnimatedVisibility(
+                androidx.compose.animation.AnimatedVisibility(
                     visible = state.errorMessage != null,
                     enter = slideInHorizontally(initialOffsetX = { it }),
                     exit = slideOutHorizontally(targetOffsetX = { it })
