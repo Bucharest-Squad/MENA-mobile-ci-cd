@@ -94,8 +94,7 @@ private fun ExportTransactionScreenContent(
             Column(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .padding(horizontal = 16.dp)
-                    .padding(top = 16.dp)
+                    .padding(16.dp)
             )
             {
                 SelectCard(
@@ -153,7 +152,7 @@ private fun ExportTransactionScreenContent(
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 16.dp)
+                        .padding(bottom = 8.dp)
                 )
             }
             CustomToast(
