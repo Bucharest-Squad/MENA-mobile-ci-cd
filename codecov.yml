@@ -57,6 +57,8 @@ flags:
 coverage:
   status:
     project:
+      default_rules:
+        flag_coverage_not_uploaded_behavior: exclude
       default:
         enabled: no
 

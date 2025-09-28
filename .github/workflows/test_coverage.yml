@@ -11,20 +11,6 @@ jobs:
     uses: ./.github/workflows/detect-changed-modules.yml
     secrets: inherit
 
-  debug-detect-output:
-    name: 🧐 Debug Detect Job Output
-    needs: detect
-    runs-on: ubuntu-latest
-    if: always()
-    steps:
-      - name: Print the outputs from the detect job
-        run: |
-          echo "Output from 'detect' job:"
-          echo "-------------------------------------"
-          echo "has_changes: ${{ needs.detect.outputs.has_changes }}"
-          echo "modules: ${{ needs.detect.outputs.modules }}"
-          echo "-------------------------------------"
-
   test:
     name: Test & Upload Coverage
     needs: detect
@@ -32,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        module: [ 'core_chat_data', 'dukan_api' ]
+        module: ${{ fromJSON(needs.detect.outputs.modules) }}
       fail-fast: false
 
     steps:
@@ -66,7 +52,7 @@ jobs:
           files: ./${{ matrix.module }}/build/reports/kover/report.xml
           flags: ${{ matrix.module }}
           fail_ci_if_error: true
-          name: ${{ matrix.module }}-${{ github.run_id }}
+          name: ${{ matrix.module }}-coverage
 
   notify-slack-on-failure:
     if: failure()
