@@ -16,6 +16,7 @@ kotlin {
     }
 
     listOf(
+        iosX64(),
         iosArm64(),
         iosSimulatorArm64()
     ).forEach { iosTarget ->
@@ -36,6 +37,7 @@ kotlin {
             implementation(libs.koin.compose.viewmodel)
             implementation(projects.faithDomain)
             implementation(projects.designSystem)
+            implementation(projects.faithApi)
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
