@@ -6,6 +6,6 @@ import net.thechance.mena.faith.domain.entity.Ayah
 fun AyahDto.toAyah() = Ayah(
     number = number,
     surahId = id,
-    displayContent = displayContent,
-    plainTextContent = plainTextContent
+    content = content,
+    plainContent = plainContent
 )

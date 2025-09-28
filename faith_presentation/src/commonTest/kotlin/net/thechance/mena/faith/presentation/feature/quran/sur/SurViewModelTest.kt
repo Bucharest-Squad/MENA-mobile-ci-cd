@@ -135,14 +135,12 @@ class SurViewModelTest {
                 order = Surah.SurahOrder.AlFatihah,
                 name = "Al-Fatihah",
                 ayahCount = 7,
-                isMakkia = true
             ),
             Surah(
                 id = 2,
                 order = Surah.SurahOrder.AlBaqarah,
                 name = "Al-Baqarah",
                 ayahCount = 286,
-                isMakkia = false
             )
         )
 

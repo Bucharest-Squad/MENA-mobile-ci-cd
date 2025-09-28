@@ -19,20 +19,23 @@ fun FaithNavigation() {
     CompositionLocalProvider(
         LocalNavController provides navController
     ) {
-        NavHost(
-            navController = navController,
-            startDestination = SurRoute
-        ) {
-            composable<SurRoute> {
-                QuranTheme { SurScreen() }
-            }
+        QuranTheme {
+            NavHost(
+                navController = navController,
+                startDestination = SurRoute
+            ) {
+                composable<SurRoute> {
+                    SurScreen()
+                }
 
-            composable<SurahDetailsRoute> { backStackEntry ->
-                val args = backStackEntry.toRoute<SurahDetailsRoute>()
-                QuranTheme {
+                composable<SurahDetailsRoute> { backStackEntry ->
+                    val args = backStackEntry.toRoute<SurahDetailsRoute>()
+
                     SurahScreen(
                         surahId = args.surahId,
-                        surahName = args.surahName)
+                        surahName = args.surahName
+                    )
+
                 }
             }
         }

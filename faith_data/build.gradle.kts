@@ -39,7 +39,7 @@ kotlin {
 kover.reports {
     verify {
         rule {
-            minBound(0)
+            minBound(80)
         }
     }
 

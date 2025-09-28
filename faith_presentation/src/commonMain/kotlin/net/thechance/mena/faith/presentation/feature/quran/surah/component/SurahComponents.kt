@@ -166,7 +166,7 @@ private fun handleAyahLongPress(
         val position = layoutResult.getOffsetForPosition(offset)
         val clickedAyahIndex = findClickedAyahIndex(annotatedText, position)
         if (clickedAyahIndex >= 0 && clickedAyahIndex < ayat.size) {
-            val ayahContent = ayat[clickedAyahIndex].plainTextContent
+            val ayahContent = ayat[clickedAyahIndex].plainContent
             listener.onAyahLongPress(ayahContent, clickedAyahIndex)
         }
     }

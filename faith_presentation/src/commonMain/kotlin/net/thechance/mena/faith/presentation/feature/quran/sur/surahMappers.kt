@@ -242,7 +242,7 @@ fun Surah.toUi() = SurScreenState.SurahUiState(
     arabicNameImg = getSurahNameDrawableResource(order),
     surahName = name,
     ayatCount = ayahCount,
-    isMakki = isMakkia
+    isMakki = order.isMakkia
 )
 
 private fun getSurahNameDrawableResource(order: Surah.SurahOrder): DrawableResource =

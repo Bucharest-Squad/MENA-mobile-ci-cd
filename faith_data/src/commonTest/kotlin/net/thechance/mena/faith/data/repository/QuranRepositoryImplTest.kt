@@ -156,14 +156,12 @@ class QuranRepositoryImplTest {
                 order = Surah.SurahOrder.AlFatihah,
                 name = AL_FATIHAH_NAME,
                 ayahCount = 7,
-                isMakkia = true
             ),
             Surah(
                 id = 2,
                 order = Surah.SurahOrder.AlBaqarah,
                 name = AL_BAQARAH_NAME,
                 ayahCount = 286,
-                isMakkia = false
             )
         )
     }

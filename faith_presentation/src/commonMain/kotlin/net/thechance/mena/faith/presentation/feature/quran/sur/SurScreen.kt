@@ -207,7 +207,7 @@ private fun SurahItem(
                 modifier = Modifier.padding(bottom = Theme.spacing._2)
             )
 
-            SurahDetailsRow(ayatNumber = surah.ayatCount, isMakki = surah.surahOrder)
+            SurahDetailsRow(ayatNumber = surah.ayatCount, isMakki = surah.isMakki)
         }
 
         Icon(

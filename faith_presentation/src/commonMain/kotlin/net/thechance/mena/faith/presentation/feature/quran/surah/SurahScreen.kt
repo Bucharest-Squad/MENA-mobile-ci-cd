@@ -60,13 +60,12 @@ private fun Content(
     state: SurahScreenState,
     listener: SurahInteractionListener,
     snackBarState: SnackBarState,
-    modifier: Modifier = Modifier
 ) {
     val lazyListState = rememberLazyListState()
 
     FaithScaffold(
         backgroundColor = Theme.colorScheme.background.surface,
-        modifier = modifier.windowInsetsPadding(WindowInsets.statusBars),
+        modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars),
         topBar = {
             SurahAppBar(
                 surahName = state.surahName,
@@ -82,7 +81,7 @@ private fun Content(
             )
         }) {
         Box(
-            modifier.fillMaxWidth()
+            Modifier.fillMaxWidth()
         ) {
             AyatOfSurah(
                 listener = listener,
