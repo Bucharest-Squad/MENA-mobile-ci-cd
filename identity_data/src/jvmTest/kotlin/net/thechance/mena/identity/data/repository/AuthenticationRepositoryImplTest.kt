@@ -21,9 +21,9 @@ import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
-import net.thechance.mena.identity.data.dto.auth.AuthenticationResponse
-import net.thechance.mena.identity.data.utils.ACCESS_TOKEN
-import net.thechance.mena.identity.data.utils.REFRESH_TOKEN
+import net.thechance.mena.identity.data.dataSource.remote.dto.AuthenticationResponse
+import net.thechance.mena.identity.data.dataSource.local.setting.ACCESS_TOKEN
+import net.thechance.mena.identity.data.dataSource.local.setting.REFRESH_TOKEN
 import net.thechance.mena.identity.domain.entity.PhoneNumber
 import net.thechance.mena.identity.domain.exception.InvalidCredentialsException
 import net.thechance.mena.identity.domain.exception.UnAuthorizedException
