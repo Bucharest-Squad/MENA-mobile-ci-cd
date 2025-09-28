@@ -51,5 +51,6 @@
 
     <string name="filter_crossfade">تبديل الفلاتر</string>
     <string name="transaction_history">سجل التحويلات المالية</string>
+    <string name="transaction_history">سجل المعاملات</string>
 
 </resources>
