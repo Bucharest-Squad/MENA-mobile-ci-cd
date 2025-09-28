@@ -9,7 +9,6 @@ data class ExportTransactionsState(
     val snackBar: SnackBarState = SnackBarState(),
     val toast: CustomToastState = CustomToastState(),
     val isCustomFilterCardSelected: Boolean = false,
-    val isAllTransactionsCardSelected: Boolean = false,
     val isDownloadLoading: Boolean = false,
     val isViewAndShareLoading: Boolean = false,
     val isViewAndShareButtonEnabled: Boolean = true,

@@ -50,7 +50,6 @@ class ExportTransactionsViewModel(
     override fun onAllTransactionsClicked() {
         updateState { oldState ->
             oldState.copy(
-                isAllTransactionsCardSelected = true,
                 isCustomFilterCardSelected = false
             )
         }
@@ -60,7 +59,6 @@ class ExportTransactionsViewModel(
         updateState { oldState ->
             oldState.copy(
                 isCustomFilterCardSelected = true,
-                isAllTransactionsCardSelected = false
 
             )
         }

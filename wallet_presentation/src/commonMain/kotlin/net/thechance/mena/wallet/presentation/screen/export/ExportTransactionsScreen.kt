@@ -101,7 +101,7 @@ private fun ExportTransactionScreenContent(
                 SelectCard(
                     cardText = stringResource(Res.string.all_transactions),
                     onCardSelected = interactionListener::onAllTransactionsClicked,
-                    isSelected = state.isAllTransactionsCardSelected,
+                    isSelected = (!state.isCustomFilterCardSelected),
                     modifier = Modifier.padding(bottom = 12.dp)
                 )
                 SelectCard(
