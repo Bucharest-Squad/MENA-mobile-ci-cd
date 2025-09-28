@@ -8,7 +8,7 @@ import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
 import net.thechance.mena.identity.domain.useCase.ResetPasswordUseCase
 import net.thechance.mena.identity.domain.useCase.validation.mobileNumber.PasswordValidator
 
-class ResetPasswordScreenModel(
+class ResetPasswordScreenViewModel(
     private val resetPasswordUseCase: ResetPasswordUseCase
 ) : BaseScreenModel<ResetPasswordScreenUIState, ResetPasswordScreenUIEffect>(
     ResetPasswordScreenUIState()
@@ -39,10 +39,6 @@ class ResetPasswordScreenModel(
 
     override fun onBackClicked() {
         sendNewEffect(ResetPasswordScreenUIEffect.NavigateBackToLogin)
-    }
-
-    override fun clearErrorMessage() {
-        updateState { copy(errorMessage = null) }
     }
 
     override fun onResetPasswordClicked() {

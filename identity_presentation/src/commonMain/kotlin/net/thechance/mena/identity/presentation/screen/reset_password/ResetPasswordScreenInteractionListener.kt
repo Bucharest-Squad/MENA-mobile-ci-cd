@@ -9,5 +9,4 @@ interface ResetPasswordScreenInteractionListener : BaseInteractionListener {
     fun onConfirmPasswordVisibilityToggled()
     fun onResetPasswordClicked()
     fun onBackClicked()
-    fun clearErrorMessage()
 }
