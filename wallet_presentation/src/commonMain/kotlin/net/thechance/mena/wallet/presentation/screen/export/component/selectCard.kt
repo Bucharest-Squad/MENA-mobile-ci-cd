@@ -25,12 +25,13 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun SelectCard(
-    modifier: Modifier = Modifier,
     cardText: String,
+    modifier: Modifier = Modifier,
     isSelected: Boolean = false,
     onCardSelected: () -> Unit = {}
 ) {
-    val backgroundColor = if (isSelected) Theme.colorScheme.brand.brandVariant
+    val backgroundColor =
+        if (isSelected) Theme.colorScheme.brand.brandVariant
     else Theme.colorScheme.background.surfaceLow
     Row(
         modifier = modifier
@@ -52,7 +53,7 @@ fun SelectCard(
     ) {
         RadioButton(
             isSelected = isSelected,
-            onClick = {onCardSelected},
+            onClick = onCardSelected,
             isEnabled = isSelected
         )
         Text(
