@@ -1,6 +1,5 @@
 package net.thechance.mena.wallet.data.repository.balance
 
-import net.thechance.mena.wallet.data.dto.TransactionDto
 import net.thechance.mena.wallet.data.exceptions.safeApiCall
 import net.thechance.mena.wallet.data.network_client.NetworkClient
 import net.thechance.mena.wallet.domain.entity.Transaction
@@ -12,10 +11,26 @@ class TransactionRepositoryImpl(
 ) : TransactionRepository {
     override suspend fun getTransactionHistory(transactionFilter: TransactionFilter?):List<Transaction>?{
         return safeApiCall<List<Transaction>?> {
-              networkClient.get(Transaction_PATH)
+              networkClient.get("$TRANSACTION_PATH?${transactionFilter?.toQueryParams()}")
         }
     }
     private companion object {
-        const val Transaction_PATH = "wallet/transaction"
+        const val TRANSACTION_PATH= "wallet/transaction"
+    }
+    private fun TransactionFilter.toQueryParams():String{
+        val params = mutableListOf<String>()
+        type?.let{
+            params.add("type=$it")
+        }
+        status?.let{
+            params.add("status=$it")
+        }
+        startDate?.let{
+            params.add("startDate=$it")
+        }
+        endDate?.let{
+            params.add("endDate=$it")
+        }
+        return params.joinToString ("&" )
     }
 }
