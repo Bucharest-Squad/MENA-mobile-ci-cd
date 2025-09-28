@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
     alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.mockkery)
 }
 
 kotlin {
@@ -34,6 +35,8 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.mokkery.core)
+            implementation(libs.kotlinx.coroutines.test)
             implementation(libs.bundles.test)
         }
 
