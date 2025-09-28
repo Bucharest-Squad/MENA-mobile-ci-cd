@@ -196,6 +196,25 @@ class ChatViewModelTest {
         assertThat(chatViewModel.state.value.inputMessage).isEmpty()
     }
 
+    @Test
+    fun `onFailedMessageClicked should update the failedMessageToResend to the failedMessage when its call`() {
+        val failedMessage = messages.first().toUi(currentUserId)
+
+        chatViewModel.onFailedMessageClicked(failedMessage)
+
+        assertThat(chatViewModel.state.value.failedMessageToReSend).isEqualTo(failedMessage)
+    }
+
+
+    @Test
+    fun `onFailedMessageClicked should update the isResendMessageDialogVisible to true when its call`() {
+        val failedMessage = messages.first().toUi(currentUserId)
+
+        chatViewModel.onFailedMessageClicked(failedMessage)
+
+        assertThat(chatViewModel.state.value.isResendMessageDialogVisible).isEqualTo(true)
+    }
+
 
     @Test
     fun `onDeleteFailedMessageClick should delete the clicked failed message when its call`() {
@@ -280,6 +299,7 @@ class ChatViewModelTest {
         val result = chatViewModel.state.value.chatListItems.first() as ChatListItem.Message
         assertThat(result).isEqualTo(chatListItem)
     }
+
 
 
     private val messages =
