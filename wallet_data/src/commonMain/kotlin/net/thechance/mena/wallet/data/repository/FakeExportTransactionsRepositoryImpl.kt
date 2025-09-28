@@ -4,6 +4,7 @@ import io.ktor.utils.io.core.toByteArray
 import kotlinx.datetime.LocalDateTime
 import net.thechance.mena.wallet.data.network_client.NetworkClient
 import net.thechance.mena.wallet.domain.entity.Transaction
+import net.thechance.mena.wallet.domain.model.FilterRequestParams
 import net.thechance.mena.wallet.domain.repository.ExportTransactionsRepository
 import org.koin.core.annotation.Single
 
@@ -12,10 +13,7 @@ class FakeExportTransactionsRepositoryImpl(
     private val networkClient: NetworkClient
 ) : ExportTransactionsRepository {
     override suspend fun getFilteredTransactionsFile(
-        type: Set<Transaction.Type>?,
-        status: Transaction.Status?,
-        startDate: LocalDateTime?,
-        endDate: LocalDateTime?
+        filterRequestParams: FilterRequestParams?
     ): ByteArray {
         return generateFakePdfFile()
     }

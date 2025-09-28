@@ -17,7 +17,7 @@ data class ExportTransactionsState(
     val noInternetConnection: Boolean = false,
     val selectedTransactionsTypes: Set<FilterType>? = null,
     val selectedTransactionsStatus: FilterStatus = FilterStatus.ALL,
-    val startDate: String? = "",
-    val endDate: String? = "",
+    val startDate: String = "",
+    val endDate: String = "",
 )
 

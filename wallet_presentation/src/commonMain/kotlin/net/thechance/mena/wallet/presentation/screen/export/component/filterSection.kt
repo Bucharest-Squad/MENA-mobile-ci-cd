@@ -30,8 +30,8 @@ fun FilterSection(
         FilterContent(
             selectedTypes = state.selectedTransactionsTypes,
             selectedStatus = state.selectedTransactionsStatus,
-            fromDate = state.startDate ?: "",
-            toDate = state.endDate ?: "",
+            fromDate = state.startDate,
+            toDate = state.endDate,
             onTypeSelected = interactionListener::onTypeSelected,
             onStatusSelected = interactionListener::onStatusSelected,
             onFromClick = interactionListener::onFromDateClicked,

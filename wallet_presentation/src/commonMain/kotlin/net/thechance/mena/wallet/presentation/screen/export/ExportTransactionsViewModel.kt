@@ -24,6 +24,7 @@ import mena.wallet_presentation.generated.resources.error_failed_view
 import mena.wallet_presentation.generated.resources.error_no_transactions
 import mena.wallet_presentation.generated.resources.something_went_wrong
 import net.thechance.mena.wallet.domain.exceptions.NoInternetException
+import net.thechance.mena.wallet.domain.model.FilterRequestParams
 import net.thechance.mena.wallet.domain.repository.ExportTransactionsRepository
 import net.thechance.mena.wallet.presentation.base.BaseViewModel
 import net.thechance.mena.wallet.presentation.base.SnackBarState
@@ -198,11 +199,14 @@ class ExportTransactionsViewModel(
                 ?: Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
 
             exportTransactionsRepository.getFilteredTransactionsFile(
-                type = currentState.selectedTransactionsTypes?.map { it.toDomain() }
-                    ?.toSet(),
-                status = currentState.selectedTransactionsStatus.toDomain(),
-                startDate = startDateTime,
-                endDate = endDateTime
+                FilterRequestParams(
+                    type = currentState.selectedTransactionsTypes?.map { it.toDomain() }
+                        ?.toSet(),
+                    status = currentState.selectedTransactionsStatus.toDomain(),
+                    startDate = startDateTime,
+                    endDate = endDateTime
+                )
+
             )
         } else {
             exportTransactionsRepository.getFilteredTransactionsFile()
