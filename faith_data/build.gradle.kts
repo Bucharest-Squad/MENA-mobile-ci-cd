@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
+    alias(libs.plugins.mockkery)
 }
 
 kotlin {
@@ -26,10 +27,11 @@ kotlin {
             implementation(libs.androidx.sqlite.bundled)
             implementation(libs.kotlinx.serialization.json)
             api(libs.koin.core)
-            implementation(compose.runtime)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.mokkery.core)
+            implementation(libs.kotlinx.coroutines.test)
         }
     }
 }
