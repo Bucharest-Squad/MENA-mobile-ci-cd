@@ -1,5 +1,6 @@
 package net.thechance.mena.core_chat.data.di
 
+import net.thechance.mena.core_chat.data.chat.ChatRepositoryImpl
 import net.thechance.mena.core_chat.data.chat.FakeChatRepository
 import net.thechance.mena.core_chat.data.contacts.ContactsRepositoryImpl
 import net.thechance.mena.core_chat.domain.repository.ChatRepository
@@ -14,4 +15,5 @@ import kotlin.uuid.ExperimentalUuidApi
 internal val repositoryModule = module {
     single<ContactsRepository> { ContactsRepositoryImpl(get(named("chatClient")), get(), get(), get()) }
     singleOf(::FakeChatRepository) bind ChatRepository::class
+    singleOf(::ChatRepositoryImpl) bind ChatRepository::class
 }
