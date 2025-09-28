@@ -69,6 +69,10 @@ class FakeChatRepository : ChatRepository {
         flow.emit(message)
     }
 
+    override suspend fun getOrCreateConversation(receiverId: String): Chat {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun loadMessages(chatId: Uuid): List<Message> {
         return messages[chatId]?.toList() ?: emptyList()
     }
