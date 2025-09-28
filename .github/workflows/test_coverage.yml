@@ -66,6 +66,7 @@ jobs:
           files: ./${{ matrix.module }}/build/reports/kover/report.xml
           flags: ${{ matrix.module }}
           fail_ci_if_error: true
+          name: ${{ matrix.module }}-coverage
 
   notify-slack-on-failure:
     if: failure()
