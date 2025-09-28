@@ -29,7 +29,7 @@ import net.thechance.mena.wallet.presentation.base.BaseViewModel
 import net.thechance.mena.wallet.presentation.base.SnackBarState
 import net.thechance.mena.wallet.presentation.model.FilterStatus
 import net.thechance.mena.wallet.presentation.model.FilterType
-import net.thechance.mena.wallet.presentation.screen.export.component.CustomToastState
+import net.thechance.mena.wallet.presentation.base.CustomToastState
 import org.jetbrains.compose.resources.StringResource
 import org.koin.android.annotation.KoinViewModel
 import org.koin.core.annotation.Provided
@@ -93,7 +93,6 @@ class ExportTransactionsViewModel(
             oldState.copy(endDate = "2025/09/27")
         }
     }
-
 
     override fun onViewAndShareClicked() {
         tryToExecute(

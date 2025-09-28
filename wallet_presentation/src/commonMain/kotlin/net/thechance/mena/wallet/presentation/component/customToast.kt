@@ -1,4 +1,4 @@
-package net.thechance.mena.wallet.presentation.screen.export.component
+package net.thechance.mena.wallet.presentation.component
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -23,6 +23,7 @@ import mena.wallet_presentation.generated.resources.downloading_started
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import net.thechance.mena.wallet.presentation.base.CustomToastState
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -64,7 +65,6 @@ fun CustomToast(
                 .padding(vertical = 12.dp, horizontal = 16.dp)
             ,
         )
-
     }
 }
 

@@ -11,7 +11,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.wallet.presentation.screen.export.component.CustomToast
 
 @Composable
 fun WalletScaffold(
@@ -49,7 +48,6 @@ fun WalletScaffold(
             ) {
                 toast()
             }
-
         }
     }
 }

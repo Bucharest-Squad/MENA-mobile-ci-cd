@@ -1,6 +1,7 @@
 package net.thechance.mena.wallet.presentation.screen.export.component
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -19,10 +20,15 @@ import mena.wallet_presentation.generated.resources.share
 import mena.wallet_presentation.generated.resources.view_and_share
 import net.thechance.mena.designsystem.presentation.component.button.OutlinedButton
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
+import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
+import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import net.thechance.mena.wallet.presentation.model.FilterStatus
+import net.thechance.mena.wallet.presentation.model.FilterType
 import net.thechance.mena.wallet.presentation.screen.export.ExportTransactionsListener
 import net.thechance.mena.wallet.presentation.screen.export.ExportTransactionsState
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun ExportTransactionContentBody(
@@ -33,8 +39,7 @@ fun ExportTransactionContentBody(
         modifier = Modifier
             .fillMaxHeight()
             .padding(16.dp)
-    )
-    {
+    ) {
         SelectCard(
             cardText = stringResource(Res.string.all_transactions),
             onCardSelected = interactionListener::onAllTransactionsClicked,
@@ -62,29 +67,66 @@ fun ExportTransactionContentBody(
         Spacer(modifier = Modifier.weight(1f))
         OutlinedButton(
             text = stringResource(Res.string.view_and_share),
-            trailingIcon = painterResource(Res.drawable.share),
             onClick = interactionListener::onViewAndShareClicked,
-            isLoading = state.isViewAndShareLoading,
-            isEnabled = state.isViewAndShareButtonEnabled,
-            contentPadding = PaddingValues(
-                vertical = 13.dp
-            ),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 12.dp)
+                .padding(bottom = 12.dp),
+            trailingIcon = painterResource(Res.drawable.share),
+            isLoading = state.isViewAndShareLoading,
+            isEnabled = state.isViewAndShareButtonEnabled,
+            contentPadding = PaddingValues(vertical = 13.dp),
         )
         PrimaryButton(
             text = stringResource(Res.string.download),
-            trailingIcon = painterResource(Res.drawable.download),
             onClick = interactionListener::onDownloadClicked,
-            isLoading = state.isDownloadLoading,
-            isEnabled = state.isDownloadButtonEnabled,
-            contentPadding = PaddingValues(
-                vertical = 13.dp
-            ),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 8.dp)
+                .padding(bottom = 8.dp),
+            trailingIcon = painterResource(Res.drawable.download),
+            isLoading = state.isDownloadLoading,
+            isEnabled = state.isDownloadButtonEnabled,
+            contentPadding = PaddingValues(vertical = 13.dp)
         )
+    }
+}
+
+@Preview
+@Composable
+fun ExportTransactionContentBodyPreview() {
+    val mockState = ExportTransactionsState(
+        isCustomFilterCardSelected = true,
+        selectedTransactionsTypes = setOf(FilterType.SENT),
+        selectedTransactionsStatus = FilterStatus.ALL,
+        startDate = "2023/01/01",
+        endDate = "2023/12/31",
+        isViewAndShareLoading = false,
+        isViewAndShareButtonEnabled = true,
+        isDownloadLoading = false,
+        isDownloadButtonEnabled = true
+    )
+
+    val mockListener = object : ExportTransactionsListener {
+        override fun onBackClicked() {}
+        override fun onAllTransactionsClicked() {}
+        override fun onCustomFilteringClicked() {}
+        override fun onTypeSelected(type: FilterType) {}
+        override fun onStatusSelected(status: FilterStatus) {}
+        override fun onFromDateClicked() {}
+        override fun onToDateClicked() {}
+        override fun onViewAndShareClicked() {}
+        override fun onDownloadClicked() {}
+    }
+
+    MenaTheme {
+        Column(
+            Modifier
+                .fillMaxHeight()
+                .background(Theme.colorScheme.background.surface)
+        ) {
+            ExportTransactionContentBody(
+                state = mockState,
+                interactionListener = mockListener
+            )
+        }
     }
 }

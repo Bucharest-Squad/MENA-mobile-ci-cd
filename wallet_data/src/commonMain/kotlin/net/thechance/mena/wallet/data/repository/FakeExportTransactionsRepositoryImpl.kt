@@ -2,7 +2,7 @@ package net.thechance.mena.wallet.data.repository
 
 import io.ktor.utils.io.core.toByteArray
 import kotlinx.datetime.LocalDateTime
-import net.thechance.mena.wallet.data.extension.NetworkClient
+import net.thechance.mena.wallet.data.network_client.NetworkClient
 import net.thechance.mena.wallet.domain.entity.Transaction
 import net.thechance.mena.wallet.domain.repository.ExportTransactionsRepository
 import org.koin.core.annotation.Single

@@ -1,4 +1,4 @@
-package net.thechance.mena.wallet.presentation.screen.export.component
+package net.thechance.mena.wallet.presentation.base
 
 import org.jetbrains.compose.resources.StringResource
 

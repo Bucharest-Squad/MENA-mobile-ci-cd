@@ -3,7 +3,7 @@ package net.thechance.mena.wallet.presentation.screen.export
 import net.thechance.mena.wallet.presentation.base.SnackBarState
 import net.thechance.mena.wallet.presentation.model.FilterStatus
 import net.thechance.mena.wallet.presentation.model.FilterType
-import net.thechance.mena.wallet.presentation.screen.export.component.CustomToastState
+import net.thechance.mena.wallet.presentation.base.CustomToastState
 
 data class ExportTransactionsState(
     val snackBar: SnackBarState = SnackBarState(),

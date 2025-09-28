@@ -52,5 +52,6 @@
 
     <string name="filter_crossfade">FilterCrossfade</string>
     <string name="transaction_history">Transaction History</string>
+    <string name="background_color_animation">Background Color Animation</string>
 
 </resources>

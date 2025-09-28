@@ -50,7 +50,7 @@
     <string name="something_went_wrong">حدث خطأ ما. يرجى المحاولة مرة أخرى.</string>
 
     <string name="filter_crossfade">تبديل الفلاتر</string>
-    <string name="transaction_history">سجل التحويلات المالية</string>
     <string name="transaction_history">سجل المعاملات</string>
+    <string name="background_color_animation">تحريك لون الخلفية</string>
 
 </resources>

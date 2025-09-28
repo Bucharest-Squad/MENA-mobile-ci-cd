@@ -1,5 +1,6 @@
 package net.thechance.mena.wallet.presentation.screen.export.component
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -9,12 +10,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import mena.wallet_presentation.generated.resources.Res
 import mena.wallet_presentation.generated.resources.all_transactions
+import mena.wallet_presentation.generated.resources.background_color_animation
 import mena.wallet_presentation.generated.resources.custom_filtering
 import net.thechance.mena.designsystem.presentation.component.button.radioButton.RadioButton
 import net.thechance.mena.designsystem.presentation.component.text.Text
@@ -30,9 +33,14 @@ fun SelectCard(
     isSelected: Boolean = false,
     onCardSelected: () -> Unit = {}
 ) {
-    val backgroundColor =
+    val targetColor =
         if (isSelected) Theme.colorScheme.brand.brandVariant
-    else Theme.colorScheme.background.surfaceLow
+        else Theme.colorScheme.background.surfaceLow
+
+    val backgroundColor by animateColorAsState(
+        targetValue = targetColor,
+        label = stringResource(Res.string.background_color_animation)
+    )
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(Theme.radius.md))
@@ -60,8 +68,7 @@ fun SelectCard(
             text = cardText,
             color = Theme.colorScheme.shadePrimary,
             style = Theme.typography.body.small,
-            modifier = Modifier
-                .weight(1f)
+            modifier = Modifier.weight(1f)
         )
     }
 }
