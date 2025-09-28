@@ -3,7 +3,6 @@
 package net.thechance.mena.core_chat.presentation.screen.chat.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -39,13 +38,13 @@ fun TextMessageItem(
         isMarkedLastInSeries = isMarkedLastInSeries,
         chatAvatarUrl = chatAvatarUrl,
         onFailClick = onFailClick,
+        onMessageClick = onClick,
         modifier = modifier
     ) {
         Text(
             text = message.text,
             style = Theme.typography.body.small,
-            color = Theme.colorScheme.shadeSecondary,
-            modifier = Modifier.clickable(onClick = onClick)
+            color = Theme.colorScheme.shadeSecondary
         )
     }
 }

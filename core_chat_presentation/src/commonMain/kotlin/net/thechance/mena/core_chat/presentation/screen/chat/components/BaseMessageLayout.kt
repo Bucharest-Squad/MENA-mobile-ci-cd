@@ -4,6 +4,7 @@ package net.thechance.mena.core_chat.presentation.screen.chat.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,6 +41,7 @@ fun BaseMessageLayout(
     modifier: Modifier = Modifier,
     chatAvatarUrl: String? = null,
     onFailClick: () -> Unit = {},
+    onMessageClick: () -> Unit = {},
     content: @Composable () -> Unit,
 ) {
     val messageBackground = if (message.isMine)
@@ -106,6 +108,7 @@ fun BaseMessageLayout(
                         color = messageBackground,
                         shape = messageShape
                     )
+                    .clickable(onClick = onMessageClick)
                     .padding(
                         horizontal = Theme.spacing._8,
                         vertical = Theme.spacing._4
