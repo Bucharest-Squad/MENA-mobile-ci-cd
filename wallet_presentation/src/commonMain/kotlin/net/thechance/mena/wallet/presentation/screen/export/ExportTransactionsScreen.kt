@@ -1,20 +1,16 @@
 package net.thechance.mena.wallet.presentation.screen.export
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -32,7 +28,6 @@ import net.thechance.mena.designsystem.presentation.component.button.OutlinedBut
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
-import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.wallet.presentation.component.SnackBarContainer
 import net.thechance.mena.wallet.presentation.component.WalletScaffold
 import net.thechance.mena.wallet.presentation.component.filter.FilterContent
@@ -88,6 +83,11 @@ private fun ExportTransactionScreenContent(
         },
         snackBar = {
             SnackBarContainer(snackBarState = state.snackBar)
+        },
+        toast = {
+            CustomToast(
+                toastState = state.toast,
+            )
         }
     ) {
         Box {
@@ -155,11 +155,6 @@ private fun ExportTransactionScreenContent(
                         .padding(bottom = 8.dp)
                 )
             }
-            CustomToast(
-                toastState = state.toast,
-                modifier = Modifier
-                    .align(Alignment.Center)
-            )
         }
     }
 }

@@ -11,12 +11,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import net.thechance.mena.wallet.presentation.screen.export.component.CustomToast
 
 @Composable
 fun WalletScaffold(
     modifier: Modifier = Modifier,
-    topBar: (@Composable () -> Unit) ? = null,
+    topBar: (@Composable () -> Unit)? = null,
     snackBar: (@Composable () -> Unit)? = null,
+    toast: (@Composable () -> Unit)? = null,
     backgroundColor: Color = Theme.colorScheme.background.surface,
     content: @Composable () -> Unit
 ) {
@@ -39,6 +41,15 @@ fun WalletScaffold(
             ) {
                 snackBarContent()
             }
+        }
+        toast?.let { toast ->
+            Box(
+                modifier = Modifier
+                    .align(Alignment.Center)
+            ) {
+                toast()
+            }
+
         }
     }
 }
