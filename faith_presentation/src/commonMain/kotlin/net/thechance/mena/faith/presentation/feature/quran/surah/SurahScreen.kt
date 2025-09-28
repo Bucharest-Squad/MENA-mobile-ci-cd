@@ -122,12 +122,13 @@ private fun AyatOfSurah(
         modifier = modifier.fillMaxWidth(),
         state = lazyListState
     ) {
-        item {
-            if (state.surahId != AT_TAUBAH_ID) BasmalaHeader(
-                selectedAyahIndex = state.selectedAyahIndex,
-                onDismissActionButtons = { listener.onDismissActionButtons() }
-            )
-        }
+        if (state.isBasmalaVisible)
+            item {
+                BasmalaHeader(
+                    selectedAyahIndex = state.selectedAyahIndex,
+                    onDismissActionButtons = { listener.onDismissActionButtons() }
+                )
+            }
 
         item {
             AyatContent(
@@ -146,7 +147,7 @@ private fun HideAyahActionButtonsOnScroll(
     state: SurahScreenState,
     listener: SurahInteractionListener
 ) {
-    LaunchedEffect(lazyListState , state.isAyahActionButtonsVisible) {
+    LaunchedEffect(lazyListState, state.isAyahActionButtonsVisible) {
         lazyListState.let { listState ->
             snapshotFlow { listState.isScrollInProgress }.collect { isScrolling ->
                 if (isScrolling && state.isAyahActionButtonsVisible) {
@@ -156,5 +157,3 @@ private fun HideAyahActionButtonsOnScroll(
         }
     }
 }
-
-private const val AT_TAUBAH_ID = 9

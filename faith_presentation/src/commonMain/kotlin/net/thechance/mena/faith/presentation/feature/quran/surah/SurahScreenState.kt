@@ -10,5 +10,9 @@ data class SurahScreenState(
     val surahName: String = "",
     val selectedAyah: String = "",
     val selectedAyahIndex: Int? = null,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val isBasmalaVisible: Boolean = (surahId != AT_TAUBAH_ID)
+
 )
+
+private const val AT_TAUBAH_ID = 9
