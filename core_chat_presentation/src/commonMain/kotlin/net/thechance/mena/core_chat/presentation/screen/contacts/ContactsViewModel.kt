@@ -45,7 +45,7 @@ class ContactsViewModel(
     private fun observeSyncSuccess() {
         tryToCollect(
             collect = { popBackStackArgsFlow },
-            onCollect = { args ->
+            onCollect = { args -> // un covered this onCollect {}
                 val success = args?.get(IS_SYNC_SUCCESS) as? Boolean ?: return@tryToCollect
                 if (success) {
                     onRefreshContacts()
@@ -98,7 +98,7 @@ class ContactsViewModel(
         navigate(ChatDetailsRoute(chatId = chat.id.toString()))
     }
 
-    private fun onContactClickError(throwable: Throwable) {
+    private fun onContactClickError(throwable: Throwable) { // uncovered
         showSnackBar(
             SnackBarData(
                 title = UiText.StringRes(Res.string.something_went_wrong),
@@ -107,7 +107,7 @@ class ContactsViewModel(
         )
     }
 
-    private fun onDataLoadError(e: Throwable) {
+    private fun onDataLoadError(e: Throwable) { // uncovered
         showSnackBar(
             SnackBarData(
                 title = UiText.StringRes(Res.string.something_went_wrong),
