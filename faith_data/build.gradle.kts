@@ -47,7 +47,7 @@ kover.reports {
                 "*.database",
                 "*.mapper",
                 "*.di",
-                "net.thechance.mena.faith.data.repository.QuranRepositoryImpl"
+                "*.repository"
             )
         }
     }
