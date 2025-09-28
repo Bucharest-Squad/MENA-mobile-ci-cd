@@ -60,6 +60,7 @@ internal fun SurahAppBar(
         )
     )
 }
+
 @Composable
 internal fun BasmalaHeader(
     selectedAyahIndex: Int?,
