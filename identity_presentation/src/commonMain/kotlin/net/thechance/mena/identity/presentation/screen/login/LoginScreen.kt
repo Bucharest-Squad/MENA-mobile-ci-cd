@@ -54,7 +54,8 @@ import net.thechance.mena.identity.presentation.screen.register.RegisterScreen
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
-class LoginScreen : BaseScreen<
+class LoginScreen(
+) : BaseScreen<
         LoginScreenModel,
         LoginScreenUIState,
         LoginScreenUIEffect,
@@ -175,7 +176,6 @@ class LoginScreen : BaseScreen<
                             .padding(top = 12.dp)
                             .padding(horizontal = 16.dp)
                     )
-
                 }
 
                 LaunchedEffect(state.errorMessage) {
@@ -196,7 +196,7 @@ class LoginScreen : BaseScreen<
         when (effect) {
             is LoginScreenUIEffect.NavigateToRegister -> navigator.push(RegisterScreen())
             LoginScreenUIEffect.NavigateToForgotPassword -> navigator.push(ForgetPasswordScreen())
-            LoginScreenUIEffect.NavigateToHome -> navigator.push(ForgetPasswordScreen())
+            LoginScreenUIEffect.NavigateToHome -> TODO()
         }
     }
 }
