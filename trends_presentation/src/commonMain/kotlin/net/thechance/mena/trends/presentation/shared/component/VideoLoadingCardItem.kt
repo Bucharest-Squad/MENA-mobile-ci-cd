@@ -36,11 +36,11 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun VideoLoadingCardItem(
-    modifier: Modifier = Modifier,
     title: String,
     videoSize: String,
     videoState: VideoUploadingState,
     progress: Float,
+    modifier: Modifier = Modifier,
     onAction: (VideoAction) -> Unit
 ) {
     Row(
@@ -114,11 +114,11 @@ fun VideoLoadingCardItem(
 
 @Composable
 private fun VideoInfoSection(
-    modifier: Modifier = Modifier,
     title: String,
     videoSize: String,
     videoState: VideoUploadingState,
     progress: Float,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier
