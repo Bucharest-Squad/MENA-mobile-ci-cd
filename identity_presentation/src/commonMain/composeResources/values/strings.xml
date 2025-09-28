@@ -35,4 +35,13 @@
     <string name="tunisia">Tunisia</string>
     <string name="uae">United Arab Emirates</string>
     <string name="yemen">Yemen</string>
+
+
+    <string name="reset">Reset</string>
+    <string name="reset_password">Reset password</string>
+    <string name="new_password_title">New password</string>
+    <string name="reset_password_description">Please enter your new password and make sure you remember it in the next time</string>
+    <string name="new_password_label">New password</string>
+    <string name="confirm_password_label">Confirm password</string>
+
 </resources>

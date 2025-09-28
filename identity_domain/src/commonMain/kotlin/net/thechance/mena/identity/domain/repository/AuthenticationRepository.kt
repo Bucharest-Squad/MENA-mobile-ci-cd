@@ -9,4 +9,5 @@ interface AuthenticationRepository {
     suspend fun refreshAccessToken(): String
     suspend fun getAccessToken(): String
     fun observeTokenChange(): StateFlow<String>
+    suspend fun resetPassword(token: String, newPassword: String)
 }

@@ -51,6 +51,9 @@ class AuthenticationRepositoryImpl(
         return observableToken
     }
 
+    override suspend fun resetPassword(token: String, newPassword: String) {
+    }
+
     companion object {
         const val LOGIN = "identity/login"
         const val REFRESH = "identity/refresh"
