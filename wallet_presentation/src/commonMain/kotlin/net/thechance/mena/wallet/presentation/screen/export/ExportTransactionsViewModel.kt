@@ -215,7 +215,7 @@ class ExportTransactionsViewModel(
                 endDate = endDateTime
             )
         } else {
-            exportTransactionsRepository.getAllTransactionsFile()
+            exportTransactionsRepository.getFilteredTransactionsFile()
         }
     }
 

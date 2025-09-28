@@ -5,10 +5,10 @@ import net.thechance.mena.wallet.domain.entity.Transaction
 
 interface ExportTransactionsRepository {
     suspend fun getFilteredTransactionsFile(
-        type: Set<Transaction.Type>?,
-        status: Transaction.Status?,
-        startDate: LocalDateTime?,
-        endDate: LocalDateTime?
+        type: Set<Transaction.Type>? = null,
+        status: Transaction.Status? = null,
+        startDate: LocalDateTime? = null,
+        endDate: LocalDateTime? = null
     ): ByteArray
-    suspend fun getAllTransactionsFile(): ByteArray
+
 }

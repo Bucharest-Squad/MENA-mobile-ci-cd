@@ -20,11 +20,6 @@ class FakeExportTransactionsRepositoryImpl(
         return generateFakePdfFile()
     }
 
-    override suspend fun getAllTransactionsFile(): ByteArray {
-
-        return generateEmptyPdfFile()
-    }
-
     private companion object {
         const val TRANSACTIONS_PATH = ""
     }
