@@ -59,7 +59,7 @@ fun PageDescription(
                                 FontWeight.Normal
                             )
                         ),
-                        color = Theme.colorScheme.shadePrimary
+                        color = Theme.colorScheme.brand.brand
                     )
                 )
             }

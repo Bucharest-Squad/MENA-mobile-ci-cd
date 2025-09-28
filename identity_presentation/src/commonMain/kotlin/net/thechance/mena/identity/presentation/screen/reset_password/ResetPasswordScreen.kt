@@ -116,24 +116,23 @@ class ResetPasswordScreen :
                         color = Theme.colorScheme.shadePrimary,
                         modifier = Modifier.padding(bottom = Theme.spacing._4)
                     )
+
                     TextField(
                         value = state.newPassword,
                         onValueChanged = listener::onNewPasswordChanged,
-                        hint = stringResource(Res.string.new_password_title),
-
-                        leadingIcon = painterResource(Res.drawable.ic_lock),
+                        hint = "",
                         trailingIcon = painterResource(
                             if (state.isNewPasswordVisible) Res.drawable.ic_open_eye
                             else Res.drawable.ic_close_eye
                         ),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password
-                        ),
-                        visualTransformation = if (state.isNewPasswordVisible) VisualTransformation.None
-                        else PasswordVisualTransformation(),
-                        onTrailingIconClick = listener::onNewPasswordVisibilityToggled,
+                        leadingIcon = painterResource(Res.drawable.ic_lock),
+                        showTrailingDivider = false,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(bottom = Theme.spacing._16)
+                            .padding(bottom = Theme.spacing._16),
+                        visualTransformation = if (state.isNewPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        onTrailingIconClick = listener::onNewPasswordVisibilityToggled
                     )
 
                     Text(
@@ -142,24 +141,21 @@ class ResetPasswordScreen :
                         color = Theme.colorScheme.shadePrimary,
                         modifier = Modifier.padding(bottom = Theme.spacing._4)
                     )
+
                     TextField(
                         value = state.confirmPassword,
                         onValueChanged = listener::onConfirmPasswordChanged,
-                        hint = stringResource(Res.string.confirm_password_label),
-                        leadingIcon = painterResource(Res.drawable.ic_lock),
+                        hint = "",
                         trailingIcon = painterResource(
                             if (state.isConfirmPasswordVisible) Res.drawable.ic_open_eye
                             else Res.drawable.ic_close_eye
                         ),
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Password
-                        ),
-                        visualTransformation = if (state.isConfirmPasswordVisible) VisualTransformation.None
-                        else PasswordVisualTransformation(),
-                        onTrailingIconClick = listener::onConfirmPasswordVisibilityToggled,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = Theme.spacing._8)
+                        leadingIcon = painterResource(Res.drawable.ic_lock),
+                        showTrailingDivider = false,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        modifier = Modifier.fillMaxWidth(),
+                        visualTransformation = if (state.isConfirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        onTrailingIconClick = listener::onConfirmPasswordVisibilityToggled
                     )
 
                     Spacer(modifier = Modifier.weight(1f))
