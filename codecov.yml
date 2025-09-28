@@ -1,3 +1,59 @@
+flags:
+  # Core Chat
+  core_chat_api:
+    carryforward: true
+  core_chat_data:
+    carryforward: true
+  core_chat_domain:
+    carryforward: true
+  core_chat_presentation:
+    carryforward: true
+  # Dukan
+  dukan_api:
+    carryforward: true
+  dukan_data:
+    carryforward: true
+  dukan_domain:
+    carryforward: true
+  dukan_presentation:
+    carryforward: true
+  # Faith
+  faith_api:
+    carryforward: true
+  faith_data:
+    carryforward: true
+  faith_domain:
+    carryforward: true
+  faith_presentation:
+    carryforward: true
+  # Identity
+  identity_api:
+    carryforward: true
+  identity_data:
+    carryforward: true
+  identity_domain:
+    carryforward: true
+  identity_presentation:
+    carryforward: true
+  # Trends
+  trends_api:
+    carryforward: true
+  trends_data:
+    carryforward: true
+  trends_domain:
+    carryforward: true
+  trends_presentation:
+    carryforward: true
+  # Wallet
+  wallet_api:
+    carryforward: true
+  wallet_data:
+    carryforward: true
+  wallet_domain:
+    carryforward: true
+  wallet_presentation:
+    carryforward: true
+
 coverage:
   status:
     project:

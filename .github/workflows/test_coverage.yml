@@ -12,7 +12,7 @@ jobs:
     secrets: inherit
 
   test:
-    name: Test
+    name: Test & Upload Coverage
     needs: detect
     if: needs.detect.outputs.has_changes == 'true'
     runs-on: ubuntu-latest
@@ -24,6 +24,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
 
       - name: Run Kover
         if: matrix.module != 'composeApp'
@@ -42,31 +44,14 @@ jobs:
           name: html-report-${{ matrix.module }}
           path: ${{ matrix.module }}/build/reports/kover/html/
 
-      - name: Upload XML report
-        if: always() && matrix.module != 'composeApp'
-        uses: actions/upload-artifact@v4
-        with:
-          name: xml-report-${{ matrix.module }}
-          path: ${{ matrix.module }}/build/reports/kover/report.xml
-
-  codecov:
-    name: Coverage
-    needs: [ detect, test ]
-    if: always() && needs.detect.outputs.has_changes == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
-        with:
-          pattern: "xml-report-*"
-          path: coverage-reports
-
-      - uses: codecov/codecov-action@v4
+      - name: Upload Coverage to Codecov
+        if: matrix.module != 'composeApp'
+        uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          directory: ./coverage-reports/
+          files: ./${{ matrix.module }}/build/reports/kover/report.xml
+          flags: ${{ matrix.module }}
           fail_ci_if_error: true
-
 
   notify-slack-on-failure:
     if: failure()
