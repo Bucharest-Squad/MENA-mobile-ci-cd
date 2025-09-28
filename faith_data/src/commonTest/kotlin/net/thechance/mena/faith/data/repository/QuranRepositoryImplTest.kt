@@ -78,69 +78,6 @@ class QuranRepositoryImplTest {
         assertTrue(result.isEmpty())
     }
 
-    @Test
-    fun `getAyahContent Should return content when called with valid ayah and surah`() = runTest {
-        // Given
-        everySuspend { mockDao.getAyahContent(1, 1) } returns BISMILLAH_TEXT
-
-        // When
-        val result = repository.getAyahContent(1, 1)
-
-        // Then
-        assertEquals(BISMILLAH_TEXT, result)
-    }
-
-    @Test
-    fun `getAyahContent Should return empty string when ayah number is invalid for existing surah`() =
-        runTest {
-            // Given
-            everySuspend { mockDao.getAyahContent(999, 1) } returns ""
-
-            // When
-            val result = repository.getAyahContent(999, 1)
-
-            // Then
-            assertEquals("", result)
-        }
-
-    @Test
-    fun `getAyahContent Should return empty string when surah id is invalid for existing ayah number`() =
-        runTest {
-            // Given
-            everySuspend { mockDao.getAyahContent(1, 999) } returns ""
-
-            // When
-            val result = repository.getAyahContent(1, 999)
-
-            // Then
-            assertEquals("", result)
-        }
-
-    @Test
-    fun `getAyahContent Should return empty string when both ayah and surah id are invalid`() =
-        runTest {
-            // Given
-            everySuspend { mockDao.getAyahContent(999, 999) } returns ""
-
-            // When
-            val result = repository.getAyahContent(999, 999)
-
-            // Then
-            assertEquals("", result)
-        }
-
-    @Test
-    fun `getAyahContent Should return empty string when dao returns null content`() = runTest {
-        // Given
-        everySuspend { mockDao.getAyahContent(1, 1) } returns ""
-
-        // When
-        val result = repository.getAyahContent(1, 1)
-
-        // Then
-        assertEquals("", result)
-    }
-
     private companion object {
         const val BISMILLAH_TEXT = "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ"
         const val AL_FATIHAH_NAME = "Al-Fatihah"

@@ -21,11 +21,4 @@ interface AyahDao {
 """)
     suspend fun getAllSur(): List<SurahDto>
 
-    @Query("""
-        SELECT aya_text 
-        FROM ayat 
-        WHERE sura_no = :surahId AND aya_no = :ayahNumber
-        LIMIT 1
-    """)
-    suspend fun getAyahContent(ayahNumber:Int, surahId: Int): String
 }

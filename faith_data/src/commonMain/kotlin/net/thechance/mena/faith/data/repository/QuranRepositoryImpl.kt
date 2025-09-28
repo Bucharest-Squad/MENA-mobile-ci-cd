@@ -14,7 +14,4 @@ class QuranRepositoryImpl(val ayahDao: AyahDao) : QuranRepository {
 
     override suspend fun getAyatOfSurah(ayahId: Int): List<Ayah> =
         ayahDao.getAyatOfSurah(surahNumber = ayahId).map { it.toAyah() }
-
-    override suspend fun getAyahContent(ayahNumber: Int, surahId: Int): String =
-        ayahDao.getAyahContent(ayahNumber = ayahNumber, surahId = surahId)
 }

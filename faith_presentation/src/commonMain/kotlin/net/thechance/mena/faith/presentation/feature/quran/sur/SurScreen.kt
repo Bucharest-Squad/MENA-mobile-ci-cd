@@ -88,14 +88,13 @@ fun SurScreen(
 private fun Content(
     uiState: SurScreenState,
     interactionListener: SurInteractionListener,
-    modifier: Modifier = Modifier
 ) {
     FaithScaffold(
         backgroundColor = Theme.colorScheme.background.surface,
-        modifier = modifier.windowInsetsPadding(WindowInsets.statusBars),
+        modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars),
         topBar = {
             Topbar(
-                modifier = modifier.padding(horizontal = Theme.spacing._16),
+                modifier = Modifier.padding(horizontal = Theme.spacing._16),
                 onBackClick = { interactionListener.onBackClick() },
                 onBookmarkClick = { interactionListener.onBookmarkClick() },
             )

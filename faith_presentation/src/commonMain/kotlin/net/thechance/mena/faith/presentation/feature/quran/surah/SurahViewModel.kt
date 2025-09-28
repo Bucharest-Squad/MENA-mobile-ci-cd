@@ -48,16 +48,7 @@ class SurahViewModel(
     override fun onCopyClick(ayahContent: String) {
         tryToExecute(
             execute = { clipboardManager.copy(ayahContent) },
-            onSuccess = {
-                showSuccessSnackBar()
-                updateState {
-                    it.copy(
-                        isAyahActionButtonsVisible = false,
-                        selectedAyahIndex = null,
-                        selectedAyah = ayahContent
-                    )
-                }
-            },
+            onSuccess = { onCopySuccess(ayahContent) },
             onError = { showErrorSnackBar() },
             dispatcher = dispatcher
         )
@@ -93,6 +84,17 @@ class SurahViewModel(
             )
         }
         sendEffect(SurahScreenEffect.ShareAyah(ayahContent))
+    }
+
+    private fun onCopySuccess(ayahContent: String) {
+        showSuccessSnackBar()
+        updateState {
+            it.copy(
+                isAyahActionButtonsVisible = false,
+                selectedAyahIndex = null,
+                selectedAyah = ayahContent
+            )
+        }
     }
 
     private fun showSuccessSnackBar() {
