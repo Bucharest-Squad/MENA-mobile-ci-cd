@@ -16,6 +16,6 @@ class TransactionRepositoryImpl(
         }
     }
     private companion object {
-        const val Transaction_PATH = "wallet/transaction?"
+        const val Transaction_PATH = "wallet/transaction"
     }
 }
