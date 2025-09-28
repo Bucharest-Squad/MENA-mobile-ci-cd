@@ -49,4 +49,6 @@
     <string name="download_complete">Download complete</string>
     <string name="download_failed">Download failed</string>
     <string name="something_went_wrong">Something went wrong. Please try again.</string>
+
+    <string name="filter_crossfade">FilterCrossfade</string>
 </resources>

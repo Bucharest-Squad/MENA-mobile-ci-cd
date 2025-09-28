@@ -49,4 +49,5 @@
     <string name="download_failed">فشل التنزيل</string>
     <string name="something_went_wrong">حدث خطأ ما. يرجى المحاولة مرة أخرى.</string>
 
+    <string name="filter_crossfade">تبديل الفلاتر</string>
 </resources>

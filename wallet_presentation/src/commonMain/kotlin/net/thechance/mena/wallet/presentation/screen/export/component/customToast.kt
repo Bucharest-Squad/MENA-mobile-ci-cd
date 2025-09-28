@@ -7,8 +7,11 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -31,52 +34,60 @@ fun CustomToast(
     modifier: Modifier = Modifier
 ) {
     val toastBackgroundColor = Color(0xB2121212)
-    Box(modifier = modifier) {
-        AnimatedVisibility(
-            visible = toastState.isVisible,
-            enter =
-                fadeIn(tween(ANIMATION_DURATION)) +
-                        slideInVertically(
-                            animationSpec = tween(ANIMATION_DURATION),
-                            initialOffsetY = { -it / 2 },
-                        ),
-            exit =
-                fadeOut(tween(ANIMATION_DURATION)) +
-                        slideOutVertically(
-                            animationSpec = tween(ANIMATION_DURATION),
-                            targetOffsetY = { -it / 2 },
-                        ),
-            modifier = Modifier.align(Alignment.Center)
-        ) {
-            Box(
-                modifier = Modifier
-                    .background(
-                        color = toastBackgroundColor,
-                        shape = RoundedCornerShape(Theme.radius.md)
-                    )
-                    .padding(vertical = 12.dp, horizontal = 16.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = toastState.messageRes?.let { stringResource(it) } ?: "",
-                    style = Theme.typography.body.small,
-                    color = Theme.colorScheme.primary.onPrimary
-                )
 
-            }
-        }
+    AnimatedVisibility(
+        visible = toastState.isVisible,
+        enter =
+            fadeIn(tween(ANIMATION_DURATION)) +
+                    slideInVertically(
+                        animationSpec = tween(ANIMATION_DURATION),
+                        initialOffsetY = { -it / 2 },
+                    ),
+        exit =
+            fadeOut(tween(ANIMATION_DURATION)) +
+                    slideOutVertically(
+                        animationSpec = tween(ANIMATION_DURATION),
+                        targetOffsetY = { -it / 2 },
+                    ),
+        modifier = modifier
+            .wrapContentSize(Alignment.Center)
+    ) {
+        Text(
+            text = toastState.messageRes?.let { stringResource(it) } ?: "",
+            style = Theme.typography.body.small,
+            color = Theme.colorScheme.primary.onPrimary,
+            modifier = Modifier
+                .background(
+                    color = toastBackgroundColor,
+                    shape = RoundedCornerShape(Theme.radius.md)
+                )
+                .padding(vertical = 12.dp, horizontal = 16.dp)
+            ,
+        )
+
     }
 }
+
 
 @Preview
 @Composable
 private fun CustomToastPreview() {
     MenaTheme {
-        CustomToast(
-            toastState = CustomToastState(
-                messageRes = Res.string.downloading_started
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = Theme.colorScheme.primary.onPrimary),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            CustomToast(
+                toastState = CustomToastState(
+                    messageRes = Res.string.downloading_started,
+                    isVisible = true
+                )
             )
-        )
+        }
+
     }
 
 }
