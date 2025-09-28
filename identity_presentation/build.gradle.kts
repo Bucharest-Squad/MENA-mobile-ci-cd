@@ -11,6 +11,7 @@ plugins {
 }
 
 kotlin {
+    jvm()
     androidTarget {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
@@ -49,9 +50,13 @@ kotlin {
             implementation(libs.bundles.koin)
             implementation(libs.bundles.voyager)
         }
-        commonTest.dependencies {
-            implementation(libs.bundles.common.test)
+        jvmTest.dependencies {
+            implementation(libs.kotlin.test)
+            implementation(libs.bundles.jvm.test)
+            implementation(libs.turbine)
+            implementation(libs.kotlinx.coroutines.test)
         }
+
     }
 }
 

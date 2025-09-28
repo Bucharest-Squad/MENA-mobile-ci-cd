@@ -1,6 +1,7 @@
 package net.thechance.mena.identity.presentation.base
 
-import cafe.adriel.voyager.core.model.ScreenModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,9 +22,8 @@ import net.thechance.mena.identity.domain.exception.AuthenticationException
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
-abstract class BaseScreenModel<S, E>(initialState: S) : ScreenModel {
+abstract class BaseScreenModel<S, E>(initialState: S) : ViewModel() {
 
-    abstract val viewModelScope: CoroutineScope
     private val _state = MutableStateFlow(initialState)
     val state = _state.asStateFlow()
 

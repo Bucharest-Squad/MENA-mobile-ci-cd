@@ -1,13 +1,10 @@
 package net.thechance.mena.identity.presentation.screen.login
 
 import app.cash.turbine.test
-import dev.mokkery.MockMode
-import dev.mokkery.answering.returns
-import dev.mokkery.answering.throws
-import dev.mokkery.every
-import dev.mokkery.everySuspend
-import dev.mokkery.matcher.any
-import dev.mokkery.mock
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.unmockkAll
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -17,31 +14,31 @@ import kotlinx.coroutines.test.setMain
 import net.thechance.mena.identity.domain.exception.InvalidMobileNumberException
 import net.thechance.mena.identity.domain.useCase.LoginUseCase
 import net.thechance.mena.identity.presentation.bottomSheet.countryPicker.menaCountries.MenaCountry
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertIs
+import org.junit.After
+import org.junit.Before
+import org.junit.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 
 class LoginViewModelTest {
 
-    private lateinit var useCase: LoginUseCase
+    private val useCase: LoginUseCase = mockk(relaxed = true)
     private lateinit var viewModel: LoginScreenModel
-
     private val testDispatcher = StandardTestDispatcher()
 
-    @BeforeTest
+    @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
-        useCase = mock(mode = MockMode.autofill)
         viewModel = LoginScreenModel(useCase)
+
     }
 
-    @AfterTest
+    @After
     fun tearDown() {
         Dispatchers.resetMain()
+        unmockkAll()
     }
 
     private fun setupValidCountry() {
@@ -52,12 +49,13 @@ class LoginViewModelTest {
     @Test
     fun `should navigate to home screen when login success`() = runTest {
 
-        everySuspend { useCase.login(any(), any(), any()) } returns Unit
+        coEvery { useCase.login(any(), any(), any()) } returns Unit
 
+
+        viewModel.onLoginClicked()
+        testDispatcher.scheduler.advanceUntilIdle()
 
         viewModel.effect.test {
-            viewModel.onLoginClicked()
-
             val effect = awaitItem()
             assertTrue { effect is LoginScreenUIEffect.NavigateToHome }
             cancelAndConsumeRemainingEvents()
@@ -68,21 +66,20 @@ class LoginViewModelTest {
     @Test
     fun `should show invalid mobile number message when mobile number is wrong`() = runTest {
 
+
         val errorMessage = "Invalid mobile number"
-        everySuspend {
-            useCase.login(
-                any(),
-                any(),
-                any()
-            )
+        coEvery {
+            useCase.login(any(), any(), any())
         } throws InvalidMobileNumberException("11006600171")
 
         viewModel.onLoginClicked()
         testDispatcher.scheduler.advanceUntilIdle()
 
+
         viewModel.state.test {
             val state = awaitItem()
-            assertIs<String>(state.errorMessage, errorMessage)
+            print("state $state")
+            assertEquals(errorMessage,state.errorMessage )
             cancelAndConsumeRemainingEvents()
         }
 

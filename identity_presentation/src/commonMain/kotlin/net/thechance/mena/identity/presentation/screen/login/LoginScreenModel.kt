@@ -1,7 +1,5 @@
 package net.thechance.mena.identity.presentation.screen.login
 
-import cafe.adriel.voyager.core.model.screenModelScope
-import kotlinx.coroutines.CoroutineScope
 import net.thechance.mena.identity.domain.useCase.LoginUseCase
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
 import net.thechance.mena.identity.presentation.base.ErrorState
@@ -13,12 +11,9 @@ class LoginScreenModel(
     val loginUseCase: LoginUseCase
 ) : BaseScreenModel<LoginScreenUIState, LoginScreenUIEffect>(LoginScreenUIState()),
     LoginScreenInteractionListener {
-    override val viewModelScope: CoroutineScope
-        get() = screenModelScope
-
 
     override fun onLoginClicked() {
-        updateState { copy(isLoading = true, errorMessage = null) }
+        updateState { copy(isLoading = true) }
         tryToExecute(
             function = ::onLogin,
             onSuccess = ::onLoginSuccess,
