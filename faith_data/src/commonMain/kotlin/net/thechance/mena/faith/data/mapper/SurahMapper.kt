@@ -10,6 +10,5 @@ fun SurahDto.toSurah(): Surah {
         order = surahOrder,
         name = name,
         ayahCount = ayahCount,
-        isMakkia = surahOrder.isMakkia
     )
 }

@@ -7,14 +7,14 @@ import net.thechance.mena.faith.domain.entity.Ayah
 import net.thechance.mena.faith.domain.entity.Surah
 import net.thechance.mena.faith.domain.repository.QuranRepository
 
-class QuranRepositoryImpl(val dao: AyahDao) : QuranRepository {
+class QuranRepositoryImpl(val ayahDao: AyahDao) : QuranRepository {
 
     override suspend fun getAllSur(): List<Surah> =
-        dao.getAllSur().map { it.toSurah() }
+        ayahDao.getAllSur().map { it.toSurah() }
 
     override suspend fun getAyatOfSurah(ayahId: Int): List<Ayah> =
-        dao.getAyatOfSurah(surahNumber = ayahId).map { it.toAyah() }
+        ayahDao.getAyatOfSurah(surahNumber = ayahId).map { it.toAyah() }
 
     override suspend fun getAyahContent(ayahNumber: Int, surahId: Int): String =
-        dao.getAyahContent(ayahNumber = ayahNumber, surahId = surahId)
+        ayahDao.getAyahContent(ayahNumber = ayahNumber, surahId = surahId)
 }
