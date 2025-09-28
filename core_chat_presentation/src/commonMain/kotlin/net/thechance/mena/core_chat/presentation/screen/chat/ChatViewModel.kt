@@ -78,22 +78,12 @@ class ChatViewModel(
         )
     }
 
-    private fun onSendMessageSuccess(uiMessage: MessageUiState) {
-        updateState { s ->
-            val updated = s.uiMessages.map {
-                if (it.id == uiMessage.id) (it as TextMessageUiState).copy(status = MessageStatusUiState.SENT) else it
-            }.sortedByDescending { it.sendTime }
-            s.copy(uiMessages = updated, chatListItems = buildListItems(updated))
-        }
+    private fun onSendMessageSuccess(message: MessageUiState) {
+        updateStateWithNewMessage((message as TextMessageUiState).copy(status = MessageStatusUiState.SENT))
     }
 
-    private fun onSendMessageError(uiMessage: MessageUiState) {
-        updateState { s ->
-            val updated = s.uiMessages.map {
-                if (it.id == uiMessage.id) (it as TextMessageUiState).copy(status = MessageStatusUiState.FAILED) else it
-            }.sortedByDescending { it.sendTime }
-            s.copy(uiMessages = updated, chatListItems = buildListItems(updated))
-        }
+    private fun onSendMessageError(message: MessageUiState) {
+        updateStateWithNewMessage( (message as TextMessageUiState).copy(status = MessageStatusUiState.FAILED) )
     }
 
     override fun onMessageClicked(messageId: Uuid) {
@@ -142,37 +132,23 @@ class ChatViewModel(
 
     override fun onResendMessageClicked() {
         state.value.failedMessageToReSend?.let { message ->
-            updateState { s ->
-                val updated = s.uiMessages.map {
-                    if (it.id == message.id) (it as TextMessageUiState).copy(status = MessageStatusUiState.SENDING) else it
-                }.sortedByDescending { it.sendTime }
-                s.copy(uiMessages = updated, chatListItems = buildListItems(updated))
-            }
+            updateStateWithNewMessage((message as TextMessageUiState).copy(status = MessageStatusUiState.SENDING))
 
             tryToExecute(
                 onSuccess = { onResendMessageSuccess(message) },
                 onError = { onResendMessageError(message) },
-                execute = { repository.sendMessage((message as TextMessageUiState).toEntity()) } // temp casting
+                execute = { repository.sendMessage((message).toEntity()) } // temp casting
             )
         }
     }
 
     fun onResendMessageSuccess(message: MessageUiState) {
-        updateState { s ->
-            val updated = s.uiMessages.map {
-                if (it.id == message.id) (it as TextMessageUiState).copy(status = MessageStatusUiState.SENT) else it
-            }.sortedByDescending { it.sendTime }
-            s.copy(uiMessages = updated, chatListItems = buildListItems(updated))
-        }
+        updateStateWithNewMessage((message as TextMessageUiState).copy(status = MessageStatusUiState.SENT))
     }
 
     fun onResendMessageError(message: MessageUiState) {
-        updateState { s ->
-            val updated = s.uiMessages.map {
-                if (it.id == message.id) (it as TextMessageUiState).copy(status = MessageStatusUiState.FAILED) else it
-            }.sortedByDescending { it.sendTime }
-            s.copy(uiMessages = updated, chatListItems = buildListItems(updated))
-        }
+        updateStateWithNewMessage((message as TextMessageUiState).copy(status = MessageStatusUiState.FAILED))
+
     }
 
     override fun onResendMessageDialogDismissed() {
@@ -231,11 +207,7 @@ class ChatViewModel(
 
     private fun onSubscribeToNewMessagesSuccess(newMessage: Message?) {
         newMessage?.toUi(state.value.userId)?.let { incomingUi ->
-            updateState { s ->
-                val merged = (s.uiMessages + incomingUi).distinctBy { it.id }
-                    .sortedByDescending { it.sendTime }
-                s.copy(uiMessages = merged, chatListItems = buildListItems(merged))
-            }
+            updateStateWithNewMessage(incomingUi)
         }
     }
 
@@ -248,6 +220,13 @@ class ChatViewModel(
         )
     }
 
+    private fun updateStateWithNewMessage(newMessage: MessageUiState) {
+        updateState { s ->
+            val merged = s.uiMessages.toMutableList().apply { add(0, newMessage) }.distinctBy { it.id }
+                .sortedByDescending { it.sendTime }
+            s.copy(uiMessages = merged, chatListItems = buildListItems(merged))
+        }
+    }
 
     private fun buildListItems(uiMessages: List<MessageUiState>): List<ChatListItem> {
         val marked = uiMessages.sortedByDescending { it.sendTime }.markLastInSeries()
