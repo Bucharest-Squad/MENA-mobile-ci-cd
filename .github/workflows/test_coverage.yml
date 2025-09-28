@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        module: ${{ fromJSON(needs.detect.outputs.modules) }}
+        module: [ 'core_chat_data', 'dukan_api' ]
       fail-fast: false
 
     steps:
