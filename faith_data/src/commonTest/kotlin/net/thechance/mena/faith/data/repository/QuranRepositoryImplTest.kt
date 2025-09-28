@@ -79,13 +79,12 @@ class QuranRepositoryImplTest {
     }
 
     private companion object {
-        const val BISMILLAH_TEXT = "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ"
         const val AL_FATIHAH_NAME = "Al-Fatihah"
         const val AL_BAQARAH_NAME = "Al-Baqarah"
 
         val SURAH_DTOS: List<SurahDto> = listOf(
-            SurahDto(order = 1, name = AL_FATIHAH_NAME, ayahCount = 7),
-            SurahDto(order = 2, name = AL_BAQARAH_NAME, ayahCount = 286)
+            SurahDto(number = 1, name = AL_FATIHAH_NAME, ayahCount = 7),
+            SurahDto(number = 2, name = AL_BAQARAH_NAME, ayahCount = 286)
         )
         val SUR_LIST = listOf(
             Surah(
