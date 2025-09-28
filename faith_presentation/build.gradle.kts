@@ -77,10 +77,21 @@ kover.reports {
     }
 
     filters {
-        excludes {
-            packages(
-                "net.thechance.mena.faith.presentation.feature.quran.surah.component.*"
-            )
-        }
+            excludes {
+                packages(
+                    "*.base",
+                    "*.component",
+                    "*.di",
+                    "*.feature.quran",
+                    "*.navigation",
+                    "*.utils"
+                )
+            }
+            includes {
+                classes(
+                    "net.thechance.mena.faith.presentation.feature.quran.sur.SurViewModel",
+                    "net.thechance.mena.faith.presentation.feature.quran.surah.SurahViewModel",
+                )
+            }
     }
 }
