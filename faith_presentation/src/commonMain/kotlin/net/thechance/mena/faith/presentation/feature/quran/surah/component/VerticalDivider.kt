@@ -24,6 +24,5 @@ fun VerticalDivider(
             .width(thickness)
             .height(height)
             .background(color)
-
     )
 }
