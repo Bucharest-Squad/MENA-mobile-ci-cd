@@ -43,6 +43,7 @@ class ExportTransactionsViewModel(
 ) : BaseViewModel<ExportTransactionsState, ExportTransactionsEffect>(
     ExportTransactionsState()
 ), ExportTransactionsListener {
+
     override fun onBackClicked() {
         sendEffect(ExportTransactionsEffect.NavigateBack)
     }

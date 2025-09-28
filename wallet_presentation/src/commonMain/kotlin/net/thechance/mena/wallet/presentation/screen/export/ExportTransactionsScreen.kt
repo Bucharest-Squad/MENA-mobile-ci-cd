@@ -28,13 +28,21 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun ExportTransactionScreen(
+    onNavigateBackClicked: () -> Unit,
+    navigateToVewTransactionStatement: () -> Unit,
     viewModel: ExportTransactionsViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     ObserveAsEffect(
         effect = viewModel.uiEffect,
-        onEffect = ::onExportTransactionsEffect
+        onEffect = { effect ->
+            onExportTransactionsEffect(
+                effect,
+                onNavigateBackClicked,
+                navigateToVewTransactionStatement
+            )
+        }
     )
 
     ExportTransactionScreenContent(
@@ -61,7 +69,7 @@ private fun ExportTransactionScreenContent(
                         contentDescription = stringResource(Res.string.back_button)
                     )
                 },
-                onLeadingClick = { interactionListener::onBackClicked },
+                onLeadingClick =  interactionListener::onBackClicked ,
             )
         },
         snackBar = {
@@ -80,14 +88,16 @@ private fun ExportTransactionScreenContent(
     }
 }
 
-private fun onExportTransactionsEffect(effect: ExportTransactionsEffect) {
+private fun onExportTransactionsEffect(
+    effect: ExportTransactionsEffect,
+    onNavigateBackClicked: () -> Unit,
+    navigateToVewTransactionStatement: () -> Unit,
+) {
     when (effect) {
-        is ExportTransactionsEffect.NavigateBack -> {/* TODO("Handle navigation back") */
-        }
+        is ExportTransactionsEffect.NavigateBack -> onNavigateBackClicked()
 
         is ExportTransactionsEffect.NavigateToViewFileScreen
-            -> {/*TODO("Handle navigation to view file screen ") */
-        }
+            -> navigateToVewTransactionStatement()
     }
 }
 

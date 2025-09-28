@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import net.thechance.mena.wallet.presentation.screen.export.ExportTransactionScreen
 import net.thechance.mena.wallet.presentation.screen.export_transactions.ExportTransactionsScreen
 import net.thechance.mena.wallet.presentation.screen.transaction_details.TransactionDetailsScreen
 import net.thechance.mena.wallet.presentation.screen.transactions_history.TransactionHistoryScreen
@@ -73,7 +74,7 @@ fun NavigationHost(
             )
         }
         composable<ExportTransactionsScreenRoute> {
-            ExportTransactionsScreen(
+            ExportTransactionScreen(
                 onNavigateBackClicked = { navController.popBackStack() },
                 navigateToVewTransactionStatement = {
                     navController.navigate(ViewTransactionsStatementScreenRoute)
