@@ -28,9 +28,15 @@ class SurahViewModel(
             execute = { quranRepository.getAyatOfSurah(surahId) },
             onStart = { updateState { it.copy(isLoading = true) } },
             onSuccess = { ayat ->
-                updateState { it.copy(ayatOfSurah = ayat) }
+                updateState {
+                    it.copy(
+                        ayatOfSurah = ayat,
+                        isBasmalaVisible = surahId != Surah.SurahOrder.AtTawbah.order
+                    )
+                }
             },
-            onFinally = { updateState { it.copy(isLoading = false) }
+            onFinally = {
+                updateState { it.copy(isLoading = false) }
             },
             dispatcher = dispatcher
         )
