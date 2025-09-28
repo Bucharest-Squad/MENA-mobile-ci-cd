@@ -12,9 +12,7 @@ data class Transaction (
     val createdAt: LocalDateTime,
     val amount: Double,
     val status: TransactionStatus,
-    val senderId: Uuid,
     val senderName: String,
-    val receiverId: Uuid,
     val receiverName: String,
     val type: TransactionType
 )
