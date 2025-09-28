@@ -34,9 +34,10 @@ abstract class BaseScreenModel<S, E>(initialState: S) : ViewModel() {
         function: suspend () -> Unit,
         onSuccess: () -> Unit,
         onError: (ErrorState) -> Unit,
+        dispatcher: CoroutineDispatcher ,
         inScope: CoroutineScope = viewModelScope,
     ): Job {
-        return runWithErrorCheck(onError, inScope) {
+        return runWithErrorCheck(onError, inScope,dispatcher) {
             function()
             onSuccess()
         }
