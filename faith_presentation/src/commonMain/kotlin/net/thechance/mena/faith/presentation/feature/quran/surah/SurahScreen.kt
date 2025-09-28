@@ -2,6 +2,7 @@ package net.thechance.mena.faith.presentation.feature.quran.surah
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
@@ -81,7 +82,7 @@ private fun Content(
             )
         }) {
         Box(
-            Modifier.fillMaxWidth()
+            Modifier.fillMaxSize()
         ) {
             AyatOfSurah(
                 listener = listener,
@@ -145,7 +146,7 @@ private fun HideAyahActionButtonsOnScroll(
     state: SurahScreenState,
     listener: SurahInteractionListener
 ) {
-    LaunchedEffect(lazyListState) {
+    LaunchedEffect(lazyListState , state.isAyahActionButtonsVisible) {
         lazyListState.let { listState ->
             snapshotFlow { listState.isScrollInProgress }.collect { isScrolling ->
                 if (isScrolling && state.isAyahActionButtonsVisible) {
