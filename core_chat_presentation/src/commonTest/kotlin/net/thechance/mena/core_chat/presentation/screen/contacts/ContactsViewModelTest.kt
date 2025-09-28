@@ -199,7 +199,7 @@ class ContactsViewModelTest {
 
     @Test
     fun `onContactClick should show snack bar when repository throws error`() = runTest {
-        everySuspend { chatRepository.getChatByContactUserId(any()) } throws RuntimeException("Contact not found")
+        everySuspend { chatRepository.getChatByContactUserId(any()) } throws Exception()
         everySuspend { effector.showSnackBar(any()) } returns Unit
 
         val viewModel =
