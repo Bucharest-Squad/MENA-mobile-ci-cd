@@ -2,7 +2,7 @@ package net.thechance.mena.identity.data.di
 
 import androidx.room.Room
 import androidx.room.RoomDatabase.Builder
-import org.example.project.data.database.IdentityDatabase
+import net.thechance.mena.identity.data.dataSource.local.database.IdentityDatabase
 import org.koin.core.scope.Scope
 import java.io.File
 
