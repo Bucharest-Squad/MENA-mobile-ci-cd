@@ -1,6 +1,6 @@
 package net.thechance.mena.wallet.data.repository.balance
 
-import net.thechance.mena.wallet.data.dto.TransactionDto
+import net.thechance.mena.wallet.data.dto.PagedTransactionResponseDto
 import net.thechance.mena.wallet.data.exceptions.safeApiCall
 import net.thechance.mena.wallet.data.mapper.toEntity
 import net.thechance.mena.wallet.data.network_client.NetworkClient
@@ -11,10 +11,11 @@ import net.thechance.mena.wallet.domain.repository.TransactionRepository
 class TransactionRepositoryImpl(
     private val networkClient: NetworkClient
 ) : TransactionRepository {
-    override suspend fun getTransactionHistory(transactionFilterParams: TransactionFilterParams?): List<Transaction>{
-        return safeApiCall<List<TransactionDto>> {
+    override suspend fun getTransactionHistory(transactionFilterParams: TransactionFilterParams?): List<Transaction> {
+        return safeApiCall<PagedTransactionResponseDto> {
             networkClient.get("$TRANSACTION_PATH?${transactionFilterParams?.toQueryParams()}")
-        }.map { it.toEntity() }
+        }.transactions.map { it.toEntity() }
+
     }
 
     private companion object {
