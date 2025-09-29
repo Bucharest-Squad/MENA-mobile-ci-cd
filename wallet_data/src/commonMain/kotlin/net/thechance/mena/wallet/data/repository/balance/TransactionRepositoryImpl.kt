@@ -15,7 +15,7 @@ class TransactionRepositoryImpl(
     override suspend fun getTransactionHistory(transactionFilterParams: TransactionFilterParams?): List<Transaction> {
         return safeApiCall<PagedTransactionResponseDto> {
             networkClient.get("$TRANSACTION_PATH?${transactionFilterParams?.toParameters()}")
-        }.transactions.map { it.toEntity() }
+        }.transactions.orEmpty().map { it.toEntity() }
 
     }
 
