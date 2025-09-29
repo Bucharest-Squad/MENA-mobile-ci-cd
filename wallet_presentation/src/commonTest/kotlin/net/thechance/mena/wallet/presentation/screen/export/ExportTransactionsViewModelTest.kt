@@ -512,7 +512,6 @@ class ExportTransactionsViewModelTest {
         assertEquals(null, result)
     }
 
-
     private fun assertSnackBarState(
         isVisible: Boolean,
         snackBarState: SnackBarState
