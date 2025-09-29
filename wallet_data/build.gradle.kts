@@ -37,6 +37,8 @@ kotlin {
             //Koin
             implementation(libs.koin.core)
             api(libs.koin.annotations)
+            //data time
+            implementation(libs.kotlinx.datetime)
 
             //datetime
             implementation(libs.kotlinx.datetime)
