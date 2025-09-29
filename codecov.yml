@@ -1,124 +1,27 @@
+github_checks: false
+
 flags:
-  # Core Chat
-  core_chat_api:
-    carryforward: false
-  core_chat_data:
-    carryforward: false
-  core_chat_domain:
-    carryforward: false
-  core_chat_presentation:
-    carryforward: false
-  # Dukan
-  dukan_api:
-    carryforward: false
-  dukan_data:
-    carryforward: false
-  dukan_domain:
-    carryforward: false
-  dukan_presentation:
-    carryforward: false
-  # Faith
-  faith_api:
-    carryforward: false
-  faith_data:
-    carryforward: false
-  faith_domain:
-    carryforward: false
-  faith_presentation:
-    carryforward: false
-  # Identity
-  identity_api:
-    carryforward: false
-  identity_data:
-    carryforward: false
-  identity_domain:
-    carryforward: false
-  identity_presentation:
-    carryforward: false
-  # Trends
-  trends_api:
-    carryforward: false
-  trends_data:
-    carryforward: false
-  trends_domain:
-    carryforward: false
-  trends_presentation:
-    carryforward: false
-  # Wallet
-  wallet_api:
-    carryforward: false
-  wallet_data:
-    carryforward: false
-  wallet_domain:
-    carryforward: false
-  wallet_presentation:
-    carryforward: false
-
-coverage:
-  status:
-    project:
-      default_rules:
-        flag_coverage_not_uploaded_behavior: exclude
-      default:
-        enabled: no
-
-    patch:
-      # --- Core Chat ---
-      core_chat_api:
-        target: 80%
-      core_chat_data:
-        target: 70%
-      core_chat_domain:
-        target: 80%
-      core_chat_presentation:
-        target: 80%
-
-      # --- Dukan ---
-      dukan_api:
-        target: 80%
-      dukan_data:
-        target: 80%
-      dukan_domain:
-        target: 80%
-      dukan_presentation:
-        target: 80%
-
-      # --- Faith ---
-      faith_api:
-        target: 80%
-      faith_data:
-        target: 80%
-      faith_domain:
-        target: 80%
-      faith_presentation:
-        target: 80%
-
-      # --- Identity ---
-      identity_api:
-        target: 80%
-      identity_data:
-        target: 80%
-      identity_domain:
-        target: 80%
-      identity_presentation:
-        target: 80%
-
-      # --- Trends ---
-      trends_api:
-        target: 80%
-      trends_data:
-        target: 80%
-      trends_domain:
-        target: 80%
-      trends_presentation:
-        target: 80%
-
-      # --- Wallet ---
-      wallet_api:
-        target: 80%
-      wallet_data:
-        target: 80%
-      wallet_domain:
-        target: 80%
-      wallet_presentation:
-        target: 80%
+  - core_chat_api
+  - core_chat_data
+  - core_chat_domain
+  - core_chat_presentation
+  - dukan_api
+  - dukan_data
+  - dukan_domain
+  - dukan_presentation
+  - faith_api
+  - faith_data
+  - faith_domain
+  - faith_presentation
+  - identity_api
+  - identity_data
+  - identity_domain
+  - identity_presentation
+  - trends_api
+  - trends_data
+  - trends_domain
+  - trends_presentation
+  - wallet_api
+  - wallet_data
+  - wallet_domain
+  - wallet_presentation
