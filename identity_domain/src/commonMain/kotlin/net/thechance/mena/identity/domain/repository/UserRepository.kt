@@ -5,7 +5,7 @@ import net.thechance.mena.identity.domain.model.User
 
 interface UserRepository {
 
-     fun getUser(): Flow<User>
+     suspend fun getUser(): Flow<User>
 
 
 }
