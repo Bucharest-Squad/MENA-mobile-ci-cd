@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import net.thechance.mena.faith.presentation.designSystem.theme.QuranTheme
+import net.thechance.mena.faith.presentation.feature.quran.EntryScreen
 import net.thechance.mena.faith.presentation.feature.quran.sur.SurScreen
 import net.thechance.mena.faith.presentation.feature.quran.surah.SurahScreen
 
@@ -22,8 +23,12 @@ fun FaithNavigation() {
         QuranTheme {
             NavHost(
                 navController = navController,
-                startDestination = SurRoute
+                startDestination = EntryRoute
             ) {
+
+                composable<EntryRoute> {
+                    EntryScreen()
+                }
                 composable<SurRoute> {
                     SurScreen()
                 }

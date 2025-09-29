@@ -13,4 +13,7 @@ data class SurahDetailsRoute(
 )
 
 @Serializable
+data object EntryRoute
+
+@Serializable
 data object BookmarksRoute
