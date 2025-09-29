@@ -1,9 +1,9 @@
 package net.thechance.mena.wallet.domain.repository
 
-import net.thechance.mena.wallet.domain.model.FilterRequestParams
+import net.thechance.mena.wallet.domain.model.TransactionFilterParams
 
 interface ExportTransactionsRepository {
     suspend fun getFilteredTransactionsFile(
-        filterRequestParams: FilterRequestParams? = null
+        filterRequestParams: TransactionFilterParams? = null
     ): ByteArray
 }

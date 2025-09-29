@@ -1,21 +1,22 @@
 package net.thechance.mena.wallet.presentation.screen.export
 
-import net.thechance.mena.wallet.domain.entity.Transaction
+import net.thechance.mena.wallet.domain.model.TransactionStatus
+import net.thechance.mena.wallet.domain.model.TransactionType
 import net.thechance.mena.wallet.presentation.model.FilterStatus
 import net.thechance.mena.wallet.presentation.model.FilterType
 
-fun FilterType.toDomain(): Transaction.Type {
+fun FilterType.toDomain(): TransactionType {
     return when (this) {
-        FilterType.SENT -> Transaction.Type.SENT
-        FilterType.RECEIVED -> Transaction.Type.RECEIVED
-        FilterType.ONLINE_PURCHASE -> Transaction.Type.ONLINE_PURCHASE
+        FilterType.SENT -> TransactionType.SENT
+        FilterType.RECEIVED -> TransactionType.RECEIVED
+        FilterType.ONLINE_PURCHASE -> TransactionType.ONLINE_PURCHASE
     }
 }
 
-fun FilterStatus.toDomain(): Transaction.Status? {
+fun FilterStatus.toDomain(): TransactionStatus? {
     return when (this) {
         FilterStatus.ALL -> null
-        FilterStatus.FAILED -> Transaction.Status.FAIL
-        FilterStatus.SUCCESS -> Transaction.Status.SUCCESS
+        FilterStatus.FAILED -> TransactionStatus.FAIL
+        FilterStatus.SUCCESS -> TransactionStatus.SUCCESS
     }
 }

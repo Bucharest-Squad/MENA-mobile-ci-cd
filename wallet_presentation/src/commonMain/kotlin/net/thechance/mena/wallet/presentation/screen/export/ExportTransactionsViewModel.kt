@@ -20,7 +20,7 @@ import mena.wallet_presentation.generated.resources.error
 import mena.wallet_presentation.generated.resources.error_failed_view
 import mena.wallet_presentation.generated.resources.something_went_wrong
 import net.thechance.mena.wallet.domain.exceptions.NoInternetException
-import net.thechance.mena.wallet.domain.model.FilterRequestParams
+import net.thechance.mena.wallet.domain.model.TransactionFilterParams
 import net.thechance.mena.wallet.domain.repository.ExportTransactionsRepository
 import net.thechance.mena.wallet.presentation.base.BaseViewModel
 import net.thechance.mena.wallet.presentation.base.CustomToastState
@@ -138,17 +138,15 @@ class ExportTransactionsViewModel(
             val formatter = LocalDate.Format {
                 year(); char('/'); monthNumber(); char('/'); dayOfMonth()
             }
-            val startDateTime: LocalDateTime? =
+            val startDateTime: LocalDate? =
                 currentState.startDate.toStartOfDayLocalDateTime(formatter)
 
-            val endDateTime: LocalDateTime = currentState.endDate
+            val endDateTime: LocalDate? = currentState.endDate
                 .toStartOfDayLocalDateTime(formatter)
-                ?: Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
 
             exportTransactionsRepository.getFilteredTransactionsFile(
-                FilterRequestParams(
-                    type = currentState.selectedTransactionsTypes?.map { it.toDomain() }
-                        ?.toSet(),
+                TransactionFilterParams(
+                    types = currentState.selectedTransactionsTypes?.map { it.toDomain() },
                     status = currentState.selectedTransactionsStatus.toDomain(),
                     startDate = startDateTime,
                     endDate = endDateTime
@@ -294,11 +292,9 @@ class ExportTransactionsViewModel(
 
     @OptIn(ExperimentalTime::class)
     private fun String?.toStartOfDayLocalDateTime(formatter: DateTimeFormat<LocalDate>):
-            LocalDateTime? {
+            LocalDate? {
         return this
             ?.takeIf { it.isNotEmpty() }
             ?.let { LocalDate.parse(it, formatter) }
-            ?.atStartOfDayIn(TimeZone.currentSystemDefault())
-            ?.toLocalDateTime(TimeZone.currentSystemDefault())
     }
 }
