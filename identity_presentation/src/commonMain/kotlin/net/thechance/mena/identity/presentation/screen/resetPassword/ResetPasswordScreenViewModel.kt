@@ -1,23 +1,23 @@
-package net.thechance.mena.identity.presentation.screen.reset_password
+package net.thechance.mena.identity.presentation.screen.resetPassword
 
 import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.coroutines.CoroutineScope
+import net.thechance.mena.identity.domain.repository.ResetPasswordRepository
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
 import net.thechance.mena.identity.presentation.base.ErrorState
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
-import net.thechance.mena.identity.domain.useCase.ResetPasswordUseCase
 import net.thechance.mena.identity.domain.useCase.validation.mobileNumber.PasswordValidator
 
 class ResetPasswordScreenViewModel(
-    private val resetPasswordUseCase: ResetPasswordUseCase
+    private val passwordValidator: PasswordValidator,
+    private val resetPasswordRepository: ResetPasswordRepository,
+    private val phoneNumber: String
 ) : BaseScreenModel<ResetPasswordScreenUIState, ResetPasswordScreenUIEffect>(
     ResetPasswordScreenUIState()
 ), ResetPasswordScreenInteractionListener {
 
     override val viewModelScope: CoroutineScope
         get() = screenModelScope
-
-    private val passwordValidator = PasswordValidator()
 
     override fun onNewPasswordChanged(password: String) {
         updateState { copy(newPassword = password) }
@@ -41,6 +41,10 @@ class ResetPasswordScreenViewModel(
         sendNewEffect(ResetPasswordScreenUIEffect.NavigateBackToLogin)
     }
 
+    override fun clearErrorMessage() {
+        updateState { copy(errorMessage = null) }
+    }
+
     override fun onResetPasswordClicked() {
         if (state.value.newPassword != state.value.confirmPassword) {
             updateState { copy(errorMessage = "New password and confirm password do not match.") }
@@ -56,9 +60,11 @@ class ResetPasswordScreenViewModel(
         )
     }
 
-    private fun onResetPassword() {
-        resetPasswordUseCase.resetPassword(
-            state.value.newPassword
+    private suspend fun onResetPassword() {
+        resetPasswordRepository.resetPassword(
+            state.value.confirmPassword,
+            state.value.newPassword,
+            phoneNumber
         )
     }
 

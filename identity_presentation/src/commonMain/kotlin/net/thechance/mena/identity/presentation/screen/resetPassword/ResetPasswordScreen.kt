@@ -1,4 +1,4 @@
-package net.thechance.mena.identity.presentation.screen.reset_password
+package net.thechance.mena.identity.presentation.screen.resetPassword
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInHorizontally
@@ -47,15 +47,16 @@ import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.component.snackbar.SnackBar
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.component.textField.TextField
-import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import net.thechance.mena.identity.domain.entity.PhoneNumber
 import net.thechance.mena.identity.presentation.base.BaseScreen
+import net.thechance.mena.identity.presentation.components.AuthScreenContainer
 import net.thechance.mena.identity.presentation.components.PageDescription
+import net.thechance.mena.identity.presentation.screen.login.LoginScreen
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
-class ResetPasswordScreen :
+class ResetPasswordScreen(phoneNumber: PhoneNumber) :
     BaseScreen<ResetPasswordScreenViewModel, ResetPasswordScreenUIState, ResetPasswordScreenUIEffect, ResetPasswordScreenInteractionListener>() {
     @Composable
     override fun Content() {
@@ -100,11 +101,8 @@ class ResetPasswordScreen :
                         .align(Alignment.BottomCenter)
                 )
 
-                AuthScreenContainer(
-                    modifier = Modifier
-                        .padding(top = Theme.spacing._24)
-                        .padding(horizontal = Theme.spacing._16)
-                ) {
+                AuthScreenContainer()
+                {
                     PageDescription(
                         title = stringResource(Res.string.new_password_title),
                         subtitle = stringResource(Res.string.reset_password_description),
@@ -131,7 +129,8 @@ class ResetPasswordScreen :
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = Theme.spacing._16),
-                        visualTransformation = if (state.isNewPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        visualTransformation = if (state.isNewPasswordVisible) VisualTransformation.None
+                        else PasswordVisualTransformation(),
                         onTrailingIconClick = listener::onNewPasswordVisibilityToggled
                     )
 
@@ -168,7 +167,7 @@ class ResetPasswordScreen :
                         contentPadding = PaddingValues(vertical = Theme.spacing._12),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(bottom = Theme.spacing._32)
+                            .padding(bottom = Theme.spacing._24)
                     )
                 }
 
@@ -192,6 +191,7 @@ class ResetPasswordScreen :
                 LaunchedEffect(state.errorMessage) {
                     if (state.errorMessage != null) {
                         delay(3000)
+                        listener.clearErrorMessage()
                     }
                 }
             }
@@ -202,58 +202,7 @@ class ResetPasswordScreen :
         effect: ResetPasswordScreenUIEffect, navigator: Navigator
     ) {
         when (effect) {
-            ResetPasswordScreenUIEffect.NavigateBackToLogin -> navigator.pop()
+            ResetPasswordScreenUIEffect.NavigateBackToLogin -> navigator.push(LoginScreen())
         }
-    }
-}
-
-@Composable
-fun AuthScreenContainer(
-    modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit
-) {
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        content = content
-    )
-}
-
-val MockState = ResetPasswordScreenUIState(
-    newPassword = "Password123",
-    confirmPassword = "Password123",
-    isResetEnabled = true,
-    errorMessage = null
-)
-
-@Preview
-@Composable
-private fun PreviewResetPasswordScreen() {
-    MenaTheme {
-        ResetPasswordScreen().OnRender(
-            state = MockState, listener = object : ResetPasswordScreenInteractionListener {
-                override fun onNewPasswordChanged(password: String) {
-                    TODO("Not yet implemented")
-                }
-
-                override fun onConfirmPasswordChanged(password: String) {
-                    TODO("Not yet implemented")
-                }
-
-                override fun onNewPasswordVisibilityToggled() {
-                    TODO("Not yet implemented")
-                }
-
-                override fun onConfirmPasswordVisibilityToggled() {
-                    TODO("Not yet implemented")
-                }
-
-                override fun onResetPasswordClicked() {
-                    TODO("Not yet implemented")
-                }
-
-                override fun onBackClicked() {
-                    TODO("Not yet implemented")
-                }
-            }
-        )
     }
 }

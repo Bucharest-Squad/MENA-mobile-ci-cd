@@ -1,4 +1,4 @@
-package net.thechance.mena.identity.presentation.screen.reset_password
+package net.thechance.mena.identity.presentation.screen.resetPassword
 
 import net.thechance.mena.identity.presentation.base.BaseInteractionListener
 
@@ -9,4 +9,6 @@ interface ResetPasswordScreenInteractionListener : BaseInteractionListener {
     fun onConfirmPasswordVisibilityToggled()
     fun onResetPasswordClicked()
     fun onBackClicked()
+    fun clearErrorMessage()
+
 }

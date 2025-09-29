@@ -1,4 +1,4 @@
-package net.thechance.mena.identity.presentation.screen.reset_password
+package net.thechance.mena.identity.presentation.screen.resetPassword
 
 data class ResetPasswordScreenUIState(
     val newPassword: String = "",

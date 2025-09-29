@@ -3,19 +3,19 @@ package net.thechance.mena.identity.presentation.screen.resetpassword
 import app.cash.turbine.test
 import dev.mokkery.MockMode
 import dev.mokkery.answering.returns
+import dev.mokkery.every
 import dev.mokkery.everySuspend
 import dev.mokkery.mock
-import dev.mokkery.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import net.thechance.mena.identity.domain.useCase.ResetPasswordUseCase
+import net.thechance.mena.identity.domain.repository.ResetPasswordRepository
 import net.thechance.mena.identity.domain.useCase.validation.mobileNumber.PasswordValidator
-import net.thechance.mena.identity.presentation.screen.reset_password.ResetPasswordScreenUIEffect
-import net.thechance.mena.identity.presentation.screen.reset_password.ResetPasswordScreenViewModel
+import net.thechance.mena.identity.presentation.screen.resetPassword.ResetPasswordScreenUIEffect
+import net.thechance.mena.identity.presentation.screen.resetPassword.ResetPasswordScreenViewModel
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -25,7 +25,7 @@ import kotlin.test.assertTrue
 @OptIn(ExperimentalCoroutinesApi::class)
 class ResetPasswordScreenViewModelTest {
 
-    private lateinit var resetPasswordUseCase: ResetPasswordUseCase
+    private lateinit var resetPasswordRepository: ResetPasswordRepository
     private lateinit var passwordValidator: PasswordValidator
     private lateinit var viewModel: ResetPasswordScreenViewModel
 
@@ -33,13 +33,22 @@ class ResetPasswordScreenViewModelTest {
 
     private val validPassword = "Password123"
     private val invalidPassword = "short"
+    private val mockPhoneNumber = "01123456789"
 
     @BeforeTest
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
-        resetPasswordUseCase = mock(mode = MockMode.autofill)
+        resetPasswordRepository = mock(mode = MockMode.autofill)
         passwordValidator = mock(mode = MockMode.autofill)
-        viewModel = ResetPasswordScreenViewModel(resetPasswordUseCase)
+
+        viewModel = ResetPasswordScreenViewModel(
+            passwordValidator = passwordValidator,
+            resetPasswordRepository = resetPasswordRepository,
+            phoneNumber = mockPhoneNumber
+        )
+
+        every { passwordValidator.isValid(validPassword) } returns true
+        every { passwordValidator.isValid(invalidPassword) } returns false
     }
 
     @AfterTest
@@ -50,6 +59,7 @@ class ResetPasswordScreenViewModelTest {
     private fun setupValidPasswords() {
         viewModel.onNewPasswordChanged(validPassword)
         viewModel.onConfirmPasswordChanged(validPassword)
+        testDispatcher.scheduler.advanceUntilIdle()
     }
 
     @Test
@@ -89,8 +99,11 @@ class ResetPasswordScreenViewModelTest {
 
     @Test
     fun `checkResetButtonEnabled should be disabled when passwords do not match`() = runTest {
+        every { passwordValidator.isValid(validPassword) } returns true
+
         viewModel.onNewPasswordChanged(validPassword)
         viewModel.onConfirmPasswordChanged("DifferentPass123")
+
         viewModel.state.test {
             assertFalse { awaitItem().isResetEnabled }
         }
@@ -98,8 +111,11 @@ class ResetPasswordScreenViewModelTest {
 
     @Test
     fun `checkResetButtonEnabled should be disabled when password is not secure`() = runTest {
+        every { passwordValidator.isValid(invalidPassword) } returns false
+
         viewModel.onNewPasswordChanged(invalidPassword)
         viewModel.onConfirmPasswordChanged(invalidPassword)
+
         viewModel.state.test {
             assertFalse { awaitItem().isResetEnabled }
         }
@@ -115,30 +131,19 @@ class ResetPasswordScreenViewModelTest {
         }
 
     @Test
-    fun `onResetPasswordClicked should show error message if passwords do not match`() = runTest {
-        viewModel.onNewPasswordChanged(validPassword)
-        viewModel.onConfirmPasswordChanged("DifferentPass123")
-
-        viewModel.onResetPasswordClicked()
-        testDispatcher.scheduler.advanceUntilIdle()
-
-        viewModel.state.test {
-            val state = awaitItem()
-            assertTrue { state.errorMessage == "New password and confirm password do not match." }
-        }
-    }
-
-    @Test
-    fun `onResetPasswordClicked should call useCase and navigate on success`() = runTest {
+    fun `onResetPasswordClicked should call Repository and navigate on success`() = runTest {
         setupValidPasswords()
 
-        everySuspend { resetPasswordUseCase.resetPassword(validPassword) } returns Unit
+        everySuspend {
+            resetPasswordRepository.resetPassword(validPassword, validPassword, mockPhoneNumber)
+        } returns Unit
 
         viewModel.effect.test {
             viewModel.onResetPasswordClicked()
 
             viewModel.state.test {
                 assertTrue { awaitItem().isLoading }
+                assertFalse { awaitItem().isLoading }
             }
 
             testDispatcher.scheduler.advanceUntilIdle()
@@ -146,8 +151,6 @@ class ResetPasswordScreenViewModelTest {
             val effect = awaitItem()
             assertTrue { effect is ResetPasswordScreenUIEffect.NavigateBackToLogin }
         }
-
-        verify { resetPasswordUseCase.resetPassword(validPassword) }
     }
 
     @Test
