@@ -46,7 +46,7 @@ abstract class BaseViewModel<UI_STATE, UI_EFFECT>(
         status: SnackBarState.Status,
         durationMillis: Long = 3000L,
     ) {
-        viewModelScope.launch(Dispatchers.Main) {
+        viewModelScope.launch(Dispatchers.Main.immediate) {
             if (snackBarState.value.isVisible) {
                 hideSnackBar()
                 delay(1000L)

@@ -50,13 +50,14 @@ fun SurahScreen(
         when (effect) {
             is SurahScreenEffect.NavigateBack -> navController.navigateUp()
             is SurahScreenEffect.ShareAyah -> {}
-            SurahScreenEffect.CopiedAyahFail -> viewModel.showSnackBar(
-                getString(Res.string.copied_ayah_failed),
-                SnackBarState.Status.Error
-            )
-            SurahScreenEffect.CopiedAyahSuccess -> viewModel.showSnackBar(
+            SurahScreenEffect.CopyAyahSuccess -> viewModel.showSnackBar(
                 getString(Res.string.copied_ayah_successfully),
                 SnackBarState.Status.Success
+            )
+
+            SurahScreenEffect.CopyAyahFail -> viewModel.showSnackBar(
+                getString(Res.string.copied_ayah_failed),
+                SnackBarState.Status.Error
             )
         }
     }
@@ -82,9 +83,7 @@ private fun Content(
         modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars),
         topBar = {
             SurahAppBar(
-                surahName = state.surahName,
-                onBackClick = { listener.onBackClick() }
-            )
+                surahName = state.surahName, onBackClick = { listener.onBackClick() })
         },
         snackBar = {
             FaithSnackBar(
@@ -94,19 +93,18 @@ private fun Content(
                 modifier = Modifier.fillMaxWidth()
             )
         }) {
+
         Box(
             Modifier.fillMaxSize()
         ) {
             AyatOfSurah(
-                listener = listener,
-                state = state,
-                lazyListState = lazyListState
+                listener = listener, state = state, lazyListState = lazyListState
             )
+
             AnimatedAyahActionButtons(
                 state = state,
                 listener = listener,
-                modifier = Modifier.fillMaxWidth()
-                    .align(Alignment.BottomCenter)
+                modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter)
                     .padding(Theme.spacing._16)
             )
         }
@@ -135,12 +133,12 @@ private fun AyatOfSurah(
         modifier = modifier.fillMaxWidth(),
         state = lazyListState
     ) {
+
         if (state.isBasmalaVisible)
             item {
                 BasmalaHeader(
                     selectedAyahIndex = state.selectedAyahIndex,
-                    onDismissActionButtons = { listener.onDismissActionButtons() }
-                )
+                    onDismissActionButtons = { listener.onDismissActionButtons() })
             }
 
         item {
@@ -160,7 +158,10 @@ private fun HideAyahActionButtonsOnScroll(
     state: SurahScreenState,
     listener: SurahInteractionListener
 ) {
-    LaunchedEffect(lazyListState, state.isAyahActionButtonsVisible) {
+    LaunchedEffect(
+        lazyListState,
+        state.isAyahActionButtonsVisible
+    ) {
         lazyListState.let { listState ->
             snapshotFlow { listState.isScrollInProgress }.collect { isScrolling ->
                 if (isScrolling && state.isAyahActionButtonsVisible) {
