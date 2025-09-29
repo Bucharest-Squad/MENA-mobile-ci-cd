@@ -1,7 +1,7 @@
 package net.thechance.mena.identity.presentation.base
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import cafe.adriel.voyager.core.model.ScreenModel
+import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +22,8 @@ import net.thechance.mena.identity.domain.exception.AuthenticationException
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
-abstract class BaseScreenModel<S, E>(initialState: S) : ViewModel() {
+
+abstract class BaseScreenModel<S, E>(initialState: S) : ScreenModel{
 
     private val _state = MutableStateFlow(initialState)
     val state = _state.asStateFlow()
@@ -35,7 +36,7 @@ abstract class BaseScreenModel<S, E>(initialState: S) : ViewModel() {
         onSuccess: () -> Unit,
         onError: (ErrorState) -> Unit,
         dispatcher: CoroutineDispatcher = Dispatchers.IO,
-        inScope: CoroutineScope = viewModelScope,
+        inScope: CoroutineScope = screenModelScope,
     ): Job {
         return runWithErrorCheck(onError, inScope,dispatcher) {
             function()
@@ -47,7 +48,7 @@ abstract class BaseScreenModel<S, E>(initialState: S) : ViewModel() {
         function: suspend () -> T,
         onSuccess: (T) -> Unit,
         onError: (ErrorState) -> Unit,
-        inScope: CoroutineScope = viewModelScope,
+        inScope: CoroutineScope = screenModelScope,
     ): Job {
         return runWithErrorCheck(onError, inScope) {
             val result = function()
@@ -59,7 +60,7 @@ abstract class BaseScreenModel<S, E>(initialState: S) : ViewModel() {
         function: suspend () -> Flow<T>,
         onNewValue: (T) -> Unit,
         onError: (ErrorState) -> Unit,
-        inScope: CoroutineScope = viewModelScope,
+        inScope: CoroutineScope = screenModelScope,
     ): Job {
         return runWithErrorCheck(onError, inScope) {
             function().distinctUntilChanged().collectLatest {
@@ -73,14 +74,14 @@ abstract class BaseScreenModel<S, E>(initialState: S) : ViewModel() {
     }
 
     protected fun sendNewEffect(newEffect: E) {
-        viewModelScope.launch(Dispatchers.IO) {
+        screenModelScope.launch(Dispatchers.IO) {
             _effect.emit(newEffect)
         }
     }
 
     private fun runWithErrorCheck(
         onError: (ErrorState) -> Unit,
-        inScope: CoroutineScope = viewModelScope,
+        inScope: CoroutineScope = screenModelScope,
         dispatcher: CoroutineDispatcher = Dispatchers.IO,
         function: suspend () -> Unit,
     ): Job {
