@@ -11,8 +11,7 @@ import kotlinx.coroutines.withContext
 import net.thechance.mena.identity.data.dataSource.local.database.dao.UserDao
 import net.thechance.mena.identity.data.dto.profile.ProfileResponseDto
 import net.thechance.mena.identity.data.mapper.toDomain
-import net.thechance.mena.identity.data.mapper.toUser
-import net.thechance.mena.identity.data.mapper.toUserEntity
+import net.thechance.mena.identity.data.mapper.toEntity
 import net.thechance.mena.identity.data.utils.getJson
 import net.thechance.mena.identity.data.utils.safeWrapper
 import net.thechance.mena.identity.domain.model.User
@@ -34,13 +33,13 @@ class UserRepositoryImpl(
                 }
             }
         }
-        return userDao.getUser().flowOn(Dispatchers.IO).map { userEntity -> userEntity.toUser() }
+        return userDao.getUser().flowOn(Dispatchers.IO).map { userEntity -> userEntity.toDomain() }
     }
 
 
     private suspend fun saveUserInfo(user: User) {
         with(Dispatchers.IO) {
-            userDao.upsert(user.toUserEntity())
+            userDao.upsert(user.toEntity())
         }
     }
 

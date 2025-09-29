@@ -15,7 +15,7 @@ fun ProfileResponseDto.toDomain(): User{
     )
 
 }
-fun UserEntity.toUser(): User{
+fun UserEntity.toDomain(): User{
 
     return User(
         firstName = this.firstName,
@@ -25,7 +25,7 @@ fun UserEntity.toUser(): User{
     )
 
 }
-fun User.toUserEntity(): UserEntity{
+fun User.toEntity(): UserEntity{
 
     return UserEntity(
         firstName = this.firstName,
