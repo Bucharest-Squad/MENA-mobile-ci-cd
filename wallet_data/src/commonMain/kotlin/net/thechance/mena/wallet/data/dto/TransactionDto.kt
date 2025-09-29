@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class TransactionDto (
     @SerialName("id")
-    val id : String?,
+    val id : String,
     @SerialName("senderName")
     val senderName: String?,
     @SerialName("receiverName")
