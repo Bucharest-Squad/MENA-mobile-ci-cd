@@ -106,12 +106,14 @@ fun createHttpClient(
     statusResponse: (suspend MockRequestHandleScope.() -> HttpResponseData)? = null,
     uploadResponse: (suspend MockRequestHandleScope.() -> HttpResponseData)? = null,
     nameResponse: (suspend MockRequestHandleScope.() -> HttpResponseData)? = null,
+    shelvesResponse: (suspend MockRequestHandleScope.() -> HttpResponseData)? = null,
 ): HttpClient {
     return HttpClient(MockEngine { request ->
         when (request.url.encodedPath) {
             "/dukan/create" -> createResponse?.invoke(this) ?: defaultCreateResponse()
             "/dukan/shelf/create" -> createResponse?.invoke(this) ?: defaultCreateResponse()
-            //    "/dukan/shelf/list" -> shelvesResponse?.invoke(this) ?: defaultShelvesResponse()      //will be added
+            "/dukan/shelf" -> shelvesResponse?.invoke(this)
+                ?: defaultShelvesResponse()      //will be added
             //  "/dukan/shelf/delete" -> deleteShelfResponse?.invoke(this) ?: defaultDeleteResponse()  //will be added
             "/dukan/styles" -> stylesResponse?.invoke(this) ?: defaultStylesResponse()
             "/dukan/categories" -> categoriesResponse?.invoke(this) ?: defaultCategoriesResponse()
@@ -154,9 +156,9 @@ fun MockRequestHandleScope.defaultShelvesResponse() = respond(
     content = jsonSerialization.encodeToString(
         ListSerializer(ShelfDto.serializer()),
         listOf(
-            ShelfDto("1", "Shelf 1", "123"),
-            ShelfDto("2", "Shelf 2", "123"),
-            ShelfDto("3", "Shelf 3", "123")
+            ShelfDto("1", "Shelf 1"),
+            ShelfDto("2", "Shelf 2"),
+            ShelfDto("3", "Shelf 3")
         )
     ),
     status = HttpStatusCode.OK,
@@ -171,13 +173,13 @@ fun MockRequestHandleScope.defaultDeleteResponse() = respond(
 
 fun createShelfRepository(
     createResponse: (suspend MockRequestHandleScope.() -> HttpResponseData)? = null,
-    //shelvesResponse: (suspend MockRequestHandleScope.() -> HttpResponseData)? = null,
+    shelvesResponse: (suspend MockRequestHandleScope.() -> HttpResponseData)? = null,
     //deleteShelfResponse: (suspend MockRequestHandleScope.() -> HttpResponseData)? = null,
 ): ShelfRepositoryImpl {
     return ShelfRepositoryImpl(
         client = createHttpClient(
             createResponse = createResponse,
-            //   shelvesResponse = shelvesResponse,
+            shelvesResponse = shelvesResponse,
             // deleteShelfResponse = deleteShelfResponse
         )
     )
