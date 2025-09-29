@@ -56,7 +56,7 @@ kover.reports {
                 "**.repository.**",
                 "**.generated.**",
                 "**.entity.**",
-                "**model.**"
+                "**.model.**"
             )
         }
     }
