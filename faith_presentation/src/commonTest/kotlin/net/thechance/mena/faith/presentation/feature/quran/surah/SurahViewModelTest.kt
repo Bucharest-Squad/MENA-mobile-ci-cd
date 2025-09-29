@@ -103,16 +103,17 @@ class SurahViewModelTest {
     }
 
     @Test
-    fun `onAyahLongPress should set selectedAyahIndex to negative value when called with negative index`() = runTest {
-        // Given
-        val testViewModel = createTestViewModel()
+    fun `onAyahLongPress should set selectedAyahIndex to negative value when called with negative index`() =
+        runTest {
+            // Given
+            val testViewModel = createTestViewModel()
 
-        // When
-        testViewModel.onAyahLongPress(TEST_AYAH_CONTENT, NEGATIVE_AYAH_INDEX)
+            // When
+            testViewModel.onAyahLongPress(TEST_AYAH_CONTENT, NEGATIVE_AYAH_INDEX)
 
-        // Then
-        assertEquals(NEGATIVE_AYAH_INDEX, testViewModel.uiState.value.selectedAyahIndex)
-    }
+            // Then
+            assertEquals(NEGATIVE_AYAH_INDEX, testViewModel.uiState.value.selectedAyahIndex)
+        }
 
     @Test
     fun `onDismissActionButtons should hide action buttons when it called`() =
@@ -142,7 +143,6 @@ class SurahViewModelTest {
             assertEquals(EMPTY_STRING, testViewModel.uiState.value.selectedAyah)
         }
 
-
     @Test
     fun `onBookmarkClick should hide action buttons after bookmark click`() = runTest {
         // Given
@@ -155,7 +155,6 @@ class SurahViewModelTest {
         // Then
         assertFalse(testViewModel.uiState.value.isAyahActionButtonsVisible)
     }
-
 
     @Test
     fun `onBookmarkClick should hide action buttons when ayah number is negative`() = runTest {
@@ -182,7 +181,6 @@ class SurahViewModelTest {
         // Then
         assertFalse(testViewModel.uiState.value.isAyahActionButtonsVisible)
     }
-
 
     @Test
     fun `onShareClick should update selectedAyah with ayah content when called`() = runTest {
@@ -236,7 +234,6 @@ class SurahViewModelTest {
             assertEquals(SECOND_AYAH_INDEX, testViewModel.uiState.value.selectedAyahIndex)
         }
 
-
     @Test
     fun `showSuccessSnackBar should display success status when called`() = runTest {
         // Given
@@ -273,7 +270,6 @@ class SurahViewModelTest {
             // When
             testViewModel.onCopyClick(AYAH_TO_COPY)
 
-
             // Then
             testViewModel.snackBarState.test {
                 val snackBarState = awaitItem()
@@ -294,7 +290,6 @@ class SurahViewModelTest {
         // Then
         val testState = testViewModel.uiState.value
         assertEquals(SELECTED_INDEX, testState.selectedAyahIndex)
-
     }
 
     private companion object {

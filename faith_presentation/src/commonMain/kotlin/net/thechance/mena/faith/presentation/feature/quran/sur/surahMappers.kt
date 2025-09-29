@@ -246,4 +246,4 @@ fun Surah.toUi() = SurScreenState.SurahUiState(
 )
 
 private fun getSurahNameDrawableResource(order: Surah.SurahOrder): DrawableResource =
-    surahDrawableMap[order] ?: Res.drawable.ic_surah_name_place_holder //empty img for safe
+    surahDrawableMap[order] ?: Res.drawable.ic_surah_name_place_holder
