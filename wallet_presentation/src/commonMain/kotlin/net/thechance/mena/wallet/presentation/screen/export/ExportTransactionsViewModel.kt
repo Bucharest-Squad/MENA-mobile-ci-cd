@@ -1,8 +1,5 @@
 package net.thechance.mena.wallet.presentation.screen.export
 
-import io.github.vinceglb.filekit.FileKit
-import io.github.vinceglb.filekit.dialogs.openFileSaver
-import io.github.vinceglb.filekit.write
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -21,16 +18,16 @@ import mena.wallet_presentation.generated.resources.download_success
 import mena.wallet_presentation.generated.resources.downloading_started
 import mena.wallet_presentation.generated.resources.error
 import mena.wallet_presentation.generated.resources.error_failed_view
-import mena.wallet_presentation.generated.resources.error_no_transactions
 import mena.wallet_presentation.generated.resources.something_went_wrong
 import net.thechance.mena.wallet.domain.exceptions.NoInternetException
 import net.thechance.mena.wallet.domain.model.FilterRequestParams
 import net.thechance.mena.wallet.domain.repository.ExportTransactionsRepository
 import net.thechance.mena.wallet.presentation.base.BaseViewModel
+import net.thechance.mena.wallet.presentation.base.CustomToastState
 import net.thechance.mena.wallet.presentation.base.SnackBarState
 import net.thechance.mena.wallet.presentation.model.FilterStatus
 import net.thechance.mena.wallet.presentation.model.FilterType
-import net.thechance.mena.wallet.presentation.base.CustomToastState
+import net.thechance.mena.wallet.presentation.screen.export.file_saver.FileSaver
 import org.jetbrains.compose.resources.StringResource
 import org.koin.android.annotation.KoinViewModel
 import org.koin.core.annotation.Provided
@@ -40,6 +37,7 @@ import kotlin.time.ExperimentalTime
 @KoinViewModel
 class ExportTransactionsViewModel(
     @Provided private val exportTransactionsRepository: ExportTransactionsRepository,
+    @Provided private val fileSaver: FileSaver,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : BaseViewModel<ExportTransactionsState, ExportTransactionsEffect>(
     ExportTransactionsState()
@@ -50,20 +48,11 @@ class ExportTransactionsViewModel(
     }
 
     override fun onAllTransactionsClicked() {
-        updateState { oldState ->
-            oldState.copy(
-                isCustomFilterCardSelected = false
-            )
-        }
+        updateState { oldState -> oldState.copy(isCustomFilterCardSelected = false) }
     }
 
     override fun onCustomFilteringClicked() {
-        updateState { oldState ->
-            oldState.copy(
-                isCustomFilterCardSelected = true,
-
-                )
-        }
+        updateState { oldState -> oldState.copy(isCustomFilterCardSelected = true) }
     }
 
     override fun onTypeSelected(type: FilterType) {
@@ -75,25 +64,17 @@ class ExportTransactionsViewModel(
     }
 
     override fun onStatusSelected(status: FilterStatus) {
-        updateState { oldState ->
-            oldState.copy(
-                selectedTransactionsStatus = status
-            )
-        }
+        updateState { oldState -> oldState.copy(selectedTransactionsStatus = status) }
     }
 
     override fun onFromDateClicked() {
         //TODO Here the DatePicker opens and stores the result in state.startDate
-        updateState { oldState ->
-            oldState.copy(startDate = "2025/09/01")
-        }
+        updateState { oldState -> oldState.copy(startDate = "2025/09/01") }
     }
 
     override fun onToDateClicked() {
         //TODO Here the DatePicker opens and stores the result in state.endDate
-        updateState { oldState ->
-            oldState.copy(endDate = "2025/09/27")
-        }
+        updateState { oldState -> oldState.copy(endDate = "2025/09/27") }
     }
 
     override fun onViewAndShareClicked() {
@@ -127,52 +108,18 @@ class ExportTransactionsViewModel(
     }
 
     private suspend fun onViewAndShareSuccess(pdfBytes: ByteArray) {
-        updateState { oldState ->
-            oldState.copy(
-                isViewAndShareLoading = false,
-                isDownloadButtonEnabled = true
-            )
-        }
-
-        if (pdfBytes.isEmpty()) {
-            showToast(
-                messageRes = Res.string.error_no_transactions
-            )
-            updateState { oldState ->
-                oldState.copy(
-                    isViewAndShareLoading = false,
-                    isDownloadButtonEnabled = true
-                )
-            }
-        } else {
-            sendEffect(ExportTransactionsEffect.NavigateToViewFileScreen)
-        }
+        resetViewAndShareState()
+        sendEffect(ExportTransactionsEffect.NavigateToViewFileScreen)
     }
 
     private suspend fun onViewAndShareError(error: Throwable) {
-        updateState { oldState ->
-            oldState.copy(
-                isViewAndShareLoading = false,
-                isDownloadButtonEnabled = true
-            )
-        }
-        when (error) {
-            is NoInternetException -> {
-                updateState { oldState ->
-                    oldState.copy(
-                        noInternetConnection = true
-                    )
-                }
-            }
-
-            else -> {
-                showSnackBar(
-                    titleRes = Res.string.error,
-                    messageRes = Res.string.error_failed_view,
-                    isSuccess = false
-                )
-            }
-        }
+        resetViewAndShareState()
+        handleError(
+            error = error,
+            titleRes = Res.string.error,
+            messageRes = Res.string.error_failed_view,
+            isSuccess = false
+        )
     }
 
     private suspend fun onDownloadStart() {
@@ -214,77 +161,66 @@ class ExportTransactionsViewModel(
     }
 
     private suspend fun handleDownloadError(error: Throwable) {
-        updateState { oldState ->
-            oldState.copy(
-                isDownloadLoading = false,
-                isViewAndShareButtonEnabled = true
-            )
-        }
-        when (error) {
-            is NoInternetException -> {
-                updateState { oldState ->
-                    oldState.copy(
-                        noInternetConnection = true
-                    )
-                }
-            }
+        resetDownloadState()
+        handleError(
+            error = error,
+            titleRes = Res.string.download_failed,
+            messageRes = Res.string.something_went_wrong,
+            isSuccess = false
+        )
+    }
 
-            else -> {
+    private suspend fun saveFile(pdfBytes: ByteArray) {
+        try {
+            val isFileSaved = fileSaver.saveFile(
+                suggestedName = "transaction",
+                extension = "pdf",
+                bytes = pdfBytes
+            )
+            resetDownloadState()
+            if (isFileSaved) {
+                showSnackBar(
+                    titleRes = Res.string.download_complete,
+                    messageRes = Res.string.download_success,
+                    isSuccess = true
+                )
+            } else {
                 showSnackBar(
                     titleRes = Res.string.download_failed,
                     messageRes = Res.string.something_went_wrong,
                     isSuccess = false
                 )
             }
+        } catch (error: Exception) {
+            resetDownloadState()
+            handleError(
+                error = error,
+                titleRes = Res.string.download_failed,
+                messageRes = Res.string.something_went_wrong,
+                isSuccess = false
+            )
         }
     }
 
-    private suspend fun saveFile(pdfBytes: ByteArray) {
-        if (pdfBytes.isEmpty()) {
-            showToast(
-                messageRes = Res.string.error_no_transactions
-            )
-            resetDownloadState()
-        } else {
-            try {
-                val file = FileKit.openFileSaver(
-                    suggestedName = "transaction",
-                    extension = "pdf"
+    private suspend fun handleError(
+        error: Throwable,
+        titleRes: StringResource,
+        messageRes: StringResource,
+        isSuccess: Boolean = false
+    ) {
+        if (error is NoInternetException) {
+            updateState { oldState ->
+                oldState.copy(
+                    noInternetConnection = true
                 )
-                file?.write(pdfBytes)
-
-                resetDownloadState()
-                showSnackBar(
-                    titleRes = Res.string.download_complete,
-                    messageRes = Res.string.download_success,
-                    isSuccess = true
-                )
-
-            } catch (error: Exception) {
-                resetDownloadState()
-                when (error) {
-                    is NoInternetException -> {
-                        updateState { oldState ->
-                            oldState.copy(
-                                noInternetConnection = true
-                            )
-                        }
-
-                    }
-
-                    else -> {
-                        showSnackBar(
-                            titleRes = Res.string.download_failed,
-                            messageRes = Res.string.something_went_wrong,
-                            isSuccess = false
-                        )
-                    }
-                }
-
-
             }
+        } else {
+            showSnackBar(
+                titleRes = titleRes,
+                messageRes = messageRes,
+                isSuccess = isSuccess
+            )
         }
-
     }
 
     private suspend fun showSnackBar(
@@ -309,11 +245,7 @@ class ExportTransactionsViewModel(
 
     private fun hideSnackBar() {
         updateState { oldState ->
-            oldState.copy(
-                snackBar = oldState.snackBar.copy(
-                    isVisible = false
-                )
-            )
+            oldState.copy(snackBar = oldState.snackBar.copy(isVisible = false))
         }
     }
 
@@ -352,8 +284,18 @@ class ExportTransactionsViewModel(
         }
     }
 
+    private fun resetViewAndShareState() {
+        updateState { oldState ->
+            oldState.copy(
+                isViewAndShareLoading = false,
+                isDownloadButtonEnabled = true
+            )
+        }
+    }
+
     @OptIn(ExperimentalTime::class)
-    private fun String?.toStartOfDayLocalDateTime(formatter: DateTimeFormat<LocalDate>): LocalDateTime? {
+    private fun String?.toStartOfDayLocalDateTime(formatter: DateTimeFormat<LocalDate>):
+            LocalDateTime? {
         return this
             ?.takeIf { it.isNotEmpty() }
             ?.let { LocalDate.parse(it, formatter) }
