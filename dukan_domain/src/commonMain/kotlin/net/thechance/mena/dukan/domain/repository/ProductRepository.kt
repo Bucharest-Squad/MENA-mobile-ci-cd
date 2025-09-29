@@ -5,7 +5,7 @@ import net.thechance.mena.dukan.domain.util.PagedFetchResponse
 
 interface ProductRepository {
 
-    suspend fun createProduct(product: Product)
+    suspend fun createProduct(product: Product): String
     suspend fun getProductsByShelfId(
         shelfId: String,
         page:Int,
