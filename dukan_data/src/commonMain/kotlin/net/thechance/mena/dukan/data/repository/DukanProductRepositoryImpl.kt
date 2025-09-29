@@ -18,11 +18,11 @@ class DukanProductRepositoryImpl(
     private val client: HttpClient
 ): ProductRepository {
 
-    override suspend fun createProduct(product: Product): String {
+    override suspend fun createProduct(product: Product,shelfId: String): String {
         return safeApiCall<CreateProductResponse> {
             client.post("${BASE_URL}/create") {
                 contentType(ContentType.Application.Json)
-                setBody(product.toCreateProductRequest())
+                setBody(product.toCreateProductRequest(shelfId))
             }
         }.productId
     }
