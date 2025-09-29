@@ -2,6 +2,7 @@ package net.thechance.mena.identity.presentation.base
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cafe.adriel.voyager.core.model.ScreenModel
@@ -21,7 +22,7 @@ abstract class BaseScreen<VM, S, E, I> : Screen
         where  VM : BaseScreenModel<S, E>, I : BaseInteractionListener, VM : I {
     @Composable
     fun InitScreen(viewModel: VM) {
-        val state: S by viewModel.state.collectAsStateWithLifecycle()
+        val state: S by viewModel.state.collectAsState()
         val navigator = LocalNavigator.currentOrThrow
 
         OnRender(state, viewModel)
