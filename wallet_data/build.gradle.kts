@@ -38,7 +38,9 @@ kotlin {
             implementation(libs.koin.core)
             api(libs.koin.annotations)
 
+            //data time
             implementation(libs.kotlinx.datetime)
+
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
