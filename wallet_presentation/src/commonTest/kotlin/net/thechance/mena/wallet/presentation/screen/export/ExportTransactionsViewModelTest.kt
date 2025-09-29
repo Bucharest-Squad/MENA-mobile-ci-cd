@@ -15,6 +15,13 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atStartOfDayIn
+import kotlinx.datetime.format.DateTimeFormat
+import kotlinx.datetime.format.char
+import kotlinx.datetime.toLocalDateTime
 import net.thechance.mena.wallet.domain.exceptions.NoInternetException
 import net.thechance.mena.wallet.domain.repository.ExportTransactionsRepository
 import net.thechance.mena.wallet.presentation.base.CustomToastState
@@ -28,6 +35,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalCoroutinesApi::class)
 
@@ -287,8 +295,6 @@ class ExportTransactionsViewModelTest {
 
                 val state = awaitItem()
 
-                println("onDownloadClicked with NoInternetException should update noInternetConnection state $state")
-
                 assertTrue(state.noInternetConnection)
 
                 cancelAndIgnoreRemainingEvents()
@@ -313,7 +319,6 @@ class ExportTransactionsViewModelTest {
             skipItems(5)
 
             val state = awaitItem()
-            println("onDownloadClicked with generic error should show failure snackBar $state")
 
             assertSnackBarState(
                 isVisible = true,
@@ -471,6 +476,42 @@ class ExportTransactionsViewModelTest {
         }
     }
 
+    @Test
+    fun `onViewAndShareClicked with NoInternetException should update noInternetConnection`() =
+        runTest {
+            everySuspend { repository.getFilteredTransactionsFile(any()) } throws NoInternetException()
+
+            val viewModel = ExportTransactionsViewModel(repository, fileSaver, testDispatcher)
+
+            viewModel.state.test {
+                viewModel.onViewAndShareClicked()
+                skipItems(3)
+
+                val state = awaitItem()
+                assertTrue(state.noInternetConnection)
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `toStartOfDayLocalDateTime should parse valid date string`() = runTest {
+        val formatter =
+            LocalDate.Format { year(); char('/'); monthNumber(); char('/'); dayOfMonth() }
+        val result = "2025/09/27".toStartOfDayLocalDateTime(formatter)
+
+        assertEquals(2025, result?.year)
+        assertEquals(9, result?.monthNumber)
+        assertEquals(27, result?.dayOfMonth)
+    }
+
+    @Test
+    fun `toStartOfDayLocalDateTime should return null for empty string`() = runTest {
+        val formatter =
+            LocalDate.Format { year(); char('/'); monthNumber(); char('/'); dayOfMonth() }
+        val result = "".toStartOfDayLocalDateTime(formatter)
+        assertEquals(null, result)
+    }
+
 
     private fun assertSnackBarState(
         isVisible: Boolean,
@@ -484,5 +525,15 @@ class ExportTransactionsViewModelTest {
         toastState: CustomToastState
     ) {
         assertEquals(isVisible, toastState.isVisible)
+    }
+
+    @OptIn(ExperimentalTime::class)
+    private fun String?.toStartOfDayLocalDateTime(formatter: DateTimeFormat<LocalDate>):
+            LocalDateTime? {
+        return this
+            ?.takeIf { it.isNotEmpty() }
+            ?.let { LocalDate.parse(it, formatter) }
+            ?.atStartOfDayIn(TimeZone.currentSystemDefault())
+            ?.toLocalDateTime(TimeZone.currentSystemDefault())
     }
 }
