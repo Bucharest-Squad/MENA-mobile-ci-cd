@@ -9,10 +9,10 @@ import kotlin.uuid.Uuid
 @OptIn(ExperimentalUuidApi::class)
 data class Transaction (
     val id: Uuid,
-    val createdAt: LocalDateTime?,
-    val amount: Double?,
-    val status: TransactionStatus?,
-    val senderName: String?,
-    val receiverName: String?,
-    val type: TransactionType?
+    val createdAt: LocalDateTime,
+    val amount: Double,
+    val status: TransactionStatus,
+    val senderName: String,
+    val receiverName: String,
+    val type: TransactionType
 )
