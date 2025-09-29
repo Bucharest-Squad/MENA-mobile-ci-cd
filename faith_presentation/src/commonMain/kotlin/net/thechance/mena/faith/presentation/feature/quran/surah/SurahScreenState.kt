@@ -5,7 +5,6 @@ import net.thechance.mena.faith.domain.entity.Ayah
 data class SurahScreenState(
     val ayatOfSurah: List<Ayah> = emptyList(),
     val isAyahActionButtonsVisible: Boolean = false,
-    val isSnackBarVisible: Boolean = false,
     val surahId: Int = 0,
     val surahName: String = "",
     val selectedAyah: String = "",

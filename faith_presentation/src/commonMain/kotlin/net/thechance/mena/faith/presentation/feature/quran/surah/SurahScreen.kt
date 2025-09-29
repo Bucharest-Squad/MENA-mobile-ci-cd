@@ -17,6 +17,9 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import mena.faith_presentation.generated.resources.Res
+import mena.faith_presentation.generated.resources.copied_ayah_failed
+import mena.faith_presentation.generated.resources.copied_ayah_successfully
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.faith.presentation.base.FaithScaffold
 import net.thechance.mena.faith.presentation.base.ObserveAsEffect
@@ -28,6 +31,7 @@ import net.thechance.mena.faith.presentation.feature.quran.surah.component.Basma
 import net.thechance.mena.faith.presentation.feature.quran.surah.component.SurahAppBar
 import net.thechance.mena.faith.presentation.feature.quran.surah.component.createClickableAyahText
 import net.thechance.mena.faith.presentation.navigation.LocalNavController
+import org.jetbrains.compose.resources.getString
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -46,8 +50,17 @@ fun SurahScreen(
         when (effect) {
             is SurahScreenEffect.NavigateBack -> navController.navigateUp()
             is SurahScreenEffect.ShareAyah -> {}
+            SurahScreenEffect.CopiedAyahFail -> viewModel.showSnackBar(
+                getString(Res.string.copied_ayah_failed),
+                SnackBarState.Status.Error
+            )
+            SurahScreenEffect.CopiedAyahSuccess -> viewModel.showSnackBar(
+                getString(Res.string.copied_ayah_successfully),
+                SnackBarState.Status.Success
+            )
         }
     }
+
     Content(
         state = uiState,
         snackBarState = snackBarState,

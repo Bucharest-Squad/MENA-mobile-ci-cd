@@ -6,7 +6,6 @@ import kotlinx.coroutines.IO
 import net.thechance.mena.faith.domain.entity.Surah
 import net.thechance.mena.faith.domain.repository.QuranRepository
 import net.thechance.mena.faith.presentation.base.BaseViewModel
-import net.thechance.mena.faith.presentation.base.SnackBarState
 import net.thechance.mena.faith.presentation.util.ClipboardManager
 
 class SurahViewModel(
@@ -56,7 +55,7 @@ class SurahViewModel(
         tryToExecute(
             execute = { clipboardManager.copy(ayahContent) },
             onSuccess = { onCopySuccess(ayahContent) },
-            onError = { showErrorSnackBar() },
+            onError = { onCopyFail(ayahContent) },
             dispatcher = dispatcher
         )
     }
@@ -94,7 +93,7 @@ class SurahViewModel(
     }
 
     private fun onCopySuccess(ayahContent: String) {
-        showSuccessSnackBar()
+        sendEffect(SurahScreenEffect.CopiedAyahSuccess)
         updateState {
             it.copy(
                 isAyahActionButtonsVisible = false,
@@ -104,17 +103,14 @@ class SurahViewModel(
         }
     }
 
-    private fun showSuccessSnackBar() {
-        showSnackBar(
-            message = "Copied message successfully",
-            status = SnackBarState.Status.Success,
-        )
-    }
-
-    private fun showErrorSnackBar() {
-        showSnackBar(
-            message = "Copied message Failed",
-            status = SnackBarState.Status.Error,
-        )
+    private fun onCopyFail(ayahContent: String) {
+        sendEffect(SurahScreenEffect.CopiedAyahFail)
+        updateState {
+            it.copy(
+                isAyahActionButtonsVisible = false,
+                selectedAyahIndex = null,
+                selectedAyah = ayahContent
+            )
+        }
     }
 }
