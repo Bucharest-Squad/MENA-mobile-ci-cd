@@ -9,12 +9,13 @@ import net.thechance.mena.identity.presentation.bottomSheet.countryPicker.menaCo
 import net.thechance.mena.identity.presentation.bottomSheet.countryPicker.selectByCountry
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
 
-class LoginScreenModel(
-    val loginUseCase: LoginUseCase,
+class LoginScreenViewModel(
+    val loginUseCase: LoginUseCase
 ) : BaseScreenModel<LoginScreenUIState, LoginScreenUIEffect>(LoginScreenUIState()),
     LoginScreenInteractionListener {
     override val viewModelScope: CoroutineScope
         get() = screenModelScope
+
 
     override fun onLoginClicked() {
         updateState { copy(isLoading = true, errorMessage = null) }

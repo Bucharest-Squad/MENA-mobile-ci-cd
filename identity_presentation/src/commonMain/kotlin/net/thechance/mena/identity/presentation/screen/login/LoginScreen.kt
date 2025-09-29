@@ -55,9 +55,8 @@ import net.thechance.mena.identity.presentation.screen.register.RegisterScreen
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
-class LoginScreen(
-) : BaseScreen<
-        LoginScreenModel,
+class LoginScreen : BaseScreen<
+        LoginScreenViewModel,
         LoginScreenUIState,
         LoginScreenUIEffect,
         LoginScreenInteractionListener>() {

@@ -1,8 +1,8 @@
 package net.thechance.mena.identity.presentation.screen.register
 
+import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.coroutines.CoroutineScope
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
 
 
 class RegisterScreenModel :
@@ -10,5 +10,9 @@ class RegisterScreenModel :
     RegisterScreenInteractionListener {
     override val viewModelScope: CoroutineScope
         get() = screenModelScope
+
+    override fun onBackButtonClicked() {
+        sendNewEffect(RegisterScreenUIEffect.NavigateBack)
+    }
 }
 
