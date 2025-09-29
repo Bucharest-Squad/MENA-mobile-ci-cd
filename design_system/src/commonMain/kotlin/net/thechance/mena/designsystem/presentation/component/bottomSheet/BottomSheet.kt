@@ -20,10 +20,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -134,11 +136,7 @@ fun ScaffoldScope.BottomSheet(
         sheetNestedScrollConnection(dragState, Orientation.Vertical)
     }
 
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .navigationBarsPadding()
-    ) {
+    Box(modifier = modifier.fillMaxSize()) {
         BackHandler(dismissOnBackPress) { onDismissRequest() }
 
         AnimatedVisibility(
@@ -205,6 +203,11 @@ fun ScaffoldScope.BottomSheet(
                 ) {
                     Box(
                         modifier = Modifier.background(containerColor)
+                            .offset(
+                                y = WindowInsets.navigationBars
+                                    .asPaddingValues()
+                                    .calculateBottomPadding()
+                            )
                             .height(with(LocalDensity.current) { referenceHeight.toDp() })
                     )
                 }
@@ -213,6 +216,11 @@ fun ScaffoldScope.BottomSheet(
 
         Box(
             modifier = Modifier
+                .offset(
+                    y = WindowInsets.navigationBars
+                        .asPaddingValues()
+                        .calculateBottomPadding()
+                )
                 .background(containerColor)
                 .clickable(false) {}
                 .align(Alignment.BottomCenter)
