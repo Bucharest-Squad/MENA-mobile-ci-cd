@@ -3,7 +3,6 @@ package net.thechance.mena.faith.presentation.feature.quran.surah
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
-import net.thechance.mena.faith.domain.entity.Surah
 import net.thechance.mena.faith.domain.repository.QuranRepository
 import net.thechance.mena.faith.presentation.base.BaseViewModel
 import net.thechance.mena.faith.presentation.util.ClipboardManager
@@ -30,7 +29,7 @@ class SurahViewModel(
                 updateState {
                     it.copy(
                         ayatOfSurah = ayat,
-                        isBasmalaVisible = surahId != Surah.SurahOrder.AtTawbah.order
+                        surahOrder = surahId
                     )
                 }
             },
@@ -93,7 +92,6 @@ class SurahViewModel(
     }
 
     private fun onCopySuccess(ayahContent: String) {
-        sendEffect(SurahScreenEffect.CopiedAyahSuccess)
         updateState {
             it.copy(
                 isAyahActionButtonsVisible = false,
@@ -101,10 +99,10 @@ class SurahViewModel(
                 selectedAyah = ayahContent
             )
         }
+        sendEffect(SurahScreenEffect.CopyAyahSuccess)
     }
 
     private fun onCopyFail(ayahContent: String) {
-        sendEffect(SurahScreenEffect.CopiedAyahFail)
         updateState {
             it.copy(
                 isAyahActionButtonsVisible = false,
@@ -112,5 +110,6 @@ class SurahViewModel(
                 selectedAyah = ayahContent
             )
         }
+        sendEffect(SurahScreenEffect.CopyAyahFail)
     }
 }
