@@ -8,7 +8,9 @@ import net.thechance.mena.wallet.data.network_client.NetworkClient
 import net.thechance.mena.wallet.domain.entity.Transaction
 import net.thechance.mena.wallet.domain.model.TransactionFilterParams
 import net.thechance.mena.wallet.domain.repository.TransactionRepository
+import org.koin.core.annotation.Single
 
+@Single
 class TransactionRepositoryImpl(
     private val networkClient: NetworkClient
 ) : TransactionRepository {
