@@ -153,7 +153,6 @@ class ExportTransactionsViewModel(
                     startDate = startDateTime,
                     endDate = endDateTime
                 )
-
             )
         } else {
             exportTransactionsRepository.getFilteredTransactionsFile()
