@@ -21,7 +21,7 @@ import net.thechance.mena.faith.presentation.navigation.SurRoute
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun FaithHomeScreen() {
+fun MainScreen() {
 
     val navController = LocalNavController.current
 
