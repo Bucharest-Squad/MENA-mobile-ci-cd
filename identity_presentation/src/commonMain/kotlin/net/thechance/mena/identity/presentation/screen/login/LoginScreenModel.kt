@@ -11,8 +11,8 @@ import net.thechance.mena.identity.presentation.bottomSheet.countryPicker.select
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
 
 class LoginScreenModel(
-    val loginUseCase: LoginUseCase,
-    val dispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val loginUseCase: LoginUseCase,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : BaseScreenModel<LoginScreenUIState, LoginScreenUIEffect>(LoginScreenUIState()),
     LoginScreenInteractionListener {
 
