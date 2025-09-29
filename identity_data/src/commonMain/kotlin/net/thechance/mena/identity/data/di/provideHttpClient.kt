@@ -13,7 +13,7 @@ import io.ktor.client.plugins.logging.SIMPLE
 import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
-import net.thechance.mena.identity.data.utils.accessToken
+import net.thechance.mena.identity.data.dataSource.local.setting.accessToken
 
 internal fun provideHttpClient(
     engine: HttpClientEngine,
