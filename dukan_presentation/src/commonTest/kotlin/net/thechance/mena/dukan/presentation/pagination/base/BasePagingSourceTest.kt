@@ -1,7 +1,7 @@
 package net.thechance.mena.dukan.presentation.pagination.base
 
 import kotlinx.coroutines.test.runTest
-import net.thechance.mena.dukan.domain.util.PagedFetchResponse
+import net.thechance.mena.dukan.domain.util.PagedResult
 import net.thechance.mena.dukan.presentation.util.pagination.PagingSource
 import net.thechance.mena.dukan.presentation.util.pagination.base.BasePagingSource
 import kotlin.test.Test
@@ -14,7 +14,7 @@ class BasePagingSourceTest {
     fun `when load initial should call FIRST_PAGE`() = runTest {
         var page: Int? = null
         val source = object : BasePagingSource<String>() {
-            override suspend fun onFetchPage(pageNumber: Int): PagedFetchResponse<String> {
+            override suspend fun onFetchPage(pageNumber: Int): PagedResult<String> {
                 page = pageNumber
                 return fakeResponse()
             }
@@ -28,7 +28,7 @@ class BasePagingSourceTest {
     fun `when load with specific key then onFetchPage called with that key`() = runTest {
         var calledPage: Int? = null
         val source = object : BasePagingSource<String>() {
-            override suspend fun onFetchPage(pageNumber: Int): PagedFetchResponse<String> {
+            override suspend fun onFetchPage(pageNumber: Int): PagedResult<String> {
                 calledPage = pageNumber
                 return fakeResponse(currentPage = pageNumber)
             }
@@ -42,7 +42,7 @@ class BasePagingSourceTest {
     @Test
     fun `when load page with key the previous key should less than one`() = runTest {
         val source = object : BasePagingSource<String>() {
-            override suspend fun onFetchPage(pageNumber: Int): PagedFetchResponse<String> {
+            override suspend fun onFetchPage(pageNumber: Int): PagedResult<String> {
                 return fakeResponse(
                     currentPage = pageNumber,
                     hasPrevious = true,
@@ -60,7 +60,7 @@ class BasePagingSourceTest {
     @Test
     fun `when load page with key the next key should greater than one`() = runTest {
         val source = object : BasePagingSource<String>() {
-            override suspend fun onFetchPage(pageNumber: Int): PagedFetchResponse<String> {
+            override suspend fun onFetchPage(pageNumber: Int): PagedResult<String> {
                 return fakeResponse(
                     currentPage = pageNumber,
                     hasPrevious = false,
@@ -78,7 +78,7 @@ class BasePagingSourceTest {
     @Test
     fun `when onFetchPage throws then return Error`() = runTest {
         val source = object : BasePagingSource<String>() {
-            override suspend fun onFetchPage(pageNumber: Int): PagedFetchResponse<String> {
+            override suspend fun onFetchPage(pageNumber: Int): PagedResult<String> {
                 throw IllegalStateException("failed")
             }
         }
@@ -95,7 +95,7 @@ class BasePagingSourceTest {
         hasNext: Boolean = false,
         currentPage: Int = 1,
         totalPages: Int = 1
-    ) = PagedFetchResponse(
+    ) = PagedResult(
         items = items,
         hasPrevious = hasPrevious,
         hasNext = hasNext,

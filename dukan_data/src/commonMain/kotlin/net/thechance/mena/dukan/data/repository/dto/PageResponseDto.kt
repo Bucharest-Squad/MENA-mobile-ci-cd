@@ -5,18 +5,11 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PageResponseDto<T>(
-    @SerialName("content")
     val content: List<T>,
-    @SerialName("pageable")
     val number: Int,
-    @SerialName("size")
     val size: Int,
-    @SerialName("totalPages")
     val totalPages: Int,
-    @SerialName("totalElements")
-    val totalElements: Int,
-    @SerialName("first")
+    val totalElements: Long,
     val first: Boolean,
-    @SerialName("last")
     val last: Boolean
 )

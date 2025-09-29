@@ -1,7 +1,7 @@
 package net.thechance.mena.dukan.domain.repository
 
 import net.thechance.mena.dukan.domain.entity.Product
-import net.thechance.mena.dukan.domain.util.PagedFetchResponse
+import net.thechance.mena.dukan.domain.util.PagedResult
 
 interface ProductRepository {
 
@@ -10,7 +10,7 @@ interface ProductRepository {
         shelfId: String,
         page:Int,
         size:Int
-    ): PagedFetchResponse<Product>
+    ): PagedResult<Product>
     suspend fun uploadProductImages(
         fileName: List<String>,
         fileBytes: List<ByteArray>,

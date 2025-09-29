@@ -1,7 +1,6 @@
 package net.thechance.mena.dukan.data.repository
 
 import io.ktor.client.HttpClient
-import io.ktor.client.call.body
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
@@ -12,7 +11,7 @@ import net.thechance.mena.dukan.data.repository.util.buildMultiPartFormData
 import net.thechance.mena.dukan.data.repository.util.safeApiCall
 import net.thechance.mena.dukan.domain.entity.Product
 import net.thechance.mena.dukan.domain.repository.ProductRepository
-import net.thechance.mena.dukan.domain.util.PagedFetchResponse
+import net.thechance.mena.dukan.domain.util.PagedResult
 
 class DukanProductRepositoryImpl(
     private val client: HttpClient
@@ -31,7 +30,7 @@ class DukanProductRepositoryImpl(
         shelfId: String,
         page: Int,
         size: Int
-    ): PagedFetchResponse<Product> {
+    ): PagedResult<Product> {
         TODO("Not yet implemented")
     }
 
