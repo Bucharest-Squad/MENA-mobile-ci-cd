@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.StringResource
 
 @OptIn(FlowPreview::class)
 abstract class BaseViewModel<UI_STATE, UI_EFFECT>(
@@ -42,7 +43,7 @@ abstract class BaseViewModel<UI_STATE, UI_EFFECT>(
     }
 
     fun showSnackBar(
-        message: String,
+        message: StringResource,
         status: SnackBarState.Status,
         durationMillis: Long = 3000L,
     ) {

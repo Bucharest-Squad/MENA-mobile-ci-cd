@@ -3,8 +3,12 @@ package net.thechance.mena.faith.presentation.feature.quran.surah
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import mena.faith_presentation.generated.resources.Res
+import mena.faith_presentation.generated.resources.copied_ayah_failed
+import mena.faith_presentation.generated.resources.copied_ayah_successfully
 import net.thechance.mena.faith.domain.repository.QuranRepository
 import net.thechance.mena.faith.presentation.base.BaseViewModel
+import net.thechance.mena.faith.presentation.base.SnackBarState
 import net.thechance.mena.faith.presentation.util.ClipboardManager
 
 class SurahViewModel(
@@ -30,9 +34,7 @@ class SurahViewModel(
                     it.copy(ayatOfSurah = ayat)
                 }
             },
-            onFinally = {
-                updateState { it.copy(isLoading = false) }
-            },
+            onFinally = { updateState { it.copy(isLoading = false) } },
             dispatcher = dispatcher
         )
     }
@@ -51,7 +53,7 @@ class SurahViewModel(
         tryToExecute(
             execute = { clipboardManager.copy(ayahContent) },
             onSuccess = { onCopySuccess(ayahContent) },
-            onError = { onCopyFail(ayahContent) },
+            onError = { showErrorSnackBar() },
             dispatcher = dispatcher
         )
     }
@@ -89,6 +91,7 @@ class SurahViewModel(
     }
 
     private fun onCopySuccess(ayahContent: String) {
+        showSuccessSnackBar()
         updateState {
             it.copy(
                 isAyahActionButtonsVisible = false,
@@ -96,17 +99,19 @@ class SurahViewModel(
                 selectedAyah = ayahContent
             )
         }
-        sendEffect(SurahScreenEffect.CopyAyahSuccess)
     }
 
-    private fun onCopyFail(ayahContent: String) {
-        updateState {
-            it.copy(
-                isAyahActionButtonsVisible = false,
-                selectedAyahIndex = null,
-                selectedAyah = ayahContent
-            )
-        }
-        sendEffect(SurahScreenEffect.CopyAyahFail)
+    private fun showSuccessSnackBar() {
+        showSnackBar(
+            message = Res.string.copied_ayah_successfully,
+            status = SnackBarState.Status.Success,
+        )
+    }
+
+    private fun showErrorSnackBar() {
+        showSnackBar(
+            message = Res.string.copied_ayah_failed,
+            status = SnackBarState.Status.Error,
+        )
     }
 }
