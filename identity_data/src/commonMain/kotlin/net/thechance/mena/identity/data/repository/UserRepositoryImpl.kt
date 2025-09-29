@@ -38,7 +38,7 @@ class UserRepositoryImpl(
 
 
     private suspend fun saveUserInfo(user: User) {
-        with(Dispatchers.IO) {
+        withContext(Dispatchers.IO) {
             userDao.upsert(user.toEntity())
         }
     }
