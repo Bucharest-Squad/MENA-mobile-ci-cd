@@ -33,8 +33,7 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
-            implementation(libs.androidx.lifecycle.viewmodelCompose)
-            implementation(libs.androidx.lifecycle.runtimeCompose)
+
         }
         commonMain.dependencies {
             implementation(projects.identityApi)
@@ -49,6 +48,8 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.bundles.koin)
             implementation(libs.bundles.voyager)
+            implementation(libs.androidx.lifecycle.viewmodelCompose)
+            implementation(libs.androidx.lifecycle.runtimeCompose)
         }
         jvmTest.dependencies {
             implementation(libs.kotlin.test)
