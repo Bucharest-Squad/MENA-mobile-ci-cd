@@ -19,5 +19,5 @@ interface UserDao {
     suspend fun count(): Int
 
     @Query("SELECT username FROM User")
-    fun getAllAsFlow(): Flow<List<String>>
+    fun getAllAsFlow(): Flow<List<UserEntity>>
 }
