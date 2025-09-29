@@ -9,7 +9,7 @@ import kotlinx.coroutines.IO
 import net.thechance.mena.identity.data.dataSource.local.database.dao.UserDao
 import net.thechance.mena.identity.data.repository.AuthenticationRepositoryImpl
 import net.thechance.mena.identity.domain.repository.AuthenticationRepository
-import org.example.project.data.database.IdentityDatabase
+import net.thechance.mena.identity.data.dataSource.local.database.IdentityDatabase
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named

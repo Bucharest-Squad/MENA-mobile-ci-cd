@@ -1,4 +1,4 @@
-package org.example.project.data.database
+package net.thechance.mena.identity.data.dataSource.local.database
 
 import androidx.room.ConstructedBy
 import androidx.room.Database
