@@ -12,12 +12,12 @@ import kotlin.uuid.Uuid
 fun TransactionDto.toEntity(): Transaction {
     return Transaction(
         id = Uuid.parse(id),
-        createdAt = LocalDateTime.parse(createdAt),
-        status = TransactionStatus.valueOf(status),
+        createdAt = createdAt?.let{LocalDateTime.parse(createdAt)},
+        status = status?.let{TransactionStatus.valueOf(status)},
         senderName = senderName,
         receiverName = receiverName,
         amount = amount,
-        type = TransactionType.valueOf(type),
+        type = type?.let{TransactionType.valueOf(type)},
     )
 
 }
