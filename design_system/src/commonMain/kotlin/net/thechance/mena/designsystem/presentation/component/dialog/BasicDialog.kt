@@ -3,7 +3,6 @@
 package net.thechance.mena.designsystem.presentation.component.dialog
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -24,11 +23,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -48,6 +43,7 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun ScaffoldScope.BasicDialog(
     onDismiss: () -> Unit,
+    isVisible: Boolean,
     modifier: Modifier = Modifier,
     hasDismissButton: Boolean = true,
     dismissOnBackPress: Boolean = true,
@@ -61,31 +57,9 @@ fun ScaffoldScope.BasicDialog(
     actionButtons: @Composable ColumnScope.() -> Unit = {},
     content: @Composable BoxScope.() -> Unit
 ) {
-    val visibleState = remember {
-        MutableTransitionState(false).apply {
-            targetState = true
-        }
-    }
-
-    var isCanceled by remember { mutableStateOf(false) }
-    var isDismissed by remember { mutableStateOf(false) }
-
-    LaunchedEffect(visibleState.isIdle) {
-        if (!visibleState.targetState && visibleState.isIdle) {
-            if (isDismissed) {
-                isDismissed = false
-                onDismiss()
-            }
-
-            if (isCanceled) {
-                isCanceled = false
-                onCancelClick()
-            }
-        }
-    }
 
     AnimatedVisibility(
-        visibleState = visibleState,
+        visible = isVisible,
         enter = fadeIn(tween()),
         exit = fadeOut(tween())
     ) {
@@ -97,10 +71,7 @@ fun ScaffoldScope.BasicDialog(
                 modifier = Modifier
                     .clickable(
                         enabled = dismissOnClickOutside,
-                        onClick = {
-                            visibleState.targetState = false
-                            isDismissed = true
-                        },
+                        onClick = onDismiss,
                     )
                     .fillMaxSize()
                     .background(scrimColor)
@@ -117,10 +88,7 @@ fun ScaffoldScope.BasicDialog(
                 dialogCornerShape = dialogCornerShape,
                 contentPadding = contentPadding,
                 content = content,
-                onCancelClick = {
-                    visibleState.targetState = false
-                    isCanceled = true
-                },
+                onCancelClick = onCancelClick,
                 actionButtons = actionButtons,
                 modifier = modifier
                     .animateEnterExit(
@@ -134,10 +102,7 @@ fun ScaffoldScope.BasicDialog(
             if (dismissOnBackPress) {
                 BackHandler(
                     enabled = true,
-                    onBack = {
-                        visibleState.targetState = false
-                        isDismissed = true
-                    }
+                    onBack = onDismiss
                 )
             }
         }

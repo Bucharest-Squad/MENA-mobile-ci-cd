@@ -34,6 +34,7 @@ fun ScaffoldScope.Dialog(
     message: String,
     buttonText: String,
     modifier: Modifier = Modifier,
+    isVisible: Boolean = true,
     hasDismissButton: Boolean = true,
     dismissOnBackPress: Boolean = true,
     dismissOnClickOutside: Boolean = true,
@@ -48,6 +49,7 @@ fun ScaffoldScope.Dialog(
 ) {
 
     BasicDialog(
+        isVisible = isVisible,
         onDismiss = onDismiss,
         hasDismissButton = hasDismissButton,
         dismissOnBackPress = dismissOnBackPress,
@@ -101,6 +103,7 @@ fun ScaffoldScope.Dialog(
 fun ScaffoldScope.Dialog(
     title: String,
     message: String,
+    isVisible: Boolean,
     onDismiss: () -> Unit,
     actionButtons: @Composable ColumnScope.() -> Unit,
     modifier: Modifier = Modifier,
@@ -116,6 +119,7 @@ fun ScaffoldScope.Dialog(
 ) {
     BasicDialog(
         onDismiss = onDismiss,
+        isVisible = isVisible,
         hasDismissButton = hasDismissButton,
         dismissOnBackPress = dismissOnBackPress,
         dismissOnClickOutside = dismissOnClickOutside,
@@ -162,6 +166,7 @@ private fun DialoguePreview() {
                     isVisible = showDialog
                 ) {
                     Dialog(
+                        isVisible = showDialog,
                         onDismiss = { showDialog = false },
                         title = "Preview Title",
                         message = "This is a preview message.",
