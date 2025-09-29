@@ -24,7 +24,7 @@ class ProfileRepositoryImplTest {
 
     private val userRemoteDataSource = mockk<UserRemoteDataSource>()
     private val userLocalDataSource = mockk<UserLocalDataSource>(relaxed = true)
-    private val profileRepositoryImpl = ProfileRepositoryImpl(
+    private val userRepositoryImpl = UserRepositoryImpl(
         userRemoteDataSource, userLocalDataSource
     )
 
@@ -33,7 +33,7 @@ class ProfileRepositoryImplTest {
 
         coEvery { userLocalDataSource.getUserInfo() } returns fakeUserInfo
 
-        val actual = profileRepositoryImpl.getUserInfoFromLocal()
+        val actual = userRepositoryImpl.getUserInfoFromLocal()
 
         assertEquals( fakeUserInfo, actual)
     }
@@ -43,7 +43,7 @@ class ProfileRepositoryImplTest {
 
         coEvery { userRemoteDataSource.getUserInfo() } returns fakeProfileResponse
 
-        val actual = profileRepositoryImpl.fetchUserInfo()
+        val actual = userRepositoryImpl.fetchUserInfo()
 
         assertEquals(actual,fakeProfileResponse.toDomain())
     }
@@ -59,7 +59,7 @@ class ProfileRepositoryImplTest {
         coEvery { userRemoteDataSource.getUserInfo() } throws clientException
 
         assertFailure {
-            profileRepositoryImpl.fetchUserInfo()
+            userRepositoryImpl.fetchUserInfo()
         }.isInstanceOf<UnAuthorizedException>()
     }
 
@@ -74,7 +74,7 @@ class ProfileRepositoryImplTest {
         coEvery { userRemoteDataSource.getUserInfo() } throws clientException
 
         assertFailure {
-            profileRepositoryImpl.fetchUserInfo()
+            userRepositoryImpl.fetchUserInfo()
         }.isInstanceOf<InvalidCredentialsException>()
 
     }
@@ -91,7 +91,7 @@ class ProfileRepositoryImplTest {
         coEvery { userRemoteDataSource.getUserInfo() } throws clientException
 
         assertFailure {
-            profileRepositoryImpl.fetchUserInfo()
+            userRepositoryImpl.fetchUserInfo()
         }.isInstanceOf<UnknownException>()
     }
 
@@ -100,7 +100,7 @@ class ProfileRepositoryImplTest {
 
         coEvery { userRemoteDataSource.getUserInfo() } returns fakeProfileResponse
 
-        profileRepositoryImpl.fetchUserInfo()
+        userRepositoryImpl.fetchUserInfo()
 
         coVerify {
             userLocalDataSource.saveUserInfo(

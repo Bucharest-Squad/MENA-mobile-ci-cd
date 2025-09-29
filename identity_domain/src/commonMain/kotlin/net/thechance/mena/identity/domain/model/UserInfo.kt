@@ -1,7 +1,7 @@
 package net.thechance.mena.identity.domain.model
 
 
-data class UserInfo(
+data class User(
 
     val firstName:String,
     val lastName:String,

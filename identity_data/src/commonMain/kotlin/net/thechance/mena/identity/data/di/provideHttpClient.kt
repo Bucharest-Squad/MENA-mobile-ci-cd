@@ -1,5 +1,6 @@
-package net.thechance.mena.identity.data.utils
+package net.thechance.mena.identity.data.di
 
+import com.russhwolf.settings.Settings
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.api.createClientPlugin

@@ -12,12 +12,6 @@ interface UserDao {
     @Upsert
     suspend fun upsert(item: UserEntity)
 
-    @Delete
-    suspend fun delete(item: UserEntity)
-
-    @Query("SELECT count(*) FROM User")
-    suspend fun count(): Int
-
     @Query("SELECT * FROM User")
-    fun getAllAsFlow(): Flow<List<UserEntity>>
+    fun getUser(): Flow<UserEntity>
 }
