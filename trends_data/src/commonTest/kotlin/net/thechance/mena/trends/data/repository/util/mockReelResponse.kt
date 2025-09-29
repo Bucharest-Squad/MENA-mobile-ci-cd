@@ -46,7 +46,6 @@ internal fun MockRequestHandleScope.getReelsResponse(
 )
 
 internal fun MockRequestHandleScope.deleteReelResponse(
-    id: String,
     status: HttpStatusCode = HttpStatusCode.OK
 ) = respond(
     content = "",
@@ -58,6 +57,14 @@ internal fun MockRequestHandleScope.updateReelResponse(
     id: String,
     description: String,
     categoryIds: List<String>,
+    status: HttpStatusCode = HttpStatusCode.OK
+) = respond(
+    content = "",
+    status = status,
+    headers = jsonHeaders
+)
+
+internal fun MockRequestHandleScope.uploadReelResponse(
     status: HttpStatusCode = HttpStatusCode.OK
 ) = respond(
     content = "",
