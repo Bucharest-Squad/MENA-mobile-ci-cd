@@ -1,7 +1,7 @@
 package net.thechance.mena.dukan.presentation.pagination.base
 
 import kotlinx.coroutines.test.runTest
-import net.thechance.mena.dukan.presentation.util.pagination.PagedFetchResponse
+import net.thechance.mena.dukan.domain.util.PagedFetchResponse
 import net.thechance.mena.dukan.presentation.util.pagination.PagingSource
 import net.thechance.mena.dukan.presentation.util.pagination.base.BasePagingSource
 import kotlin.test.Test

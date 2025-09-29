@@ -1,5 +1,4 @@
-package net.thechance.mena.dukan.presentation.util.pagination
-
+package net.thechance.mena.dukan.domain.util
 
 data class PagedFetchResponse<T>(
     val items: List<T>,

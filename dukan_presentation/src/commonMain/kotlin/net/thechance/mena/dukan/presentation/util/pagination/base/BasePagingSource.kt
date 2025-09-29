@@ -1,6 +1,6 @@
 package net.thechance.mena.dukan.presentation.util.pagination.base
 
-import net.thechance.mena.dukan.presentation.util.pagination.PagedFetchResponse
+import net.thechance.mena.dukan.domain.util.PagedFetchResponse
 import net.thechance.mena.dukan.presentation.util.pagination.Pager
 import net.thechance.mena.dukan.presentation.util.pagination.PagingConfig
 import net.thechance.mena.dukan.presentation.util.pagination.PagingSource
