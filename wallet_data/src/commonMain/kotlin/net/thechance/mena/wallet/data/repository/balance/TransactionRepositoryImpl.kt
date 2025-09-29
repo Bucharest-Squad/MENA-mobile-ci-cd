@@ -11,10 +11,10 @@ import net.thechance.mena.wallet.domain.repository.TransactionRepository
 class TransactionRepositoryImpl(
     private val networkClient: NetworkClient
 ) : TransactionRepository {
-    override suspend fun getTransactionHistory(transactionFilterParams: TransactionFilterParams?): List<Transaction>? {
-        return safeApiCall<List<TransactionDto>?> {
+    override suspend fun getTransactionHistory(transactionFilterParams: TransactionFilterParams?): List<Transaction>{
+        return safeApiCall<List<TransactionDto>> {
             networkClient.get("$TRANSACTION_PATH?${transactionFilterParams?.toQueryParams()}")
-        }?.map { it.toEntity() }
+        }.map { it.toEntity() }
     }
 
     private companion object {
