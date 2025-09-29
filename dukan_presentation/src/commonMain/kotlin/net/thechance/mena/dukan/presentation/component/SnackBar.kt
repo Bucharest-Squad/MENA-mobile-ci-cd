@@ -1,4 +1,4 @@
-package net.thechance.mena.dukan.presentation.screen.createDukan.content.component
+package net.thechance.mena.dukan.presentation.component
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -18,13 +18,13 @@ import mena.dukan_presentation.generated.resources.ic_success
 import mena.dukan_presentation.generated.resources.success
 import net.thechance.mena.designsystem.presentation.component.snackbar.SnackBar
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun SnackBar(
     snackBarUiState: SnackBarUiState,
-    isVisible: Boolean,
     onDismiss: () -> Unit,
     autoDismissMillis: Long = 3000L,
     modifier: Modifier = Modifier.padding(
@@ -33,16 +33,15 @@ fun SnackBar(
         top = Theme.spacing._12
     )
 ) {
+    val messageText = stringResource(snackBarUiState.message)
 
-    LaunchedEffect(isVisible) {
-        if (isVisible) {
-            delay(autoDismissMillis)
-            onDismiss()
-        }
+    LaunchedEffect(Unit) {
+        delay(autoDismissMillis)
+        onDismiss()
     }
 
     AnimatedVisibility(
-        visible = isVisible,
+        visible = true,
         enter = slideInVertically(
             initialOffsetY = { -it },
             animationSpec = tween(400)
@@ -56,7 +55,7 @@ fun SnackBar(
             SnackBarType.SUCCESS -> {
                 SnackBar(
                     title = stringResource(Res.string.success),
-                    message = snackBarUiState.message,
+                    message = messageText,
                     leadingIcon = painterResource(Res.drawable.ic_success),
                     contentDescription = stringResource(Res.string.success),
                     tint = Theme.colorScheme.success,
@@ -67,7 +66,7 @@ fun SnackBar(
             SnackBarType.ERROR -> {
                 SnackBar(
                     title = stringResource(Res.string.error),
-                    message = snackBarUiState.message,
+                    message = messageText,
                     leadingIcon = painterResource(Res.drawable.ic_error),
                     contentDescription = stringResource(Res.string.error),
                     tint = Theme.colorScheme.error,
@@ -78,7 +77,7 @@ fun SnackBar(
     }
 }
 
-data class SnackBarUiState(val snackBarType: SnackBarType, val message: String)
+data class SnackBarUiState(val snackBarType: SnackBarType, val message: StringResource)
 
 enum class SnackBarType {
     SUCCESS,

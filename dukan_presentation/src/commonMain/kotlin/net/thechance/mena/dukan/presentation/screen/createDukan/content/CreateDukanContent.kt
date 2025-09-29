@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -16,16 +15,14 @@ import mena.dukan_presentation.generated.resources.back_arrow
 import mena.dukan_presentation.generated.resources.create
 import mena.dukan_presentation.generated.resources.create_new_dukan
 import mena.dukan_presentation.generated.resources.dukan_image
-import mena.dukan_presentation.generated.resources.dukan_name_is_already_exist
 import mena.dukan_presentation.generated.resources.ic_arrow_left
 import mena.dukan_presentation.generated.resources.next
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
+import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.dukan.presentation.screen.createDukan.content.component.SnackBar
-import net.thechance.mena.dukan.presentation.screen.createDukan.content.component.SnackBarType
-import net.thechance.mena.dukan.presentation.screen.createDukan.content.component.SnackBarUiState
+import net.thechance.mena.dukan.presentation.component.SnackBar
 import net.thechance.mena.dukan.presentation.util.OnSystemBackPressed
 import net.thechance.mena.dukan.presentation.viewModel.createDukan.CreateDukanInteractionListener
 import net.thechance.mena.dukan.presentation.viewModel.createDukan.CreateDukanUiState
@@ -121,14 +118,12 @@ fun CreateDukanContent(
         }
     }
 
-    SnackBar(
-        snackBarUiState = SnackBarUiState(
-            snackBarType = SnackBarType.ERROR,
-            message = stringResource(Res.string.dukan_name_is_already_exist)
-        ),
-        isVisible = state.showSnackBar,
-        onDismiss = listener::onDismissSnackBar
-    )
+    state.snackBarState?.let { snackBarState ->
+        SnackBar(
+            snackBarUiState = snackBarState,
+            onDismiss = listener::onDismissSnackBar
+        )
+    }
 }
 
 @Composable
