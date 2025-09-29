@@ -27,10 +27,7 @@ class SurahViewModel(
             onStart = { updateState { it.copy(isLoading = true) } },
             onSuccess = { ayat ->
                 updateState {
-                    it.copy(
-                        ayatOfSurah = ayat,
-                        surahOrder = surahId
-                    )
+                    it.copy(ayatOfSurah = ayat)
                 }
             },
             onFinally = {
