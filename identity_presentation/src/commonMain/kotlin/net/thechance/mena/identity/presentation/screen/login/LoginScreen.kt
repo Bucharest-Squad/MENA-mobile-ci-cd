@@ -176,7 +176,6 @@ class LoginScreen : BaseScreen<
                             .padding(top = 12.dp)
                             .padding(horizontal = 16.dp)
                     )
-
                 }
 
                 LaunchedEffect(state.errorMessage) {
@@ -197,7 +196,7 @@ class LoginScreen : BaseScreen<
         when (effect) {
             is LoginScreenUIEffect.NavigateToRegister -> navigator.push(RegisterScreen())
             LoginScreenUIEffect.NavigateToForgotPassword -> navigator.push(ForgetPasswordScreen())
-            LoginScreenUIEffect.NavigateToHome -> navigator.push(ForgetPasswordScreen())
+            LoginScreenUIEffect.NavigateToHome -> TODO()
         }
     }
 }

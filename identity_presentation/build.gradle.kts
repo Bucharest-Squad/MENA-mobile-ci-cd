@@ -36,10 +36,11 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
         }
         commonMain.dependencies {
-            implementation(libs.squircle.shape)
+            implementation(projects.identityApi)
             implementation(projects.identityDomain)
             implementation(projects.designSystem)
 
+            implementation(libs.squircle.shape)
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)

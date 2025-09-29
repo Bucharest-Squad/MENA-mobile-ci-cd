@@ -16,6 +16,7 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
+    iosX64()
     iosArm64()
     iosSimulatorArm64()
 
@@ -26,13 +27,17 @@ kotlin {
 
         }
         commonMain.dependencies {
+            // project
             implementation(projects.walletDomain)
+            implementation(projects.identityDomain)
+
             //ktor
             implementation(libs.bundles.ktor)
 
             //Koin
             implementation(libs.koin.core)
             api(libs.koin.annotations)
+
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

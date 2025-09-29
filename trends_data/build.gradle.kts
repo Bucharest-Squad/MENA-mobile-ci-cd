@@ -18,6 +18,7 @@ kotlin {
         }
     }
     jvm()
+    iosX64()
     iosArm64()
     iosSimulatorArm64()
 
@@ -74,7 +75,19 @@ android {
 kover.reports {
     verify {
         rule {
-            minBound(0)
+            minBound(80)
+        }
+    }
+
+    filters {
+        excludes {
+            packages("mena.trends_data.generated.resources*")
+            classes(
+                "**.di.**",
+                "**.dto.**",
+                "**.util.**",
+                "**org.koin.ksp.generated**",
+            )
         }
     }
 }
