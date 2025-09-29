@@ -22,7 +22,7 @@ abstract class BaseScreen<VM, S, E, I> : Screen
         where  VM : BaseScreenModel<S, E>, I : BaseInteractionListener, VM : I {
     @Composable
     fun InitScreen(viewModel: VM) {
-        val state: S by viewModel.state.collectAsState()
+        val state: S by viewModel.state.collectAsStateWithLifecycle()
         val navigator = LocalNavigator.currentOrThrow
 
         OnRender(state, viewModel)
