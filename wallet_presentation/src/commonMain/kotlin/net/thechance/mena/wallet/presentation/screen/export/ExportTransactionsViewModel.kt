@@ -360,6 +360,4 @@ class ExportTransactionsViewModel(
             ?.atStartOfDayIn(TimeZone.currentSystemDefault())
             ?.toLocalDateTime(TimeZone.currentSystemDefault())
     }
-
-
 }
