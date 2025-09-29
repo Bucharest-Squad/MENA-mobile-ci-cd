@@ -55,7 +55,6 @@ fun Scaffold(
     }
 
     scope.items.forEach {
-        if (it.isVisible)
             it.content(scope)
     }
 }
