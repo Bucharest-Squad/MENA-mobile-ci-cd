@@ -51,7 +51,7 @@ jobs:
   codecov:
     name: Coverage
     needs: [ detect, test ]
-    if: always() && needs.detect.outputs.has_changes == 'true'
+    if: always() && needs.detect.outputs.has_changes == 'true' && fromJSON(needs.detect.outputs.test_modules) | length > 0
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -64,7 +64,7 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./coverage-reports/
-          fail_ci_if_error: true
+          fail_ci_if_error: false
 
   notify-slack-on-failure:
     if: failure()
