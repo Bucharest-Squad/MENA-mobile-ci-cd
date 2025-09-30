@@ -1,12 +1,14 @@
 package net.thechance.mena.identity.data.repository
 
 import io.ktor.client.HttpClient
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
 import net.thechance.mena.identity.data.dataSource.local.database.dao.UserDao
 import net.thechance.mena.identity.data.dto.profile.ProfileResponseDto
@@ -24,12 +26,18 @@ class UserRepositoryImpl(
 ) : UserRepository {
 
 
+    val handler = CoroutineExceptionHandler { _, throwable ->
+        println("Exception was caught: ${throwable.message}")
+    }
+
     override suspend fun getUser(): Flow<User> {
-        withContext(Dispatchers.IO) {
-            launch {
-                safeWrapper {
-                    val userInfo: ProfileResponseDto = client.getJson(path = PROFILE)
-                    saveUserInfo(userInfo.toDomain())
+        withContext(Dispatchers.IO ) {
+            supervisorScope {
+                launch(handler) {
+                    safeWrapper {
+                        val userInfo: ProfileResponseDto = client.getJson(path = PROFILE)
+                        saveUserInfo(userInfo.toDomain())
+                    }
                 }
             }
         }
@@ -37,7 +45,7 @@ class UserRepositoryImpl(
     }
 
 
-    private suspend fun saveUserInfo(user: User) {
+     private suspend fun saveUserInfo(user: User) {
         withContext(Dispatchers.IO) {
             userDao.upsert(user.toEntity())
         }
