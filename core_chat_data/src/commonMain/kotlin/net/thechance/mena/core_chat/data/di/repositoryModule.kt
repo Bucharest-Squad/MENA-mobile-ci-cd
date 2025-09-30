@@ -14,6 +14,6 @@ import kotlin.uuid.ExperimentalUuidApi
 @OptIn(ExperimentalUuidApi::class)
 internal val repositoryModule = module {
     single<ContactsRepository> { ContactsRepositoryImpl(get(named("chatClient")), get(), get(), get()) }
-    singleOf(::FakeChatRepository) bind ChatRepository::class
-    singleOf(::ChatRepositoryImpl) bind ChatRepository::class
+    single<ChatRepository>{ FakeChatRepository(get(named("chatClient")), get(), get(named("baseUrl")), get()) }
+    //singleOf(::ChatRepositoryImpl) bind ChatRepository::class
 }

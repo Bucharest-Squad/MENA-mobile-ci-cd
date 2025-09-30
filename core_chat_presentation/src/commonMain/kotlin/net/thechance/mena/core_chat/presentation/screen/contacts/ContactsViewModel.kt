@@ -94,8 +94,8 @@ class ContactsViewModel(
         )
     }
 
-    private fun onContactClickSuccess(chat: Chat) {
-        navigate(ChatDetailsRoute(chatId = chat.id.toString()))
+    private fun onContactClickSuccess(chat: Chat?) {
+        navigate(ChatDetailsRoute(chatId = chat?.id.toString()))
     }
 
     private fun onContactClickError(throwable: Throwable) { // uncovered
