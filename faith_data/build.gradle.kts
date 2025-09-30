@@ -29,6 +29,7 @@ kotlin {
             implementation(libs.androidx.room.runtime)
             implementation(libs.androidx.sqlite.bundled)
             implementation(libs.kotlinx.serialization.json)
+            implementation(projects.identityDomain)
             implementation(libs.bundles.ktor)
             api(libs.koin.core)
             implementation(libs.kotlinx.datetime)
