@@ -21,6 +21,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import app.cash.paging.compose.LazyPagingItems
+import app.cash.paging.compose.collectAsLazyPagingItems
+import kotlinx.coroutines.flow.MutableStateFlow
 import mena.faith_presentation.generated.resources.Res
 import mena.faith_presentation.generated.resources.bookmarks
 import mena.faith_presentation.generated.resources.empty_state_bookmark_description
@@ -36,6 +39,8 @@ import net.thechance.mena.faith.presentation.component.FaithScaffold
 import net.thechance.mena.faith.presentation.component.FaithSnackBar
 import net.thechance.mena.faith.presentation.component.SwappableCard
 import net.thechance.mena.faith.presentation.designSystem.theme.QuranTheme
+import net.thechance.mena.faith.presentation.extensions.paging.isEmpty
+import net.thechance.mena.faith.presentation.extensions.paging.isNotEmpty
 import net.thechance.mena.faith.presentation.feature.quran.bookmark.component.AyaBookmarkCard
 import net.thechance.mena.faith.presentation.feature.quran.bookmark.component.EmptyBookmarkState
 import org.jetbrains.compose.resources.painterResource
@@ -71,6 +76,10 @@ private fun Content(
     listener: BookmarkInteractionListener,
     snackBarState: SnackBarState
 ) {
+    val bookmarks = uiState.bookmarks.collectAsLazyPagingItems()
+    val deletedIds by (uiState.deletedBookmarkIds
+        ?: MutableStateFlow(emptySet())).collectAsStateWithLifecycle()
+
     QuranTheme {
         FaithScaffold(
             modifier = Modifier.statusBarsPadding().systemBarsPadding(),
@@ -99,7 +108,7 @@ private fun Content(
                     .padding(horizontal = Theme.spacing._16)
             ) {
                 AnimatedVisibility(
-                    visible = uiState.bookmarks.isEmpty() && uiState.isLoading.not(),
+                    visible = bookmarks.isEmpty() && uiState.isLoading.not(),
                     enter = fadeIn(tween()),
                     exit = fadeOut(tween())
                 ) {
@@ -107,12 +116,13 @@ private fun Content(
                 }
 
                 AnimatedVisibility(
-                    visible = uiState.bookmarks.isNotEmpty(),
+                    visible = bookmarks.isNotEmpty(),
                     enter = fadeIn(tween()),
                     exit = fadeOut(tween())
                 ) {
                     BookmarkItems(
-                        uiState = uiState,
+                        bookmarks = bookmarks,
+                        deletedIds = deletedIds,
                         onRemoveBookmarkClick = listener::onDeleteBookmarkClick,
                     )
                 }
@@ -139,15 +149,19 @@ private fun EmptyBookmarkState() {
 
 @Composable
 private fun BookmarkItems(
-    uiState: BookmarksScreenState,
+    bookmarks: LazyPagingItems<BookmarksScreenState.BookmarkCardUiState>,
+    deletedIds: Set<Int>,
     onRemoveBookmarkClick: (Int) -> Unit,
 ) {
+    val filteredBookmarks =
+        bookmarks.itemSnapshotList.items.filterNot { it.bookmarkId in deletedIds }
+
     LazyColumn(
         contentPadding = PaddingValues(bottom = Theme.spacing._16),
         verticalArrangement = Arrangement.spacedBy(Theme.spacing._8),
     ) {
         items(
-            items = uiState.bookmarks,
+            items = filteredBookmarks,
             key = { it.bookmarkId }
         ) { bookmark ->
             SwappableCard(
