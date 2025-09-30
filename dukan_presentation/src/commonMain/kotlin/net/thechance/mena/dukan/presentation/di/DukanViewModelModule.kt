@@ -4,6 +4,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import net.thechance.mena.dukan.presentation.viewModel.createDukan.CreateDukanViewModel
+import net.thechance.mena.dukan.presentation.viewModel.createProduct.CreateProductViewModel
 import net.thechance.mena.dukan.presentation.viewModel.cropImage.ImageCropViewModel
 import net.thechance.mena.dukan.presentation.viewModel.mainScreen.MainViewModel
 import org.koin.core.module.dsl.viewModelOf
@@ -14,4 +15,5 @@ internal val dukanViewModelModule = module {
     viewModelOf(::CreateDukanViewModel)
     viewModelOf(::ImageCropViewModel)
     viewModelOf(::MainViewModel)
+    viewModelOf(::CreateProductViewModel)
 }
