@@ -11,7 +11,6 @@ import net.thechance.mena.wallet.domain.repository.TransactionRepository
 import org.koin.core.annotation.Single
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
-import org.koin.core.annotation.Single
 
 @OptIn(ExperimentalUuidApi::class)
 @Single
