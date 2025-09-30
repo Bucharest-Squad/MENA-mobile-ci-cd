@@ -2,31 +2,48 @@ package net.thechance.mena.identity.presentation.screen.profile
 
 import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.coroutines.CoroutineScope
+import net.thechance.mena.identity.domain.model.User
+import net.thechance.mena.identity.domain.repository.UserRepository
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
 import net.thechance.mena.identity.presentation.base.ErrorState
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
 
-class ProfileScreenViewModel() :
-    BaseScreenModel<ProfileScreenUIState, ProfileScreenUIEffect>(ProfileScreenUIState()),
+class ProfileScreenViewModel(
+    private val userRepository: UserRepository
+) :
+    BaseScreenModel<ProfileScreenUIState, ProfileScreenUIEffect>
+        (ProfileScreenUIState()),
     ProfileScreenInteractionListener {
     override val viewModelScope: CoroutineScope get() = screenModelScope
 
     init {
-        updateState {
-            copy(
-                fullName = "Mohammed Ahmed Mansour",
-                userName = "@Mohammed_2025",
-                profilePicture = "https://i.pinimg.com/736x/b4/d6/e5/b4d6e50449fff312606a05bce43cc4c3.jpg",
-                isSuccess = true,
-            )
-        }
+        getUserInfo()
     }
 
-    private fun onErrorAccrue(errorState: ErrorState) {
+    private fun onErrorOccurred(errorState: ErrorState) {
         updateState {
             copy(
                 isLoading = false,
                 errorMessage = mapErrorToMessage(errorState)
+            )
+        }
+    }
+
+    private fun getUserInfo() {
+        tryToCollect(
+            function = { userRepository.getUser() },
+            onNewValue = ::updateUserInfo,
+            onError = ::onErrorOccurred,
+        )
+    }
+
+    private fun updateUserInfo(user: User) {
+        updateState {
+            copy(
+                userName = user.username,
+                fullName = user.firstName + "" + user.lastName,
+                profileImageUrl = user.profileImageUrl,
+                isSuccess = true
             )
         }
     }
@@ -70,7 +87,7 @@ class ProfileScreenViewModel() :
     override fun onDismissThemeDialog() =
         updateState { copy(showThemeDialog = false) }
 
-    fun clearErrorMessage() {
+    override fun clearErrorMessage() {
         updateState { copy(errorMessage = null) }
     }
 }

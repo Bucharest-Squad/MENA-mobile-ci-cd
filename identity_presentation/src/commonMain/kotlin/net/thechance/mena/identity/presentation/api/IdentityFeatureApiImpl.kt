@@ -10,16 +10,12 @@ import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.identity.api.IdentityFeatureApi
 import net.thechance.mena.identity.presentation.screen.login.LoginScreen
+import net.thechance.mena.identity.presentation.screen.profile.ProfileScreen
 
 class IdentityFeatureApiImpl : IdentityFeatureApi {
     @Composable
     override fun ProfileTabEntry() {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center,
-        ) {
-            Text(text = "ProfileScreen", Theme.typography.body.medium)
-        }
+        Navigator(ProfileScreen())
     }
 
     @Composable

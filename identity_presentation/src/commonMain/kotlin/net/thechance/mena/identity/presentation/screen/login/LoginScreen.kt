@@ -196,7 +196,7 @@ class LoginScreen : BaseScreen<
         when (effect) {
             is LoginScreenUIEffect.NavigateToRegister -> navigator.push(RegisterScreen())
             LoginScreenUIEffect.NavigateToForgotPassword -> navigator.push(ForgetPasswordScreen())
-            LoginScreenUIEffect.NavigateToHome -> TODO()
+            LoginScreenUIEffect.NavigateToHome -> navigator.push(ForgetPasswordScreen())
         }
     }
 }

@@ -16,14 +16,15 @@ import mena.identity_presentation.generated.resources.profile_privacy_and_policy
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.identity.presentation.screen.profile.ProfileScreenInteractionListener
-import net.thechance.mena.identity.presentation.screen.profile.ProfileScreenViewModel
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun OtherSettingsSection(listener: ProfileScreenInteractionListener) {
+fun OtherSettingsSection(
+    onPrivacyAndPolicyClicked : ()->Unit,
+    onContactUsClicked : ()->Unit,
+) {
     Column(
         modifier = Modifier.padding(top = 24.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -37,12 +38,12 @@ fun OtherSettingsSection(listener: ProfileScreenInteractionListener) {
         SettingItem(
             title = stringResource(Res.string.profile_privacy_and_policy),
             leadingIcon = painterResource(Res.drawable.ic_privacy_and_policies),
-            onClick = listener::onPrivacyAndPolicyClicked,
+            onClick =onPrivacyAndPolicyClicked,
         )
         SettingItem(
             title = stringResource(Res.string.profile_contact_us),
             leadingIcon = painterResource(Res.drawable.ic_contact_us),
-            onClick = listener::onContactUsClicked,
+            onClick = onContactUsClicked,
         )
     }
 }
@@ -51,7 +52,10 @@ fun OtherSettingsSection(listener: ProfileScreenInteractionListener) {
 @Composable
 fun PreviewOtherSettingsSection() {
     MenaTheme {
-        val fakeListener = ProfileScreenViewModel()
-        OtherSettingsSection(listener = fakeListener)
+
+        OtherSettingsSection(
+            {}
+,{}
+        )
     }
 }

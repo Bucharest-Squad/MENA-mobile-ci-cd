@@ -16,10 +16,12 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.Navigator
+import kotlinx.coroutines.delay
 import mena.identity_presentation.generated.resources.Res
 import mena.identity_presentation.generated.resources.error
 import mena.identity_presentation.generated.resources.ic_close_circle
@@ -126,15 +128,28 @@ class ProfileScreen : BaseScreen<
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .align(Alignment.CenterHorizontally),
-                            profilePicture = state.profilePicture,
+                            profilePicture = state.profileImageUrl,
                             fullName = state.fullName,
                             userName = state.userName,
                         )
                     }
-                    InviteFriendsCard(onCLick = listener::onInviteFriendsClicked)
-                    AccountSettingsSection(listener)
-                    AppSettingsSection(listener)
-                    OtherSettingsSection(listener)
+                    InviteFriendsCard(
+                        onCLick = listener::onInviteFriendsClicked
+                    )
+                    AccountSettingsSection(
+                        onEditProfileInfoClicked = listener::onEditProfileInfoClicked,
+                        onChangePasswordClicked = listener::onChangePasswordClicked,
+                        onAddressesClicked = listener::onAddressesClicked,
+                        onPrivacySettingsClicked = listener::onPrivacySettingsClicked
+                    )
+                    AppSettingsSection(
+                        onLanguageClicked = listener::onLanguageClicked,
+                        onThemeClicked = listener::onThemeClicked
+                    )
+                    OtherSettingsSection(
+                        onPrivacyAndPolicyClicked =listener::onPrivacyAndPolicyClicked,
+                        onContactUsClicked = listener::onContactUsClicked
+                    )
                     Text(
                         modifier = Modifier
                             .padding(vertical = 16.dp)
@@ -148,7 +163,7 @@ class ProfileScreen : BaseScreen<
                     visible = state.errorMessage?.isNotEmpty() ?: false,
                     enter = slideInHorizontally(initialOffsetX = { it }),
                     exit = slideOutHorizontally(targetOffsetX = { it }),
-                    modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter)
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     SnackBar(
                         title = stringResource(Res.string.error),
@@ -157,6 +172,10 @@ class ProfileScreen : BaseScreen<
                         modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
                             .padding(horizontal = 16.dp)
                     )
+                }
+                LaunchedEffect(state.errorMessage) {
+                    delay(3000)
+                    listener.clearErrorMessage()
                 }
             }
         }

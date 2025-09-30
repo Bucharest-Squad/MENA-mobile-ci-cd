@@ -18,6 +18,7 @@ import mena.identity_presentation.generated.resources.profile_theme_light
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import net.thechance.mena.identity.domain.repository.UserRepository
 import net.thechance.mena.identity.presentation.screen.profile.ProfileScreenInteractionListener
 import net.thechance.mena.identity.presentation.screen.profile.ProfileScreenViewModel
 import org.jetbrains.compose.resources.painterResource
@@ -25,7 +26,10 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun AppSettingsSection(listener: ProfileScreenInteractionListener) {
+fun AppSettingsSection(
+    onLanguageClicked:()->Unit,
+    onThemeClicked:()->Unit,
+) {
     Column(
         modifier = Modifier.padding(top = 24.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -39,13 +43,13 @@ fun AppSettingsSection(listener: ProfileScreenInteractionListener) {
         SettingItem(
             title = stringResource(Res.string.profile_language),
             leadingIcon = painterResource(Res.drawable.ic_language),
-            onClick = listener::onLanguageClicked,
+            onClick = onLanguageClicked,
             trailingText = stringResource(Res.string.profile_language_english)
         )
         SettingItem(
             title = stringResource(Res.string.profile_theme),
             leadingIcon = painterResource(Res.drawable.ic_theme),
-            onClick = listener::onThemeClicked,
+            onClick = onThemeClicked,
             trailingText = stringResource(Res.string.profile_theme_light)
         )
     }
@@ -55,7 +59,9 @@ fun AppSettingsSection(listener: ProfileScreenInteractionListener) {
 @Composable
 fun PreviewAppSettingsSection() {
     MenaTheme {
-        val fakeListener = ProfileScreenViewModel()
-        AppSettingsSection(listener = fakeListener)
+
+        AppSettingsSection(
+            {},{}
+        )
     }
 }
