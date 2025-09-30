@@ -11,3 +11,9 @@ data class MessageDto(
     val sendAt: String,
     val isRead: Boolean
 )
+
+@Serializable
+data class SendMessageDto(
+    val chatId: String,
+    val text: String,
+)

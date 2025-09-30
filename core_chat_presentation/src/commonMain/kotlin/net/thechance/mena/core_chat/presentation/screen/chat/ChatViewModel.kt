@@ -48,13 +48,11 @@ class ChatViewModel(
 
     override fun onSendMessageClicked() {
         val chatId = state.value.chat.id
-        val senderId = state.value.userId
         val text = state.value.inputMessage.trim()
         if (text.isEmpty()) return
 
         val now = LocalDateTime.now()
         val uiMessage = TextMessageUiState(
-            senderId = senderId,
             chatId = chatId,
             sendTime = now,
             status = MessageStatusUiState.SENDING,

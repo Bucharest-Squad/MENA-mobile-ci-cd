@@ -33,3 +33,4 @@ fun LocalDate.minusDays(days: Int): LocalDate {
 }
 
 fun Instant.toLocalDateTime() = toLocalDateTime(TimeZone.currentSystemDefault())
+fun LocalDateTime.toInstant() = toInstant(TimeZone.currentSystemDefault())

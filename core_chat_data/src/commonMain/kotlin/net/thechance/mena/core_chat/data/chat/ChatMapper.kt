@@ -3,6 +3,8 @@
 package net.thechance.mena.core_chat.data.chat
 
 import net.thechance.mena.core_chat.data.chat.dto.MessageDto
+import net.thechance.mena.core_chat.data.chat.dto.SendMessageDto
+import net.thechance.mena.core_chat.data.chat.utils.toInstant
 import net.thechance.mena.core_chat.data.chat.utils.toLocalDateTime
 import net.thechance.mena.core_chat.domain.entity.Message
 import net.thechance.mena.core_chat.domain.entity.MessageStatus
@@ -26,6 +28,11 @@ fun Message.toDto() = MessageDto(
     senderId = senderId.toString(),
     chatId = chatId.toString(),
     text = text,
-    sendAt = sendAt.toString(),
+    sendAt = sendAt.toInstant().toString(),
     isRead = status == MessageStatus.READ
+)
+
+fun Message.toSendMessageRequestDto() = SendMessageDto(
+    chatId = chatId.toString(),
+    text = text
 )
