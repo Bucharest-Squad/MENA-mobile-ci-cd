@@ -9,9 +9,9 @@ import io.ktor.client.request.setBody
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
-import net.thechance.mena.faith.data.database.QuranDao
+import net.thechance.mena.faith.data.database.AyahDao
 import net.thechance.mena.faith.data.mapper.ayahBookmark.toAyah
-import net.thechance.mena.faith.data.mapper.ayahBookmark.toSurah
+import net.thechance.mena.faith.data.mapper.toSurah
 import net.thechance.mena.faith.data.remote.dto.bookmark.AddBookmarkRequest
 import net.thechance.mena.faith.data.remote.dto.bookmark.AyahBookmarkDto
 import net.thechance.mena.faith.data.remote.dto.bookmark.AyahBookmarkResponse
@@ -23,15 +23,15 @@ import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
 class BookmarkRepositoryImpl(
-    private val quranDao: QuranDao,
+    private val ayahDao: AyahDao,
     private val httpClient: HttpClient,
 ) : BookmarkRepository {
 
     override suspend fun addAyahBookmark(surahId: Int, ayahNumber: Int): AyahBookmark {
         return coroutineScope {
             val bookmarkResponse = async { httpClient.postBookmark(surahId, ayahNumber) }
-            val surah = async { quranDao.getSurah(surahId) }
-            val ayah = async { quranDao.getAyah(surahId, ayahNumber) }
+            val surah = async { ayahDao.getSurah(surahId) }
+            val ayah = async { ayahDao.getAyah(surahId, ayahNumber) }
 
             AyahBookmark(
                 id = bookmarkResponse.await().id.toInt(),
@@ -46,8 +46,8 @@ class BookmarkRepositoryImpl(
         return coroutineScope {
             val response = httpClient.getBookmarks()
             response.ayahBookmarks.mapAsync { bookmarkDto ->
-                val surah = async { quranDao.getSurah(bookmarkDto.surahId) }
-                val ayah = async { quranDao.getAyah(bookmarkDto.surahId, bookmarkDto.ayahNumber) }
+                val surah = async { ayahDao.getSurah(bookmarkDto.surahId) }
+                val ayah = async { ayahDao.getAyah(bookmarkDto.surahId, bookmarkDto.ayahNumber) }
 
                 AyahBookmark(
                     id = bookmarkDto.id.toInt(),

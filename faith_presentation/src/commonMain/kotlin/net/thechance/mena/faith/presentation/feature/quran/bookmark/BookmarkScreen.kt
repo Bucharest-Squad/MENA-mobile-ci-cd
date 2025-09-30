@@ -34,7 +34,6 @@ import net.thechance.mena.faith.presentation.base.SnackBarState
 import net.thechance.mena.faith.presentation.component.BackIcon
 import net.thechance.mena.faith.presentation.component.FaithScaffold
 import net.thechance.mena.faith.presentation.component.FaithSnackBar
-import net.thechance.mena.faith.presentation.component.LoadingIndicator
 import net.thechance.mena.faith.presentation.component.SwappableCard
 import net.thechance.mena.faith.presentation.designSystem.theme.QuranTheme
 import net.thechance.mena.faith.presentation.feature.quran.bookmark.component.AyaBookmarkCard
@@ -99,14 +98,6 @@ private fun Content(
                     .background(color = Theme.colorScheme.background.surface)
                     .padding(horizontal = Theme.spacing._16)
             ) {
-                AnimatedVisibility(
-                    visible = uiState.isLoading,
-                    enter = fadeIn(tween()),
-                    exit = fadeOut(tween())
-                ) {
-                    LoadingIndicator()
-                }
-
                 AnimatedVisibility(
                     visible = uiState.bookmarks.isEmpty() && uiState.isLoading.not(),
                     enter = fadeIn(tween()),

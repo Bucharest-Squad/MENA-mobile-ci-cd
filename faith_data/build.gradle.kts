@@ -11,9 +11,9 @@ plugins {
 }
 
 kotlin {
-    iosArm64()
     androidTarget()
     iosSimulatorArm64()
+    iosX64()
     iosArm64()
 
     sourceSets {
@@ -49,7 +49,20 @@ kotlin {
 kover.reports {
     verify {
         rule {
-            minBound(0)
+            minBound(80)
+        }
+    }
+
+    filters {
+        excludes {
+            packages(
+                "*.database",
+                "*.mapper",
+                "*.di",
+            )
+        }
+        includes {
+            packages("*.repository")
         }
 
     }

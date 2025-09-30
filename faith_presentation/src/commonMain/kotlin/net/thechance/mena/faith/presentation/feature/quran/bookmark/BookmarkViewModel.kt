@@ -43,7 +43,7 @@ class BookmarkViewModel(
             )
         }
         showSnackBar(
-            message = Res.string.bookmark_removed_successfully,
+            messageResource = Res.string.bookmark_removed_successfully,
             status = SnackBarState.Status.Success
         )
     }
