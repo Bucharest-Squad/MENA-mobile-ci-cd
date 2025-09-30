@@ -269,7 +269,7 @@ private fun LazyListScope.shelfSection(
             ) { shelf ->
                 Chip(
                     text = shelf.name,
-                    modifier = Modifier.padding(),
+                    modifier = Modifier.height(32.dp),
                     isSelected = shelf.isSelected,
                     onClick = { onShelfSelect(shelf) }
                 )
