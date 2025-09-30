@@ -51,7 +51,7 @@ fun CreateShelfScreen(
         when (effect) {
             CreateShelfEffect.NavigateBack -> navController.popBackStack()
             CreateShelfEffect.NavigateToApprovedDukan -> {
-                navController.navigate(DukanRoute.ApprovedDukanScreenRoute)
+                navController.navigate(DukanRoute.ManageDukanScreenRoute)
             }
         }
     }

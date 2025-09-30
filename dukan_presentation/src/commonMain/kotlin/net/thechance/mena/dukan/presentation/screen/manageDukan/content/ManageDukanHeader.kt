@@ -1,4 +1,4 @@
-package net.thechance.mena.dukan.presentation.screen.approvedDukan.content
+package net.thechance.mena.dukan.presentation.screen.manageDukan.content
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,15 +20,15 @@ import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.dukan.presentation.component.SelectionRow
-import net.thechance.mena.dukan.presentation.viewModel.approvedDukan.ApprovedDukanInteractionListener
-import net.thechance.mena.dukan.presentation.viewModel.approvedDukan.ApprovedDukanUiState
+import net.thechance.mena.dukan.presentation.viewModel.manageDukan.ManageDukanInteractionListener
+import net.thechance.mena.dukan.presentation.viewModel.manageDukan.ManageDukanUiState
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun ApprovedDukanHeader(
-    state: ApprovedDukanUiState,
-    listener: ApprovedDukanInteractionListener
+fun ManageDukanHeader(
+    state: ManageDukanUiState,
+    listener: ManageDukanInteractionListener
 ) {
     Column {
         Text(
@@ -60,7 +60,7 @@ fun ApprovedDukanHeader(
 @Composable
 private fun ProductCountRow(
     productCount: Int,
-    listener: ApprovedDukanInteractionListener
+    listener: ManageDukanInteractionListener
 ) {
     Row(
         modifier = Modifier

@@ -1,4 +1,4 @@
-package net.thechance.mena.dukan.presentation.viewModel.approvedDukan
+package net.thechance.mena.dukan.presentation.viewModel.manageDukan
 
 import mena.dukan_presentation.generated.resources.Res
 import mena.dukan_presentation.generated.resources.delete
@@ -8,7 +8,7 @@ import net.thechance.mena.dukan.domain.entity.Shelf
 import net.thechance.mena.dukan.presentation.component.SnackBarUiState
 import org.jetbrains.compose.resources.StringResource
 
-data class ApprovedDukanUiState(
+data class ManageDukanUiState(
     val shelves: List<Shelf> = emptyList(),
     val availableShelves: List<Shelf> = emptyList(),
     val selectedShelf: Shelf? = null,

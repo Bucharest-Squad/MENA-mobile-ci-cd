@@ -1,4 +1,4 @@
-package net.thechance.mena.dukan.presentation.screen.approvedDukan.content
+package net.thechance.mena.dukan.presentation.screen.manageDukan.content
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -23,19 +23,19 @@ import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.dukan.presentation.component.SnackBar
 import net.thechance.mena.dukan.presentation.util.OnSystemBackPressed
-import net.thechance.mena.dukan.presentation.util.stubPreviews.PreviewApprovedDukanInteractionListener
-import net.thechance.mena.dukan.presentation.viewModel.approvedDukan.ApprovedDukanInteractionListener
-import net.thechance.mena.dukan.presentation.viewModel.approvedDukan.ApprovedDukanUiState
-import net.thechance.mena.dukan.presentation.viewModel.approvedDukan.ConfirmDialogType
-import net.thechance.mena.dukan.presentation.viewModel.approvedDukan.DeleteShelfConfirmationDialogUiState
+import net.thechance.mena.dukan.presentation.util.stubPreviews.PreviewManageDukanInteractionListener
+import net.thechance.mena.dukan.presentation.viewModel.manageDukan.ConfirmDialogType
+import net.thechance.mena.dukan.presentation.viewModel.manageDukan.DeleteShelfConfirmationDialogUiState
+import net.thechance.mena.dukan.presentation.viewModel.manageDukan.ManageDukanInteractionListener
+import net.thechance.mena.dukan.presentation.viewModel.manageDukan.ManageDukanUiState
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun ApprovedDukanContent(
-    state: ApprovedDukanUiState,
-    listener: ApprovedDukanInteractionListener,
+fun ManageDukanContent(
+    state: ManageDukanUiState,
+    listener: ManageDukanInteractionListener,
     deletedShelfId: String? = null
 ) {
     OnSystemBackPressed(listener::onBackButtonClicked)
@@ -74,7 +74,7 @@ fun ApprovedDukanContent(
             modifier = Modifier.fillMaxSize()
         ) {
             if (state.shelves.isNotEmpty()) {
-                ApprovedDukanHeader(
+                ManageDukanHeader(
                     state = state,
                     listener = listener
                 )
@@ -84,7 +84,7 @@ fun ApprovedDukanContent(
                 Spacer(modifier = Modifier.weight(1f))
             }
 
-            ApprovedDukanProducts(
+            ManageDukanProducts(
                 state = state,
                 onProductClick = listener::onProductClick
             )
@@ -114,7 +114,7 @@ fun ApprovedDukanContent(
 private fun ScaffoldScope.DeleteShelfConfirmationDialog(
     state: DeleteShelfConfirmationDialogUiState,
     deletedShelfId: String?,
-    listener: ApprovedDukanInteractionListener
+    listener: ManageDukanInteractionListener
 ) {
     Dialog(
         title = stringResource(state.title),
@@ -137,11 +137,11 @@ private fun ScaffoldScope.DeleteShelfConfirmationDialog(
 
 @Preview
 @Composable
-private fun ApprovedDukanContentPreview() {
+private fun ManageDukanContentPreview() {
     MenaTheme {
-        ApprovedDukanContent(
-            state = ApprovedDukanUiState(),
-            listener = PreviewApprovedDukanInteractionListener
+        ManageDukanContent(
+            state = ManageDukanUiState(),
+            listener = PreviewManageDukanInteractionListener
         )
     }
 }

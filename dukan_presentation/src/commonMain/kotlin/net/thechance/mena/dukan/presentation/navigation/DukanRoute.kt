@@ -13,7 +13,7 @@ sealed interface DukanRoute {
     object CreateShelfScreenRoute : DukanRoute
 
     @Serializable
-    object ApprovedDukanScreenRoute : DukanRoute
+    object ManageDukanScreenRoute : DukanRoute
 
     @Serializable
     object MyDukanScreenRoute : DukanRoute

@@ -2,9 +2,9 @@ package net.thechance.mena.dukan.presentation.util.stubPreviews
 
 import net.thechance.mena.dukan.domain.entity.Product
 import net.thechance.mena.dukan.domain.entity.Shelf
-import net.thechance.mena.dukan.presentation.viewModel.approvedDukan.ApprovedDukanInteractionListener
+import net.thechance.mena.dukan.presentation.viewModel.manageDukan.ManageDukanInteractionListener
 
-object PreviewApprovedDukanInteractionListener : ApprovedDukanInteractionListener {
+object PreviewManageDukanInteractionListener : ManageDukanInteractionListener {
     override fun onBackButtonClicked() {}
     override fun onDismissSnackBar() {}
     override fun onDismissDeleteShelfConfirmationDialog(){}

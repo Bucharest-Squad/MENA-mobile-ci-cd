@@ -1,4 +1,4 @@
-package net.thechance.mena.dukan.presentation.screen.approvedDukan.content
+package net.thechance.mena.dukan.presentation.screen.manageDukan.content
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,12 +20,12 @@ import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.dukan.domain.entity.Product
 import net.thechance.mena.dukan.presentation.component.ImageWithTextContainer
-import net.thechance.mena.dukan.presentation.viewModel.approvedDukan.ApprovedDukanUiState
+import net.thechance.mena.dukan.presentation.viewModel.manageDukan.ManageDukanUiState
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun ApprovedDukanProducts(
-    state: ApprovedDukanUiState,
+fun ManageDukanProducts(
+    state: ManageDukanUiState,
     onProductClick: (Product) -> Unit
 ) {
     when {

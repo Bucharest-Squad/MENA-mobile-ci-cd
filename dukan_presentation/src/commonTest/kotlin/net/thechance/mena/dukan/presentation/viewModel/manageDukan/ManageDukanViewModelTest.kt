@@ -1,4 +1,4 @@
-package net.thechance.mena.dukan.presentation.viewModel.approvedDukan
+package net.thechance.mena.dukan.presentation.viewModel.manageDukan
 
 import app.cash.turbine.test
 import dev.mokkery.MockMode
@@ -10,9 +10,9 @@ import dev.mokkery.mock
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import kotlinx.coroutines.test.resetMain
 import mena.dukan_presentation.generated.resources.Res
 import mena.dukan_presentation.generated.resources.add_shelf_successfully
 import mena.dukan_presentation.generated.resources.delete_shelf_description
@@ -25,8 +25,8 @@ import mena.dukan_presentation.generated.resources.shelf_name_is_already_exist
 import net.thechance.mena.dukan.domain.entity.Product
 import net.thechance.mena.dukan.domain.entity.Shelf
 import net.thechance.mena.dukan.domain.exceptions.DukanException
-import net.thechance.mena.dukan.domain.repository.ProductRepository
 import net.thechance.mena.dukan.domain.repository.CreateShelfRepository
+import net.thechance.mena.dukan.domain.repository.ProductRepository
 import net.thechance.mena.dukan.presentation.component.SnackBarType
 import net.thechance.mena.dukan.presentation.component.SnackBarUiState
 import kotlin.test.AfterTest
@@ -39,11 +39,11 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class ApprovedDukanViewModelTest {
+class ManageDukanViewModelTest {
 
     private val shelfRepository = mock<CreateShelfRepository>(mode = MockMode.autofill)
     private val productRepository = mock<ProductRepository>(mode = MockMode.autofill)
-    private lateinit var approvedDukanViewModel: ApprovedDukanViewModel
+    private lateinit var manageDukanViewModel: ManageDukanViewModel
     private val testDispatcher = StandardTestDispatcher()
 
     @BeforeTest
@@ -52,7 +52,7 @@ class ApprovedDukanViewModelTest {
         everySuspend { shelfRepository.getMyDukanShelves() } returns fakeShelves()
         everySuspend { productRepository.getProductsByShelfId(any()) } returns emptyList()
 
-        approvedDukanViewModel = ApprovedDukanViewModel(
+        manageDukanViewModel = ManageDukanViewModel(
             shelfRepository,
             productRepository,
             defaultDispatcher = testDispatcher
@@ -67,7 +67,7 @@ class ApprovedDukanViewModelTest {
     @Test
     fun `init SHOULD load shelves with correct count`() = runTest {
         // When
-        approvedDukanViewModel.state.test {
+        manageDukanViewModel.state.test {
             val state = awaitItem()
             // Then
             assertEquals(3, state.shelves.size)
@@ -78,7 +78,7 @@ class ApprovedDukanViewModelTest {
     @Test
     fun `init SHOULD set available shelves with correct count`() = runTest {
         // When
-        approvedDukanViewModel.state.test {
+        manageDukanViewModel.state.test {
             val state = awaitItem()
             // Then
             assertEquals(3, state.availableShelves.size)
@@ -89,7 +89,7 @@ class ApprovedDukanViewModelTest {
     @Test
     fun `init SHOULD select exactly one shelf by default`() = runTest {
         // When
-        approvedDukanViewModel.state.test {
+        manageDukanViewModel.state.test {
             val state = awaitItem()
             // Then
             assertNotNull(state.selectedShelf)
@@ -100,7 +100,7 @@ class ApprovedDukanViewModelTest {
     @Test
     fun `init SHOULD select first shelf with correct id`() = runTest {
         // When
-        approvedDukanViewModel.state.test {
+        manageDukanViewModel.state.test {
             val state = awaitItem()
             // Then
             assertEquals("shelf_1", state.selectedShelf?.id)
@@ -111,7 +111,7 @@ class ApprovedDukanViewModelTest {
     @Test
     fun `init SHOULD select first shelf with correct name`() = runTest {
         // When
-        approvedDukanViewModel.state.test {
+        manageDukanViewModel.state.test {
             val state = awaitItem()
             // Then
             assertEquals("Electronics", state.selectedShelf?.name)
@@ -122,11 +122,11 @@ class ApprovedDukanViewModelTest {
     @Test
     fun `onBackButtonClicked SHOULD emit NavigateBack effect`() = runTest {
         // When
-        approvedDukanViewModel.onBackButtonClicked()
+        manageDukanViewModel.onBackButtonClicked()
 
         // Then
-        approvedDukanViewModel.effect.test {
-            assertEquals(ApprovedDukanEffect.NavigateBack, awaitItem())
+        manageDukanViewModel.effect.test {
+            assertEquals(ManageDukanEffect.NavigateBack, awaitItem())
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -134,11 +134,11 @@ class ApprovedDukanViewModelTest {
     @Test
     fun `onAddShelfClicked SHOULD emit NavigateToAddShelf effect`() = runTest {
         // When
-        approvedDukanViewModel.onAddShelfClicked()
+        manageDukanViewModel.onAddShelfClicked()
 
         // Then
-        approvedDukanViewModel.effect.test {
-            assertEquals(ApprovedDukanEffect.NavigateToAddShelf, awaitItem())
+        manageDukanViewModel.effect.test {
+            assertEquals(ManageDukanEffect.NavigateToAddShelf, awaitItem())
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -146,11 +146,11 @@ class ApprovedDukanViewModelTest {
     @Test
     fun `onAddProductClicked SHOULD emit NavigateToAddProduct effect`() = runTest {
         // When
-        approvedDukanViewModel.onAddProductClicked()
+        manageDukanViewModel.onAddProductClicked()
 
         // Then
-        approvedDukanViewModel.effect.test {
-            assertEquals(ApprovedDukanEffect.NavigateToAddProduct, awaitItem())
+        manageDukanViewModel.effect.test {
+            assertEquals(ManageDukanEffect.NavigateToAddProduct, awaitItem())
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -158,11 +158,11 @@ class ApprovedDukanViewModelTest {
     @Test
     fun `onEditShelfClicked SHOULD emit NavigateToEditShelf effect`() = runTest {
         // When
-        approvedDukanViewModel.onEditShelfClicked()
+        manageDukanViewModel.onEditShelfClicked()
 
         // Then
-        approvedDukanViewModel.effect.test {
-            assertEquals(ApprovedDukanEffect.NavigateToEditShelf, awaitItem())
+        manageDukanViewModel.effect.test {
+            assertEquals(ManageDukanEffect.NavigateToEditShelf, awaitItem())
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -173,11 +173,11 @@ class ApprovedDukanViewModelTest {
         val product = fakeProducts().first()
 
         // When
-        approvedDukanViewModel.onProductClick(product)
+        manageDukanViewModel.onProductClick(product)
 
         // Then
-        approvedDukanViewModel.effect.test {
-            assertEquals(ApprovedDukanEffect.NavigateToProductDetails, awaitItem())
+        manageDukanViewModel.effect.test {
+            assertEquals(ManageDukanEffect.NavigateToProductDetails, awaitItem())
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -185,7 +185,7 @@ class ApprovedDukanViewModelTest {
     @Test
     fun `onDismissSnackBar SHOULD hide snackbar`() = runTest {
         // Given
-        approvedDukanViewModel.updateState {
+        manageDukanViewModel.updateState {
             copy(
                 snackBarState = SnackBarUiState(
                     SnackBarType.SUCCESS,
@@ -195,17 +195,17 @@ class ApprovedDukanViewModelTest {
         }
 
         // When
-        approvedDukanViewModel.onDismissSnackBar()
+        manageDukanViewModel.onDismissSnackBar()
 
         // Then
-        val state = approvedDukanViewModel.state.value
+        val state = manageDukanViewModel.state.value
         assertTrue(state.snackBarState == null)
     }
 
     @Test
     fun `onDismissSnackBar SHOULD reset snackbar state to null`() = runTest {
         // Given
-        approvedDukanViewModel.updateState {
+        manageDukanViewModel.updateState {
             copy(
                 snackBarState = SnackBarUiState(
                     SnackBarType.ERROR,
@@ -215,10 +215,10 @@ class ApprovedDukanViewModelTest {
         }
 
         // When
-        approvedDukanViewModel.onDismissSnackBar()
+        manageDukanViewModel.onDismissSnackBar()
 
         // Then
-        val state = approvedDukanViewModel.state.value
+        val state = manageDukanViewModel.state.value
         assertTrue(state.snackBarState == null)
     }
 
@@ -226,10 +226,10 @@ class ApprovedDukanViewModelTest {
     fun `isShelfSelected SHOULD return true when shelf is selected`() = runTest {
         // Given
         val shelf = fakeShelves().first()
-        approvedDukanViewModel.updateState { copy(selectedShelf = shelf) }
+        manageDukanViewModel.updateState { copy(selectedShelf = shelf) }
 
         // When
-        val isSelected = approvedDukanViewModel.isShelfSelected()(shelf)
+        val isSelected = manageDukanViewModel.isShelfSelected()(shelf)
 
         // Then
         assertTrue(isSelected)
@@ -240,10 +240,10 @@ class ApprovedDukanViewModelTest {
         // Given
         val shelf = fakeShelves().first()
         val otherShelf = fakeShelves()[1]
-        approvedDukanViewModel.updateState { copy(selectedShelf = shelf) }
+        manageDukanViewModel.updateState { copy(selectedShelf = shelf) }
 
         // When
-        val isSelected = approvedDukanViewModel.isShelfSelected()(otherShelf)
+        val isSelected = manageDukanViewModel.isShelfSelected()(otherShelf)
 
         // Then
         assertFalse(isSelected)
@@ -253,10 +253,10 @@ class ApprovedDukanViewModelTest {
     fun `onShelfSelected SHOULD return true when shelf is selected`() = runTest {
         // Given
         val shelf = fakeShelves()[1]
-        approvedDukanViewModel.updateState { copy(selectedShelf = fakeShelves().first()) }
+        manageDukanViewModel.updateState { copy(selectedShelf = fakeShelves().first()) }
 
         // When
-        val result = approvedDukanViewModel.onShelfSelected(shelf)
+        val result = manageDukanViewModel.onShelfSelected(shelf)
 
         // Then
         assertTrue(result)
@@ -267,13 +267,13 @@ class ApprovedDukanViewModelTest {
         // Given
         val firstShelf = fakeShelves().first()
         val secondShelf = fakeShelves()[1]
-        approvedDukanViewModel.updateState { copy(selectedShelf = firstShelf) }
+        manageDukanViewModel.updateState { copy(selectedShelf = firstShelf) }
 
         // When
-        approvedDukanViewModel.onShelfSelected(secondShelf)
+        manageDukanViewModel.onShelfSelected(secondShelf)
 
         // Then
-        val selectedShelf = approvedDukanViewModel.state.value.selectedShelf
+        val selectedShelf = manageDukanViewModel.state.value.selectedShelf
         assertEquals(secondShelf, selectedShelf)
     }
 
@@ -282,13 +282,13 @@ class ApprovedDukanViewModelTest {
         // Given
         val firstShelf = fakeShelves().first()
         val secondShelf = fakeShelves()[1]
-        approvedDukanViewModel.updateState { copy(selectedShelf = firstShelf) }
+        manageDukanViewModel.updateState { copy(selectedShelf = firstShelf) }
 
         // When
-        approvedDukanViewModel.onShelfSelected(secondShelf)
+        manageDukanViewModel.onShelfSelected(secondShelf)
 
         // Then
-        val selectedShelf = approvedDukanViewModel.state.value.selectedShelf
+        val selectedShelf = manageDukanViewModel.state.value.selectedShelf
         assertTrue(selectedShelf != firstShelf)
     }
 
@@ -297,13 +297,13 @@ class ApprovedDukanViewModelTest {
         // Given
         val firstShelf = fakeShelves().first()
         val secondShelf = fakeShelves()[1]
-        approvedDukanViewModel.updateState { copy(selectedShelf = firstShelf) }
+        manageDukanViewModel.updateState { copy(selectedShelf = firstShelf) }
 
         // When
-        approvedDukanViewModel.onShelfSelected(secondShelf)
+        manageDukanViewModel.onShelfSelected(secondShelf)
 
         // Then
-        val selectedShelf = approvedDukanViewModel.state.value.selectedShelf
+        val selectedShelf = manageDukanViewModel.state.value.selectedShelf
         assertNotNull(selectedShelf)
     }
 
@@ -316,11 +316,11 @@ class ApprovedDukanViewModelTest {
         everySuspend { productRepository.getProductsByShelfId(shelf.id) } returns products
 
         // When
-        approvedDukanViewModel.onShelfSelected(shelf)
+        manageDukanViewModel.onShelfSelected(shelf)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
-        val state = approvedDukanViewModel.state.value
+        val state = manageDukanViewModel.state.value
         assertEquals(products.size, state.products.size)
     }
 
@@ -332,11 +332,11 @@ class ApprovedDukanViewModelTest {
         everySuspend { productRepository.getProductsByShelfId(shelf.id) } returns products
 
         // When
-        approvedDukanViewModel.onShelfSelected(shelf)
+        manageDukanViewModel.onShelfSelected(shelf)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
-        val state = approvedDukanViewModel.state.value
+        val state = manageDukanViewModel.state.value
         assertEquals(products.size, state.totalProducts)
     }
 
@@ -344,10 +344,10 @@ class ApprovedDukanViewModelTest {
     fun `onShelfDeselected SHOULD return true when shelf is deselected`() = runTest {
         // Given
         val shelf = fakeShelves().first()
-        approvedDukanViewModel.updateState { copy(selectedShelf = shelf) }
+        manageDukanViewModel.updateState { copy(selectedShelf = shelf) }
 
         // When
-        val result = approvedDukanViewModel.onShelfDeselected(shelf)
+        val result = manageDukanViewModel.onShelfDeselected(shelf)
 
         // Then
         assertTrue(result)
@@ -357,13 +357,13 @@ class ApprovedDukanViewModelTest {
     fun `onShelfDeselected SHOULD clear selected shelf`() = runTest {
         // Given
         val shelf = fakeShelves().first()
-        approvedDukanViewModel.updateState { copy(selectedShelf = shelf) }
+        manageDukanViewModel.updateState { copy(selectedShelf = shelf) }
 
         // When
-        approvedDukanViewModel.onShelfDeselected(shelf)
+        manageDukanViewModel.onShelfDeselected(shelf)
 
         // Then
-        val selectedShelf = approvedDukanViewModel.state.value.selectedShelf
+        val selectedShelf = manageDukanViewModel.state.value.selectedShelf
         assertNull(selectedShelf)
     }
 
@@ -373,7 +373,7 @@ class ApprovedDukanViewModelTest {
         // Given
         val shelf = fakeShelves().first()
         val products = fakeProducts().filter { it.shelfId == shelf.id }
-        approvedDukanViewModel.updateState {
+        manageDukanViewModel.updateState {
             copy(
                 selectedShelf = shelf,
                 products = products,
@@ -382,10 +382,10 @@ class ApprovedDukanViewModelTest {
         }
 
         // When
-        approvedDukanViewModel.onShelfDeselected(shelf)
+        manageDukanViewModel.onShelfDeselected(shelf)
 
         // Then
-        val state = approvedDukanViewModel.state.value
+        val state = manageDukanViewModel.state.value
         assertTrue(state.products.isEmpty())
     }
 
@@ -395,7 +395,7 @@ class ApprovedDukanViewModelTest {
             // Given
             val shelf = fakeShelves().first()
             val products = fakeProducts().filter { it.shelfId == shelf.id }
-            approvedDukanViewModel.updateState {
+            manageDukanViewModel.updateState {
                 copy(
                     selectedShelf = shelf,
                     products = products,
@@ -404,10 +404,10 @@ class ApprovedDukanViewModelTest {
             }
 
             // When
-            approvedDukanViewModel.onShelfDeselected(shelf)
+            manageDukanViewModel.onShelfDeselected(shelf)
 
             // Then
-            val state = approvedDukanViewModel.state.value
+            val state = manageDukanViewModel.state.value
             assertEquals(0, state.totalProducts)
         }
 
@@ -417,7 +417,7 @@ class ApprovedDukanViewModelTest {
         val shelf = fakeShelves().first()
 
         // When
-        val result = approvedDukanViewModel.onShelfEnabled(shelf)
+        val result = manageDukanViewModel.onShelfEnabled(shelf)
 
         // Then
         assertTrue(result)
@@ -426,30 +426,30 @@ class ApprovedDukanViewModelTest {
     @Test
     fun `onShelfAddedSuccessfully SHOULD show snackbar`() = runTest {
         // When
-        approvedDukanViewModel.onShelfAddedSuccessfully()
+        manageDukanViewModel.onShelfAddedSuccessfully()
 
         // Then
-        val state = approvedDukanViewModel.state.value
+        val state = manageDukanViewModel.state.value
         assertTrue(state.snackBarState != null)
     }
 
     @Test
     fun `onShelfAddedSuccessfully SHOULD show success snackbar type`() = runTest {
         // When
-        approvedDukanViewModel.onShelfAddedSuccessfully()
+        manageDukanViewModel.onShelfAddedSuccessfully()
 
         // Then
-        val state = approvedDukanViewModel.state.value
+        val state = manageDukanViewModel.state.value
         assertEquals(SnackBarType.SUCCESS, state.snackBarState?.snackBarType)
     }
 
     @Test
     fun `onShelfAddedSuccessfully SHOULD show correct success message`() = runTest {
         // When
-        approvedDukanViewModel.onShelfAddedSuccessfully()
+        manageDukanViewModel.onShelfAddedSuccessfully()
 
         // Then
-        val state = approvedDukanViewModel.state.value
+        val state = manageDukanViewModel.state.value
         assertEquals(Res.string.add_shelf_successfully, state.snackBarState?.message)
     }
 
@@ -460,11 +460,11 @@ class ApprovedDukanViewModelTest {
         everySuspend { shelfRepository.getMyDukanShelves() } returns newShelves
 
         // When
-        approvedDukanViewModel.onShelfAddedSuccessfully()
+        manageDukanViewModel.onShelfAddedSuccessfully()
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
-        val state = approvedDukanViewModel.state.value
+        val state = manageDukanViewModel.state.value
         assertEquals(4, state.shelves.size)
     }
 
@@ -475,34 +475,34 @@ class ApprovedDukanViewModelTest {
         everySuspend { shelfRepository.getMyDukanShelves() } returns newShelves
 
         // When
-        approvedDukanViewModel.onShelfAddedSuccessfully()
+        manageDukanViewModel.onShelfAddedSuccessfully()
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
-        val state = approvedDukanViewModel.state.value
+        val state = manageDukanViewModel.state.value
         assertTrue(state.shelves.any { it.id == "shelf_4" })
     }
 
     @Test
     fun `onShelfAddedSuccessfully SHOULD reload products for selected shelf`() = runTest {
         // Wait for initial state to load
-        approvedDukanViewModel.state.test {
+        manageDukanViewModel.state.test {
             awaitItem()
             cancelAndIgnoreRemainingEvents()
         }
-        
+
         // Given
         val selectedShelf = fakeShelves().first()
         val products = fakeProducts().filter { it.shelfId == selectedShelf.id }
-        approvedDukanViewModel.updateState { copy(selectedShelf = selectedShelf) }
+        manageDukanViewModel.updateState { copy(selectedShelf = selectedShelf) }
         everySuspend { productRepository.getProductsByShelfId(selectedShelf.id) } returns products
 
         // When
-        approvedDukanViewModel.onShelfAddedSuccessfully()
+        manageDukanViewModel.onShelfAddedSuccessfully()
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
-        val state = approvedDukanViewModel.state.value
+        val state = manageDukanViewModel.state.value
         assertEquals(products.size, state.products.size)
     }
 
@@ -511,29 +511,29 @@ class ApprovedDukanViewModelTest {
         // Given
         val selectedShelf = fakeShelves().first()
         val products = fakeProducts().filter { it.shelfId == selectedShelf.id }
-        approvedDukanViewModel.updateState { copy(selectedShelf = selectedShelf) }
+        manageDukanViewModel.updateState { copy(selectedShelf = selectedShelf) }
         everySuspend { productRepository.getProductsByShelfId(selectedShelf.id) } returns products
 
         // When
-        approvedDukanViewModel.onShelfAddedSuccessfully()
+        manageDukanViewModel.onShelfAddedSuccessfully()
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
-        val state = approvedDukanViewModel.state.value
+        val state = manageDukanViewModel.state.value
         assertEquals(products.size, state.totalProducts)
     }
 
     @Test
     fun `onShelfAddedSuccessfully SHOULD clear products when no shelf selected`() = runTest {
         // Given
-        approvedDukanViewModel.updateState { copy(selectedShelf = null) }
+        manageDukanViewModel.updateState { copy(selectedShelf = null) }
 
         // When
-        approvedDukanViewModel.onShelfAddedSuccessfully()
+        manageDukanViewModel.onShelfAddedSuccessfully()
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
-        val state = approvedDukanViewModel.state.value
+        val state = manageDukanViewModel.state.value
         assertTrue(state.products.isEmpty())
     }
 
@@ -541,14 +541,14 @@ class ApprovedDukanViewModelTest {
     fun `onShelfAddedSuccessfully SHOULD reset product count to zero when no shelf selected`() =
         runTest {
             // Given
-            approvedDukanViewModel.updateState { copy(selectedShelf = null) }
+            manageDukanViewModel.updateState { copy(selectedShelf = null) }
 
             // When
-            approvedDukanViewModel.onShelfAddedSuccessfully()
+            manageDukanViewModel.onShelfAddedSuccessfully()
             testDispatcher.scheduler.advanceUntilIdle()
 
             // Then
-            val state = approvedDukanViewModel.state.value
+            val state = manageDukanViewModel.state.value
             assertEquals(0, state.totalProducts)
         }
 
@@ -560,11 +560,11 @@ class ApprovedDukanViewModelTest {
         everySuspend { productRepository.getProductsByShelfId(shelf.id) } returns emptyList()
 
         // When
-        approvedDukanViewModel.onShelfSelected(shelf)
+        manageDukanViewModel.onShelfSelected(shelf)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
-        val state = approvedDukanViewModel.state.value
+        val state = manageDukanViewModel.state.value
         assertFalse(state.isLoadingProducts)
     }
 
@@ -575,18 +575,18 @@ class ApprovedDukanViewModelTest {
         everySuspend { productRepository.getProductsByShelfId(shelf.id) } returns emptyList()
 
         // When
-        approvedDukanViewModel.onShelfSelected(shelf)
+        manageDukanViewModel.onShelfSelected(shelf)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
-        val state = approvedDukanViewModel.state.value
+        val state = manageDukanViewModel.state.value
         assertTrue(state.products.isEmpty())
     }
 
     @Test
     fun `init SHOULD load shelves from mock repository`() = runTest {
         // When
-        approvedDukanViewModel.state.test {
+        manageDukanViewModel.state.test {
             val state = awaitItem()
             // Then
             assertEquals(3, state.shelves.size)
@@ -598,7 +598,7 @@ class ApprovedDukanViewModelTest {
     @Test
     fun `init SHOULD select first shelf by default from mock data`() = runTest {
         // When
-        approvedDukanViewModel.state.test {
+        manageDukanViewModel.state.test {
             val state = awaitItem()
             // Then
             assertNotNull(state.selectedShelf)
@@ -616,11 +616,11 @@ class ApprovedDukanViewModelTest {
         everySuspend { productRepository.getProductsByShelfId(shelf.id) } returns mockProducts
 
         // When
-        approvedDukanViewModel.onShelfSelected(shelf)
+        manageDukanViewModel.onShelfSelected(shelf)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
-        val state = approvedDukanViewModel.state.value
+        val state = manageDukanViewModel.state.value
         assertEquals(mockProducts.size, state.products.size)
     }
 
@@ -632,11 +632,11 @@ class ApprovedDukanViewModelTest {
         everySuspend { productRepository.getProductsByShelfId(shelf.id) } returns mockProducts
 
         // When
-        approvedDukanViewModel.onShelfSelected(shelf)
+        manageDukanViewModel.onShelfSelected(shelf)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
-        val state = approvedDukanViewModel.state.value
+        val state = manageDukanViewModel.state.value
         assertEquals("iPhone 15", state.products.first().name)
     }
 
@@ -648,17 +648,17 @@ class ApprovedDukanViewModelTest {
         everySuspend { productRepository.getProductsByShelfId(shelf.id) } returns fakeProducts
 
         // When
-        approvedDukanViewModel.onShelfSelected(shelf)
+        manageDukanViewModel.onShelfSelected(shelf)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
-        assertEquals(fakeProducts.size, approvedDukanViewModel.state.value.totalProducts)
+        assertEquals(fakeProducts.size, manageDukanViewModel.state.value.totalProducts)
     }
 
     @Test
     fun `onDismissSnackBar should hide the snackbar`() = runTest {
-        approvedDukanViewModel.onDismissSnackBar()
-        approvedDukanViewModel.state.test {
+        manageDukanViewModel.onDismissSnackBar()
+        manageDukanViewModel.state.test {
             val state = awaitItem()
             assertEquals(null, state.snackBarState)
         }
@@ -666,7 +666,7 @@ class ApprovedDukanViewModelTest {
 
     @Test
     fun `onDismissDeleteShelfConfirmationDialog hides the dialog`() = runTest {
-        approvedDukanViewModel.state.test {
+        manageDukanViewModel.state.test {
             val state = awaitItem()
             assertFalse(state.showDeleteConfirmationDialog)
         }
@@ -674,8 +674,8 @@ class ApprovedDukanViewModelTest {
 
     @Test
     fun `onShowDeleteShelfConfirmationDialog show the dialog`() = runTest {
-        approvedDukanViewModel.onShowDeleteShelfConfirmationDialog()
-        approvedDukanViewModel.state.test {
+        manageDukanViewModel.onShowDeleteShelfConfirmationDialog()
+        manageDukanViewModel.state.test {
             val state = awaitItem()
             assertTrue(state.showDeleteConfirmationDialog)
         }
@@ -684,7 +684,7 @@ class ApprovedDukanViewModelTest {
     @Test
     fun `onShowDeleteShelfConfirmationDialog displays dialog with delete type when no products`() =
         runTest {
-            approvedDukanViewModel.updateState {
+            manageDukanViewModel.updateState {
                 copy(
                     products = emptyList()
                 )
@@ -694,9 +694,9 @@ class ApprovedDukanViewModelTest {
                 description = Res.string.delete_shelf_description,
                 type = ConfirmDialogType.DELETE
             )
-            approvedDukanViewModel.onShowDeleteShelfConfirmationDialog()
+            manageDukanViewModel.onShowDeleteShelfConfirmationDialog()
 
-            approvedDukanViewModel.state.test {
+            manageDukanViewModel.state.test {
                 val state = awaitItem()
                 assertEquals(
                     deleteShelfConfirmationDialogUiState,
@@ -708,7 +708,7 @@ class ApprovedDukanViewModelTest {
     @Test
     fun `onShowDeleteShelfConfirmationDialog displays dialog with dismiss type when shelf has products`() =
         runTest {
-            approvedDukanViewModel.updateState {
+            manageDukanViewModel.updateState {
                 copy(
                     products = listOf(
                         Product(
@@ -728,9 +728,9 @@ class ApprovedDukanViewModelTest {
                 description = Res.string.dismiss_description,
                 type = ConfirmDialogType.DISMISS
             )
-            approvedDukanViewModel.onShowDeleteShelfConfirmationDialog()
+            manageDukanViewModel.onShowDeleteShelfConfirmationDialog()
 
-            approvedDukanViewModel.state.test {
+            manageDukanViewModel.state.test {
                 val state = awaitItem()
                 assertEquals(
                     deleteShelfConfirmationDialogUiState,
@@ -749,9 +749,9 @@ class ApprovedDukanViewModelTest {
             )
             everySuspend { shelfRepository.deleteShelf(shelfId) }
 
-            approvedDukanViewModel.deleteShelf(shelfId)
+            manageDukanViewModel.deleteShelf(shelfId)
 
-            approvedDukanViewModel.state.test {
+            manageDukanViewModel.state.test {
                 skipItems(1)
                 val state = awaitItem()
                 assertEquals(snackBarUiState, state.snackBarState)
@@ -768,9 +768,9 @@ class ApprovedDukanViewModelTest {
             )
             everySuspend { shelfRepository.deleteShelf(shelfId) } throws DukanException("")
 
-            approvedDukanViewModel.deleteShelf(shelfId)
+            manageDukanViewModel.deleteShelf(shelfId)
 
-            approvedDukanViewModel.state.test {
+            manageDukanViewModel.state.test {
                 skipItems(1)
                 val state = awaitItem()
                 assertEquals(snackBarUiState, state.snackBarState)

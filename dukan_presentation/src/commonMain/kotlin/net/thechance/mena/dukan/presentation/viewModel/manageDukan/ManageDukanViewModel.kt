@@ -1,4 +1,4 @@
-package net.thechance.mena.dukan.presentation.viewModel.approvedDukan
+package net.thechance.mena.dukan.presentation.viewModel.manageDukan
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -20,21 +20,21 @@ import net.thechance.mena.dukan.presentation.component.SnackBarUiState
 import net.thechance.mena.dukan.presentation.viewModel.base.BaseViewModel
 import org.jetbrains.compose.resources.StringResource
 
-class ApprovedDukanViewModel(
+class ManageDukanViewModel(
     private val shelfRepository: CreateShelfRepository,
     private val productRepository: ProductRepository,
     defaultDispatcher: CoroutineDispatcher = Dispatchers.IO
-) : BaseViewModel<ApprovedDukanUiState, ApprovedDukanEffect>(
-    initialState = ApprovedDukanUiState(),
+) : BaseViewModel<ManageDukanUiState, ManageDukanEffect>(
+    initialState = ManageDukanUiState(),
     defaultDispatcher = defaultDispatcher
-), ApprovedDukanInteractionListener {
+), ManageDukanInteractionListener {
 
     init {
         loadShelves()
     }
 
     override fun onBackButtonClicked() {
-        emitEffect(ApprovedDukanEffect.NavigateBack)
+        emitEffect(ManageDukanEffect.NavigateBack)
     }
 
     private fun showSnackBar(message: StringResource, type: SnackBarType) {
@@ -55,19 +55,19 @@ class ApprovedDukanViewModel(
     }
 
     override fun onAddProductClicked() {
-        emitEffect(ApprovedDukanEffect.NavigateToAddProduct)
+        emitEffect(ManageDukanEffect.NavigateToAddProduct)
     }
 
     override fun onEditShelfClicked() {
-        emitEffect(ApprovedDukanEffect.NavigateToEditShelf)
+        emitEffect(ManageDukanEffect.NavigateToEditShelf)
     }
 
     override fun onAddShelfClicked() {
-        emitEffect(ApprovedDukanEffect.NavigateToAddShelf)
+        emitEffect(ManageDukanEffect.NavigateToAddShelf)
     }
 
     override fun onProductClick(product: Product) {
-        emitEffect(ApprovedDukanEffect.NavigateToProductDetails)
+        emitEffect(ManageDukanEffect.NavigateToProductDetails)
     }
 
     override fun isShelfSelected(): (Shelf) -> Boolean = { shelf ->

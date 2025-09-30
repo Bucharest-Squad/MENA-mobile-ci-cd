@@ -1,4 +1,4 @@
-package net.thechance.mena.dukan.presentation.screen.approvedDukan
+package net.thechance.mena.dukan.presentation.screen.manageDukan
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -7,16 +7,16 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import net.thechance.mena.dukan.presentation.navigation.DukanRoute
 import net.thechance.mena.dukan.presentation.navigation.LocalNavController
-import net.thechance.mena.dukan.presentation.screen.approvedDukan.content.ApprovedDukanContent
+import net.thechance.mena.dukan.presentation.screen.manageDukan.content.ManageDukanContent
 import net.thechance.mena.dukan.presentation.screen.manageShelf.ManageShelfArgs
 import net.thechance.mena.dukan.presentation.util.ObserveAsEffect
-import net.thechance.mena.dukan.presentation.viewModel.approvedDukan.ApprovedDukanEffect
-import net.thechance.mena.dukan.presentation.viewModel.approvedDukan.ApprovedDukanViewModel
+import net.thechance.mena.dukan.presentation.viewModel.manageDukan.ManageDukanEffect
+import net.thechance.mena.dukan.presentation.viewModel.manageDukan.ManageDukanViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun ApprovedDukanScreen(
-    viewModel: ApprovedDukanViewModel = koinViewModel()
+fun ManageDukanScreen(
+    viewModel: ManageDukanViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsState()
     val navController = LocalNavController.current
@@ -35,23 +35,23 @@ fun ApprovedDukanScreen(
 
     ObserveAsEffect(viewModel.effect) { effect ->
         when (effect) {
-            ApprovedDukanEffect.NavigateBack -> navController.popBackStack()
+            ManageDukanEffect.NavigateBack -> navController.popBackStack()
 
-            ApprovedDukanEffect.NavigateToAddShelf -> navController.navigate(
+            ManageDukanEffect.NavigateToAddShelf -> navController.navigate(
                 DukanRoute.CreateShelfScreenRoute
             )
 
-            ApprovedDukanEffect.NavigateToEditShelf -> {
+            ManageDukanEffect.NavigateToEditShelf -> {
             }
 
-            ApprovedDukanEffect.NavigateToAddProduct -> {
+            ManageDukanEffect.NavigateToAddProduct -> {
             }
 
-            ApprovedDukanEffect.NavigateToProductDetails -> {
+            ManageDukanEffect.NavigateToProductDetails -> {
             }
         }
     }
-    ApprovedDukanContent(
+    ManageDukanContent(
         state = state,
         listener = viewModel,
         deletedShelfId = deletedShelfId?.value

@@ -1,9 +1,9 @@
-package net.thechance.mena.dukan.presentation.viewModel.approvedDukan
+package net.thechance.mena.dukan.presentation.viewModel.manageDukan
 
 import net.thechance.mena.dukan.domain.entity.Product
 import net.thechance.mena.dukan.domain.entity.Shelf
 
-interface ApprovedDukanInteractionListener {
+interface ManageDukanInteractionListener {
     fun onBackButtonClicked()
     fun onDismissSnackBar()
     fun onDismissDeleteShelfConfirmationDialog()
