@@ -9,7 +9,8 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
-class ShelfRepositoryImplTest {
+class CreateShelfRepositoryImplTest {
+
     @Test
     fun `createShelf calls the correct endpoint`() = runTest {
         // Given
@@ -129,7 +130,6 @@ class ShelfRepositoryImplTest {
         assertEquals("Shelf 1", shelves[0].name)
     }
 
-
     @Test
     fun `getMyDukanShelves handles empty response`() = runTest {
         // Given
@@ -161,9 +161,42 @@ class ShelfRepositoryImplTest {
         }
     }
 
+    @Test
+    fun `deleteShelf call success`() = runTest {
+        val shelfId = "1"
+        var called = false
+        val repository = createShelfRepository(
+            deleteShelfResponse = {
+                called = true
+                defaultDeleteShelfResponse()
+            }
+        )
+
+        repository.deleteShelf(shelfId)
+
+        assertTrue(
+            called,
+        )
+    }
+
+    @Test
+    fun `deleteShelf handle error response`() = runTest {
+        val shelfId = "1"
+        val repository = createShelfRepository(
+            deleteShelfResponse = {
+                respond("", HttpStatusCode.BadRequest, jsonHeaders)
+            }
+        )
+
+        assertFailsWith<Exception> {
+            repository.deleteShelf(shelfId)
+        }
+    }
+
 }
 
 private fun fakeShelf() = Shelf(
     id = "123",
-    name = "Test Shelf"
+    name = "Test Shelf",
 )
+

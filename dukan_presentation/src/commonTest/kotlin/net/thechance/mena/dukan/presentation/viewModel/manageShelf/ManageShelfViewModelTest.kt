@@ -1,6 +1,8 @@
 package net.thechance.mena.dukan.presentation.viewModel.manageShelf
 
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import app.cash.turbine.test
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -54,12 +56,16 @@ class ManageShelfViewModelTest {
     }
 
     @Test
-    fun `init should throw exception when shelf title is null`() {
-        val failingSavedStateHandle = savedStateHandle
+    fun `init should set shelf title to empty when shelf title is null`()=runTest {
+        val failingSavedStateHandle = SavedStateHandle()
+        failingSavedStateHandle[ManageShelfArgs.shelfId] = expectedShelfId
         failingSavedStateHandle[ManageShelfArgs.shelfTitle] = null
 
-        assertFailsWith<IllegalArgumentException> {
-            ManageShelfViewModel(failingSavedStateHandle, testDispatcher)
+        val viewModel = ManageShelfViewModel(failingSavedStateHandle, testDispatcher)
+
+        viewModel.state.test {
+            val state=awaitItem()
+            assertEquals("",state.shelfTitle)
         }
     }
 

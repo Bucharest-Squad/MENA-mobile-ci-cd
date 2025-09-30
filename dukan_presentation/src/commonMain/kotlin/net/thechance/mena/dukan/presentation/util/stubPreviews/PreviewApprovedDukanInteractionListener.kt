@@ -7,6 +7,9 @@ import net.thechance.mena.dukan.presentation.viewModel.approvedDukan.ApprovedDuk
 object PreviewApprovedDukanInteractionListener : ApprovedDukanInteractionListener {
     override fun onBackButtonClicked() {}
     override fun onDismissSnackBar() {}
+    override fun onDismissDeleteShelfConfirmationDialog(){}
+    override fun onShowDeleteShelfConfirmationDialog() {}
+    override fun deleteShelf(shelfId: String) {}
     override fun onAddProductClicked() {}
     override fun onEditShelfClicked() {}
     override fun onAddShelfClicked() {}

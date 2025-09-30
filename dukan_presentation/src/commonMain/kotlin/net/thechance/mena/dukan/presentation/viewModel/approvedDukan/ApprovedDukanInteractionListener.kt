@@ -6,6 +6,9 @@ import net.thechance.mena.dukan.domain.entity.Shelf
 interface ApprovedDukanInteractionListener {
     fun onBackButtonClicked()
     fun onDismissSnackBar()
+    fun onDismissDeleteShelfConfirmationDialog()
+    fun onShowDeleteShelfConfirmationDialog()
+    fun deleteShelf(shelfId: String)
     fun onAddProductClicked()
     fun onProductClick(product: Product)
     fun onEditShelfClicked()

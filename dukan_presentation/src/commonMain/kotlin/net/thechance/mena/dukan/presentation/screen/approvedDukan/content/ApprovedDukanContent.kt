@@ -15,8 +15,10 @@ import mena.dukan_presentation.generated.resources.ic_arrow_left
 import mena.dukan_presentation.generated.resources.my_dukan
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.button.FabButton
+import net.thechance.mena.designsystem.presentation.component.dialog.Dialog
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
+import net.thechance.mena.designsystem.presentation.component.scaffold.ScaffoldScope
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.dukan.presentation.component.SnackBar
@@ -24,6 +26,8 @@ import net.thechance.mena.dukan.presentation.util.OnSystemBackPressed
 import net.thechance.mena.dukan.presentation.util.stubPreviews.PreviewApprovedDukanInteractionListener
 import net.thechance.mena.dukan.presentation.viewModel.approvedDukan.ApprovedDukanInteractionListener
 import net.thechance.mena.dukan.presentation.viewModel.approvedDukan.ApprovedDukanUiState
+import net.thechance.mena.dukan.presentation.viewModel.approvedDukan.ConfirmDialogType
+import net.thechance.mena.dukan.presentation.viewModel.approvedDukan.DeleteShelfConfirmationDialogUiState
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -31,11 +35,23 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun ApprovedDukanContent(
     state: ApprovedDukanUiState,
-    listener: ApprovedDukanInteractionListener
+    listener: ApprovedDukanInteractionListener,
+    deletedShelfId: String? = null
 ) {
     OnSystemBackPressed(listener::onBackButtonClicked)
 
     Scaffold(
+        overlays = {
+            dialog(state.showDeleteConfirmationDialog) {
+                state.deleteShelfConfirmationDialogUiState?.let {
+                    DeleteShelfConfirmationDialog(
+                        state = it,
+                        deletedShelfId = deletedShelfId,
+                        listener = listener
+                    )
+                }
+            }
+        },
         topBar = {
             AppBar(
                 title = stringResource(Res.string.my_dukan),
@@ -93,6 +109,31 @@ fun ApprovedDukanContent(
         )
     }
 }
+
+@Composable
+private fun ScaffoldScope.DeleteShelfConfirmationDialog(
+    state: DeleteShelfConfirmationDialogUiState,
+    deletedShelfId: String?,
+    listener: ApprovedDukanInteractionListener
+) {
+    Dialog(
+        title = stringResource(state.title),
+        message = stringResource(state.description),
+        buttonText = stringResource(state.type.text),
+        onDismiss = { listener.onDismissDeleteShelfConfirmationDialog() },
+        onActionClick = {
+            if (state.type == ConfirmDialogType.DISMISS) {
+                listener.onDismissDeleteShelfConfirmationDialog()
+            } else {
+                deletedShelfId?.let { shelfId ->
+                    listener.deleteShelf(shelfId = shelfId)
+                }
+            }
+        },
+        onCancelClick = { listener.onDismissDeleteShelfConfirmationDialog() }
+    )
+}
+
 
 @Preview
 @Composable

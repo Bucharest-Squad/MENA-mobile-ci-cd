@@ -1,6 +1,7 @@
 package net.thechance.mena.dukan.data.repository
 
 import io.ktor.client.HttpClient
+import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -11,11 +12,11 @@ import net.thechance.mena.dukan.data.repository.mapper.toCreateShelfRequest
 import net.thechance.mena.dukan.data.repository.mapper.toShelfList
 import net.thechance.mena.dukan.data.repository.util.safeApiCall
 import net.thechance.mena.dukan.domain.entity.Shelf
-import net.thechance.mena.dukan.domain.repository.ShelfRepository
+import net.thechance.mena.dukan.domain.repository.CreateShelfRepository
 
-class ShelfRepositoryImpl(
+class CreateShelfRepositoryImpl(
     private val client: HttpClient
-) : ShelfRepository {
+) : CreateShelfRepository {
 
     override suspend fun createShelf(shelf: Shelf) {
         safeApiCall<Unit> {
@@ -32,8 +33,10 @@ class ShelfRepositoryImpl(
         }.toShelfList()
     }
 
-    override suspend fun deleteShelf(shelfId: String): Boolean {
-        TODO("Provide the return value")
+    override suspend fun deleteShelf(shelfId: String) {
+        safeApiCall<Unit> {
+            client.delete(urlString = "$BASE_URL/shelf/$shelfId")
+        }
     }
 
     companion object {
