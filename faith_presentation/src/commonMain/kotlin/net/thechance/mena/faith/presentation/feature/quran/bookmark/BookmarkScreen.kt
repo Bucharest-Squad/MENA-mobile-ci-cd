@@ -34,7 +34,6 @@ import net.thechance.mena.faith.presentation.base.SnackBarState
 import net.thechance.mena.faith.presentation.component.BackIcon
 import net.thechance.mena.faith.presentation.component.FaithScaffold
 import net.thechance.mena.faith.presentation.component.FaithSnackBar
-import net.thechance.mena.faith.presentation.component.LoadingIndicator
 import net.thechance.mena.faith.presentation.component.SwappableCard
 import net.thechance.mena.faith.presentation.designSystem.theme.QuranTheme
 import net.thechance.mena.faith.presentation.feature.quran.bookmark.component.AyaBookmarkCard
@@ -42,7 +41,6 @@ import net.thechance.mena.faith.presentation.feature.quran.bookmark.component.Em
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
-import kotlin.time.ExperimentalTime
 
 @Composable
 fun BookmarkScreen(
@@ -101,14 +99,6 @@ private fun Content(
                     .padding(horizontal = Theme.spacing._16)
             ) {
                 AnimatedVisibility(
-                    visible = uiState.isLoading,
-                    enter = fadeIn(tween()),
-                    exit = fadeOut(tween())
-                ) {
-                    LoadingIndicator()
-                }
-
-                AnimatedVisibility(
                     visible = uiState.bookmarks.isEmpty() && uiState.isLoading.not(),
                     enter = fadeIn(tween()),
                     exit = fadeOut(tween())
@@ -148,7 +138,6 @@ private fun EmptyBookmarkState() {
 }
 
 @Composable
-@OptIn(ExperimentalTime::class)
 private fun BookmarkItems(
     uiState: BookmarksScreenState,
     onRemoveBookmarkClick: (Int) -> Unit,

@@ -64,7 +64,7 @@ class NetworkClient {
     }
 
     private companion object {
-        const val BASE_URL = ""
+        const val BASE_URL = "https://mena-dev.the-chance.net/"
         const val ACCESS_TOKEN = ""
     }
 }
