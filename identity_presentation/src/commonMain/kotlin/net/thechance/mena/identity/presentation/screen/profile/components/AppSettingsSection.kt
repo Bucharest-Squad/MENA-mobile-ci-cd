@@ -18,17 +18,14 @@ import mena.identity_presentation.generated.resources.profile_theme_light
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.identity.domain.repository.UserRepository
-import net.thechance.mena.identity.presentation.screen.profile.ProfileScreenInteractionListener
-import net.thechance.mena.identity.presentation.screen.profile.ProfileScreenViewModel
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun AppSettingsSection(
-    onLanguageClicked:()->Unit,
-    onThemeClicked:()->Unit,
+    onLanguageClicked: () -> Unit,
+    onThemeClicked: () -> Unit,
 ) {
     Column(
         modifier = Modifier.padding(top = 24.dp),
@@ -61,7 +58,7 @@ fun PreviewAppSettingsSection() {
     MenaTheme {
 
         AppSettingsSection(
-            {},{}
+            {}, {}
         )
     }
 }
