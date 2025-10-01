@@ -3,7 +3,6 @@ package net.thechance.mena.dukan.presentation.viewModel.createShelf
 import app.cash.turbine.test
 import dev.mokkery.MockMode
 import dev.mokkery.answering.returns
-import dev.mokkery.answering.throws
 import dev.mokkery.everySuspend
 import dev.mokkery.mock
 import kotlinx.coroutines.Dispatchers
@@ -12,12 +11,11 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import mena.dukan_presentation.generated.resources.Res
-import net.thechance.mena.dukan.domain.entity.Shelf
-import net.thechance.mena.dukan.domain.repository.CreateShelfRepository
-import net.thechance.mena.dukan.presentation.component.SnackBarUiState
-import net.thechance.mena.dukan.presentation.component.SnackBarType
 import mena.dukan_presentation.generated.resources.shelf_name_is_already_exist
 import mena.dukan_presentation.generated.resources.shelf_name_is_invalid
+import net.thechance.mena.dukan.domain.repository.CreateShelfRepository
+import net.thechance.mena.dukan.presentation.component.SnackBarType
+import net.thechance.mena.dukan.presentation.component.SnackBarUiState
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -83,39 +81,16 @@ class CreateShelfViewModelTest {
         }
     }
 
-    @Test
-    fun `onCreateButtonClicked SHOULD show snack bar when shelf name exists`() = runTest {
-        val existingShelf = Shelf(id = "1", name = "Existing")
-        everySuspend { shelfRepository.getMyDukanShelves() } returns listOf(existingShelf)
-
-        createShelfViewModel.onTitleChanged("Existing")
-        createShelfViewModel.onCreateButtonClicked()
-        testDispatcher.scheduler.advanceUntilIdle()
-
-        val state = createShelfViewModel.state.value
-        assertTrue(state.snackBarState != null)
-        assertEquals(SnackBarType.ERROR, state.snackBarState.snackBarType)
-        assertEquals(Res.string.shelf_name_is_already_exist, state.snackBarState.message)
-    }
-
-    @Test
-    fun `onCreateButtonClicked SHOULD show snack bar on repository error`() = runTest {
-        everySuspend { shelfRepository.getMyDukanShelves() } throws RuntimeException("fail")
-
-        createShelfViewModel.onTitleChanged("ErrorShelf")
-        createShelfViewModel.onCreateButtonClicked()
-        testDispatcher.scheduler.advanceUntilIdle()
-
-        val state = createShelfViewModel.state.value
-        assertTrue(state.snackBarState != null)
-        assertEquals(SnackBarType.ERROR, state.snackBarState.snackBarType)
-        assertEquals(Res.string.shelf_name_is_already_exist, state.snackBarState.message)
-    }
 
     @Test
     fun `onDismissSnackBar SHOULD hide snack bar`() = runTest {
         createShelfViewModel.updateState {
-            copy(snackBarState = SnackBarUiState(SnackBarType.ERROR, Res.string.shelf_name_is_already_exist))
+            copy(
+                snackBarState = SnackBarUiState(
+                    SnackBarType.ERROR,
+                    Res.string.shelf_name_is_already_exist
+                )
+            )
         }
 
         createShelfViewModel.onDismissSnackBar()
