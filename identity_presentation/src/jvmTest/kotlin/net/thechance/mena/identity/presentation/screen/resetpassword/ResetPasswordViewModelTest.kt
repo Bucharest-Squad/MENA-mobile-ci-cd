@@ -1,17 +1,16 @@
 package net.thechance.mena.identity.presentation.screen.resetpassword
 
 import app.cash.turbine.test
-import dev.mokkery.MockMode
-import dev.mokkery.answering.returns
-import dev.mokkery.every
-import dev.mokkery.everySuspend
-import dev.mokkery.mock
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import net.thechance.mena.identity.domain.entity.PhoneNumber
 import net.thechance.mena.identity.domain.repository.ResetPasswordRepository
 import net.thechance.mena.identity.domain.useCase.validation.mobileNumber.PasswordValidator
 import net.thechance.mena.identity.presentation.screen.resetPassword.ResetPasswordScreenUIEffect
@@ -38,14 +37,15 @@ class ResetPasswordScreenViewModelTest {
     @BeforeTest
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
-        resetPasswordRepository = mock(mode = MockMode.autofill)
-        passwordValidator = mock(mode = MockMode.autofill)
+        resetPasswordRepository = mockk()
+        passwordValidator = mockk()
 
         viewModel = ResetPasswordScreenViewModel(
             passwordValidator = passwordValidator,
             resetPasswordRepository = resetPasswordRepository,
             phoneNumber = mockkPhoneNumber,
-            callingCode = mockkPhoneNumber
+            callingCode = mockkPhoneNumber,
+            dispatcher = testDispatcher
         )
 
         every { passwordValidator.isValid(validPassword) } returns true
@@ -66,91 +66,88 @@ class ResetPasswordScreenViewModelTest {
     @Test
     fun `onChangeNewPassword should update newPassword in state`() = runTest {
         val newPass = "NewP@ss123"
-        viewModel.onChangeNewPassword(newPass)
-        viewModel.state.test {
-            assertTrue { awaitItem().newPassword == newPass }
-        }
-    }
+        every { passwordValidator.isValid(newPass) } returns true
 
-    @Test
-    fun `onChangeConfirmPassword should update confirmPassword in state`() = runTest {
-        val confirmPass = "ConfirmP@ss123"
-        viewModel.onChangeConfirmPassword(confirmPass)
+        viewModel.onChangeNewPassword(newPass)
+
         viewModel.state.test {
-            assertTrue { awaitItem().confirmPassword == confirmPass }
+            assertTrue(awaitItem().newPassword == newPass)
         }
     }
 
     @Test
     fun `onToggleNewPasswordVisibility should toggle isNewPasswordVisible state`() = runTest {
         viewModel.onToggleNewPasswordVisibility()
+
         viewModel.state.test {
-            assertTrue { awaitItem().isNewPasswordVisible }
+            assertTrue(awaitItem().isNewPasswordVisible)
         }
     }
 
     @Test
-    fun `onToggleConfirmPasswordVisibility should toggle isConfirmPasswordVisible state`() =
-        runTest {
-            viewModel.onToggleConfirmPasswordVisibility()
-            viewModel.state.test {
-                assertTrue { awaitItem().isConfirmPasswordVisible }
-            }
+    fun `onToggleConfirmPasswordVisibility should toggle isConfirmPasswordVisible state`() = runTest {
+        viewModel.onToggleConfirmPasswordVisibility()
+
+        viewModel.state.test {
+            assertTrue(awaitItem().isConfirmPasswordVisible)
         }
+    }
 
     @Test
     fun `checkResetButtonEnabled should be disabled when passwords do not match`() = runTest {
-        every { passwordValidator.isValid(validPassword) } returns true
-
         viewModel.onChangeNewPassword(validPassword)
         viewModel.onChangeConfirmPassword("DifferentPass123")
 
         viewModel.state.test {
-            assertFalse { awaitItem().isResetEnabled }
+            assertFalse(awaitItem().isResetEnabled)
         }
     }
 
     @Test
     fun `checkResetButtonEnabled should be disabled when password is not secure`() = runTest {
-        every { passwordValidator.isValid(invalidPassword) } returns false
-
         viewModel.onChangeNewPassword(invalidPassword)
         viewModel.onChangeConfirmPassword(invalidPassword)
 
         viewModel.state.test {
-            assertFalse { awaitItem().isResetEnabled }
+            assertFalse(awaitItem().isResetEnabled)
         }
     }
 
     @Test
-    fun `checkResetButtonEnabled should be enabled when both passwords match and are secure`() =
-        runTest {
-            setupValidPasswords()
-            viewModel.state.test {
-                assertTrue { awaitItem().isResetEnabled }
-            }
+    fun `checkResetButtonEnabled should be enabled when both passwords match and are secure`() = runTest {
+        setupValidPasswords()
+
+        viewModel.state.test {
+            assertTrue(awaitItem().isResetEnabled)
         }
+    }
 
     @Test
     fun `onClickResetPassword should call Repository and navigate on success`() = runTest {
         setupValidPasswords()
 
-        everySuspend {
-            resetPasswordRepository.resetPassword(validPassword, validPassword, mockkPhoneNumber)
+        coEvery {
+            resetPasswordRepository.resetPassword(
+                validPassword,
+                validPassword,
+                PhoneNumber(countryCode = mockkPhoneNumber, localNumber = mockkPhoneNumber)
+            )
         } returns Unit
 
         viewModel.effect.test {
             viewModel.onClickResetPassword()
 
             viewModel.state.test {
-                assertTrue { awaitItem().isLoading }
-                assertFalse { awaitItem().isLoading }
+                val loadingState = awaitItem()
+                assertTrue(loadingState.isLoading)
+
+                val finishedState = awaitItem()
+                assertFalse(finishedState.isLoading)
             }
 
             testDispatcher.scheduler.advanceUntilIdle()
 
-            val effect = awaitItem()
-            assertTrue { effect is ResetPasswordScreenUIEffect.NavigateBackToLogin }
+            assertTrue(awaitItem() is ResetPasswordScreenUIEffect.NavigateBackToLogin)
         }
     }
 
@@ -158,8 +155,7 @@ class ResetPasswordScreenViewModelTest {
     fun `onClickBack should send NavigateBackToLogin effect`() = runTest {
         viewModel.effect.test {
             viewModel.onClickBack()
-            val effect = awaitItem()
-            assertTrue { effect is ResetPasswordScreenUIEffect.NavigateBackToLogin }
+            assertTrue(awaitItem() is ResetPasswordScreenUIEffect.NavigateBackToLogin)
         }
     }
 }

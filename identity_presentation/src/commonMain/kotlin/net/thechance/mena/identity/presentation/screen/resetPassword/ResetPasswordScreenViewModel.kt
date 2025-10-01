@@ -1,5 +1,8 @@
 package net.thechance.mena.identity.presentation.screen.resetPassword
 
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import net.thechance.mena.identity.domain.entity.PhoneNumber
 import net.thechance.mena.identity.domain.repository.ResetPasswordRepository
 import net.thechance.mena.identity.domain.useCase.validation.mobileNumber.PasswordValidator
@@ -11,7 +14,8 @@ class ResetPasswordScreenViewModel(
     private val passwordValidator: PasswordValidator,
     private val resetPasswordRepository: ResetPasswordRepository,
     private val phoneNumber: String,
-    private val callingCode: String
+    private val callingCode: String,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : BaseScreenModel<ResetPasswordScreenUIState, ResetPasswordScreenUIEffect>(
     ResetPasswordScreenUIState()
 ), ResetPasswordScreenInteractionListener {
@@ -53,7 +57,8 @@ class ResetPasswordScreenViewModel(
         tryToExecute(
             function = ::onResetPassword,
             onSuccess = ::onResetPasswordSuccess,
-            onError = ::onErrorAccrue
+            onError = ::onErrorAccrue,
+            dispatcher = dispatcher
         )
     }
 
