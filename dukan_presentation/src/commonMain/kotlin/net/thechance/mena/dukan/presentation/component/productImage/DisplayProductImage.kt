@@ -1,19 +1,14 @@
-package net.thechance.mena.dukan.presentation.component
+package net.thechance.mena.dukan.presentation.component.productImage
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.EaseIn
-import androidx.compose.animation.core.EaseOut
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,35 +23,32 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import mena.dukan_presentation.generated.resources.Res
 import mena.dukan_presentation.generated.resources.ic_cancel
+import mena.dukan_presentation.generated.resources.image_size_mb
 import mena.dukan_presentation.generated.resources.upload_dukan_image
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.progressBar.ProgressBar
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import net.thechance.mena.dukan.presentation.util.animation.fadeTransitionSpec
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun DisplayProductImage(
-    modifier: Modifier = Modifier,
     image: ImageBitmap,
     imageSizeInMegaByte: Double,
+    onCancelClick: (image: ImageBitmap) -> Unit,
+    modifier: Modifier = Modifier,
     productImageState: ProductImageState = ProductImageState.LOADING,
     errorMessage: String? = null,
-    onCancelClick: (image: ImageBitmap) -> Unit
 ) {
     Box(
         modifier = modifier
@@ -80,7 +72,6 @@ fun DisplayProductImage(
         }
 
         CancelImageButton(
-            modifier = Modifier.align(Alignment.TopEnd),
             productImageState = productImageState,
             onCancelClick = { onCancelClick(image) },
         )
@@ -88,7 +79,9 @@ fun DisplayProductImage(
         errorMessage?.let { error ->
             if (productImageState == ProductImageState.ERROR) {
                 Text(
-                    modifier = Modifier.fillMaxWidth().padding(start = 4.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = Theme.spacing._4)
                         .align(Alignment.BottomCenter),
                     text = error,
                     style = Theme.typography.label.extraSmall,
@@ -101,10 +94,10 @@ fun DisplayProductImage(
 }
 
 @Composable
-private fun CancelImageButton(
-    modifier: Modifier,
+private fun BoxScope.CancelImageButton(
     productImageState: ProductImageState,
     onCancelClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val color = if (productImageState == ProductImageState.SUCCESS) {
         Theme.colorScheme.primary.primary
@@ -125,15 +118,15 @@ private fun CancelImageButton(
     if (isIconVisible) {
         Box(
             modifier = modifier
+                .align(Alignment.TopEnd)
                 .size(size = 24.dp)
-                .offset(x= 2.dp, y = (-4).dp)
+                .offset(x = 2.dp, y = (-4).dp)
                 .background(
                     color = Theme.colorScheme.background.surfaceLow,
                     shape = RoundedCornerShape(Theme.radius.full)
                 )
                 .clip(RoundedCornerShape(Theme.radius.full))
-                .clickable(onClick = onCancelClick)
-            ,
+                .clickable(onClick = onCancelClick),
             contentAlignment = Alignment.Center
         ) {
             Icon(
@@ -158,14 +151,14 @@ private fun LoadingContentImage(imageSize: Double) {
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "${imageSize}MB",
+            text = stringResource(resource = Res.string.image_size_mb, imageSize),
             style = Theme.typography.label.small
         )
         ProgressBar(
             modifier = Modifier
-                .padding(vertical = 4.dp, horizontal = 8.dp)
+                .padding(vertical = Theme.spacing._4, horizontal = Theme.spacing._8)
                 .fillMaxWidth()
-                .height(height = 4.dp),
+                .height(height = Theme.spacing._4),
         )
     }
 }
@@ -181,7 +174,9 @@ private fun SuccessContentImage(image: ImageBitmap) {
         contentAlignment = Alignment.Center
     ) {
         Image(
-            modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(size = Theme.radius.md)),
+            modifier = Modifier
+                .fillMaxSize()
+                .clip(shape = RoundedCornerShape(size = Theme.radius.md)),
             bitmap = image,
             contentDescription = stringResource(resource = Res.string.upload_dukan_image),
             contentScale = ContentScale.Crop
@@ -192,9 +187,7 @@ private fun SuccessContentImage(image: ImageBitmap) {
 
 @Composable
 private fun ErrorContentImage(image: ImageBitmap) {
-    val dashPattern = floatArrayOf(15f, 5f)
-    val phase = 0f
-    val strokeWidth = 1.dp
+
     val borderColor = Theme.colorScheme.error
     val cornerRadiusValue = Theme.radius.md
 
@@ -205,24 +198,9 @@ private fun ErrorContentImage(image: ImageBitmap) {
                 shape = RoundedCornerShape(size = Theme.radius.md)
             ).drawWithContent {
                 drawContent()
-                drawRoundRect(
-                    color = borderColor,
-                    topLeft = Offset(
-                        x = strokeWidth.toPx() / 2,
-                        y = strokeWidth.toPx() / 2
-                    ),
-                    size = Size(
-                        width = size.width - strokeWidth.toPx(),
-                        height = size.height - strokeWidth.toPx()
-                    ),
-                    cornerRadius = CornerRadius(
-                        x = cornerRadiusValue.toPx(),
-                        y = cornerRadiusValue.toPx()
-                    ),
-                    style = Stroke(
-                        width = strokeWidth.toPx(),
-                        pathEffect = PathEffect.dashPathEffect(intervals = dashPattern, phase),
-                    )
+                drawBorder(
+                    borderColor = borderColor,
+                    cornerRadiusValue = cornerRadiusValue.toPx()
                 )
             },
         contentAlignment = Alignment.Center
@@ -237,29 +215,13 @@ private fun ErrorContentImage(image: ImageBitmap) {
 
 }
 
-private fun fadeTransitionSpec(): ContentTransform {
-    return fadeIn(
-        animationSpec = tween(
-            durationMillis = 500,
-            delayMillis = 100,
-            easing = EaseIn
-        )
-    ) togetherWith fadeOut(
-        animationSpec = tween(
-            durationMillis = 500,
-            delayMillis = 100,
-            easing = EaseOut
-        )
-    )
-}
-
 enum class ProductImageState {
     SUCCESS, LOADING, ERROR
 }
 
 @Preview()
 @Composable
-fun LoadingProductImagePreview() {
+private fun LoadingProductImagePreview() {
     MenaTheme {
         Box(
             modifier = Modifier.size(150.dp)
@@ -277,9 +239,10 @@ fun LoadingProductImagePreview() {
         }
     }
 }
+
 @Preview()
 @Composable
-fun SuccessProductImagePreview() {
+private fun SuccessProductImagePreview() {
     MenaTheme {
         Box(
             modifier = Modifier.size(150.dp)
@@ -297,9 +260,10 @@ fun SuccessProductImagePreview() {
         }
     }
 }
+
 @Preview()
 @Composable
-fun ErrorProductImagePreview() {
+private fun ErrorProductImagePreview() {
     MenaTheme {
         Box(
             modifier = Modifier.size(150.dp)

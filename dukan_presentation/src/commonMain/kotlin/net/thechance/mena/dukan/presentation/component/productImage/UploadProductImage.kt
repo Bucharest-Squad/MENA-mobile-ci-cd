@@ -1,4 +1,4 @@
-package net.thechance.mena.dukan.presentation.component
+package net.thechance.mena.dukan.presentation.component.productImage
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -77,37 +77,6 @@ fun UploadProductImage(
         )
     }
 }
-
-private fun DrawScope.drawBorder(
-    borderColor: Color,
-    cornerRadiusValue: Float
-) {
-    val dashPattern = floatArrayOf(15f, 5f)
-    val phase = 0f
-    val strokeWidth = 1.dp
-    val strokeWidthPx = strokeWidth.toPx()
-
-    drawRoundRect(
-        color = borderColor,
-        topLeft = Offset(
-            x = strokeWidthPx / 2,
-            y = strokeWidthPx / 2
-        ),
-        size = Size(
-            width = size.width - strokeWidthPx,
-            height = size.height - strokeWidthPx
-        ),
-        cornerRadius = CornerRadius(
-            x = cornerRadiusValue,
-            y = cornerRadiusValue
-        ),
-        style = Stroke(
-            width = strokeWidth.toPx(),
-            pathEffect = PathEffect.dashPathEffect(intervals = dashPattern, phase),
-        )
-    )
-}
-
 
 @Preview
 @Composable
