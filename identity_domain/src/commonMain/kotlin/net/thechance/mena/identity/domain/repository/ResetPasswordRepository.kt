@@ -8,6 +8,6 @@ interface ResetPasswordRepository {
     suspend fun resetPassword(
         newPassword: String,
         confirmPassword: String,
-        phoneNumber: String
+        phoneNumber: PhoneNumber
     )
 }
