@@ -41,7 +41,13 @@ fun ManageDukanScreen(
                 DukanRoute.CreateShelfScreenRoute
             )
 
-            ManageDukanEffect.NavigateToManageShelf -> {
+            is ManageDukanEffect.NavigateToManageShelf -> {
+                navController.navigate(
+                    DukanRoute.ManageShelfScreenRoute(
+                        shelfId = effect.shelfId,
+                        shelfTitle = effect.shelfTitle
+                    )
+                )
             }
 
             ManageDukanEffect.NavigateToAddProduct -> {

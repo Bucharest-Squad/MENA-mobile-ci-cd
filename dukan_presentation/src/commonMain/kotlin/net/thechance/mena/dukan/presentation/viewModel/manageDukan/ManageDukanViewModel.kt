@@ -59,7 +59,12 @@ class ManageDukanViewModel(
     }
 
     override fun onEditShelfClicked() {
-        emitEffect(ManageDukanEffect.NavigateToManageShelf)
+        emitEffect(
+            ManageDukanEffect.NavigateToManageShelf(
+                shelfId = state.value.selectedShelf?.id.orEmpty(),
+                shelfTitle = state.value.selectedShelf?.name.orEmpty()
+            )
+        )
     }
 
     override fun onAddShelfClicked() {

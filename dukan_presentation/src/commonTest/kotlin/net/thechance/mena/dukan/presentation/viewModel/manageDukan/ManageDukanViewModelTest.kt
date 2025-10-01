@@ -152,7 +152,10 @@ class ManageDukanViewModelTest {
 
         // Then
         manageDukanViewModel.effect.test {
-            assertEquals(ManageDukanEffect.NavigateToManageShelf, awaitItem())
+            assertEquals(ManageDukanEffect.NavigateToManageShelf(
+                shelfId = "shelf_1",
+                shelfTitle = "Electronics"
+            ), awaitItem())
             cancelAndIgnoreRemainingEvents()
         }
     }
