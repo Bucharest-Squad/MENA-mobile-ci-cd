@@ -18,6 +18,7 @@ kotlin {
     }
 
     listOf(
+        iosX64(),
         iosArm64(),
         iosSimulatorArm64()
     ).forEach { iosTarget ->
@@ -35,6 +36,7 @@ kotlin {
         }
         commonMain.dependencies {
             implementation(projects.coreChatApi)
+            implementation(projects.walletApi)
             implementation(projects.coreChatDomain)
             implementation(projects.designSystem)
 
@@ -80,6 +82,7 @@ kotlin {
                 implementation(libs.assertk)
                 implementation(libs.kotlinx.coroutines.test)
                 implementation(libs.turbine)
+                implementation(libs.mokkery.core)
         }
     }
 }
@@ -109,6 +112,7 @@ kover.reports {
             classes(
                 "*SyncContactsViewModel*",
                 "*ContactsViewModel*",
+                "*ChatViewModel*"
             )
         }
     }

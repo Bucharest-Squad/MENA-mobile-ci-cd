@@ -8,6 +8,7 @@ plugins {
 
 kotlin {
     jvm()
+    iosX64()
     iosArm64()
     iosSimulatorArm64()
 
@@ -19,6 +20,7 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.mokkery.core)
         }
     }
     sourceSets.named("commonMain").configure {
@@ -27,7 +29,7 @@ kotlin {
 }
 
 ksp {
-    arg("KOIN_CONFIG_CHECK","true")
+    arg("KOIN_CONFIG_CHECK", "true")
 }
 
 dependencies {
@@ -35,7 +37,7 @@ dependencies {
 }
 
 project.tasks.withType(KotlinCompilationTask::class.java).configureEach {
-    if(name != "kspCommonMainKotlinMetadata") {
+    if (name != "kspCommonMainKotlinMetadata") {
         dependsOn("kspCommonMainKotlinMetadata")
     }
 }
@@ -48,7 +50,14 @@ kover.reports {
     }
     filters {
         excludes {
-            classes("**.di.**","**.exceptions.**", "**.repository.**", "**.generated.**","**.entity.**")
+            classes(
+                "**.di.**",
+                "**.exceptions.**",
+                "**.repository.**",
+                "**.generated.**",
+                "**.entity.**",
+                "**.model.**"
+            )
         }
     }
 }

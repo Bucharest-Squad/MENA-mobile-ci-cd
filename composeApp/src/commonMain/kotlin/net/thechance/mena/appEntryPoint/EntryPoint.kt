@@ -1,19 +1,24 @@
 package net.thechance.mena.appEntryPoint
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import net.thechance.mena.core_chat.api.CoreChatApi
 import net.thechance.mena.designsystem.presentation.component.bottomNavigation.BottomNavigationBar
 import net.thechance.mena.designsystem.presentation.component.bottomNavigation.BottomNavigationItem
+import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.dukan.api.DukanApi
 import net.thechance.mena.faith.api.FaithApi
 import net.thechance.mena.identity.api.IdentityFeatureApi
@@ -40,7 +45,14 @@ fun EntryPoint(){
 @Composable
 private fun LoggedInContainer(){
     var activeFeature: Feature by remember { mutableStateOf(Feature.CHAT) }
-    Column(Modifier.fillMaxSize()) {
+    Column(
+        Modifier
+            .fillMaxSize()
+            .background(Theme.colorScheme.background.surfaceLow)
+            .navigationBarsPadding()
+            .systemBarsPadding()
+            .background(Theme.colorScheme.background.surfaceHigh)
+    ) {
         FeatureContent(activeFeature)
         BottomNavigationBar(onItemClick = { navBarItem ->
             //TODO: refactor this work around with refactoring bottom navbar
