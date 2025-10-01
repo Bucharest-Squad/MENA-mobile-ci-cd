@@ -7,19 +7,16 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import com.russhwolf.settings.Settings
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.mock.MockEngine
-import io.ktor.client.engine.mock.respond
-import io.ktor.client.engine.mock.respondError
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.http.ContentType
-import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
-import io.ktor.http.headersOf
-import io.ktor.serialization.kotlinx.json.json
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.test.runTest
+import net.thechance.mena.identity.data.dto.auth.AuthenticationResponse
+import net.thechance.mena.identity.data.utils.ACCESS_TOKEN
+import net.thechance.mena.identity.data.utils.REFRESH_TOKEN
+import net.thechance.mena.identity.data.utils.mockHttpClient
+import net.thechance.mena.identity.data.utils.mockHttpClientError
 import kotlinx.serialization.json.Json
 import net.thechance.mena.identity.data.dataSource.remote.dto.AuthenticationResponse
 import net.thechance.mena.identity.data.dataSource.local.setting.ACCESS_TOKEN
@@ -39,42 +36,6 @@ class AuthenticationRepositoryImplTest {
 
     private var authenticationRepository: AuthenticationRepositoryImpl =
         AuthenticationRepositoryImpl(client, settings)
-
-
-    private fun mockHttpClient(response: AuthenticationResponse): HttpClient {
-        return HttpClient(MockEngine) {
-            install(ContentNegotiation) {
-                json()
-            }
-            engine {
-                addHandler { request ->
-                    respond(
-                        content = Json.encodeToString(response),
-                        status = HttpStatusCode.OK,
-                        headers = headersOf(
-                            HttpHeaders.ContentType,
-                            ContentType.Application.Json.toString()
-                        )
-                    )
-                }
-            }
-        }
-    }
-
-    private fun mockHttpClientError(status: HttpStatusCode): HttpClient {
-        return HttpClient(MockEngine) {
-            install(ContentNegotiation) {
-                json()
-            }
-            engine {
-                addHandler {
-                    respondError(
-                        status = status
-                    )
-                }
-            }
-        }
-    }
 
 
     @Test
@@ -136,7 +97,8 @@ class AuthenticationRepositoryImplTest {
     }
 
     @Test
-    fun `refresh token should be stored in settings after successful refreshAccessTokens`() = runTest {
+    fun `refresh token should be stored in settings after successful refreshAccessTokens`() =
+        runTest {
 
             val client = mockHttpClient(fakeLoginResponse)
 
@@ -148,7 +110,8 @@ class AuthenticationRepositoryImplTest {
         }
 
     @Test
-    fun `access token should be stored in settings after successful refreshAccessTokens`() = runTest {
+    fun `access token should be stored in settings after successful refreshAccessTokens`() =
+        runTest {
 
             val client = mockHttpClient(fakeLoginResponse)
 
@@ -173,7 +136,8 @@ class AuthenticationRepositoryImplTest {
     }
 
     @Test
-    fun `refreshAccessToken() should throw UnAuthorizedException when server returns 401`() = runTest {
+    fun `refreshAccessToken() should throw UnAuthorizedException when server returns 401`() =
+        runTest {
 
             val client = mockHttpClientError(HttpStatusCode.Unauthorized)
             authenticationRepository = AuthenticationRepositoryImpl(client, settings)

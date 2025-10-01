@@ -1,7 +1,5 @@
 package net.thechance.mena.identity.presentation.screen.profile
 
-import cafe.adriel.voyager.core.model.screenModelScope
-import kotlinx.coroutines.CoroutineScope
 import net.thechance.mena.identity.domain.model.User
 import net.thechance.mena.identity.domain.repository.UserRepository
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
@@ -14,7 +12,6 @@ class ProfileScreenViewModel(
     BaseScreenModel<ProfileScreenUIState, ProfileScreenUIEffect>
         (ProfileScreenUIState()),
     ProfileScreenInteractionListener {
-    override val viewModelScope: CoroutineScope get() = screenModelScope
 
     init {
         getUserInfo()

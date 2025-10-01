@@ -10,8 +10,10 @@ import net.thechance.mena.identity.data.dataSource.local.database.IdentityDataba
 import net.thechance.mena.identity.data.dataSource.local.database.dao.UserDao
 import net.thechance.mena.identity.data.repository.AuthenticationRepositoryImpl
 import net.thechance.mena.identity.data.repository.UserRepositoryImpl
+import net.thechance.mena.identity.data.repository.ResetPasswordRepositoryImpl
 import net.thechance.mena.identity.domain.repository.AuthenticationRepository
 import net.thechance.mena.identity.domain.repository.UserRepository
+import net.thechance.mena.identity.domain.repository.ResetPasswordRepository
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
@@ -38,6 +40,7 @@ val identityDataModule = module {
     single<UserDao> { get<IdentityDatabase>().getUserDao() }
 
     singleOf(::AuthenticationRepositoryImpl) bind AuthenticationRepository::class
+    singleOf(::ResetPasswordRepositoryImpl) bind ResetPasswordRepository::class
 }
 
 fun getRoomDatabase(builder: RoomDatabase.Builder<IdentityDatabase>): IdentityDatabase {
