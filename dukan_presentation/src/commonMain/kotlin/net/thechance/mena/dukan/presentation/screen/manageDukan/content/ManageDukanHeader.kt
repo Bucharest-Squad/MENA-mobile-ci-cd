@@ -42,7 +42,7 @@ fun ManageDukanHeader(
         )
 
         SelectionRow(
-            availableItems = state.availableShelves,
+            availableItems = state.shelves,
             isItemSelected = listener.isShelfSelected(),
             onItemSelected = listener::onShelfSelected,
             onItemDeselected = listener::onShelfDeselected,

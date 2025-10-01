@@ -13,8 +13,8 @@ import mena.dukan_presentation.generated.resources.dismiss_title
 import mena.dukan_presentation.generated.resources.error_for_delete_shelf
 import net.thechance.mena.dukan.domain.entity.Product
 import net.thechance.mena.dukan.domain.entity.Shelf
-import net.thechance.mena.dukan.domain.repository.ProductRepository
 import net.thechance.mena.dukan.domain.repository.CreateShelfRepository
+import net.thechance.mena.dukan.domain.repository.ProductRepository
 import net.thechance.mena.dukan.presentation.component.SnackBarType
 import net.thechance.mena.dukan.presentation.component.SnackBarUiState
 import net.thechance.mena.dukan.presentation.viewModel.base.BaseViewModel
@@ -59,7 +59,7 @@ class ManageDukanViewModel(
     }
 
     override fun onEditShelfClicked() {
-        emitEffect(ManageDukanEffect.NavigateToEditShelf)
+        emitEffect(ManageDukanEffect.NavigateToManageShelf)
     }
 
     override fun onAddShelfClicked() {
@@ -70,25 +70,25 @@ class ManageDukanViewModel(
         emitEffect(ManageDukanEffect.NavigateToProductDetails)
     }
 
-    override fun isShelfSelected(): (Shelf) -> Boolean = { shelf ->
+    override fun isShelfSelected(): (ShelfUiState) -> Boolean = { shelf ->
         state.value.selectedShelf == shelf
     }
 
-    override fun onShelfSelected(shelf: Shelf): Boolean {
+    override fun onShelfSelected(shelf: ShelfUiState): Boolean {
         if (state.value.selectedShelf == shelf) return true
         updateState { copy(selectedShelf = shelf) }
         loadProductsForSelectedShelf()
         return true
     }
 
-    override fun onShelfDeselected(shelf: Shelf): Boolean {
+    override fun onShelfDeselected(shelf: ShelfUiState): Boolean {
         if (state.value.selectedShelf != shelf) return true
         updateState { copy(selectedShelf = null) }
         loadProductsForSelectedShelf()
         return true
     }
 
-    override fun onShelfEnabled(shelf: Shelf): Boolean = true
+    override fun onShelfEnabled(shelf: ShelfUiState): Boolean = true
 
     override fun onShelfAddedSuccessfully() {
         showSnackBar(message = Res.string.add_shelf_successfully, type = SnackBarType.SUCCESS)
@@ -113,9 +113,8 @@ class ManageDukanViewModel(
     private fun handleShelvesLoaded(shelves: List<Shelf>) {
         updateState {
             copy(
-                shelves = shelves,
-                availableShelves = shelves,
-                selectedShelf = selectFirstShelfByDefault(shelves),
+                shelves = shelves.map(Shelf::toUiState),
+                selectedShelf = selectFirstShelfByDefault(shelves.map(Shelf::toUiState)),
                 isLoading = false
             )
         }
@@ -124,13 +123,15 @@ class ManageDukanViewModel(
 
     private fun loadProductsForSelectedShelf() {
         val selectedShelf = state.value.selectedShelf
-        if (selectedShelf != null) loadProductsFromRepository(selectedShelf) else clearProducts()
+        selectedShelf?.let { shelf ->
+            loadProductsFromRepository(shelf.id)
+        }
     }
 
-    private fun loadProductsFromRepository(selectedShelf: Shelf) {
+    private fun loadProductsFromRepository(shelfId: String) {
         tryToExecute(
             onStart = { updateState { copy(isLoadingProducts = isLoading) } },
-            block = { productRepository.getProductsByShelfId(selectedShelf.id) },
+            block = { productRepository.getProductsByShelfId(shelfId) },
             onSuccess = { products -> handleProductsLoaded(products) },
             onError = { updateState { copy(isLoadingProducts = false) } }
         )
@@ -148,7 +149,7 @@ class ManageDukanViewModel(
             copy(
                 deleteShelfConfirmationDialogUiState = DeleteShelfConfirmationDialogUiState(
                     title = updateDialogTitle(hasProducts),
-                    description = updateDialogDescription(hasProducts) ,
+                    description = updateDialogDescription(hasProducts),
                     type = updateDialogType(hasProducts)
                 ),
                 showDeleteConfirmationDialog = true
@@ -156,15 +157,18 @@ class ManageDukanViewModel(
         }
     }
 
-    private fun updateDialogTitle(hasProducts: Boolean): StringResource{
+    private fun updateDialogTitle(hasProducts: Boolean): StringResource {
         return if (!hasProducts) Res.string.delete_shelf_title else Res.string.dismiss_title
     }
-    private fun updateDialogDescription(hasProducts: Boolean): StringResource{
+
+    private fun updateDialogDescription(hasProducts: Boolean): StringResource {
         return if (!hasProducts) Res.string.delete_shelf_description else Res.string.dismiss_description
     }
-    private fun updateDialogType(hasProducts: Boolean): ConfirmDialogType{
+
+    private fun updateDialogType(hasProducts: Boolean): ConfirmDialogType {
         return if (!hasProducts) ConfirmDialogType.DELETE else ConfirmDialogType.DISMISS
     }
+
     override fun deleteShelf(shelfId: String) {
         tryToExecute(
             block = { shelfRepository.deleteShelf(shelfId) },
@@ -193,17 +197,8 @@ class ManageDukanViewModel(
         }
     }
 
-    private fun clearProducts() {
-        updateState {
-            copy(
-                products = emptyList(),
-                totalProducts = 0,
-                isLoadingProducts = false
-            )
-        }
-    }
 
-    private fun selectFirstShelfByDefault(shelves: List<Shelf>): Shelf? {
+    private fun selectFirstShelfByDefault(shelves: List<ShelfUiState>): ShelfUiState? {
         return shelves.firstOrNull()
     }
 

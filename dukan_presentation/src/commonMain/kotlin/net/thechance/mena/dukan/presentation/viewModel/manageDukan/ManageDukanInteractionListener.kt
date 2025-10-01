@@ -1,7 +1,6 @@
 package net.thechance.mena.dukan.presentation.viewModel.manageDukan
 
 import net.thechance.mena.dukan.domain.entity.Product
-import net.thechance.mena.dukan.domain.entity.Shelf
 
 interface ManageDukanInteractionListener {
     fun onBackButtonClicked()
@@ -14,8 +13,8 @@ interface ManageDukanInteractionListener {
     fun onEditShelfClicked()
     fun onAddShelfClicked()
     fun onShelfAddedSuccessfully()
-    fun isShelfSelected(): (Shelf) -> Boolean
-    fun onShelfSelected(shelf: Shelf): Boolean
-    fun onShelfDeselected(shelf: Shelf): Boolean
-    fun onShelfEnabled(shelf: Shelf): Boolean
+    fun isShelfSelected(): (ShelfUiState) -> Boolean
+    fun onShelfSelected(shelf: ShelfUiState): Boolean
+    fun onShelfDeselected(shelf: ShelfUiState): Boolean
+    fun onShelfEnabled(shelf: ShelfUiState): Boolean
 }
