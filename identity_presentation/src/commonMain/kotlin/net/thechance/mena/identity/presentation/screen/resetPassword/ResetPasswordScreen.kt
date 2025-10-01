@@ -101,19 +101,6 @@ data class ResetPasswordScreen(
                             .fillMaxWidth()
                             .padding(bottom = Theme.spacing._24)
                     )
-
-                    Spacer(modifier = Modifier.weight(1f))
-
-                    PrimaryButton(
-                        text = stringResource(Res.string.reset),
-                        onClick = listener::onClickResetPassword,
-                        isEnabled = state.isResetEnabled,
-                        isLoading = state.isLoading,
-                        contentPadding = PaddingValues(vertical = Theme.spacing._12),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = Theme.spacing._24)
-                    )
                 }
             }
         }
