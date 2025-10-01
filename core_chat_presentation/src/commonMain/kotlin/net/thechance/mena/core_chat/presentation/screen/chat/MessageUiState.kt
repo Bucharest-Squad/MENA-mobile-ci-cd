@@ -118,10 +118,10 @@ fun Message.toUi(currentUserId: Uuid): TextMessageUiState {
     )
 }
 
-fun TextMessageUiState.toEntity(): Message {
+fun TextMessageUiState.toEntity(currentUserId: Uuid): Message {
     return Message(
         id = id,
-        senderId = null,
+        senderId = currentUserId,
         chatId = chatId,
         text = text,
         sendAt = sendTime,
