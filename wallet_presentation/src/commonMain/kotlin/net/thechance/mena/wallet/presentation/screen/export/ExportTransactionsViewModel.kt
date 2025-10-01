@@ -214,14 +214,13 @@ class ExportTransactionsViewModel(
             }
 
             is NoTransactionsFoundException -> {
-                showToast(messageRes = Res.string.error_no_transactions)
-
                 updateState { oldState ->
                     oldState.copy(
                         isDownloadLoading = false,
                         isViewAndShareLoading = false
                     )
                 }
+                showToast(messageRes = Res.string.error_no_transactions)
             }
 
             else -> {
