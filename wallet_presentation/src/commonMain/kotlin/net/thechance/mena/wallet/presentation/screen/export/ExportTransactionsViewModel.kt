@@ -45,18 +45,46 @@ class ExportTransactionsViewModel(
     }
 
     override fun onAllTransactionsClicked() {
-        updateState { oldState -> oldState.copy(isCustomFilterCardSelected = false) }
+        updateState { oldState ->
+            oldState.copy(
+                isCustomFilterCardSelected = false,
+                isDownloadButtonEnabled = true,
+                isViewAndShareButtonEnabled = true
+            )
+        }
     }
 
     override fun onCustomFilteringClicked() {
-        updateState { oldState -> oldState.copy(isCustomFilterCardSelected = true) }
+        updateState { oldState ->
+            oldState.copy(
+                isCustomFilterCardSelected = true,
+                isDownloadButtonEnabled = oldState.hasActiveFilters,
+                isViewAndShareButtonEnabled = oldState.hasActiveFilters
+            )
+        }
     }
 
     override fun onTypeSelected(type: FilterType) {
-        updateState { oldState ->
-            val current = oldState.selectedTransactionsTypes ?: emptySet()
-            val newSet = if (current.contains(type)) current - type else current + type
-            oldState.copy(selectedTransactionsTypes = newSet)
+        val current = currentState.selectedTransactionsTypes
+        val newSet = if (current.contains(type)) current - type else current + type
+
+        val newState = currentState.copy(selectedTransactionsTypes = newSet)
+
+        updateState {
+            newState.copy(
+                isDownloadButtonEnabled =
+                    if (newState.isCustomFilterCardSelected) {
+                        newState.hasActiveFilters
+                    } else {
+                        true
+                    },
+                isViewAndShareButtonEnabled =
+                    if (newState.isCustomFilterCardSelected) {
+                        newState.hasActiveFilters
+                    } else {
+                        true
+                    }
+            )
         }
     }
 

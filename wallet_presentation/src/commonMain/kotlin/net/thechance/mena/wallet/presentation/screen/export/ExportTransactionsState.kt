@@ -1,9 +1,8 @@
 package net.thechance.mena.wallet.presentation.screen.export
 
-import net.thechance.mena.wallet.presentation.base.SnackBarState
-import net.thechance.mena.wallet.presentation.model.FilterStatus
-import net.thechance.mena.wallet.presentation.model.FilterType
 import net.thechance.mena.wallet.presentation.base.CustomToastState
+import net.thechance.mena.wallet.presentation.base.SnackBarState
+import net.thechance.mena.wallet.presentation.model.FilterType
 
 data class ExportTransactionsState(
     val snackBar: SnackBarState = SnackBarState(),
@@ -15,8 +14,11 @@ data class ExportTransactionsState(
     val isDownloadButtonEnabled: Boolean = true,
     val hasShownEmptyFileToast: Boolean = false,
     val noInternetConnection: Boolean = false,
-    val selectedTransactionsTypes: Set<FilterType>? = null,
-    val startDate: String = "",
-    val endDate: String = "",
-)
+    val selectedTransactionsTypes: Set<FilterType> = emptySet(),
+    val startDate: String = "2025/09/01",
+    val endDate: String = "2025/09/27",
+) {
+    val hasActiveFilters: Boolean
+        get() = selectedTransactionsTypes.isNotEmpty()
+}
 

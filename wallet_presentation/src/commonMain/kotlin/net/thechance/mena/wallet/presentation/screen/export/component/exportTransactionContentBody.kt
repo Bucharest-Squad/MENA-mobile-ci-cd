@@ -78,7 +78,7 @@ fun ExportTransactionContentBody(
             onClick = interactionListener::onViewAndShareClicked,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 12.dp),
+                .padding(top = 6.dp, bottom = 12.dp),
             trailingIcon = painterResource(Res.drawable.share),
             isLoading = state.isViewAndShareLoading,
             isEnabled = state.isViewAndShareButtonEnabled,
