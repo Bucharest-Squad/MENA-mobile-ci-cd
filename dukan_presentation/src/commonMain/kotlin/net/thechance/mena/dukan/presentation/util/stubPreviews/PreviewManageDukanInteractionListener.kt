@@ -1,13 +1,21 @@
 package net.thechance.mena.dukan.presentation.util.stubPreviews
 
 import net.thechance.mena.dukan.domain.entity.Product
+import net.thechance.mena.dukan.presentation.component.SnackBarType
 import net.thechance.mena.dukan.presentation.viewModel.manageDukan.ManageDukanInteractionListener
 import net.thechance.mena.dukan.presentation.viewModel.manageDukan.ShelfUiState
+import org.jetbrains.compose.resources.StringResource
 
 object PreviewManageDukanInteractionListener : ManageDukanInteractionListener {
     override fun onBackButtonClicked() {}
     override fun onDismissSnackBar() {}
-    override fun onDismissDeleteShelfConfirmationDialog(){}
+    override fun onShowSnackBar(
+        message: StringResource,
+        type: SnackBarType
+    ) {
+    }
+
+    override fun onDismissDeleteShelfConfirmationDialog() {}
     override fun onShowDeleteShelfDailog(shelfId: String) {}
     override fun onDeleteConfirmed(shelfId: String) {}
     override fun onAddProductClicked() {}

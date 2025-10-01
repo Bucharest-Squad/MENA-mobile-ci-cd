@@ -1,15 +1,18 @@
 package net.thechance.mena.dukan.presentation.screen.manageDukan
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import mena.dukan_presentation.generated.resources.Res
+import mena.dukan_presentation.generated.resources.add_shelf_successfully
+import net.thechance.mena.dukan.presentation.component.SnackBarType
 import net.thechance.mena.dukan.presentation.navigation.DukanRoute
 import net.thechance.mena.dukan.presentation.navigation.LocalNavController
+import net.thechance.mena.dukan.presentation.screen.createShelf.CreateShelfArgs
 import net.thechance.mena.dukan.presentation.screen.manageDukan.content.ManageDukanContent
 import net.thechance.mena.dukan.presentation.screen.manageShelf.ManageShelfArgs
 import net.thechance.mena.dukan.presentation.util.ObserveAsEffect
+import net.thechance.mena.dukan.presentation.util.ObserveSavedStateEvent
 import net.thechance.mena.dukan.presentation.viewModel.manageDukan.ManageDukanEffect
 import net.thechance.mena.dukan.presentation.viewModel.manageDukan.ManageDukanViewModel
 import org.koin.compose.viewmodel.koinViewModel
@@ -18,20 +21,18 @@ import org.koin.compose.viewmodel.koinViewModel
 fun ManageDukanScreen(
     viewModel: ManageDukanViewModel = koinViewModel()
 ) {
-    val state by viewModel.state.collectAsState()
+    val state by viewModel.state.collectAsStateWithLifecycle()
     val navController = LocalNavController.current
 
-    val deletedShelfId = navController.currentBackStackEntry
-        ?.savedStateHandle
-        ?.getStateFlow<String?>(ManageShelfArgs.deletedShelfId, null)
-        ?.collectAsStateWithLifecycle()
-
-    LaunchedEffect(deletedShelfId?.value) {
-        deletedShelfId?.value?.let { id ->
+    navController.currentBackStackEntry?.apply {
+        ObserveSavedStateEvent<String>(CreateShelfArgs.createShelfSnackBar) { message ->
+            viewModel.onShowSnackBar(
+                message = Res.string.add_shelf_successfully,
+                type = SnackBarType.SUCCESS
+            )
+        }
+        ObserveSavedStateEvent<String>(ManageShelfArgs.deletedShelfId) { id ->
             viewModel.onShowDeleteShelfDailog(shelfId = id)
-            navController.currentBackStackEntry
-                ?.savedStateHandle
-                ?.remove<String>(ManageShelfArgs.deletedShelfId)
         }
     }
 

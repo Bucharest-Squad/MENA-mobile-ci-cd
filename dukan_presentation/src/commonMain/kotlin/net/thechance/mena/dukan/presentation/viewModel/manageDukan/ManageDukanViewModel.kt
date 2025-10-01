@@ -37,7 +37,7 @@ class ManageDukanViewModel(
         emitEffect(ManageDukanEffect.NavigateBack)
     }
 
-    private fun showSnackBar(message: StringResource, type: SnackBarType) {
+    override fun onShowSnackBar(message: StringResource, type: SnackBarType) {
         updateState {
             copy(
                 snackBarState = SnackBarUiState(
@@ -96,7 +96,7 @@ class ManageDukanViewModel(
     override fun onShelfEnabled(shelf: ShelfUiState): Boolean = true
 
     override fun onShelfAddedSuccessfully() {
-        showSnackBar(message = Res.string.add_shelf_successfully, type = SnackBarType.SUCCESS)
+        onShowSnackBar(message = Res.string.add_shelf_successfully, type = SnackBarType.SUCCESS)
         loadShelves()
     }
 
@@ -180,19 +180,19 @@ class ManageDukanViewModel(
     override fun onDeleteConfirmed(shelfId: String) {
         tryToExecute(
             block = { shelfRepository.deleteShelf(shelfId) },
-            onSuccess = { deleteShelfSuccess() },
-            onError = ::deleteShelfFail
+            onSuccess = { onDeleteShelfSuccess() },
+            onError = ::onDeleteShelfError
         )
     }
 
-    private fun deleteShelfSuccess() {
+    private fun onDeleteShelfSuccess() {
         onDismissDeleteShelfConfirmationDialog()
-        showSnackBar(type = SnackBarType.SUCCESS, message = Res.string.delete_shelf_success)
+        onShowSnackBar(type = SnackBarType.SUCCESS, message = Res.string.delete_shelf_success)
     }
 
-    private fun deleteShelfFail(error: Throwable) {
+    private fun onDeleteShelfError(throwable: Throwable) {
         onDismissDeleteShelfConfirmationDialog()
-        showSnackBar(type = SnackBarType.ERROR, message = Res.string.error_for_delete_shelf)
+        onShowSnackBar(type = SnackBarType.ERROR, message = Res.string.error_for_delete_shelf)
     }
 
     private fun handleProductsLoaded(products: List<Product>) {
