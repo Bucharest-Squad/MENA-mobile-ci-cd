@@ -131,7 +131,7 @@ class ExportTransactionsViewModel(
     private suspend fun generateTransactionsFile(): ByteArray {
         return if (currentState.isCustomFilterCardSelected) {
             val formatter = LocalDate.Format {
-                year(); char('/'); monthNumber(); char('/'); dayOfMonth()
+                year(); char('-'); monthNumber(); char('-'); dayOfMonth()
             }
             val startDateTime: LocalDate? =
                 currentState.startDate.toStartOfDayLocalDateTime(formatter)
@@ -165,7 +165,7 @@ class ExportTransactionsViewModel(
     private suspend fun saveFile(pdfBytes: ByteArray) {
         try {
             val isFileSaved = fileSaver.saveFile(
-                suggestedName = "transaction",
+                suggestedName = "transactions",
                 extension = "pdf",
                 bytes = pdfBytes
             )
