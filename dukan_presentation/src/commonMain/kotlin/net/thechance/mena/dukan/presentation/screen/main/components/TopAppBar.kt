@@ -1,13 +1,6 @@
 package net.thechance.mena.dukan.presentation.screen.main.components
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ContentTransform
-import androidx.compose.animation.core.EaseIn
-import androidx.compose.animation.core.EaseOut
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -31,6 +24,7 @@ import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import net.thechance.mena.dukan.presentation.util.animation.fadeTransitionSpec
 import net.thechance.mena.dukan.presentation.viewModel.mainScreen.MainScreenUiState
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -97,21 +91,6 @@ private fun DukanIconButton(
     }
 }
 
-private fun fadeTransitionSpec(): ContentTransform {
-    return fadeIn(
-        animationSpec = tween(
-            durationMillis = 500,
-            delayMillis = 100,
-            easing = EaseIn
-        )
-    ) togetherWith fadeOut(
-        animationSpec = tween(
-            durationMillis = 500,
-            delayMillis = 100,
-            easing = EaseOut
-        )
-    )
-}
 
 @Preview
 @Composable
