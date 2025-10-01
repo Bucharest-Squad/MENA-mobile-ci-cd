@@ -87,7 +87,7 @@ class BookmarkRepositoryImpl(
         return executeApiSafely {
             get(GET_AYAH_BOOKMARK_END_POINT) {
                 parameter("page", pageNumber)
-                parameter("pageSize", pageSize)
+                parameter("size", pageSize)
             }.body()
         }
     }

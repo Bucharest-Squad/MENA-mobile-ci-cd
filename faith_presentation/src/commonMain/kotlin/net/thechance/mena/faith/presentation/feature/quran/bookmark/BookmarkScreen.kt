@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -23,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.collectAsLazyPagingItems
-import kotlinx.coroutines.flow.MutableStateFlow
 import mena.faith_presentation.generated.resources.Res
 import mena.faith_presentation.generated.resources.bookmarks
 import mena.faith_presentation.generated.resources.empty_state_bookmark_description
@@ -79,8 +77,6 @@ private fun Content(
     snackBarState: SnackBarState
 ) {
     val bookmarks = uiState.bookmarks.collectAsLazyPagingItems()
-    val deletedIds by (uiState.deletedBookmarkIds
-        ?: MutableStateFlow(emptySet())).collectAsStateWithLifecycle()
 
     QuranTheme {
         FaithScaffold(
@@ -124,7 +120,6 @@ private fun Content(
                 ) {
                     BookmarkItems(
                         bookmarks = bookmarks,
-                        deletedIds = deletedIds,
                         onRemoveBookmarkClick = listener::onDeleteBookmarkClick,
                     )
                 }
@@ -152,37 +147,36 @@ private fun EmptyBookmarkState() {
 @Composable
 private fun BookmarkItems(
     bookmarks: LazyPagingItems<BookmarksScreenState.BookmarkCardUiState>,
-    deletedIds: Set<Int>,
     onRemoveBookmarkClick: (Int) -> Unit,
 ) {
-    val filteredBookmarks =
-        bookmarks.itemSnapshotList.items.filterNot { it.bookmarkId in deletedIds }
 
     LazyColumn(
         contentPadding = PaddingValues(bottom = Theme.spacing._16),
         verticalArrangement = Arrangement.spacedBy(Theme.spacing._8),
     ) {
         items(
-            items = filteredBookmarks,
-            key = { it.bookmarkId }
-        ) { bookmark ->
-            SwappableCard(
-                id = bookmark.bookmarkId,
-                onClick = { onRemoveBookmarkClick(bookmark.bookmarkId) },
-                cardContent = { contentModifier ->
-                    AyaBookmarkCard(
-                        surahName = bookmark.surahName,
-                        ayaNumber = bookmark.ayaNumber,
-                        createdAt = bookmark.createdAt,
-                        ayaText = bookmark.ayaText,
-                        modifier = contentModifier
+            count = bookmarks.itemCount,
+            key = { index -> bookmarks[index]?.bookmarkId ?: index }
+        ) { index ->
+            bookmarks[index]?.let {
+                SwappableCard(
+                    id = it.bookmarkId,
+                    onClick = { onRemoveBookmarkClick(it.bookmarkId) },
+                    cardContent = { contentModifier ->
+                        AyaBookmarkCard(
+                            surahName = it.surahName,
+                            ayaNumber = it.ayaNumber,
+                            createdAt = it.createdAt,
+                            ayaText = it.ayaText,
+                            modifier = contentModifier
+                        )
+                    },
+                    modifier = Modifier.animateItem(
+                        fadeInSpec = tween(500),
+                        fadeOutSpec = tween(500)
                     )
-                },
-                modifier = Modifier.animateItem(
-                    fadeInSpec = tween(500),
-                    fadeOutSpec = tween(500)
                 )
-            )
+            }
         }
     }
 }

@@ -3,11 +3,14 @@ package net.thechance.mena.faith.presentation.feature.quran.bookmark
 import androidx.lifecycle.viewModelScope
 import app.cash.paging.PagingData
 import app.cash.paging.cachedIn
+import app.cash.paging.filter
 import app.cash.paging.map
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import mena.faith_presentation.generated.resources.Res
 import mena.faith_presentation.generated.resources.bookmark_removed_successfully
 import net.thechance.mena.faith.domain.entity.AyahBookmark
@@ -21,7 +24,18 @@ class BookmarkViewModel(
 ) : BaseViewModel<BookmarksScreenState, BookmarkEffect>(BookmarksScreenState()),
     BookmarkInteractionListener {
 
-    private val deletedBookmarkIds = MutableStateFlow<Set<Int>>(emptySet())
+    private val cachedBookmarksFlow = createBookmarksPagingSource()
+        .map { pagingData -> pagingData.map { bookmark -> bookmark.toUiState() } }
+        .cachedIn(viewModelScope)
+
+    private val deletedBookmarkIdsFlow = MutableStateFlow(setOf<Int>())
+
+    private val filteredBookmarksFlow = combine(
+        cachedBookmarksFlow,
+        deletedBookmarkIdsFlow
+    ) { pagingData, deletedIds ->
+        pagingData.filter { bookmark -> bookmark.bookmarkId !in deletedIds }
+    }
 
     init {
         getBookmarks()
@@ -32,25 +46,31 @@ class BookmarkViewModel(
     override fun onStartTilawahClick() = sendEffect(BookmarkEffect.NavigateBack)
 
     override fun onDeleteBookmarkClick(bookmarkId: Int) {
-        deletedBookmarkIds.update { it + bookmarkId }
+        deletedBookmarkIdsFlow.update { currentSet ->
+            currentSet + bookmarkId
+        }
 
-        tryToExecute(
-            execute = { bookmarkRepository.deleteAyahBookmark(bookmarkId) },
-            onSuccess = { onDeleteBookmarkSuccess() },
-            onError = { error ->
-                deletedBookmarkIds.update { it - bookmarkId }
-                handleErrorState(error)
-            },
-        )
+        viewModelScope.launch {
+            tryToExecute(
+                execute = { bookmarkRepository.deleteAyahBookmark(bookmarkId) },
+                onSuccess = { onDeleteBookmarkSuccess() },
+                onError = { error ->
+                    deletedBookmarkIdsFlow.update { currentSet ->
+                        currentSet - bookmarkId
+                    }
+                    handleErrorState(error)
+                }
+            )
+        }
     }
 
     private fun getBookmarks() {
-        tryToExecute(
-            execute = { createBookmarksPagingSource() },
-            onStart = { updateState { it.copy(isLoading = true) } },
-            onSuccess = ::onGetBookmarksSuccess,
-            onError = ::handleErrorState,
-        )
+        updateState {
+            it.copy(
+                bookmarks = filteredBookmarksFlow,
+                isLoading = false
+            )
+        }
     }
 
     private fun onDeleteBookmarkSuccess() {
@@ -60,20 +80,6 @@ class BookmarkViewModel(
         )
     }
 
-    private fun onGetBookmarksSuccess(ayahBookmarksFlow: Flow<PagingData<AyahBookmark>>) {
-        updateState {
-            it.copy(
-                bookmarks = ayahBookmarksFlow
-                    .map { pagingData ->
-                        pagingData.map { bookmark -> bookmark.toUiState() }
-                    }
-                    .cachedIn(viewModelScope),
-                isLoading = false,
-                deletedBookmarkIds = deletedBookmarkIds
-            )
-        }
-    }
-
     private fun createBookmarksPagingSource(): Flow<PagingData<AyahBookmark>> {
         return createPagingSourceFlow(
             onError = {},
@@ -81,7 +87,6 @@ class BookmarkViewModel(
             bookmarkRepository.getAyahBookmarks(pageNumber, pageSize)
         }
     }
-
 
     private fun handleErrorState(throwable: Throwable) {
         // TODO: handle error here

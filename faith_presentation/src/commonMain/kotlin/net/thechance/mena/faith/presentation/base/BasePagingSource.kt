@@ -41,7 +41,7 @@ abstract class BasePagingSource<T : Any>(
     abstract suspend fun onFetchPage(pageNumber: Int, pageSize: Int): PagedFetchResponse<T>
 
     companion object {
-        const val PAGING_PAGE_SIZE = 30
+        const val PAGING_PAGE_SIZE = 10
     }
 }
 
