@@ -5,6 +5,9 @@ import app.cash.paging.PagingData
 import app.cash.paging.cachedIn
 import app.cash.paging.filter
 import app.cash.paging.map
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -20,7 +23,8 @@ import net.thechance.mena.faith.presentation.base.SnackBarState
 import net.thechance.mena.faith.presentation.base.createPagingSourceFlow
 
 class BookmarkViewModel(
-    private val bookmarkRepository: BookmarkRepository
+    private val bookmarkRepository: BookmarkRepository,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : BaseViewModel<BookmarksScreenState, BookmarkEffect>(BookmarksScreenState()),
     BookmarkInteractionListener {
 
@@ -52,6 +56,7 @@ class BookmarkViewModel(
 
         viewModelScope.launch {
             tryToExecute(
+                dispatcher = dispatcher,
                 execute = { bookmarkRepository.deleteAyahBookmark(bookmarkId) },
                 onSuccess = { onDeleteBookmarkSuccess() },
                 onError = { error ->

@@ -1,21 +1,21 @@
 package net.thechance.mena.faith.data.repository
 
+import net.thechance.mena.faith.data.database.AyahDao
 import net.thechance.mena.faith.data.database.AyahDto
-import net.thechance.mena.faith.data.database.QuranDao
 import net.thechance.mena.faith.data.database.SurahDto
 
-internal class MockQuranDao : QuranDao {
+internal class MockAyahDao : AyahDao {
 
     private val ayahBySurah: MutableMap<Int, MutableList<AyahDto>> = mutableMapOf(
         1 to mutableListOf(
             AyahDto(
                 id = 1,
                 surahNumber = 1,
-                surahName = "Al-Fatiha",
+                surahNameEn = "Al-Fatiha",
                 surahNameAr = "الفاتحة",
                 number = 1,
-                displayContent = "بِسْمِ اللهِ الرَّحْمنِ الرَّحِيمِ",
-                plainTextContent = "بسم الله الرحمن الرحيم",
+                content = "بِسْمِ اللهِ الرَّحْمنِ الرَّحِيمِ",
+                plainContent = "بسم الله الرحمن الرحيم",
                 lineStart = 1,
                 lineEnd = 1,
                 jozz = 1,
@@ -24,11 +24,11 @@ internal class MockQuranDao : QuranDao {
             AyahDto(
                 id = 2,
                 surahNumber = 1,
-                surahName = "Al-Fatiha",
+                surahNameEn = "Al-Fatiha",
                 surahNameAr = "الفاتحة",
                 number = 2,
-                displayContent = "ٱلۡحَمۡدُ لِلَّهِ رَبِّ ٱلۡعَٰلَمِينَ",
-                plainTextContent = "الحمد لله رب العالمين",
+                content = "ٱلۡحَمۡدُ لِلَّهِ رَبِّ ٱلۡعَٰلَمِينَ",
+                plainContent = "الحمد لله رب العالمين",
                 lineStart = 1,
                 lineEnd = 1,
                 jozz = 1,
@@ -39,11 +39,11 @@ internal class MockQuranDao : QuranDao {
             AyahDto(
                 id = 3,
                 surahNumber = 2,
-                surahName = "Al-Baqarah",
+                surahNameEn = "Al-Baqarah",
                 surahNameAr = "البقرة",
                 number = 5,
-                displayContent = "أُوْلَٰٓئِكَ عَلَىٰ هُدٗى مِّن رَّبِّهِمۡۖ وَأُوْلَٰٓئِكَ هُمُ ٱلۡمُفۡلِحُونَ",
-                plainTextContent = "أولئك على هدى من ربهم وأولئك هم المفلحون",
+                content = "أُوْلَٰٓئِكَ عَلَىٰ هُدٗى مِّن رَّبِّهِمۡۖ وَأُوْلَٰٓئِكَ هُمُ ٱلۡمُفۡلِحُونَ",
+                plainContent = "أولئك على هدى من ربهم وأولئك هم المفلحون",
                 lineStart = 2,
                 lineEnd = 2,
                 jozz = 1,
@@ -58,13 +58,13 @@ internal class MockQuranDao : QuranDao {
 
     override suspend fun getAllSur(): List<SurahDto> {
         return ayahBySurah.entries.map { (surahNo, ayat) ->
-            val surahName = ayat.firstOrNull()?.surahName ?: "Surah $surahNo"
-            SurahDto(order = surahNo, nameEn = surahName)
+            val surahName = ayat.firstOrNull()?.surahNameEn ?: "Surah $surahNo"
+            SurahDto(number = surahNo, name = surahName, ayahCount = ayat.size)
         }
     }
 
     override suspend fun getAyahContent(ayahNumber: Int, surahId: Int): String {
-        return getAyah(ayahNumber, surahId).displayContent
+        return getAyah(ayahNumber, surahId).content
     }
 
     override suspend fun getAyah(ayahId: Int, surahId: Int): AyahDto {
@@ -78,7 +78,7 @@ internal class MockQuranDao : QuranDao {
     }
 
     override suspend fun getSurah(surahId: Int): SurahDto {
-        val name = ayahBySurah[surahId]?.firstOrNull()?.surahName ?: "Surah $surahId"
-        return SurahDto(order = surahId, nameEn = name)
+        val name = ayahBySurah[surahId]?.firstOrNull()?.surahNameEn ?: "Surah $surahId"
+        return SurahDto(number = surahId, name = name, ayahCount = ayahBySurah[surahId]?.size ?: 0)
     }
 }

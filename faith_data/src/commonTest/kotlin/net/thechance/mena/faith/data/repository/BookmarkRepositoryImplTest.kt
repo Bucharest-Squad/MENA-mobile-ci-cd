@@ -7,7 +7,7 @@ import kotlinx.coroutines.test.runTest
 import net.thechance.mena.faith.domain.entity.Ayah
 import net.thechance.mena.faith.domain.entity.AyahBookmark
 import net.thechance.mena.faith.domain.entity.Surah
-import org.junit.Test
+import kotlin.test.Test
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
@@ -21,8 +21,9 @@ class BookmarkRepositoryImplTest {
         runTest {
             // Given
             val pageNumber = 1
+            val pageSize = 10
             // When
-            val response = repository.getAyahBookmarks(pageNumber)
+            val response = repository.getAyahBookmarks(pageNumber, pageSize)
             // Then
             assertThat(response.currentPage).isEqualTo(pageNumber)
             assertThat(response.items).isEqualTo(AYAH_BOOKMARK_LIST)
@@ -56,13 +57,13 @@ class BookmarkRepositoryImplTest {
                     id = 1,
                     order = Surah.SurahOrder.AlFatihah,
                     name = "Al-Fatiha",
-                    ayahCount = 1,
-                    isMakkia = true
+                    ayahCount = 2,
                 ),
                 ayah = Ayah(
                     number = 1,
                     surahId = 1,
-                    content = "بِسْمِ اللهِ الرَّحْمنِ الرَّحِيمِ"
+                    content = "بِسْمِ اللهِ الرَّحْمنِ الرَّحِيمِ",
+                    plainContent = "بسم الله الرحمن الرحيم"
                 ),
                 createdAt = Instant.parse("2023-01-01T00:00:00Z")
             ),
@@ -73,12 +74,12 @@ class BookmarkRepositoryImplTest {
                     order = Surah.SurahOrder.AlBaqarah,
                     name = "Al-Baqarah",
                     ayahCount = 1,
-                    isMakkia = false
                 ),
                 ayah = Ayah(
                     number = 5,
                     surahId = 2,
-                    content = "أُوْلَٰٓئِكَ عَلَىٰ هُدٗى مِّن رَّبِّهِمۡۖ وَأُوْلَٰٓئِكَ هُمُ ٱلۡمُفۡلِحُونَ"
+                    content = "أُوْلَٰٓئِكَ عَلَىٰ هُدٗى مِّن رَّبِّهِمۡۖ وَأُوْلَٰٓئِكَ هُمُ ٱلۡمُفۡلِحُونَ",
+                    plainContent = "أولئك على هدى من ربهم وأولئك هم المفلحون"
                 ),
                 createdAt = Instant.parse("2023-02-01T00:00:00Z")
             )
@@ -90,13 +91,13 @@ class BookmarkRepositoryImplTest {
                 id = 1,
                 order = Surah.SurahOrder.AlFatihah,
                 name = "Al-Fatiha",
-                ayahCount = 1,
-                isMakkia = true
+                ayahCount = 2,
             ),
             ayah = Ayah(
                 number = 1,
                 surahId = 1,
-                content = "بِسْمِ اللهِ الرَّحْمنِ الرَّحِيمِ"
+                content = "بِسْمِ اللهِ الرَّحْمنِ الرَّحِيمِ",
+                plainContent = "بسم الله الرحمن الرحيم"
             ),
             createdAt = Instant.parse("2023-01-01T00:00:00Z")
         )

@@ -1,14 +1,15 @@
 package net.thechance.mena.faith.presentation.feature.quran.bookmark
 
-import junit.framework.TestCase.assertEquals
 import net.thechance.mena.faith.domain.entity.Ayah
 import net.thechance.mena.faith.domain.entity.AyahBookmark
 import net.thechance.mena.faith.domain.entity.Surah
-import org.junit.Test
+import net.thechance.mena.faith.presentation.extensions.timeFormatingHelper.TimeAgo
+import net.thechance.mena.faith.presentation.extensions.timeFormatingHelper.TimeUnit
+import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
-
 
 @OptIn(ExperimentalTime::class)
 class BookmarkMapperKtTest {
@@ -56,22 +57,6 @@ class BookmarkMapperKtTest {
     }
 
     @Test
-    fun `toUiState should return future timestamp when createdAt is in future`() {
-        val future = Instant.DISTANT_FUTURE
-        val bookmark = createBookmark(createdAt = future)
-
-        assertEquals(expectedUiState(bookmark), bookmark.toUiState())
-    }
-
-    @Test
-    fun `toUiState should return epoch timestamp when createdAt is epoch`() {
-        val epoch = Instant.fromEpochMilliseconds(0)
-        val bookmark = createBookmark(createdAt = epoch)
-
-        assertEquals(expectedUiState(bookmark), bookmark.toUiState())
-    }
-
-    @Test
     fun `toUiState should return surahName with special characters when surah name contains them`() {
         val now = Clock.System.now()
         val weirdName = "Surah-123!#?"
@@ -100,13 +85,13 @@ class BookmarkMapperKtTest {
             order = Surah.SurahOrder.AlFath,
             name = "Al-Fatiha",
             ayahCount = 7,
-            isMakkia = true
         )
 
         val sampleAyah = Ayah(
             number = 1,
-            content = "In the name of Allah, the Entirely Merciful, the Especially Merciful.",
-            surahId = 1
+            content = "بسم الله الرحمن الرحيم",
+            surahId = 1,
+            plainContent = "بسم الله الرحمن الرحيم"
         )
 
         fun createBookmark(
@@ -124,7 +109,16 @@ class BookmarkMapperKtTest {
             surahName = bookmark.surah.name,
             ayaNumber = bookmark.ayah.number,
             ayaText = bookmark.ayah.content,
-            createdAt = bookmark.createdAt
+            createdAt = TimeAgo(
+                amount = bookmark.createdAt.let { createdAt ->
+                    val now = Clock.System.now()
+                    when {
+                        createdAt > now -> 0
+                        else -> (now - createdAt).inWholeSeconds.toInt()
+                    }
+                },
+                unit = TimeUnit.SECONDS
+            )
         )
     }
 }

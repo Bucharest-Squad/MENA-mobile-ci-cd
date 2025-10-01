@@ -74,25 +74,14 @@ android {
 kover.reports {
     verify {
         rule {
-            minBound(0)
+            minBound(80)
         }
     }
 
     filters {
-        excludes {
-            packages(
-                "*.base",
-                "*.component",
-                "*.di",
-                "*.feature.quran",
-                "*.navigation",
-                "*.utils"
-            )
-        }
         includes {
             classes(
-                "net.thechance.mena.faith.presentation.feature.quran.sur.SurViewModel",
-                "net.thechance.mena.faith.presentation.feature.quran.surah.SurahViewModel",
+                "*ViewModel"
             )
         }
     }

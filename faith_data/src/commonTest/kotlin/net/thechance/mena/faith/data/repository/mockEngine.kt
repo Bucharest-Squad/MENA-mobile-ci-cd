@@ -24,7 +24,7 @@ internal fun bookmarkRepository(
     deleteBookmark: (suspend MockRequestHandleScope.(ayahBookmarkId: Int) -> HttpResponseData)? = null,
 ): BookmarkRepositoryImpl {
     return BookmarkRepositoryImpl(
-        ayahDao = MockQuranDao(),
+        ayahDao = MockAyahDao(),
         httpClient = createHttpClient(
             getBookmarks,
             postBookmark,
