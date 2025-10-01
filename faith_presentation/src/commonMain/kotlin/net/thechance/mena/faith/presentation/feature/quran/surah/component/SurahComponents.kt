@@ -130,8 +130,8 @@ internal fun UnifiedChunkText(
     var textLayoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
 
     val styledText = buildAnnotatedString {
-        chunkAyat.forEachIndexed { index, ayah ->
-            val color = getAyahTextColor(selectedAyahIndex, index + 1)
+        chunkAyat.forEach { ayah ->
+            val color = getAyahTextColor(selectedAyahIndex, ayah.number)
             pushStyle(SpanStyle(color = color))
             append(ayah.content)
             pop()
@@ -152,7 +152,6 @@ internal fun UnifiedChunkText(
                     onLongPress = { offset ->
                         textLayoutResult?.let { layout ->
                             val pos = layout.getOffsetForPosition(offset)
-
                             val clickedAyahIndex = findClickedAyahIndexFromPosition(chunkAyat, pos)
                             if (clickedAyahIndex != -1) {
                                 val ayah = chunkAyat[clickedAyahIndex]
