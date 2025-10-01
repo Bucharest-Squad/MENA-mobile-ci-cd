@@ -21,6 +21,7 @@ import kotlinx.serialization.json.Json
 import net.thechance.mena.core_chat.data.chat.dto.ChatDto
 import net.thechance.mena.core_chat.data.chat.dto.MessageDto
 import net.thechance.mena.core_chat.data.chat.dto.SendMessageDto
+import net.thechance.mena.core_chat.data.database.dao.MessageDao
 import net.thechance.mena.core_chat.data.network.ApiConstants.CHAT_ENDPOINT
 import net.thechance.mena.core_chat.data.network.ApiConstants.CHAT_HISTORY_ENDPOINT
 import net.thechance.mena.core_chat.data.network.ApiConstants.WEB_SOCKETS_ENDPOINT
@@ -28,6 +29,7 @@ import net.thechance.mena.core_chat.data.shared.BaseRepository
 import net.thechance.mena.core_chat.data.shared.dto.PagedDataDto
 import net.thechance.mena.core_chat.domain.entity.Chat
 import net.thechance.mena.core_chat.domain.entity.Message
+import net.thechance.mena.core_chat.domain.entity.MessageStatus
 import net.thechance.mena.core_chat.domain.exception.ChatNotFoundException
 import net.thechance.mena.core_chat.domain.exception.SendMessageFailedException
 import net.thechance.mena.core_chat.domain.repository.ChatRepository
@@ -41,6 +43,7 @@ class ChatRepositoryImpl(
     private val json: Json,
     private val baseUrl: String,
     private val authenticationRepository: AuthenticationRepository,
+    private val messageDao: MessageDao
 ) : ChatRepository, BaseRepository {
 
     private var isWebSocketSessionActive = false
@@ -69,17 +72,35 @@ class ChatRepositoryImpl(
 
 
     override suspend fun sendMessage(message: Message) {
-        if (webSocketSession?.isActive == true) {
-            val messageJson = json.encodeToString(
-                SendMessageDto.serializer(),
-                message.toSendMessageRequestDto()
-            )
-            val frameText = "SEND\ndestination:/app/chat.privateMessage\n\n$messageJson\n\n\u0000"
-            val frame = Frame.Text(frameText)
-            println("Sending frame : $frameText")
-            webSocketSession?.send(frame)
-        } else {
-            throw SendMessageFailedException("Failed to send message")
+        val sendingMessage = message.copy(status = MessageStatus.LOADING)
+        try {
+            messageDao.insertMessage(sendingMessage.toMessageEntity())
+            println("Message inserted into local DB with LOADING status: ${sendingMessage.text}, id: ${sendingMessage.id}")
+            if (webSocketSession?.isActive == true) {
+                val messageJson = json.encodeToString(
+                    SendMessageDto.serializer(),
+                    sendingMessage.toSendMessageRequestDto()
+                )
+                val frameText =
+                    "SEND\ndestination:/app/chat.privateMessage\n\n$messageJson\n\n\u0000"
+
+                println("Sending frame : $frameText")
+                webSocketSession?.send(Frame.Text(frameText))
+                println("Message sent successfully: ${sendingMessage.text}, id: ${sendingMessage.id}")
+
+                messageDao.deleteMessage(sendingMessage.id.toString())
+                println("Message deleted from local DB after sending: ${sendingMessage.id}")
+
+            } else {
+                val failedMessage = sendingMessage.copy(status = MessageStatus.FAILED)
+                messageDao.updateMessageStatus(failedMessage.id.toString(), net.thechance.mena.core_chat.data.database.entity.MessageStatus.FAILED)
+                throw SendMessageFailedException("WebSocket is not active. Failed to send message.")
+            }
+        } catch (e: Exception) {
+            val failedMessage = sendingMessage.copy(status = MessageStatus.FAILED)
+            messageDao.updateMessageStatus(failedMessage.id.toString(), net.thechance.mena.core_chat.data.database.entity.MessageStatus.FAILED)
+            println("Error sending message: ${e.message}")
+            throw SendMessageFailedException("Failed to send message: ${e.message}")
         }
     }
 
