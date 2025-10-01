@@ -125,6 +125,11 @@ class ChatRepositoryImpl(
         }?.toDomain() ?: throw ChatNotFoundException("Chat not found")
     }
 
+    override suspend fun getLocalMessages(chatId: Uuid): List<Message> {
+        val failedEntities = messageDao.getMessagesByChat(chatId.toString())
+        return failedEntities.map { it.toDomain() }
+    }
+
     private suspend fun initializeWebsocketConnection(chatId: String) {
         try {
             val webSocketUrlString =

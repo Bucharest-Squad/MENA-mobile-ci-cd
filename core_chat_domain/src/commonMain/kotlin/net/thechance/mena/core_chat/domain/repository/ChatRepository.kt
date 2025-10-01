@@ -12,4 +12,5 @@ interface ChatRepository {
     suspend fun loadMessages(chatId: Uuid): List<Message>
     fun subscribeToMessages(chatId: Uuid): Flow<Message>
     suspend fun getChatByContactUserId(userId : Uuid): Chat
+    suspend fun getLocalMessages(chatId: Uuid): List<Message>
 }

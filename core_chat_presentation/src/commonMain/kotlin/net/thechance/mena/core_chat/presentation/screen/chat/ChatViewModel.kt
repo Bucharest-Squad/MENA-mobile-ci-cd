@@ -80,7 +80,7 @@ class ChatViewModel(
         }
 
         tryToExecute(
-            execute = { repository.sendMessage(uiMessage.toEntity()) },
+            execute = { repository.sendMessage(uiMessage.toEntity(state.value.chat.requesterId)) },
             onSuccess = { onSendMessageSuccess(uiMessage) },
             onError = { onSendMessageError(uiMessage) },
         )
@@ -151,7 +151,7 @@ class ChatViewModel(
             updateStateWithNewMessage((message as TextMessageUiState).copy(status = MessageStatusUiState.SENDING))
 
             tryToExecute(
-                execute = { repository.sendMessage((message).toEntity()) },
+                execute = { repository.sendMessage((message).toEntity(state.value.chat.requesterId)) },
                 onSuccess = { onResendMessageSuccess(message) },
                 onError = { onResendMessageError(message) },
             )
@@ -173,7 +173,11 @@ class ChatViewModel(
 
     private fun loadChatHistory(chatId: Uuid) {
         tryToExecute(
-            execute = { repository.loadMessages(chatId) },
+            execute = {
+                val serverMessages = repository.loadMessages(chatId)
+                val failedMessages = repository.getLocalMessages(chatId)
+                (serverMessages + failedMessages)
+            },
             onSuccess = ::onLoadChatHistorySuccess,
             onError = ::onLoadChatHistoryError
         )
