@@ -14,8 +14,10 @@ import mena.wallet_presentation.generated.resources.download_success
 import mena.wallet_presentation.generated.resources.downloading_started
 import mena.wallet_presentation.generated.resources.error
 import mena.wallet_presentation.generated.resources.error_failed_view
+import mena.wallet_presentation.generated.resources.error_no_transactions
 import mena.wallet_presentation.generated.resources.something_went_wrong
 import net.thechance.mena.wallet.domain.exceptions.NoInternetException
+import net.thechance.mena.wallet.domain.exceptions.NoTransactionsFoundException
 import net.thechance.mena.wallet.domain.model.TransactionFilterParams
 import net.thechance.mena.wallet.domain.repository.ExportTransactionsRepository
 import net.thechance.mena.wallet.presentation.base.BaseViewModel
@@ -200,18 +202,35 @@ class ExportTransactionsViewModel(
         messageRes: StringResource,
         isSuccess: Boolean = false
     ) {
-        if (error is NoInternetException) {
-            updateState { oldState ->
-                oldState.copy(
-                    noInternetConnection = true
+        when (error) {
+            is NoInternetException -> {
+                updateState { oldState ->
+                    oldState.copy(
+                        noInternetConnection = true,
+                        isDownloadLoading = false,
+                        isViewAndShareLoading = false
+                    )
+                }
+            }
+
+            is NoTransactionsFoundException -> {
+                showToast(messageRes = Res.string.error_no_transactions)
+
+                updateState { oldState ->
+                    oldState.copy(
+                        isDownloadLoading = false,
+                        isViewAndShareLoading = false
+                    )
+                }
+            }
+
+            else -> {
+                showSnackBar(
+                    titleRes = titleRes,
+                    messageRes = messageRes,
+                    isSuccess = isSuccess
                 )
             }
-        } else {
-            showSnackBar(
-                titleRes = titleRes,
-                messageRes = messageRes,
-                isSuccess = isSuccess
-            )
         }
     }
 
