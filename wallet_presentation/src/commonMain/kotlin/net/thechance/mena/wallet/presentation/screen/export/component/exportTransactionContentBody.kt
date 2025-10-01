@@ -96,7 +96,6 @@ fun ExportTransactionContentBodyPreview() {
     val mockState = ExportTransactionsState(
         isCustomFilterCardSelected = true,
         selectedTransactionsTypes = setOf(FilterType.SENT),
-        selectedTransactionsStatus = FilterStatus.ALL,
         startDate = "2023/01/01",
         endDate = "2023/12/31",
         isViewAndShareLoading = false,
@@ -110,7 +109,6 @@ fun ExportTransactionContentBodyPreview() {
         override fun onAllTransactionsClicked() {}
         override fun onCustomFilteringClicked() {}
         override fun onTypeSelected(type: FilterType) {}
-        override fun onStatusSelected(status: FilterStatus) {}
         override fun onFromDateClicked() {}
         override fun onToDateClicked() {}
         override fun onViewAndShareClicked() {}

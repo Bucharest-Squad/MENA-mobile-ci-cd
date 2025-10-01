@@ -131,25 +131,6 @@ class ExportTransactionsViewModelTest {
     }
 
     @Test
-    fun `should update status in state when onStatusSelected is called`() = runTest {
-        val viewModel =
-            ExportTransactionsViewModel(
-                exportTransactionsRepository = repository,
-                fileSaver = fileSaver,
-                ioDispatcher = testDispatcher
-            )
-        val status = FilterStatus.SUCCESS
-
-        viewModel.state.test {
-            skipItems(1)
-            viewModel.onStatusSelected(status)
-
-            val state = awaitItem()
-            assertEquals(status, state.selectedTransactionsStatus)
-        }
-    }
-
-    @Test
     fun `onViewAndShareClicked with non-empty pdf should navigate`() = runTest {
         everySuspend { repository.getFilteredTransactionsFile(any()) } returns byteArrayOf(1, 2, 3)
 

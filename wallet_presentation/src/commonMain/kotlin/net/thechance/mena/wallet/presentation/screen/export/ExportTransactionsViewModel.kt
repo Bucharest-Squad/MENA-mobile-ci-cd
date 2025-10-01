@@ -6,6 +6,7 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.delay
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.format.DateTimeFormat
+import kotlinx.datetime.format.Padding
 import kotlinx.datetime.format.char
 import mena.wallet_presentation.generated.resources.Res
 import mena.wallet_presentation.generated.resources.download_complete
@@ -23,7 +24,6 @@ import net.thechance.mena.wallet.domain.repository.ExportTransactionsRepository
 import net.thechance.mena.wallet.presentation.base.BaseViewModel
 import net.thechance.mena.wallet.presentation.base.CustomToastState
 import net.thechance.mena.wallet.presentation.base.SnackBarState
-import net.thechance.mena.wallet.presentation.model.FilterStatus
 import net.thechance.mena.wallet.presentation.model.FilterType
 import net.thechance.mena.wallet.presentation.screen.export.file_saver.FileSaver
 import org.jetbrains.compose.resources.StringResource
@@ -58,10 +58,6 @@ class ExportTransactionsViewModel(
             val newSet = if (current.contains(type)) current - type else current + type
             oldState.copy(selectedTransactionsTypes = newSet)
         }
-    }
-
-    override fun onStatusSelected(status: FilterStatus) {
-        updateState { oldState -> oldState.copy(selectedTransactionsStatus = status) }
     }
 
     override fun onFromDateClicked() {
@@ -133,7 +129,8 @@ class ExportTransactionsViewModel(
     private suspend fun generateTransactionsFile(): ByteArray {
         return if (currentState.isCustomFilterCardSelected) {
             val formatter = LocalDate.Format {
-                year(); char('-'); monthNumber(); char('-'); dayOfMonth()
+                year(); char('-'); monthNumber(); char('-');
+                day(padding = Padding.ZERO)
             }
             val startDateTime: LocalDate? =
                 currentState.startDate.toStartOfDayLocalDateTime(formatter)
@@ -144,7 +141,6 @@ class ExportTransactionsViewModel(
             exportTransactionsRepository.getFilteredTransactionsFile(
                 TransactionFilterParams(
                     types = currentState.selectedTransactionsTypes?.map { it.toDomain() },
-                    status = currentState.selectedTransactionsStatus.toDomain(),
                     startDate = startDateTime,
                     endDate = endDateTime
                 )
