@@ -1,11 +1,8 @@
 package net.thechance.mena.faith.presentation.feature.quran.surah
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -51,7 +48,6 @@ fun SurahScreen(
 
     FaithScaffold(
         backgroundColor = Theme.colorScheme.background.surface,
-        modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars),
         topBar = {
             SurahAppBar(surahName = uiState.surahName, onBackClick = { viewModel.onBackClick() })
         },
