@@ -4,10 +4,10 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -22,7 +22,6 @@ import net.thechance.mena.designsystem.presentation.component.button.OutlinedBut
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.wallet.presentation.model.FilterStatus
 import net.thechance.mena.wallet.presentation.model.FilterType
 import net.thechance.mena.wallet.presentation.screen.export.ExportTransactionsListener
 import net.thechance.mena.wallet.presentation.screen.export.ExportTransactionsState
@@ -39,32 +38,41 @@ fun ExportTransactionContentBody(
         modifier = Modifier
             .fillMaxHeight()
             .padding(16.dp)
-    ) {
-        SelectCard(
-            cardText = stringResource(Res.string.all_transactions),
-            onCardSelected = interactionListener::onAllTransactionsClicked,
-            isSelected = (!state.isCustomFilterCardSelected),
-            modifier = Modifier.padding(bottom = 12.dp)
-        )
-        SelectCard(
-            cardText = stringResource(Res.string.custom_filtering),
-            isSelected = state.isCustomFilterCardSelected,
-            onCardSelected = interactionListener::onCustomFilteringClicked,
-        )
-        Crossfade(
-            targetState = state.isCustomFilterCardSelected,
-            label = stringResource(Res.string.filter_crossfade),
-
-            )
-        { visible ->
-            if (visible) {
-                FilterSection(
-                    state = state,
-                    interactionListener = interactionListener
+    )
+    {
+        LazyColumn(
+            modifier = Modifier
+                .weight(1f)
+        ) {
+            item {
+                SelectCard(
+                    cardText = stringResource(Res.string.all_transactions),
+                    onCardSelected = interactionListener::onAllTransactionsClicked,
+                    isSelected = (!state.isCustomFilterCardSelected),
+                    modifier = Modifier.padding(bottom = 12.dp)
                 )
             }
+            item {
+                SelectCard(
+                    cardText = stringResource(Res.string.custom_filtering),
+                    isSelected = state.isCustomFilterCardSelected,
+                    onCardSelected = interactionListener::onCustomFilteringClicked,
+                )
+            }
+            item {
+                Crossfade(
+                    targetState = state.isCustomFilterCardSelected,
+                    label = stringResource(Res.string.filter_crossfade),
+                ) { visible ->
+                    if (visible) {
+                        FilterSection(
+                            state = state,
+                            interactionListener = interactionListener
+                        )
+                    }
+                }
+            }
         }
-        Spacer(modifier = Modifier.weight(1f))
         OutlinedButton(
             text = stringResource(Res.string.view_and_share),
             onClick = interactionListener::onViewAndShareClicked,
