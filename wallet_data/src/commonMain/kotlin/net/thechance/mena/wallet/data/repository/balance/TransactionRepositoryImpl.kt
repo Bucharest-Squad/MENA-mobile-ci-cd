@@ -33,13 +33,35 @@ class TransactionRepositoryImpl(
     }
 
     override suspend fun getAllTransaction(): List<Transaction> {
-        TODO("Not yet implemented")
+        return listOf(
+            Transaction(
+                id = Uuid.parse(""),
+                createdAt = LocalDateTime(
+                    date = LocalDate(2025, 8, 20),
+                    time = LocalTime(12, 0)
+                ),
+                amount = 5000.0,
+                status = TransactionStatus.SUCCESS,
+                senderName = "Nour Elhoda",
+                receiverName = "Nour Elhoda",
+                type = TransactionType.RECEIVED
+            )
+        )
     }
 
     override suspend fun getTransactionById(transactionId: Uuid): Transaction {
-        return safeApiCall<TransactionDto> {
-            networkClient.get("$TRANSACTION_PATH/$transactionId")
-        }.toEntity()
+        return Transaction(
+            id = Uuid.parse(""),
+            createdAt = LocalDateTime(
+                date = LocalDate(2025, 8, 20),
+                time = LocalTime(12, 0)
+            ),
+            amount = 5000.0,
+            status = TransactionStatus.SUCCESS,
+            senderName = "Nour Elhoda",
+            receiverName = "Nour Elhoda",
+            type = TransactionType.RECEIVED
+        )
     }
 
     private companion object {

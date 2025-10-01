@@ -87,6 +87,10 @@ class TransactionDetailsViewModelTest {
                 skipItems(2)
                 val successState = awaitItem()
                 assertEquals(
+                    transaction1uiState.id,
+                    successState.transactionDetailsUiState.id
+                )
+                assertEquals(
                     transaction1uiState.transactionType,
                     successState.transactionDetailsUiState.transactionType
                 )
@@ -265,7 +269,7 @@ class TransactionDetailsViewModelTest {
             type = TransactionType.RECEIVED
         )
         val transaction1uiState = TransactionDetailsScreenState.TransactionDetailsUiState(
-            id = transaction1Id.toString(),
+            id = "TX-${transaction1Id.toString().substring(0,6)}",
             amount = "5000.0",
             date = "20 Aug 2025, 12:00 pm",
             userName = "Nour Elhoda",
