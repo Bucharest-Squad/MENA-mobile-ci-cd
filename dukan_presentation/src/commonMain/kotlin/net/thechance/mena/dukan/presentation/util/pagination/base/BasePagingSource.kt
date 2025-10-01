@@ -1,6 +1,6 @@
 package net.thechance.mena.dukan.presentation.util.pagination.base
 
-import net.thechance.mena.dukan.presentation.util.pagination.PagedFetchResponse
+import net.thechance.mena.dukan.domain.util.PagedResult
 import net.thechance.mena.dukan.presentation.util.pagination.Pager
 import net.thechance.mena.dukan.presentation.util.pagination.PagingConfig
 import net.thechance.mena.dukan.presentation.util.pagination.PagingSource
@@ -22,7 +22,7 @@ abstract class BasePagingSource<T : Any> : PagingSource<Int, T>() {
         }
     }
 
-    abstract suspend fun onFetchPage(pageNumber: Int): PagedFetchResponse<T>
+    abstract suspend fun onFetchPage(pageNumber: Int): PagedResult<T>
 
     companion object {
         const val FIRST_PAGE = 1
@@ -31,13 +31,13 @@ abstract class BasePagingSource<T : Any> : PagingSource<Int, T>() {
 
 fun <T : Any> createPagingSource(
     config: PagingConfig = PagingConfig(),
-    block: suspend (pageNumber: Int) -> PagedFetchResponse<T>
+    block: suspend (pageNumber: Int) -> PagedResult<T>
 ): Pager<Int, T> {
     return Pager(
         config = config,
         pagingSourceFactory = {
             object : BasePagingSource<T>() {
-                override suspend fun onFetchPage(pageNumber: Int): PagedFetchResponse<T> {
+                override suspend fun onFetchPage(pageNumber: Int): PagedResult<T> {
                     return block(pageNumber)
                 }
             }
