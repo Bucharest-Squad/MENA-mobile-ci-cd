@@ -26,11 +26,13 @@ fun ManageDukanScreen(
         ?.getStateFlow<String?>(ManageShelfArgs.deletedShelfId, null)
         ?.collectAsStateWithLifecycle()
 
-    LaunchedEffect(deletedShelfId?.value != null) {
-        viewModel.onShowDeleteShelfConfirmationDialog()
-        navController.currentBackStackEntry
-            ?.savedStateHandle
-            ?.remove<String>(ManageShelfArgs.deletedShelfId)
+    LaunchedEffect(deletedShelfId?.value) {
+        deletedShelfId?.value?.let { id ->
+            viewModel.onShowDeleteShelfDailog(shelfId = id)
+            navController.currentBackStackEntry
+                ?.savedStateHandle
+                ?.remove<String>(ManageShelfArgs.deletedShelfId)
+        }
     }
 
     ObserveAsEffect(viewModel.effect) { effect ->
@@ -60,6 +62,5 @@ fun ManageDukanScreen(
     ManageDukanContent(
         state = state,
         listener = viewModel,
-        deletedShelfId = deletedShelfId?.value
     )
 }

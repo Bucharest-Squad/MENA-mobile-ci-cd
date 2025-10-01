@@ -13,6 +13,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.dukan.presentation.navigation.DukanRoute
+import net.thechance.mena.dukan.presentation.navigation.DukanRoute.ManageDukanScreenRoute
+import net.thechance.mena.dukan.presentation.navigation.DukanRoute.PendingScreenRoute
 import net.thechance.mena.dukan.presentation.navigation.LocalNavController
 import net.thechance.mena.dukan.presentation.screen.main.components.TopAppBar
 import net.thechance.mena.dukan.presentation.util.ObserveAsEffect
@@ -33,10 +35,12 @@ fun MainScreen(
         when (effect) {
             MainEffect.NavigateToAddDukanScreen -> navController.navigate(DukanRoute.CreateDukanScreenRoute)
             MainEffect.NavigateToPendingDukanScreen -> navController.navigate(
-                DukanRoute.PendingScreenRoute(
+                PendingScreenRoute(
                     state.value.dukanState.name,
                 )
             )
+
+            MainEffect.NavigateToManageDukanScreen -> navController.navigate(ManageDukanScreenRoute)
         }
     }
 

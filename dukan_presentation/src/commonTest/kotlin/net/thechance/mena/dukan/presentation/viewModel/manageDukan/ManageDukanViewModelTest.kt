@@ -152,10 +152,12 @@ class ManageDukanViewModelTest {
 
         // Then
         manageDukanViewModel.effect.test {
-            assertEquals(ManageDukanEffect.NavigateToManageShelf(
-                shelfId = "shelf_1",
-                shelfTitle = "Electronics"
-            ), awaitItem())
+            assertEquals(
+                ManageDukanEffect.NavigateToManageShelf(
+                    shelfId = "shelf_1",
+                    shelfTitle = "Electronics"
+                ), awaitItem()
+            )
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -609,7 +611,9 @@ class ManageDukanViewModelTest {
 
     @Test
     fun `onShowDeleteShelfConfirmationDialog show the dialog`() = runTest {
-        manageDukanViewModel.onShowDeleteShelfConfirmationDialog()
+        manageDukanViewModel.onShowDeleteShelfDailog(
+            shelfId = "1"
+        )
         manageDukanViewModel.state.test {
             val state = awaitItem()
             assertTrue(state.showDeleteConfirmationDialog)
@@ -627,9 +631,12 @@ class ManageDukanViewModelTest {
             val deleteShelfConfirmationDialogUiState = DeleteShelfConfirmationDialogUiState(
                 title = Res.string.delete_shelf_title,
                 description = Res.string.delete_shelf_description,
-                type = ConfirmDialogType.DELETE
+                type = ConfirmDialogType.DELETE,
+                shelfId = "1"
             )
-            manageDukanViewModel.onShowDeleteShelfConfirmationDialog()
+            manageDukanViewModel.onShowDeleteShelfDailog(
+                shelfId = "1"
+            )
 
             manageDukanViewModel.state.test {
                 val state = awaitItem()
@@ -661,9 +668,12 @@ class ManageDukanViewModelTest {
             val deleteShelfConfirmationDialogUiState = DeleteShelfConfirmationDialogUiState(
                 title = Res.string.dismiss_title,
                 description = Res.string.dismiss_description,
-                type = ConfirmDialogType.DISMISS
+                type = ConfirmDialogType.DISMISS,
+                shelfId = "1"
             )
-            manageDukanViewModel.onShowDeleteShelfConfirmationDialog()
+            manageDukanViewModel.onShowDeleteShelfDailog(
+                shelfId = "1"
+            )
 
             manageDukanViewModel.state.test {
                 val state = awaitItem()
@@ -684,7 +694,7 @@ class ManageDukanViewModelTest {
             )
             everySuspend { shelfRepository.deleteShelf(shelfId) }
 
-            manageDukanViewModel.deleteShelf(shelfId)
+            manageDukanViewModel.onDeleteConfirmed(shelfId)
 
             manageDukanViewModel.state.test {
                 skipItems(1)
@@ -703,7 +713,7 @@ class ManageDukanViewModelTest {
             )
             everySuspend { shelfRepository.deleteShelf(shelfId) } throws DukanException("")
 
-            manageDukanViewModel.deleteShelf(shelfId)
+            manageDukanViewModel.onDeleteConfirmed(shelfId)
 
             manageDukanViewModel.state.test {
                 skipItems(1)

@@ -22,7 +22,8 @@ data class ManageDukanUiState(
 data class DeleteShelfConfirmationDialogUiState(
     val title: StringResource,
     val description: StringResource,
-    val type: ConfirmDialogType
+    val type: ConfirmDialogType,
+    val shelfId: String
 )
 
 enum class ConfirmDialogType(val text: StringResource) {

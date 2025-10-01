@@ -8,8 +8,8 @@ object PreviewManageDukanInteractionListener : ManageDukanInteractionListener {
     override fun onBackButtonClicked() {}
     override fun onDismissSnackBar() {}
     override fun onDismissDeleteShelfConfirmationDialog(){}
-    override fun onShowDeleteShelfConfirmationDialog() {}
-    override fun deleteShelf(shelfId: String) {}
+    override fun onShowDeleteShelfDailog(shelfId: String) {}
+    override fun onDeleteConfirmed(shelfId: String) {}
     override fun onAddProductClicked() {}
     override fun onEditShelfClicked() {}
     override fun onAddShelfClicked() {}

@@ -148,14 +148,17 @@ class ManageDukanViewModel(
         }
     }
 
-    override fun onShowDeleteShelfConfirmationDialog() {
+    override fun onShowDeleteShelfDailog(
+        shelfId: String
+    ) {
         val hasProducts = state.value.products.isNotEmpty()
         updateState {
             copy(
                 deleteShelfConfirmationDialogUiState = DeleteShelfConfirmationDialogUiState(
                     title = updateDialogTitle(hasProducts),
                     description = updateDialogDescription(hasProducts),
-                    type = updateDialogType(hasProducts)
+                    type = updateDialogType(hasProducts),
+                    shelfId = shelfId
                 ),
                 showDeleteConfirmationDialog = true
             )
@@ -174,7 +177,7 @@ class ManageDukanViewModel(
         return if (!hasProducts) ConfirmDialogType.DELETE else ConfirmDialogType.DISMISS
     }
 
-    override fun deleteShelf(shelfId: String) {
+    override fun onDeleteConfirmed(shelfId: String) {
         tryToExecute(
             block = { shelfRepository.deleteShelf(shelfId) },
             onSuccess = { deleteShelfSuccess() },
@@ -206,5 +209,4 @@ class ManageDukanViewModel(
     private fun selectFirstShelfByDefault(shelves: List<ShelfUiState>): ShelfUiState? {
         return shelves.firstOrNull()
     }
-
 }

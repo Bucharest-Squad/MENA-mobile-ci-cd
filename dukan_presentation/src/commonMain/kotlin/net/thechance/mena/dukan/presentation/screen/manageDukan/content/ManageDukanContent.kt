@@ -36,7 +36,6 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun ManageDukanContent(
     state: ManageDukanUiState,
     listener: ManageDukanInteractionListener,
-    deletedShelfId: String? = null
 ) {
     OnSystemBackPressed(listener::onBackButtonClicked)
 
@@ -46,7 +45,7 @@ fun ManageDukanContent(
                 state.deleteShelfConfirmationDialogUiState?.let {
                     DeleteShelfConfirmationDialog(
                         state = it,
-                        deletedShelfId = deletedShelfId,
+                        deletedShelfId = state.deleteShelfConfirmationDialogUiState.shelfId,
                         listener = listener
                     )
                 }
@@ -126,7 +125,7 @@ private fun ScaffoldScope.DeleteShelfConfirmationDialog(
                 listener.onDismissDeleteShelfConfirmationDialog()
             } else {
                 deletedShelfId?.let { shelfId ->
-                    listener.deleteShelf(shelfId = shelfId)
+                    listener.onDeleteConfirmed(shelfId = shelfId)
                 }
             }
         },
