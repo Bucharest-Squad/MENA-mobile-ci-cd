@@ -211,6 +211,11 @@ class ExportTransactionsViewModel(
                         isViewAndShareLoading = false
                     )
                 }
+                showSnackBar(
+                    titleRes = Res.string.download_failed,
+                    messageRes = Res.string.something_went_wrong,
+                    isSuccess = false
+                )
             }
 
             is NoTransactionsFoundException -> {
