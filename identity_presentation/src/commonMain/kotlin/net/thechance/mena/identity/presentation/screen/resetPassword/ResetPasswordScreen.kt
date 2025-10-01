@@ -85,7 +85,7 @@ class ResetPasswordScreen(
                             tint = Theme.colorScheme.primary.primary,
                         )
                     },
-                    onLeadingClick = listener::onBackClicked
+                    onLeadingClick = listener::onClickBack
                 )
             }) {
             Box(
@@ -118,7 +118,7 @@ class ResetPasswordScreen(
 
                     TextField(
                         value = state.newPassword,
-                        onValueChanged = listener::onNewPasswordChanged,
+                        onValueChanged = listener::onChangeNewPassword,
                         hint = "",
                         trailingIcon = painterResource(
                             if (state.isNewPasswordVisible) Res.drawable.ic_open_eye
@@ -132,7 +132,7 @@ class ResetPasswordScreen(
                             .padding(bottom = Theme.spacing._16),
                         visualTransformation = if (state.isNewPasswordVisible) VisualTransformation.None
                         else PasswordVisualTransformation(),
-                        onTrailingIconClick = listener::onNewPasswordVisibilityToggled
+                        onTrailingIconClick = listener::onToggleNewPasswordVisibility
                     )
 
                     Text(
@@ -144,7 +144,7 @@ class ResetPasswordScreen(
 
                     TextField(
                         value = state.confirmPassword,
-                        onValueChanged = listener::onConfirmPasswordChanged,
+                        onValueChanged = listener::onChangeConfirmPassword,
                         hint = "",
                         trailingIcon = painterResource(
                             if (state.isConfirmPasswordVisible) Res.drawable.ic_open_eye
@@ -155,14 +155,14 @@ class ResetPasswordScreen(
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                         modifier = Modifier.fillMaxWidth(),
                         visualTransformation = if (state.isConfirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                        onTrailingIconClick = listener::onConfirmPasswordVisibilityToggled
+                        onTrailingIconClick = listener::onToggleConfirmPasswordVisibility
                     )
 
                     Spacer(modifier = Modifier.weight(1f))
 
                     PrimaryButton(
                         text = stringResource(Res.string.reset),
-                        onClick = listener::onResetPasswordClicked,
+                        onClick = listener::onClickResetPassword,
                         isEnabled = state.isResetEnabled,
                         isLoading = state.isLoading,
                         contentPadding = PaddingValues(vertical = Theme.spacing._12),
@@ -192,7 +192,7 @@ class ResetPasswordScreen(
                 LaunchedEffect(state.errorMessage) {
                     if (state.errorMessage != null) {
                         delay(3000)
-                        listener.clearErrorMessage()
+                        listener.onClearErrorMessage()
                     }
                 }
             }

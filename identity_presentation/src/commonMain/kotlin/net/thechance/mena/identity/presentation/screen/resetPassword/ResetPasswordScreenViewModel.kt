@@ -21,33 +21,33 @@ class ResetPasswordScreenViewModel(
     override val viewModelScope: CoroutineScope
         get() = screenModelScope
 
-    override fun onNewPasswordChanged(password: String) {
+    override fun onChangeNewPassword(password: String) {
         updateState { copy(newPassword = password) }
         checkResetButtonEnabled()
     }
 
-    override fun onConfirmPasswordChanged(password: String) {
+    override fun onChangeConfirmPassword(password: String) {
         updateState { copy(confirmPassword = password) }
         checkResetButtonEnabled()
     }
 
-    override fun onNewPasswordVisibilityToggled() {
+    override fun onToggleNewPasswordVisibility() {
         updateState { copy(isNewPasswordVisible = !isNewPasswordVisible) }
     }
 
-    override fun onConfirmPasswordVisibilityToggled() {
+    override fun onToggleConfirmPasswordVisibility() {
         updateState { copy(isConfirmPasswordVisible = !isConfirmPasswordVisible) }
     }
 
-    override fun onBackClicked() {
+    override fun onClickBack() {
         sendNewEffect(ResetPasswordScreenUIEffect.NavigateBackToLogin)
     }
 
-    override fun clearErrorMessage() {
+    override fun onClearErrorMessage() {
         updateState { copy(errorMessage = null) }
     }
 
-    override fun onResetPasswordClicked() {
+    override fun onClickResetPassword() {
         if (state.value.newPassword != state.value.confirmPassword) {
             updateState { copy(errorMessage = "New password and confirm password do not match.") }
             return
@@ -66,7 +66,7 @@ class ResetPasswordScreenViewModel(
         resetPasswordRepository.resetPassword(
             state.value.confirmPassword,
             state.value.newPassword,
-            phoneNumber = PhoneNumber(phoneNumber, callingCode)
+            phoneNumber = PhoneNumber(phoneNumber, callingCode).toString()
         )
     }
 
