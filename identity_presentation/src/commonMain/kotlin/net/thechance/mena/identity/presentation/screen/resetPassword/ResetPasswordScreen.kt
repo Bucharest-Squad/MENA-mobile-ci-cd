@@ -54,11 +54,15 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.core.parameter.parametersOf
 
-class ResetPasswordScreen(
+data class ResetPasswordScreen(
     private val phoneNumber: String,
     private val callingCode: String
 ) :
-    BaseScreen<ResetPasswordScreenViewModel, ResetPasswordScreenUIState, ResetPasswordScreenUIEffect, ResetPasswordScreenInteractionListener>() {
+    BaseScreen<ResetPasswordScreenViewModel,
+    ResetPasswordScreenUIState,
+    ResetPasswordScreenUIEffect,
+    ResetPasswordScreenInteractionListener>() {
+
     @Composable
     override fun Content() {
         InitScreen(getScreenModel(parameters = { parametersOf(phoneNumber, callingCode) }))
@@ -87,12 +91,14 @@ class ResetPasswordScreen(
                     },
                     onLeadingClick = listener::onClickBack
                 )
-            }) {
+            })
+        {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(Theme.colorScheme.background.surface)
             ) {
+
                 Image(
                     painter = painterResource(Res.drawable.login_background),
                     contentDescription = null,
