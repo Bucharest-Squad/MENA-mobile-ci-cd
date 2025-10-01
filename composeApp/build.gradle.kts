@@ -83,9 +83,6 @@ kotlin {
             implementation(projects.trendsPresentation)
             implementation(projects.trendsDomain)
             implementation(projects.trendsData)
-
-            // File kit
-            implementation(libs.bundles.filekit)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
