@@ -2,7 +2,6 @@ package net.thechance.mena.faith.presentation.feature.quran.surah
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
@@ -13,20 +12,20 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.faith.presentation.base.FaithScaffold
 import net.thechance.mena.faith.presentation.base.ObserveAsEffect
-import net.thechance.mena.faith.presentation.base.SnackBarState
 import net.thechance.mena.faith.presentation.component.FaithSnackBar
 import net.thechance.mena.faith.presentation.feature.quran.surah.component.AnimatedAyahActionButtons
-import net.thechance.mena.faith.presentation.feature.quran.surah.component.AyatContent
 import net.thechance.mena.faith.presentation.feature.quran.surah.component.BasmalaHeader
 import net.thechance.mena.faith.presentation.feature.quran.surah.component.SurahAppBar
-import net.thechance.mena.faith.presentation.feature.quran.surah.component.createClickableAyahText
+import net.thechance.mena.faith.presentation.feature.quran.surah.component.UnifiedChunkText
 import net.thechance.mena.faith.presentation.navigation.LocalNavController
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -50,28 +49,11 @@ fun SurahScreen(
         }
     }
 
-    Content(
-        state = uiState,
-        snackBarState = snackBarState,
-        listener = viewModel
-    )
-}
-
-
-@Composable
-private fun Content(
-    state: SurahScreenState,
-    listener: SurahInteractionListener,
-    snackBarState: SnackBarState,
-) {
-    val lazyListState = rememberLazyListState()
-
     FaithScaffold(
         backgroundColor = Theme.colorScheme.background.surface,
         modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars),
         topBar = {
-            SurahAppBar(
-                surahName = state.surahName, onBackClick = { listener.onBackClick() })
+            SurahAppBar(surahName = uiState.surahName, onBackClick = { viewModel.onBackClick() })
         },
         snackBar = {
             FaithSnackBar(
@@ -80,19 +62,20 @@ private fun Content(
                 status = snackBarState.status,
                 modifier = Modifier.fillMaxWidth()
             )
-        }) {
-
-        Box(
-            Modifier.fillMaxSize()
-        ) {
-            AyatOfSurah(
-                listener = listener, state = state, lazyListState = lazyListState
+        }
+    ) {
+        Box(Modifier.fillMaxWidth()) {
+            AyatOfSurahLazy(
+                listener = viewModel,
+                state = uiState
             )
 
             AnimatedAyahActionButtons(
-                state = state,
-                listener = listener,
-                modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter)
+                state = uiState,
+                listener = viewModel,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
                     .padding(Theme.spacing._16)
             )
         }
@@ -100,41 +83,54 @@ private fun Content(
 }
 
 @Composable
-private fun AyatOfSurah(
+private fun AyatOfSurahLazy(
     listener: SurahInteractionListener,
     state: SurahScreenState,
-    lazyListState: LazyListState,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
-    val annotatedText = createClickableAyahText(
-        ayatOfSurah = state.ayatOfSurah,
-        selectedAyahIndex = state.selectedAyahIndex
-    )
+    val lazyListState = rememberLazyListState()
+    HideAyahActionButtonsOnScroll(lazyListState, state, listener)
 
-    HideAyahActionButtonsOnScroll(
-        lazyListState = lazyListState,
-        state = state,
-        listener = listener
-    )
+    val allAyat = remember(state.ayatOfSurah) { state.ayatOfSurah }
+    val ayahChunks = remember(allAyat) { allAyat.chunked(AYAT_PER_PAGE) }
+
+    val preRenderedChunks = remember(ayahChunks) {
+        ayahChunks.map { chunk ->
+            buildAnnotatedString {
+                chunk.forEachIndexed { index, ayah ->
+                    append(ayah.content)
+                    if (index < chunk.lastIndex) append(" ")
+                }
+            }
+        }
+    }
 
     LazyColumn(
-        modifier = modifier.fillMaxWidth(),
-        state = lazyListState
+        state = lazyListState,
+        modifier = modifier.fillMaxWidth()
     ) {
 
         if (state.isBasmalaVisible)
             item {
                 BasmalaHeader(
                     selectedAyahIndex = state.selectedAyahIndex,
-                    onDismissActionButtons = { listener.onDismissActionButtons() })
+                    onDismissActionButtons = { listener.onDismissActionButtons() }
+                )
             }
 
-        item {
-            AyatContent(
-                annotatedText = annotatedText,
-                state = state,
-                ayat = state.ayatOfSurah,
-                listener = listener
+        items(preRenderedChunks.size) { chunkIndex ->
+            val chunkAyat = ayahChunks[chunkIndex]
+
+            UnifiedChunkText(
+                chunkAyat = chunkAyat,
+                selectedAyahIndex = state.selectedAyahIndex,
+                onLongPress = { ayah ->
+                    listener.onAyahLongPress(
+                        ayahContent = ayah.plainContent,
+                        ayahIndex = ayah.number
+                    )
+                },
+                onDismiss = { listener.onDismissActionButtons() }
             )
         }
     }
@@ -159,3 +155,5 @@ private fun HideAyahActionButtonsOnScroll(
         }
     }
 }
+
+private const val AYAT_PER_PAGE = 70

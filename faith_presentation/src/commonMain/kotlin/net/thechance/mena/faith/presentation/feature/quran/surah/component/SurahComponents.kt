@@ -16,10 +16,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.dp
@@ -113,36 +114,51 @@ private fun isValidAyahSelection(state: SurahScreenState): Boolean {
 }
 
 @Composable
-internal fun AyatContent(
-    annotatedText: AnnotatedString,
-    state: SurahScreenState,
-    ayat: List<Ayah>,
-    listener: SurahInteractionListener
+private fun getAyahTextStyle() = Theme.typography.quran.large.copy(
+    textDirection = TextDirection.Rtl,
+    textAlign = TextAlign.Justify
+)
+
+
+@Composable
+internal fun UnifiedChunkText(
+    chunkAyat: List<Ayah>,
+    selectedAyahIndex: Int?,
+    onLongPress: (Ayah) -> Unit,
+    onDismiss: () -> Unit
 ) {
-    var textLayoutResult by remember {
-        mutableStateOf<TextLayoutResult?>(null)
+    var textLayoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
+
+    val styledText = buildAnnotatedString {
+        chunkAyat.forEachIndexed { index, ayah ->
+            val color = getAyahTextColor(selectedAyahIndex, index + 1)
+            pushStyle(SpanStyle(color = color))
+            append(ayah.content)
+            pop()
+            append(" ")
+        }
     }
 
     BasicText(
-        text = annotatedText,
-        onTextLayout = { textLayoutResult = it },
+        text = styledText,
         style = getAyahTextStyle(),
+        onTextLayout = { textLayoutResult = it },
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = Theme.spacing._16)
-            .pointerInput(state.selectedAyahIndex) {
+            .padding(horizontal = Theme.spacing._16, vertical = Theme.spacing._8)
+            .pointerInput(selectedAyahIndex) {
                 detectTapGestures(
-                    onTap = {
-                        if (state.isAyahActionButtonsVisible) listener.onDismissActionButtons()
-                    },
+                    onTap = { onDismiss() },
                     onLongPress = { offset ->
-                        handleAyahLongPress(
-                            offset = offset,
-                            textLayoutResult = textLayoutResult,
-                            annotatedText = annotatedText,
-                            ayat = ayat,
-                            listener = listener
-                        )
+                        textLayoutResult?.let { layout ->
+                            val pos = layout.getOffsetForPosition(offset)
+
+                            val clickedAyahIndex = findClickedAyahIndexFromPosition(chunkAyat, pos)
+                            if (clickedAyahIndex != -1) {
+                                val ayah = chunkAyat[clickedAyahIndex]
+                                onLongPress(ayah)
+                            }
+                        }
                     }
                 )
             }
@@ -150,36 +166,21 @@ internal fun AyatContent(
 }
 
 @Composable
-private fun getAyahTextStyle() = Theme.typography.quran.large.copy(
-    textDirection = TextDirection.Rtl,
-    textAlign = TextAlign.Justify
-)
-
-private fun handleAyahLongPress(
-    offset: Offset,
-    textLayoutResult: TextLayoutResult?,
-    annotatedText: AnnotatedString,
-    ayat: List<Ayah>,
-    listener: SurahInteractionListener
-) {
-    textLayoutResult?.let { layoutResult ->
-        val position = layoutResult.getOffsetForPosition(offset)
-        val clickedAyahIndex = findClickedAyahIndex(annotatedText, position)
-        if (clickedAyahIndex >= 0 && clickedAyahIndex < ayat.size) {
-            val ayahContent = ayat[clickedAyahIndex].plainContent
-            listener.onAyahLongPress(ayahContent, clickedAyahIndex)
-        }
+private fun getAyahTextColor(selectedAyahIndex: Int?, currentIndex: Int): Color {
+    return when (selectedAyahIndex) {
+        null -> Theme.colorScheme.shadePrimary
+        currentIndex -> Theme.colorScheme.shadeSecondary
+        else -> Theme.colorScheme.shadeTertiary
     }
 }
 
-private fun findClickedAyahIndex(
-    annotatedText: AnnotatedString,
-    offset: Int
+private fun findClickedAyahIndexFromPosition(ayat: List<Ayah>, pos: Int
 ): Int {
-    val annotations = annotatedText.getStringAnnotations(
-        tag = "AYAH",
-        start = offset,
-        end = offset
-    )
-    return annotations.firstOrNull()?.item?.toIntOrNull() ?: -1
+    var currentPos = 0
+    ayat.forEachIndexed { index, ayah ->
+        val end = currentPos + ayah.content.length
+        if (pos in currentPos..end) return index
+        currentPos = end + 1
+    }
+    return -1
 }
