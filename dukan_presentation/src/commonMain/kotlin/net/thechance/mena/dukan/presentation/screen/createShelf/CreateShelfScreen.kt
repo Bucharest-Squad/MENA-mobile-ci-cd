@@ -15,7 +15,6 @@ import mena.dukan_presentation.generated.resources.back_arrow
 import mena.dukan_presentation.generated.resources.create
 import mena.dukan_presentation.generated.resources.create_shelf
 import mena.dukan_presentation.generated.resources.ic_arrow_left
-import mena.dukan_presentation.generated.resources.shelf_title
 import mena.dukan_presentation.generated.resources.title
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
@@ -50,7 +49,7 @@ fun CreateShelfScreen(
     ObserveAsEffect(viewModel.effect) { effect ->
         when (effect) {
             CreateShelfEffect.NavigateBack -> navController.popBackStack()
-            CreateShelfEffect.NavigateToApprovedDukan -> {
+            CreateShelfEffect.NavigateToManageDukan -> {
                 navController.navigate(DukanRoute.ManageDukanScreenRoute)
             }
         }
@@ -123,17 +122,16 @@ private fun CreateShelfContent(
                     modifier = Modifier
                         .padding(horizontal = Theme.spacing._16)
                         .padding(bottom = Theme.spacing._12),
-                    hint = stringResource(Res.string.shelf_title),
+                    hint = ""
                 )
             }
         }
-
-        state.snackBarState?.let { snackBarState ->
-            SnackBar(
-                snackBarUiState = snackBarState,
-                onDismiss = interactionListener::onDismissSnackBar
-            )
-        }
+    }
+    state.snackBarState?.let { snackBarState ->
+        SnackBar(
+            snackBarUiState = snackBarState,
+            onDismiss = interactionListener::onDismissSnackBar
+        )
     }
 }
 

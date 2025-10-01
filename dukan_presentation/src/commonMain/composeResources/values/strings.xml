@@ -77,4 +77,9 @@
     <string name="shelf_name_is_invalid">Shelf name is invalid</string>
     <string name="shelf_name_already_exists">Shelf name already exists</string>
     <string name="products_count">%1$d products</string>
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="dukan">Dukan</string>
+    <string name="dukan_button">dukan button</string>
+    <string name="dukan_icon">dukan icon</string>
+    <string name="add_dukan_icon">add dukan icon</string>
 </resources>

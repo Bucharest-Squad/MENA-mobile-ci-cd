@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,11 +28,7 @@ fun SnackBar(
     snackBarUiState: SnackBarUiState,
     onDismiss: () -> Unit,
     autoDismissMillis: Long = 3000L,
-    modifier: Modifier = Modifier.padding(
-        start = Theme.spacing._16,
-        end = Theme.spacing._16,
-        top = Theme.spacing._12
-    )
+    modifier: Modifier = Modifier
 ) {
     val messageText = stringResource(snackBarUiState.message)
 
@@ -41,6 +38,12 @@ fun SnackBar(
     }
 
     AnimatedVisibility(
+        modifier = modifier.fillMaxWidth()
+            .padding(
+                start = Theme.spacing._16,
+                end = Theme.spacing._16,
+                top = Theme.spacing._12
+            ),
         visible = true,
         enter = slideInVertically(
             initialOffsetY = { -it },
@@ -59,7 +62,6 @@ fun SnackBar(
                     leadingIcon = painterResource(Res.drawable.ic_success),
                     contentDescription = stringResource(Res.string.success),
                     tint = Theme.colorScheme.success,
-                    modifier = modifier
                 )
             }
 
@@ -70,7 +72,6 @@ fun SnackBar(
                     leadingIcon = painterResource(Res.drawable.ic_error),
                     contentDescription = stringResource(Res.string.error),
                     tint = Theme.colorScheme.error,
-                    modifier = modifier
                 )
             }
         }
