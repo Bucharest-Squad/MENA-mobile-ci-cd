@@ -1,4 +1,4 @@
-package net.thechance.mena.dukan.data.repository
+package net.thechance.mena.dukan.data.repository.mockEngine.dukan
 
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
@@ -16,15 +16,15 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
+import net.thechance.mena.dukan.data.repository.DukanRepositoryImpl
 import net.thechance.mena.dukan.data.repository.dto.DukanCategoryDto
 import net.thechance.mena.dukan.data.repository.dto.DukanCategoryResponse
 import net.thechance.mena.dukan.data.repository.dto.DukanColorDto
 import net.thechance.mena.dukan.data.repository.dto.DukanColorsResponse
 import net.thechance.mena.dukan.data.repository.dto.DukanNameResponse
 import net.thechance.mena.dukan.data.repository.dto.MyDukanStatusDto
-
-val jsonSerialization = Json { ignoreUnknownKeys = true }
-val jsonHeaders = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+import net.thechance.mena.dukan.data.repository.mockEngine.jsonHeaders
+import net.thechance.mena.dukan.data.repository.mockEngine.jsonSerialization
 
 
 fun MockRequestHandleScope.defaultCreateResponse() = respond(
@@ -97,7 +97,7 @@ fun MockRequestHandleScope.defaultNameAvailableResponse(isTaken: Boolean) = resp
 )
 
 
-fun createHttpClient(
+fun createDukanHttpClient(
     createResponse: (suspend MockRequestHandleScope.() -> HttpResponseData)? = null,
     stylesResponse: (suspend MockRequestHandleScope.() -> HttpResponseData)? = null,
     categoriesResponse: (suspend MockRequestHandleScope.() -> HttpResponseData)? = null,
@@ -134,7 +134,7 @@ fun createDukanRepository(
     nameResponse: (suspend MockRequestHandleScope.() -> HttpResponseData)? = null,
 ): DukanRepositoryImpl {
     return DukanRepositoryImpl(
-        client = createHttpClient(
+        client = createDukanHttpClient(
             createResponse,
             stylesResponse,
             categoriesResponse,
