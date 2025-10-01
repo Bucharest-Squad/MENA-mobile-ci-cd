@@ -14,7 +14,6 @@ import net.thechance.mena.core_chat.domain.entity.MessageStatus as DomainMessage
 
 abstract class MessageUiState(
     open val id: Uuid = Uuid.random(),
-    open val senderId: Uuid? = Uuid.random(),
     open val chatId: Uuid = Uuid.random(),
     open val sendTime: LocalDateTime,
     open val status: MessageStatusUiState,
@@ -36,7 +35,6 @@ data class MarkedMessageUiState(
 
 data class TextMessageUiState(
     override val id: Uuid = Uuid.random(),
-    override val senderId: Uuid? = Uuid.random(),
     override val chatId: Uuid = Uuid.random(),
     override val sendTime: LocalDateTime,
     override val status: MessageStatusUiState,
@@ -44,7 +42,6 @@ data class TextMessageUiState(
     val text: String
 ) : MessageUiState(
     id,
-    senderId,
     chatId,
     sendTime,
     status,
@@ -53,8 +50,8 @@ data class TextMessageUiState(
 
 fun List<MessageUiState>.markLastInSeries(): List<MarkedMessageUiState> {
     return this.mapIndexed { index, message ->
-        val nextSender = this.getOrNull(index - 1)?.senderId
-        val isLastInSeries = nextSender == null || nextSender != message.senderId
+        val nextIsMine = this.getOrNull(index - 1)?.isMine
+        val isLastInSeries = nextIsMine != message.isMine
 
         MarkedMessageUiState(message, isLastInSeries)
     }
@@ -113,7 +110,6 @@ fun List<MarkedMessageUiState>.withDateSeparators(
 fun Message.toUi(currentUserId: Uuid): TextMessageUiState {
     return TextMessageUiState(
         id = id,
-        senderId = senderId,
         chatId = chatId,
         sendTime = sendAt,
         status = status.toUi(),
@@ -125,7 +121,7 @@ fun Message.toUi(currentUserId: Uuid): TextMessageUiState {
 fun TextMessageUiState.toEntity(): Message {
     return Message(
         id = id,
-        senderId = senderId,
+        senderId = null,
         chatId = chatId,
         text = text,
         sendAt = sendTime,
