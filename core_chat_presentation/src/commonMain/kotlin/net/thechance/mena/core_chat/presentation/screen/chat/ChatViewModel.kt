@@ -146,11 +146,12 @@ class ChatViewModel(
 
 
     override fun onResendMessageClicked() {
+        updateState { it.copy(isResendMessageDialogVisible = false) }
         state.value.failedMessageToReSend?.let { message ->
             updateStateWithNewMessage((message as TextMessageUiState).copy(status = MessageStatusUiState.SENDING))
 
             tryToExecute(
-                execute = { repository.sendMessage((message).toEntity()) }, // temp casting
+                execute = { repository.sendMessage((message).toEntity()) },
                 onSuccess = { onResendMessageSuccess(message) },
                 onError = { onResendMessageError(message) },
             )
@@ -208,6 +209,7 @@ class ChatViewModel(
     }
 
     private fun onSubscribeToNewMessagesSuccess(newMessage: Message?) {
+        println("ViewModel : message : $newMessage")
         newMessage?.toUi(state.value.chat.requesterId)?.let { incomingUi ->
             updateStateWithNewMessage(incomingUi)
         }

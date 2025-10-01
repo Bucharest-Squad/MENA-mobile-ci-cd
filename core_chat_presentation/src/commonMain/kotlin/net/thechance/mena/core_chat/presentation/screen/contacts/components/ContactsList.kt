@@ -58,7 +58,7 @@ fun ContactsList(
                     val contact = contacts[index]
 
                     contact?.let {
-                        ContactItem(contact = it, onContactClick = { onContactClick(contact.menaUserId) }) // temp userId
+                        ContactItem(contact = it, onContactClick = { onContactClick(contact.menaUserId) })
                     }
                 }
             }
