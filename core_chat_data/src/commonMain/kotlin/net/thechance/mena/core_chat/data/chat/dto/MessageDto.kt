@@ -17,3 +17,13 @@ data class SendMessageDto(
     val chatId: String,
     val text: String,
 )
+
+@Serializable
+data class MarkAsReadRequest(
+    val chatId: String
+)
+
+@Serializable
+data class MarkAsReadResponse(
+    val readBy: String
+)

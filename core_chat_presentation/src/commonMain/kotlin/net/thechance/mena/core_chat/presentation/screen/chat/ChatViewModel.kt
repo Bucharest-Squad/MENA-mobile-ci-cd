@@ -3,6 +3,7 @@
 package net.thechance.mena.core_chat.presentation.screen.chat
 
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.datetime.LocalDateTime
@@ -22,7 +23,7 @@ import kotlin.uuid.Uuid
 
 
 class ChatViewModel(
-    private val repository: ChatRepository,
+    private val chatRepository: ChatRepository,
     chatArgs: ChatArgs,
     effector: ChatEffector,
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO
@@ -45,6 +46,7 @@ class ChatViewModel(
 
         loadChatHistory(chatId)
         subscribeToNewMessages(chatId)
+        observeReadMessages()
     }
 
 
@@ -80,7 +82,7 @@ class ChatViewModel(
         }
 
         tryToExecute(
-            execute = { repository.sendMessage(uiMessage.toEntity()) },
+            execute = { chatRepository.sendMessage(uiMessage.toEntity()) },
             onSuccess = { onSendMessageSuccess(uiMessage) },
             onError = { onSendMessageError(uiMessage) },
         )
@@ -151,7 +153,7 @@ class ChatViewModel(
             updateStateWithNewMessage((message as TextMessageUiState).copy(status = MessageStatusUiState.SENDING))
 
             tryToExecute(
-                execute = { repository.sendMessage((message).toEntity()) },
+                execute = { chatRepository.sendMessage((message).toEntity()) },
                 onSuccess = { onResendMessageSuccess(message) },
                 onError = { onResendMessageError(message) },
             )
@@ -173,7 +175,7 @@ class ChatViewModel(
 
     private fun loadChatHistory(chatId: Uuid) {
         tryToExecute(
-            execute = { repository.loadMessages(chatId) },
+            execute = { chatRepository.loadMessages(chatId) },
             onSuccess = ::onLoadChatHistorySuccess,
             onError = ::onLoadChatHistoryError
         )
@@ -202,14 +204,13 @@ class ChatViewModel(
 
     private fun subscribeToNewMessages(chatId: Uuid) {
         tryToCollect(
-            collect = { repository.subscribeToMessages(chatId) },
+            collect = { chatRepository.subscribeToMessages(chatId) },
             onCollect = ::onSubscribeToNewMessagesSuccess,
             onError = ::onSubscribeToNewMessagesError,
         )
     }
 
     private fun onSubscribeToNewMessagesSuccess(newMessage: Message?) {
-        println("ViewModel : message : $newMessage")
         newMessage?.toUi(state.value.chat.requesterId)?.let { incomingUi ->
             updateStateWithNewMessage(incomingUi)
         }
@@ -224,6 +225,31 @@ class ChatViewModel(
         )
     }
 
+    private fun observeReadMessages() {
+        tryToCollect(
+            collect = { chatRepository.observeReadMessages() },
+            onCollect = ::onObserveReadMessagesSuccess
+        )
+    }
+
+    private fun onObserveReadMessagesSuccess(readerId: String?) {
+        readerId?.let { readerId ->
+            updateState {
+                val updatedMessages = it.uiMessages.toMutableList().map {  message ->
+                    if (message.senderId != Uuid.parse(readerId)) {
+                        (message as TextMessageUiState).copy(status = MessageStatusUiState.READ)
+                    } else {
+                        message
+                    }
+                }
+                it.copy(
+                    uiMessages = updatedMessages,
+                    chatListItems = buildListItems(updatedMessages)
+                )
+            }
+        }
+    }
+
     private fun updateStateWithNewMessage(newMessage: MessageUiState) {
         updateState { s ->
             val merged =
@@ -236,5 +262,14 @@ class ChatViewModel(
     private fun buildListItems(uiMessages: List<MessageUiState>): List<ChatListItem> {
         val marked = uiMessages.sortedByDescending { it.sendTime }.markLastInSeries()
         return marked.withDateSeparators()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        println("Disconnected")
+        tryToExecute(
+            coroutineScope = CoroutineScope(Dispatchers.IO),
+            execute = { chatRepository.disconnect() }
+        )
     }
 }

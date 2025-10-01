@@ -8,6 +8,7 @@ import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.util.reflect.typeInfo
 import io.ktor.websocket.Frame
+import io.ktor.websocket.close
 import io.ktor.websocket.readText
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -19,8 +20,10 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import net.thechance.mena.core_chat.data.chat.dto.ChatDto
+import net.thechance.mena.core_chat.data.chat.dto.MarkAsReadRequest
 import net.thechance.mena.core_chat.data.chat.dto.MessageDto
 import net.thechance.mena.core_chat.data.chat.dto.SendMessageDto
+import net.thechance.mena.core_chat.data.chat.utils.MessageEvent
 import net.thechance.mena.core_chat.data.network.ApiConstants.CHAT_ENDPOINT
 import net.thechance.mena.core_chat.data.network.ApiConstants.CHAT_HISTORY_ENDPOINT
 import net.thechance.mena.core_chat.data.network.ApiConstants.WEB_SOCKETS_ENDPOINT
@@ -46,6 +49,7 @@ class ChatRepositoryImpl(
     private var isWebSocketSessionActive = false
     private var webSocketSession: DefaultClientWebSocketSession? = null
     private val messageFlows = MutableSharedFlow<Message>()
+    private val markMessagesAsRead = MutableSharedFlow<String>()
     private val scope = CoroutineScope(Dispatchers.IO)
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         println("Error in ChatRepositoryImpl: ${throwable.message}")
@@ -91,6 +95,10 @@ class ChatRepositoryImpl(
         return messageFlows
     }
 
+    override fun observeReadMessages(): Flow<String> {
+        return markMessagesAsRead
+    }
+
     override suspend fun getChatByContactUserId(userId: Uuid): Chat {
         return tryNetworkCall<ChatDto>(
             bodyType = typeInfo<ChatDto>()
@@ -126,8 +134,6 @@ class ChatRepositoryImpl(
                 send(Frame.Text(connectFrame))
                 println("STOMP CONNECT sent")
 
-                var connected = false
-
                 for (frame in incoming) {
                     if (frame is Frame.Text) {
                         val text = frame.readText()
@@ -136,25 +142,31 @@ class ChatRepositoryImpl(
                         when {
                             text.startsWith("CONNECTED") -> {
                                 println("STOMP CONNECTED from server ✅")
-                                connected = true
 
                                 val subscribeFrame =
                                     "SUBSCRIBE\nid:sub-0\ndestination:/user/$chatId/queue/messages\n\n\u0000"
                                 send(Frame.Text(subscribeFrame))
-                                println("STOMP SUBSCRIBE sent to /user/$chatId/queue/messages")
+
+                                val markAsReadRequest =
+                                    json.encodeToString<MarkAsReadRequest>(MarkAsReadRequest(chatId = chatId))
+                                val markAsReadFrame =
+                                    "SEND\ndestination:/app/chat.markAsRead\n\n$markAsReadRequest\n\n\u0000"
+                                println("MarkAsReadFrame: $markAsReadFrame")
+                                send(Frame.Text(markAsReadFrame))
                             }
 
                             text.startsWith("MESSAGE") -> {
-                                val body = text.substringAfter("\n\n").trimEnd('\u0000')
-                                println("Message payload: $body")
+                                val jsonBody = text.substringAfter("\n\n").trimEnd('\u0000')
+                                println("Message payload: $jsonBody")
 
                                 try {
-                                    val messageDto =
-                                        json.decodeFromString(MessageDto.serializer(), body)
-                                    messageFlows.emit(messageDto.toDomain())
+                                    val event = json.decodeFromString<MessageEvent>(jsonBody)
+                                    handleIncomingEvent(chatId, event)
+
                                 } catch (e: Exception) {
                                     println("Error parsing message: ${e.message}")
                                 }
+
                             }
 
                             text.startsWith("ERROR") -> {
@@ -164,6 +176,7 @@ class ChatRepositoryImpl(
                     }
                 }
 
+                isWebSocketSessionActive = false
                 println("WebSocket session ended.")
             }
 
@@ -172,5 +185,39 @@ class ChatRepositoryImpl(
             println("Error in websocket: ${e.message}")
             throw e
         }
+    }
+
+
+    private suspend fun DefaultClientWebSocketSession.handleIncomingEvent(
+        chatId: String,
+        event: MessageEvent
+    ) {
+        when (event) {
+            is MessageEvent.MarkAsRead -> {
+                val markAsReadResponse = event.dto
+
+                println("Read messages received: $markAsReadResponse")
+                markMessagesAsRead.emit(markAsReadResponse.readBy)
+            }
+
+            is MessageEvent.Message -> {
+                val messageDto = event.dto
+                messageFlows.emit(messageDto.toDomain())
+
+                val markAsReadRequest =
+                    json.encodeToString<MarkAsReadRequest>(MarkAsReadRequest(chatId = chatId))
+                val markAsReadFrame =
+                    "SEND\ndestination:/app/chat.markAsRead\n\n$markAsReadRequest\n\n\u0000"
+                println("MarkAsReadFrame: $markAsReadFrame")
+                send(Frame.Text(markAsReadFrame))
+            }
+        }
+    }
+
+    override suspend fun disconnect() {
+        webSocketSession?.close()
+        isWebSocketSessionActive = false
+        webSocketSession = null
+        println("WebSocket session closed.\nisActive=$isWebSocketSessionActive\nwebSocketSession=$webSocketSession")
     }
 }
