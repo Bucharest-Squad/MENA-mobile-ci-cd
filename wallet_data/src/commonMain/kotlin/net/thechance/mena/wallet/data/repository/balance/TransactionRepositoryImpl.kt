@@ -2,6 +2,9 @@ package net.thechance.mena.wallet.data.repository.balance
 
 import io.ktor.client.request.parameter
 import io.ktor.http.Parameters
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
 import net.thechance.mena.wallet.data.dto.PagedTransactionResponseDto
 import net.thechance.mena.wallet.data.dto.TransactionDto
 import net.thechance.mena.wallet.data.exceptions.safeApiCall
@@ -10,6 +13,8 @@ import net.thechance.mena.wallet.data.mapper.toParameters
 import net.thechance.mena.wallet.data.network_client.NetworkClient
 import net.thechance.mena.wallet.domain.entity.Transaction
 import net.thechance.mena.wallet.domain.model.TransactionFilterParams
+import net.thechance.mena.wallet.domain.model.TransactionStatus
+import net.thechance.mena.wallet.domain.model.TransactionType
 import net.thechance.mena.wallet.domain.repository.TransactionRepository
 import org.koin.core.annotation.Single
 import kotlin.uuid.ExperimentalUuidApi
@@ -33,7 +38,7 @@ class TransactionRepositoryImpl(
 
     override suspend fun getTransactionById(transactionId: Uuid): Transaction {
         return safeApiCall<TransactionDto> {
-            networkClient.get("$TRANSACTION_PATH/{$transactionId}")
+            networkClient.get("$TRANSACTION_PATH/$transactionId")
         }.toEntity()
     }
 
