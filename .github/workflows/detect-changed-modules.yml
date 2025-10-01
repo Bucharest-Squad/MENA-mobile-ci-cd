@@ -42,9 +42,7 @@ jobs:
           else
             CHANGED_FILES=$(git diff --name-only HEAD~1..HEAD)
           fi
-          echo "changed_files<<EOF" >> $GITHUB_OUTPUT
-          echo "$CHANGED_FILES" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          echo "changed_files=$CHANGED_FILES" >> $GITHUB_OUTPUT
 
       - name: Determine modules
         id: changes
@@ -73,25 +71,15 @@ jobs:
           FINAL_MODULES=$(echo $FINAL_MODULES | tr ' ' '\n' | sort -u | tr '\n' ' ')
           JSON_ARRAY=$(echo "$FINAL_MODULES" | jq -R 'split(" ") | map(select(length > 0))' | jq -c '.')
           IOS_JSON_ARRAY=$(echo "$FINAL_MODULES" | tr ' ' '\n' | grep -F -x -f <(echo "$IOS_MODULES" | tr ' ' '\n') | jq -R -s -c 'split("\n")[:-1]')
-
-          # Filter out composeApp for testing
           TEST_JSON_ARRAY=$(echo "$JSON_ARRAY" | jq '[.[] | select(. != "composeApp")]')
 
           if [ "$(echo "$JSON_ARRAY" | jq 'length')" -gt 0 ]; then
             echo "has_changes=true" >> $GITHUB_OUTPUT
-
-            echo "modules<<EOF" >> $GITHUB_OUTPUT
-            echo "$JSON_ARRAY" >> $GITHUB_OUTPUT
-            echo "EOF" >> $GITHUB_OUTPUT
+            echo "modules=$JSON_ARRAY" >> $GITHUB_OUTPUT
           else
             echo "has_changes=false" >> $GITHUB_OUTPUT
             echo "modules=[]" >> $GITHUB_OUTPUT
           fi
 
-          echo "ios_modules<<EOF" >> $GITHUB_OUTPUT
-          echo "$IOS_JSON_ARRAY" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-
-          echo "test_modules<<EOF" >> $GITHUB_OUTPUT
-          echo "$TEST_JSON_ARRAY" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          echo "ios_modules=$IOS_JSON_ARRAY" >> $GITHUB_OUTPUT
+          echo "test_modules=$TEST_JSON_ARRAY" >> $GITHUB_OUTPUT
