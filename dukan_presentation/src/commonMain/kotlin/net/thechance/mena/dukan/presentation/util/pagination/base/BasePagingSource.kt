@@ -29,16 +29,24 @@ abstract class BasePagingSource<T : Any> : PagingSource<Int, T>() {
     }
 }
 
-fun <T : Any> createPagingSource(
+fun <T : Any, R : Any> createPagingSource(
+    mapper: (T) -> R,
     config: PagingConfig = PagingConfig(),
     block: suspend (pageNumber: Int) -> PagedResult<T>
-): Pager<Int, T> {
+): Pager<Int, R> {
     return Pager(
         config = config,
         pagingSourceFactory = {
-            object : BasePagingSource<T>() {
-                override suspend fun onFetchPage(pageNumber: Int): PagedResult<T> {
-                    return block(pageNumber)
+            object : BasePagingSource<R>() {
+                override suspend fun onFetchPage(pageNumber: Int): PagedResult<R> {
+                    val result = block(pageNumber)
+                    return PagedResult(
+                        items = result.items.map(mapper),
+                        hasNext = result.hasNext,
+                        hasPrevious = result.hasPrevious,
+                        currentPage = result.currentPage,
+                        totalPages = result.totalPages
+                    )
                 }
             }
         }
