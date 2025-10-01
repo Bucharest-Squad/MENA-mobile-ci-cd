@@ -8,8 +8,6 @@ import net.thechance.mena.dukan.data.repository.mockEngine.product.demoPagedResu
 import net.thechance.mena.dukan.data.repository.mockEngine.product.productDto1
 import net.thechance.mena.dukan.domain.entity.Product
 import org.junit.Test
-import java.util.UUID
-import kotlin.math.exp
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
