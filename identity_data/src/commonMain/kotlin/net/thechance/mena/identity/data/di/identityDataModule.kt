@@ -8,7 +8,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import net.thechance.mena.identity.data.dataSource.local.database.dao.UserDao
 import net.thechance.mena.identity.data.repository.AuthenticationRepositoryImpl
+import net.thechance.mena.identity.data.repository.ResetPasswordRepositoryImpl
 import net.thechance.mena.identity.domain.repository.AuthenticationRepository
+import net.thechance.mena.identity.domain.repository.ResetPasswordRepository
 import net.thechance.mena.identity.data.dataSource.local.database.IdentityDatabase
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
@@ -34,6 +36,7 @@ val identityDataModule = module {
     single<UserDao> { get<IdentityDatabase>().getUserDao() }
 
     singleOf(::AuthenticationRepositoryImpl) bind AuthenticationRepository::class
+    singleOf(::ResetPasswordRepositoryImpl) bind ResetPasswordRepository::class
 }
 
 fun getRoomDatabase(builder: RoomDatabase.Builder<IdentityDatabase>): IdentityDatabase {
