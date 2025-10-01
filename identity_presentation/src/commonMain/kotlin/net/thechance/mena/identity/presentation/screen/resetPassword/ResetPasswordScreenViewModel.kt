@@ -2,6 +2,7 @@ package net.thechance.mena.identity.presentation.screen.resetPassword
 
 import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.coroutines.CoroutineScope
+import net.thechance.mena.identity.domain.entity.PhoneNumber
 import net.thechance.mena.identity.domain.repository.ResetPasswordRepository
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
 import net.thechance.mena.identity.presentation.base.ErrorState
@@ -11,7 +12,8 @@ import net.thechance.mena.identity.domain.useCase.validation.mobileNumber.Passwo
 class ResetPasswordScreenViewModel(
     private val passwordValidator: PasswordValidator,
     private val resetPasswordRepository: ResetPasswordRepository,
-    private val phoneNumber: String
+    private val phoneNumber: String,
+    private val callingCode:String
 ) : BaseScreenModel<ResetPasswordScreenUIState, ResetPasswordScreenUIEffect>(
     ResetPasswordScreenUIState()
 ), ResetPasswordScreenInteractionListener {
@@ -64,7 +66,7 @@ class ResetPasswordScreenViewModel(
         resetPasswordRepository.resetPassword(
             state.value.confirmPassword,
             state.value.newPassword,
-            phoneNumber
+            phoneNumber = PhoneNumber(phoneNumber, callingCode)
         )
     }
 
