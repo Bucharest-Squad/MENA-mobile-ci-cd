@@ -20,6 +20,7 @@ import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.dukan.domain.entity.Product
 import net.thechance.mena.dukan.presentation.component.ImageWithTextContainer
+import net.thechance.mena.dukan.presentation.screen.productLayout.ProductUiState
 import net.thechance.mena.dukan.presentation.viewModel.manageDukan.ManageDukanUiState
 import org.jetbrains.compose.resources.stringResource
 
@@ -30,9 +31,9 @@ fun ManageDukanProducts(
 ) {
     when {
         state.shelves.isEmpty() -> NoShelvesContent()
-        state.products.isEmpty() -> EmptyStateContent()
+        state.products.items.isEmpty() -> EmptyStateContent()
         else -> ProductListContent(
-            products = state.products,
+            products = state.products.items,
             onProductClick = onProductClick
         )
     }
@@ -72,7 +73,7 @@ private fun EmptyStateContent() {
 
 @Composable
 private fun ProductListContent(
-    products: List<Product>,
+    products: List<ProductUiState>,
     onProductClick: (Product) -> Unit
 ) {
     // TODO: Replace with ProductCard component when ready

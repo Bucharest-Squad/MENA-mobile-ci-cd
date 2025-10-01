@@ -8,11 +8,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import net.thechance.mena.dukan.domain.util.PagedResult
 import net.thechance.mena.dukan.presentation.component.productCard.EditProductIcon
 import net.thechance.mena.dukan.presentation.component.productCard.ProductCard
+import net.thechance.mena.dukan.presentation.screen.productLayout.ProductUiState
 import net.thechance.mena.dukan.presentation.util.pagination.LoadMoreOnScroll
 import net.thechance.mena.dukan.presentation.util.pagination.Pager
-import net.thechance.mena.dukan.presentation.viewModel.manageDukan.ProductUiState
+import net.thechance.mena.dukan.presentation.util.pagination.PagingConfig
+import net.thechance.mena.dukan.presentation.util.pagination.base.BasePagingSource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 
@@ -24,9 +27,9 @@ fun ProductsList(
     onProductClick: (ProductUiState) -> Unit = {},
 ) {
     val lazyListState = rememberLazyListState()
-    lazyListState.LoadMoreOnScroll(
-        loadMore = { pager.loadNextPage() },
-    )
+
+    lazyListState.LoadMoreOnScroll(pager)
+
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(Theme.spacing._8),
         modifier = modifier,
@@ -50,7 +53,22 @@ fun ProductsList(
 private fun ProductsLayoutPreview() {
     MenaTheme {
         ProductsList(
-            fakeProducts()
+            fakeProducts(),
+            pager = Pager(
+                config = PagingConfig()
+            ) {
+                object : BasePagingSource<ProductUiState>() {
+                    override suspend fun onFetchPage(pageNumber: Int): PagedResult<ProductUiState> {
+                        return PagedResult(
+                            items = fakeProducts(),
+                            hasPrevious = false,
+                            hasNext = true,
+                            currentPage = pageNumber,
+                            totalPages = 1000,
+                        )
+                    }
+                }
+            },
         )
     }
 }

@@ -1,16 +1,19 @@
 package net.thechance.mena.dukan.presentation.viewModel.manageDukan
 
+import androidx.compose.foundation.pager.PagerState
 import mena.dukan_presentation.generated.resources.Res
 import mena.dukan_presentation.generated.resources.delete
 import mena.dukan_presentation.generated.resources.dismiss
 import net.thechance.mena.dukan.domain.entity.Product
 import net.thechance.mena.dukan.presentation.component.SnackBarUiState
+import net.thechance.mena.dukan.presentation.screen.productLayout.ProductUiState
+import net.thechance.mena.dukan.presentation.util.pagination.PagingData
 import org.jetbrains.compose.resources.StringResource
 
 data class ManageDukanUiState(
     val shelves: List<ShelfUiState> = emptyList(),
     val selectedShelf: ShelfUiState? = null,
-    val products: List<Product> = emptyList(),
+    val products: PagingData<ProductUiState> = PagingData(),
     val totalProducts: Int = 0,
     val isLoading: Boolean = false,
     val isLoadingProducts: Boolean = false,

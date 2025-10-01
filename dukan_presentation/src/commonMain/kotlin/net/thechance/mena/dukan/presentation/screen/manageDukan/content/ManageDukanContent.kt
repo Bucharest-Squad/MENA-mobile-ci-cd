@@ -79,7 +79,7 @@ fun ManageDukanContent(
                 )
             }
 
-            if (state.shelves.isEmpty() || state.products.isEmpty()) {
+            if (state.shelves.isEmpty() || state.products.items.isEmpty()) {
                 Spacer(modifier = Modifier.weight(1f))
             }
 

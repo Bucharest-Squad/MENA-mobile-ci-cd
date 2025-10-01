@@ -17,6 +17,10 @@ import net.thechance.mena.dukan.domain.repository.CreateShelfRepository
 import net.thechance.mena.dukan.domain.repository.ProductRepository
 import net.thechance.mena.dukan.presentation.component.SnackBarType
 import net.thechance.mena.dukan.presentation.component.SnackBarUiState
+import net.thechance.mena.dukan.presentation.screen.productLayout.ProductUiState
+import net.thechance.mena.dukan.presentation.screen.productLayout.toUiState
+import net.thechance.mena.dukan.presentation.util.pagination.PagingData
+import net.thechance.mena.dukan.presentation.util.pagination.base.createPagingSource
 import net.thechance.mena.dukan.presentation.viewModel.base.BaseViewModel
 import org.jetbrains.compose.resources.StringResource
 
@@ -134,11 +138,9 @@ class ManageDukanViewModel(
     }
 
     private fun loadProductsFromRepository(shelfId: String) {
-        tryToExecute(
-            onStart = { updateState { copy(isLoadingProducts = isLoading) } },
-            block = { productRepository.getProductsByShelfId(shelfId) },
-            onSuccess = { products -> handleProductsLoaded(products) },
-            onError = { updateState { copy(isLoadingProducts = false) } }
+        tryToCollect(
+            block = { pager.flow },
+            onCollect = { products -> handleProductsLoaded(products) },
         )
     }
 
@@ -151,7 +153,7 @@ class ManageDukanViewModel(
     override fun onShowDeleteShelfDailog(
         shelfId: String
     ) {
-        val hasProducts = state.value.products.isNotEmpty()
+        val hasProducts = state.value.products.items.isNotEmpty()
         updateState {
             copy(
                 deleteShelfConfirmationDialogUiState = DeleteShelfConfirmationDialogUiState(
@@ -195,14 +197,22 @@ class ManageDukanViewModel(
         onShowSnackBar(type = SnackBarType.ERROR, message = Res.string.error_for_delete_shelf)
     }
 
-    private fun handleProductsLoaded(products: List<Product>) {
+    private fun handleProductsLoaded(products: PagingData<ProductUiState>) {
         updateState {
             copy(
                 products = products,
-                totalProducts = products.size,
-                isLoadingProducts = false
             )
         }
+    }
+
+    val pager = createPagingSource(
+        mapper = { it.toUiState() },
+    ) {
+        productRepository.getProductsByShelfId(
+            shelfId = state.value.selectedShelf?.id.orEmpty(),
+            page = it,
+            size = 10
+        )
     }
 
 
