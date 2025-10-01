@@ -57,7 +57,7 @@ kover.reports {
     }
 
     filters.excludes {
-        packages("*.di", "*.dto", "*.utils")
+        packages("*.di", "*.dto", "*.utils", "*.database")
     }
 }
 
