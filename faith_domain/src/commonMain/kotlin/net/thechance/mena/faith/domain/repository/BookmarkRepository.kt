@@ -4,7 +4,7 @@ import net.thechance.mena.faith.domain.entity.AyahBookmark
 import net.thechance.mena.faith.domain.entity.PagedFetchResponse
 
 interface BookmarkRepository {
-    suspend fun getAyahBookmarks(pageNumber: Int): PagedFetchResponse<AyahBookmark>
+    suspend fun getAyahBookmarks(pageNumber: Int, pageSize: Int): PagedFetchResponse<AyahBookmark>
     suspend fun addAyahBookmark(surahId: Int, ayahNumber: Int): AyahBookmark
     suspend fun deleteAyahBookmark(ayahBookmarkId: Int)
 }

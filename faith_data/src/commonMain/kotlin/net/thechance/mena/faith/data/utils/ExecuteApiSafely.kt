@@ -7,7 +7,7 @@ import kotlinx.io.IOException
 import kotlinx.serialization.SerializationException
 import net.thechance.mena.faith.domain.exception.FaithException
 
-suspend inline fun <reified T> safeApiCall(
+suspend inline fun <reified T> executeApiSafely(
     apiCall: suspend () -> HttpResponse,
 ): T {
     val response = try {

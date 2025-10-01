@@ -7,17 +7,22 @@ import net.thechance.mena.faith.data.repository.BookmarkRepositoryImpl
 import net.thechance.mena.faith.data.repository.QuranRepositoryImpl
 import net.thechance.mena.faith.domain.repository.BookmarkRepository
 import net.thechance.mena.faith.domain.repository.QuranRepository
-import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
-import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val faithDataModule = module {
     includes(platformModule())
     single<AyahDao> { get<QuranDatabase>().getAyaDao() }
     single<QuranRepository> { QuranRepositoryImpl(get()) }
-    singleOf(::BookmarkRepositoryImpl) bind BookmarkRepository::class
-    single {
+
+    single<BookmarkRepository> {
+        BookmarkRepositoryImpl(
+            ayahDao = get(),
+            httpClient = get((named("faithHttpClient")))
+        )
+    }
+
+    single(named("faithHttpClient")) {
         NetworkClient(
             authorizationService = get(),
             baseUrl = get<String>(named("baseUrl"))

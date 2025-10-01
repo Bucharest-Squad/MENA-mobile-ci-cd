@@ -18,7 +18,8 @@ internal val faithViewModelModule = module {
             quranRepository = get(),
             surahId = surahId,
             surahName = surahName,
-            clipboardManager = get()
+            clipboardManager = get(),
+            bookmarkRepository = get()
         )
     }
     viewModelOf(::BookmarkViewModel)

@@ -74,11 +74,16 @@ class BookmarkViewModel(
         }
     }
 
-    private fun createBookmarksPagingSource(): Flow<PagingData<AyahBookmark>> =
-        createPagingSourceFlow { _, pageNumber -> bookmarkRepository.getAyahBookmarks(pageNumber) }
+    private fun createBookmarksPagingSource(): Flow<PagingData<AyahBookmark>> {
+        return createPagingSourceFlow(
+            onError = {},
+        ) { pageNumber, pageSize ->
+            bookmarkRepository.getAyahBookmarks(pageNumber, pageSize)
+        }
+    }
+
 
     private fun handleErrorState(throwable: Throwable) {
         // TODO: handle error here
     }
-
 }

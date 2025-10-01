@@ -50,6 +50,7 @@ import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.faith.presentation.base.ObserveAsEffect
 import net.thechance.mena.faith.presentation.component.FaithScaffold
+import net.thechance.mena.faith.presentation.navigation.BookmarksRoute
 import net.thechance.mena.faith.presentation.navigation.LocalNavController
 import net.thechance.mena.faith.presentation.navigation.SurahDetailsRoute
 import org.jetbrains.compose.resources.painterResource
@@ -68,7 +69,9 @@ fun SurScreen(
     ObserveAsEffect(viewModel.uiEffect) { effect ->
         when (effect) {
             is SurEffect.NavigateBack -> navController.navigateUp()
-            is SurEffect.NavigateToBookmark -> {}
+            is SurEffect.NavigateToBookmark -> {
+                navController.navigate(BookmarksRoute)
+            }
             is SurEffect.NavigateToSurahDetails -> navController.navigate(
                 SurahDetailsRoute(
                     surahId = effect.surahId,

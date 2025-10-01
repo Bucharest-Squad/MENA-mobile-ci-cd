@@ -1,6 +1,7 @@
 package net.thechance.mena.faith.data.mapper.ayahBookmark
 
 import net.thechance.mena.faith.data.database.AyahDto
+import net.thechance.mena.faith.data.mapper.toAyah
 import net.thechance.mena.faith.domain.entity.Ayah
 import org.junit.Assert.assertEquals
 import org.junit.Test

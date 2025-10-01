@@ -11,13 +11,13 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import net.thechance.mena.faith.data.database.AyahDao
-import net.thechance.mena.faith.data.mapper.ayahBookmark.toAyah
 import net.thechance.mena.faith.data.mapper.ayahBookmark.toAyahBookmark
+import net.thechance.mena.faith.data.mapper.toAyah
 import net.thechance.mena.faith.data.mapper.toSurah
 import net.thechance.mena.faith.data.remote.dto.PageResponse
 import net.thechance.mena.faith.data.remote.dto.bookmark.AddBookmarkRequest
 import net.thechance.mena.faith.data.remote.dto.bookmark.AyahBookmarkDto
-import net.thechance.mena.faith.data.utils.safeApiCall
+import net.thechance.mena.faith.data.utils.executeApiSafely
 import net.thechance.mena.faith.domain.entity.AyahBookmark
 import net.thechance.mena.faith.domain.entity.PagedFetchResponse
 import net.thechance.mena.faith.domain.repository.BookmarkRepository
@@ -45,9 +45,12 @@ class BookmarkRepositoryImpl(
         }
     }
 
-    override suspend fun getAyahBookmarks(pageNumber: Int): PagedFetchResponse<AyahBookmark> {
+    override suspend fun getAyahBookmarks(
+        pageNumber: Int,
+        pageSize: Int
+    ): PagedFetchResponse<AyahBookmark> {
         return coroutineScope {
-            val response = httpClient.getBookmarks(pageNumber)
+            val response = httpClient.getBookmarks(pageNumber, pageSize)
 
             PagedFetchResponse(
                 currentPage = pageNumber,
@@ -64,23 +67,27 @@ class BookmarkRepositoryImpl(
     }
 
     override suspend fun deleteAyahBookmark(ayahBookmarkId: Int) {
-        safeApiCall<Unit> {
+        executeApiSafely<Unit> {
             httpClient.delete("$DELETE_AYAH_BOOKMARK_END_POINT/$ayahBookmarkId")
         }
     }
 
     private suspend fun HttpClient.postBookmark(surahId: Int, ayahNumber: Int): AyahBookmarkDto {
-        return safeApiCall {
+        return executeApiSafely {
             post(POST_AYAH_BOOKMARK_END_POINT) {
                 setBody(AddBookmarkRequest(surahId, ayahNumber))
             }.body()
         }
     }
 
-    private suspend fun HttpClient.getBookmarks(pageNumber: Int): PageResponse<AyahBookmarkDto> {
-        return safeApiCall {
+    private suspend fun HttpClient.getBookmarks(
+        pageNumber: Int,
+        pageSize: Int
+    ): PageResponse<AyahBookmarkDto> {
+        return executeApiSafely {
             get(GET_AYAH_BOOKMARK_END_POINT) {
                 parameter("page", pageNumber)
+                parameter("pageSize", pageSize)
             }.body()
         }
     }

@@ -43,6 +43,7 @@ import net.thechance.mena.faith.presentation.extensions.paging.isEmpty
 import net.thechance.mena.faith.presentation.extensions.paging.isNotEmpty
 import net.thechance.mena.faith.presentation.feature.quran.bookmark.component.AyaBookmarkCard
 import net.thechance.mena.faith.presentation.feature.quran.bookmark.component.EmptyBookmarkState
+import net.thechance.mena.faith.presentation.navigation.LocalNavController
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -54,11 +55,12 @@ fun BookmarkScreen(
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val snackBarState by viewModel.snackBarState.collectAsStateWithLifecycle()
+    val navController = LocalNavController.current
 
     ObserveAsEffect(viewModel.uiEffect) { effect ->
         when (effect) {
             is BookmarkEffect.NavigateBack -> {
-                // TODO(navigate back)
+                navController.navigateUp()
             }
         }
     }
