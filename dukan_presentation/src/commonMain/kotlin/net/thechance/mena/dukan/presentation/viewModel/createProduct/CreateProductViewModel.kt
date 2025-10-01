@@ -1,6 +1,7 @@
 package net.thechance.mena.dukan.presentation.viewModel.createProduct
 
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.lifecycle.SavedStateHandle
 import com.attafitamim.krop.filekit.toImageSrc
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.dialogs.compose.util.toImageBitmap
@@ -12,7 +13,7 @@ import kotlinx.coroutines.awaitCancellation
 import net.thechance.mena.dukan.domain.entity.Shelf
 import net.thechance.mena.dukan.domain.repository.ProductRepository
 import net.thechance.mena.dukan.domain.repository.ShelfRepository
-import net.thechance.mena.dukan.presentation.component.ProductImageState
+import net.thechance.mena.dukan.presentation.component.productImage.ProductImageState
 import net.thechance.mena.dukan.presentation.screen.createDukan.content.component.SnackBarType
 import net.thechance.mena.dukan.presentation.screen.createDukan.content.component.SnackBarUiState
 import net.thechance.mena.dukan.presentation.util.imageCrop.toPngByteArray
@@ -22,7 +23,8 @@ import kotlin.math.round
 class CreateProductViewModel(
     private val productRepository: ProductRepository,
     private val shelfRepository: ShelfRepository,
-    dispatcher: CoroutineDispatcher = Dispatchers.IO
+    savedStateHandle: SavedStateHandle,
+    dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : BaseViewModel<ProductUiState, CreateProductEffect>(
     initialState = ProductUiState(),
     defaultDispatcher = dispatcher
@@ -30,6 +32,10 @@ class CreateProductViewModel(
 
     init {
         getShelves()
+    }
+
+    private val shelfId by lazy {
+        savedStateHandle.get<String>(SHELF_ID)
     }
 
     private fun getShelves() {
@@ -52,11 +58,7 @@ class CreateProductViewModel(
 
     override fun onProductNameChange(name: String) {
         updateState {
-            copy(
-                productName = name
-            ).also { updatedState ->
-                updateState { copy(isAddButtonEnabled = isProductValid(updatedState)) }
-            }
+            copy(productName = name).updateButtonState()
         }
     }
 
@@ -67,29 +69,21 @@ class CreateProductViewModel(
                     shelfItem.copy(isSelected = shelfItem.id == shelfUiState.id)
                 },
                 selectedShelf = shelfUiState,
-            ).also { updatedState ->
-                updateState { copy(isAddButtonEnabled = isProductValid(updatedState)) }
-            }
+            ).updateButtonState()
         }
     }
 
     override fun onPriceChange(price: String) {
         updateState {
             copy(
-                price = price.filter { it.isDigit() || it == '.' },
-            ).also { updatedState ->
-                updateState { copy(isAddButtonEnabled = isProductValid(updatedState)) }
-            }
+                price = price.filter { it.isDigit() || it == PRICE_DECIMAL_SEPARATOR },
+            ).updateButtonState()
         }
     }
 
     override fun onDescriptionChange(description: String) {
         updateState {
-            copy(
-                description = description,
-            ).also { updatedState ->
-                updateState { copy(isAddButtonEnabled = isProductValid(updatedState)) }
-            }
+            copy(description = description).updateButtonState()
         }
     }
 
@@ -101,51 +95,8 @@ class CreateProductViewModel(
     }
 
     private suspend fun onUploadImageBlock(image: PlatformFile) {
-        if (state.value.images.size > 9) {
-            updateState {
-                copy(
-                    snackBarUiState = SnackBarUiState(
-                        message = "You can upload only 10 images",
-                        snackBarType = SnackBarType.ERROR
-                    ),
-                    showSnackBar = true,
-                )
-            }
+        if (isUploadImageValid(image).not())
             awaitCancellation()
-        }
-
-        val imageSizeInMegabyte = image.size().toDouble() / (1024.0 * 1024.0)
-        if (imageSizeInMegabyte > 5) {
-            updateState {
-                copy(
-                    snackBarUiState = SnackBarUiState(
-                        message = "You can upload only 10 images",
-                        snackBarType = SnackBarType.ERROR
-                    ),
-                    showSnackBar = true,
-                    showCropImage = false,
-                    selectedImage = null
-                )
-            }
-            awaitCancellation()
-        }
-
-        val imageBitmap = image.toImageBitmap()
-        val imageAspectRatio = imageBitmap.width.toFloat() / imageBitmap.height.toFloat()
-        if (imageAspectRatio == 1f) {
-            updateState {
-                copy(
-                    images = images + ProductImageUi(
-                        image = imageBitmap,
-                        imageSizeInMegaByte = imageSizeInMegabyte.rounded(),
-                        imageState = ProductImageState.SUCCESS,
-                    )
-                ).also { updatedState ->
-                    updateState { copy(isAddButtonEnabled = isProductValid(updatedState)) }
-                }
-            }
-            awaitCancellation()
-        }
 
         val imageSrc = image.toImageSrc()
         updateState {
@@ -154,6 +105,73 @@ class CreateProductViewModel(
                 showCropImage = true
             )
         }
+    }
+
+    private suspend fun isUploadImageValid(image: PlatformFile): Boolean {
+
+        val imageSizeInMegabyte = image.size().toDouble() / BYTES_PER_MEGABYTE
+        val imageBitmap = image.toImageBitmap()
+        val imageAspectRatio = imageBitmap.width.toFloat() / imageBitmap.height.toFloat()
+        val imageSrc = image.toImageSrc()
+
+        return when {
+            state.value.images.size >= IMAGE_MAX_LIMIT -> {
+                updateState {
+                    copy(
+                        snackBarUiState = SnackBarUiState(
+                            message = MESSAGE_IMAGE_MAX_LIMIT_REACHED,
+                            snackBarType = SnackBarType.ERROR
+                        ),
+                        showSnackBar = true,
+                    )
+                }
+                false
+            }
+
+            imageSizeInMegabyte > IMAGE_MAX_SIZE_IN_MB -> {
+                updateState {
+                    copy(
+                        snackBarUiState = SnackBarUiState(
+                            message = MESSAGE_IMAGE_SIZE_EXCEEDED,
+                            snackBarType = SnackBarType.ERROR
+                        ),
+                        showSnackBar = true,
+                        showCropImage = false,
+                        selectedImage = null
+                    )
+                }
+                false
+            }
+
+            imageAspectRatio == IMAGE_ASPECT_RATIO -> {
+                updateState {
+                    copy(
+                        images = images + ProductImageUi(
+                            image = imageBitmap,
+                            imageSizeInMegaByte = imageSizeInMegabyte.rounded(),
+                            imageState = ProductImageState.SUCCESS,
+                        )
+                    ).updateButtonState()
+                }
+                false
+            }
+
+            imageSrc == null -> {
+                updateState {
+                    copy(
+                        snackBarUiState = SnackBarUiState(
+                            message = MESSAGE_UPLOAD_FAILED,
+                            snackBarType = SnackBarType.ERROR
+                        ),
+                        showSnackBar = true,
+                    )
+                }
+                false
+            }
+
+            else -> true
+        }
+
     }
 
     fun onCroppedImage(imageBitmap: ImageBitmap) {
@@ -173,7 +191,7 @@ class CreateProductViewModel(
         }
 
         val imageByteArray = imageBitmap.toPngByteArray().size.toDouble()
-        val imageSizeInMegabyte = imageByteArray / (1024.0 * 1024.0)
+        val imageSizeInMegabyte = imageByteArray / BYTES_PER_MEGABYTE
 
         return ProductImageUi(
             image = imageBitmap,
@@ -184,11 +202,7 @@ class CreateProductViewModel(
 
     private fun onCroppedImageSuccess(productImage: ProductImageUi) {
         updateState {
-            copy(
-                images = images + productImage,
-            ).also { updatedState ->
-                updateState { copy(isAddButtonEnabled = isProductValid(updatedState)) }
-            }
+            copy(images = images + productImage).updateButtonState()
         }
     }
 
@@ -205,7 +219,7 @@ class CreateProductViewModel(
         updateState {
             copy(
                 images = images.filter { it.image != image }
-            )
+            ).updateButtonState()
         }
     }
 
@@ -221,7 +235,7 @@ class CreateProductViewModel(
         updateState {
             copy(
                 snackBarUiState = SnackBarUiState(
-                    message = throwable.message.orEmpty(),
+                    message = MESSAGE_ERROR_GENERAL,
                     snackBarType = SnackBarType.ERROR
                 ),
                 showSnackBar = true,
@@ -254,24 +268,28 @@ class CreateProductViewModel(
             )
         }
 
-        // Todo ( add a new functions of create product and upload image here )
-//         val productId = productRepository.createProduct(state.value.toDomain())
-//                productRepository.uploadProductImages(
-//                    fileName = state.value.images.map {
-//                                state.value.productName +
-//                                it.image.toPngByteArray().toFileName() +
-//                                "product_image"
-//                      },
-//                    fileBytes = state.value.images.map { it.image.toPngByteArray() },
-//                    productId = productId
-//                )
+        val productId = shelfId?.let { myShelfId ->
+            productRepository.createProduct(shelfId = myShelfId, product = state.value.toDomain())
+        }
+
+        productId?.let { myProductId ->
+            productRepository.uploadProductImages(
+                fileName = state.value.images.map {
+                    state.value.productName +
+                            it.image.toPngByteArray().toFileName() +
+                            "product_image"
+                },
+                fileBytes = state.value.images.map { it.image.toPngByteArray() },
+                productId = myProductId
+            )
+        }
     }
 
     private fun onAddProductSuccess(unit: Unit) {
         updateState {
             copy(
                 snackBarUiState = SnackBarUiState(
-                    message = "Add product successfully.",
+                    message = MESSAGE_PRODUCT_ADD_SUCCESS,
                     snackBarType = SnackBarType.SUCCESS
                 ),
                 showSnackBar = true,
@@ -279,7 +297,7 @@ class CreateProductViewModel(
                 images = images.map { it.copy(imageState = ProductImageState.SUCCESS) },
             )
         }
-        // Todo emit effect Navigate to Mange Product Screen
+        emitEffect(effect = CreateProductEffect.NavigateToMyDukan)
     }
 
     override fun onDismissSnackBar() {
@@ -295,12 +313,16 @@ class CreateProductViewModel(
         updateState {
             copy(
                 snackBarUiState = SnackBarUiState(
-                    message = throwable.message.orEmpty(),
+                    message = MESSAGE_ERROR_GENERAL,
                     snackBarType = SnackBarType.ERROR
                 ),
                 showSnackBar = true,
             )
         }
+    }
+
+    private fun ProductUiState.updateButtonState(): ProductUiState {
+        return copy(isAddButtonEnabled = isProductValid(this))
     }
 
     private fun isProductValid(productUiState: ProductUiState): Boolean {
@@ -316,12 +338,38 @@ class CreateProductViewModel(
 
     private fun getProductValidationError(productUiState: ProductUiState): String? {
         return when {
-            productUiState.price.toDoubleOrNull() == null -> "Price is invalid"
-            productUiState.price.toDouble() <= 0 -> "Price must be greater than zero"
-
-            productUiState.description.length !in 100..3000 -> "Description must be between 100 and 3000 letters"
+            productUiState.price.toDoubleOrNull() == null -> VALIDATION_PRICE_INVALID
+            productUiState.price.toDouble() < PRICE_EXCLUSIVE_LOWER_BOUND -> VALIDATION_PRICE_NOT_POSITIVE
+            productUiState.description.length !in MIN_DESCRIPTION_LENGTH..MAX_DESCRIPTION_LENGTH -> VALIDATION_DESCRIPTION_LENGTH_ERROR
+            shelfId == null -> MESSAGE_ERROR_GENERAL
             else -> null
         }
+    }
+
+    companion object {
+        const val IMAGE_ASPECT_RATIO = 1F
+        const val IMAGE_MAX_LIMIT = 9
+        const val IMAGE_MAX_SIZE_IN_MB = 5
+        const val BYTES_PER_MEGABYTE = 1024 * 1024
+
+        const val MIN_DESCRIPTION_LENGTH = 100
+        const val MAX_DESCRIPTION_LENGTH = 3000
+        const val PRICE_EXCLUSIVE_LOWER_BOUND = 0.0
+        const val PRICE_DECIMAL_SEPARATOR = '.'
+
+        const val SHELF_ID = "shelfId"
+        const val MESSAGE_IMAGE_MAX_LIMIT_REACHED =
+            "You can upload a maximum of $IMAGE_MAX_LIMIT images."
+        const val MESSAGE_IMAGE_SIZE_EXCEEDED =
+            "Image size should be less than $IMAGE_MAX_SIZE_IN_MB MB."
+        const val MESSAGE_UPLOAD_FAILED = "Upload failed, please try again."
+        const val MESSAGE_PRODUCT_ADD_SUCCESS = "Add product successfully."
+        const val MESSAGE_ERROR_GENERAL = "Something went wrong, please try again."
+        const val VALIDATION_PRICE_INVALID = "Price is invalid."
+        const val VALIDATION_PRICE_NOT_POSITIVE =
+            "Price must be greater than $PRICE_EXCLUSIVE_LOWER_BOUND."
+        const val VALIDATION_DESCRIPTION_LENGTH_ERROR =
+            "Description must be between $MIN_DESCRIPTION_LENGTH and $MAX_DESCRIPTION_LENGTH letters."
     }
 }
 
@@ -329,5 +377,3 @@ private fun Double.rounded(): Double = (round(this * 100) / 100)
 private fun ByteArray.toFileName(): String {
     return this.take(15).joinToString(",") { item -> (item.toInt() and 0xFF).toString() }
 }
-
-
