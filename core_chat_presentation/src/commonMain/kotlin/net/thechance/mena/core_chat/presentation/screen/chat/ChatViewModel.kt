@@ -30,9 +30,19 @@ class ChatViewModel(
     ChatInteractionListener {
 
     init {
-        val chatId = chatArgs.chatId
+        val chatId = Uuid.parse(chatArgs.chatId)
+        val requesterUserId = Uuid.parse(chatArgs.chatRequesterId)
+        updateState {
+            it.copy(
+                chat = ChatUiState(
+                    id = chatId,
+                    name = chatArgs.chatName,
+                    avatarUrl = chatArgs.chatImageUrl,
+                    requesterId = requesterUserId
+                )
+            )
+        }
 
-        getChat(chatId)
         loadChatHistory(chatId)
         subscribeToNewMessages(chatId)
     }
@@ -70,18 +80,25 @@ class ChatViewModel(
         }
 
         tryToExecute(
+            execute = { repository.sendMessage(uiMessage.toEntity()) },
             onSuccess = { onSendMessageSuccess(uiMessage) },
             onError = { onSendMessageError(uiMessage) },
-            execute = { repository.sendMessage(uiMessage.toEntity()) }
         )
     }
 
     private fun onSendMessageSuccess(message: MessageUiState) {
-        updateStateWithNewMessage((message as TextMessageUiState).copy(status = MessageStatusUiState.SENT))
+        val updatedMessages =
+            state.value.uiMessages.filterNot { it.id == message.id && it.sendTime == message.sendTime }
+        updateState {
+            it.copy(
+                uiMessages = updatedMessages,
+                chatListItems = buildListItems(updatedMessages),
+            )
+        }
     }
 
     private fun onSendMessageError(message: MessageUiState) {
-        updateStateWithNewMessage( (message as TextMessageUiState).copy(status = MessageStatusUiState.FAILED) )
+        updateStateWithNewMessage((message as TextMessageUiState).copy(status = MessageStatusUiState.FAILED))
     }
 
     override fun onMessageClicked(messageId: Uuid) {
@@ -133,9 +150,9 @@ class ChatViewModel(
             updateStateWithNewMessage((message as TextMessageUiState).copy(status = MessageStatusUiState.SENDING))
 
             tryToExecute(
+                execute = { repository.sendMessage((message).toEntity()) }, // temp casting
                 onSuccess = { onResendMessageSuccess(message) },
                 onError = { onResendMessageError(message) },
-                execute = { repository.sendMessage((message).toEntity()) } // temp casting
             )
         }
     }
@@ -153,21 +170,9 @@ class ChatViewModel(
         updateState { it.copy(isResendMessageDialogVisible = false) }
     }
 
-
-    private fun getChat(chatId: String) {
-
+    private fun loadChatHistory(chatId: Uuid) {
         tryToExecute(
-            onSuccess = { updateState { s -> s.copy(chat = it.toUi()) } },
-            execute = { repository.getChatById(Uuid.parse(chatId)) }
-        )
-
-    }
-
-    private fun loadChatHistory(chatId: String) {
-        tryToExecute(
-            execute = {
-                repository.loadMessages(Uuid.parse(chatId))
-            },
+            execute = { repository.loadMessages(chatId) },
             onSuccess = ::onLoadChatHistorySuccess,
             onError = ::onLoadChatHistoryError
         )
@@ -175,7 +180,8 @@ class ChatViewModel(
 
     private fun onLoadChatHistorySuccess(messages: List<Message>) {
         val uiMessages =
-            messages.map { it.toUi(state.value.userId) }.sortedByDescending { it.sendTime }
+            messages.map { it.toUi(state.value.chat.requesterId) }
+                .sortedByDescending { it.sendTime }
         updateState { s ->
             s.copy(
                 uiMessages = uiMessages,
@@ -193,18 +199,16 @@ class ChatViewModel(
         )
     }
 
-    private fun subscribeToNewMessages(chatId: String) {
+    private fun subscribeToNewMessages(chatId: Uuid) {
         tryToCollect(
+            collect = { repository.subscribeToMessages(chatId) },
             onCollect = ::onSubscribeToNewMessagesSuccess,
             onError = ::onSubscribeToNewMessagesError,
-            collect = {
-                repository.subscribeToMessages(Uuid.parse(chatId))
-            }
         )
     }
 
     private fun onSubscribeToNewMessagesSuccess(newMessage: Message?) {
-        newMessage?.toUi(state.value.userId)?.let { incomingUi ->
+        newMessage?.toUi(state.value.chat.requesterId)?.let { incomingUi ->
             updateStateWithNewMessage(incomingUi)
         }
     }
@@ -220,8 +224,9 @@ class ChatViewModel(
 
     private fun updateStateWithNewMessage(newMessage: MessageUiState) {
         updateState { s ->
-            val merged = s.uiMessages.toMutableList().apply { add(0, newMessage) }.distinctBy { it.id }
-                .sortedByDescending { it.sendTime }
+            val merged =
+                s.uiMessages.toMutableList().apply { add(0, newMessage) }.distinctBy { it.id }
+                    .sortedByDescending { it.sendTime }
             s.copy(uiMessages = merged, chatListItems = buildListItems(merged))
         }
     }
