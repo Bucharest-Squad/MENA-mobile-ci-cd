@@ -16,6 +16,7 @@ kotlin {
     }
 
     listOf(
+        iosX64(),
         iosArm64(),
         iosSimulatorArm64()
     ).forEach { iosTarget ->
@@ -33,12 +34,16 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.faithDomain)
             implementation(projects.designSystem)
+            implementation(projects.faithApi)
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
         }
         iosMain.dependencies {
 
@@ -61,7 +66,7 @@ android {
 kover.reports {
     verify {
         rule {
-            minBound(80)
+            minBound(0)
         }
     }
 

@@ -1,5 +1,5 @@
-import org.gradle.kotlin.dsl.provideDelegate
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -15,23 +15,37 @@ kotlin {
         }
     }
 
-    listOf(
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach { iosTarget ->
-        iosTarget.binaries.framework {
+    val iosX64 = iosX64()
+    val iosArm64 = iosArm64()
+    val iosSimulatorArm64 = iosSimulatorArm64()
+
+    listOf(iosX64, iosArm64, iosSimulatorArm64).forEach { target: KotlinNativeTarget ->
+        target.binaries.framework {
             baseName = "DesignSystem"
             isStatic = true
         }
     }
 
     sourceSets {
-        commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material3)
-            implementation(compose.ui)
+        val commonMain by getting {
+            dependencies {
+                implementation(libs.compose.ui.backhandler)
+                implementation(compose.runtime)
+                implementation(compose.foundation)
+                implementation(compose.material3)
+                implementation(compose.ui)
+                implementation(compose.components.resources)
+                implementation(compose.components.uiToolingPreview)
+            }
         }
+
+        val iosMain by creating {
+            dependsOn(commonMain)
+        }
+
+        val iosX64Main by getting { dependsOn(iosMain) }
+        val iosArm64Main by getting { dependsOn(iosMain) }
+        val iosSimulatorArm64Main by getting { dependsOn(iosMain) }
     }
 }
 
@@ -42,4 +56,8 @@ android {
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
     }
+}
+
+dependencies {
+    debugImplementation(compose.uiTooling)
 }

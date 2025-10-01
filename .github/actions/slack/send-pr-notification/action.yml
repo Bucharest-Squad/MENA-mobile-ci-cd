@@ -82,6 +82,8 @@ runs:
               -H "Content-type: application/json; charset=utf-8" \
               --data "{
                 \"channel\": \"$SLACK_NOTIFICATION_CHANNEL_ID\",
+                \"unfurl_links\": false,
+                \"unfurl_media\": false,
                 \"thread_ts\": \"$thread_ts\",
                 \"blocks\": [
                   {

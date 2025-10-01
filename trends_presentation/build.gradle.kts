@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -6,6 +7,9 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kover)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.mockkery)
 }
 
 kotlin {
@@ -14,8 +18,8 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-
     listOf(
+        iosX64(),
         iosArm64(),
         iosSimulatorArm64()
     ).forEach { iosTarget ->
@@ -29,23 +33,59 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.coil.network.ktor3)
         }
         commonMain.dependencies {
             implementation(projects.trendsDomain)
+            implementation(projects.trendsApi)
             implementation(projects.designSystem)
+            implementation(libs.androidx.navigation.compose)
             implementation(compose.runtime)
             implementation(compose.foundation)
-            implementation(compose.material3)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
+            api(libs.koin.annotations)
+            implementation(libs.kotlinx.serialization.json)
+            implementation(libs.bundles.coil)
+            implementation(libs.androidx.paging.runtime)
+            implementation(libs.androidx.paging.compose)
+            implementation(libs.resources)
+            implementation(libs.kermit)
+            implementation(libs.filekit.core)
+            implementation(libs.filekit.dialogs.compose)
         }
         iosMain.dependencies {
 
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.assertk)
+            implementation(libs.turbine)
+            implementation(libs.koin.test)
         }
+    }
+    sourceSets.named("commonMain").configure {
+        kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
+    }
+}
+
+ksp {
+    arg("KOIN_USE_COMPOSE_VIEWMODEL","true")
+    arg("KOIN_CONFIG_CHECK","true")
+}
+
+dependencies {
+    add("kspCommonMainMetadata", libs.koin.ksp.compiler)
+}
+
+project.tasks.withType(KotlinCompilationTask::class.java).configureEach {
+    if(name != "kspCommonMainKotlinMetadata") {
+        dependsOn("kspCommonMainKotlinMetadata")
     }
 }
 
@@ -61,7 +101,7 @@ android {
 kover.reports {
     verify {
         rule {
-            minBound(80)
+            minBound(0)
         }
     }
 

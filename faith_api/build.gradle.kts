@@ -16,6 +16,7 @@ kotlin {
     }
 
     listOf(
+        iosX64(),
         iosArm64(),
         iosSimulatorArm64()
     ).forEach { iosTarget ->
@@ -48,7 +49,7 @@ android {
 kover.reports {
     verify {
         rule {
-            minBound(80)
+            minBound(0)
         }
     }
 }

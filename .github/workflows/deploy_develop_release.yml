@@ -20,6 +20,7 @@ jobs:
           android-key-alias: ${{ secrets.ANDROID_KEY_ALIAS }}
           android-key-alias-password: ${{ secrets.ANDROID_KEY_ALIAS_PASSWORD }}
           build-type: Development
+          base-url: ${{ secrets.BASE_URL_DEVELOPMENT }}
 
       - name: Deploy to Firebase
         uses: wzieba/Firebase-Distribution-Github-Action@v1
@@ -28,7 +29,7 @@ jobs:
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
           file: ${{ env.SIGNED_APK_PATH }}
           debug: true
-          groups: testers
+          groups: testers-develop
 
       - name: Deploy APK to Slack
         uses: MeilCli/slack-upload-file@v4.0.20
@@ -36,8 +37,8 @@ jobs:
           slack_token: ${{ secrets.SLACK_BOT_TOKEN }}
           channel_id: ${{ secrets.SLACK_DEVELOPMENT_CHANNEL_ID }}
           file_path: ${{ env.SIGNED_APK_PATH }}
-          file_name: "app-release-${{ github.run_number }}.apk"
+          file_name: "${{ env.APK_NAME }}.apk"
           initial_comment: |
             📲 *New Develop APK Build Released*
-            *Version:* `1.0.${{ github.run_number }}`
-            *File:* `app-release-${{ github.run_number }}.apk`
+            *Version:* `${{env.APK_VERSION}}`
+            *File:* `${{ env.APK_NAME }}`

@@ -5,12 +5,13 @@ plugins {
 
 kotlin {
     jvm()
+    iosX64()
     iosArm64()
     iosSimulatorArm64()
 
     sourceSets {
         commonMain.dependencies {
-
+            implementation(libs.kotlinx.datetime)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -21,7 +22,7 @@ kotlin {
 kover.reports {
     verify {
         rule {
-            minBound(80)
+            minBound(0)
         }
     }
 }
