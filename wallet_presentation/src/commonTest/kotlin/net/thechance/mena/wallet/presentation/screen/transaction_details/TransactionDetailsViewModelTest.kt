@@ -205,7 +205,7 @@ class TransactionDetailsViewModelTest {
         )
 
         viewModel.state.test {
-            skipItems(3)
+            skipItems(2)
             viewModel.onScreenShotCaptured(byteArray, "test_file")
             val finalState = awaitItem()
             assertEquals(true, finalState.snackBar.isSuccess)
