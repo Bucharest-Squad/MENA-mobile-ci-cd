@@ -82,4 +82,8 @@
     <string name="dukan_button">dukan button</string>
     <string name="dukan_icon">dukan icon</string>
     <string name="add_dukan_icon">add dukan icon</string>
+    <string name="product_image"> Product image</string>
+    <string name="edit_product_pencil">Edit Product Pencil </string>
+    <string name="koin_icon">Koin Icon</string>
+    <string name="discount_icon">Discount Icon</string>
 </resources>

@@ -61,4 +61,9 @@
     <string name="edit_shelf">تعديل الرف</string>
     <string name="this_shelf_is_empty">هذا الرف فارغ</string>
     <string name="products">المنتجات</string>
+    <string name="product_image"> صورة المنتج</string>
+    <string name="edit_product_pencil">تحرير قلم المنتج</string>
+    <string name="koin_icon">أيقونة الفلوس</string>
+    <string name="discount_icon">أيقونة الخصم</string>
+
 </resources>
