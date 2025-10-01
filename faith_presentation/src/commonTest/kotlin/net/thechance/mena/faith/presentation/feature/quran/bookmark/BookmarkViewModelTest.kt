@@ -68,9 +68,6 @@ class BookmarkViewModelTest {
             advanceUntilIdle()
 
             // Then
-            // The bookmark should be filtered out from the flow
-            // We can't directly access deletedBookmarkIdsFlow as it's private
-            // But we can verify the delete was called successfully
             val state = testViewModel.uiState.value
             assertNotNull(state.bookmarks)
         }
@@ -91,7 +88,6 @@ class BookmarkViewModelTest {
             advanceUntilIdle()
 
             // Then
-            // The bookmark should be back in the list after the deletion fails
             val state = testViewModel.uiState.value
             assertNotNull(state.bookmarks)
         }
