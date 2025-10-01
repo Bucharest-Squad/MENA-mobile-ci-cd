@@ -1,0 +1,212 @@
+package net.thechance.mena.dukan.presentation.viewModel.manageDukan
+
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import mena.dukan_presentation.generated.resources.Res
+import mena.dukan_presentation.generated.resources.add_shelf_successfully
+import mena.dukan_presentation.generated.resources.delete_shelf_description
+import mena.dukan_presentation.generated.resources.delete_shelf_success
+import mena.dukan_presentation.generated.resources.delete_shelf_title
+import mena.dukan_presentation.generated.resources.dismiss_description
+import mena.dukan_presentation.generated.resources.dismiss_title
+import mena.dukan_presentation.generated.resources.error_for_delete_shelf
+import net.thechance.mena.dukan.domain.entity.Product
+import net.thechance.mena.dukan.domain.entity.Shelf
+import net.thechance.mena.dukan.domain.repository.CreateShelfRepository
+import net.thechance.mena.dukan.domain.repository.ProductRepository
+import net.thechance.mena.dukan.presentation.component.SnackBarType
+import net.thechance.mena.dukan.presentation.component.SnackBarUiState
+import net.thechance.mena.dukan.presentation.viewModel.base.BaseViewModel
+import org.jetbrains.compose.resources.StringResource
+
+class ManageDukanViewModel(
+    private val shelfRepository: CreateShelfRepository,
+    private val productRepository: ProductRepository,
+    defaultDispatcher: CoroutineDispatcher = Dispatchers.IO
+) : BaseViewModel<ManageDukanUiState, ManageDukanEffect>(
+    initialState = ManageDukanUiState(),
+    defaultDispatcher = defaultDispatcher
+), ManageDukanInteractionListener {
+
+    init {
+        loadShelves()
+    }
+
+    override fun onBackButtonClicked() {
+        emitEffect(ManageDukanEffect.NavigateBack)
+    }
+
+    override fun onShowSnackBar(message: StringResource, type: SnackBarType) {
+        updateState {
+            copy(
+                snackBarState = SnackBarUiState(
+                    snackBarType = type,
+                    message = message
+                )
+            )
+        }
+    }
+
+    override fun onDismissSnackBar() {
+        updateState {
+            copy(snackBarState = null)
+        }
+    }
+
+    override fun onAddProductClicked() {
+        emitEffect(ManageDukanEffect.NavigateToAddProduct)
+    }
+
+    override fun onEditShelfClicked() {
+        emitEffect(
+            ManageDukanEffect.NavigateToManageShelf(
+                shelfId = state.value.selectedShelf?.id.orEmpty(),
+                shelfTitle = state.value.selectedShelf?.name.orEmpty()
+            )
+        )
+    }
+
+    override fun onAddShelfClicked() {
+        emitEffect(ManageDukanEffect.NavigateToAddShelf)
+    }
+
+    override fun onProductClick(product: Product) {
+        emitEffect(ManageDukanEffect.NavigateToProductDetails)
+    }
+
+    override fun isShelfSelected(): (ShelfUiState) -> Boolean = { shelf ->
+        state.value.selectedShelf == shelf
+    }
+
+    override fun onShelfSelected(shelf: ShelfUiState): Boolean {
+        if (state.value.selectedShelf == shelf) return true
+        updateState { copy(selectedShelf = shelf) }
+        loadProductsForSelectedShelf()
+        return true
+    }
+
+    override fun onShelfDeselected(shelf: ShelfUiState): Boolean {
+        if (state.value.selectedShelf != shelf) return true
+        updateState { copy(selectedShelf = null) }
+        loadProductsForSelectedShelf()
+        return true
+    }
+
+    override fun onShelfEnabled(shelf: ShelfUiState): Boolean = true
+
+    override fun onShelfAddedSuccessfully() {
+        onShowSnackBar(message = Res.string.add_shelf_successfully, type = SnackBarType.SUCCESS)
+        loadShelves()
+    }
+
+    private fun loadShelves() {
+        tryToExecute(
+            onStart = { updateState { copy(isLoading = true) } },
+            block = { shelfRepository.getMyDukanShelves() },
+            onSuccess = { shelves -> handleShelvesLoaded(shelves) },
+            onError = { handleLoadShelvesError() }
+        )
+    }
+
+    private fun handleLoadShelvesError() {
+        updateState {
+            copy(isLoading = false)
+        }
+    }
+
+    private fun handleShelvesLoaded(shelves: List<Shelf>) {
+        updateState {
+            copy(
+                shelves = shelves.map(Shelf::toUiState),
+                selectedShelf = selectFirstShelfByDefault(shelves.map(Shelf::toUiState)),
+                isLoading = false
+            )
+        }
+        loadProductsForSelectedShelf()
+    }
+
+    private fun loadProductsForSelectedShelf() {
+        val selectedShelf = state.value.selectedShelf
+        selectedShelf?.let { shelf ->
+            loadProductsFromRepository(shelf.id)
+        }
+    }
+
+    private fun loadProductsFromRepository(shelfId: String) {
+        tryToExecute(
+            onStart = { updateState { copy(isLoadingProducts = isLoading) } },
+            block = { productRepository.getProductsByShelfId(shelfId) },
+            onSuccess = { products -> handleProductsLoaded(products) },
+            onError = { updateState { copy(isLoadingProducts = false) } }
+        )
+    }
+
+    override fun onDismissDeleteShelfConfirmationDialog() {
+        updateState {
+            copy(showDeleteConfirmationDialog = false)
+        }
+    }
+
+    override fun onShowDeleteShelfDailog(
+        shelfId: String
+    ) {
+        val hasProducts = state.value.products.isNotEmpty()
+        updateState {
+            copy(
+                deleteShelfConfirmationDialogUiState = DeleteShelfConfirmationDialogUiState(
+                    title = updateDialogTitle(hasProducts),
+                    description = updateDialogDescription(hasProducts),
+                    type = updateDialogType(hasProducts),
+                    shelfId = shelfId
+                ),
+                showDeleteConfirmationDialog = true
+            )
+        }
+    }
+
+    private fun updateDialogTitle(hasProducts: Boolean): StringResource {
+        return if (!hasProducts) Res.string.delete_shelf_title else Res.string.dismiss_title
+    }
+
+    private fun updateDialogDescription(hasProducts: Boolean): StringResource {
+        return if (!hasProducts) Res.string.delete_shelf_description else Res.string.dismiss_description
+    }
+
+    private fun updateDialogType(hasProducts: Boolean): ConfirmDialogType {
+        return if (!hasProducts) ConfirmDialogType.DELETE else ConfirmDialogType.DISMISS
+    }
+
+    override fun onDeleteConfirmed(shelfId: String) {
+        tryToExecute(
+            block = { shelfRepository.deleteShelf(shelfId) },
+            onSuccess = { onDeleteShelfSuccess() },
+            onError = ::onDeleteShelfError
+        )
+    }
+
+    private fun onDeleteShelfSuccess() {
+        onDismissDeleteShelfConfirmationDialog()
+        onShowSnackBar(type = SnackBarType.SUCCESS, message = Res.string.delete_shelf_success)
+    }
+
+    private fun onDeleteShelfError(throwable: Throwable) {
+        onDismissDeleteShelfConfirmationDialog()
+        onShowSnackBar(type = SnackBarType.ERROR, message = Res.string.error_for_delete_shelf)
+    }
+
+    private fun handleProductsLoaded(products: List<Product>) {
+        updateState {
+            copy(
+                products = products,
+                totalProducts = products.size,
+                isLoadingProducts = false
+            )
+        }
+    }
+
+
+    private fun selectFirstShelfByDefault(shelves: List<ShelfUiState>): ShelfUiState? {
+        return shelves.firstOrNull()
+    }
+}
