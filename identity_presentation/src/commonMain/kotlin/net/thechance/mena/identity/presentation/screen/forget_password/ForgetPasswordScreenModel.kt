@@ -7,7 +7,3 @@ import cafe.adriel.voyager.core.model.screenModelScope
 class ForgetPasswordScreenModel :
     BaseScreenModel<ForgetPasswordScreenUIState, ForgetPasswordScreenUIEffect>(ForgetPasswordScreenUIState()),
     ForgetPasswordScreenInteractionListener {
-    override val viewModelScope: CoroutineScope
-        get() = screenModelScope
-}
-
