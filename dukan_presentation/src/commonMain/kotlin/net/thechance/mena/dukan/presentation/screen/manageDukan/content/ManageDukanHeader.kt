@@ -61,7 +61,7 @@ fun ManageDukanHeader(
         }
 
         ProductCountRow(
-            productCount = state.products.totalItems,
+            productCount = state.totalProducts,
             listener = listener
         )
     }

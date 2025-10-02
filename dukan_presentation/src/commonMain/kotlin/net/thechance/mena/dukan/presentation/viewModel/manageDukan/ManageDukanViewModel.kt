@@ -205,6 +205,12 @@ class ManageDukanViewModel(
             shelfId = state.value.selectedShelf?.id.orEmpty(),
             page = it,
             size = 10
-        )
+        ).also { result ->
+            updateState {
+                copy(
+                    totalProducts = result.totalItems
+                )
+            }
+        }
     }
 }

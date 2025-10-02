@@ -10,6 +10,7 @@ import org.jetbrains.compose.resources.StringResource
 data class ManageDukanUiState(
     val shelves: List<ShelfUiState> = emptyList(),
     val selectedShelf: ShelfUiState? = null,
+    val totalProducts: Long = 0,
     val products: PagingData<ProductUiState> = PagingData(),
     val isLoading: Boolean = false,
     val isLoadingProducts: Boolean = false,
