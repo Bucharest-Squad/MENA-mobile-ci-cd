@@ -92,25 +92,19 @@ class ChatRepositoryImpl(
     override suspend fun sendMessage(message: Message) {
         val updatedMessage = message.copy(status = MessageStatus.LOADING).toMessageEntity()
         messageDao.insertMessage(updatedMessage)
-
         try {
             if (webSocketManager.isConnected()) {
                 val messageJson = json.encodeToString(
                     SendMessageDto.serializer(),
                     message.toSendMessageRequestDto()
                 )
-
                 webSocketManager.sendTextFrame(
                     destination = "/app/chat.privateMessage",
                     payload = messageJson
                 )
-
                 messageDao.deleteMessage(updatedMessage.id)
             } else {
-                messageDao.updateMessageStatus(
-                    updatedMessage.id,
-                    net.thechance.mena.core_chat.data.database.entity.MessageStatus.FAILED
-                )
+                throw SendMessageFailedException("Failed to send message")
             }
         } catch (e: Exception) {
             messageDao.updateMessageStatus(
@@ -120,7 +114,6 @@ class ChatRepositoryImpl(
             throw SendMessageFailedException("Failed to send message: ${e.message}")
         }
     }
-
 
     override fun observeReadMessages(): Flow<String> {
         return markMessagesAsRead
