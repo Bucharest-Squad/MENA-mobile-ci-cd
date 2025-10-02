@@ -18,7 +18,7 @@ import mena.wallet_presentation.generated.resources.error_failed_view
 import mena.wallet_presentation.generated.resources.error_no_transactions
 import mena.wallet_presentation.generated.resources.something_went_wrong
 import net.thechance.mena.wallet.domain.exceptions.NoInternetException
-import net.thechance.mena.wallet.domain.exceptions.NoTransactionsFoundException
+import net.thechance.mena.wallet.domain.exceptions.NoDataFoundException
 import net.thechance.mena.wallet.domain.model.TransactionFilterParams
 import net.thechance.mena.wallet.domain.repository.ExportTransactionsRepository
 import net.thechance.mena.wallet.presentation.base.BaseViewModel
@@ -252,7 +252,7 @@ class ExportTransactionsViewModel(
                 )
             }
 
-            is NoTransactionsFoundException -> {
+            is NoDataFoundException -> {
                 updateState { oldState ->
                     oldState.copy(
                         isDownloadLoading = false,
