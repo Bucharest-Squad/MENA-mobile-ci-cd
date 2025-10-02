@@ -31,8 +31,8 @@ fun AccountSettingsSection(
     onPrivacySettingsClicked: () -> Unit
 ) {
     Column(
-        modifier = Modifier.padding(top = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        modifier = Modifier.padding(top = Theme.spacing._24),
+        verticalArrangement = Arrangement.spacedBy(Theme.spacing._8)
     ) {
         Text(
             text = stringResource(Res.string.profile_account_settings_header),
