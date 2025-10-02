@@ -88,7 +88,6 @@ private fun IconTextButton(
     modifier: Modifier = Modifier
 
 ) {
-
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -116,7 +115,6 @@ private fun VerticalDivider(
     color: Color = Theme.colorScheme.stroke,
     thickness: Dp = 1.dp,
 ) {
-
     Box(
         modifier = modifier
             .width(thickness)

@@ -1,6 +1,8 @@
 package net.thechance.mena.faith.presentation.feature.quran.surah
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,6 +20,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.faith.presentation.base.FaithScaffold
 import net.thechance.mena.faith.presentation.base.ObserveAsEffect
+import net.thechance.mena.faith.presentation.base.SnackBarState
 import net.thechance.mena.faith.presentation.component.FaithSnackBar
 import net.thechance.mena.faith.presentation.feature.quran.surah.component.AnimatedAyahActionButtons
 import net.thechance.mena.faith.presentation.feature.quran.surah.component.BasmalaHeader
@@ -46,31 +49,53 @@ fun SurahScreen(
         }
     }
 
+    Content(
+        state = uiState,
+        listener = viewModel,
+        snackBarState = snackBarState
+    )
+}
+
+@Composable
+private fun Content(
+    state: SurahScreenState,
+    listener: SurahInteractionListener,
+    snackBarState: SnackBarState,
+    modifier: Modifier = Modifier
+) {
     FaithScaffold(
-        backgroundColor = Theme.colorScheme.background.surface,
         topBar = {
-            SurahAppBar(surahName = uiState.surahName, onBackClick = { viewModel.onBackClick() })
+            SurahAppBar(
+                surahName = state.surahName,
+                onBackClick = listener::onBackClick
+            )
         },
         snackBar = {
             FaithSnackBar(
                 message = stringResource(snackBarState.message),
-                isVisible = snackBarState.isVisible,
                 status = snackBarState.status,
-                modifier = Modifier.fillMaxWidth()
+                isVisible = snackBarState.isVisible,
+                modifier = modifier.fillMaxWidth()
             )
-        }
+        },
+        backgroundColor = Theme.colorScheme.background.surface
+
     ) {
-        Box(Modifier.fillMaxWidth()) {
-            AyatOfSurahLazy(
-                listener = viewModel,
-                state = uiState
-            )
+        Box(
+            modifier = modifier
+                .fillMaxSize()
+                .background(Theme.colorScheme.background.surface)
+        ) {
+            AyatOfSurah(
+                listener = listener,
+                state = state,
+
+                )
 
             AnimatedAyahActionButtons(
-                state = uiState,
-                listener = viewModel,
-                modifier = Modifier
-                    .fillMaxWidth()
+                state = state,
+                listener = listener,
+                modifier = Modifier.fillMaxWidth()
                     .align(Alignment.BottomCenter)
                     .padding(Theme.spacing._16)
             )
@@ -78,15 +103,14 @@ fun SurahScreen(
     }
 }
 
+
 @Composable
-private fun AyatOfSurahLazy(
+private fun AyatOfSurah(
     listener: SurahInteractionListener,
     state: SurahScreenState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val lazyListState = rememberLazyListState()
-    HideAyahActionButtonsOnScroll(lazyListState, state, listener)
-
     val allAyat = remember(state.ayatOfSurah) { state.ayatOfSurah }
     val ayahChunks = remember(allAyat) { allAyat.chunked(AYAT_PER_PAGE) }
 
@@ -102,17 +126,17 @@ private fun AyatOfSurahLazy(
     }
 
     LazyColumn(
-        state = lazyListState,
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth(),
+        state = lazyListState
     ) {
-
-        if (state.isBasmalaVisible)
+        if (state.isBasmalaVisible) {
             item {
                 BasmalaHeader(
                     selectedAyahIndex = state.selectedAyahIndex,
-                    onDismissActionButtons = { listener.onDismissActionButtons() }
+                    onDismissActionButtons = listener::onDismissActionButtons
                 )
             }
+        }
 
         items(preRenderedChunks.size) { chunkIndex ->
             val chunkAyat = ayahChunks[chunkIndex]
@@ -130,6 +154,7 @@ private fun AyatOfSurahLazy(
             )
         }
     }
+    HideAyahActionButtonsOnScroll(lazyListState, state, listener)
 }
 
 @Composable
