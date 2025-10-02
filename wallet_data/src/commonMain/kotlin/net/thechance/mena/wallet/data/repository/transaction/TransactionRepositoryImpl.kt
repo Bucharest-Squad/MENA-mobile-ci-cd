@@ -1,5 +1,7 @@
 package net.thechance.mena.wallet.data.repository.transaction
 
+import kotlinx.datetime.LocalDate
+import net.thechance.mena.wallet.data.dto.FirstTransactionDateDto
 import net.thechance.mena.wallet.data.dto.PagedTransactionResponseDto
 import net.thechance.mena.wallet.data.dto.TransactionDto
 import net.thechance.mena.wallet.data.exceptions.safeApiCall
@@ -33,6 +35,12 @@ class TransactionRepositoryImpl(
         return safeApiCall<TransactionDto> {
             networkClient.get("$TRANSACTION_PATH/$transactionId")
         }.toEntity()
+    }
+
+    override suspend fun getFirstTransactionDate(): LocalDate? {
+        return safeApiCall<FirstTransactionDateDto> {
+            networkClient.get("$TRANSACTION_PATH/first-date")
+        }.firstTransactionDate?.let { LocalDate.parse(it) }
     }
 
     private companion object {
