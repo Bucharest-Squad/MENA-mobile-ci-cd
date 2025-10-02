@@ -15,8 +15,9 @@ data class ExportTransactionsState(
     val hasShownEmptyFileToast: Boolean = false,
     val noInternetConnection: Boolean = false,
     val selectedTransactionsTypes: Set<FilterType> = emptySet(),
-    val startDate: String = "2025/09/01",
-    val endDate: String = "2025/09/27",
+    val startDate: String = "",
+    val endDate: String = "",
+    val hasNoTransactionsError: Boolean = false
 ) {
     val hasActiveFilters: Boolean
         get() = selectedTransactionsTypes.isNotEmpty()

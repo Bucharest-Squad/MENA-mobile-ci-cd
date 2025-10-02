@@ -83,7 +83,8 @@ class ExportTransactionsViewModel(
                         newState.hasActiveFilters
                     } else {
                         true
-                    }
+                    },
+                hasNoTransactionsError = false
             )
         }
     }
@@ -119,7 +120,11 @@ class ExportTransactionsViewModel(
         )
     }
 
-    private fun onViewAndShareStart() {
+    private suspend fun onViewAndShareStart() {
+        if (currentState.hasNoTransactionsError) {
+            showToast(messageRes = Res.string.error_no_transactions)
+            return
+        }
         updateState { oldState ->
             oldState.copy(
                 isViewAndShareLoading = true,
@@ -144,6 +149,11 @@ class ExportTransactionsViewModel(
     }
 
     private suspend fun onDownloadStart() {
+        if (currentState.hasNoTransactionsError) {
+            showToast(messageRes = Res.string.error_no_transactions)
+            return
+        }
+
         updateState { oldState ->
             oldState.copy(
                 isDownloadLoading = true,
@@ -246,7 +256,8 @@ class ExportTransactionsViewModel(
                 updateState { oldState ->
                     oldState.copy(
                         isDownloadLoading = false,
-                        isViewAndShareLoading = false
+                        isViewAndShareLoading = false,
+                        hasNoTransactionsError = true
                     )
                 }
                 showToast(messageRes = Res.string.error_no_transactions)
