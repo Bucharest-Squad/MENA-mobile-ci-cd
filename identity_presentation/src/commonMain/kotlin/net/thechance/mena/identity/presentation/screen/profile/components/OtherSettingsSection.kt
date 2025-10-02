@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import mena.identity_presentation.generated.resources.Res
 import mena.identity_presentation.generated.resources.ic_contact_us
 import mena.identity_presentation.generated.resources.ic_privacy_and_policies
@@ -22,8 +21,8 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun OtherSettingsSection(
-    onPrivacyAndPolicyClicked : ()->Unit,
-    onContactUsClicked : ()->Unit,
+    onPrivacyAndPolicyClicked: () -> Unit,
+    onContactUsClicked: () -> Unit,
 ) {
     Column(
         modifier = Modifier.padding(top = Theme.spacing._24),
@@ -38,7 +37,7 @@ fun OtherSettingsSection(
         SettingItem(
             title = stringResource(Res.string.profile_privacy_and_policy),
             leadingIcon = painterResource(Res.drawable.ic_privacy_and_policies),
-            onClick =onPrivacyAndPolicyClicked,
+            onClick = onPrivacyAndPolicyClicked,
         )
         SettingItem(
             title = stringResource(Res.string.profile_contact_us),
@@ -54,8 +53,7 @@ fun PreviewOtherSettingsSection() {
     MenaTheme {
 
         OtherSettingsSection(
-            {}
-,{}
+            {}, {}
         )
     }
 }
