@@ -584,7 +584,25 @@ class ExportTransactionsViewModelTest {
             }
         }
 
-    
+    @Test
+    fun whenCustomFilterSelectedWithNoTypesOrDates_thenButtonsDisabled() = runTest {
+
+        val viewModel = ExportTransactionsViewModel(
+            exportTransactionsRepository = repository,
+            fileSaver = fileSaver,
+            ioDispatcher = testDispatcher
+        )
+        viewModel.state.test {
+            viewModel.onCustomFilteringClicked()
+
+            skipItems(1)
+
+            val state = awaitItem()
+            assertFalse(state.isDownloadButtonEnabled)
+            assertFalse(state.isViewAndShareButtonEnabled)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
 
     private fun assertSnackBarState(
         isVisible: Boolean,
