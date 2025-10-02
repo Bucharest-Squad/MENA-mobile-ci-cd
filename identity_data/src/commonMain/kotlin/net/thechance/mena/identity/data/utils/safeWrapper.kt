@@ -24,7 +24,7 @@ suspend fun <T> safeWrapper(block: suspend () -> T): T {
     } catch (e: Exception) {
         when(e){
             is UnresolvedAddressException -> throw NoNetworkException()
-            else -> throw UnknownException()
+            else -> throw e
         }
     }
 }
