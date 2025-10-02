@@ -2,6 +2,7 @@ package net.thechance.mena.core_chat.data.database.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 import net.thechance.mena.core_chat.data.database.entity.MessageEntity
@@ -9,8 +10,10 @@ import net.thechance.mena.core_chat.data.database.entity.MessageStatus
 
 @Dao
 interface MessageDao {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMessage(message: MessageEntity)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAllMessages(message: List<MessageEntity>)
 
     @Query("SELECT * FROM MessageEntity WHERE chat_id = :chatId ORDER BY timestamp ASC")
     suspend fun getMessagesByChat(chatId: String): List<MessageEntity>

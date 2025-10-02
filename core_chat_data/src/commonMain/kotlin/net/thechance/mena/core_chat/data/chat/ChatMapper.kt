@@ -17,7 +17,7 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 
-fun MessageDto.toDomain() = Message(
+fun MessageDto.toMessageDomain() = Message(
     id = Uuid.parse(id),
     senderId = Uuid.parse(senderId),
     chatId = Uuid.parse(chatId),
@@ -26,7 +26,7 @@ fun MessageDto.toDomain() = Message(
     status = if (isRead) MessageStatus.READ else MessageStatus.SENT
 )
 
-fun ChatDto.toDomain() = Chat(
+fun ChatDto.toMessageDomain() = Chat(
     id = Uuid.parse(id),
     imageUrl = imageUrl,
     name = name,
@@ -64,7 +64,7 @@ fun Message.toMessageEntity(): MessageEntity {
     )
 }
 
-fun MessageEntity.toDomain(): Message {
+fun MessageEntity.toMessageDomain(): Message {
     return Message(
         id = Uuid.parse(this.id),
         senderId = if (this.senderId.isEmpty()) null else Uuid.parse(this.senderId),

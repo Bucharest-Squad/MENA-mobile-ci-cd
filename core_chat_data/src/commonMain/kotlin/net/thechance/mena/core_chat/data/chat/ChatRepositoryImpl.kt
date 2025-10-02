@@ -41,7 +41,7 @@ class ChatRepositoryImpl(
     private val client: HttpClient,
     private val webSocketManager: WebSocketManager,
     private val authenticationRepository: AuthenticationRepository,
-    private val messageDao: MessageDao
+    private val messageDao: MessageDao,
     private val json: Json,
     baseUrl: String,
 ) : ChatRepository, BaseRepository {
@@ -61,7 +61,7 @@ class ChatRepositoryImpl(
                 parameter("page", 0)
                 bearerAuth(token)
             }
-        }?.data?.map { it.toDomain() } ?: emptyList()
+        }?.data?.map { it.toMessageDomain() } ?: emptyList()
     }
 
     override suspend fun getChatByContactUserId(userId: Uuid): Chat {
@@ -74,12 +74,12 @@ class ChatRepositoryImpl(
                 parameter("receiverId", userId)
                 bearerAuth(token)
             }
-        }?.toDomain() ?: throw ChatNotFoundException("Chat not found")
+        }?.toMessageDomain() ?: throw ChatNotFoundException("Chat not found")
     }
 
     override suspend fun getLocalMessages(chatId: Uuid): List<Message> {
         val failedEntities = messageDao.getMessagesByChat(chatId.toString())
-        return failedEntities.map { it.toDomain() }
+        return failedEntities.map { it.toMessageDomain() }
     }
 
     override fun subscribeToMessages(chatId: Uuid): Flow<Message> {
@@ -88,38 +88,39 @@ class ChatRepositoryImpl(
         }
         return messageFlows
     }
+
     override suspend fun sendMessage(message: Message) {
-        val sendingMessage = message.copy(status = MessageStatus.LOADING)
+        val updatedMessage = message.copy(status = MessageStatus.LOADING).toMessageEntity()
+        messageDao.insertMessage(updatedMessage)
+
         try {
-            messageDao.insertMessage(sendingMessage.toMessageEntity())
-            println("Message inserted into local DB with LOADING status: ${sendingMessage.text}, id: ${sendingMessage.id}")
-            if (webSocketSession?.isActive == true) {
+            if (webSocketManager.isConnected()) {
                 val messageJson = json.encodeToString(
                     SendMessageDto.serializer(),
-                    sendingMessage.toSendMessageRequestDto()
+                    message.toSendMessageRequestDto()
                 )
-                val frameText =
-                    "SEND\ndestination:/app/chat.privateMessage\n\n$messageJson\n\n\u0000"
 
-                println("Sending frame : $frameText")
-                webSocketSession?.send(Frame.Text(frameText))
-                println("Message sent successfully: ${sendingMessage.text}, id: ${sendingMessage.id}")
+                webSocketManager.sendTextFrame(
+                    destination = "/app/chat.privateMessage",
+                    payload = messageJson
+                )
 
-                messageDao.deleteMessage(sendingMessage.id.toString())
-                println("Message deleted from local DB after sending: ${sendingMessage.id}")
-
+                messageDao.deleteMessage(updatedMessage.id)
             } else {
-                val failedMessage = sendingMessage.copy(status = MessageStatus.FAILED)
-                messageDao.updateMessageStatus(failedMessage.id.toString(), net.thechance.mena.core_chat.data.database.entity.MessageStatus.FAILED)
-                throw SendMessageFailedException("WebSocket is not active. Failed to send message.")
+                messageDao.updateMessageStatus(
+                    updatedMessage.id,
+                    net.thechance.mena.core_chat.data.database.entity.MessageStatus.FAILED
+                )
             }
         } catch (e: Exception) {
-            val failedMessage = sendingMessage.copy(status = MessageStatus.FAILED)
-            messageDao.updateMessageStatus(failedMessage.id.toString(), net.thechance.mena.core_chat.data.database.entity.MessageStatus.FAILED)
-            println("Error sending message: ${e.message}")
+            messageDao.updateMessageStatus(
+                updatedMessage.id,
+                net.thechance.mena.core_chat.data.database.entity.MessageStatus.FAILED
+            )
             throw SendMessageFailedException("Failed to send message: ${e.message}")
         }
     }
+
 
     override fun observeReadMessages(): Flow<String> {
         return markMessagesAsRead
@@ -162,8 +163,7 @@ class ChatRepositoryImpl(
             }
 
             is MessageEvent.Message -> {
-                messageFlows.emit(event.dto.toDomain())
-                // mark as read
+                messageFlows.emit(event.dto.toMessageDomain())
                 webSocketManager.sendTextFrame(
                     destination = "/app/chat.markAsRead",
                     payload = json.encodeToString<MarkAsReadRequest>(MarkAsReadRequest(chatId = chatId))
