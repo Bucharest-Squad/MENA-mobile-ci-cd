@@ -1,5 +1,6 @@
 package net.thechance.mena.wallet.presentation.screen.export
 
+import kotlinx.datetime.LocalDate
 import net.thechance.mena.wallet.presentation.base.CustomToastState
 import net.thechance.mena.wallet.presentation.base.SnackBarState
 import net.thechance.mena.wallet.presentation.model.FilterType
@@ -15,11 +16,21 @@ data class ExportTransactionsState(
     val hasShownEmptyFileToast: Boolean = false,
     val noInternetConnection: Boolean = false,
     val selectedTransactionsTypes: Set<FilterType> = emptySet(),
-    val startDate: String = "",
-    val endDate: String = "",
+    val isDateBottomSheetVisible: Boolean = false,
+    val datePickerMode: DatePickerMode = DatePickerMode.START_DATE,
+    val defaultStartDate: LocalDate? = null,
+    val defaultEndDate: LocalDate? = null,
+    val startDate: LocalDate? = null,
+    val endDate: LocalDate? = null,
+    val error: Throwable? = null,
     val hasNoTransactionsError: Boolean = false
 ) {
     val hasActiveFilters: Boolean
-        get() = selectedTransactionsTypes.isNotEmpty()
+        get() = (startDate != null && endDate != null && selectedTransactionsTypes.isNotEmpty())
+
+    enum class DatePickerMode {
+        START_DATE,
+        END_DATE
+    }
 }
 
