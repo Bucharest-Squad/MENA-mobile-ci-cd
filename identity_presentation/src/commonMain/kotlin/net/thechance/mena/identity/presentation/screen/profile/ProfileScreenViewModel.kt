@@ -7,7 +7,8 @@ import net.thechance.mena.identity.presentation.base.ErrorState
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
 
 class ProfileScreenViewModel(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    val appVersion: String
 ) :
     BaseScreenModel<ProfileScreenUIState, ProfileScreenUIEffect>
         (ProfileScreenUIState()),
@@ -15,8 +16,16 @@ class ProfileScreenViewModel(
 
     init {
         getUserInfo()
+        setAppVersion()
     }
 
+    private fun setAppVersion(){
+        updateState {
+            copy(
+                versionNumber = appVersion
+            )
+        }
+    }
     private fun onErrorOccurred(errorState: ErrorState) {
         updateState {
             copy(
