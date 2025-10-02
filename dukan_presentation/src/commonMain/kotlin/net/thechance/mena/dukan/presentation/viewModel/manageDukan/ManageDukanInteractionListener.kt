@@ -16,8 +16,6 @@ interface ManageDukanInteractionListener {
     fun onEditShelfClicked()
     fun onAddShelfClicked()
     fun onShelfAddedSuccessfully()
-    fun isShelfSelected(): (ShelfUiState) -> Boolean
-    fun onShelfSelected(shelf: ShelfUiState): Boolean
-    fun onShelfDeselected(shelf: ShelfUiState): Boolean
-    fun onShelfEnabled(shelf: ShelfUiState): Boolean
+    fun isShelfSelected(shelf: ShelfUiState): Boolean
+    fun onShelfSelected(shelf: ShelfUiState)
 }

@@ -1,8 +1,10 @@
 package net.thechance.mena.dukan.presentation.viewModel.manageDukan
 
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.launch
 import mena.dukan_presentation.generated.resources.Res
 import mena.dukan_presentation.generated.resources.add_shelf_successfully
 import mena.dukan_presentation.generated.resources.delete_shelf_description
@@ -79,25 +81,16 @@ class ManageDukanViewModel(
         emitEffect(ManageDukanEffect.NavigateToProductDetails)
     }
 
-    override fun isShelfSelected(): (ShelfUiState) -> Boolean = { shelf ->
-        state.value.selectedShelf == shelf
+    override fun isShelfSelected(shelf: ShelfUiState): Boolean {
+        return state.value.selectedShelf == shelf
     }
 
-    override fun onShelfSelected(shelf: ShelfUiState): Boolean {
-        if (state.value.selectedShelf == shelf) return true
-        updateState { copy(selectedShelf = shelf) }
-        loadProductsForSelectedShelf()
-        return true
+    override fun onShelfSelected(shelf: ShelfUiState) {
+        if (state.value.selectedShelf != shelf) {
+            updateState { copy(selectedShelf = shelf) }
+            loadProductsForSelectedShelf()
+        }
     }
-
-    override fun onShelfDeselected(shelf: ShelfUiState): Boolean {
-        if (state.value.selectedShelf != shelf) return true
-        updateState { copy(selectedShelf = null) }
-        loadProductsForSelectedShelf()
-        return true
-    }
-
-    override fun onShelfEnabled(shelf: ShelfUiState): Boolean = true
 
     override fun onShelfAddedSuccessfully() {
         onShowSnackBar(message = Res.string.add_shelf_successfully, type = SnackBarType.SUCCESS)
@@ -123,7 +116,7 @@ class ManageDukanViewModel(
         updateState {
             copy(
                 shelves = shelves.map(Shelf::toUiState),
-                selectedShelf = selectFirstShelfByDefault(shelves.map(Shelf::toUiState)),
+                selectedShelf = shelves.firstOrNull()?.toUiState(),
                 isLoading = false
             )
         }
@@ -133,11 +126,11 @@ class ManageDukanViewModel(
     private fun loadProductsForSelectedShelf() {
         val selectedShelf = state.value.selectedShelf
         selectedShelf?.let { shelf ->
-            loadProductsFromRepository(shelf.id)
+            loadProductsFromRepository()
         }
     }
 
-    private fun loadProductsFromRepository(shelfId: String) {
+    private fun loadProductsFromRepository() {
         tryToCollect(
             block = { pager.flow },
             onCollect = { products -> handleProductsLoaded(products) },
@@ -213,10 +206,5 @@ class ManageDukanViewModel(
             page = it,
             size = 10
         )
-    }
-
-
-    private fun selectFirstShelfByDefault(shelves: List<ShelfUiState>): ShelfUiState? {
-        return shelves.firstOrNull()
     }
 }

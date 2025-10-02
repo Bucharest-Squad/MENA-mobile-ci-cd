@@ -23,8 +23,6 @@ object PreviewManageDukanInteractionListener : ManageDukanInteractionListener {
     override fun onAddShelfClicked() {}
     override fun onProductClick(product: Product) {}
     override fun onShelfAddedSuccessfully() {}
-    override fun isShelfSelected(): (ShelfUiState) -> Boolean = { false }
-    override fun onShelfSelected(shelf: ShelfUiState): Boolean = true
-    override fun onShelfDeselected(shelf: ShelfUiState): Boolean = true
-    override fun onShelfEnabled(shelf: ShelfUiState): Boolean = true
+    override fun isShelfSelected(shelf: ShelfUiState): Boolean = false
+    override fun onShelfSelected(shelf: ShelfUiState) {}
 }

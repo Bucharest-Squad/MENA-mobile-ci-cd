@@ -25,7 +25,7 @@ abstract class BasePagingSource<T : Any> : PagingSource<Int, T>() {
     abstract suspend fun onFetchPage(pageNumber: Int): PagedResult<T>
 
     companion object {
-        const val FIRST_PAGE = 1
+        const val FIRST_PAGE = 0
     }
 }
 

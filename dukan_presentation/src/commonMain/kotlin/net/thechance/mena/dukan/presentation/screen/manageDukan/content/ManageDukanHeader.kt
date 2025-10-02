@@ -2,9 +2,12 @@ package net.thechance.mena.dukan.presentation.screen.manageDukan.content
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,10 +19,10 @@ import mena.dukan_presentation.generated.resources.ic_pencil_edit
 import mena.dukan_presentation.generated.resources.products_count
 import mena.dukan_presentation.generated.resources.shelves
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBarOptionContainer
+import net.thechance.mena.designsystem.presentation.component.chip.Chip
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.dukan.presentation.component.SelectionRow
 import net.thechance.mena.dukan.presentation.viewModel.manageDukan.ManageDukanInteractionListener
 import net.thechance.mena.dukan.presentation.viewModel.manageDukan.ManageDukanUiState
 import org.jetbrains.compose.resources.painterResource
@@ -41,14 +44,21 @@ fun ManageDukanHeader(
             )
         )
 
-        SelectionRow(
-            availableItems = state.shelves,
-            isItemSelected = listener.isShelfSelected(),
-            onItemSelected = listener::onShelfSelected,
-            onItemDeselected = listener::onShelfDeselected,
-            onItemEnabled = listener::onShelfEnabled,
-            getItemName = { it.name }
-        )
+        LazyRow(
+            contentPadding = PaddingValues(horizontal = Theme.spacing._16),
+            horizontalArrangement = Arrangement.spacedBy(Theme.spacing._8)
+        ) {
+            items(
+                items = state.shelves,
+                key = { item -> item.id }
+            ) { item ->
+                Chip(
+                    text = item.name,
+                    isSelected = listener.isShelfSelected(item),
+                    onClick = { listener.onShelfSelected(item) },
+                )
+            }
+        }
 
         ProductCountRow(
             productCount = state.totalProducts,
