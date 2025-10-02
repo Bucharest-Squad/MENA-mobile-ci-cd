@@ -1,5 +1,6 @@
 package net.thechance.mena.wallet.presentation.screen.export
 
+import androidx.lifecycle.viewmodel.compose.viewModel
 import app.cash.turbine.test
 import dev.mokkery.MockMode
 import dev.mokkery.answering.returns
@@ -512,7 +513,52 @@ class ExportTransactionsViewModelTest {
         }
     }
 
-    
+    @Test
+    fun whenDownloadFails_thenIsDownloadLoadingResetsToFalse() = runTest {
+        everySuspend {
+            repository.getFilteredTransactionsFile(any())
+        } throws RuntimeException("error")
+        val viewModel = ExportTransactionsViewModel(
+            exportTransactionsRepository = repository,
+            fileSaver = fileSaver,
+            ioDispatcher = testDispatcher
+        )
+
+        viewModel.state.test {
+            viewModel.onDownloadClicked()
+
+            skipItems(4)
+
+            val state = awaitItem()
+            assertFalse(state.isDownloadLoading)
+
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun whenViewAndShareFails_thenIsViewAndShareLoadingResetsToFalse() = runTest {
+        everySuspend {
+            repository.getFilteredTransactionsFile(any())
+        } throws RuntimeException("error")
+        val viewModel = ExportTransactionsViewModel(
+            exportTransactionsRepository = repository,
+            fileSaver = fileSaver,
+            ioDispatcher = testDispatcher
+        )
+
+        viewModel.state.test {
+            viewModel.onViewAndShareClicked()
+
+            skipItems(4)
+
+            val state = awaitItem()
+            assertFalse(state.isViewAndShareLoading)
+
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
 
     private fun assertSnackBarState(
         isVisible: Boolean,
