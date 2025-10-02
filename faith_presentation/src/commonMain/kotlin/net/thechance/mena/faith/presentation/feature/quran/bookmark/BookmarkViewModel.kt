@@ -80,16 +80,15 @@ class BookmarkViewModel(
 
     private fun onDeleteBookmarkSuccess() {
         showSnackBar(
-            messageResource = Res.string.bookmark_removed_successfully,
+            message = Res.string.bookmark_removed_successfully,
             status = SnackBarState.Status.Success
         )
     }
 
     private fun createBookmarksPagingSource(): Flow<PagingData<AyahBookmark>> {
         return createPagingSourceFlow(
-            onError = {},
         ) { pageNumber, pageSize ->
-            bookmarkRepository.getAyahBookmarks(pageNumber, pageSize)
+            bookmarkRepository.getAyahBookmarks(pageNumber = pageNumber, pageSize = pageSize)
         }
     }
 

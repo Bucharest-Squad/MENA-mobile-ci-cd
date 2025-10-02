@@ -48,7 +48,7 @@ fun <T : Any> createPagingSourceFlow(
             enablePlaceholders = false
         ),
         pagingSourceFactory = {
-            BasePagingSource(onError, block)
+            BasePagingSource(onError = onError, onFetchPage = block)
         }
     ).flow
 }

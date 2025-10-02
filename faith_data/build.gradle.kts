@@ -33,6 +33,7 @@ kotlin {
             implementation(libs.bundles.ktor)
             api(libs.koin.core)
             implementation(libs.kotlinx.datetime)
+            implementation(libs.napier)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

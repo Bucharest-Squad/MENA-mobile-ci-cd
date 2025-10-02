@@ -5,8 +5,12 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class AyahBookmarkDto(
-    @SerialName("id") val id: String,
-    @SerialName("surahId") val surahId: Int,
-    @SerialName("ayahNumber") val ayahNumber: Int,
-    @SerialName("createdAt") val createdAt: String,
+    @SerialName("id")
+    val id: String,
+    @SerialName("surahId")
+    val surahId: Int,
+    @SerialName("ayahNumber")
+    val ayahNumber: Int,
+    @SerialName("createdAt")
+    val createdAt: String,
 )

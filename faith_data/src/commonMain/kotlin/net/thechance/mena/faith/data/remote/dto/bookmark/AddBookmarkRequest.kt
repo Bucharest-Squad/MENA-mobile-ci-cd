@@ -5,6 +5,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class AddBookmarkRequest(
-    @SerialName("surahId") val surahId: Int,
-    @SerialName("ayahNumber") val ayahNumber: Int
+    @SerialName("surahId")
+    val surahId: Int,
+    @SerialName("ayahNumber")
+    val ayahNumber: Int
 )

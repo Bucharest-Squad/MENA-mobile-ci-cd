@@ -58,9 +58,7 @@ fun BookmarkScreen(
 
     ObserveAsEffect(viewModel.uiEffect) { effect ->
         when (effect) {
-            is BookmarkEffect.NavigateBack -> {
-                navController.navigateUp()
-            }
+            is BookmarkEffect.NavigateBack -> navController.navigateUp()
         }
     }
 
@@ -127,7 +125,6 @@ private fun Content(
             }
         }
     }
-
 }
 
 @Composable

@@ -19,9 +19,7 @@ class NetworkClient(
     private val authorizationService: AuthorizationService,
     private val baseUrl: String
 ) {
-    fun provideHttpClient(): HttpClient {
-        return configureBaseSettings()
-    }
+    fun provideHttpClient(): HttpClient = configureBaseSettings()
 
     private fun configureBaseSettings(): HttpClient {
         return HttpClient {

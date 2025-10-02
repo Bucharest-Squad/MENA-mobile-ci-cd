@@ -1,5 +1,6 @@
 package net.thechance.mena.faith.data.utils
 
+import io.github.aakira.napier.Napier
 import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpStatusCode
@@ -10,44 +11,44 @@ import net.thechance.mena.faith.domain.exception.FaithException
 suspend inline fun <reified T> executeApiSafely(
     apiCall: suspend () -> HttpResponse,
 ): T {
-    val response = try {
-        apiCall()
-    } catch (e: Exception) {
-        println("Network error: ${e.message}")
-        throw mapToNetworkException(e)
-    }
+    val response = runCatching { apiCall() }
+        .onFailure { e ->
+            Napier.d("Network error: ${e.message}")
+            throw mapToNetworkException(e)
+        }
+        .getOrThrow()
 
     return when (response.status) {
         HttpStatusCode.OK -> {
-            try {
-                response.body<T>()
-            } catch (e: Exception) {
-                println("Error parsing response: ${e.message}")
-                throw FaithException.NetworkException
-            }
+            runCatching { response.body<T>() }
+                .onFailure { e ->
+                    Napier.d("Error parsing response: ${e.message}")
+                    throw FaithException.NetworkException
+                }
+                .getOrThrow()
         }
 
         HttpStatusCode.Unauthorized -> {
-            println("Unauthorized access")
+            Napier.d("Unauthorized access")
             throw FaithException.UnauthorizedException
         }
 
         HttpStatusCode.TooManyRequests -> {
-            println("Too many requests")
+            Napier.d("Too many requests")
             throw FaithException.NetworkException
         }
 
         HttpStatusCode.RequestTimeout -> {
-            println("Request timed out")
+            Napier.d("Request timed out")
             throw FaithException.NetworkException
         }
 
         else -> {
             if (response.status.value in 500..599) {
-                println("Server error: ${response.status.value}")
+                Napier.d("Server error: ${response.status.value}")
                 throw FaithException.NetworkException
             } else {
-                println("Unknown error: ${response.status.value}")
+                Napier.d("Unknown error: ${response.status.value}")
                 throw FaithException.UnknownException
             }
         }

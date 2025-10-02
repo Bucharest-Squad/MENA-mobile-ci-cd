@@ -69,9 +69,7 @@ fun SurScreen(
     ObserveAsEffect(viewModel.uiEffect) { effect ->
         when (effect) {
             is SurEffect.NavigateBack -> navController.navigateUp()
-            is SurEffect.NavigateToBookmark -> {
-                navController.navigate(BookmarksRoute)
-            }
+            is SurEffect.NavigateToBookmark -> navController.navigate(BookmarksRoute)
             is SurEffect.NavigateToSurahDetails -> navController.navigate(
                 SurahDetailsRoute(
                     surahId = effect.surahId,

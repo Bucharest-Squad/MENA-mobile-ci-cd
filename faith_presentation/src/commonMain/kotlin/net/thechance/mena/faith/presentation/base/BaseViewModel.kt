@@ -42,7 +42,7 @@ abstract class BaseViewModel<UI_STATE, UI_EFFECT>(
     }
 
     fun showSnackBar(
-        messageResource: StringResource,
+        message: StringResource,
         status: SnackBarState.Status,
         durationMillis: Long = 3000L,
     ) {
@@ -53,7 +53,7 @@ abstract class BaseViewModel<UI_STATE, UI_EFFECT>(
             }
             _snackBarState.update {
                 SnackBarState(
-                    message = getString(messageResource),
+                    message = getString(message),
                     status = status,
                     isVisible = true
                 )

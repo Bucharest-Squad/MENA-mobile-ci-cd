@@ -34,33 +34,25 @@ fun Instant.calculateTimeAgo(now: Instant = Clock.System.now()): TimeAgo {
     val duration: Duration = now - this
 
     return when {
-        duration.inWholeSeconds < ONE_MINUTE_IN_SECONDS -> {
+        duration.inWholeSeconds < ONE_MINUTE_IN_SECONDS ->
             TimeAgo(duration.inWholeSeconds.toInt(), TimeUnit.SECONDS)
-        }
 
-        duration.inWholeMinutes < ONE_HOUR_IN_MINUTES -> {
+        duration.inWholeMinutes < ONE_HOUR_IN_MINUTES ->
             TimeAgo(duration.inWholeMinutes.toInt(), TimeUnit.MINUTES)
-        }
 
-        duration.inWholeHours < ONE_DAY_IN_HOURS -> {
+        duration.inWholeHours < ONE_DAY_IN_HOURS ->
             TimeAgo(duration.inWholeHours.toInt(), TimeUnit.HOURS)
-        }
 
-        duration.inWholeDays < ONE_WEEK_IN_DAYS -> {
+        duration.inWholeDays < ONE_WEEK_IN_DAYS ->
             TimeAgo(duration.inWholeDays.toInt(), TimeUnit.DAYS)
-        }
 
-        duration.inWholeDays < ONE_MONTH_IN_DAYS -> {
+        duration.inWholeDays < ONE_MONTH_IN_DAYS ->
             TimeAgo((duration.inWholeDays / ONE_WEEK_IN_DAYS).toInt(), TimeUnit.WEEKS)
-        }
 
-        duration.inWholeDays < ONE_YEAR_IN_DAYS -> {
+        duration.inWholeDays < ONE_YEAR_IN_DAYS ->
             TimeAgo((duration.inWholeDays / ONE_MONTH_IN_DAYS).toInt(), TimeUnit.MONTHS)
-        }
 
-        else -> {
-            TimeAgo((duration.inWholeDays / ONE_YEAR_IN_DAYS).toInt(), TimeUnit.YEARS)
-        }
+        else -> TimeAgo((duration.inWholeDays / ONE_YEAR_IN_DAYS).toInt(), TimeUnit.YEARS)
     }
 }
 

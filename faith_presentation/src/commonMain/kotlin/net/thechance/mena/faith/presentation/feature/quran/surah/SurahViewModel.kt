@@ -89,7 +89,7 @@ class SurahViewModel(
 
     private fun onAddBookmarkSuccess() {
         showSnackBar(
-            messageResource = Res.string.bookmark_added_successfully,
+            message = Res.string.bookmark_added_successfully,
             status = SnackBarState.Status.Success
         )
     }
@@ -118,14 +118,14 @@ class SurahViewModel(
 
     private fun showSuccessSnackBar() {
         showSnackBar(
-            messageResource = Res.string.copied_ayah_successfully,
+            message = Res.string.copied_ayah_successfully,
             status = SnackBarState.Status.Success,
         )
     }
 
     private fun showErrorSnackBar() {
         showSnackBar(
-            messageResource = Res.string.copied_ayah_failed,
+            message = Res.string.copied_ayah_failed,
             status = SnackBarState.Status.Error,
         )
     }

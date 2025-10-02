@@ -20,6 +20,7 @@ kmpCapturableCompose = "0.1.1"
 kotlin = "2.2.10"
 koverVersion = "0.9.1"
 kotlinxDatetime = "0.7.1"
+napier = "2.7.1"
 navigationCompose = "2.9.0-rc02"
 ksp = "2.2.10-2.0.2"
 koin-core = "4.1.0"
@@ -40,7 +41,6 @@ filekit = "0.11.0"
 krop = "0.2.0"
 pagingTesting = "3.3.6"
 kotlinxDatetimeVersion = "0.4.0"
-
 # Maps version
 map-libra = "0.11.1"
 # GeoCoder
@@ -87,6 +87,7 @@ coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", ve
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines-test" }
 kotlin-test-annotations-common = { module = "org.jetbrains.kotlin:kotlin-test-annotations-common", version.ref = "kotlin" }
 assertk = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assertk" }
+napier = { module = "io.github.aakira:napier", version.ref = "napier" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mokkery-core = { module = "dev.mokkery:mokkery-core", version.ref = "mockkery" }
