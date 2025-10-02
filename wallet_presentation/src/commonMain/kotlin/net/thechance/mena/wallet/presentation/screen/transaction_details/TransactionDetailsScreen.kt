@@ -9,10 +9,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.github.suwasto.capturablecompose.CaptureController
 import io.github.suwasto.capturablecompose.rememberCaptureController
 import mena.wallet_presentation.generated.resources.Res
 import mena.wallet_presentation.generated.resources.back_button
+import mena.wallet_presentation.generated.resources.error
 import mena.wallet_presentation.generated.resources.ic_arrow_left
+import mena.wallet_presentation.generated.resources.share_transaction_details_error_msg
 import mena.wallet_presentation.generated.resources.transaction_details_header
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
@@ -25,10 +28,13 @@ import net.thechance.mena.wallet.presentation.screen.transaction_details.Transac
 import net.thechance.mena.wallet.presentation.screen.transaction_details.component.DetailsContent
 import net.thechance.mena.wallet.presentation.screen.transaction_details.component.TransactionDetailsScreenShot
 import net.thechance.mena.wallet.presentation.screen.wallet.component.ThreeDotsLoadingIndicator
+import net.thechance.mena.wallet.presentation.utils.ImageSharer
 import net.thechance.mena.wallet.presentation.utils.ObserveAsEffect
+import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.uuid.ExperimentalUuidApi
@@ -41,30 +47,38 @@ fun TransactionDetailsScreen(
     viewModel: TransactionDetailsViewModel = koinViewModel(
         key = id,
         parameters = { parametersOf(id) }
-    )
+    ),
+    imageSharer: ImageSharer = koinInject(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val captureController = rememberCaptureController()
 
     ObserveAsEffect(
         effect = viewModel.uiEffect,
         onEffect = { effect ->
             onTransactionDetailsEffect(
                 effect = effect,
-                onNavigateBackClicked = onNavigateBackClicked
+                onNavigateBackClicked = onNavigateBackClicked,
+                shareImage = imageSharer::shareImage,
+                captureImage = captureController::capture,
+                showSnackBar = viewModel::showSnackBar,
+                onCaptureError = viewModel::onCaptureError
             )
         }
     )
 
     TransactionDetailsScreenContent(
         state = state,
-        interactionListener = viewModel
+        interactionListener = viewModel,
+        captureController = captureController
     )
 }
 
 @Composable
 private fun TransactionDetailsScreenContent(
     state: TransactionDetailsScreenState,
-    interactionListener: TransactionDetailsInteractionListener
+    interactionListener: TransactionDetailsInteractionListener,
+    captureController: CaptureController
 ) {
     WalletScaffold(
         topBar = {
@@ -101,11 +115,9 @@ private fun TransactionDetailsScreenContent(
                 }
                 else -> {
                     Box {
-                        val captureController = rememberCaptureController()
                         DetailsContent(
                             transactionDetailsUiState = state.transactionDetailsUiState,
                             onShareReceiptButtonClicked = interactionListener::onShareReceiptButtonClicked,
-                            captureController = captureController,
                             isShareReceiptBtnLoading = state.isShareReceiptBtnLoading,
                         )
                         TransactionDetailsScreenShot(
@@ -125,13 +137,33 @@ private fun TransactionDetailsScreenContent(
     }
 }
 
-private fun onTransactionDetailsEffect(
+private suspend fun onTransactionDetailsEffect(
     effect: TransactionDetailsEffect,
     onNavigateBackClicked: () -> Unit,
+    shareImage: suspend (ByteArray, String, String) -> Unit,
+    captureImage: suspend () -> Unit,
+    showSnackBar: suspend (StringResource, StringResource, Boolean) -> Unit,
+    onCaptureError: () -> Unit
 ) {
     when (effect) {
         TransactionDetailsEffect.NavigateBack -> {
             onNavigateBackClicked()
+        }
+
+        is TransactionDetailsEffect.ShareImage -> {
+            shareImage(effect.imageBytes, effect.fileName, effect.mimeType)
+        }
+
+        TransactionDetailsEffect.CaptureImage -> {
+            try {
+                captureImage()
+            }catch (e: Throwable){
+                onCaptureError()
+            }
+        }
+
+        TransactionDetailsEffect.showErrorSnackBar -> {
+            showSnackBar(Res.string.error,Res.string.share_transaction_details_error_msg,false)
         }
     }
 }
@@ -144,10 +176,12 @@ private fun TransactionDetailsScreenPreview() {
             state = TransactionDetailsScreenState(TransactionDetailsUiState()),
             interactionListener = object : TransactionDetailsInteractionListener {
                 override fun onBackButtonClicked() {}
-                override fun onShareReceiptButtonClicked(capture: suspend () -> Unit) {}
+                override fun onShareReceiptButtonClicked() {}
                 override fun onScreenShotCaptured(byteArray: ByteArray, fileName: String) {}
                 override fun onRefresh() {}
-            }
+                override fun onCaptureError() {}
+            },
+            captureController = rememberCaptureController()
         )
     }
 }
