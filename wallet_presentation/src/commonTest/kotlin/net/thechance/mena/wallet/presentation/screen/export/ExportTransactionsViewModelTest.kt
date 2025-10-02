@@ -498,6 +498,47 @@ class ExportTransactionsViewModelTest {
         }
     }
 
+    @Test
+    fun whenViewAndShareSuccess_thenIsViewAndShareLoadingResetsToFalse() = runTest {
+        everySuspend { repository.getFilteredTransactionsFile(any()) } returns byteArrayOf(1, 2, 3)
+
+        initViewModel()
+        viewModel.state.test {
+            viewModel.onViewAndShareClicked()
+            skipItems(2)
+
+            val state = awaitItem()
+            assertFalse(state.isViewAndShareLoading)
+
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun whenDownloadSuccess_thenIsDownloadLoadingResetsToFalse() = runTest {
+        everySuspend { repository.getFilteredTransactionsFile(any()) } returns byteArrayOf(1, 2, 3)
+
+        initViewModel()
+        viewModel.state.test {
+            viewModel.onDownloadClicked()
+            skipItems(4)
+
+            val state = awaitItem()
+            assertFalse(state.isDownloadLoading)
+
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun whenSelectedTransactionsTypesNotEmpty_thenHasActiveFiltersIsTrue() = runTest {
+        val state = ExportTransactionsState(
+            selectedTransactionsTypes = setOf(FilterType.SENT)
+        )
+        assertTrue(state.hasActiveFilters)
+    }
+
+
     private fun TestScope.initViewModel() {
         viewModel = ExportTransactionsViewModel(
             exportTransactionsRepository = repository,
