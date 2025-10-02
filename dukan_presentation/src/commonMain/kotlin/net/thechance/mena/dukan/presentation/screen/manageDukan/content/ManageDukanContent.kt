@@ -19,10 +19,14 @@ import net.thechance.mena.designsystem.presentation.component.dialog.Dialog
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.component.scaffold.ScaffoldScope
+import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.dukan.presentation.component.SnackBar
 import net.thechance.mena.dukan.presentation.util.OnSystemBackPressed
 import net.thechance.mena.dukan.presentation.util.pagination.Pager
+import net.thechance.mena.dukan.presentation.util.pagination.PagingConfig
+import net.thechance.mena.dukan.presentation.util.stubPreviews.FakeProductPagingSource
+import net.thechance.mena.dukan.presentation.util.stubPreviews.PreviewManageDukanInteractionListener
 import net.thechance.mena.dukan.presentation.viewModel.manageDukan.ConfirmDialogType
 import net.thechance.mena.dukan.presentation.viewModel.manageDukan.DeleteShelfConfirmationDialogUiState
 import net.thechance.mena.dukan.presentation.viewModel.manageDukan.ManageDukanInteractionListener
@@ -30,6 +34,7 @@ import net.thechance.mena.dukan.presentation.viewModel.manageDukan.ManageDukanUi
 import net.thechance.mena.dukan.presentation.viewModel.manageDukan.ProductUiState
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun ManageDukanContent(
@@ -135,15 +140,17 @@ private fun ScaffoldScope.DeleteShelfConfirmationDialog(
 }
 
 
-//@Preview
-//@Composable
-//private fun ManageDukanContentPreview() {
-//    MenaTheme {
-//        ManageDukanContent(
-//            state = ManageDukanUiState(),
-//            listener = PreviewManageDukanInteractionListener,
-//            pager = {
-//            }
-//        )
-//    }
-//}
+@Preview
+@Composable
+private fun ManageDukanContentPreview() {
+    MenaTheme {
+        ManageDukanContent(
+            state = ManageDukanUiState(),
+            listener = PreviewManageDukanInteractionListener,
+            pager = Pager(
+                config = PagingConfig(),
+                pagingSourceFactory = { FakeProductPagingSource() }
+            )
+        )
+    }
+}
