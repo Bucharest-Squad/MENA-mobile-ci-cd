@@ -10,6 +10,7 @@ import dev.mokkery.mock
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -23,7 +24,7 @@ import mena.dukan_presentation.generated.resources.shelf_name_is_already_exist
 import net.thechance.mena.dukan.domain.entity.Product
 import net.thechance.mena.dukan.domain.entity.Shelf
 import net.thechance.mena.dukan.domain.exceptions.DukanException
-import net.thechance.mena.dukan.domain.repository.CreateShelfRepository
+import net.thechance.mena.dukan.domain.repository.ShelfRepository
 import net.thechance.mena.dukan.domain.repository.ProductRepository
 import net.thechance.mena.dukan.domain.util.PagedResult
 import net.thechance.mena.dukan.presentation.component.SnackBarType
@@ -40,7 +41,7 @@ import kotlin.test.assertTrue
 @OptIn(ExperimentalCoroutinesApi::class)
 class ManageDukanViewModelTest {
 
-    private val shelfRepository = mock<CreateShelfRepository>(mode = MockMode.autofill)
+    private val shelfRepository = mock<ShelfRepository>(mode = MockMode.autofill)
     private val productRepository = mock<ProductRepository>(mode = MockMode.autofill)
     private lateinit var manageDukanViewModel: ManageDukanViewModel
     private val testDispatcher = StandardTestDispatcher()
@@ -499,9 +500,8 @@ class ManageDukanViewModelTest {
             everySuspend { shelfRepository.deleteShelf(shelfId) }
 
             manageDukanViewModel.onDeleteConfirmed(shelfId)
-
+            advanceUntilIdle()
             manageDukanViewModel.state.test {
-                skipItems(1)
                 val state = awaitItem()
                 assertEquals(snackBarUiState, state.snackBarState)
             }
@@ -518,9 +518,8 @@ class ManageDukanViewModelTest {
             everySuspend { shelfRepository.deleteShelf(shelfId) } throws DukanException("")
 
             manageDukanViewModel.onDeleteConfirmed(shelfId)
-
+            advanceUntilIdle()
             manageDukanViewModel.state.test {
-                skipItems(1)
                 val state = awaitItem()
                 assertEquals(snackBarUiState, state.snackBarState)
             }

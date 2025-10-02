@@ -16,7 +16,7 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
-import net.thechance.mena.dukan.data.repository.CreateShelfRepositoryImpl
+import net.thechance.mena.dukan.data.repository.ShelfRepositoryImpl
 import net.thechance.mena.dukan.data.repository.DukanRepositoryImpl
 import net.thechance.mena.dukan.data.repository.dto.DukanCategoryDto
 import net.thechance.mena.dukan.data.repository.dto.DukanCategoryResponse
@@ -158,8 +158,8 @@ fun createShelfRepository(
     createResponse: (suspend MockRequestHandleScope.() -> HttpResponseData)? = null,
     deleteShelfResponse: (suspend MockRequestHandleScope.() -> HttpResponseData)? = null,
     shelvesResponse: (suspend MockRequestHandleScope.() -> HttpResponseData)? = null,
-): CreateShelfRepositoryImpl {
-    return CreateShelfRepositoryImpl(
+): ShelfRepositoryImpl {
+    return ShelfRepositoryImpl(
         client = createDukanHttpClient(
             createResponse = createResponse,
             deleteResponse = deleteShelfResponse,
