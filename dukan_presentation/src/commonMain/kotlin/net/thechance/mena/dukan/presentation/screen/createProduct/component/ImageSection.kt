@@ -1,7 +1,8 @@
 package net.thechance.mena.dukan.presentation.screen.createProduct.component
 
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -32,8 +33,9 @@ import net.thechance.mena.dukan.presentation.viewModel.createProduct.ProductImag
 import org.jetbrains.compose.resources.stringResource
 
 fun LazyListScope.imageSection(
-    isUploadingImageEnabled: Boolean,
     images: List<ProductImageUi>,
+    isUploadingImageEnabled: Boolean,
+    isCancelImageEnabled: Boolean,
     onUploadImageClick: (image: PlatformFile) -> Unit,
     onCancelImageClick: (image: ImageBitmap) -> Unit,
 ) {
@@ -75,17 +77,18 @@ fun LazyListScope.imageSection(
 
                 DisplayProductImage(
                     modifier = Modifier.animateItem(
-                        fadeInSpec = tween(durationMillis = 250),
-                        fadeOutSpec = tween(durationMillis = 100),
-                        placementSpec = spring(
-                            stiffness = Spring.StiffnessLow,
-                            dampingRatio = Spring.DampingRatioMediumBouncy
+                        fadeInSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing),
+                        fadeOutSpec = tween(durationMillis = 200, easing = FastOutLinearInEasing),
+                        placementSpec = tween(
+                            durationMillis = 300,
+                            easing = LinearOutSlowInEasing
                         )
                     ),
                     image = image.image,
                     imageSizeInMegaByte = image.imageSizeInMegaByte,
                     productImageState = image.imageState,
                     onCancelClick = onCancelImageClick,
+                    isCancelButtonEnabled = isCancelImageEnabled,
                     errorMessage = image.errorMessage
                 )
             }

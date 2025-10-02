@@ -25,6 +25,7 @@ import org.jetbrains.compose.resources.stringResource
 
 fun LazyListScope.shelfSection(
     shelves: List<ShelfUiState>,
+    isTextFieldEnabled: Boolean,
     onShelfSelect: (ShelfUiState) -> Unit
 ) {
     item {
@@ -70,7 +71,8 @@ fun LazyListScope.shelfSection(
                     text = shelf.name,
                     modifier = Modifier.height(32.dp),
                     isSelected = shelf.isSelected,
-                    onClick = { onShelfSelect(shelf) }
+                    onClick = { onShelfSelect(shelf) },
+                    isEnabled = isTextFieldEnabled
                 )
             }
         }

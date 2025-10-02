@@ -21,6 +21,8 @@ data class ProductUiState(
     val showCropImage:Boolean=false,
     val snackBarUiState: SnackBarUiState? = null,
     val showSnackBar: Boolean = false,
+    val isTextFieldEnabled: Boolean = true,
+    val isCancelImageEnabled: Boolean = true,
 )
 
 data class ShelfUiState(

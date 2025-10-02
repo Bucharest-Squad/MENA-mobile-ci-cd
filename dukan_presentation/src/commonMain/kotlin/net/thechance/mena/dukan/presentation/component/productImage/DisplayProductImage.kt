@@ -48,6 +48,7 @@ fun DisplayProductImage(
     onCancelClick: (image: ImageBitmap) -> Unit,
     modifier: Modifier = Modifier,
     productImageState: ProductImageState = ProductImageState.LOADING,
+    isCancelButtonEnabled:Boolean=true,
     errorMessage: String? = null,
 ) {
     Box(
@@ -74,6 +75,7 @@ fun DisplayProductImage(
         CancelImageButton(
             productImageState = productImageState,
             onCancelClick = { onCancelClick(image) },
+            isCancelButtonEnabled = isCancelButtonEnabled
         )
 
         errorMessage?.let { error ->
@@ -97,6 +99,7 @@ fun DisplayProductImage(
 private fun BoxScope.CancelImageButton(
     productImageState: ProductImageState,
     onCancelClick: () -> Unit,
+    isCancelButtonEnabled:Boolean=true,
     modifier: Modifier = Modifier
 ) {
     val color = if (productImageState == ProductImageState.SUCCESS) {
@@ -126,7 +129,10 @@ private fun BoxScope.CancelImageButton(
                     shape = RoundedCornerShape(Theme.radius.full)
                 )
                 .clip(RoundedCornerShape(Theme.radius.full))
-                .clickable(onClick = onCancelClick),
+                .clickable(
+                    enabled = isCancelButtonEnabled,
+                    onClick = onCancelClick
+                ),
             contentAlignment = Alignment.Center
         ) {
             Icon(

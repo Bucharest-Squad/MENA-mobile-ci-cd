@@ -19,6 +19,7 @@ import org.jetbrains.compose.resources.stringResource
 
 fun LazyListScope.priceSection(
     price: String,
+    isTextFieldEnabled: Boolean,
     onPriceChange: (String) -> Unit
 ) {
     item {
@@ -38,8 +39,9 @@ fun LazyListScope.priceSection(
             leadingIcon = painterResource(resource = Res.drawable.ic_price),
             leadingIconTint = Theme.colorScheme.shadePrimary,
             trailingIcon = painterResource(Res.drawable.silver_tc),
-            hint = "",
+            enabled = isTextFieldEnabled,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+            hint = "",
         )
     }
 }

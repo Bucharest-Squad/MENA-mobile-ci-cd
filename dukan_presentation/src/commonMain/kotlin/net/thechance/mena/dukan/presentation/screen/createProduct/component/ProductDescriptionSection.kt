@@ -14,6 +14,7 @@ import org.jetbrains.compose.resources.stringResource
 
 fun LazyListScope.descriptionSection(
     description: String,
+    isTextFieldEnabled: Boolean,
     onDescriptionChange: (String) -> Unit
 ) {
     item {
@@ -31,6 +32,7 @@ fun LazyListScope.descriptionSection(
                 .height(96.dp),
             value = description,
             onValueChanged = onDescriptionChange,
+            enabled = isTextFieldEnabled,
             hint = "",
         )
     }

@@ -17,6 +17,7 @@ import org.jetbrains.compose.resources.stringResource
 
 fun LazyListScope.productNameSection(
     productName: String,
+    isTextFieldEnabled: Boolean,
     onProductNameChange: (String) -> Unit
 ) {
     item {
@@ -37,6 +38,7 @@ fun LazyListScope.productNameSection(
             onValueChanged = onProductNameChange,
             leadingIcon = painterResource(resource = Res.drawable.ic_product),
             leadingIconTint = Theme.colorScheme.shadePrimary,
+            enabled = isTextFieldEnabled,
             hint = ""
         )
     }
