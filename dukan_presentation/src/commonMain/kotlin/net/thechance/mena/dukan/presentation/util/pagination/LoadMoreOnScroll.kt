@@ -9,9 +9,8 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 @Composable
 fun <T : Any> LazyListState.LoadMoreOnScroll(
     pager: Pager<Int, T>,
-    loadNextPage: suspend () -> Unit,
 ) {
-    LaunchedEffect(pager) {
+    LaunchedEffect(pager , ) {
         snapshotFlow {
             val layoutInfo = layoutInfo
             val totalItems = layoutInfo.totalItemsCount
@@ -21,7 +20,7 @@ fun <T : Any> LazyListState.LoadMoreOnScroll(
         }.distinctUntilChanged()
             .collect { (lastVisible, total) ->
                 if (pager.isShouldLoadMore(lastVisible, total)) {
-                    loadNextPage()
+                    pager.load()
                 }
             }
     }

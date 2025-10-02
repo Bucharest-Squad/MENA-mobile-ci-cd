@@ -6,9 +6,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import net.thechance.mena.dukan.presentation.screen.manageDukan.ManageDukanScreen
 import net.thechance.mena.dukan.presentation.screen.createDukan.CreateDukanScreen
 import net.thechance.mena.dukan.presentation.screen.createProduct.CreateProductScreen
+import net.thechance.mena.dukan.presentation.screen.createShelf.CreateShelfScreen
 import net.thechance.mena.dukan.presentation.screen.main.MainScreen
+import net.thechance.mena.dukan.presentation.screen.manageShelf.ManageShelfScreen
 import net.thechance.mena.dukan.presentation.screen.pendingDukan.PendingDukanScreen
 
 @Composable
@@ -28,6 +31,15 @@ fun DukanNavHost() {
             composable<DukanRoute.CreateDukanScreenRoute> {
                 CreateDukanScreen()
             }
+
+            composable<DukanRoute.CreateShelfScreenRoute> {
+                CreateShelfScreen()
+            }
+
+            composable<DukanRoute.ManageDukanScreenRoute> {
+                ManageDukanScreen()
+            }
+
             composable<DukanRoute.MyDukanScreenRoute> {
                 // MyDukanScreen()
             }
@@ -38,6 +50,9 @@ fun DukanNavHost() {
                     dukanName = route.dukanName,
                     onBackClick = { navController.popBackStack() }
                 )
+            }
+            composable<DukanRoute.ManageShelfScreenRoute> {
+                ManageShelfScreen()
             }
             composable<DukanRoute.CreateProductScreenRoute>{
                 CreateProductScreen()

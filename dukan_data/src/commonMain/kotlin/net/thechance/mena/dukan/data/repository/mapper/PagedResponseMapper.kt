@@ -9,6 +9,8 @@ fun <T, R> PageResponseDto<T>.toDomain(mapper: (T) -> R): PagedResult<R> {
         currentPage = number,
         totalPages = totalPages,
         hasNext = !last,
-        hasPrevious = !first
+        hasPrevious = !first,
+        totalItems = totalElements
+
     )
 }

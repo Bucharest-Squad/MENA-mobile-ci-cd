@@ -1,43 +1,23 @@
-package net.thechance.mena.dukan.presentation.screen.productLayout
+package net.thechance.mena.dukan.presentation.util.stubPreviews
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.unit.dp
-import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
-import net.thechance.mena.dukan.presentation.component.productCard.EditProductIcon
-import net.thechance.mena.dukan.presentation.component.productCard.ProductCard
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import net.thechance.mena.dukan.domain.util.PagedResult
+import net.thechance.mena.dukan.presentation.util.pagination.base.BasePagingSource
+import net.thechance.mena.dukan.presentation.viewModel.manageDukan.ProductUiState
 
-
-@Composable
-fun ProductsLayout(
-    products: List<ProductUiState>
-) {
-    LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        items(products) { product ->
-            ProductCard(
-                productUiState = product,
-                productAction = { EditProductIcon(onClick = {}) }
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun ProductsLayoutPreview() {
-    MenaTheme {
-        ProductsLayout(
-            fakeProducts()
+class FakeProductPagingSource : BasePagingSource<ProductUiState>() {
+    override suspend fun onFetchPage(pageNumber: Int): PagedResult<ProductUiState> {
+        return PagedResult(
+            items = fakeProducts(),
+            hasPrevious = false,
+            hasNext = true,
+            currentPage = pageNumber,
+            totalPages = 1000,
+            totalItems = 1000000
         )
     }
 }
 
-private fun fakeProducts(): List<ProductUiState> {
+ fun fakeProducts(): List<ProductUiState> {
     return listOf(
         ProductUiState(
             id = "1",
