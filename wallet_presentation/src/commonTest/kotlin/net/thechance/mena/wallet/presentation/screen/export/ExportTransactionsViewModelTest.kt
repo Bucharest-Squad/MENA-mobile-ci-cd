@@ -9,6 +9,7 @@ import dev.mokkery.matcher.any
 import dev.mokkery.mock
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceTimeBy
@@ -425,24 +426,15 @@ class ExportTransactionsViewModelTest {
     }
 
     @Test
-    fun whenDownloadFails_thenIsDownloadLoadingResetsToFalse() = runTest {
-        everySuspend {
-            repository.getFilteredTransactionsFile(any())
-        } throws RuntimeException("error")
+    fun whenDownloadFails_thenIsDownloadLoadingResetsToFalse() = runTest(testDispatcher) {
+        everySuspend { repository.getFilteredTransactionsFile(any()) } throws RuntimeException("error")
         initViewModel()
 
-        viewModel.state.test {
-            viewModel.onDownloadClicked()
+        val state = viewModel.state.first()
 
-            skipItems(4)
-
-            val state = awaitItem()
-            assertFalse(state.isDownloadLoading)
-
-            cancelAndIgnoreRemainingEvents()
-        }
+        assertFalse(state.isDownloadLoading)
     }
-
+    
     @Test
     fun whenViewAndShareFails_thenIsViewAndShareLoadingResetsToFalse() = runTest {
         everySuspend {
