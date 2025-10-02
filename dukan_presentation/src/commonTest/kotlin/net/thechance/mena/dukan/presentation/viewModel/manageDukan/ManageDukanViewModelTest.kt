@@ -387,7 +387,7 @@ class ManageDukanViewModelTest {
 
             // Then
             val state = manageDukanViewModel.state.value
-            assertEquals(0, state.products.totalItems)
+            assertEquals(0, state.totalProducts)
         }
 
 
