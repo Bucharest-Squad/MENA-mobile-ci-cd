@@ -40,39 +40,11 @@ fun ExportTransactionContentBody(
             .padding(16.dp)
     )
     {
-        LazyColumn(
-            modifier = Modifier
-                .weight(1f)
-        ) {
-            item {
-                SelectCard(
-                    cardText = stringResource(Res.string.all_transactions),
-                    onCardSelected = interactionListener::onAllTransactionsClicked,
-                    isSelected = (!state.isCustomFilterCardSelected),
-                    modifier = Modifier.padding(bottom = 12.dp)
-                )
-            }
-            item {
-                SelectCard(
-                    cardText = stringResource(Res.string.custom_filtering),
-                    isSelected = state.isCustomFilterCardSelected,
-                    onCardSelected = interactionListener::onCustomFilteringClicked,
-                )
-            }
-            item {
-                Crossfade(
-                    targetState = state.isCustomFilterCardSelected,
-                    label = stringResource(Res.string.filter_crossfade),
-                ) { visible ->
-                    if (visible) {
-                        FilterSection(
-                            state = state,
-                            interactionListener = interactionListener
-                        )
-                    }
-                }
-            }
-        }
+        ExportTransactionFilterSection(
+            modifier = Modifier.weight(1f),
+            state = state,
+            interactionListener = interactionListener
+        )
         OutlinedButton(
             text = stringResource(Res.string.view_and_share),
             onClick = interactionListener::onViewAndShareClicked,
@@ -95,6 +67,47 @@ fun ExportTransactionContentBody(
             isEnabled = state.isDownloadButtonEnabled,
             contentPadding = PaddingValues(vertical = 13.dp)
         )
+    }
+}
+
+
+@Composable
+private fun ExportTransactionFilterSection(
+    modifier: Modifier = Modifier,
+    state: ExportTransactionsState,
+    interactionListener: ExportTransactionsListener
+) {
+    LazyColumn(
+        modifier = modifier
+    ) {
+        item {
+            SelectCard(
+                cardText = stringResource(Res.string.all_transactions),
+                onCardSelected = interactionListener::onAllTransactionsClicked,
+                isSelected = (!state.isCustomFilterCardSelected),
+                modifier = Modifier.padding(bottom = 12.dp)
+            )
+        }
+        item {
+            SelectCard(
+                cardText = stringResource(Res.string.custom_filtering),
+                isSelected = state.isCustomFilterCardSelected,
+                onCardSelected = interactionListener::onCustomFilteringClicked,
+            )
+        }
+        item {
+            Crossfade(
+                targetState = state.isCustomFilterCardSelected,
+                label = stringResource(Res.string.filter_crossfade),
+            ) { visible ->
+                if (visible) {
+                    FilterSection(
+                        state = state,
+                        interactionListener = interactionListener
+                    )
+                }
+            }
+        }
     }
 }
 
