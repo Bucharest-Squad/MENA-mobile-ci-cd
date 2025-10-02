@@ -50,6 +50,12 @@
     <string name="otp_prompt">Please enter the OTP code that was sent to your phone number end with **%1$s to reset your password.</string>
 
 
+    <string name="reset">Reset</string>
+    <string name="new_password_title">New password</string>
+    <string name="reset_password_description">Please enter your new password and make sure you remember it in the next time</string>
+    <string name="new_password_label">New password</string>
+    <string name="confirm_password_label">Confirm password</string>
+
     <!-- Profile Screen Strings -->
     <string name="profile_title">Profile</string>
     <string name="profile_account_settings_header">Account settings</string>
