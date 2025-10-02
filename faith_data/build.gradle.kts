@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.room)
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.mockkery)
+    alias(libs.plugins.ktorfit)
 }
 
 kotlin {
@@ -34,6 +35,7 @@ kotlin {
             api(libs.koin.core)
             implementation(libs.kotlinx.datetime)
             implementation(libs.napier)
+            implementation(libs.bundles.ktorfit)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -86,6 +88,7 @@ dependencies {
     add("kspAndroid", libs.androidx.room.compiler)
     add("kspIosSimulatorArm64", libs.androidx.room.compiler)
     add("kspIosArm64", libs.androidx.room.compiler)
+    addKsp(libs.ktorfit.ksp)
 }
 
 compose.resources {
@@ -139,6 +142,29 @@ listOf(
             "kspKotlinIosArm64" -> dependsOn(
                 "generateResourceAccessorsForIosArm64Main",
                 "generateActualResourceCollectorsForIosArm64Main"
+            )
+        }
+    }
+}
+
+fun DependencyHandlerScope.addKsp(dependencyNotation: Any) {
+    val targets = listOf(
+        //"CommonMainMetadata",
+        "Android",
+        "AndroidTest",
+        "IosX64",
+        "IosX64Test",
+        "IosArm64",
+        "IosSimulatorArm64",
+        "IosArm64Test",
+        "IosSimulatorArm64Test"
+    )
+
+    targets.forEach { target ->
+        runCatching {
+            add(
+                configurationName = "ksp$target",
+                dependencyNotation = dependencyNotation
             )
         }
     }
