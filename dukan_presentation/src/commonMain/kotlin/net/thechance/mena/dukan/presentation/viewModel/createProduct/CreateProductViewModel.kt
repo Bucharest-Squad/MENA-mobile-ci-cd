@@ -9,14 +9,24 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.awaitCancellation
+import mena.dukan_presentation.generated.resources.Res
+import mena.dukan_presentation.generated.resources.add_product_success
+import mena.dukan_presentation.generated.resources.error_description_length
+import mena.dukan_presentation.generated.resources.error_general
+import mena.dukan_presentation.generated.resources.error_image_max_limit
+import mena.dukan_presentation.generated.resources.error_image_size
+import mena.dukan_presentation.generated.resources.error_price_invalid
+import mena.dukan_presentation.generated.resources.error_price_not_positive
+import mena.dukan_presentation.generated.resources.error_upload_failed
 import net.thechance.mena.dukan.domain.entity.Shelf
 import net.thechance.mena.dukan.domain.repository.ProductRepository
 import net.thechance.mena.dukan.domain.repository.ShelfRepository
+import net.thechance.mena.dukan.presentation.component.SnackBarType
+import net.thechance.mena.dukan.presentation.component.SnackBarUiState
 import net.thechance.mena.dukan.presentation.component.productImage.ProductImageState
-import net.thechance.mena.dukan.presentation.screen.createDukan.content.component.SnackBarType
-import net.thechance.mena.dukan.presentation.screen.createDukan.content.component.SnackBarUiState
 import net.thechance.mena.dukan.presentation.util.imageCrop.toPngByteArray
 import net.thechance.mena.dukan.presentation.viewModel.base.BaseViewModel
+import org.jetbrains.compose.resources.StringResource
 import kotlin.math.round
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
@@ -115,7 +125,7 @@ class CreateProductViewModel(
                 updateState {
                     copy(
                         snackBarUiState = SnackBarUiState(
-                            message = MESSAGE_IMAGE_MAX_LIMIT_REACHED,
+                            message = Res.string.error_image_max_limit,
                             snackBarType = SnackBarType.ERROR
                         ),
                         showSnackBar = true,
@@ -128,7 +138,7 @@ class CreateProductViewModel(
                 updateState {
                     copy(
                         snackBarUiState = SnackBarUiState(
-                            message = MESSAGE_IMAGE_SIZE_EXCEEDED,
+                            message = Res.string.error_image_size,
                             snackBarType = SnackBarType.ERROR
                         ),
                         showSnackBar = true,
@@ -156,7 +166,7 @@ class CreateProductViewModel(
                 updateState {
                     copy(
                         snackBarUiState = SnackBarUiState(
-                            message = MESSAGE_UPLOAD_FAILED,
+                            message = Res.string.error_upload_failed,
                             snackBarType = SnackBarType.ERROR
                         ),
                         showSnackBar = true,
@@ -259,7 +269,7 @@ class CreateProductViewModel(
         updateState {
             copy(
                 snackBarUiState = SnackBarUiState(
-                    message = "",
+                    message = Res.string.add_product_success,
                     snackBarType = SnackBarType.SUCCESS
                 ),
                 showSnackBar = true,
@@ -274,7 +284,7 @@ class CreateProductViewModel(
         updateState {
             copy(
                 snackBarUiState = SnackBarUiState(
-                    message = MESSAGE_ERROR_GENERAL,
+                    message = Res.string.error_general,
                     snackBarType = SnackBarType.ERROR
                 ),
                 showSnackBar = true,
@@ -299,7 +309,7 @@ class CreateProductViewModel(
         updateState {
             copy(
                 snackBarUiState = SnackBarUiState(
-                    message = MESSAGE_ERROR_GENERAL,
+                    message = Res.string.error_general,
                     snackBarType = SnackBarType.ERROR
                 ),
                 showSnackBar = true,
@@ -311,7 +321,7 @@ class CreateProductViewModel(
         return copy(isAddButtonEnabled = isProductValid(this))
     }
 
-    private fun isProductDetailsNotValid(productErrorMessage: String?): Boolean {
+    private fun isProductDetailsNotValid(productErrorMessage: StringResource?): Boolean {
         return if (productErrorMessage != null) {
             updateState {
                 copy(
@@ -339,13 +349,13 @@ class CreateProductViewModel(
         }
     }
 
-    private fun getProductValidationError(productUiState: ProductUiState): String? {
+    private fun getProductValidationError(productUiState: ProductUiState): StringResource? {
         return when {
-            productUiState.price.toDoubleOrNull() == null -> VALIDATION_PRICE_INVALID
-            productUiState.price.toDouble() < PRICE_EXCLUSIVE_LOWER_BOUND -> VALIDATION_PRICE_NOT_POSITIVE
-            productUiState.description.length !in MIN_DESCRIPTION_LENGTH..MAX_DESCRIPTION_LENGTH -> VALIDATION_DESCRIPTION_LENGTH_ERROR
+            productUiState.price.toDoubleOrNull() == null -> Res.string.error_price_invalid
+            productUiState.price.toDouble() < PRICE_EXCLUSIVE_LOWER_BOUND -> Res.string.error_price_not_positive
+            productUiState.description.length !in MIN_DESCRIPTION_LENGTH..MAX_DESCRIPTION_LENGTH -> Res.string.error_description_length
             else -> null
-        }
+        } as StringResource?
     }
 
     companion object {
@@ -358,18 +368,6 @@ class CreateProductViewModel(
         const val MAX_DESCRIPTION_LENGTH = 3000
         const val PRICE_EXCLUSIVE_LOWER_BOUND = 0.0
         const val PRICE_DECIMAL_SEPARATOR = '.'
-
-        const val MESSAGE_IMAGE_MAX_LIMIT_REACHED =
-            "You can upload a maximum of $IMAGE_MAX_LIMIT images."
-        const val MESSAGE_IMAGE_SIZE_EXCEEDED =
-            "Image size should be less than $IMAGE_MAX_SIZE_IN_MB MB."
-        const val MESSAGE_UPLOAD_FAILED = "Upload failed, please try again."
-        const val MESSAGE_ERROR_GENERAL = "Something went wrong, please try again."
-        const val VALIDATION_PRICE_INVALID = "Price is invalid."
-        const val VALIDATION_PRICE_NOT_POSITIVE =
-            "Price must be greater than $PRICE_EXCLUSIVE_LOWER_BOUND."
-        const val VALIDATION_DESCRIPTION_LENGTH_ERROR =
-            "Description must be between $MIN_DESCRIPTION_LENGTH and $MAX_DESCRIPTION_LENGTH letters."
     }
 }
 
