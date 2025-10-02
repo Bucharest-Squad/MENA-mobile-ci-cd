@@ -1,15 +1,11 @@
 package net.thechance.mena.core_chat.data.chat
 
 import io.ktor.client.HttpClient
-import io.ktor.client.plugins.websocket.DefaultClientWebSocketSession
-import io.ktor.client.plugins.websocket.webSocket
 import io.ktor.client.request.bearerAuth
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.util.reflect.typeInfo
 import io.ktor.websocket.Frame
-import io.ktor.websocket.readText
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -19,9 +15,12 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import net.thechance.mena.core_chat.data.chat.dto.ChatDto
+import net.thechance.mena.core_chat.data.chat.dto.MarkAsReadRequest
 import net.thechance.mena.core_chat.data.chat.dto.MessageDto
 import net.thechance.mena.core_chat.data.chat.dto.SendMessageDto
 import net.thechance.mena.core_chat.data.database.dao.MessageDao
+import net.thechance.mena.core_chat.data.chat.utils.MessageEvent
+import net.thechance.mena.core_chat.data.chat.utils.WebSocketManager
 import net.thechance.mena.core_chat.data.network.ApiConstants.CHAT_ENDPOINT
 import net.thechance.mena.core_chat.data.network.ApiConstants.CHAT_HISTORY_ENDPOINT
 import net.thechance.mena.core_chat.data.network.ApiConstants.WEB_SOCKETS_ENDPOINT
@@ -40,20 +39,15 @@ import kotlin.uuid.Uuid
 @OptIn(ExperimentalUuidApi::class)
 class ChatRepositoryImpl(
     private val client: HttpClient,
-    private val json: Json,
-    private val baseUrl: String,
+    private val webSocketManager: WebSocketManager,
     private val authenticationRepository: AuthenticationRepository,
     private val messageDao: MessageDao
+    private val json: Json,
+    baseUrl: String,
 ) : ChatRepository, BaseRepository {
-
-    private var isWebSocketSessionActive = false
-    private var webSocketSession: DefaultClientWebSocketSession? = null
     private val messageFlows = MutableSharedFlow<Message>()
+    private val markMessagesAsRead = MutableSharedFlow<String>()
     private val scope = CoroutineScope(Dispatchers.IO)
-    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        println("Error in ChatRepositoryImpl: ${throwable.message}")
-        isWebSocketSessionActive = false
-    }
 
 
     override suspend fun loadMessages(chatId: Uuid): List<Message> {
@@ -70,7 +64,30 @@ class ChatRepositoryImpl(
         }?.data?.map { it.toDomain() } ?: emptyList()
     }
 
+    override suspend fun getChatByContactUserId(userId: Uuid): Chat {
+        return tryNetworkCall<ChatDto>(
+            bodyType = typeInfo<ChatDto>()
+        ) {
+            val token = authenticationRepository.getAccessToken()
 
+            client.get(CHAT_ENDPOINT) {
+                parameter("receiverId", userId)
+                bearerAuth(token)
+            }
+        }?.toDomain() ?: throw ChatNotFoundException("Chat not found")
+    }
+
+    override suspend fun getLocalMessages(chatId: Uuid): List<Message> {
+        val failedEntities = messageDao.getMessagesByChat(chatId.toString())
+        return failedEntities.map { it.toDomain() }
+    }
+
+    override fun subscribeToMessages(chatId: Uuid): Flow<Message> {
+        scope.launch {
+            initializeWebsocketConnection(chatId.toString())
+        }
+        return messageFlows
+    }
     override suspend fun sendMessage(message: Message) {
         val sendingMessage = message.copy(status = MessageStatus.LOADING)
         try {
@@ -104,99 +121,64 @@ class ChatRepositoryImpl(
         }
     }
 
-
-    override fun subscribeToMessages(chatId: Uuid): Flow<Message> {
-        scope.launch(exceptionHandler) {
-            initializeWebsocketConnection(chatId.toString())
-        }
-        return messageFlows
-    }
-
-    override suspend fun getChatByContactUserId(userId: Uuid): Chat {
-        return tryNetworkCall<ChatDto>(
-            bodyType = typeInfo<ChatDto>()
-        ) {
-            val token = authenticationRepository.getAccessToken()
-
-            client.get(CHAT_ENDPOINT) {
-                parameter("receiverId", userId)
-                bearerAuth(token)
-            }
-        }?.toDomain() ?: throw ChatNotFoundException("Chat not found")
-    }
-
-    override suspend fun getLocalMessages(chatId: Uuid): List<Message> {
-        val failedEntities = messageDao.getMessagesByChat(chatId.toString())
-        return failedEntities.map { it.toDomain() }
+    override fun observeReadMessages(): Flow<String> {
+        return markMessagesAsRead
     }
 
     private suspend fun initializeWebsocketConnection(chatId: String) {
-        try {
-            val webSocketUrlString =
-                "${baseUrl.replace("https", "ws").replace("http", "ws")}$WEB_SOCKETS_ENDPOINT"
-            println("WebSocket URL String : $webSocketUrlString")
+        val bearerToken = authenticationRepository.getAccessToken()
 
-            val bearerToken = authenticationRepository.getAccessToken()
+        webSocketManager.connect(
+            url = constructWebSocketUrl,
+            token = bearerToken,
+            onConnected = { onConnectedWebSocket(chatId) }
+        )
 
-            client.webSocket(
-                urlString = webSocketUrlString,
-                request = {
-                    bearerAuth(bearerToken)
-                }
-            ) {
-                webSocketSession = this
-                isWebSocketSessionActive = isActive
-                println("Connection established: isActive=$isWebSocketSessionActive")
+        webSocketManager.incomingMessages.collect { handleIncomingAsEvent(chatId, it) }
+    }
 
-                val connectFrame = "CONNECT\naccept-version:1.2\nheart-beat:10000,10000\n\n\u0000"
-                send(Frame.Text(connectFrame))
-                println("STOMP CONNECT sent")
+    private suspend fun onConnectedWebSocket(chatId: String) {
+        // subscribe
+        webSocketManager.subscribe("/user/$chatId/queue/messages")
+        // mark as read
+        webSocketManager.sendTextFrame(
+            destination = "/app/chat.markAsRead",
+            payload = json.encodeToString<MarkAsReadRequest>(
+                MarkAsReadRequest(chatId = chatId)
+            )
+        )
+    }
 
-                var connected = false
+    private suspend fun handleIncomingAsEvent(
+        chatId: String,
+        incomingText: String
+    ) {
+        val jsonBody = incomingText.substringAfter("\n\n").trimEnd('\u0000')
+        val event = json.decodeFromString<MessageEvent>(jsonBody)
 
-                for (frame in incoming) {
-                    if (frame is Frame.Text) {
-                        val text = frame.readText()
-                        println("Frame received: $text")
-
-                        when {
-                            text.startsWith("CONNECTED") -> {
-                                println("STOMP CONNECTED from server ✅")
-                                connected = true
-
-                                val subscribeFrame =
-                                    "SUBSCRIBE\nid:sub-0\ndestination:/user/$chatId/queue/messages\n\n\u0000"
-                                send(Frame.Text(subscribeFrame))
-                                println("STOMP SUBSCRIBE sent to /user/$chatId/queue/messages")
-                            }
-
-                            text.startsWith("MESSAGE") -> {
-                                val body = text.substringAfter("\n\n").trimEnd('\u0000')
-                                println("Message payload: $body")
-
-                                try {
-                                    val messageDto =
-                                        json.decodeFromString(MessageDto.serializer(), body)
-                                    messageFlows.emit(messageDto.toDomain())
-                                } catch (e: Exception) {
-                                    println("Error parsing message: ${e.message}")
-                                }
-                            }
-
-                            text.startsWith("ERROR") -> {
-                                println("STOMP ERROR: $text")
-                            }
-                        }
-                    }
-                }
-
-                println("WebSocket session ended.")
+        when (event) {
+            is MessageEvent.MarkAsRead -> {
+                markMessagesAsRead.emit(event.dto.readBy)
             }
 
-        } catch (e: Exception) {
-            isWebSocketSessionActive = false
-            println("Error in websocket: ${e.message}")
-            throw e
+            is MessageEvent.Message -> {
+                messageFlows.emit(event.dto.toDomain())
+                // mark as read
+                webSocketManager.sendTextFrame(
+                    destination = "/app/chat.markAsRead",
+                    payload = json.encodeToString<MarkAsReadRequest>(MarkAsReadRequest(chatId = chatId))
+                )
+            }
         }
     }
+
+    override suspend fun disconnect() {
+        webSocketManager.disconnect()
+    }
+
+    private val constructWebSocketUrl =
+        "${baseUrl
+                .replace("https", "ws")
+                .replace("http", "ws")
+        }$WEB_SOCKETS_ENDPOINT"
 }

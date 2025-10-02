@@ -14,6 +14,7 @@ import net.thechance.mena.core_chat.domain.entity.MessageStatus as DomainMessage
 
 abstract class MessageUiState(
     open val id: Uuid = Uuid.random(),
+    open val senderId: Uuid? = null,
     open val chatId: Uuid = Uuid.random(),
     open val sendTime: LocalDateTime,
     open val status: MessageStatusUiState,
@@ -35,6 +36,7 @@ data class MarkedMessageUiState(
 
 data class TextMessageUiState(
     override val id: Uuid = Uuid.random(),
+    override val senderId: Uuid? = null,
     override val chatId: Uuid = Uuid.random(),
     override val sendTime: LocalDateTime,
     override val status: MessageStatusUiState,
@@ -42,6 +44,7 @@ data class TextMessageUiState(
     val text: String
 ) : MessageUiState(
     id,
+    senderId,
     chatId,
     sendTime,
     status,
@@ -110,6 +113,7 @@ fun List<MarkedMessageUiState>.withDateSeparators(
 fun Message.toUi(currentUserId: Uuid): TextMessageUiState {
     return TextMessageUiState(
         id = id,
+        senderId = senderId,
         chatId = chatId,
         sendTime = sendAt,
         status = status.toUi(),
@@ -118,10 +122,10 @@ fun Message.toUi(currentUserId: Uuid): TextMessageUiState {
     )
 }
 
-fun TextMessageUiState.toEntity(currentUserId: Uuid): Message {
+fun TextMessageUiState.toEntity(): Message {
     return Message(
         id = id,
-        senderId = currentUserId,
+        senderId = senderId,
         chatId = chatId,
         text = text,
         sendAt = sendTime,

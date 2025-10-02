@@ -12,6 +12,23 @@ import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalUuidApi::class)
 internal val repositoryModule = module {
-    single<ContactsRepository> { ContactsRepositoryImpl(client = get(named(CHAT_CLIENT)), get(), get(), get()) }
-    single<ChatRepository> { ChatRepositoryImpl(client = get(named(CHAT_CLIENT)), baseUrl = get(named(BASE_URL)), json = get(), authenticationRepository = get(), messageDao = get()) }
+    single<ContactsRepository> {
+        ContactsRepositoryImpl(
+            client = get(named(CHAT_CLIENT)),
+            authenticationRepository = get(),
+            contactsProvider = get(),
+            dataStore = get()
+        )
+    }
+
+    single<ChatRepository> {
+        ChatRepositoryImpl(
+            client = get(named(CHAT_CLIENT)),
+            baseUrl = get(named(BASE_URL)),
+            json = get(),
+            authenticationRepository = get(),
+            webSocketManager = get(),
+            messageDao = get()
+        )
+    }
 }
