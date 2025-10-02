@@ -269,7 +269,7 @@ class CreateProductViewModel(
         }
 
         val productId = shelfId?.let { myShelfId ->
-            productRepository.createProduct(shelfId = myShelfId, product = state.value.toDomain())
+            productRepository.createProduct( params = state.value.toCreateProductParam(myShelfId))
         }
 
         productId?.let { myProductId ->

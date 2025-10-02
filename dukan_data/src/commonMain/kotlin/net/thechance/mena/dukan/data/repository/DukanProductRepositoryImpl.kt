@@ -16,17 +16,18 @@ import net.thechance.mena.dukan.data.repository.util.buildMultiPartFormData
 import net.thechance.mena.dukan.data.repository.util.safeApiCall
 import net.thechance.mena.dukan.domain.entity.Product
 import net.thechance.mena.dukan.domain.repository.ProductRepository
+import net.thechance.mena.dukan.domain.util.CreateProductParams
 import net.thechance.mena.dukan.domain.util.PagedResult
 
 class DukanProductRepositoryImpl(
     private val client: HttpClient
 ): ProductRepository {
 
-    override suspend fun createProduct(product: Product,shelfId: String): String {
+    override suspend fun createProduct(params: CreateProductParams): String {
         return safeApiCall<CreateProductResponse> {
             client.post("${BASE_URL}/create") {
                 contentType(ContentType.Application.Json)
-                setBody(product.toCreateProductRequest(shelfId))
+                setBody(params.toCreateProductRequest())
             }
         }.productId
     }
