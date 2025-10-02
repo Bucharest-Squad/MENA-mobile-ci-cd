@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 
 internal class BasePagingSource<T : Any>(
     private val onError: (Throwable) -> Unit = {},
-    private val onFetchPage: suspend (Int, Int) -> List<T>
+    private val onFetchPage: suspend (pageNumber: Int, pageSize: Int) -> List<T>
 ) : PagingSource<Int, T>() {
 
     override fun getRefreshKey(state: PagingState<Int, T>) = state.anchorPosition

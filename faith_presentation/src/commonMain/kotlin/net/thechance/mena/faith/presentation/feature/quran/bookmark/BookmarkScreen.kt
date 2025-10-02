@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -30,14 +28,13 @@ import mena.faith_presentation.generated.resources.empty_state_bookmark_image
 import mena.faith_presentation.generated.resources.empty_state_bookmark_title
 import mena.faith_presentation.generated.resources.ic_not_saved_book_mark
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
+import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.faith.presentation.base.ObserveAsEffect
 import net.thechance.mena.faith.presentation.base.SnackBarState
 import net.thechance.mena.faith.presentation.component.BackIcon
-import net.thechance.mena.faith.presentation.component.FaithScaffold
 import net.thechance.mena.faith.presentation.component.FaithSnackBar
 import net.thechance.mena.faith.presentation.component.SwappableCard
-import net.thechance.mena.faith.presentation.designSystem.theme.QuranTheme
 import net.thechance.mena.faith.presentation.extensions.paging.isEmpty
 import net.thechance.mena.faith.presentation.extensions.paging.isNotEmpty
 import net.thechance.mena.faith.presentation.feature.quran.bookmark.component.AyaBookmarkCard
@@ -77,54 +74,52 @@ private fun Content(
 ) {
     val bookmarks = uiState.bookmarks.collectAsLazyPagingItems()
 
-    QuranTheme {
-        FaithScaffold(
-            modifier = Modifier.statusBarsPadding().systemBarsPadding(),
-            topBar = {
-                AppBar(
-                    title = stringResource(Res.string.bookmarks),
-                    contentPadding = PaddingValues(
-                        horizontal = Theme.spacing._16, vertical = Theme.spacing._8
-                    ),
-                    leadingContent = { BackIcon() },
-                    onLeadingClick = listener::onBackClick,
-                )
-            },
-            snackBar = {
-                FaithSnackBar(
-                    message = snackBarState.message,
-                    isVisible = snackBarState.isVisible,
-                    status = snackBarState.status
-                )
-            }
+    Scaffold(
+        topBar = {
+            AppBar(
+                title = stringResource(Res.string.bookmarks),
+                contentPadding = PaddingValues(
+                    horizontal = Theme.spacing._16, vertical = Theme.spacing._8
+                ),
+                leadingContent = { BackIcon() },
+                onLeadingClick = listener::onBackClick,
+            )
+        },
+        snakeBar = {
+            FaithSnackBar(
+                message = snackBarState.message,
+                isVisible = snackBarState.isVisible,
+                status = snackBarState.status
+            )
+        }
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = Theme.colorScheme.background.surface)
+                .padding(horizontal = Theme.spacing._16)
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(color = Theme.colorScheme.background.surface)
-                    .padding(horizontal = Theme.spacing._16)
+            AnimatedVisibility(
+                visible = bookmarks.isEmpty() && uiState.isLoading.not(),
+                enter = fadeIn(tween()),
+                exit = fadeOut(tween())
             ) {
-                AnimatedVisibility(
-                    visible = bookmarks.isEmpty() && uiState.isLoading.not(),
-                    enter = fadeIn(tween()),
-                    exit = fadeOut(tween())
-                ) {
-                    EmptyBookmarkState()
-                }
+                EmptyBookmarkState()
+            }
 
-                AnimatedVisibility(
-                    visible = bookmarks.isNotEmpty(),
-                    enter = fadeIn(tween()),
-                    exit = fadeOut(tween())
-                ) {
-                    BookmarkItems(
-                        bookmarks = bookmarks,
-                        onRemoveBookmarkClick = listener::onDeleteBookmarkClick,
-                    )
-                }
+            AnimatedVisibility(
+                visible = bookmarks.isNotEmpty(),
+                enter = fadeIn(tween()),
+                exit = fadeOut(tween())
+            ) {
+                BookmarkItems(
+                    bookmarks = bookmarks,
+                    onRemoveBookmarkClick = listener::onDeleteBookmarkClick,
+                )
             }
         }
     }
+
 }
 
 @Composable

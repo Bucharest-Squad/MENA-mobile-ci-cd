@@ -1,5 +1,6 @@
 package net.thechance.mena.faith.data.remote.client
 
+import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.auth.Auth
@@ -40,7 +41,7 @@ class NetworkClient(
                 level = LogLevel.ALL
                 logger = object : Logger {
                     override fun log(message: String) {
-                        println("Http client: $message")
+                        Napier.d("Http client: $message", tag = "HttpClient")
                     }
                 }
             }

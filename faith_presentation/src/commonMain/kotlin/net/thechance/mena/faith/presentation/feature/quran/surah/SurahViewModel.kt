@@ -75,7 +75,12 @@ class SurahViewModel(
 
     override fun onBookmarkClick(ayahNumber: Int) {
         tryToExecute(
-            execute = { bookmarkRepository.addAyahBookmark(surahId, ayahNumber) },
+            execute = {
+                bookmarkRepository.addAyahBookmark(
+                    surahId = surahId,
+                    ayahNumber = ayahNumber
+                )
+            },
             onSuccess = { onAddBookmarkSuccess() },
             dispatcher = dispatcher
         )
