@@ -6,5 +6,4 @@ data class PagingData<T>(
     val error: Exception? = null,
     val hasMore: Boolean = true,
     val isRefreshing: Boolean = false,
-    val totalItems : Long = 0
 )

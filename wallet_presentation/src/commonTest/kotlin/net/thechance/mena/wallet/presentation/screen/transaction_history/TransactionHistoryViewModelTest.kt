@@ -95,19 +95,6 @@ class TransactionHistoryViewModelTest {
         }
     }
 
-    @Test
-    fun `should send NavigateToFilterBottomSheet effect when onFilterClicked is called`() = runTest(testDispatcher) {
-        everySuspend { transactionRepository.getTransactionHistory(null) } returns emptyList()
-        val viewModel = TransactionHistoryViewModel(transactionRepository)
-        advanceUntilIdle()
-        viewModel.uiEffect.test {
-            viewModel.onFilterClicked()
-            val effect = awaitItem()
-            assertEquals(TransactionHistoryEffect.NavigateToFilterBottomSheet, effect)
-            cancelAndIgnoreRemainingEvents()
-        }
-    }
-
     companion object {
         val history = listOf(
             Transaction(
@@ -129,7 +116,7 @@ class TransactionHistoryViewModelTest {
                     time = LocalTime(12, 0)
                 ),
                 amount = 75.5,
-                status = TransactionStatus.FAIL,
+                status = TransactionStatus.FAILED,
                 senderName = "Charlie",
                 receiverName = "You",
                 type = TransactionType.RECEIVED

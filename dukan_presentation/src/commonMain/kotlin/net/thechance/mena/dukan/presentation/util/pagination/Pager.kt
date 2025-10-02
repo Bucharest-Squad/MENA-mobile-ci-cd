@@ -68,7 +68,6 @@ class Pager<Key : Any, Value : Any>(
             error = null,
             hasMore = nextKey != null,
             isRefreshing = false,
-            totalItems  = _flow.value.totalItems + finalItems.size
         )
     }
 

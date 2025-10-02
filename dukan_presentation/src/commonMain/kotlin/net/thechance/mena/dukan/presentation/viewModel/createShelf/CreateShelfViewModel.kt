@@ -9,14 +9,14 @@ import mena.dukan_presentation.generated.resources.shelf_name_is_invalid
 import mena.dukan_presentation.generated.resources.something_went_wrong
 import net.thechance.mena.dukan.domain.entity.Shelf
 import net.thechance.mena.dukan.domain.exceptions.ShelfNameTakenException
-import net.thechance.mena.dukan.domain.repository.CreateShelfRepository
+import net.thechance.mena.dukan.domain.repository.ShelfRepository
 import net.thechance.mena.dukan.presentation.component.SnackBarType
 import net.thechance.mena.dukan.presentation.component.SnackBarUiState
 import net.thechance.mena.dukan.presentation.viewModel.base.BaseViewModel
 import org.jetbrains.compose.resources.StringResource
 
 class CreateShelfViewModel(
-    private val shelfRepository: CreateShelfRepository,
+    private val shelfRepository: ShelfRepository,
     defaultDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : BaseViewModel<CreateShelfUiState, CreateShelfEffect>(
     initialState = CreateShelfUiState(),
