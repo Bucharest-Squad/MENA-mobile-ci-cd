@@ -32,7 +32,7 @@ fun createThemeTypography(): Typography {
         appName = TextStyle.Default.copy(
             fontSize = 28.sp,
             fontFamily = madimiOneFontFamily,
-            color = Theme.colorScheme.shadePrimary
+            color = Theme.colorScheme.brand.brand
         ),
         headline = Typography.Headline(
             large = TextStyle(
