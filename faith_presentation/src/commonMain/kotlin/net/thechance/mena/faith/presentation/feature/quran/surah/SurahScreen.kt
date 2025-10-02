@@ -108,7 +108,7 @@ private fun Content(
 private fun AyatOfSurah(
     listener: SurahInteractionListener,
     state: SurahScreenState,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     val lazyListState = rememberLazyListState()
     val allAyat = remember(state.ayatOfSurah) { state.ayatOfSurah }
