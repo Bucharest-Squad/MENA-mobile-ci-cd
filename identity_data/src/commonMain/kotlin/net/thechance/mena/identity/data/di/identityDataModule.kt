@@ -26,5 +26,3 @@ val identityDataModule = module {
     singleOf(::AuthenticationRepositoryImpl) bind AuthenticationRepository::class
     singleOf(::ResetPasswordRepositoryImpl) bind ResetPasswordRepository::class
 }
-
-

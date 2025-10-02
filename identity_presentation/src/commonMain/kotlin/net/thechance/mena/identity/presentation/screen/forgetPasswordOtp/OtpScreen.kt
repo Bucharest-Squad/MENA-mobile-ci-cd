@@ -29,6 +29,7 @@ import net.thechance.mena.identity.presentation.components.AuthScreenContainer
 import net.thechance.mena.identity.presentation.components.ErrorSnackBar
 import net.thechance.mena.identity.presentation.components.OtpInput
 import net.thechance.mena.identity.presentation.components.PageDescription
+import net.thechance.mena.identity.presentation.screen.resetPassword.ResetPasswordScreen
 import org.jetbrains.compose.resources.stringResource
 import org.koin.core.parameter.parametersOf
 
@@ -126,7 +127,7 @@ class OtpScreen(
     ) {
         when (effect) {
             OtpScreenUIEffect.NavigateBack -> navigator.pop()
-            is OtpScreenUIEffect.NavigateToResetPassword -> TODO("add reset password screen")
+            is OtpScreenUIEffect.NavigateToResetPassword -> navigator.push(ResetPasswordScreen( effect.phoneNumber, effect.callingCode))
         }
     }
 }
