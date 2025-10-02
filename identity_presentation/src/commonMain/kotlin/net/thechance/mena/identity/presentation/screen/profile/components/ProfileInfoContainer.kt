@@ -95,14 +95,14 @@ fun ProfileInfoContainer(
             ),
             color = Theme.colorScheme.shadePrimary,
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(top = 8.dp)
+            modifier = Modifier.padding(top = Theme.spacing._8)
         )
         Text(
             text = userName,
             style = Theme.typography.label.small,
             color = Theme.colorScheme.shadeSecondary,
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(top = 2.dp)
+            modifier = Modifier.padding(top = Theme.spacing._2)
         )
     }
 }

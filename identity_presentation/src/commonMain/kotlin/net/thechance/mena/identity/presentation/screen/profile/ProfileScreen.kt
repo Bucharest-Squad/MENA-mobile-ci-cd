@@ -111,7 +111,7 @@ class ProfileScreen : BaseScreen<
                     Modifier.fillMaxSize()
                         .background(Theme.colorScheme.background.surface)
                         .verticalScroll(rememberScrollState())
-                        .padding(horizontal = 16.dp),
+                        .padding(horizontal = Theme.spacing._16),
                 ) {
                     AppBar(
                         contentPadding = PaddingValues(horizontal = 0.dp, vertical = 14.dp),
@@ -152,7 +152,7 @@ class ProfileScreen : BaseScreen<
                     )
                     Text(
                         modifier = Modifier
-                            .padding(vertical = 16.dp)
+                            .padding(vertical = Theme.spacing._16)
                             .align(Alignment.CenterHorizontally),
                         text = "version ${state.versionNumber}",
                         style = Theme.typography.label.small,
@@ -169,8 +169,8 @@ class ProfileScreen : BaseScreen<
                         title = stringResource(Res.string.error),
                         message = state.errorMessage ?: "",
                         leadingIcon = painterResource(Res.drawable.ic_close_circle),
-                        modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
-                            .padding(horizontal = 16.dp)
+                        modifier = Modifier.fillMaxWidth().padding(bottom = Theme.spacing._16)
+                            .padding(horizontal = Theme.spacing._16)
                     )
                 }
                 LaunchedEffect(state.errorMessage) {

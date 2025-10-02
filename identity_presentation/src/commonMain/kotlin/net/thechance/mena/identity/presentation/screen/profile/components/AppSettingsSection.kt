@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import mena.identity_presentation.generated.resources.Res
 import mena.identity_presentation.generated.resources.ic_language
 import mena.identity_presentation.generated.resources.ic_theme
@@ -28,8 +27,8 @@ fun AppSettingsSection(
     onThemeClicked: () -> Unit,
 ) {
     Column(
-        modifier = Modifier.padding(top = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        modifier = Modifier.padding(top = Theme.spacing._24),
+        verticalArrangement = Arrangement.spacedBy(Theme.spacing._8)
     ) {
         Text(
             text = stringResource(Res.string.profile_app_settings_header),

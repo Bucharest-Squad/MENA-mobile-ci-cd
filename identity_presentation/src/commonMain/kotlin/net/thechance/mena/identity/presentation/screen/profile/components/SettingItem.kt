@@ -40,14 +40,14 @@ fun SettingItem(
                     onClick()
                 }
             )
-            .padding(horizontal = 12.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+            .padding(horizontal = Theme.spacing._12),
+        horizontalArrangement = Arrangement.spacedBy(Theme.spacing._8),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             modifier = Modifier
-                .padding(vertical = 12.dp)
-                .size(24.dp),
+                .padding(vertical = Theme.spacing._12)
+                .size(Theme.spacing._24),
             painter = leadingIcon,
             contentDescription = stringResource(Res.string.profile_edit_profile_icon_content_description),
         )
@@ -63,7 +63,7 @@ fun SettingItem(
                 style = Theme.typography.label.small,
                 color = Theme.colorScheme.shadeTertiary,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(top = 2.dp)
+                modifier = Modifier.padding(top = Theme.spacing._2)
             )
         }
     }

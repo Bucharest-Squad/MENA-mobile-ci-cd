@@ -34,7 +34,7 @@ import sv.lib.squircleshape.SquircleShape
 fun InviteFriendsCard(onCLick: () -> Unit) {
     Row(
         modifier = Modifier
-            .padding(top = 24.dp)
+            .padding(top = Theme.spacing._24)
             .fillMaxWidth()
             .clip(SquircleShape(radius = Theme.radius.lg))
             .background(
@@ -46,15 +46,15 @@ fun InviteFriendsCard(onCLick: () -> Unit) {
                 )
             )
             .clickable { onCLick() }
-            .padding(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
+            .padding(Theme.spacing._8),
+        horizontalArrangement = Arrangement.spacedBy(Theme.spacing._12),
     ) {
         Icon(
             modifier = Modifier
                 .clip(SquircleShape(Theme.radius.md))
                 .background(Theme.colorScheme.background.surfaceLow.copy(alpha = .12f))
-                .padding(12.dp)
-                .size(24.dp)
+                .padding(Theme.spacing._12)
+                .size(Theme.spacing._24)
             ,
             painter = painterResource(Res.drawable.ic_invite_friends),
             contentDescription = stringResource(Res.string.profile_invite_friends_icon_content_description),
