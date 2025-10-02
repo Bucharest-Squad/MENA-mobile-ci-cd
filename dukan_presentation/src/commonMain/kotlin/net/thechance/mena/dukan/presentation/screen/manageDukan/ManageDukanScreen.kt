@@ -63,5 +63,6 @@ fun ManageDukanScreen(
     ManageDukanContent(
         state = state,
         listener = viewModel,
+        pager = viewModel.pager
     )
 }

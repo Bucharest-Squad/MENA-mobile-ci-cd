@@ -13,14 +13,11 @@ import mena.dukan_presentation.generated.resources.delete_shelf_title
 import mena.dukan_presentation.generated.resources.dismiss_description
 import mena.dukan_presentation.generated.resources.dismiss_title
 import mena.dukan_presentation.generated.resources.error_for_delete_shelf
-import net.thechance.mena.dukan.domain.entity.Product
 import net.thechance.mena.dukan.domain.entity.Shelf
 import net.thechance.mena.dukan.domain.repository.CreateShelfRepository
 import net.thechance.mena.dukan.domain.repository.ProductRepository
 import net.thechance.mena.dukan.presentation.component.SnackBarType
 import net.thechance.mena.dukan.presentation.component.SnackBarUiState
-import net.thechance.mena.dukan.presentation.screen.productLayout.ProductUiState
-import net.thechance.mena.dukan.presentation.screen.productLayout.toUiState
 import net.thechance.mena.dukan.presentation.util.pagination.PagingData
 import net.thechance.mena.dukan.presentation.util.pagination.base.createPagingSource
 import net.thechance.mena.dukan.presentation.viewModel.base.BaseViewModel
@@ -77,7 +74,7 @@ class ManageDukanViewModel(
         emitEffect(ManageDukanEffect.NavigateToAddShelf)
     }
 
-    override fun onProductClick(product: Product) {
+    override fun onProductClick(product: ProductUiState) {
         emitEffect(ManageDukanEffect.NavigateToProductDetails)
     }
 
@@ -133,8 +130,11 @@ class ManageDukanViewModel(
     private fun loadProductsFromRepository() {
         tryToCollect(
             block = { pager.flow },
-            onCollect = { products -> handleProductsLoaded(products) },
+            onCollect = { products -> onProductsLoaded(products) },
         )
+        viewModelScope.launch {
+            pager.load()
+        }
     }
 
     override fun onDismissDeleteShelfConfirmationDialog() {
@@ -190,7 +190,7 @@ class ManageDukanViewModel(
         onShowSnackBar(type = SnackBarType.ERROR, message = Res.string.error_for_delete_shelf)
     }
 
-    private fun handleProductsLoaded(products: PagingData<ProductUiState>) {
+    private fun onProductsLoaded(products: PagingData<ProductUiState>) {
         updateState {
             copy(
                 products = products,
@@ -205,6 +205,10 @@ class ManageDukanViewModel(
             shelfId = state.value.selectedShelf?.id.orEmpty(),
             page = it,
             size = 10
-        )
+        ).also { result ->
+            updateState {
+                copy(totalProducts = result.totalItems)
+            }
+        }
     }
 }

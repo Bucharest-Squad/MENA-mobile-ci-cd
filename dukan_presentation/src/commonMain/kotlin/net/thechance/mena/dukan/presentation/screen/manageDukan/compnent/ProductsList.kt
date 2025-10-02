@@ -1,6 +1,8 @@
 package net.thechance.mena.dukan.presentation.screen.manageDukan.compnent
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -11,11 +13,11 @@ import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.dukan.domain.util.PagedResult
 import net.thechance.mena.dukan.presentation.component.productCard.EditProductIcon
 import net.thechance.mena.dukan.presentation.component.productCard.ProductCard
-import net.thechance.mena.dukan.presentation.screen.productLayout.ProductUiState
 import net.thechance.mena.dukan.presentation.util.pagination.LoadMoreOnScroll
 import net.thechance.mena.dukan.presentation.util.pagination.Pager
 import net.thechance.mena.dukan.presentation.util.pagination.PagingConfig
 import net.thechance.mena.dukan.presentation.util.pagination.base.BasePagingSource
+import net.thechance.mena.dukan.presentation.viewModel.manageDukan.ProductUiState
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 
@@ -31,8 +33,12 @@ fun ProductsList(
     lazyListState.LoadMoreOnScroll(pager)
 
     LazyColumn(
+        modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(Theme.spacing._8),
-        modifier = modifier,
+        contentPadding = PaddingValues(
+            horizontal = Theme.spacing._16,
+            vertical = Theme.spacing._8
+        ),
         state = lazyListState
     ) {
         items(products) { product ->
@@ -65,6 +71,7 @@ private fun ProductsLayoutPreview() {
                             hasNext = true,
                             currentPage = pageNumber,
                             totalPages = 1000,
+                            totalItems = 1000000
                         )
                     }
                 }

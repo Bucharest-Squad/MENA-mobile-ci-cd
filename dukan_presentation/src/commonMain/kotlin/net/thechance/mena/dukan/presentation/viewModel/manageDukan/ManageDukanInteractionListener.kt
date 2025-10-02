@@ -1,6 +1,5 @@
 package net.thechance.mena.dukan.presentation.viewModel.manageDukan
 
-import net.thechance.mena.dukan.domain.entity.Product
 import net.thechance.mena.dukan.presentation.component.SnackBarType
 import org.jetbrains.compose.resources.StringResource
 
@@ -12,7 +11,7 @@ interface ManageDukanInteractionListener {
     fun onShowDeleteShelfDailog(shelfId: String)
     fun onDeleteConfirmed(shelfId: String)
     fun onAddProductClicked()
-    fun onProductClick(product: Product)
+    fun onProductClick(product: ProductUiState)
     fun onEditShelfClicked()
     fun onAddShelfClicked()
     fun onShelfAddedSuccessfully()

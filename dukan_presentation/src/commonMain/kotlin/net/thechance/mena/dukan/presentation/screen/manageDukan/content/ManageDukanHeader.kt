@@ -69,7 +69,7 @@ fun ManageDukanHeader(
 
 @Composable
 private fun ProductCountRow(
-    productCount: Int,
+    productCount: Long,
     listener: ManageDukanInteractionListener
 ) {
     Row(

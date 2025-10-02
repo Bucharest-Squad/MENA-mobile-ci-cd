@@ -45,7 +45,8 @@ fun <T : Any, R : Any> createPagingSource(
                         hasNext = result.hasNext,
                         hasPrevious = result.hasPrevious,
                         currentPage = result.currentPage,
-                        totalPages = result.totalPages
+                        totalPages = result.totalPages,
+                        totalItems = result.totalItems
                     )
                 }
             }
