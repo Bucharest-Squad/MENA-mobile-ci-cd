@@ -12,7 +12,6 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import net.thechance.mena.faith.domain.entity.Ayah
 import net.thechance.mena.faith.domain.entity.AyahBookmark
-import net.thechance.mena.faith.domain.entity.PagedFetchResponse
 import net.thechance.mena.faith.domain.entity.Surah
 import net.thechance.mena.faith.domain.repository.BookmarkRepository
 import kotlin.test.Test
@@ -131,28 +130,23 @@ class BookmarkViewModelTest {
         const val SURAH_AYAH_COUNT = 7
 
         @OptIn(ExperimentalTime::class)
-        val fakeBookmarks: PagedFetchResponse<AyahBookmark> = PagedFetchResponse(
-            currentPage = 1,
-            items = listOf(
-                AyahBookmark(
-                    id = BOOKMARK_ID,
-                    surah = Surah(
-                        id = SURAH_ID,
-                        order = Surah.SurahOrder.AlFath,
-                        name = "Al-Fatiha",
-                        ayahCount = SURAH_AYAH_COUNT,
-                    ),
-                    ayah = Ayah(
-                        number = AYAH_NUMBER,
-                        content = "بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ",
-                        surahId = SURAH_ID,
-                        plainContent = "بسم الله الرحمن الرحيم"
-                    ),
-                    createdAt = Instant.Companion.fromEpochMilliseconds(0)
-                )
-            ),
-            totalItems = 1,
-            totalPages = 1
+        val fakeBookmarks: List<AyahBookmark> = listOf(
+            AyahBookmark(
+                id = BOOKMARK_ID,
+                surah = Surah(
+                    id = SURAH_ID,
+                    order = Surah.SurahOrder.AlFath,
+                    name = "Al-Fatiha",
+                    ayahCount = SURAH_AYAH_COUNT,
+                ),
+                ayah = Ayah(
+                    number = AYAH_NUMBER,
+                    content = "بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ",
+                    surahId = SURAH_ID,
+                    plainContent = "بسم الله الرحمن الرحيم"
+                ),
+                createdAt = Instant.Companion.fromEpochMilliseconds(0)
+            )
         )
     }
 }

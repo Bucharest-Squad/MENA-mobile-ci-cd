@@ -47,9 +47,9 @@ fun SwappableCard(
     swipeThreshold: Float = 130f,
     cardContent: @Composable (Modifier) -> Unit,
 ) {
-    val currentSwipedCardId = mutableIntStateOf(NORMAL_STATE)
+    val currentSwipedCardId = remember(id) { mutableIntStateOf(NORMAL_STATE) }
 
-    var rawOffsetX by remember { mutableFloatStateOf(0f) }
+    var rawOffsetX by remember(id) { mutableFloatStateOf(0f) }
     val isCurrentCardSwiped = currentSwipedCardId.intValue == id
 
     LaunchedEffect(isCurrentCardSwiped) {

@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.collectAsLazyPagingItems
+import app.cash.paging.compose.itemKey
 import mena.faith_presentation.generated.resources.Res
 import mena.faith_presentation.generated.resources.bookmarks
 import mena.faith_presentation.generated.resources.empty_state_bookmark_description
@@ -149,14 +150,13 @@ private fun BookmarkItems(
     bookmarks: LazyPagingItems<BookmarksScreenState.BookmarkCardUiState>,
     onRemoveBookmarkClick: (Int) -> Unit,
 ) {
-
     LazyColumn(
         contentPadding = PaddingValues(bottom = Theme.spacing._16),
         verticalArrangement = Arrangement.spacedBy(Theme.spacing._8),
     ) {
         items(
             count = bookmarks.itemCount,
-            key = { index -> bookmarks[index]?.bookmarkId ?: index }
+            key = bookmarks.itemKey { bookmark -> bookmark.bookmarkId }
         ) { index ->
             bookmarks[index]?.let {
                 SwappableCard(

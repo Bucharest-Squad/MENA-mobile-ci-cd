@@ -25,8 +25,7 @@ class BookmarkRepositoryImplTest {
             // When
             val response = repository.getAyahBookmarks(pageNumber, pageSize)
             // Then
-            assertThat(response.currentPage).isEqualTo(pageNumber)
-            assertThat(response.items).isEqualTo(AYAH_BOOKMARK_LIST)
+            assertThat(response).isEqualTo(AYAH_BOOKMARK_LIST)
         }
 
     @Test

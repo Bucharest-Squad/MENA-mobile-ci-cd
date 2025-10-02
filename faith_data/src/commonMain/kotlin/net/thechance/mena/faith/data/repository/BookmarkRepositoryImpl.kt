@@ -19,7 +19,6 @@ import net.thechance.mena.faith.data.remote.dto.bookmark.AddBookmarkRequest
 import net.thechance.mena.faith.data.remote.dto.bookmark.AyahBookmarkDto
 import net.thechance.mena.faith.data.utils.executeApiSafely
 import net.thechance.mena.faith.domain.entity.AyahBookmark
-import net.thechance.mena.faith.domain.entity.PagedFetchResponse
 import net.thechance.mena.faith.domain.repository.BookmarkRepository
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
@@ -48,21 +47,16 @@ class BookmarkRepositoryImpl(
     override suspend fun getAyahBookmarks(
         pageNumber: Int,
         pageSize: Int
-    ): PagedFetchResponse<AyahBookmark> {
+    ): List<AyahBookmark> {
         return coroutineScope {
             val response = httpClient.getBookmarks(pageNumber, pageSize)
 
-            PagedFetchResponse(
-                currentPage = pageNumber,
-                items = response.items.mapAsync {
-                    it.toAyahBookmark(
-                        fetchSurah = ayahDao::getSurah,
-                        fetchAyah = ayahDao::getAyah
-                    )
-                },
-                totalPages = response.totalPages,
-                totalItems = response.totalItems
-            )
+            response.items.mapAsync {
+                it.toAyahBookmark(
+                    fetchSurah = ayahDao::getSurah,
+                    fetchAyah = ayahDao::getAyah
+                )
+            }
         }
     }
 

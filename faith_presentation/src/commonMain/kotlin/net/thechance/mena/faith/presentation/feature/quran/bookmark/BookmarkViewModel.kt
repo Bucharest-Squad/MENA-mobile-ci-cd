@@ -1,10 +1,10 @@
 package net.thechance.mena.faith.presentation.feature.quran.bookmark
 
 import androidx.lifecycle.viewModelScope
-import app.cash.paging.PagingData
-import app.cash.paging.cachedIn
-import app.cash.paging.filter
-import app.cash.paging.map
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.paging.filter
+import androidx.paging.map
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -42,7 +42,7 @@ class BookmarkViewModel(
     }
 
     init {
-        getBookmarks()
+        initializeBookmarks()
     }
 
     override fun onBackClick() = sendEffect(BookmarkEffect.NavigateBack)
@@ -69,7 +69,7 @@ class BookmarkViewModel(
         }
     }
 
-    private fun getBookmarks() {
+    private fun initializeBookmarks() {
         updateState {
             it.copy(
                 bookmarks = filteredBookmarksFlow,
