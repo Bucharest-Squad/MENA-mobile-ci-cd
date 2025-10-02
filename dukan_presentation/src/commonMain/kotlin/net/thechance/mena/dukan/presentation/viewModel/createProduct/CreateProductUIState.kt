@@ -2,8 +2,8 @@ package net.thechance.mena.dukan.presentation.viewModel.createProduct
 
 import androidx.compose.ui.graphics.ImageBitmap
 import com.attafitamim.krop.core.images.ImageSrc
+import net.thechance.mena.dukan.presentation.component.SnackBarUiState
 import net.thechance.mena.dukan.presentation.component.productImage.ProductImageState
-import net.thechance.mena.dukan.presentation.screen.createDukan.content.component.SnackBarUiState
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 

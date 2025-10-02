@@ -24,10 +24,10 @@ import mena.dukan_presentation.generated.resources.add_product_success
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import net.thechance.mena.dukan.presentation.component.SnackBar
+import net.thechance.mena.dukan.presentation.component.SnackBarType
 import net.thechance.mena.dukan.presentation.navigation.DukanRoute
 import net.thechance.mena.dukan.presentation.navigation.LocalNavController
-import net.thechance.mena.dukan.presentation.screen.createDukan.content.component.SnackBar
-import net.thechance.mena.dukan.presentation.screen.createDukan.content.component.SnackBarType
 import net.thechance.mena.dukan.presentation.screen.createProduct.component.ProductImageCropScreen
 import net.thechance.mena.dukan.presentation.screen.createProduct.component.descriptionSection
 import net.thechance.mena.dukan.presentation.screen.createProduct.component.imageSection
@@ -81,11 +81,9 @@ fun CreateProductScreen(viewModel: CreateProductViewModel = koinViewModel()) {
                 .padding(top = 52.dp)
                 .clip(RoundedCornerShape(Theme.radius.md))
                 .clickable(onClick = viewModel::onDismissSnackBar),
-            isVisible = state.showSnackBar,
+//            isVisible = state.showSnackBar,todo delete if not needed
             onDismiss = viewModel::onDismissSnackBar,
-            snackBarUiState = if (snackBarState.snackBarType == SnackBarType.SUCCESS)
-                snackBarState.copy(message = stringResource(Res.string.add_product_success))
-            else snackBarState
+            snackBarUiState = snackBarState
         )
     }
 
