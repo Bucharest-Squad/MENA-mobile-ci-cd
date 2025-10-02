@@ -1,5 +1,6 @@
 package net.thechance.mena.wallet.presentation.screen.export
 
+import androidx.compose.ui.input.key.Key.Companion.R
 import androidx.lifecycle.viewmodel.compose.viewModel
 import app.cash.turbine.test
 import dev.mokkery.MockMode
@@ -559,6 +560,31 @@ class ExportTransactionsViewModelTest {
         }
     }
 
+    @Test
+    fun whenViewAndShareThrowsNoDataFound_thenHasNoTransactionsErrorIsTrue() =
+        runTest {
+            everySuspend {
+                repository.getFilteredTransactionsFile(any())
+            } throws NoDataFoundException()
+
+            val viewModel = ExportTransactionsViewModel(
+                exportTransactionsRepository = repository,
+                fileSaver = fileSaver,
+                ioDispatcher = testDispatcher
+            )
+            viewModel.state.test {
+                viewModel.onViewAndShareClicked()
+
+                skipItems(4)
+
+                val state = awaitItem()
+                assertTrue(state.hasNoTransactionsError)
+
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    
 
     private fun assertSnackBarState(
         isVisible: Boolean,
