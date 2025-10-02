@@ -1,7 +1,5 @@
 package net.thechance.mena.wallet.presentation.screen.export
 
-import androidx.compose.ui.input.key.Key.Companion.R
-import androidx.lifecycle.viewmodel.compose.viewModel
 import app.cash.turbine.test
 import dev.mokkery.MockMode
 import dev.mokkery.answering.returns
@@ -12,6 +10,7 @@ import dev.mokkery.mock
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
@@ -45,6 +44,7 @@ class ExportTransactionsViewModelTest {
     private val repository = mock<ExportTransactionsRepository>(mode = MockMode.autofill)
     private val fileSaver = mock<FileSaver>(mode = MockMode.autofill)
     private val testDispatcher = StandardTestDispatcher()
+    private lateinit var viewModel: ExportTransactionsViewModel
 
     @BeforeTest
     fun setup() {
@@ -58,12 +58,7 @@ class ExportTransactionsViewModelTest {
 
     @Test
     fun `should send NavigateBack effect when onBackClicked is called`() = runTest {
-        val viewModel =
-            ExportTransactionsViewModel(
-                exportTransactionsRepository = repository,
-                fileSaver = fileSaver,
-                ioDispatcher = testDispatcher
-            )
+        initViewModel()
         viewModel.onBackClicked()
 
         viewModel.uiEffect.test {
@@ -74,12 +69,7 @@ class ExportTransactionsViewModelTest {
 
     @Test
     fun `should update state when onAllTransactionsClicked is called`() = runTest {
-        val viewModel =
-            ExportTransactionsViewModel(
-                exportTransactionsRepository = repository,
-                fileSaver = fileSaver,
-                ioDispatcher = testDispatcher
-            )
+        initViewModel()
         viewModel.onCustomFilteringClicked()
 
         viewModel.state.test {
@@ -93,12 +83,7 @@ class ExportTransactionsViewModelTest {
 
     @Test
     fun `should update state when onCustomFilteringClicked is called`() = runTest {
-        val viewModel =
-            ExportTransactionsViewModel(
-                exportTransactionsRepository = repository,
-                fileSaver = fileSaver,
-                ioDispatcher = testDispatcher
-            )
+        initViewModel()
 
         viewModel.state.test {
             skipItems(1)
@@ -111,12 +96,7 @@ class ExportTransactionsViewModelTest {
 
     @Test
     fun `should toggle type in state when onTypeSelected is called`() = runTest {
-        val viewModel =
-            ExportTransactionsViewModel(
-                exportTransactionsRepository = repository,
-                fileSaver = fileSaver,
-                ioDispatcher = testDispatcher
-            )
+        initViewModel()
         val type = FilterType.SENT
 
         viewModel.state.test {
@@ -136,12 +116,7 @@ class ExportTransactionsViewModelTest {
     fun `onViewAndShareClicked with non-empty pdf should navigate`() = runTest {
         everySuspend { repository.getFilteredTransactionsFile(any()) } returns byteArrayOf(1, 2, 3)
 
-        val viewModel =
-            ExportTransactionsViewModel(
-                exportTransactionsRepository = repository,
-                fileSaver = fileSaver,
-                ioDispatcher = testDispatcher
-            )
+        initViewModel()
 
         viewModel.uiEffect.test {
             viewModel.onViewAndShareClicked()
@@ -154,12 +129,7 @@ class ExportTransactionsViewModelTest {
 
     @Test
     fun `should update startDate when onFromDateClicked is called`() = runTest {
-        val viewModel =
-            ExportTransactionsViewModel(
-                exportTransactionsRepository = repository,
-                fileSaver = fileSaver,
-                ioDispatcher = testDispatcher
-            )
+        initViewModel()
 
         viewModel.state.test {
             skipItems(1)
@@ -171,12 +141,7 @@ class ExportTransactionsViewModelTest {
 
     @Test
     fun `should update endDate when onToDateClicked is called`() = runTest {
-        val viewModel =
-            ExportTransactionsViewModel(
-                exportTransactionsRepository = repository,
-                fileSaver = fileSaver,
-                ioDispatcher = testDispatcher
-            )
+        initViewModel()
 
         viewModel.state.test {
             skipItems(1)
@@ -191,12 +156,7 @@ class ExportTransactionsViewModelTest {
     fun `onDownloadClicked with empty pdf should show toast`() = runTest {
         everySuspend { repository.getFilteredTransactionsFile(any()) } returns byteArrayOf()
 
-        val viewModel =
-            ExportTransactionsViewModel(
-                exportTransactionsRepository = repository,
-                fileSaver = fileSaver,
-                ioDispatcher = testDispatcher
-            )
+        initViewModel()
 
         viewModel.state.test {
             viewModel.onDownloadClicked()
@@ -214,12 +174,7 @@ class ExportTransactionsViewModelTest {
         everySuspend {
             repository.getFilteredTransactionsFile(any())
         } throws Exception("Unknown")
-        val viewModel =
-            ExportTransactionsViewModel(
-                exportTransactionsRepository = repository,
-                fileSaver = fileSaver,
-                ioDispatcher = testDispatcher
-            )
+        initViewModel()
 
         viewModel.state.test {
             viewModel.onViewAndShareClicked()
@@ -238,12 +193,7 @@ class ExportTransactionsViewModelTest {
     fun `onDownloadClicked with non-empty pdf should show success snackBar`() = runTest {
         everySuspend { repository.getFilteredTransactionsFile(any()) } returns byteArrayOf(1, 2, 3)
 
-        val viewModel =
-            ExportTransactionsViewModel(
-                exportTransactionsRepository = repository,
-                fileSaver = fileSaver,
-                ioDispatcher = testDispatcher
-            )
+        initViewModel()
 
         viewModel.state.test {
             viewModel.onDownloadClicked()
@@ -265,12 +215,7 @@ class ExportTransactionsViewModelTest {
                 repository.getFilteredTransactionsFile(any())
             } throws NoInternetException()
 
-            val viewModel =
-                ExportTransactionsViewModel(
-                    exportTransactionsRepository = repository,
-                    fileSaver = fileSaver,
-                    ioDispatcher = testDispatcher
-                )
+            initViewModel()
 
             viewModel.state.test {
                 viewModel.onDownloadClicked()
@@ -290,12 +235,7 @@ class ExportTransactionsViewModelTest {
             repository.getFilteredTransactionsFile(any())
         } throws Exception("Unknown")
 
-        val viewModel =
-            ExportTransactionsViewModel(
-                exportTransactionsRepository = repository,
-                fileSaver = fileSaver,
-                ioDispatcher = testDispatcher
-            )
+        initViewModel()
 
         viewModel.state.test {
             viewModel.onDownloadClicked()
@@ -322,12 +262,7 @@ class ExportTransactionsViewModelTest {
                 fileSaver.saveFile(any(), any(), any())
             } returns true
 
-            val viewModel =
-                ExportTransactionsViewModel(
-                    exportTransactionsRepository = repository,
-                    fileSaver = fileSaver,
-                    ioDispatcher = testDispatcher
-                )
+            initViewModel()
 
             viewModel.state.test {
                 viewModel.onDownloadClicked()
@@ -352,12 +287,7 @@ class ExportTransactionsViewModelTest {
                 fileSaver.saveFile(any(), any(), any())
             } returns false
 
-            val viewModel =
-                ExportTransactionsViewModel(
-                    exportTransactionsRepository = repository,
-                    fileSaver = fileSaver,
-                    ioDispatcher = testDispatcher
-                )
+            initViewModel()
 
             viewModel.state.test {
                 viewModel.onDownloadClicked()
@@ -382,12 +312,7 @@ class ExportTransactionsViewModelTest {
                 fileSaver.saveFile(any(), any(), any())
             } throws Exception("IO Error")
 
-            val viewModel =
-                ExportTransactionsViewModel(
-                    exportTransactionsRepository = repository,
-                    fileSaver = fileSaver,
-                    ioDispatcher = testDispatcher
-                )
+            initViewModel()
 
             viewModel.state.test {
                 viewModel.onDownloadClicked()
@@ -405,12 +330,7 @@ class ExportTransactionsViewModelTest {
     @Test
     fun `toast should disappear after duration`() = runTest {
 
-        val viewModel =
-            ExportTransactionsViewModel(
-                exportTransactionsRepository = repository,
-                fileSaver = fileSaver,
-                ioDispatcher = testDispatcher
-            )
+        initViewModel()
 
         viewModel.state.test {
             viewModel.onDownloadClicked()
@@ -436,12 +356,7 @@ class ExportTransactionsViewModelTest {
             fileSaver.saveFile(any(), any(), any())
         } returns true
 
-        val viewModel =
-            ExportTransactionsViewModel(
-                exportTransactionsRepository = repository,
-                fileSaver = fileSaver,
-                ioDispatcher = testDispatcher
-            )
+        initViewModel()
 
         viewModel.state.test {
             viewModel.onDownloadClicked()
@@ -464,8 +379,7 @@ class ExportTransactionsViewModelTest {
         runTest {
             everySuspend { repository.getFilteredTransactionsFile(any()) } throws NoInternetException()
 
-            val viewModel = ExportTransactionsViewModel(repository, fileSaver, testDispatcher)
-
+            initViewModel()
             viewModel.state.test {
                 viewModel.onViewAndShareClicked()
                 skipItems(3)
@@ -498,11 +412,7 @@ class ExportTransactionsViewModelTest {
     @Test
     fun whenDownloadThrowsNoDataFound_thenHasNoTransactionsErrorIsTrue_andToastShown() = runTest {
         everySuspend { repository.getFilteredTransactionsFile(any()) } throws NoDataFoundException()
-        val viewModel = ExportTransactionsViewModel(
-            exportTransactionsRepository = repository,
-            fileSaver = fileSaver,
-            ioDispatcher = testDispatcher
-        )
+        initViewModel()
 
         viewModel.state.test {
             viewModel.onViewAndShareClicked()
@@ -519,11 +429,7 @@ class ExportTransactionsViewModelTest {
         everySuspend {
             repository.getFilteredTransactionsFile(any())
         } throws RuntimeException("error")
-        val viewModel = ExportTransactionsViewModel(
-            exportTransactionsRepository = repository,
-            fileSaver = fileSaver,
-            ioDispatcher = testDispatcher
-        )
+        initViewModel()
 
         viewModel.state.test {
             viewModel.onDownloadClicked()
@@ -542,11 +448,7 @@ class ExportTransactionsViewModelTest {
         everySuspend {
             repository.getFilteredTransactionsFile(any())
         } throws RuntimeException("error")
-        val viewModel = ExportTransactionsViewModel(
-            exportTransactionsRepository = repository,
-            fileSaver = fileSaver,
-            ioDispatcher = testDispatcher
-        )
+        initViewModel()
 
         viewModel.state.test {
             viewModel.onViewAndShareClicked()
@@ -567,11 +469,7 @@ class ExportTransactionsViewModelTest {
                 repository.getFilteredTransactionsFile(any())
             } throws NoDataFoundException()
 
-            val viewModel = ExportTransactionsViewModel(
-                exportTransactionsRepository = repository,
-                fileSaver = fileSaver,
-                ioDispatcher = testDispatcher
-            )
+            initViewModel()
             viewModel.state.test {
                 viewModel.onViewAndShareClicked()
 
@@ -587,11 +485,7 @@ class ExportTransactionsViewModelTest {
     @Test
     fun whenCustomFilterSelectedWithNoTypesOrDates_thenButtonsDisabled() = runTest {
 
-        val viewModel = ExportTransactionsViewModel(
-            exportTransactionsRepository = repository,
-            fileSaver = fileSaver,
-            ioDispatcher = testDispatcher
-        )
+        initViewModel()
         viewModel.state.test {
             viewModel.onCustomFilteringClicked()
 
@@ -602,6 +496,15 @@ class ExportTransactionsViewModelTest {
             assertFalse(state.isViewAndShareButtonEnabled)
             cancelAndIgnoreRemainingEvents()
         }
+    }
+
+    private fun TestScope.initViewModel() {
+        viewModel = ExportTransactionsViewModel(
+            exportTransactionsRepository = repository,
+            fileSaver = fileSaver,
+            ioDispatcher = testDispatcher
+        )
+        advanceUntilIdle()
     }
 
     private fun assertSnackBarState(
