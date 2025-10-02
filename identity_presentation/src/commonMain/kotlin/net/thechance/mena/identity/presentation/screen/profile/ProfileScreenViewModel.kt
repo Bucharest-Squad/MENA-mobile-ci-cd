@@ -1,6 +1,6 @@
 package net.thechance.mena.identity.presentation.screen.profile
 
-import net.thechance.mena.identity.domain.model.User
+import net.thechance.mena.identity.domain.entity.User
 import net.thechance.mena.identity.domain.repository.UserRepository
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
 import net.thechance.mena.identity.presentation.base.ErrorState

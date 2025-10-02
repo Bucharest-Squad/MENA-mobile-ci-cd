@@ -16,6 +16,7 @@ import net.thechance.mena.identity.presentation.bottomSheet.countryPicker.menaCo
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -249,6 +250,11 @@ class LoginViewModelTest {
 
         }
 
+    @Test
+    fun `clearErrorMessage() should update error message to null`(){
+        viewModel.clearErrorMessage()
+        assertNull(viewModel.state.value.errorMessage)
+    }
 
     companion object {
         val selectedCountry: MenaCountry = MenaCountry.EGYPT
