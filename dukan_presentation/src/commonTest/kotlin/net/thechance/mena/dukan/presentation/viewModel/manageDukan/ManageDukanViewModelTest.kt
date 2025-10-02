@@ -59,6 +59,7 @@ class ManageDukanViewModelTest {
             items = emptyList(),
             currentPage = 1,
             totalPages = 1,
+            totalItems = 0
         )
 
         manageDukanViewModel = ManageDukanViewModel(
@@ -174,7 +175,7 @@ class ManageDukanViewModelTest {
     @Test
     fun `onProductClick SHOULD emit NavigateToProductDetails effect`() = runTest {
         // Given
-        val product = fakeProducts().first()
+        val product = fakeProducts().first().toUiState()
 
         // When
         manageDukanViewModel.onProductClick(product)
@@ -386,7 +387,7 @@ class ManageDukanViewModelTest {
 
             // Then
             val state = manageDukanViewModel.state.value
-            assertEquals(0, state.totalProducts)
+            assertEquals(0, state.products.totalItems)
         }
 
 
@@ -404,6 +405,7 @@ class ManageDukanViewModelTest {
             items = emptyList(),
             currentPage = 1,
             totalPages = 1,
+            totalItems = 0
         )
 
         // When

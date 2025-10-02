@@ -94,12 +94,14 @@ class BasePagingSourceTest {
         hasPrevious: Boolean = false,
         hasNext: Boolean = false,
         currentPage: Int = 1,
-        totalPages: Int = 1
+        totalPages: Int = 1,
+        totalItems: Long = 0
     ) = PagedResult(
         items = items,
         hasPrevious = hasPrevious,
         hasNext = hasNext,
         currentPage = currentPage,
-        totalPages = totalPages
+        totalPages = totalPages,
+        totalItems = totalItems
     )
 }

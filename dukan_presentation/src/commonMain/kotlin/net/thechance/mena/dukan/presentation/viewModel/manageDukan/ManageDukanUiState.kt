@@ -11,7 +11,6 @@ data class ManageDukanUiState(
     val shelves: List<ShelfUiState> = emptyList(),
     val selectedShelf: ShelfUiState? = null,
     val products: PagingData<ProductUiState> = PagingData(),
-    val totalProducts: Long = 0,
     val isLoading: Boolean = false,
     val isLoadingProducts: Boolean = false,
     val snackBarState: SnackBarUiState? = null,
