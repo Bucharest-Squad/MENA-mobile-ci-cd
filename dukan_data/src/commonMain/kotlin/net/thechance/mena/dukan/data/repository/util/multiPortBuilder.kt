@@ -3,7 +3,6 @@ package net.thechance.mena.dukan.data.repository.util
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
 
-// For single file (Dukan)
 fun buildSinglePartFormData(
     fileName: String,
     fileBytes: ByteArray,
@@ -23,7 +22,6 @@ fun buildSinglePartFormData(
     )
 }
 
-// For multiple files (Products)
 fun buildMultiPartFormData(
     fileNames: List<String>,
     fileBytes: List<ByteArray>,
