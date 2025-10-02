@@ -22,11 +22,11 @@ import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.format.DateTimeFormat
 import kotlinx.datetime.format.char
 import kotlinx.datetime.toLocalDateTime
+import net.thechance.mena.wallet.domain.exceptions.NoDataFoundException
 import net.thechance.mena.wallet.domain.exceptions.NoInternetException
 import net.thechance.mena.wallet.domain.repository.ExportTransactionsRepository
 import net.thechance.mena.wallet.presentation.base.CustomToastState
 import net.thechance.mena.wallet.presentation.base.SnackBarState
-import net.thechance.mena.wallet.presentation.model.FilterStatus
 import net.thechance.mena.wallet.presentation.model.FilterType
 import net.thechance.mena.wallet.presentation.screen.export.file_saver.FileSaver
 import kotlin.test.AfterTest
@@ -492,6 +492,27 @@ class ExportTransactionsViewModelTest {
         val result = "".toStartOfDayLocalDateTime(formatter)
         assertEquals(null, result)
     }
+
+    @Test
+    fun whenDownloadThrowsNoDataFound_thenHasNoTransactionsErrorIsTrue_andToastShown() = runTest {
+        everySuspend { repository.getFilteredTransactionsFile(any()) } throws NoDataFoundException()
+        val viewModel = ExportTransactionsViewModel(
+            exportTransactionsRepository = repository,
+            fileSaver = fileSaver,
+            ioDispatcher = testDispatcher
+        )
+
+        viewModel.state.test {
+            viewModel.onViewAndShareClicked()
+            skipItems(3)
+
+            val state = awaitItem()
+            assertTrue(state.hasNoTransactionsError)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    
 
     private fun assertSnackBarState(
         isVisible: Boolean,
