@@ -207,10 +207,10 @@ class TransactionHistoryViewModel(
         )
     }
 
-    private suspend fun onGetFirstTransactionDateError(throwable: Throwable) {
+    private suspend fun onGetFirstTransactionDateError(throwable: ErrorState) {
         updateState {
             it.copy(
-                filterState = it.filterState.copy(isError = throwable)
+                filterState = it.filterState.copy(errorState = throwable)
             )
         }
 
@@ -229,7 +229,7 @@ class TransactionHistoryViewModel(
                     defaultStartDate = currentStartDate,
                     isDateBottomSheetVisible = true,
                     datePickerMode = TransactionFilterState.DatePickerMode.START_DATE,
-                    isError = null
+                    errorState = null
                 )
             )
         }
