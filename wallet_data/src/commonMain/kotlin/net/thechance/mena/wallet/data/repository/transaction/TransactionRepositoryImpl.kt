@@ -39,12 +39,13 @@ class TransactionRepositoryImpl(
 
     override suspend fun getFirstTransactionDate(): LocalDate? {
         return safeApiCall<FirstTransactionDateDto> {
-            networkClient.get("$TRANSACTION_PATH/first-date")
+            networkClient.get(FIRST_TRANSACTION_DATE_PATH)
         }.firstTransactionDate
     }
 
     private companion object {
         const val TRANSACTION_PATH = "wallet/transactions"
+        const val FIRST_TRANSACTION_DATE_PATH = "$TRANSACTION_PATH/first-date"
     }
 
 }
