@@ -232,7 +232,7 @@ class ManageDukanViewModel(
 
     private fun onProductsLoaded(products: PagingData<ProductUiState>) {
         val productState = when {
-            products.isLoading -> ProductsState.LOADING
+            products.isLoading && products.items.isEmpty() -> ProductsState.LOADING
             products.items.isEmpty() -> ProductsState.EMPTY
             else -> ProductsState.LOADED
         }
