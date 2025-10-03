@@ -11,6 +11,7 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
@@ -23,6 +24,7 @@ class WebSocketManager(
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
     private var session: DefaultClientWebSocketSession? = null
     private var isActiveSession = false
+    private var shouldReconnect = true
 
     private val _incomingMessages = MutableSharedFlow<String>(extraBufferCapacity = 64)
     val incomingMessages: SharedFlow<String> = _incomingMessages
@@ -40,42 +42,50 @@ class WebSocketManager(
         if (isActiveSession) return
 
         scope.launch(exceptionHandler) {
-            client.webSocket(urlString = url, request = {
-                bearerAuth(token)
-            }) {
-                session = this
-                isActiveSession = true
+            while (shouldReconnect) {
+                try {
+                    client.webSocket(urlString = url, request = { bearerAuth(token) }) {
+                        session = this
+                        isActiveSession = true
+                        sendConnectFrame()
+                        println("WebSocket connected")
 
-                // Send CONNECT frame
-                sendConnectFrame()
-
-
-                // Listen for incoming frames
-                for (frame in incoming) {
-                    if (frame is Frame.Text) {
-                        val text = frame.readText()
-                        when {
-                            text.startsWith("CONNECTED") -> {
-                                onConnected()
-                            }
-
-                            text.startsWith("MESSAGE") -> {
-                                _incomingMessages.emit(text)
+                        // Listen for incoming frames
+                        for (frame in incoming) {
+                            if (frame is Frame.Text) {
+                                val text = frame.readText()
+                                when {
+                                    text.startsWith("CONNECTED") -> onConnected()
+                                    text.startsWith("MESSAGE") -> _incomingMessages.emit(text)
+                                }
                             }
                         }
-
                     }
+                } catch (e: Exception) {
+                    println("WebSocket reconnect error: ${e.message}")
+                    isActiveSession = false
+                    session = null
+                    delay(5000) // wait 5s before retry
                 }
-
-                isActiveSession = false
             }
         }
     }
 
     suspend fun disconnect() {
-        session?.close()
-        isActiveSession = false
-        session = null
+        try {
+            if (isActiveSession) {
+
+                session?.send(Frame.Text("DISCONNECT\n\n\u0000"))
+                println("STOMP DISCONNECT sent")
+            }
+            session?.close()
+            println("WebSocket closed by client")
+        } catch (e: Exception) {
+            println("Error while disconnecting: ${e.message}")
+        } finally {
+            isActiveSession = false
+            session = null
+        }
     }
 
     suspend fun sendFrame(raw: String) {
