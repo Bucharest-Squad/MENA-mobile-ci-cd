@@ -290,6 +290,7 @@ class CreateProductViewModel(
                     message = Res.string.error_general,
                     snackBarType = SnackBarType.ERROR
                 ),
+                images = images.map { it.copy(imageState = ProductImageState.SUCCESS) },
                 showSnackBar = true,
                 isAddButtonLoading = false,
                 isUploadingImageEnabled = true,
