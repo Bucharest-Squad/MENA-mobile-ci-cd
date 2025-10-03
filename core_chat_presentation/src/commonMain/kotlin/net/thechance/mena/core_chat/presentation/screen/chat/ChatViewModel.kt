@@ -12,6 +12,7 @@ import mena.core_chat_presentation.generated.resources.error
 import mena.core_chat_presentation.generated.resources.error_cant_get_messages
 import mena.core_chat_presentation.generated.resources.error_cant_subscribe_to_new_messages
 import net.thechance.mena.core_chat.domain.entity.Message
+import net.thechance.mena.core_chat.domain.entity.MessageStatus
 import net.thechance.mena.core_chat.domain.repository.ChatRepository
 import net.thechance.mena.core_chat.presentation.components.SnackBarData
 import net.thechance.mena.core_chat.presentation.navigation.ChatEffector
@@ -44,8 +45,8 @@ class ChatViewModel(
             )
         }
 
-        loadChatHistory(chatId)
         subscribeToNewMessages(chatId)
+        loadChatHistory(chatId)
         observeReadMessages()
     }
 
@@ -129,6 +130,7 @@ class ChatViewModel(
                 failedMessageToReSend = message
             )
         }
+        onResendMessageClicked()
     }
 
     override fun onDeleteFailedMessageClicked() {
@@ -146,27 +148,32 @@ class ChatViewModel(
         }
     }
 
-
     override fun onResendMessageClicked() {
         updateState { it.copy(isResendMessageDialogVisible = false) }
-        state.value.failedMessageToReSend?.let { message ->
-            updateStateWithNewMessage((message as TextMessageUiState).copy(status = MessageStatusUiState.SENDING))
-
-            tryToExecute(
-                execute = { chatRepository.sendMessage((message).toEntity(state.value.chat.requesterId)) },
-                onSuccess = { onResendMessageSuccess(message) },
-                onError = { onResendMessageError(message) },
+        val failedMessage = state.value.failedMessageToReSend
+        updateState { s ->
+            val messageIndex = s.uiMessages.indexOfFirst { it.id == failedMessage?.id }
+            s.copy(
+                uiMessages = s.uiMessages.toMutableList().apply {
+                    this[messageIndex] = (this[messageIndex] as TextMessageUiState).copy(
+                        status = MessageStatusUiState.SENDING
+                    )
+                },
+                failedMessageToReSend = null,
             )
         }
-    }
-
-    fun onResendMessageSuccess(message: MessageUiState) {
-        updateStateWithNewMessage((message as TextMessageUiState).copy(status = MessageStatusUiState.SENT))
-    }
-
-    fun onResendMessageError(message: MessageUiState) {
-        updateStateWithNewMessage((message as TextMessageUiState).copy(status = MessageStatusUiState.FAILED))
-
+        failedMessage?.let { message ->
+            tryToExecute(
+                execute = {
+                    chatRepository.sendMessage(
+                        (message as TextMessageUiState)
+                            .toEntity(state.value.chat.requesterId)
+                    )
+                },
+                onSuccess = { onSendMessageSuccess(message) },
+                onError = { onSendMessageError(message) },
+            )
+        }
     }
 
     override fun onResendMessageDialogDismissed() {
@@ -193,6 +200,20 @@ class ChatViewModel(
             s.copy(
                 uiMessages = uiMessages,
                 chatListItems = buildListItems(uiMessages)
+            )
+        }
+
+        val loadingMessages = messages.filter { it.status == MessageStatus.LOADING }
+        handleLoadingMessages(loadingMessages)
+    }
+
+    private fun handleLoadingMessages(messages: List<Message>) {
+        val loadingMessages = messages.filter { it.status == MessageStatus.LOADING }
+        loadingMessages.forEach { message ->
+            tryToExecute(
+                execute = { chatRepository.sendMessage(message) },
+                onSuccess = { onSendMessageSuccess(message.toUi(state.value.chat.requesterId)) },
+                onError = { onSendMessageError(message.toUi(state.value.chat.requesterId)) },
             )
         }
     }
@@ -239,7 +260,7 @@ class ChatViewModel(
     private fun onObserveReadMessagesSuccess(readerId: String?) {
         readerId?.let { readerId ->
             updateState {
-                val updatedMessages = it.uiMessages.toMutableList().map {  message ->
+                val updatedMessages = it.uiMessages.toMutableList().map { message ->
                     if (message.senderId != Uuid.parse(readerId)) {
                         (message as TextMessageUiState).copy(status = MessageStatusUiState.READ)
                     } else {
