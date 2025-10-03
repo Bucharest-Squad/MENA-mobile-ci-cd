@@ -17,8 +17,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.faith.presentation.base.FaithScaffold
 import net.thechance.mena.faith.presentation.base.ObserveAsEffect
 import net.thechance.mena.faith.presentation.base.SnackBarState
 import net.thechance.mena.faith.presentation.component.FaithSnackBar
@@ -27,7 +27,6 @@ import net.thechance.mena.faith.presentation.feature.quran.surah.component.Basma
 import net.thechance.mena.faith.presentation.feature.quran.surah.component.SurahAppBar
 import net.thechance.mena.faith.presentation.feature.quran.surah.component.UnifiedChunkText
 import net.thechance.mena.faith.presentation.navigation.LocalNavController
-import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -63,23 +62,21 @@ private fun Content(
     snackBarState: SnackBarState,
     modifier: Modifier = Modifier
 ) {
-    FaithScaffold(
+    Scaffold(
         topBar = {
             SurahAppBar(
                 surahName = state.surahName,
                 onBackClick = listener::onBackClick
             )
         },
-        snackBar = {
+        snakeBar = {
             FaithSnackBar(
-                message = stringResource(snackBarState.message),
+                message = snackBarState.message,
                 status = snackBarState.status,
                 isVisible = snackBarState.isVisible,
                 modifier = modifier.fillMaxWidth()
             )
-        },
-        backgroundColor = Theme.colorScheme.background.surface
-
+        }
     ) {
         Box(
             modifier = modifier
@@ -102,7 +99,6 @@ private fun Content(
         }
     }
 }
-
 
 @Composable
 private fun AyatOfSurah(
