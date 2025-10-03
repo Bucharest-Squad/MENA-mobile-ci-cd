@@ -7,7 +7,8 @@ import kotlinx.coroutines.delay
 import net.thechance.mena.wallet.domain.entity.Transaction
 import net.thechance.mena.wallet.domain.repository.TransactionRepository
 import net.thechance.mena.wallet.presentation.base.BaseViewModel
-import net.thechance.mena.wallet.presentation.base.SnackBarState
+import net.thechance.mena.wallet.presentation.base.ErrorState
+import net.thechance.mena.wallet.presentation.model.SnackBarState
 import org.jetbrains.compose.resources.StringResource
 import org.koin.android.annotation.KoinViewModel
 import org.koin.core.annotation.Provided
@@ -21,8 +22,7 @@ class TransactionDetailsViewModel(
     @Provided val transactionRepository: TransactionRepository,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : BaseViewModel<TransactionDetailsScreenState, TransactionDetailsEffect>(
-    TransactionDetailsScreenState()
-), TransactionDetailsInteractionListener {
+    TransactionDetailsScreenState()), TransactionDetailsInteractionListener {
 
     init {
         getTransactionDetails()
@@ -44,15 +44,12 @@ class TransactionDetailsViewModel(
 
     private fun onGetTransactionDetailsSuccess(transaction: Transaction) {
         updateState {
-            it.copy(
-                isLoading = false,
-                transactionDetailsUiState =transaction.toUi()
-            )
+            it.copy(isLoading = false, transactionDetailsUiState = transaction.toUi())
         }
     }
 
-    private fun onGetTransactionDetailsError(throwable: Throwable) {
-        updateState { it.copy(isLoading = false, isError = throwable) }
+    private fun onGetTransactionDetailsError(errorState: ErrorState) {
+        updateState { it.copy(isLoading = false, errorState = errorState) }
     }
 
     private fun onGetTransactionDetailsStart() {
@@ -80,7 +77,7 @@ class TransactionDetailsViewModel(
     }
 
     override fun onRefresh() {
-        updateState { it.copy(isLoading = true, isError = null) }
+        updateState { it.copy(isLoading = true, errorState = null) }
         getTransactionDetails()
     }
 

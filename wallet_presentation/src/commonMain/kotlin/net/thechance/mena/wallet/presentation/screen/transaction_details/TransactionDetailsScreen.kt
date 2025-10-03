@@ -21,7 +21,7 @@ import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.wallet.presentation.component.NoInternetScreen
+import net.thechance.mena.wallet.presentation.component.ErrorView
 import net.thechance.mena.wallet.presentation.component.SnackBarContainer
 import net.thechance.mena.wallet.presentation.component.WalletScaffold
 import net.thechance.mena.wallet.presentation.screen.transaction_details.TransactionDetailsScreenState.TransactionDetailsUiState
@@ -99,20 +99,22 @@ private fun TransactionDetailsScreenContent(
             )
         },
         snackBar = { SnackBarContainer(snackBarState = state.snackBar) },
+        errorState = state.errorState,
+        onRetry = { interactionListener.onRefresh() }
     ) {
         Crossfade(
             targetState = state,
             modifier = Modifier.fillMaxSize()
         ) {
             when {
-                (state.isError != null) -> {
-                    NoInternetScreen(onRetry = interactionListener::onRefresh)
-                }
                 state.isLoading -> {
-                    Box(modifier = Modifier.fillMaxSize()){
+                    Box(modifier = Modifier.fillMaxSize()) {
                         ThreeDotsLoadingIndicator(modifier = Modifier.align(Alignment.Center))
                     }
                 }
+
+                state.errorState != null -> ErrorView(onRetry = { interactionListener.onRefresh() })
+
                 else -> {
                     TransactionDetailsSuccessContent(
                         state = state,
@@ -159,9 +161,7 @@ private suspend fun onTransactionDetailsEffect(
     onCaptureError: () -> Unit
 ) {
     when (effect) {
-        TransactionDetailsEffect.NavigateBack -> {
-            onNavigateBackClicked()
-        }
+        TransactionDetailsEffect.NavigateBack -> onNavigateBackClicked()
 
         is TransactionDetailsEffect.ShareImage -> {
             shareImage(effect.imageBytes, effect.fileName, effect.mimeType)
