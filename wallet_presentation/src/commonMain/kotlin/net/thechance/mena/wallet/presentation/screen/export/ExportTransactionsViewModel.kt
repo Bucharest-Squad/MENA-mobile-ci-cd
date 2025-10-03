@@ -24,8 +24,6 @@ import mena.wallet_presentation.generated.resources.failed_to_load_date_picker
 import mena.wallet_presentation.generated.resources.no_internet_title
 import mena.wallet_presentation.generated.resources.something_went_wrong
 import mena.wallet_presentation.generated.resources.start_date_must_be_before_end_date
-import net.thechance.mena.wallet.domain.exceptions.NoDataFoundException
-import net.thechance.mena.wallet.domain.exceptions.NoInternetException
 import net.thechance.mena.wallet.domain.model.TransactionFilterParams
 import net.thechance.mena.wallet.domain.repository.StatementRepository
 import net.thechance.mena.wallet.domain.repository.TransactionRepository
@@ -222,7 +220,7 @@ class ExportTransactionsViewModel(
         )
     }
 
-    private suspend fun onGetFirstTransactionDateError(throwable: Throwable) {
+    private suspend fun onGetFirstTransactionDateError(throwable: ErrorState) {
         handleError(
             error = throwable,
             titleRes = Res.string.error,
