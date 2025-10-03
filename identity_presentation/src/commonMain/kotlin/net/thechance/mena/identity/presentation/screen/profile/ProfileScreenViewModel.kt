@@ -52,7 +52,7 @@ class ProfileScreenViewModel(
         updateState {
             copy(
                 userName = user.username,
-                fullName = user.firstName + "" + user.lastName,
+                fullName = user.firstName + " " + user.lastName,
                 profileImageUrl = user.profileImageUrl,
                 isSuccess = true
             )
