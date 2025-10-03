@@ -1,6 +1,7 @@
 package net.thechance.mena.dukan.data.repository
 
 import io.ktor.client.HttpClient
+import io.ktor.client.request.accept
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
@@ -51,9 +52,17 @@ class DukanProductRepositoryImpl(
         fileBytes: List<ByteArray>,
         productId: String
     ): List<String> {
+        require(fileName.size == fileBytes.size) {
+            "fileNames and fileBytes must have the same size."
+        }
+
+        val parts: List<Pair<String, ByteArray>> = fileName.zip(fileBytes)
+
         return safeApiCall {
-            client.post("${BASE_URL}/images/$productId") {
-                setBody(buildMultiPartFormData(fileName, fileBytes,"files"))
+            client.post("$BASE_URL/images/$productId") {
+                // Don't set Content-Type manually; Ktor handles multipart + boundary.
+                accept(io.ktor.http.ContentType.Application.Json)
+                setBody(buildMultiPartFormData(parts, fieldName = "files"))
             }
         }
     }
