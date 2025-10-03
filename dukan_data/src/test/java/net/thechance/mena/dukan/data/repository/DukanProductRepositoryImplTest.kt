@@ -52,7 +52,7 @@ class DukanProductRepositoryImplTest {
     @Test
     fun `uploadProductImages returns uploaded image URLs`() = runTest {
         val urls = repository.uploadProductImages(
-            fileName = listOf(),
+            fileName = listOf(""),
             fileBytes = listOf(ByteArray(0)),
             productId = createdProductResponseId
         )
