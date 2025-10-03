@@ -68,6 +68,7 @@ class ChatViewModel(
         val uiMessage = TextMessageUiState(
             chatId = chatId,
             sendTime = now,
+            senderId = state.value.chat.requesterId,
             status = MessageStatusUiState.SENDING,
             isMine = true,
             text = text
@@ -83,7 +84,7 @@ class ChatViewModel(
         }
 
         tryToExecute(
-            execute = { chatRepository.sendMessage(uiMessage.toEntity(state.value.chat.requesterId)) },
+            execute = { chatRepository.sendMessage(uiMessage.toEntity()) },
             onSuccess = { onSendMessageSuccess(uiMessage) },
             onError = { onSendMessageError(uiMessage) },
         )
@@ -167,7 +168,7 @@ class ChatViewModel(
                 execute = {
                     chatRepository.sendMessage(
                         (message as TextMessageUiState)
-                            .toEntity(state.value.chat.requesterId)
+                            .toEntity()
                     )
                 },
                 onSuccess = { onSendMessageSuccess(message) },
