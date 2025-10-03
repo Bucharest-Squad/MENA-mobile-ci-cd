@@ -266,7 +266,7 @@ private fun SimpleBottomSheetPreview() {
             overlays = {
                 bottomSheet(isVisible = visible) { isVisible ->
                     BottomSheet(
-
+                        isVisible = isVisible,
                         onDismissRequest = { visible = false },
                         stickyFooterContent = {
                             PrimaryButton(
