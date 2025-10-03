@@ -1,5 +1,8 @@
 package net.thechance.mena.identity.presentation.screen.profile
 
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import net.thechance.mena.identity.domain.entity.User
 import net.thechance.mena.identity.domain.repository.UserRepository
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
@@ -8,7 +11,8 @@ import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
 
 class ProfileScreenViewModel(
     private val userRepository: UserRepository,
-    val appVersion: String
+    val appVersion: String,
+    val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) :
     BaseScreenModel<ProfileScreenUIState, ProfileScreenUIEffect>
         (ProfileScreenUIState()),
@@ -30,7 +34,7 @@ class ProfileScreenViewModel(
         updateState {
             copy(
                 isLoading = false,
-                errorMessage = mapErrorToMessage(errorState)
+                errorMessage = "User Information Not Found"
             )
         }
     }
@@ -40,6 +44,7 @@ class ProfileScreenViewModel(
             function = { userRepository.getUser() },
             onNewValue = ::updateUserInfo,
             onError = ::onErrorOccurred,
+            dispatcher =dispatcher
         )
     }
 

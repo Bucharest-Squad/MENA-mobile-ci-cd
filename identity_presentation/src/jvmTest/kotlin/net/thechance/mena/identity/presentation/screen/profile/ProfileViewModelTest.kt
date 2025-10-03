@@ -24,6 +24,7 @@ import kotlin.test.assertTrue
 class ProfileViewModelTest {
 
     private val testDispatcher = StandardTestDispatcher()
+
     private val userRepository: UserRepository = mockk()
     private lateinit var viewModel: ProfileScreenViewModel
 
@@ -31,7 +32,11 @@ class ProfileViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
         coEvery { userRepository.getUser() } returns flowOf(fakeUser)
-        viewModel = ProfileScreenViewModel(userRepository,"")
+        viewModel = ProfileScreenViewModel(
+            userRepository,
+            "",
+            testDispatcher
+        )
     }
 
     @AfterTest
@@ -42,11 +47,26 @@ class ProfileViewModelTest {
     @Test
     fun `getUserInfo() updates state on success`() = runTest {
 
+        viewModel = ProfileScreenViewModel(userRepository,"",testDispatcher)
+        testDispatcher.scheduler.advanceUntilIdle()
+        
         assertEquals(fakeUser.firstName + fakeUser.lastName, viewModel.state.value.fullName)
         assertEquals(fakeUser.username, viewModel.state.value.userName)
         assertEquals(fakeUser.profileImageUrl, viewModel.state.value.profileImageUrl)
         assertTrue { viewModel.state.value.isSuccess  }
     }
+
+    @Test
+    fun `should update state with error when repository throws`() = runTest {
+
+        coEvery { userRepository.getUser() } throws Exception()
+
+        viewModel = ProfileScreenViewModel(userRepository,"",testDispatcher)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertEquals("User Information Not Found" , viewModel.state.value.errorMessage)
+    }
+
 
     @Test
     fun `should emit NavigateEditProfileScreen effect when onEditProfileInfoClicked`() = runTest {
@@ -178,6 +198,7 @@ class ProfileViewModelTest {
         viewModel.clearErrorMessage()
         assertNull(viewModel.state.value.errorMessage)
     }
+
     private val fakeUser = User(
         firstName = "The ",
         lastName = "Chance",

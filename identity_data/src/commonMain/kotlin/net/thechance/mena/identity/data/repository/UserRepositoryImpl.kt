@@ -41,7 +41,10 @@ class UserRepositoryImpl(
                 }
             }
         }
-        return userDao.getUser().flowOn(Dispatchers.IO).map { userEntity -> userEntity.toDomain() }
+        return userDao.getUser()
+            .map { userEntity -> userEntity?.toDomain() ?: throw Exception("User Not Found") }
+            .flowOn(Dispatchers.IO)
+
     }
 
 
