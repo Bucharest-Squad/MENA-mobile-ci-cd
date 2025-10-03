@@ -1,7 +1,6 @@
 package net.thechance.mena.identity.data.dataSource.local.database.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
@@ -12,12 +11,6 @@ interface UserDao {
     @Upsert
     suspend fun upsert(item: UserEntity)
 
-    @Delete
-    suspend fun delete(item: UserEntity)
-
-    @Query("SELECT count(*) FROM User")
-    suspend fun count(): Int
-
     @Query("SELECT * FROM User")
-    fun getAllAsFlow(): Flow<List<UserEntity>>
+    fun getUser(): Flow<UserEntity>
 }
