@@ -23,7 +23,8 @@ data class DeleteShelfConfirmationDialogUiState(
     val title: StringResource,
     val description: StringResource,
     val type: ConfirmDialogType,
-    val shelfId: String
+    val shelfId: String,
+    val isDialogVisible: Boolean = false
 )
 
 enum class ConfirmDialogType(val text: StringResource) {

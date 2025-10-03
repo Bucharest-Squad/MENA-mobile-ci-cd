@@ -124,6 +124,9 @@ class ManageDukanViewModel(
         val selectedShelf = state.value.selectedShelf
         selectedShelf?.let { shelf ->
             loadProductsFromRepository()
+            viewModelScope.launch {
+                pager.refresh()
+            }
         }
     }
 
@@ -138,8 +141,12 @@ class ManageDukanViewModel(
     }
 
     override fun onDismissDeleteShelfConfirmationDialog() {
+        val dialogState = state.value.deleteShelfConfirmationDialogUiState
         updateState {
-            copy(showDeleteConfirmationDialog = false)
+            copy(
+                showDeleteConfirmationDialog = false,
+                deleteShelfConfirmationDialogUiState = dialogState?.copy(isDialogVisible = false)
+            )
         }
     }
 
@@ -153,10 +160,12 @@ class ManageDukanViewModel(
                     title = updateDialogTitle(hasProducts),
                     description = updateDialogDescription(hasProducts),
                     type = updateDialogType(hasProducts),
-                    shelfId = shelfId
+                    shelfId = shelfId,
+                    isDialogVisible = true
                 ),
-                showDeleteConfirmationDialog = true
-            )
+                showDeleteConfirmationDialog = true,
+
+                )
         }
     }
 
@@ -175,12 +184,12 @@ class ManageDukanViewModel(
     override fun onDeleteConfirmed(shelfId: String) {
         tryToExecute(
             block = { shelfRepository.deleteShelf(shelfId) },
-            onSuccess = { onDeleteShelfSuccess() },
+            onSuccess = ::onDeleteShelfSuccess,
             onError = ::onDeleteShelfError
         )
     }
 
-    private fun onDeleteShelfSuccess() {
+    private fun onDeleteShelfSuccess(unit: Unit) {
         onDismissDeleteShelfConfirmationDialog()
         onShowSnackBar(type = SnackBarType.SUCCESS, message = Res.string.delete_shelf_success)
     }
