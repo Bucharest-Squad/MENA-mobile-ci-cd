@@ -4,7 +4,6 @@ import net.thechance.mena.faith.data.database.SurahDto
 import net.thechance.mena.faith.data.mapper.toSurah
 import net.thechance.mena.faith.domain.entity.Surah
 import kotlin.test.Test
-
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
