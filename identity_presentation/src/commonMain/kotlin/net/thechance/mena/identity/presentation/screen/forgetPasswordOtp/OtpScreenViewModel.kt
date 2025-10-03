@@ -45,6 +45,7 @@ class OtpScreenViewModel(
 
     private fun verifySuccess() {
         sendNewEffect(OtpScreenUIEffect.NavigateToResetPassword)
+        updateState { copy(otpValue = "") }
     }
 
     override fun onChangeOtp(otp: String) {
