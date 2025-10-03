@@ -123,6 +123,9 @@ class ManageDukanViewModel(
     private fun loadProductsForSelectedShelf() {
         val selectedShelf = state.value.selectedShelf
         selectedShelf?.let { shelf ->
+            viewModelScope.launch {
+                pager.refresh()
+            }
             loadProductsFromRepository()
         }
     }

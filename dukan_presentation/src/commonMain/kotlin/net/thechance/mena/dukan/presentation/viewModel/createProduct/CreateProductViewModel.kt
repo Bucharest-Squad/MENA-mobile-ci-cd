@@ -277,7 +277,7 @@ class CreateProductViewModel(
                 images = images.map { it.copy(imageState = ProductImageState.SUCCESS) },
             )
         }
-        emitEffect(effect = CreateProductEffect.NavigateToMyDukan)
+        emitEffect(effect = CreateProductEffect.NavigateToManagementProductMyDukan)
     }
 
     private fun onAddProductError(throwable: Throwable) {

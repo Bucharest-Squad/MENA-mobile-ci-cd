@@ -20,12 +20,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.navOptions
 import mena.dukan_presentation.generated.resources.Res
 import mena.dukan_presentation.generated.resources.add
-import mena.dukan_presentation.generated.resources.add_product_success
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.dukan.presentation.component.SnackBar
-import net.thechance.mena.dukan.presentation.component.SnackBarType
 import net.thechance.mena.dukan.presentation.navigation.DukanRoute
 import net.thechance.mena.dukan.presentation.navigation.LocalNavController
 import net.thechance.mena.dukan.presentation.screen.createProduct.component.ProductImageCropScreen
@@ -53,9 +51,14 @@ fun CreateProductScreen(viewModel: CreateProductViewModel = koinViewModel()) {
     ObserveAsEffect(effects = viewModel.effect) { effect ->
         when (effect) {
             CreateProductEffect.NavigateBack -> navController.navigateUp()
-            CreateProductEffect.NavigateToMyDukan -> {
-                val navOptions = navOptions { popUpTo(DukanRoute.MyDukanScreenRoute) }
-                navController.navigate(route = DukanRoute.MyDukanScreenRoute, navOptions = navOptions)
+            CreateProductEffect.NavigateToManagementProductMyDukan -> {
+                val navOptions = navOptions {
+                    popUpTo(DukanRoute.ManageDukanScreenRoute) { inclusive = true }
+                }
+                navController.navigate(
+                    route = DukanRoute.ManageDukanScreenRoute,
+                    navOptions = navOptions
+                )
             }
         }
     }
@@ -99,7 +102,7 @@ private fun CreateProductContent(
             .fillMaxSize()
             .background(color = Theme.colorScheme.background.surface)
             .statusBarsPadding()
-    ){
+    ) {
         LazyColumn {
             topAppBar(onBackClick = interactionListener::onBackButton)
 
