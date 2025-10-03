@@ -75,7 +75,7 @@ class WebSocketManager(
         try {
             if (isActiveSession) {
 
-                session?.send(Frame.Text("DISCONNECT\n\n\u0000"))
+                sendFrame("DISCONNECT\n\n\u0000")
                 println("STOMP DISCONNECT sent")
             }
             session?.close()
