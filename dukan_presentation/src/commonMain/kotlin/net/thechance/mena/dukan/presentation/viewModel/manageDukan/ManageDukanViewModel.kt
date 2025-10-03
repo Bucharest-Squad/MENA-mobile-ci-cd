@@ -49,6 +49,7 @@ class ManageDukanViewModel(
                 )
             )
         }
+        loadShelves()
     }
 
     override fun onDismissSnackBar() {
@@ -227,14 +228,15 @@ class ManageDukanViewModel(
     }
 
     private fun onProductsLoaded(products: PagingData<ProductUiState>) {
-        val productState = if (products.items.isEmpty())
-            ProductsState.EMPTY
-        else
-            ProductsState.LOADED
+        val productState = when {
+            products.isLoading -> ProductsState.LOADING
+            products.items.isEmpty() -> ProductsState.EMPTY
+            else -> ProductsState.LOADED
+        }
         updateState {
             copy(
                 productState = productState,
-                products = products,
+                products = products
             )
         }
     }

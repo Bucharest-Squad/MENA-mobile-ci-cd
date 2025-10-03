@@ -37,7 +37,6 @@ import net.thechance.mena.dukan.presentation.viewModel.manageDukan.DeleteShelfCo
 import net.thechance.mena.dukan.presentation.viewModel.manageDukan.ManageDukanInteractionListener
 import net.thechance.mena.dukan.presentation.viewModel.manageDukan.ManageDukanUiState
 import net.thechance.mena.dukan.presentation.viewModel.manageDukan.ProductUiState
-import net.thechance.mena.dukan.presentation.viewModel.manageDukan.ShelvesState
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -59,29 +58,19 @@ fun ManageDukanContent(
             modifier = Modifier.fillMaxSize()
         ) {
             Column {
-                AnimatedContent(state.shelvesState) {
-                    when (it) {
-                        ShelvesState.LOADING -> {}
-                        ShelvesState.LOADED ->
-                            ManageDukanHeader(
-                                state = state,
-                                listener = listener
-                            )
-
-                        ShelvesState.EMPTY -> {}
-                    }
-                }
+                ManageDukanHeader(
+                    state = state,
+                    listener = listener
+                )
 
                 if (state.shelves.isEmpty() || state.products.items.isEmpty()) {
                     Spacer(modifier = Modifier.weight(1f))
                 }
-
                 ManageDukanProducts(
                     state = state,
                     onProductClick = listener::onProductClick,
                     pager = pager
                 )
-
                 Spacer(modifier = Modifier.weight(1f))
             }
             FabButton(
