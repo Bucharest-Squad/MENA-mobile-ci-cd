@@ -102,7 +102,10 @@ class TransactionHistoryViewModel(
 
     override fun onApplyFilterClicked() {
         val filters = state.value.filterState
-        if (!handleDateFilters(filters.startDate, filters.endDate)) return
+        if (areDatesValid().not()) {
+            showInvalidDatesSnackBar()
+            return
+        }
         tryToExecute(
             callee = {
                 transactionRepository.getTransactionHistory(
@@ -121,19 +124,12 @@ class TransactionHistoryViewModel(
         )
     }
 
-    private fun handleDateFilters(startDate: LocalDate?, endDate: LocalDate?): Boolean {
-        if (startDate != null && endDate != null && startDate > endDate) {
-            viewModelScope.launch {
-                showSnackBar(
-                    titleRes = Res.string.error,
-                    messageRes = Res.string.start_date_must_be_before_end_date,
-                    isSuccess = false
-                )
-            }
-            return false
-        }
-        return true
+    private fun areDatesValid(): Boolean {
+        val startDate = currentState.filterState.startDate
+        val endDate = currentState.filterState.endDate
+        return (startDate != null && endDate != null && startDate > endDate).not()
     }
+
 
     override fun onStartDateClicked() {
         val currentStartDate = state.value.filterState.startDate
@@ -141,6 +137,74 @@ class TransactionHistoryViewModel(
             handleExistingStartDate(currentStartDate)
         } else {
             fetchFirstTransactionDate()
+        }
+    }
+
+
+
+    @OptIn(ExperimentalTime::class)
+    override fun onEndDateClicked() {
+        val currentEndDate = state.value.filterState.endDate
+        updateState {
+            it.copy(
+                filterState = it.filterState.copy(
+                    isDateBottomSheetVisible = true,
+                    datePickerMode = TransactionFilterState.DatePickerMode.END_DATE,
+                    defaultEndDate = currentEndDate ?: Clock.System.now()
+                        .toLocalDateTime(TimeZone.currentSystemDefault()).date
+                )
+            )
+        }
+    }
+
+    override fun onDismissDatePicker() {
+        updateState {
+            it.copy(
+                filterState = it.filterState.copy(
+                    isDateBottomSheetVisible = false
+                )
+            )
+        }
+    }
+
+    override fun onPickDateClicked(date: LocalDate) {
+        when (state.value.filterState.datePickerMode) {
+            TransactionFilterState.DatePickerMode.START_DATE -> updateStartDate(date)
+            TransactionFilterState.DatePickerMode.END_DATE -> updateEndDate(date)
+        }
+        onDismissDatePicker()
+    }
+
+    override fun selectFilterType(type: FilterType) {
+        updateState {
+            val currentTypes = it.filterState.selectedTypes.toMutableSet()
+            if (currentTypes.contains(type)) {
+                currentTypes.remove(type)
+            } else {
+                currentTypes.add(type)
+            }
+            it.copy(
+                filterState = it.filterState.copy(
+                    selectedTypes = currentTypes
+                )
+            )
+        }
+    }
+
+    override fun selectFilterStatus(status: FilterStatus) {
+        updateState {
+            it.copy(
+                filterState = it.filterState.copy(
+                    selectedStatus = status
+                )
+            )
+        }
+    }
+
+
+    override fun onDismissFilter() {
+        updateState {
+            it.copy(isFilterVisible = false)
         }
     }
 
@@ -191,39 +255,6 @@ class TransactionHistoryViewModel(
                 )
             )
         }
-    }
-
-    @OptIn(ExperimentalTime::class)
-    override fun onEndDateClicked() {
-        val currentEndDate = state.value.filterState.endDate
-        updateState {
-            it.copy(
-                filterState = it.filterState.copy(
-                    isDateBottomSheetVisible = true,
-                    datePickerMode = TransactionFilterState.DatePickerMode.END_DATE,
-                    defaultEndDate = currentEndDate ?: Clock.System.now()
-                        .toLocalDateTime(TimeZone.currentSystemDefault()).date
-                )
-            )
-        }
-    }
-
-    override fun onDismissDatePicker() {
-        updateState {
-            it.copy(
-                filterState = it.filterState.copy(
-                    isDateBottomSheetVisible = false
-                )
-            )
-        }
-    }
-
-    override fun onPickDateClicked(date: LocalDate) {
-        when (state.value.filterState.datePickerMode) {
-            TransactionFilterState.DatePickerMode.START_DATE -> updateStartDate(date)
-            TransactionFilterState.DatePickerMode.END_DATE -> updateEndDate(date)
-        }
-        onDismissDatePicker()
     }
 
     private fun updateStartDate(date: LocalDate) {
@@ -295,6 +326,17 @@ class TransactionHistoryViewModel(
         )
     }
 
+
+    private fun showInvalidDatesSnackBar() {
+        viewModelScope.launch {
+            showSnackBar(
+                titleRes = Res.string.error,
+                messageRes = Res.string.start_date_must_be_before_end_date,
+                isSuccess = false
+            )
+        }
+    }
+
     private suspend fun showSnackBar(
         titleRes: StringResource,
         messageRes: StringResource,
@@ -325,38 +367,5 @@ class TransactionHistoryViewModel(
         }
     }
 
-    override fun selectFilterType(type: FilterType) {
-        updateState {
-            val currentTypes = it.filterState.selectedTypes.toMutableSet()
-            if (currentTypes.contains(type)) {
-                currentTypes.remove(type)
-            } else {
-                currentTypes.add(type)
-            }
-            it.copy(
-                filterState = it.filterState.copy(
-                    selectedTypes = currentTypes
-                )
-            )
-        }
-    }
 
-    override fun selectFilterStatus(status: FilterStatus) {
-        updateState {
-            it.copy(
-                filterState = it.filterState.copy(
-                    selectedStatus = status
-                )
-            )
-        }
-    }
-
-
-    override fun onDismissFilter() {
-        updateState {
-            it.copy(
-                isFilterVisible = false
-            )
-        }
-    }
 }

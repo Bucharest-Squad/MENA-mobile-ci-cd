@@ -107,6 +107,108 @@ class ExportTransactionsViewModel(
         }
     }
 
+    @OptIn(ExperimentalTime::class)
+    override fun onEndDateClicked() {
+        val currentEndDate = state.value.endDate
+        updateState {
+            it.copy(
+                isDateBottomSheetVisible = true,
+                datePickerMode = ExportTransactionsState.DatePickerMode.END_DATE,
+                defaultEndDate = currentEndDate ?: Clock.System.now()
+                    .toLocalDateTime(TimeZone.currentSystemDefault()).date
+            )
+        }
+    }
+
+    override fun onDismissDatePicker() {
+        updateState {
+            it.copy(
+                isDateBottomSheetVisible = false
+            )
+        }
+    }
+
+    override fun onPickDateClicked(date: LocalDate) {
+        val updatedState = when (state.value.datePickerMode) {
+            ExportTransactionsState.DatePickerMode.START_DATE -> updateStartDate(date)
+            ExportTransactionsState.DatePickerMode.END_DATE -> updateEndDate(date)
+        }
+
+        applyStateWithUpdatedButtons(updatedState)
+        onDismissDatePicker()
+    }
+
+
+    override fun onViewAndShareClicked() {
+        if (areDatesValid().not()) {
+            showInvalidDatesSnackBar()
+            return
+        }
+        tryToExecute(
+            onStart = ::onViewAndShareStart,
+            callee = ::generateTransactionsFile,
+            onSuccess = { pdfBytes -> onViewAndShareSuccess(pdfBytes) },
+            onError = { error -> onViewAndShareError(error) },
+            dispatcher = ioDispatcher
+        )
+    }
+
+    @OptIn(ExperimentalTime::class)
+    override fun onDownloadClicked() {
+        if (areDatesValid().not()) {
+            showInvalidDatesSnackBar()
+            return
+        }
+        tryToExecute(
+            onStart = ::onDownloadStart,
+            callee = ::generateTransactionsFile,
+            onSuccess = { pdfBytes -> saveFile(pdfBytes) },
+            onError = { error -> handleDownloadError(error) },
+            dispatcher = ioDispatcher
+        )
+    }
+
+    private fun areDatesValid(): Boolean {
+        val startDate = currentState.startDate
+        val endDate = currentState.endDate
+        return (startDate != null && endDate != null && startDate > endDate).not()
+    }
+
+    private fun showInvalidDatesSnackBar() {
+        viewModelScope.launch {
+            showSnackBar(
+                titleRes = Res.string.error,
+                messageRes = Res.string.start_date_must_be_before_end_date,
+                isSuccess = false
+            )
+        }
+    }
+
+    private fun updateStartDate(date: LocalDate): ExportTransactionsState {
+        return state.value.copy(
+            startDate = date,
+            defaultStartDate = date
+        )
+    }
+
+    private fun updateEndDate(date: LocalDate): ExportTransactionsState {
+        return state.value.copy(
+            endDate = date,
+            defaultEndDate = date
+        )
+    }
+
+    private fun applyStateWithUpdatedButtons(newState: ExportTransactionsState) {
+        updateState {
+            newState.copy(
+                isDownloadButtonEnabled =
+                    if (newState.isCustomFilterCardSelected) newState.hasActiveFilters else true,
+                isViewAndShareButtonEnabled =
+                    if (newState.isCustomFilterCardSelected) newState.hasActiveFilters else true
+            )
+        }
+    }
+
     private fun handleExistingStartDate(currentStartDate: LocalDate) {
         updateState {
             it.copy(
@@ -143,99 +245,6 @@ class ExportTransactionsViewModel(
                 datePickerMode = ExportTransactionsState.DatePickerMode.START_DATE,
             )
         }
-    }
-
-    @OptIn(ExperimentalTime::class)
-    override fun onEndDateClicked() {
-        val currentEndDate = state.value.endDate
-        updateState {
-            it.copy(
-                isDateBottomSheetVisible = true,
-                datePickerMode = ExportTransactionsState.DatePickerMode.END_DATE,
-                defaultEndDate = currentEndDate ?: Clock.System.now()
-                    .toLocalDateTime(TimeZone.currentSystemDefault()).date
-            )
-        }
-    }
-
-    override fun onDismissDatePicker() {
-        updateState {
-            it.copy(
-                isDateBottomSheetVisible = false
-            )
-        }
-    }
-
-    override fun onPickDateClicked(date: LocalDate) {
-        val updatedState = when (state.value.datePickerMode) {
-            ExportTransactionsState.DatePickerMode.START_DATE -> updateStartDate(date)
-            ExportTransactionsState.DatePickerMode.END_DATE -> updateEndDate(date)
-        }
-
-        applyStateWithUpdatedButtons(updatedState)
-        onDismissDatePicker()
-    }
-
-    private fun updateStartDate(date: LocalDate): ExportTransactionsState {
-        return state.value.copy(
-            startDate = date,
-            defaultStartDate = date
-        )
-    }
-
-    private fun updateEndDate(date: LocalDate): ExportTransactionsState {
-        return state.value.copy(
-            endDate = date,
-            defaultEndDate = date
-        )
-    }
-
-    private fun applyStateWithUpdatedButtons(newState: ExportTransactionsState) {
-        updateState {
-            newState.copy(
-                isDownloadButtonEnabled =
-                    if (newState.isCustomFilterCardSelected) newState.hasActiveFilters else true,
-                isViewAndShareButtonEnabled =
-                    if (newState.isCustomFilterCardSelected) newState.hasActiveFilters else true
-            )
-        }
-    }
-
-    override fun onViewAndShareClicked() {
-        if (!handleDateFilters(state.value.startDate, state.value.endDate)) return
-        tryToExecute(
-            onStart = ::onViewAndShareStart,
-            callee = ::generateTransactionsFile,
-            onSuccess = { pdfBytes -> onViewAndShareSuccess(pdfBytes) },
-            onError = { error -> onViewAndShareError(error) },
-            dispatcher = ioDispatcher
-        )
-    }
-
-    @OptIn(ExperimentalTime::class)
-    override fun onDownloadClicked() {
-        if (!handleDateFilters(state.value.startDate, state.value.endDate)) return
-        tryToExecute(
-            onStart = ::onDownloadStart,
-            callee = ::generateTransactionsFile,
-            onSuccess = { pdfBytes -> saveFile(pdfBytes) },
-            onError = { error -> handleDownloadError(error) },
-            dispatcher = ioDispatcher
-        )
-    }
-
-    private fun handleDateFilters(startDate: LocalDate?, endDate: LocalDate?): Boolean {
-        if (startDate != null && endDate != null && startDate > endDate) {
-            viewModelScope.launch {
-                showSnackBar(
-                    titleRes = Res.string.error,
-                    messageRes = Res.string.start_date_must_be_before_end_date,
-                    isSuccess = false
-                )
-            }
-            return false
-        }
-        return true
     }
 
     private suspend fun onViewAndShareStart() {
