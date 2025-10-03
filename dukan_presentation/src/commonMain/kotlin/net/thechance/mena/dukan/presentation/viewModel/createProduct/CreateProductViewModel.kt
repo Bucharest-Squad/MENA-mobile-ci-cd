@@ -1,11 +1,6 @@
 package net.thechance.mena.dukan.presentation.viewModel.createProduct
 
 import androidx.compose.ui.graphics.ImageBitmap
-import com.attafitamim.krop.core.images.ImageSrc
-import com.attafitamim.krop.filekit.toImageSrc
-import io.github.vinceglb.filekit.PlatformFile
-import io.github.vinceglb.filekit.dialogs.compose.util.toImageBitmap
-import io.github.vinceglb.filekit.size
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -31,9 +26,6 @@ import net.thechance.mena.dukan.presentation.util.rounded
 import net.thechance.mena.dukan.presentation.util.toFileName
 import net.thechance.mena.dukan.presentation.viewModel.base.BaseViewModel
 import org.jetbrains.compose.resources.StringResource
-import kotlin.math.round
-import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 
 class CreateProductViewModel(
     private val productRepository: ProductRepository,
@@ -242,7 +234,7 @@ class CreateProductViewModel(
 
     private suspend fun onAddProductBlock() {
         val productErrorMessage = getProductValidationError(productUiState = state.value)
-        if (isProductDetailsNotValid(productErrorMessage).not()) awaitCancellation()
+        if (isProductDetailsValid(productErrorMessage).not()) awaitCancellation()
 
         updateState {
             copy(
@@ -325,7 +317,7 @@ class CreateProductViewModel(
         return copy(isAddButtonEnabled = isProductValid(this))
     }
 
-    private fun isProductDetailsNotValid(productErrorMessage: StringResource?): Boolean {
+    private fun isProductDetailsValid(productErrorMessage: StringResource?): Boolean {
         return if (productErrorMessage != null) {
             updateState {
                 copy(
