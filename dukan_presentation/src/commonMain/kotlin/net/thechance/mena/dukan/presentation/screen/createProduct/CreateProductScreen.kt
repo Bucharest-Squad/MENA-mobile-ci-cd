@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -102,6 +103,7 @@ private fun CreateProductContent(
             .fillMaxSize()
             .background(color = Theme.colorScheme.background.surface)
             .statusBarsPadding()
+            .imePadding()
     ) {
         LazyColumn {
             topAppBar(onBackClick = interactionListener::onBackButton)
