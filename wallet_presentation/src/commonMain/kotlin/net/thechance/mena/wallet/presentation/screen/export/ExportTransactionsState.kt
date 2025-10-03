@@ -22,7 +22,6 @@ data class ExportTransactionsState(
     val defaultEndDate: LocalDate? = null,
     val startDate: LocalDate? = null,
     val endDate: LocalDate? = null,
-    val error: Throwable? = null,
     val hasNoTransactionsError: Boolean = false
 ) {
     val hasActiveFilters: Boolean

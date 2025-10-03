@@ -187,7 +187,6 @@ class TransactionHistoryViewModel(
                     defaultStartDate = currentStartDate,
                     isDateBottomSheetVisible = true,
                     datePickerMode = TransactionFilterState.DatePickerMode.START_DATE,
-                    isLoading = false,
                     isError = null
                 )
             )

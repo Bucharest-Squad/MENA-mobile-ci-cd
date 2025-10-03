@@ -127,9 +127,6 @@ class ExportTransactionsViewModel(
     }
 
     private suspend fun onGetFirstTransactionDateError(throwable: Throwable) {
-        updateState {
-            it.copy(error = throwable)
-        }
         showSnackBar(
             titleRes = Res.string.error,
             messageRes = Res.string.failed_to_load_date_picker,
@@ -144,7 +141,6 @@ class ExportTransactionsViewModel(
                 defaultStartDate = currentStartDate,
                 isDateBottomSheetVisible = true,
                 datePickerMode = ExportTransactionsState.DatePickerMode.START_DATE,
-                error = null
             )
         }
     }
