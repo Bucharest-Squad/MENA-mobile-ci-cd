@@ -51,7 +51,6 @@ fun ProductCard(
                 )
             )
         ) {
-
             AsyncImage(
                 model = productUiState.imageUrl,
                 contentDescription = stringResource(Res.string.product_image),
@@ -59,7 +58,6 @@ fun ProductCard(
                     .size(96.dp)
                     .clip(RoundedCornerShape(Theme.radius.sm)),
             )
-
         }
         Column(
             modifier = Modifier
@@ -74,9 +72,7 @@ fun ProductCard(
                 name = productUiState.name,
                 description = productUiState.description
             )
-
             Spacer(modifier = Modifier.weight(1f))
-
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
