@@ -65,6 +65,7 @@ class ProfileScreen : BaseScreen<
                 isVisible = state.showShareBottomSheet
             ) {
                 BottomSheet(
+                    isVisible = it,
                     onDismissRequest = listener::onDismissBottomSheet,
                 ) {
                     Column(
@@ -83,22 +84,20 @@ class ProfileScreen : BaseScreen<
             }
             dialog(state.showLanguageDialog) {
                 Dialog(
+                    isVisible = it,
                     title = "HI",
                     message = "Not Yet Implemented",
-                    buttonText = "OK",
                     onDismiss = listener::onDismissLanguageDialog,
-                    onCancelClick = listener::onDismissLanguageDialog,
-                    onActionClick = listener::onDismissLanguageDialog,
+                    actionButtons = {}
                 )
             }
             dialog(state.showThemeDialog) {
                 Dialog(
+                    isVisible = it,
                     title = "HI",
                     message = "Not Yet Implemented",
-                    buttonText = "OK",
                     onDismiss = listener::onDismissThemeDialog,
-                    onCancelClick = listener::onDismissThemeDialog,
-                    onActionClick = listener::onDismissThemeDialog,
+                    actionButtons = {}
                 )
             }
         }) {
