@@ -34,7 +34,7 @@ class ProfileScreenViewModel(
         updateState {
             copy(
                 isLoading = false,
-                errorMessage = "User Information Not Found"
+                errorMessage = ""
             )
         }
     }
