@@ -1,5 +1,6 @@
 package net.thechance.mena.dukan.presentation.component.productImage
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -19,7 +20,6 @@ import kotlinx.coroutines.launch
 import mena.dukan_presentation.generated.resources.Res
 import mena.dukan_presentation.generated.resources.ic_add_image
 import mena.dukan_presentation.generated.resources.upload_dukan_image
-import net.thechance.mena.designsystem.presentation.component.image.Image
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
@@ -63,7 +63,7 @@ fun UploadProductImage(
             },
         contentAlignment = Alignment.Center
     ) {
-        Image(
+      Image(
             modifier = Modifier.size(size = 24.dp),
             painter = painterResource(resource = Res.drawable.ic_add_image),
             contentDescription = stringResource(resource = Res.string.upload_dukan_image),
