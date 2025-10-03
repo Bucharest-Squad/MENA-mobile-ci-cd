@@ -40,7 +40,7 @@ class TransactionRepositoryImpl(
     override suspend fun getFirstTransactionDate(): LocalDate? {
         return safeApiCall<FirstTransactionDateDto> {
             networkClient.get("$TRANSACTION_PATH/first-date")
-        }.firstTransactionDate?.let { LocalDate.parse(it) }
+        }.firstTransactionDate
     }
 
     private companion object {
