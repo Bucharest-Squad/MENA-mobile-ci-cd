@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import mena.faith_presentation.generated.resources.Res
 import mena.faith_presentation.generated.resources.bookmark_removed_successfully
 import net.thechance.mena.faith.domain.entity.AyahBookmark
@@ -50,24 +49,23 @@ class BookmarkViewModel(
     override fun onStartTilawahClick() = sendEffect(BookmarkEffect.NavigateBack)
 
     override fun onDeleteBookmarkClick(bookmarkId: Int) {
-        deletedBookmarkIdsFlow.update { currentSet ->
-            currentSet + bookmarkId
-        }
-
-        viewModelScope.launch {
-            tryToExecute(
-                dispatcher = dispatcher,
-                execute = { bookmarkRepository.deleteAyahBookmark(bookmarkId) },
-                onSuccess = { onDeleteBookmarkSuccess() },
-                onError = { error ->
-                    deletedBookmarkIdsFlow.update { currentSet ->
-                        currentSet - bookmarkId
-                    }
-                    handleErrorState(error)
-                }
-            )
-        }
+        tryToExecute(
+            dispatcher = dispatcher,
+            execute = { bookmarkRepository.deleteAyahBookmark(bookmarkId) },
+            onStart = { insertDeletedBookmarkId(bookmarkId) },
+            onSuccess = { onDeleteBookmarkSuccess() },
+            onError = { error ->
+                removeDeletedBookmarkId(bookmarkId)
+                handleErrorState(error)
+            }
+        )
     }
+
+    private fun insertDeletedBookmarkId(bookmarkId: Int) =
+        deletedBookmarkIdsFlow.update { currentSet -> currentSet + bookmarkId }
+
+    private fun removeDeletedBookmarkId(bookmarkId: Int) =
+        deletedBookmarkIdsFlow.update { currentSet -> currentSet - bookmarkId }
 
     private fun initializeBookmarks() {
         updateState {
@@ -86,8 +84,7 @@ class BookmarkViewModel(
     }
 
     private fun createBookmarksPagingSource(): Flow<PagingData<AyahBookmark>> {
-        return createPagingSourceFlow(
-        ) { pageNumber, pageSize ->
+        return createPagingSourceFlow { pageNumber, pageSize ->
             bookmarkRepository.getAyahBookmarks(pageNumber = pageNumber, pageSize = pageSize)
         }
     }
