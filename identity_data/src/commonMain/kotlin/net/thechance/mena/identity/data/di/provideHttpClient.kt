@@ -15,10 +15,10 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.http.encodedPath
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import net.thechance.mena.identity.data.dataSource.local.setting.accessToken
+import net.thechance.mena.identity.data.dataSource.local.setting.refreshToken
 import net.thechance.mena.identity.data.repository.AuthenticationRepositoryImpl.Companion.LOGIN_ENDPOINT
 import net.thechance.mena.identity.data.repository.AuthenticationRepositoryImpl.Companion.REFRESH_ENDPOINT
-import net.thechance.mena.identity.data.utils.accessToken
-import net.thechance.mena.identity.data.utils.refreshToken
 
 internal fun provideHttpClient(
     engine: HttpClientEngine, settings: Settings, baseUrl: String, refreshToken: suspend () -> Unit
