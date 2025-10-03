@@ -101,7 +101,7 @@ class ExportTransactionsViewModel(
     override fun onStartDateClicked() {
         val currentStartDate = currentState.startDate
         if (currentStartDate != null) {
-            handleExistingStartDate(currentStartDate)
+            openStartDatePickerWithExistingDate(currentStartDate)
         } else {
             fetchFirstTransactionDate()
         }
@@ -209,7 +209,7 @@ class ExportTransactionsViewModel(
         }
     }
 
-    private fun handleExistingStartDate(currentStartDate: LocalDate) {
+    private fun openStartDatePickerWithExistingDate(currentStartDate: LocalDate) {
         updateState {
             it.copy(
                 isDateBottomSheetVisible = true,
