@@ -14,5 +14,4 @@ interface ExportTransactionsListener {
     fun onPickDateClicked(date: LocalDate)
     fun onViewAndShareClicked()
     fun onDownloadClicked()
-
 }
