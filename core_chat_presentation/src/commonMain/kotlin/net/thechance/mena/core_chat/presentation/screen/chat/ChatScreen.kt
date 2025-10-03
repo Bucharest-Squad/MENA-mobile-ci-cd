@@ -11,6 +11,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import net.thechance.mena.core_chat.presentation.screen.chat.components.ChatHeader
 import net.thechance.mena.core_chat.presentation.screen.chat.components.ChatInputBar
 import net.thechance.mena.core_chat.presentation.screen.chat.components.ChatList
+import net.thechance.mena.core_chat.presentation.screen.chat.components.ChatScreenOverlays
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
@@ -56,12 +57,12 @@ fun ChatScreenContent(
             )
         },
         overlays = {
-//            ChatScreenOverlays(
-//                showResendMessageDialog = state.isResendMessageDialogVisible,
-//                onDismissResendMessageDialog = interactions::onResendMessageDialogDismissed,
-//                onDeleteFailedMessageClick = interactions::onDeleteFailedMessageClicked,
-//                onResendFailedMessageClick = interactions::onResendMessageClicked,
-//            )
+            ChatScreenOverlays(
+                showResendMessageDialog = state.isResendMessageDialogVisible,
+                onDismissResendMessageDialog = interactions::onResendMessageDialogDismissed,
+                onDeleteFailedMessageClick = interactions::onDeleteFailedMessageClicked,
+                onResendFailedMessageClick = interactions::onResendMessageClicked,
+            )
         }
     ) {
         ChatList(

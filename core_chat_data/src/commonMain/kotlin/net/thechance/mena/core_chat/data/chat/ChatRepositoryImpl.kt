@@ -40,7 +40,6 @@ class ChatRepositoryImpl(
     private val authenticationRepository: AuthenticationRepository,
     private val messageDao: MessageDao,
     private val json: Json,
-    baseUrl: String,
 ) : ChatRepository, BaseRepository {
 
     private val messageFlows = MutableSharedFlow<Message>()
@@ -123,7 +122,6 @@ class ChatRepositoryImpl(
         val bearerToken = authenticationRepository.getAccessToken()
 
         webSocketManager.connect(
-            url = constructWebSocketUrl,
             token = bearerToken,
             onConnected = { onConnectedWebSocket(chatId) }
         )

@@ -1,6 +1,7 @@
 package net.thechance.mena.dukan.presentation.viewModel.createProduct
 
 import androidx.compose.ui.graphics.ImageBitmap
+import io.github.vinceglb.filekit.PlatformFile
 import net.thechance.mena.dukan.presentation.util.file.ImageFile
 
 interface CreateProductInteractionListener {

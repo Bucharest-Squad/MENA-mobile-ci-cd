@@ -6,6 +6,7 @@ import net.thechance.mena.dukan.data.repository.mockEngine.product.createdProduc
 import net.thechance.mena.dukan.data.repository.mockEngine.product.defaultCreateProductResponse
 import net.thechance.mena.dukan.data.repository.mockEngine.product.demoPagedResult
 import net.thechance.mena.dukan.data.repository.mockEngine.product.productDto1
+import net.thechance.mena.dukan.domain.entity.Product
 import net.thechance.mena.dukan.domain.util.CreateProductParams
 import org.junit.Test
 import kotlin.test.assertEquals

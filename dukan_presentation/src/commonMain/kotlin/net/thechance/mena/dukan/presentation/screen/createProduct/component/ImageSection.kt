@@ -22,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
+import io.github.vinceglb.filekit.PlatformFile
 import mena.dukan_presentation.generated.resources.Res
 import mena.dukan_presentation.generated.resources.image_1_1
 import net.thechance.mena.designsystem.presentation.component.text.Text
@@ -29,6 +30,7 @@ import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.dukan.presentation.component.productImage.DisplayProductImage
 import net.thechance.mena.dukan.presentation.component.productImage.UploadProductImage
 import net.thechance.mena.dukan.presentation.util.file.ImageFile
+import net.thechance.mena.dukan.presentation.util.file.PlatformImageFile
 import net.thechance.mena.dukan.presentation.viewModel.createProduct.ProductImageUi
 import org.jetbrains.compose.resources.stringResource
 
