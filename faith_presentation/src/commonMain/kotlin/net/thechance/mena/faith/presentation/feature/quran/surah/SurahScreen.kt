@@ -107,9 +107,9 @@ private fun AyatOfSurah(
     modifier: Modifier = Modifier
 ) {
     val lazyListState = rememberLazyListState()
-    val allAyat = remember(state.ayatOfSurah) { state.ayatOfSurah }
-    val ayahChunks = remember(allAyat) { allAyat.chunked(AYAT_PER_PAGE) }
-
+    val ayahChunks = remember(state.ayatOfSurah) {
+        state.ayatOfSurah.chunked(AYAT_PER_PAGE)
+    }
     val preRenderedChunks = remember(ayahChunks) {
         ayahChunks.map { chunk ->
             buildAnnotatedString {

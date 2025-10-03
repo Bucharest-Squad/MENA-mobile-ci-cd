@@ -43,8 +43,7 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 internal fun SurahAppBar(
-    surahName: String,
-    onBackClick: () -> Unit
+    surahName: String, onBackClick: () -> Unit
 ) {
     AppBar(
         leadingContent = {
@@ -52,12 +51,8 @@ internal fun SurahAppBar(
                 painter = painterResource(Res.drawable.ic_arrow_left),
                 contentDescription = stringResource(Res.string.arrow_left)
             )
-        },
-        onLeadingClick = onBackClick,
-        title = surahName,
-        contentPadding = PaddingValues(
-            vertical = Theme.spacing._8,
-            horizontal = Theme.spacing._16
+        }, onLeadingClick = onBackClick, title = surahName, contentPadding = PaddingValues(
+            vertical = Theme.spacing._8, horizontal = Theme.spacing._16
         )
     )
 }
@@ -85,9 +80,7 @@ internal fun BasmalaHeader(
 
 @Composable
 internal fun AnimatedAyahActionButtons(
-    state: SurahScreenState,
-    listener: SurahInteractionListener,
-    modifier: Modifier = Modifier
+    state: SurahScreenState, listener: SurahInteractionListener, modifier: Modifier = Modifier
 ) {
 
     AnimatedVisibility(
@@ -101,16 +94,13 @@ internal fun AnimatedAyahActionButtons(
             AyahActionButtons(
                 onBookmarkClick = { listener.onBookmarkClick(selectedAyah?.number ?: 0) },
                 onCopyClick = { listener.onCopyClick(ayahContent = state.selectedAyah) },
-                onShareClick = { listener.onShareClick(state.selectedAyah) }
-            )
+                onShareClick = { listener.onShareClick(state.selectedAyah) })
         }
     }
 }
 
 private fun isValidAyahSelection(state: SurahScreenState): Boolean {
-    return state.selectedAyahIndex != null &&
-            state.selectedAyahIndex >= 0 &&
-            state.selectedAyahIndex < state.ayatOfSurah.size
+    return state.selectedAyahIndex != null && state.selectedAyahIndex >= 0 && state.selectedAyahIndex < state.ayatOfSurah.size
 }
 
 @Composable
@@ -147,21 +137,19 @@ internal fun UnifiedChunkText(
             .fillMaxWidth()
             .padding(horizontal = Theme.spacing._16, vertical = Theme.spacing._8)
             .pointerInput(selectedAyahIndex) {
-                detectTapGestures(
-                    onTap = { onDismiss() },
-                    onLongPress = { offset ->
-                        textLayoutResult?.let { layout ->
-                            val pos = layout.getOffsetForPosition(offset)
-                            val clickedAyahIndex = findClickedAyahIndexFromPosition(chunkAyat, pos)
-                            if (clickedAyahIndex != -1) {
-                                val ayah = chunkAyat[clickedAyahIndex]
-                                onLongPress(ayah)
-                            }
+                detectTapGestures(onTap = { onDismiss() }, onLongPress = { offset ->
+                    textLayoutResult?.let { layout ->
+                        val ayahPosition = layout.getOffsetForPosition(offset)
+                        val clickedAyahIndex = findClickedAyahIndexFromPosition(
+                            ayat = chunkAyat, position = ayahPosition
+                        )
+                        if (clickedAyahIndex != -1) {
+                            val ayah = chunkAyat[clickedAyahIndex]
+                            onLongPress(ayah)
                         }
                     }
-                )
-            }
-    )
+                })
+            })
 }
 
 @Composable
@@ -173,13 +161,14 @@ private fun getAyahTextColor(selectedAyahIndex: Int?, currentIndex: Int): Color 
     }
 }
 
-private fun findClickedAyahIndexFromPosition(ayat: List<Ayah>, pos: Int
+private fun findClickedAyahIndexFromPosition(
+    ayat: List<Ayah>, position: Int
 ): Int {
-    var currentPos = 0
+    var currentPosition = 0
     ayat.forEachIndexed { index, ayah ->
-        val end = currentPos + ayah.content.length
-        if (pos in currentPos..end) return index
-        currentPos = end + 1
+        val end = currentPosition + ayah.content.length
+        if (position in currentPosition..end) return index
+        currentPosition = end + 1
     }
     return -1
 }

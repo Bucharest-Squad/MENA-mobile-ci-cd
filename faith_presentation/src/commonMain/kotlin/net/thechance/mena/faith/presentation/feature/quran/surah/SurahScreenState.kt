@@ -14,6 +14,7 @@ data class SurahScreenState(
     val isLoading: Boolean = false,
 ) {
     val isBasmalaVisible: Boolean
-        get() = surahId != Surah.SurahOrder.AtTawbah.order
+        get() = surahId != Surah.SurahOrder.AtTawbah.order &&
+                surahId != Surah.SurahOrder.AlFatihah.order
 
 }
