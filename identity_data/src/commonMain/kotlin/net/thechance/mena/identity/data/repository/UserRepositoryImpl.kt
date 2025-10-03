@@ -53,7 +53,7 @@ class UserRepositoryImpl(
 
 
     companion object {
-        const val PROFILE = "profile/me"
+        const val PROFILE = "identity/profile/me"
     }
 
 
