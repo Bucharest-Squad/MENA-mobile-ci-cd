@@ -39,7 +39,7 @@ fun TrendsSnackBar(
     modifier: Modifier = Modifier,
     durationInMilliSeconds: Long = 3000,
 ) {
-    var isVisible by remember { mutableStateOf(true) }
+    var isVisible by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         isVisible = true
