@@ -35,10 +35,10 @@ class CreateProductViewModelTest {
 
     @Test
     fun `getShelves Should update emit success state`() = scope.runTest {
-        val shelves = listOf(Shelf("1", "Shelf1"))
+        val shelves = listOf(Shelf("1", "Shelf1"),Shelf("2", "Shelf2"))
         everySuspend { shelfRepository.getMyDukanShelves() } returns shelves
 
-        viewModel = CreateProductViewModel(productRepository, shelfRepository)
+        viewModel = CreateProductViewModel(productRepository, shelfRepository,dispatcher)
         advanceUntilIdle()
 
         viewModel.state.test {

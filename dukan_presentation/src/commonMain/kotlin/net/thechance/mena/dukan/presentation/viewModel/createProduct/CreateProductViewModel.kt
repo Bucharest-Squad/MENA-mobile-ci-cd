@@ -25,6 +25,8 @@ import net.thechance.mena.dukan.presentation.component.SnackBarType
 import net.thechance.mena.dukan.presentation.component.SnackBarUiState
 import net.thechance.mena.dukan.presentation.component.productImage.ProductImageState
 import net.thechance.mena.dukan.presentation.util.imageCrop.toPngByteArray
+import net.thechance.mena.dukan.presentation.util.rounded
+import net.thechance.mena.dukan.presentation.util.toFileName
 import net.thechance.mena.dukan.presentation.viewModel.base.BaseViewModel
 import org.jetbrains.compose.resources.StringResource
 import kotlin.math.round
@@ -355,7 +357,7 @@ class CreateProductViewModel(
             productUiState.price.toDouble() < PRICE_EXCLUSIVE_LOWER_BOUND -> Res.string.error_price_not_positive
             productUiState.description.length !in MIN_DESCRIPTION_LENGTH..MAX_DESCRIPTION_LENGTH -> Res.string.error_description_length
             else -> null
-        } as StringResource?
+        }
     }
 
     companion object {
@@ -371,8 +373,3 @@ class CreateProductViewModel(
     }
 }
 
-private fun Double.rounded(): Double = (round(this * 100) / 100)
-@OptIn(ExperimentalTime::class)
-private fun ByteArray.toFileName(): String {
-    return "${Clock.System.now().toEpochMilliseconds()}+product_image"
-}
