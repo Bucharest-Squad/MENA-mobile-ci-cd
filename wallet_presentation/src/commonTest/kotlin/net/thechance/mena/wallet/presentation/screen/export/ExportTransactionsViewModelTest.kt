@@ -570,6 +570,64 @@ class ExportTransactionsViewModelTest {
         assertTrue(state.hasActiveFilters)
     }
 
+    @Test
+    fun `onAllTransactionsClicked should enable download and view buttons`() = runTest {
+        initViewModel()
+
+        viewModel.state.test {
+            viewModel.onAllTransactionsClicked()
+            skipItems(0)
+
+            val state = awaitItem()
+            assertTrue(state.isDownloadButtonEnabled)
+            assertTrue(state.isViewAndShareButtonEnabled)
+            assertFalse(state.isCustomFilterCardSelected)
+
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `hideToast should hide toast`() = runTest {
+        initViewModel()
+        viewModel.state.test {
+            viewModel.onDownloadClicked()
+            skipItems(2)
+
+            val toastVisible = awaitItem().toast
+            assertTrue(toastVisible.isVisible)
+
+            advanceTimeBy(2000L)
+
+            val toastHidden = awaitItem().toast
+            assertFalse(toastHidden.isVisible)
+
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `hideSnackBar should hide snackbar after duration`() = runTest {
+        everySuspend { repository.getTransactionsPdf(any()) } returns byteArrayOf(1, 2, 3)
+        everySuspend { fileSaver.saveFile(any(), any(), any()) } returns true
+
+        initViewModel()
+        viewModel.state.test {
+            viewModel.onDownloadClicked()
+            skipItems(5)
+
+            val visible = awaitItem().snackBar
+            assertTrue(visible.isVisible)
+
+            advanceTimeBy(3000L)
+
+            val hidden = awaitItem().snackBar
+            assertFalse(hidden.isVisible)
+
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
 
     private fun TestScope.initViewModel() {
         viewModel = ExportTransactionsViewModel(
