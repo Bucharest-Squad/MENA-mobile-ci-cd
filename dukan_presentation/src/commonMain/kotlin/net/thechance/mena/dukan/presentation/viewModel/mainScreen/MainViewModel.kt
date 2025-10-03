@@ -56,6 +56,7 @@ class MainViewModel(
             DukanStatusUi.None -> emitEffect(MainEffect.NavigateToAddDukanScreen)
             DukanStatusUi.Pending -> emitEffect(MainEffect.NavigateToPendingDukanScreen)
             DukanStatusUi.Approved -> emitEffect(MainEffect.NavigateToManageDukanScreen)
+            DukanStatusUi.Loading -> {}
         }
     }
 }
