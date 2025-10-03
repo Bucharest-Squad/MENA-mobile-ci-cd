@@ -7,13 +7,22 @@ import net.thechance.mena.identity.presentation.screen.profile.ProfileScreenView
 import net.thechance.mena.identity.presentation.screen.register.RegisterScreenModel
 import net.thechance.mena.identity.presentation.screen.resetPassword.ResetPasswordScreenViewModel
 import org.koin.core.module.dsl.factoryOf
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
+import kotlin.coroutines.EmptyCoroutineContext.get
+
+const val APP_VERSION = "appVersion"
 
 val identityScreensModule = module {
+
     factoryOf(::LoginScreenViewModel)
     factoryOf(::RegisterScreenModel)
     factoryOf(::ForgetPasswordScreenViewModel)
     factoryOf(::OtpScreenViewModel)
-    factoryOf(::ProfileScreenViewModel)
+    factory{
+        ProfileScreenViewModel(
+        get(),
+        get<String>(named(APP_VERSION)))
+    }
     factoryOf(::ResetPasswordScreenViewModel)
 }

@@ -20,7 +20,10 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
+
 expect val IdentityPlatformModule: Module
+const val BASE_URL = "baseUrl"
+
 val identityDataModule = module {
     single { CIO.create() }
     singleOf(::AuthenticationRepositoryImpl) bind AuthenticationRepository::class
@@ -29,7 +32,7 @@ val identityDataModule = module {
     single {
         provideHttpClient(
             engine = get(),
-            baseUrl = get<String>(named("baseUrl")),
+            baseUrl = get<String>(named(BASE_URL)),
             settings = get(),
         )
     }
