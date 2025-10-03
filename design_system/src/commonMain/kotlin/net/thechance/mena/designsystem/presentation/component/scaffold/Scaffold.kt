@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -20,6 +21,7 @@ fun Scaffold(
     modifier: Modifier = Modifier,
     topBar: @Composable () -> Unit = {},
     bottomBar: @Composable () -> Unit = {},
+    snakeBar: @Composable () -> Unit = {},
     overlays: ScaffoldScope .() -> Unit = {},
     content: @Composable () -> Unit,
 ) {
@@ -52,10 +54,17 @@ fun Scaffold(
             }
             bottomBar()
         }
+
+        Box(
+            modifier = Modifier.align(Alignment.TopCenter)
+                .fillMaxWidth()
+                .padding(vertical = 12.dp, horizontal = 16.dp)
+        ) {
+            snakeBar()
+        }
     }
 
     scope.items.forEach {
-        if (it.isVisible)
             it.content(scope)
     }
 }

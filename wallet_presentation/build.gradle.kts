@@ -48,10 +48,10 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
 
-            //data time
+            // data time
             implementation(libs.kotlinx.datetime)
 
-            //Koin
+            // koin
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
@@ -60,6 +60,15 @@ kotlin {
 
             // navigation
             implementation(libs.navigation.compose)
+
+            // coil
+            implementation(libs.coil.compose)
+
+            // capturable
+            implementation(libs.kmp.capturable.compose)
+
+            // File kit
+            implementation(libs.bundles.filekit)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

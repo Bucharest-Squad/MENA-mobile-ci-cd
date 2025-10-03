@@ -42,11 +42,13 @@ import mena.faith_presentation.generated.resources.surah_number_container_icon
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBarOptionContainer
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
+import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.faith.presentation.base.FaithScaffold
 import net.thechance.mena.faith.presentation.base.ObserveAsEffect
+import net.thechance.mena.faith.presentation.component.FaithScaffold
+import net.thechance.mena.faith.presentation.navigation.BookmarksRoute
 import net.thechance.mena.faith.presentation.navigation.LocalNavController
 import net.thechance.mena.faith.presentation.navigation.SurahDetailsRoute
 import org.jetbrains.compose.resources.painterResource
@@ -65,7 +67,7 @@ fun SurScreen(
     ObserveAsEffect(viewModel.uiEffect) { effect ->
         when (effect) {
             is SurEffect.NavigateBack -> navController.navigateUp()
-            is SurEffect.NavigateToBookmark -> {}
+            is SurEffect.NavigateToBookmark -> navController.navigate(BookmarksRoute)
             is SurEffect.NavigateToSurahDetails -> navController.navigate(
                 SurahDetailsRoute(
                     surahId = effect.surahId,
@@ -86,8 +88,7 @@ private fun Content(
     uiState: SurScreenState,
     interactionListener: SurInteractionListener,
 ) {
-    FaithScaffold(
-        backgroundColor = Theme.colorScheme.background.surface,
+    Scaffold(
         topBar = {
             Topbar(
                 modifier = Modifier.padding(horizontal = Theme.spacing._16),

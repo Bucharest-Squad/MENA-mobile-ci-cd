@@ -9,8 +9,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import mena.wallet_presentation.generated.resources.Res
 import mena.wallet_presentation.generated.resources.from
@@ -32,6 +34,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun FilterContent(
+    showStatusFilter: Boolean = true,
     selectedTypes: Set<FilterType>? = null,
     selectedStatus: FilterStatus = FilterStatus.ALL,
     fromDate: String,
@@ -57,17 +60,18 @@ fun FilterContent(
             selectedTypes = selectedTypes,
             onTypeSelected = onTypeSelected
         )
+        if (showStatusFilter) {
+            Text(
+                text = stringResource(Res.string.status),
+                style = Theme.typography.body.small,
+                color = Theme.colorScheme.shadePrimary
+            )
 
-        Text(
-            text = stringResource(Res.string.status),
-            style = Theme.typography.body.small,
-            color = Theme.colorScheme.shadePrimary
-        )
-
-        TransactionStatusRow(
-            selectedStatus = selectedStatus,
-            onStatusSelected = onStatusSelected
-        )
+            TransactionStatusRow(
+                selectedStatus = selectedStatus,
+                onStatusSelected = onStatusSelected
+            )
+        }
 
         DateRangePicker(
             fromDate = fromDate,
@@ -170,6 +174,7 @@ private fun DatePickerField(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 8.dp)
+                .clip(shape = RoundedCornerShape(Theme.radius.md))
                 .clickable { onClick() },
             trailingIcon = painterResource(Res.drawable.ic_calendar)
         )
