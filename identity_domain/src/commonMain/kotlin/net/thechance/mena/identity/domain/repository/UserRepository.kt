@@ -4,8 +4,5 @@ import kotlinx.coroutines.flow.Flow
 import net.thechance.mena.identity.domain.entity.User
 
 interface UserRepository {
-
      suspend fun getUser(): Flow<User>
-
-
 }

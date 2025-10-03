@@ -36,9 +36,7 @@ class AuthenticationRepositoryImpl(
             client.postJson(RefreshRequestDto(settings.refreshToken), REFRESH_ENDPOINT)
         }
         saveAuthTokens(refreshResponse)
-
         return settings.accessToken
-
     }
 
     override suspend fun getAccessToken(): String {
@@ -50,7 +48,7 @@ class AuthenticationRepositoryImpl(
         settings.refreshToken = authInfo.refreshToken
     }
 
-    override fun observeTokenChange(): StateFlow<String>{
+    override fun observeTokenChange(): StateFlow<String> {
         return observableToken
     }
 

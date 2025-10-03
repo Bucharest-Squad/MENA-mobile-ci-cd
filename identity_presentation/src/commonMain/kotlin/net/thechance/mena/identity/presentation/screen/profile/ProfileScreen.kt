@@ -1,8 +1,8 @@
 package net.thechance.mena.identity.presentation.screen.profile
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
@@ -65,6 +65,7 @@ class ProfileScreen : BaseScreen<
                 isVisible = state.showShareBottomSheet
             ) {
                 BottomSheet(
+                    isVisible = it,
                     onDismissRequest = listener::onDismissBottomSheet,
                 ) {
                     Column(
@@ -83,22 +84,20 @@ class ProfileScreen : BaseScreen<
             }
             dialog(state.showLanguageDialog) {
                 Dialog(
+                    isVisible = it,
                     title = "HI",
                     message = "Not Yet Implemented",
-                    buttonText = "OK",
                     onDismiss = listener::onDismissLanguageDialog,
-                    onCancelClick = listener::onDismissLanguageDialog,
-                    onActionClick = listener::onDismissLanguageDialog,
+                    actionButtons = {}
                 )
             }
             dialog(state.showThemeDialog) {
                 Dialog(
+                    isVisible = it,
                     title = "HI",
                     message = "Not Yet Implemented",
-                    buttonText = "OK",
                     onDismiss = listener::onDismissThemeDialog,
-                    onCancelClick = listener::onDismissThemeDialog,
-                    onActionClick = listener::onDismissThemeDialog,
+                    actionButtons = {}
                 )
             }
         }) {
@@ -120,10 +119,11 @@ class ProfileScreen : BaseScreen<
                     )
                     AnimatedVisibility(
                         visible = state.isSuccess,
-                        enter = fadeIn(),
-                        exit = fadeOut(),
+                        enter = expandVertically(),
+                        exit = shrinkVertically(),
                         modifier = Modifier.fillMaxWidth()
-                    ) {
+                    )
+                    {
                         ProfileInfoContainer(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -147,7 +147,7 @@ class ProfileScreen : BaseScreen<
                         onThemeClicked = listener::onThemeClicked
                     )
                     OtherSettingsSection(
-                        onPrivacyAndPolicyClicked =listener::onPrivacyAndPolicyClicked,
+                        onPrivacyAndPolicyClicked = listener::onPrivacyAndPolicyClicked,
                         onContactUsClicked = listener::onContactUsClicked
                     )
                     Text(

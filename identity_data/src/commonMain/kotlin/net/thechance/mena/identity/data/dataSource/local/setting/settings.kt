@@ -2,7 +2,6 @@ package net.thechance.mena.identity.data.dataSource.local.setting
 
 import com.russhwolf.settings.Settings
 
-
 internal var Settings.accessToken: String
     get() = getString(ACCESS_TOKEN, "")
     set(value) = putString(ACCESS_TOKEN, value)

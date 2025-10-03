@@ -16,6 +16,7 @@ import kotlin.coroutines.EmptyCoroutineContext.get
 const val APP_VERSION = "appVersion"
 
 val identityScreensModule = module {
+    factoryOf(::LoginScreenViewModel)
 
     single { get<String>(named(APP_VERSION)) }
     factoryOf(::LoginScreenViewModel)

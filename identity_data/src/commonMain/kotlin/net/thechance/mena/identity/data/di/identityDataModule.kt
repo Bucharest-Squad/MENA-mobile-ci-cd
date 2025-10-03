@@ -9,41 +9,47 @@ import kotlinx.coroutines.IO
 import net.thechance.mena.identity.data.dataSource.local.database.IdentityDatabase
 import net.thechance.mena.identity.data.dataSource.local.database.dao.UserDao
 import net.thechance.mena.identity.data.repository.AuthenticationRepositoryImpl
-import net.thechance.mena.identity.data.repository.UserRepositoryImpl
 import net.thechance.mena.identity.data.repository.ResetPasswordRepositoryImpl
+import net.thechance.mena.identity.data.repository.UserRepositoryImpl
 import net.thechance.mena.identity.domain.repository.AuthenticationRepository
-import net.thechance.mena.identity.domain.repository.UserRepository
 import net.thechance.mena.identity.domain.repository.ResetPasswordRepository
+import net.thechance.mena.identity.domain.repository.UserRepository
+import net.thechance.mena.identity.domain.service.AuthorizationService
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
+private const val IDENTITY_CLIENT = "IdentityClient"
+private const val BASE_URL = "baseUrl"
 
 expect val IdentityPlatformModule: Module
-const val BASE_URL = "baseUrl"
-
 val identityDataModule = module {
     single { CIO.create() }
-    singleOf(::AuthenticationRepositoryImpl) bind AuthenticationRepository::class
+
     singleOf(::UserRepositoryImpl) bind UserRepository::class
+    singleOf(::ResetPasswordRepositoryImpl) bind ResetPasswordRepository::class
+    single<AuthenticationRepository> {
+        AuthenticationRepositoryImpl(
+            client = get(named(IDENTITY_CLIENT)),
+            settings = get()
+        )
+    }
     singleOf(::Settings)
-    single {
+    singleOf(::AuthorizationService)
+    single(named(IDENTITY_CLIENT)) {
         provideHttpClient(
             engine = get(),
             baseUrl = get<String>(named(BASE_URL)),
             settings = get(),
+            refreshToken = { get<AuthorizationService>().refreshToken() }
         )
     }
 
     single { provideDatabaseBuilder() }
     single<IdentityDatabase> { getRoomDatabase(builder = get()) }
-
     single<UserDao> { get<IdentityDatabase>().getUserDao() }
-
-    singleOf(::AuthenticationRepositoryImpl) bind AuthenticationRepository::class
-    singleOf(::ResetPasswordRepositoryImpl) bind ResetPasswordRepository::class
 }
 
 fun getRoomDatabase(builder: RoomDatabase.Builder<IdentityDatabase>): IdentityDatabase {

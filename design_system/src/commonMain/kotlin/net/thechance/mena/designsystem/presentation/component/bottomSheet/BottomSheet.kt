@@ -70,6 +70,7 @@ enum class BottomSheetValue {
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ScaffoldScope.BottomSheet(
+    isVisible: Boolean,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     dismissOnBackPress: Boolean = true,
@@ -85,6 +86,10 @@ fun ScaffoldScope.BottomSheet(
     stickyFooterContent: @Composable BoxScope.() -> Unit = {},
     sheetContent: @Composable ColumnScope.() -> Unit
 ) {
+
+    if (!isVisible)
+        return
+
     val scope = rememberCoroutineScope()
     val density = LocalDensity.current
     var showScrim by remember { mutableStateOf(true) }
@@ -259,8 +264,9 @@ private fun SimpleBottomSheetPreview() {
     MenaTheme {
         Scaffold(
             overlays = {
-                bottomSheet(isVisible = visible) {
+                bottomSheet(isVisible = visible) { isVisible ->
                     BottomSheet(
+                        isVisible = isVisible,
                         onDismissRequest = { visible = false },
                         stickyFooterContent = {
                             PrimaryButton(

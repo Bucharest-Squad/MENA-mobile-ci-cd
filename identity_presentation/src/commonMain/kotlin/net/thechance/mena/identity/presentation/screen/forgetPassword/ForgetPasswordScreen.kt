@@ -21,17 +21,17 @@ import net.thechance.mena.identity.presentation.bottomSheet.countryPicker.Countr
 import net.thechance.mena.identity.presentation.components.AuthAppBar
 import net.thechance.mena.identity.presentation.components.AuthScreenContainer
 import net.thechance.mena.identity.presentation.components.ErrorSnackBar
-import net.thechance.mena.identity.presentation.components.LabeledPhoneNumberInput
+import net.thechance.mena.identity.presentation.components.LabeledInputPhoneNumber
 import net.thechance.mena.identity.presentation.components.PageDescription
 import net.thechance.mena.identity.presentation.screen.forgetPasswordOtp.OtpScreen
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 class ForgetPasswordScreen : BaseScreen<
-        ForgetPasswordScreenViewModel,
-        ForgetPasswordScreenUIState,
-        ForgetPasswordScreenUIEffect,
-        ForgetPasswordScreenInteractionListener>() {
+    ForgetPasswordScreenViewModel,
+    ForgetPasswordScreenUIState,
+    ForgetPasswordScreenUIEffect,
+    ForgetPasswordScreenInteractionListener>() {
     @Composable
     override fun Content() {
         InitScreen(getScreenModel())
@@ -44,8 +44,9 @@ class ForgetPasswordScreen : BaseScreen<
     ) {
         Scaffold(
             overlays = {
-                bottomSheet(isVisible = state.showCountryBottomSheet) {
+                bottomSheet(isVisible = state.showCountryBottomSheet) {showBottomSheet ->
                     CountryPicker(
+                        isVisible = showBottomSheet,
                         isEnabled = state.countryPickerUIState.isEnabled,
                         countries = state.countryPickerUIState.countries,
                         onSelectCountryItem = listener::onSelectCountryItem,
@@ -67,12 +68,12 @@ class ForgetPasswordScreen : BaseScreen<
                     subtitle = stringResource(Res.string.forget_password_prompt),
                 )
 
-                LabeledPhoneNumberInput(
+                LabeledInputPhoneNumber(
                     phoneNumber = state.phoneNumber,
                     onPhoneChange = listener::onChangePhone,
                     countryCode = state.countryPickerUIState.currentCountry.callingCode,
                     countryFlag = painterResource(state.countryPickerUIState.currentCountry.flagImage),
-                    onCountryClick = listener::onClickPhoneCode
+                    onClickCountry = listener::onClickCountry
                 )
 
                 Spacer(modifier = Modifier.weight(1f))

@@ -6,5 +6,4 @@ sealed class ProfileScreenUIEffect {
     object NavigateToChangePasswordScreen : ProfileScreenUIEffect()
     object NavigateToPrivacyAndPolicyScreen : ProfileScreenUIEffect()
     object NavigateContactUsScreen : ProfileScreenUIEffect()
-
 }

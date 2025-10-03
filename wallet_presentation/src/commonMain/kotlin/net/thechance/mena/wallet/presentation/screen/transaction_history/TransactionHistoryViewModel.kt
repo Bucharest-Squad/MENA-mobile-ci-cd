@@ -2,9 +2,20 @@ package net.thechance.mena.wallet.presentation.screen.transaction_history
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.delay
+import kotlinx.datetime.LocalDate
+import mena.wallet_presentation.generated.resources.Res
+import mena.wallet_presentation.generated.resources.error
+import mena.wallet_presentation.generated.resources.failed_to_apply_filters
 import net.thechance.mena.wallet.domain.entity.Transaction
+import net.thechance.mena.wallet.domain.model.TransactionFilterParams
 import net.thechance.mena.wallet.domain.repository.TransactionRepository
 import net.thechance.mena.wallet.presentation.base.BaseViewModel
+import net.thechance.mena.wallet.presentation.base.ErrorState
+import net.thechance.mena.wallet.presentation.model.FilterStatus
+import net.thechance.mena.wallet.presentation.model.FilterType
+import net.thechance.mena.wallet.presentation.model.SnackBarState
+import org.jetbrains.compose.resources.StringResource
 import org.koin.android.annotation.KoinViewModel
 import org.koin.core.annotation.Provided
 import kotlin.uuid.ExperimentalUuidApi
@@ -16,15 +27,15 @@ class TransactionHistoryViewModel(
     @Provided private val transactionRepository: TransactionRepository
 ) : BaseViewModel<TransactionHistoryScreenState, TransactionHistoryEffect>(
     TransactionHistoryScreenState()
-),
-    TransactionHistoryInteractionListener {
+), TransactionHistoryInteractionListener {
+
     init {
         getTransactionHistory()
     }
 
-    private fun getTransactionHistory() {
+    private fun getTransactionHistory(filters: TransactionFilterParams? = null) {
         tryToExecute(
-            callee = { transactionRepository.getTransactionHistory(null) },
+            callee = { transactionRepository.getTransactionHistory(filters) },
             onStart = ::onGetTransactionHistoryStart,
             onSuccess = ::onGetTransactionHistorySuccess,
             onError = ::onGetTransactionHistoryError,
@@ -32,17 +43,22 @@ class TransactionHistoryViewModel(
         )
     }
 
-    private fun onGetTransactionHistorySuccess(transactionHistory: List<Transaction>) {
-        updateState { it.copy(history = transactionHistory.map { it -> it.toUi() }) }
-
-    }
-
     private fun onGetTransactionHistoryStart() {
-        updateState { it.copy(isLoading = true) }
+        updateState { it.copy(isLoading = true, errorState = null) }
     }
 
-    private fun onGetTransactionHistoryError(throwable: Throwable) {
-        updateState { it.copy(isError = throwable) }
+    private fun onGetTransactionHistorySuccess(transactionHistory: List<Transaction>) {
+        updateState {
+            it.copy(
+                history = transactionHistory.map { it -> it.toUi() },
+                isLoading = false,
+                errorState = null
+            )
+        }
+    }
+
+    private fun onGetTransactionHistoryError(errorState: ErrorState) {
+        updateState { it.copy(errorState = errorState, isLoading = false) }
     }
 
     override fun onBackClicked() {
@@ -58,6 +74,130 @@ class TransactionHistoryViewModel(
     }
 
     override fun onFilterClicked() {
-        sendEffect(TransactionHistoryEffect.NavigateToFilterBottomSheet)
+        updateState { it.copy(isFilterVisible = true) }
+    }
+
+    override fun onResetFilterClicked() {
+        updateState { it.copy(filterState = TransactionFilterState()) }
+        getTransactionHistory(filters = null)
+    }
+
+    override fun onApplyFilterClicked() {
+        val filters = state.value.filterState
+        tryToExecute(
+            callee = {
+                transactionRepository.getTransactionHistory(filters.toParams())
+            },
+            onStart = ::onGetTransactionFilterStart,
+            onSuccess = ::onGetTransactionFilterSuccess,
+            onError = ::onGetTransactionFilterError,
+            dispatcher = Dispatchers.IO
+        )
+    }
+
+    override fun onRetryLoadTransactionHistoryClicked() {
+        getTransactionHistory()
+    }
+
+    private fun onGetTransactionFilterStart() {
+        updateState {
+            it.copy(
+                filterState = it.filterState.copy(
+                    isLoading = true,
+                    errorState = null
+                )
+            )
+        }
+    }
+
+    private fun onGetTransactionFilterSuccess(transactionHistory: List<Transaction>) {
+        updateState {
+            it.copy(
+                isFilterVisible = false,
+                history = transactionHistory.map { tx -> tx.toUi() },
+                filterState = it.filterState.copy(
+                    isLoading = false,
+                    activeFilterCount = getActiveFilterCount()
+                )
+            )
+        }
+    }
+
+    private fun getActiveFilterCount(): Int {
+        val state = state.value.filterState
+        return (if (state.selectedTypes.isNotEmpty()) 1 else 0) +
+                (if (state.selectedStatus != FilterStatus.ALL) 1 else 0) +
+                (if (state.fromDate != null || state.toDate != null) 1 else 0)
+    }
+
+    private suspend fun onGetTransactionFilterError(errorState: ErrorState) {
+        updateState {
+            it.copy(
+                filterState = it.filterState.copy(
+                    isLoading = false,
+                    errorState = errorState
+                )
+            )
+        }
+
+        showSnackBar(
+            titleRes = Res.string.error,
+            messageRes = Res.string.failed_to_apply_filters,
+            isSuccess = false
+        )
+    }
+
+    private suspend fun showSnackBar(
+        titleRes: StringResource,
+        messageRes: StringResource,
+        isSuccess: Boolean,
+        durationMillis: Long = 3000L
+    ) {
+        updateState { oldState ->
+            oldState.copy(
+                snackBar = SnackBarState(
+                    isVisible = true,
+                    titleRes = titleRes,
+                    messageRes = messageRes,
+                    isSuccess = isSuccess
+                )
+            )
+        }
+
+        delay(durationMillis)
+
+        hideSnackBar()
+    }
+
+    private fun hideSnackBar() {
+        updateState { oldState -> oldState.copy(snackBar = oldState.snackBar.copy(isVisible = false)) }
+    }
+
+    override fun selectFilterType(type: FilterType) {
+        updateState {
+            val currentTypes = it.filterState.selectedTypes.toMutableSet()
+            if (currentTypes.contains(type)) {
+                currentTypes.remove(type)
+            } else {
+                currentTypes.add(type)
+            }
+            it.copy(filterState = it.filterState.copy(selectedTypes = currentTypes))
+        }
+    }
+
+    override fun selectFilterStatus(status: FilterStatus) {
+        updateState { it.copy(filterState = it.filterState.copy(selectedStatus = status)) }
+    }
+
+    fun updateFromDate(date: LocalDate?) {
+        updateState { it.copy(filterState = it.filterState.copy(fromDate = date)) }
+    }
+
+    fun updateToDate(date: LocalDate?) {
+        updateState { it.copy(filterState = it.filterState.copy(toDate = date)) }
+    }
+
+    override fun onDismissFilter() {
+        updateState { it.copy(isFilterVisible = false) }
     }
 }

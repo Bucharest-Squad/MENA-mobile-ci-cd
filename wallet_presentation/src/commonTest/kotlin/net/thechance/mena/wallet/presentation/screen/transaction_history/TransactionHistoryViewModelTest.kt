@@ -50,7 +50,7 @@ class TransactionHistoryViewModelTest {
             awaitItem()
             advanceUntilIdle()
             val successState = awaitItem()
-            assertEquals(null, successState.isError)
+            assertEquals(null, successState.errorState)
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -91,19 +91,6 @@ class TransactionHistoryViewModelTest {
             viewModel.onExportClicked()
             val effect = awaitItem()
             assertEquals(TransactionHistoryEffect.NavigateToExportTransaction, effect)
-            cancelAndIgnoreRemainingEvents()
-        }
-    }
-
-    @Test
-    fun `should send NavigateToFilterBottomSheet effect when onFilterClicked is called`() = runTest(testDispatcher) {
-        everySuspend { transactionRepository.getTransactionHistory(null) } returns emptyList()
-        val viewModel = TransactionHistoryViewModel(transactionRepository)
-        advanceUntilIdle()
-        viewModel.uiEffect.test {
-            viewModel.onFilterClicked()
-            val effect = awaitItem()
-            assertEquals(TransactionHistoryEffect.NavigateToFilterBottomSheet, effect)
             cancelAndIgnoreRemainingEvents()
         }
     }
