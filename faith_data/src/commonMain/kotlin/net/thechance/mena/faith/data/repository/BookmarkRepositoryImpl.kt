@@ -1,6 +1,5 @@
 package net.thechance.mena.faith.data.repository
 
-import io.ktor.client.statement.HttpResponse
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -25,17 +24,17 @@ class BookmarkRepositoryImpl(
 ) : BookmarkRepository {
 
     override suspend fun addAyahBookmark(surahId: Int, ayahNumber: Int): AyahBookmark {
-        val dto = executeApiSafely<AyahBookmarkDto> {
+        val bookmarkDto = executeApiSafely<AyahBookmarkDto> {
             bookmarkApiService.addBookmark(AddBookmarkRequest(surahId, ayahNumber))
         }
         val surah = ayahDao.getSurah(surahId)
         val ayah = ayahDao.getAyah(surahId, ayahNumber)
 
         return AyahBookmark(
-            id = dto.id.toInt(),
+            id = bookmarkDto.id.toInt(),
             surah = surah.toSurah(),
             ayah = ayah.toAyah(),
-            createdAt = Instant.parse(dto.createdAt)
+            createdAt = Instant.parse(bookmarkDto.createdAt)
         )
     }
 
@@ -52,7 +51,7 @@ class BookmarkRepositoryImpl(
     }
 
     override suspend fun deleteAyahBookmark(ayahBookmarkId: Int) {
-        executeApiSafely<HttpResponse> {
+        executeApiSafely<Unit> {
             bookmarkApiService.deleteBookmark(ayahBookmarkId)
         }
     }

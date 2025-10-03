@@ -1,15 +1,14 @@
 package net.thechance.mena.faith.data.utils
 
+import de.jensklingenberg.ktorfit.Response
 import io.github.aakira.napier.Napier
-import io.ktor.client.call.body
-import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpStatusCode
 import kotlinx.io.IOException
 import kotlinx.serialization.SerializationException
 import net.thechance.mena.faith.domain.exception.FaithException
 
 suspend inline fun <reified T> executeApiSafely(
-    apiCall: suspend () -> HttpResponse,
+    apiCall: suspend () -> Response<T>,
 ): T {
     val response = runCatching { apiCall() }
         .onFailure { e ->
@@ -20,7 +19,12 @@ suspend inline fun <reified T> executeApiSafely(
 
     return when (response.status) {
         HttpStatusCode.OK -> {
-            runCatching { response.body<T>() }
+            runCatching {
+                response.body() ?: run {
+                    Napier.d("Response body is null")
+                    throw FaithException.NetworkException
+                }
+            }
                 .onFailure { e ->
                     Napier.d("Error parsing response: ${e.message}")
                     throw FaithException.NetworkException
