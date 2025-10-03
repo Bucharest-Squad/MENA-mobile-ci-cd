@@ -4,8 +4,10 @@ import androidx.compose.ui.graphics.ImageBitmap
 import app.cash.turbine.test
 import com.attafitamim.krop.core.images.ImageSrc
 import dev.mokkery.answering.returns
+import dev.mokkery.answering.throws
 import dev.mokkery.every
 import dev.mokkery.everySuspend
+import dev.mokkery.matcher.any
 import dev.mokkery.mock
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -13,15 +15,16 @@ import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import mena.dukan_presentation.generated.resources.Res
+import mena.dukan_presentation.generated.resources.error_general
 import mena.dukan_presentation.generated.resources.error_image_max_limit
 import mena.dukan_presentation.generated.resources.error_image_size
+import mena.dukan_presentation.generated.resources.error_price_invalid
 import mena.dukan_presentation.generated.resources.error_upload_failed
 import net.thechance.mena.dukan.domain.entity.Shelf
 import net.thechance.mena.dukan.domain.repository.ProductRepository
 import net.thechance.mena.dukan.domain.repository.ShelfRepository
 import net.thechance.mena.dukan.presentation.component.productImage.ProductImageState
 import net.thechance.mena.dukan.presentation.util.file.ImageFile
-import net.thechance.mena.dukan.presentation.util.imageCrop.toPngByteArray
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -41,15 +44,15 @@ class CreateProductViewModelTest {
 
     @BeforeTest
     fun setUp() {
-        viewModel = CreateProductViewModel(productRepository, shelfRepository,dispatcher)
+        viewModel = CreateProductViewModel(productRepository, shelfRepository, dispatcher)
     }
 
     @Test
     fun `getShelves Should update emit success state`() = scope.runTest {
-        val shelves = listOf(Shelf("1", "Shelf1"),Shelf("2", "Shelf2"))
+        val shelves = listOf(Shelf("1", "Shelf1"), Shelf("2", "Shelf2"))
         everySuspend { shelfRepository.getMyDukanShelves() } returns shelves
 
-        viewModel = CreateProductViewModel(productRepository, shelfRepository,dispatcher)
+        viewModel = CreateProductViewModel(productRepository, shelfRepository, dispatcher)
         advanceUntilIdle()
 
         viewModel.state.test {
@@ -117,6 +120,7 @@ class CreateProductViewModelTest {
         assertFalse(state.showSnackBar)
         assertNull(state.snackBarUiState)
     }
+
     @Test
     fun `onUploadImageClick - too many images shows max limit error`() = scope.runTest {
         val fakeBitmap = mock<ImageBitmap>()
@@ -271,6 +275,57 @@ class CreateProductViewModelTest {
         assertFalse(state.showCropImage)
     }
 
+    @Test
+    fun `onAddProductClick - invalid product shows validation error`() = scope.runTest {
+        viewModel.updateState {
+            copy(
+                productName = "Test",
+                selectedShelf = ShelfUiState("id1"),
+                price = "abc",
+                description = "Valid description".padEnd(120, 'x'),
+                images = listOf(
+                    ProductImageUi(
+                        1234,
+                        mock<ImageBitmap>(),
+                        1.0,
+                        ProductImageState.SUCCESS
+                    )
+                )
+            )
+        }
+
+        viewModel.onAddProductClick()
+        advanceUntilIdle()
+
+        val state = viewModel.state.value
+        assertTrue(state.showSnackBar)
+        assertEquals(Res.string.error_price_invalid, state.snackBarUiState?.message)
+    }
+
+    @Test
+    fun `onAddProductClick - repository error shows error snackbar`() = scope.runTest {
+        val fakeBitmap = mock<ImageBitmap>()
+        val shelf = ShelfUiState("s1", name = "Shelf1")
+
+        everySuspend { productRepository.createProduct(any()) } throws RuntimeException("fail")
+
+        viewModel.updateState {
+            copy(
+                productName = "Phone",
+                selectedShelf = shelf,
+                price = "50.0",
+                description = "Nice description".padEnd(120, 'z'),
+                images = listOf(ProductImageUi(0, fakeBitmap, 1.0, ProductImageState.SUCCESS))
+            )
+        }
+
+        viewModel.onAddProductClick()
+        advanceUntilIdle()
+
+        val state = viewModel.state.value
+        assertTrue(state.showSnackBar)
+        assertEquals(Res.string.error_general, state.snackBarUiState?.message)
+    }
 
 
 }
