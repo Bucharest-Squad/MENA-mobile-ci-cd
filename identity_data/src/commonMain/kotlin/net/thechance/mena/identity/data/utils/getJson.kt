@@ -10,16 +10,14 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 
 internal suspend inline fun <reified R> HttpClient.getJson(
-    path : String,
+    path: String,
     queryParams: Map<String, String> = emptyMap(),
-
-    ) : R {
-
-    val response = this.get{
+): R {
+    val response = this.get {
         url(path)
 
-        queryParams.forEach {query ->
-            url.parameters.append(query.key , query.value)
+        queryParams.forEach { query ->
+            url.parameters.append(query.key, query.value)
         }
 
         contentType(ContentType.Application.Json)
@@ -30,5 +28,4 @@ internal suspend inline fun <reified R> HttpClient.getJson(
     }
 
     return response.body()
-
 }

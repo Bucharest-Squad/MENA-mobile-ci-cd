@@ -51,9 +51,6 @@ fun OtherSettingsSection(
 @Composable
 fun PreviewOtherSettingsSection() {
     MenaTheme {
-
-        OtherSettingsSection(
-            {}, {}
-        )
+        OtherSettingsSection({}, {})
     }
 }

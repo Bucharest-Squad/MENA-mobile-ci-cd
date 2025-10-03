@@ -9,6 +9,5 @@ class RegisterScreenModel :
     override fun onBackButtonClicked() {
         sendNewEffect(RegisterScreenUIEffect.NavigateBack)
     }
-
 }
 
