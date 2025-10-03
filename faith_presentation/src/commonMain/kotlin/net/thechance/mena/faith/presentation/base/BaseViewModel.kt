@@ -15,9 +15,11 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import net.thechance.mena.faith.domain.annotation.KoverIgnore
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.getString
 
+@KoverIgnore
 abstract class BaseViewModel<UI_STATE, UI_EFFECT>(
     initialState: UI_STATE
 ) : ViewModel() {
