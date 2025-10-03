@@ -26,6 +26,7 @@ import net.thechance.mena.wallet.domain.entity.Transaction
 import net.thechance.mena.wallet.domain.model.TransactionStatus
 import net.thechance.mena.wallet.domain.model.TransactionType
 import net.thechance.mena.wallet.domain.repository.TransactionRepository
+import net.thechance.mena.wallet.presentation.base.ErrorState
 import net.thechance.mena.wallet.presentation.utils.ImageSharer
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
@@ -87,6 +88,10 @@ class TransactionDetailsViewModelTest {
                 skipItems(2)
                 val successState = awaitItem()
                 assertEquals(
+                    transaction1uiState.id,
+                    successState.transactionDetailsUiState.id
+                )
+                assertEquals(
                     transaction1uiState.transactionType,
                     successState.transactionDetailsUiState.transactionType
                 )
@@ -118,7 +123,7 @@ class TransactionDetailsViewModelTest {
             viewModel.state.test {
                 skipItems(2)
                 val errorState = awaitItem()
-                assertEquals(expectedError, errorState.isError)
+                assertEquals(ErrorState.Unknown, errorState.errorState)
                 cancelAndIgnoreRemainingEvents()
             }
         }
@@ -201,7 +206,7 @@ class TransactionDetailsViewModelTest {
         )
 
         viewModel.state.test {
-            skipItems(3)
+            skipItems(2)
             viewModel.onScreenShotCaptured(byteArray, "test_file")
             val finalState = awaitItem()
             assertEquals(true, finalState.snackBar.isSuccess)
@@ -265,7 +270,7 @@ class TransactionDetailsViewModelTest {
             type = TransactionType.RECEIVED
         )
         val transaction1uiState = TransactionDetailsScreenState.TransactionDetailsUiState(
-            id = transaction1Id.toString(),
+            id = "TX-${transaction1Id.toString().substring(0,6)}",
             amount = "5000.0",
             date = "20 Aug 2025, 12:00 pm",
             userName = "Nour Elhoda",

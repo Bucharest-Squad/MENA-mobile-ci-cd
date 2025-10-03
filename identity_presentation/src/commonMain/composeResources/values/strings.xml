@@ -49,4 +49,13 @@
     <string name="otp_prompt_title">Enter the verification code</string>
     <string name="otp_prompt">Please enter the OTP code that was sent to your phone number end with **%1$s to reset your password.</string>
 
+
+    <string name="reset">Reset</string>
+    <string name="new_password_title">New password</string>
+    <string name="reset_password_description">Please enter your new password and make sure you remember it in the next time</string>
+    <string name="new_password_label">New password</string>
+    <string name="confirm_password_label">Confirm password</string>
+    <string name="reset_password_dialog_title">Success!</string>
+    <string name="reset_password_dialog_message">Your password has been successfully reset.</string>
+
 </resources>

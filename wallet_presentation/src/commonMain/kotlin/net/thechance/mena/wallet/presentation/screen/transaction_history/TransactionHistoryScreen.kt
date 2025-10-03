@@ -10,33 +10,35 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import mena.wallet_presentation.generated.resources.Res
 import mena.wallet_presentation.generated.resources.back_button
-import mena.wallet_presentation.generated.resources.filter
 import mena.wallet_presentation.generated.resources.ic_arrow_left
-import mena.wallet_presentation.generated.resources.ic_filter
 import mena.wallet_presentation.generated.resources.ic_share
 import mena.wallet_presentation.generated.resources.share
 import mena.wallet_presentation.generated.resources.transactions_history
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
-import net.thechance.mena.designsystem.presentation.component.button.Button
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
-import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import net.thechance.mena.wallet.presentation.component.ErrorView
+import net.thechance.mena.wallet.presentation.component.SnackBarContainer
 import net.thechance.mena.wallet.presentation.component.WalletScaffold
+import net.thechance.mena.wallet.presentation.screen.transaction_history.component.FilterButton
+import net.thechance.mena.wallet.presentation.screen.transaction_history.component.FilterTransactionEmpty
+import net.thechance.mena.wallet.presentation.screen.transaction_history.component.TransactionFilterBottomSheet
 import net.thechance.mena.wallet.presentation.screen.transaction_history.component.TransactionHistoryCard
+import net.thechance.mena.wallet.presentation.screen.transaction_history.component.TransactionHistoryEmpty
+import net.thechance.mena.wallet.presentation.screen.wallet.component.ThreeDotsLoadingIndicator
 import net.thechance.mena.wallet.presentation.utils.ObserveAsEffect
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -66,10 +68,7 @@ fun TransactionHistoryScreen(
         }
     )
 
-    TransactionHistoryContent(
-        state = state,
-        interactionListener = viewModel
-    )
+    TransactionHistoryContent(state = state, interactionListener = viewModel)
 }
 
 @Composable
@@ -92,57 +91,105 @@ fun TransactionHistoryContent(
                 onLeadingClick = interactionListener::onBackClicked,
                 trailingContent = {
                     Icon(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(16.dp))
+                        modifier = Modifier.clip(RoundedCornerShape(16.dp))
                             .clickable { interactionListener.onExportClicked() },
                         painter = painterResource(Res.drawable.ic_share),
                         contentDescription = Res.string.share.toString()
                     )
-                },
-            )
-        }
-    ) {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Theme.colorScheme.background.surface)
-                .padding(horizontal = 16.dp, vertical = 16.dp),
-        ) {
-            item {
-                Button(
-                    contentPadding = PaddingValues(vertical = 8.dp, horizontal = 12.dp),
-                    onClick = interactionListener::onFilterClicked,
-                    containerColor = Theme.colorScheme.brand.brandVariant,
-                    shape = CircleShape,
-                ) {
-                    Icon(
-                        modifier = Modifier.size(16.dp),
-                        painter = painterResource(Res.drawable.ic_filter),
-                        contentDescription = stringResource(Res.string.filter)
-                    )
-                    Text(
-                        modifier = Modifier.padding(start = 4.dp),
-                        text = stringResource(Res.string.filter),
-                        style = Theme.typography.label.small,
-                        color = Theme.colorScheme.primary.primary
-                    )
                 }
-            }
-            items(state.history) { transaction ->
-                TransactionHistoryCard(
-                    transaction = transaction,
-                    onTransactionCardClicked = {
-                        interactionListener.onTransactionCardClicked(transaction.id)
+            )
+        },
+        overlays = {
+            bottomSheet(state.isFilterVisible) {
+                TransactionFilterBottomSheet(
+                    uiState = state.filterState,
+                    onDismiss = interactionListener::onDismissFilter,
+                    onClickAddFilter = interactionListener::onApplyFilterClicked,
+                    onResetClicked = interactionListener::onResetFilterClicked,
+                    onTypeToggled = interactionListener::selectFilterType,
+                    onStatusSelected = interactionListener::selectFilterStatus,
+                    onFromClick = {
+                        // TODO: Show date picker
+                    },
+                    onToClick = {
+                        // TODO: Show date picker
                     }
                 )
-                Box(
-                    modifier = Modifier
-                        .padding(top = 4.dp)
-                        .fillMaxWidth(1f)
-                        .height(1.dp)
-                        .background(Theme.colorScheme.stroke)
-                )
             }
+        },
+        snackBar = { SnackBarContainer(snackBarState = state.snackBar) },
+        errorState = state.errorState,
+        onRetry = { interactionListener.onRetryLoadTransactionHistoryClicked() }
+    ) {
+
+        when {
+            state.isLoading -> {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    ThreeDotsLoadingIndicator(modifier = Modifier.align(Alignment.Center))
+                }
+            }
+
+            state.errorState != null ->
+                ErrorView(onRetry = { interactionListener.onRetryLoadTransactionHistoryClicked() })
+
+            else ->
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Theme.colorScheme.background.surface)
+                        .padding(horizontal = 16.dp, vertical = 16.dp),
+                ) {
+                    item {
+                        if (state.history.isNotEmpty() || state.filterState.activeFilterCount != 0) {
+                            FilterButton(
+                                activeFilterCount = state.filterState.activeFilterCount,
+                                hasActiveFilters = state.filterState.hasActiveFilters,
+                                onClick = interactionListener::onFilterClicked
+                            )
+                        }
+                    }
+                    when {
+                        state.history.isEmpty() && state.filterState.activeFilterCount == 0 -> {
+                            item {
+                                Box(
+                                    modifier = Modifier.fillParentMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    TransactionHistoryEmpty()
+                                }
+                            }
+                        }
+
+                        state.history.isEmpty() && state.filterState.activeFilterCount > 0 -> {
+                            item {
+                                Box(
+                                    modifier = Modifier.fillParentMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    FilterTransactionEmpty()
+                                }
+                            }
+                        }
+
+                        state.history.isNotEmpty() -> {
+                            items(state.history) { transaction ->
+                                TransactionHistoryCard(
+                                    transaction = transaction,
+                                    onTransactionCardClicked = {
+                                        interactionListener.onTransactionCardClicked(transaction.id)
+                                    }
+                                )
+                                Box(
+                                    modifier = Modifier
+                                        .padding(top = 4.dp)
+                                        .fillMaxWidth()
+                                        .height(1.dp)
+                                        .background(Theme.colorScheme.stroke)
+                                )
+                            }
+                        }
+                    }
+                }
         }
     }
 }
@@ -157,9 +204,6 @@ private fun onTransactionHistoryEffect(
     when (effect) {
         TransactionHistoryEffect.NavigateBack -> onNavigateBackClicked()
         TransactionHistoryEffect.NavigateToExportTransaction -> navigateToExportTransaction()
-        TransactionHistoryEffect.NavigateToFilterBottomSheet -> {/*TODO: navigate to filter bottom sheet*/
-        }
-
         is TransactionHistoryEffect.NavigateToTransactionDetails -> {
             navigateToTransactionDetails(effect.id)
         }
