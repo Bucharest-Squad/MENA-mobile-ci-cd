@@ -71,8 +71,9 @@ class LoginScreen : BaseScreen<
 
         Scaffold(
             overlays = {
-                bottomSheet(state.showCountryBottomSheet) {
+                bottomSheet(state.showCountryBottomSheet) { showBottomSheet ->
                     CountryPicker(
+                        isVisible = showBottomSheet,
                         isEnabled = state.countryPickerUIState.isEnabled,
                         countries = state.countryPickerUIState.countries,
                         onSelectCountryItem = listener::onSelectCountryItem,
