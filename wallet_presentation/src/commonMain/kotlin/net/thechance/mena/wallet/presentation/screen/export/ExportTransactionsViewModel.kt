@@ -99,7 +99,7 @@ class ExportTransactionsViewModel(
     }
 
     override fun onStartDateClicked() {
-        val currentStartDate = state.value.startDate
+        val currentStartDate = currentState.startDate
         if (currentStartDate != null) {
             handleExistingStartDate(currentStartDate)
         } else {
@@ -109,7 +109,7 @@ class ExportTransactionsViewModel(
 
     @OptIn(ExperimentalTime::class)
     override fun onEndDateClicked() {
-        val currentEndDate = state.value.endDate
+        val currentEndDate = currentState.endDate
         updateState {
             it.copy(
                 isDateBottomSheetVisible = true,
@@ -129,7 +129,7 @@ class ExportTransactionsViewModel(
     }
 
     override fun onPickDateClicked(date: LocalDate) {
-        val updatedState = when (state.value.datePickerMode) {
+        val updatedState = when (currentState.datePickerMode) {
             ExportTransactionsState.DatePickerMode.START_DATE -> updateStartDate(date)
             ExportTransactionsState.DatePickerMode.END_DATE -> updateEndDate(date)
         }
@@ -185,14 +185,14 @@ class ExportTransactionsViewModel(
     }
 
     private fun updateStartDate(date: LocalDate): ExportTransactionsState {
-        return state.value.copy(
+        return currentState.copy(
             startDate = date,
             defaultStartDate = date
         )
     }
 
     private fun updateEndDate(date: LocalDate): ExportTransactionsState {
-        return state.value.copy(
+        return currentState.copy(
             endDate = date,
             defaultEndDate = date
         )
