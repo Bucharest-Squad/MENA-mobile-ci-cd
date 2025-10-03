@@ -229,7 +229,8 @@ class ExportTransactionsViewModel(
     }
 
     private suspend fun onGetFirstTransactionDateError(throwable: Throwable) {
-        showSnackBar(
+        handleError(
+            error = throwable,
             titleRes = Res.string.error,
             messageRes = Res.string.failed_to_load_date_picker,
             isSuccess = false
