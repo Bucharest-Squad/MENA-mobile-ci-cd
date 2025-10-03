@@ -3,6 +3,7 @@ package net.thechance.mena.identity.data.di
 import com.russhwolf.settings.Settings
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
@@ -54,9 +55,14 @@ internal fun provideHttpClient(
                 }
             }
         }
+        install(HttpTimeout) {
+            connectTimeoutMillis = NETWORK_TIMEOUT_MS
+            requestTimeoutMillis = NETWORK_TIMEOUT_MS
+        }
     }
 }
 
+const val NETWORK_TIMEOUT_MS = 15_000L
 private val whiteListEndPoints = listOf(
     LOGIN_ENDPOINT, REFRESH_ENDPOINT
 )
