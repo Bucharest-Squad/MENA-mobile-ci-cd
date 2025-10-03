@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import mena.wallet_presentation.generated.resources.Res
 import mena.wallet_presentation.generated.resources.from
@@ -25,7 +27,6 @@ import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.wallet.presentation.model.FilterStatus
 import net.thechance.mena.wallet.presentation.model.FilterType
-import net.thechance.mena.wallet.presentation.utils.pointerClick
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -172,6 +173,7 @@ private fun DatePickerField(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 8.dp)
+                .clip(shape = RoundedCornerShape(Theme.radius.md))
                 .pointerClick(key = value) { onClick() },
             trailingIcon = painterResource(Res.drawable.ic_calendar)
         )
