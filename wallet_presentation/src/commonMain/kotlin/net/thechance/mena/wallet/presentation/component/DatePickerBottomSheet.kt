@@ -73,7 +73,7 @@ fun ScaffoldScope.DatePickerBottomSheet(
     maxYear: Int = Clock.System.now()
         .toLocalDateTime(TimeZone.currentSystemDefault()).year,
     defaultSelectedDate: LocalDate? = null,
-    onPickClick: (Int, Int, Int) -> Unit,
+    onPickClick: (day: Int, month: Int, year: Int) -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -101,7 +101,7 @@ fun DatePickerBottomSheetContent(
     title: String = stringResource(Res.string.pick_start_date),
     minYear: Int = 2000,
     maxYear: Int = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).year,
-    onPickClick: (Int, Int, Int) -> Unit,
+    onPickClick: (day: Int, month: Int, year: Int) -> Unit,
     selectedDate: LocalDate?,
     onDismiss: () -> Unit,
 ) {
