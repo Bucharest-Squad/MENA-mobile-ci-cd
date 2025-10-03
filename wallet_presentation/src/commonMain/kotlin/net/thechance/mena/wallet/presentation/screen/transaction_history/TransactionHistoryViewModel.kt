@@ -101,7 +101,7 @@ class TransactionHistoryViewModel(
     }
 
     override fun onApplyFilterClicked() {
-        val filters = state.value.filterState
+        val filters = currentState.filterState
         if (areDatesValid().not()) {
             showInvalidDatesSnackBar()
             return
@@ -132,9 +132,9 @@ class TransactionHistoryViewModel(
 
 
     override fun onStartDateClicked() {
-        val currentStartDate = state.value.filterState.startDate
+        val currentStartDate = currentState.filterState.startDate
         if (currentStartDate != null) {
-            handleExistingStartDate(currentStartDate)
+            openStartDatePickerWithExistingDate(currentStartDate)
         } else {
             fetchFirstTransactionDate()
         }
@@ -144,7 +144,7 @@ class TransactionHistoryViewModel(
 
     @OptIn(ExperimentalTime::class)
     override fun onEndDateClicked() {
-        val currentEndDate = state.value.filterState.endDate
+        val currentEndDate = currentState.filterState.endDate
         updateState {
             it.copy(
                 filterState = it.filterState.copy(
@@ -168,7 +168,7 @@ class TransactionHistoryViewModel(
     }
 
     override fun onPickDateClicked(date: LocalDate) {
-        when (state.value.filterState.datePickerMode) {
+        when (currentState.filterState.datePickerMode) {
             TransactionFilterState.DatePickerMode.START_DATE -> updateStartDate(date)
             TransactionFilterState.DatePickerMode.END_DATE -> updateEndDate(date)
         }
@@ -208,7 +208,7 @@ class TransactionHistoryViewModel(
         }
     }
 
-    private fun handleExistingStartDate(currentStartDate: LocalDate) {
+    private fun openStartDatePickerWithExistingDate(currentStartDate: LocalDate) {
         updateState {
             it.copy(
                 filterState = it.filterState.copy(
@@ -303,7 +303,7 @@ class TransactionHistoryViewModel(
     }
 
     private fun getActiveFilterCount(): Int {
-        val state = state.value.filterState
+        val state = currentState.filterState
         return (if (state.selectedTypes.isNotEmpty()) 1 else 0) +
                 (if (state.selectedStatus != FilterStatus.ALL) 1 else 0) +
                 (if (state.startDate != null || state.endDate != null) 1 else 0)
