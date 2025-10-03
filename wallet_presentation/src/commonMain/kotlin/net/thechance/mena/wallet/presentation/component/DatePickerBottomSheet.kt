@@ -97,7 +97,7 @@ fun ScaffoldScope.DatePickerBottomSheet(
 
 @OptIn(ExperimentalTime::class)
 @Composable
-fun DatePickerBottomSheetContent(
+private fun DatePickerBottomSheetContent(
     title: String = stringResource(Res.string.pick_start_date),
     minYear: Int = 2000,
     maxYear: Int = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).year,

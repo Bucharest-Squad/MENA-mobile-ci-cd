@@ -122,7 +122,7 @@ private fun TransactionStatusRow(
 }
 
 @Composable
-fun DateRangePicker(
+private fun DateRangePicker(
     startDate: String,
     endDate: String,
     onStartDateClicked: () -> Unit,
