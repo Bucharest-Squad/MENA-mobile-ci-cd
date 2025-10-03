@@ -1,5 +1,10 @@
 package net.thechance.mena.dukan.presentation.screen.manageDukan.content
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.style.TextAlign
 import mena.dukan_presentation.generated.resources.Res
@@ -16,6 +21,7 @@ import net.thechance.mena.dukan.presentation.screen.manageDukan.compnent.Product
 import net.thechance.mena.dukan.presentation.util.pagination.Pager
 import net.thechance.mena.dukan.presentation.viewModel.manageDukan.ManageDukanUiState
 import net.thechance.mena.dukan.presentation.viewModel.manageDukan.ProductUiState
+import net.thechance.mena.dukan.presentation.viewModel.manageDukan.ProductsState
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -24,14 +30,23 @@ fun ManageDukanProducts(
     pager: Pager<Int, ProductUiState>,
     onProductClick: (ProductUiState) -> Unit
 ) {
-    when {
-        state.shelves.isEmpty() -> NoShelvesContent()
-        state.products.items.isEmpty() -> EmptyStateContent()
-        else -> ProductsList(
-            products = state.products.items,
-            onProductClick = onProductClick,
-            pager = pager
-        )
+    AnimatedContent(
+        targetState = state.productState,
+        transitionSpec = {
+            fadeIn(animationSpec = tween()) togetherWith
+                    fadeOut(animationSpec = tween())
+        },
+        label = "ContentAnimation"
+    ) { target ->
+        when (target) {
+            ProductsState.LOADING -> {}
+            ProductsState.LOADED -> ProductsList(
+                products = state.products.items,
+                onProductClick = onProductClick,
+                pager = pager
+            )
+            ProductsState.EMPTY -> EmptyStateContent()
+        }
     }
 }
 

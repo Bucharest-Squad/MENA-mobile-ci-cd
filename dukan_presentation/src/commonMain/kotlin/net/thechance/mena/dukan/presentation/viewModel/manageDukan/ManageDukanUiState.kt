@@ -12,8 +12,8 @@ data class ManageDukanUiState(
     val selectedShelf: ShelfUiState? = null,
     val totalProducts: Long = 0,
     val products: PagingData<ProductUiState> = PagingData(),
-    val isLoading: Boolean = false,
-    val isLoadingProducts: Boolean = false,
+    val shelvesState: ShelvesState = ShelvesState.LOADING,
+    val productState: ProductsState = ProductsState.LOADING,
     val snackBarState: SnackBarUiState? = null,
     val deleteShelfConfirmationDialogUiState: DeleteShelfConfirmationDialogUiState? = null,
     val showDeleteConfirmationDialog: Boolean = false,
@@ -30,6 +30,18 @@ data class DeleteShelfConfirmationDialogUiState(
 enum class ConfirmDialogType(val text: StringResource) {
     DELETE(text = Res.string.delete),
     DISMISS(text = Res.string.dismiss)
+}
+
+enum class ShelvesState {
+    LOADING,
+    LOADED,
+    EMPTY
+}
+
+enum class ProductsState {
+    LOADING,
+    LOADED,
+    EMPTY
 }
 
 data class ShelfUiState(
