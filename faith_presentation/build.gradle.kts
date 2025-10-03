@@ -58,6 +58,7 @@ kotlin {
             implementation(libs.turbine)
             implementation(libs.mokkery.core)
             implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.androidx.paging.testing)
         }
     }
 }
@@ -81,8 +82,13 @@ kover.reports {
     filters {
         includes {
             classes(
-                "*ViewModel"
+                "*ViewModel",
+                "*MapperKt",
             )
+        }
+
+        excludes {
+            annotatedBy("net.thechance.mena.faith.domain.annotation.KoverIgnore")
         }
     }
 }
