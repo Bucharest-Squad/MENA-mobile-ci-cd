@@ -29,6 +29,8 @@ import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.dukan.presentation.component.productImage.DisplayProductImage
 import net.thechance.mena.dukan.presentation.component.productImage.UploadProductImage
+import net.thechance.mena.dukan.presentation.util.file.ImageFile
+import net.thechance.mena.dukan.presentation.util.file.PlatformImageFile
 import net.thechance.mena.dukan.presentation.viewModel.createProduct.ProductImageUi
 import org.jetbrains.compose.resources.stringResource
 
@@ -36,7 +38,7 @@ fun LazyListScope.imageSection(
     images: List<ProductImageUi>,
     isUploadingImageEnabled: Boolean,
     isCancelImageEnabled: Boolean,
-    onUploadImageClick: (image: PlatformFile) -> Unit,
+    onUploadImageClick: (image: ImageFile) -> Unit,
     onCancelImageClick: (image: ImageBitmap) -> Unit,
 ) {
     item {

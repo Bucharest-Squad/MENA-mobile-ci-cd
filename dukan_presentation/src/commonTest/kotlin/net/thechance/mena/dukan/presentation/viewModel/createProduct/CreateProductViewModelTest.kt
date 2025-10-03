@@ -1,7 +1,10 @@
 package net.thechance.mena.dukan.presentation.viewModel.createProduct
 
+import androidx.compose.ui.graphics.ImageBitmap
 import app.cash.turbine.test
+import com.attafitamim.krop.core.images.ImageSrc
 import dev.mokkery.answering.returns
+import dev.mokkery.every
 import dev.mokkery.everySuspend
 import dev.mokkery.mock
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -9,9 +12,15 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
+import mena.dukan_presentation.generated.resources.Res
+import mena.dukan_presentation.generated.resources.error_image_max_limit
+import mena.dukan_presentation.generated.resources.error_image_size
+import mena.dukan_presentation.generated.resources.error_upload_failed
 import net.thechance.mena.dukan.domain.entity.Shelf
 import net.thechance.mena.dukan.domain.repository.ProductRepository
 import net.thechance.mena.dukan.domain.repository.ShelfRepository
+import net.thechance.mena.dukan.presentation.component.productImage.ProductImageState
+import net.thechance.mena.dukan.presentation.util.file.ImageFile
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -27,6 +36,7 @@ class CreateProductViewModelTest {
     private lateinit var viewModel: CreateProductViewModel
     private val dispatcher = StandardTestDispatcher()
     private val scope = TestScope(dispatcher)
+
 
     @BeforeTest
     fun setUp() {
@@ -106,4 +116,112 @@ class CreateProductViewModelTest {
         assertFalse(state.showSnackBar)
         assertNull(state.snackBarUiState)
     }
+    @Test
+    fun `onUploadImageClick - too many images shows max limit error`() = scope.runTest {
+        val fakeBitmap = mock<ImageBitmap>()
+        every { fakeBitmap.width } returns 1
+        every { fakeBitmap.height } returns 1
+
+        viewModel.updateState {
+            copy(images = List(CreateProductViewModel.IMAGE_MAX_LIMIT) {
+                ProductImageUi(
+                    image = fakeBitmap,
+                    imageSizeInMegaByte = 1.0,
+                    imageState = ProductImageState.SUCCESS
+                )
+            })
+        }
+
+        val fakeFile = mock<ImageFile>()
+        everySuspend { fakeFile.size() } returns 1
+        everySuspend { fakeFile.toImageBitmap() } returns fakeBitmap
+        everySuspend { fakeFile.toImageSrc() } returns mock<ImageSrc>()
+
+        viewModel.onUploadImageClick(fakeFile)
+        advanceUntilIdle()
+
+        val state = viewModel.state.value
+        assertTrue(state.showSnackBar)
+        assertEquals(
+            Res.string.error_image_max_limit.key,
+            state.snackBarUiState?.message?.key
+        )
+    }
+
+    @Test
+    fun `onUploadImageClick - large file shows size error`() = scope.runTest {
+        val fakeFile = mock<ImageFile>()
+        val fakeBitmap = mock<ImageBitmap>()
+        every { fakeBitmap.width } returns 100
+        every { fakeBitmap.height } returns 100
+
+        everySuspend { fakeFile.size() } returns (6 * 1024 * 1024L) // 6 MB
+        everySuspend { fakeFile.toImageBitmap() } returns fakeBitmap
+        everySuspend { fakeFile.toImageSrc() } returns mock<ImageSrc>()
+
+        viewModel.onUploadImageClick(fakeFile)
+        advanceUntilIdle()
+
+        val state = viewModel.state.value
+        assertTrue(state.showSnackBar)
+        assertEquals(Res.string.error_image_size, state.snackBarUiState?.message)
+    }
+
+    @Test
+    fun `onUploadImageClick - aspect ratio == 1 adds image immediately`() = scope.runTest {
+        val fakeFile = mock<ImageFile>()
+        val fakeBitmap = mock<ImageBitmap>()
+        every { fakeBitmap.width } returns 100
+        every { fakeBitmap.height } returns 100 // 1:1 ratio
+
+        everySuspend { fakeFile.size() } returns (1024 * 1024L) // 1 MB
+        everySuspend { fakeFile.toImageBitmap() } returns fakeBitmap
+        everySuspend { fakeFile.toImageSrc() } returns mock<ImageSrc>()
+
+        viewModel.onUploadImageClick(fakeFile)
+        advanceUntilIdle()
+
+        val state = viewModel.state.value
+        assertEquals(1, state.images.size)
+        assertEquals(ProductImageState.SUCCESS, state.images.first().imageState)
+    }
+
+    @Test
+    fun `onUploadImageClick - valid image goes to crop step`() = scope.runTest {
+        val fakeFile = mock<ImageFile>()
+        val fakeBitmap = mock<ImageBitmap>()
+        every { fakeBitmap.width } returns 100
+        every { fakeBitmap.height } returns 200 // ratio != 1
+
+        everySuspend { fakeFile.size() } returns (1024 * 1024L)
+        everySuspend { fakeFile.toImageBitmap() } returns fakeBitmap
+        everySuspend { fakeFile.toImageSrc() } returns mock<ImageSrc>()
+
+        viewModel.onUploadImageClick(fakeFile)
+        advanceUntilIdle()
+
+        val state = viewModel.state.value
+        assertTrue(state.showCropImage)
+        assertTrue(state.selectedImage != null)
+    }
+
+    @Test
+    fun `onUploadImageClick - null imageSrc shows upload failed`() = scope.runTest {
+        val fakeFile = mock<ImageFile>()
+        val fakeBitmap = mock<ImageBitmap>()
+        every { fakeBitmap.width } returns 100
+        every { fakeBitmap.height } returns 200
+
+        everySuspend { fakeFile.size() } returns (1024 * 1024L)
+        everySuspend { fakeFile.toImageBitmap() } returns fakeBitmap
+        everySuspend { fakeFile.toImageSrc() } returns null
+
+        viewModel.onUploadImageClick(fakeFile)
+        advanceUntilIdle()
+
+        val state = viewModel.state.value
+        assertTrue(state.showSnackBar)
+        assertEquals(Res.string.error_upload_failed, state.snackBarUiState?.message)
+    }
+
 }
