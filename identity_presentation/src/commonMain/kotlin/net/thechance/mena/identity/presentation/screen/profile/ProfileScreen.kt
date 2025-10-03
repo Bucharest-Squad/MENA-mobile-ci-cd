@@ -154,7 +154,7 @@ class ProfileScreen : BaseScreen<
                         modifier = Modifier
                             .padding(vertical = Theme.spacing._16)
                             .align(Alignment.CenterHorizontally),
-                        text = "version 1.0",
+                        text = "version ${state.versionNumber}",
                         style = Theme.typography.label.small,
                         color = Theme.colorScheme.shadeSecondary,
                     )

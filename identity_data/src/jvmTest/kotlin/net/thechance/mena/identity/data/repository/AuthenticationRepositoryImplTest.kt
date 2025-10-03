@@ -164,6 +164,21 @@ class AuthenticationRepositoryImplTest {
         assertThat(result).isEmpty()
     }
 
+    @Test
+    fun `observeToken emits new value when login is called`() = runTest {
+        val client = mockHttpClient(fakeLoginResponse)
+
+        authenticationRepository = AuthenticationRepositoryImpl(client = client, settings)
+
+        authenticationRepository.login(PhoneNumber("20", "1234567890"), "password123")
+
+        val result = authenticationRepository.observeTokenChange()
+
+        assertEquals(fakeLoginResponse.accessToken, result.value)
+
+
+    }
+
 }
 
 val fakeLoginResponse = AuthenticationResponse(

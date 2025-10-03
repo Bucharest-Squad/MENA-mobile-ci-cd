@@ -16,7 +16,7 @@ import net.thechance.mena.identity.data.mapper.toDomain
 import net.thechance.mena.identity.data.mapper.toEntity
 import net.thechance.mena.identity.data.utils.getJson
 import net.thechance.mena.identity.data.utils.safeWrapper
-import net.thechance.mena.identity.domain.model.User
+import net.thechance.mena.identity.domain.entity.User
 import net.thechance.mena.identity.domain.repository.UserRepository
 
 
@@ -41,7 +41,10 @@ class UserRepositoryImpl(
                 }
             }
         }
-        return userDao.getUser().flowOn(Dispatchers.IO).map { userEntity -> userEntity.toDomain() }
+        return userDao.getUser()
+            .map { userEntity -> userEntity?.toDomain() ?: throw Exception("User Not Found") }
+            .flowOn(Dispatchers.IO)
+
     }
 
 

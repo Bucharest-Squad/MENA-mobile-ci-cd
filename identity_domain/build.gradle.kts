@@ -17,6 +17,8 @@ kotlin {
 
         jvmTest.dependencies {
             implementation(libs.bundles.jvm.test)
+            implementation(libs.turbine)
+
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

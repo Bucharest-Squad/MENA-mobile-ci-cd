@@ -60,9 +60,10 @@ abstract class BaseScreenModel<S, E>(initialState: S) : ScreenModel{
         function: suspend () -> Flow<T>,
         onNewValue: (T) -> Unit,
         onError: (ErrorState) -> Unit,
+        dispatcher: CoroutineDispatcher ,
         inScope: CoroutineScope = screenModelScope,
     ): Job {
-        return runWithErrorCheck(onError, inScope) {
+        return runWithErrorCheck(onError, inScope ,dispatcher) {
             function().distinctUntilChanged().collectLatest {
                 onNewValue(it)
             }

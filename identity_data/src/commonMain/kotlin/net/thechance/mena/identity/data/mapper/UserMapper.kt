@@ -2,7 +2,7 @@ package net.thechance.mena.identity.data.mapper
 
 import net.thechance.mena.identity.data.dataSource.local.database.model.UserEntity
 import net.thechance.mena.identity.data.dto.profile.ProfileResponseDto
-import net.thechance.mena.identity.domain.model.User
+import net.thechance.mena.identity.domain.entity.User
 
 
 fun ProfileResponseDto.toDomain(): User{

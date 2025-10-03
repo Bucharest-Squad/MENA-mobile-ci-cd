@@ -1,4 +1,4 @@
-package net.thechance.mena.identity.domain.model
+package net.thechance.mena.identity.domain.entity
 
 data class User(
     val firstName:String,

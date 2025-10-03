@@ -1,13 +1,18 @@
 package net.thechance.mena.identity.presentation.screen.profile
 
-import net.thechance.mena.identity.domain.model.User
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import net.thechance.mena.identity.domain.entity.User
 import net.thechance.mena.identity.domain.repository.UserRepository
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
 import net.thechance.mena.identity.presentation.base.ErrorState
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
 
 class ProfileScreenViewModel(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    val appVersion: String,
+    val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) :
     BaseScreenModel<ProfileScreenUIState, ProfileScreenUIEffect>
         (ProfileScreenUIState()),
@@ -15,13 +20,21 @@ class ProfileScreenViewModel(
 
     init {
         getUserInfo()
+        setAppVersion()
     }
 
+    private fun setAppVersion(){
+        updateState {
+            copy(
+                versionNumber = appVersion
+            )
+        }
+    }
     private fun onErrorOccurred(errorState: ErrorState) {
         updateState {
             copy(
                 isLoading = false,
-                errorMessage = mapErrorToMessage(errorState)
+                errorMessage = ""
             )
         }
     }
@@ -31,6 +44,7 @@ class ProfileScreenViewModel(
             function = { userRepository.getUser() },
             onNewValue = ::updateUserInfo,
             onError = ::onErrorOccurred,
+            dispatcher =dispatcher
         )
     }
 

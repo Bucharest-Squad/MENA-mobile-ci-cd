@@ -28,7 +28,12 @@ expect val IdentityPlatformModule: Module
 val identityDataModule = module {
     single { CIO.create() }
 
-    singleOf(::UserRepositoryImpl) bind UserRepository::class
+    single<UserRepository>{
+        UserRepositoryImpl(
+            client = get(named(IDENTITY_CLIENT)),
+            userDao =  get()
+        )
+    }
     singleOf(::ResetPasswordRepositoryImpl) bind ResetPasswordRepository::class
     single<AuthenticationRepository> {
         AuthenticationRepositoryImpl(

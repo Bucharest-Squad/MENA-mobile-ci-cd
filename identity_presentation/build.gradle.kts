@@ -70,6 +70,7 @@ android {
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
     }
+
 }
 
 kover.reports {
