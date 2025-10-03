@@ -21,6 +21,7 @@ import net.thechance.mena.dukan.domain.repository.ProductRepository
 import net.thechance.mena.dukan.domain.repository.ShelfRepository
 import net.thechance.mena.dukan.presentation.component.productImage.ProductImageState
 import net.thechance.mena.dukan.presentation.util.file.ImageFile
+import net.thechance.mena.dukan.presentation.util.imageCrop.toPngByteArray
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -223,5 +224,53 @@ class CreateProductViewModelTest {
         assertTrue(state.showSnackBar)
         assertEquals(Res.string.error_upload_failed, state.snackBarUiState?.message)
     }
+
+    @Test
+    fun `onCancelImageClick should remove the given image`() = scope.runTest {
+        val fakeBitmap1 = mock<ImageBitmap>()
+        val fakeBitmap2 = mock<ImageBitmap>()
+
+        viewModel.updateState {
+            copy(
+                images = listOf(
+                    ProductImageUi(
+                        image = fakeBitmap1,
+                        imageSizeInMegaByte = 1.0,
+                        imageState = ProductImageState.SUCCESS
+                    ),
+                    ProductImageUi(
+                        image = fakeBitmap2,
+                        imageSizeInMegaByte = 1.5,
+                        imageState = ProductImageState.SUCCESS
+                    )
+                )
+            )
+        }
+
+        viewModel.onCancelImageClick(fakeBitmap1)
+
+        val state = viewModel.state.value
+        assertEquals(1, state.images.size)
+        assertEquals(fakeBitmap2, state.images.first().image)
+    }
+
+
+    @Test
+    fun `onCropImageBackClick should clear selected image and hide crop UI`() = scope.runTest {
+        viewModel.updateState {
+            copy(
+                selectedImage = mock<ImageSrc>(), // anything non-null
+                showCropImage = true
+            )
+        }
+
+        viewModel.onCropImageBackClick()
+
+        val state = viewModel.state.value
+        assertNull(state.selectedImage)
+        assertFalse(state.showCropImage)
+    }
+
+
 
 }
