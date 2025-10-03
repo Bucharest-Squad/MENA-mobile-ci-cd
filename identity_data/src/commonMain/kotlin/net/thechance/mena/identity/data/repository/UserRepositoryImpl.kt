@@ -2,11 +2,15 @@ package net.thechance.mena.identity.data.repository
 
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
@@ -26,32 +30,31 @@ class UserRepositoryImpl(
 ) : UserRepository {
 
 
-    val handler = CoroutineExceptionHandler { _, throwable ->
-        println("Exception was caught: ${throwable.message}")
-    }
-
     override suspend fun getUser(): Flow<User> {
-        withContext(Dispatchers.IO ) {
-            supervisorScope {
-                launch(handler) {
-                    safeWrapper {
-                        val userInfo: ProfileResponseDto = client.getJson(path = PROFILE)
-                        saveUserInfo(userInfo.toDomain())
+       return userDao.getUser()
+            .onStart {
+                coroutineScope {
+                    launch {
+                        try {
+                            val userInfo: ProfileResponseDto = client.getJson(path = PROFILE)
+                            saveUserInfo(userInfo.toDomain())
+                        } catch (e: Exception) {
+                            println("Failed to fetch user: ${e.message}")
+                        }
                     }
                 }
             }
-        }
-        return userDao.getUser()
-            .map { userEntity -> userEntity?.toDomain() ?: throw Exception("User Not Found") }
+            .map { userEntity ->
+                userEntity?.toDomain() ?: throw Exception("User Not Found")
+            }
             .flowOn(Dispatchers.IO)
-
     }
 
 
+
+
      private suspend fun saveUserInfo(user: User) {
-        withContext(Dispatchers.IO) {
-            userDao.upsert(user.toEntity())
-        }
+         userDao.upsert(user.toEntity())
     }
 
 
