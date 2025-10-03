@@ -10,12 +10,14 @@ fun buildSinglePartFormData(
 ): MultiPartFormDataContent {
     return MultiPartFormDataContent(
         formData {
+            val ext = sniffExt(fileBytes, fileName)
+            val safeName = sanitizeFileName(ensureExt(fileName, ext))
             append(
                 key = key,
                 value = fileBytes,
                 headers = Headers.build {
-                    append(HttpHeaders.ContentType, "multipart/form-data")
-                    append(HttpHeaders.ContentDisposition, "filename=\"$fileName\"")
+                    append(HttpHeaders.ContentType, mimeForExt(ext))
+                    append(HttpHeaders.ContentDisposition, """filename="$safeName"""")
                 }
             )
         }
