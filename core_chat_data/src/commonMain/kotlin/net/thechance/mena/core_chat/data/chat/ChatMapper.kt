@@ -7,6 +7,7 @@ import net.thechance.mena.core_chat.data.chat.dto.MessageDto
 import net.thechance.mena.core_chat.data.chat.dto.SendMessageDto
 import net.thechance.mena.core_chat.data.chat.utils.toInstant
 import net.thechance.mena.core_chat.data.chat.utils.toLocalDateTime
+import net.thechance.mena.core_chat.data.contacts.utils.getUuidOrNull
 import net.thechance.mena.core_chat.data.database.entity.MessageEntity
 import net.thechance.mena.core_chat.domain.entity.Chat
 import net.thechance.mena.core_chat.domain.entity.Message
@@ -17,21 +18,25 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 
-fun MessageDto.toMessageDomain() = Message(
-    id = Uuid.parse(id),
-    senderId = Uuid.parse(senderId),
-    chatId = Uuid.parse(chatId),
-    text = text,
-    sendAt = Instant.parse(sendAt).toLocalDateTime(),
-    status = if (isRead) MessageStatus.READ else MessageStatus.SENT
-)
+fun MessageDto.toDomain(): Message? {
+    return Message(
+        id = getUuidOrNull(id) ?: return null,
+        senderId = getUuidOrNull(senderId) ?: return null,
+        chatId = getUuidOrNull(chatId) ?: return null,
+        text = text,
+        sendAt = Instant.parse(sendAt).toLocalDateTime(),
+        status = if (isRead) MessageStatus.READ else MessageStatus.SENT
+    )
+}
 
-fun ChatDto.toMessageDomain() = Chat(
-    id = Uuid.parse(id),
-    imageUrl = imageUrl,
-    name = name,
-    requesterId = Uuid.parse(requesterId)
-)
+fun ChatDto.toDomain(): Chat? {
+    return Chat(
+        id = getUuidOrNull(id) ?: return null,
+        imageUrl = imageUrl,
+        name = name,
+        requesterId = getUuidOrNull(requesterId) ?: return null
+    )
+}
 
 fun Message.toDto() = MessageDto(
     id = id.toString(),

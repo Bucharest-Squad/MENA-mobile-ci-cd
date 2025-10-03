@@ -14,7 +14,7 @@ import net.thechance.mena.core_chat.domain.entity.MessageStatus as DomainMessage
 
 abstract class MessageUiState(
     open val id: Uuid = Uuid.random(),
-    open val senderId: Uuid = Uuid.random(),
+    open val senderId: Uuid? = null,
     open val chatId: Uuid = Uuid.random(),
     open val sendTime: LocalDateTime,
     open val status: MessageStatusUiState,
@@ -36,7 +36,7 @@ data class MarkedMessageUiState(
 
 data class TextMessageUiState(
     override val id: Uuid = Uuid.random(),
-    override val senderId: Uuid = Uuid.random(),
+    override val senderId: Uuid? = null,
     override val chatId: Uuid = Uuid.random(),
     override val sendTime: LocalDateTime,
     override val status: MessageStatusUiState,

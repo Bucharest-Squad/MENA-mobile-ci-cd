@@ -3,7 +3,6 @@
 package net.thechance.mena.core_chat.presentation.screen.chat
 
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.datetime.LocalDateTime
@@ -18,6 +17,7 @@ import net.thechance.mena.core_chat.presentation.components.SnackBarData
 import net.thechance.mena.core_chat.presentation.navigation.ChatEffector
 import net.thechance.mena.core_chat.presentation.shared.BaseViewModel
 import net.thechance.mena.core_chat.presentation.utils.UiText
+import net.thechance.mena.core_chat.presentation.utils.getUuidOrNull
 import net.thechance.mena.core_chat.presentation.utils.now
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -32,22 +32,37 @@ class ChatViewModel(
     ChatInteractionListener {
 
     init {
-        val chatId = Uuid.parse(chatArgs.chatId)
-        val requesterUserId = Uuid.parse(chatArgs.chatRequesterId)
-        updateState {
-            it.copy(
-                chat = ChatUiState(
-                    id = chatId,
-                    name = chatArgs.chatName,
-                    avatarUrl = chatArgs.chatImageUrl,
-                    requesterId = requesterUserId
-                )
-            )
-        }
+        val chatId = getUuidOrNull(chatArgs.chatId)
+        val requesterUserId = getUuidOrNull(chatArgs.chatRequesterId)
 
-        subscribeToNewMessages(chatId)
-        loadChatHistory(chatId)
-        observeReadMessages()
+        if (chatId == null || requesterUserId == null) {
+            showSnackBarAndNavigateBack()
+        } else {
+            updateState {
+                it.copy(
+                    chat = ChatUiState(
+                        id = chatId,
+                        name = chatArgs.chatName,
+                        avatarUrl = chatArgs.chatImageUrl,
+                        requesterId = requesterUserId
+                    )
+                )
+            }
+
+            subscribeToNewMessages(chatId)
+            loadChatHistory(chatId)
+            observeReadMessages()
+        }
+    }
+
+    private fun showSnackBarAndNavigateBack() {
+        showSnackBar(
+            SnackBarData(
+                title = UiText.StringRes(Res.string.error),
+                message = UiText.StringRes(Res.string.error_cant_get_messages)
+            )
+        )
+        popBackStack()
     }
 
 
@@ -102,7 +117,8 @@ class ChatViewModel(
     }
 
     private fun onSendMessageError(message: MessageUiState) {
-        updateStateWithNewMessage((message as TextMessageUiState).copy(status = MessageStatusUiState.FAILED))
+        when (message) {
+            is TextMessageUiState ->updateStateWithNewMessage(message.copy(status = MessageStatusUiState.FAILED))}
     }
 
     override fun onMessageClicked(messageId: Uuid) {
@@ -164,16 +180,16 @@ class ChatViewModel(
             )
         }
         failedMessage?.let { message ->
-            tryToExecute(
-                execute = {
-                    chatRepository.sendMessage(
-                        (message as TextMessageUiState)
-                            .toEntity()
+            when (message) {
+                is TextMessageUiState -> {
+                    tryToExecute(
+                        execute = { chatRepository.sendMessage(message.toEntity()) },
+                        onSuccess = { onSendMessageSuccess(message) },
+                        onError = { onSendMessageError(message) },
                     )
-                },
-                onSuccess = { onSendMessageSuccess(message) },
-                onError = { onSendMessageError(message) },
-            )
+                }
+            }
+
         }
     }
 
@@ -185,8 +201,8 @@ class ChatViewModel(
         tryToExecute(
             execute = {
                 val serverMessages = chatRepository.loadMessages(chatId)
-                val failedMessages = chatRepository.getLocalMessages(chatId)
-                (serverMessages + failedMessages)
+                val localMessages = chatRepository.getLocalMessages(chatId)
+                (serverMessages + localMessages)
             },
             onSuccess = ::onLoadChatHistorySuccess,
             onError = ::onLoadChatHistoryError
@@ -262,8 +278,8 @@ class ChatViewModel(
         readerId?.let { readerId ->
             updateState {
                 val updatedMessages = it.uiMessages.toMutableList().map { message ->
-                    if (message.senderId != Uuid.parse(readerId)) {
-                        (message as TextMessageUiState).copy(status = MessageStatusUiState.READ)
+                    if (message.senderId.toString() != readerId && message is TextMessageUiState) {
+                    message.copy(status = MessageStatusUiState.READ)
                     } else {
                         message
                     }
@@ -294,7 +310,6 @@ class ChatViewModel(
         super.onCleared()
         println("Disconnected")
         tryToExecute(
-            coroutineScope = CoroutineScope(Dispatchers.IO),
             execute = { chatRepository.disconnect() }
         )
     }

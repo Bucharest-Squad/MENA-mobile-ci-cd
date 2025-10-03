@@ -26,8 +26,8 @@ import net.thechance.mena.core_chat.presentation.navigation.SyncContactsRoute
 import net.thechance.mena.core_chat.presentation.shared.BasePagingSource
 import net.thechance.mena.core_chat.presentation.shared.BaseViewModel
 import net.thechance.mena.core_chat.presentation.utils.UiText
+import net.thechance.mena.core_chat.presentation.utils.getUuidOrNull
 import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 
 class ContactsViewModel(
     private val contactsRepository: ContactsRepository,
@@ -87,9 +87,18 @@ class ContactsViewModel(
     }
 
     override fun onContactClick(contactId: String?) {
-        if (contactId.isNullOrBlank()) return
+        val id = getUuidOrNull(contactId)
+        if (id == null) {
+            showSnackBar(
+                SnackBarData(
+                    title = UiText.StringRes(Res.string.something_went_wrong),
+                    message = UiText.StringRes(Res.string.contact_not_mena_user),
+                )
+            )
+            return
+        }
         tryToExecute(
-            execute = { chatRepository.getChatByContactUserId(Uuid.parse(contactId)) },
+            execute = { chatRepository.getChatByContactUserId(id) },
             onSuccess = ::onContactClickSuccess,
             onError = ::onContactClickError,
         )
