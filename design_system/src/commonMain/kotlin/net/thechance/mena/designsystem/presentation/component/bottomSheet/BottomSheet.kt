@@ -70,9 +70,9 @@ enum class BottomSheetValue {
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ScaffoldScope.BottomSheet(
+    isVisible: Boolean,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
-    isVisible: Boolean = false,
     dismissOnBackPress: Boolean = true,
     dismissOnClickOutside: Boolean = true,
     containerColor: Color = Theme.colorScheme.background.surface,
