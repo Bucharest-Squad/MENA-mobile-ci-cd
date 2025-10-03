@@ -1,12 +1,9 @@
 package net.thechance.mena.faith.presentation.feature.quran.surah
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -17,6 +14,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.faith.presentation.base.ObserveAsEffect
 import net.thechance.mena.faith.presentation.base.SnackBarState
@@ -65,14 +63,12 @@ private fun Content(
 ) {
     val lazyListState = rememberLazyListState()
 
-    FaithScaffold(
-        backgroundColor = Theme.colorScheme.background.surface,
-        modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars),
+    Scaffold(
         topBar = {
             SurahAppBar(
                 surahName = state.surahName, onBackClick = { listener.onBackClick() })
         },
-        snackBar = {
+        snakeBar = {
             FaithSnackBar(
                 message = snackBarState.message,
                 isVisible = snackBarState.isVisible,
