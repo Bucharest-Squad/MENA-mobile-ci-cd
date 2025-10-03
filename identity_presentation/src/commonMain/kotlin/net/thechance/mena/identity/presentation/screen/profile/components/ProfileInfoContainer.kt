@@ -21,12 +21,10 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import mena.identity_presentation.generated.resources.Res
-import mena.identity_presentation.generated.resources.ic_share
 import mena.identity_presentation.generated.resources.profile_profile_picture_content_description
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -71,7 +69,6 @@ fun ProfileInfoContainer(
                     model = profilePicture,
                     contentScale = ContentScale.Crop,
                     contentDescription = stringResource(Res.string.profile_profile_picture_content_description),
-                    placeholder = painterResource(Res.drawable.ic_share),
                 )
             }
 

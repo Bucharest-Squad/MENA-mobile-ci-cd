@@ -1,8 +1,10 @@
 package net.thechance.mena.identity.presentation.screen.profile
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
@@ -120,10 +122,11 @@ class ProfileScreen : BaseScreen<
                     )
                     AnimatedVisibility(
                         visible = state.isSuccess,
-                        enter = fadeIn(),
-                        exit = fadeOut(),
+                        enter = expandVertically(),
+                        exit = shrinkVertically (),
                         modifier = Modifier.fillMaxWidth()
-                    ) {
+                    )
+                    {
                         ProfileInfoContainer(
                             modifier = Modifier
                                 .fillMaxWidth()
