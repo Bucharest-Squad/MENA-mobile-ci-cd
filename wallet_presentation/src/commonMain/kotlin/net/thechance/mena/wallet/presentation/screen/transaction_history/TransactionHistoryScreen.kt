@@ -101,8 +101,9 @@ fun TransactionHistoryContent(
             )
         },
         overlays = {
-            bottomSheet(state.isFilterVisible) {
+            bottomSheet(state.isFilterVisible) { isVisible ->
                 TransactionFilterBottomSheet(
+                    isVisible = isVisible,
                     uiState = state.filterState,
                     onDismiss = interactionListener::onDismissFilter,
                     onClickAddFilter = interactionListener::onApplyFilterClicked,
