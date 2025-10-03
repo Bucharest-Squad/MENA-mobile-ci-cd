@@ -17,9 +17,9 @@ import kotlin.uuid.Uuid
 @OptIn(ExperimentalUuidApi::class)
 @KoinViewModel
 class TransactionDetailsViewModel(
+    @Provided private val transactionId: String,
     @Provided val transactionRepository: TransactionRepository,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
-    @Provided private val transactionId: String,
 ) : BaseViewModel<TransactionDetailsScreenState, TransactionDetailsEffect>(
     TransactionDetailsScreenState()
 ), TransactionDetailsInteractionListener {
@@ -79,14 +79,6 @@ class TransactionDetailsViewModel(
         stopButtonLoading()
     }
 
-    private fun stopButtonLoading() {
-        updateState { it.copy(isShareReceiptBtnLoading = false) }
-    }
-
-    private fun startButtonLoading() {
-        updateState { it.copy(isShareReceiptBtnLoading = true) }
-    }
-
     override fun onRefresh() {
         updateState { it.copy(isLoading = true, isError = null) }
         getTransactionDetails()
@@ -124,6 +116,14 @@ class TransactionDetailsViewModel(
                 snackBar = oldState.snackBar.copy(isVisible = false)
             )
         }
+    }
+
+    private fun stopButtonLoading() {
+        updateState { it.copy(isShareReceiptBtnLoading = false) }
+    }
+
+    private fun startButtonLoading() {
+        updateState { it.copy(isShareReceiptBtnLoading = true) }
     }
 
     private companion object {

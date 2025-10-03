@@ -114,26 +114,39 @@ private fun TransactionDetailsScreenContent(
                     }
                 }
                 else -> {
-                    Box {
-                        DetailsContent(
-                            transactionDetailsUiState = state.transactionDetailsUiState,
-                            onShareReceiptButtonClicked = interactionListener::onShareReceiptButtonClicked,
-                            isShareReceiptBtnLoading = state.isShareReceiptBtnLoading,
-                        )
-                        TransactionDetailsScreenShot(
-                            captureController = captureController,
-                            onScreenShotCapture = { imageBitmap ->
-                                interactionListener.onScreenShotCaptured(
-                                    byteArray = imageBitmapToByteArray(imageBitmap),
-                                    fileName = state.transactionDetailsUiState.id
-                                )
-                            },
-                            transactionDetailsUiState = state.transactionDetailsUiState,
-                        )
-                    }
+                    TransactionDetailsSuccessContent(
+                        state = state,
+                        interactionListener = interactionListener,
+                        captureController = captureController
+                    )
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun TransactionDetailsSuccessContent(
+    state: TransactionDetailsScreenState,
+    interactionListener: TransactionDetailsInteractionListener,
+    captureController: CaptureController
+){
+    Box {
+        DetailsContent(
+            transactionDetailsUiState = state.transactionDetailsUiState,
+            onShareReceiptButtonClicked = interactionListener::onShareReceiptButtonClicked,
+            isShareReceiptBtnLoading = state.isShareReceiptBtnLoading,
+        )
+        TransactionDetailsScreenShot(
+            captureController = captureController,
+            onScreenShotCapture = { imageBitmap ->
+                interactionListener.onScreenShotCaptured(
+                    byteArray = imageBitmapToByteArray(imageBitmap),
+                    fileName = state.transactionDetailsUiState.id
+                )
+            },
+            transactionDetailsUiState = state.transactionDetailsUiState,
+        )
     }
 }
 
