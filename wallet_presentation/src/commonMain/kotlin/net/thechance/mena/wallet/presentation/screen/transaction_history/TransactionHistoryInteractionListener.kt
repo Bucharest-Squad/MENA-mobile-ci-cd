@@ -21,4 +21,5 @@ interface TransactionHistoryInteractionListener {
     fun onEndDateClicked()
     fun onDismissDatePicker()
     fun onPickDateClicked(date: LocalDate)
+    fun onRetryLoadTransactionHistoryClicked()
 }

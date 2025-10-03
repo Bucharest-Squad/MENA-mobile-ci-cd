@@ -21,6 +21,7 @@ import mena.wallet_presentation.generated.resources.error
 import mena.wallet_presentation.generated.resources.error_failed_view
 import mena.wallet_presentation.generated.resources.error_no_transactions
 import mena.wallet_presentation.generated.resources.failed_to_load_date_picker
+import mena.wallet_presentation.generated.resources.no_internet_title
 import mena.wallet_presentation.generated.resources.something_went_wrong
 import mena.wallet_presentation.generated.resources.start_date_must_be_before_end_date
 import net.thechance.mena.wallet.domain.exceptions.NoDataFoundException
@@ -29,9 +30,10 @@ import net.thechance.mena.wallet.domain.model.TransactionFilterParams
 import net.thechance.mena.wallet.domain.repository.StatementRepository
 import net.thechance.mena.wallet.domain.repository.TransactionRepository
 import net.thechance.mena.wallet.presentation.base.BaseViewModel
-import net.thechance.mena.wallet.presentation.base.CustomToastState
-import net.thechance.mena.wallet.presentation.base.SnackBarState
+import net.thechance.mena.wallet.presentation.base.ErrorState
+import net.thechance.mena.wallet.presentation.model.CustomToastState
 import net.thechance.mena.wallet.presentation.model.FilterType
+import net.thechance.mena.wallet.presentation.model.SnackBarState
 import net.thechance.mena.wallet.presentation.screen.export.file_saver.FileSaver
 import org.jetbrains.compose.resources.StringResource
 import org.koin.android.annotation.KoinViewModel
@@ -82,17 +84,9 @@ class ExportTransactionsViewModel(
         updateState {
             newState.copy(
                 isDownloadButtonEnabled =
-                    if (newState.isCustomFilterCardSelected) {
-                        newState.hasActiveFilters
-                    } else {
-                        true
-                    },
+                    if (newState.isCustomFilterCardSelected) newState.hasActiveFilters else true,
                 isViewAndShareButtonEnabled =
-                    if (newState.isCustomFilterCardSelected) {
-                        newState.hasActiveFilters
-                    } else {
-                        true
-                    },
+                    if (newState.isCustomFilterCardSelected) newState.hasActiveFilters else true,
                 hasNoTransactionsError = false
             )
         }
@@ -266,7 +260,7 @@ class ExportTransactionsViewModel(
         sendEffect(ExportTransactionsEffect.NavigateToViewFileScreen)
     }
 
-    private suspend fun onViewAndShareError(error: Throwable) {
+    private suspend fun onViewAndShareError(error: ErrorState) {
         resetViewAndShareState()
         handleError(
             error = error,
@@ -283,10 +277,7 @@ class ExportTransactionsViewModel(
         }
 
         updateState { oldState ->
-            oldState.copy(
-                isDownloadLoading = true,
-                isViewAndShareButtonEnabled = false
-            )
+            oldState.copy(isDownloadLoading = true, isViewAndShareButtonEnabled = false)
         }
         showToast(messageRes = Res.string.downloading_started)
     }
@@ -316,7 +307,7 @@ class ExportTransactionsViewModel(
         }
     }
 
-    private suspend fun handleDownloadError(error: Throwable) {
+    private suspend fun handleDownloadError(error: ErrorState) {
         resetDownloadState()
         handleError(
             error = error,
@@ -347,10 +338,10 @@ class ExportTransactionsViewModel(
                     isSuccess = false
                 )
             }
-        } catch (error: Exception) {
+        } catch (_: Exception) {
             resetDownloadState()
             handleError(
-                error = error,
+                error = ErrorState.Unknown,
                 titleRes = Res.string.download_failed,
                 messageRes = Res.string.something_went_wrong,
                 isSuccess = false
@@ -359,13 +350,13 @@ class ExportTransactionsViewModel(
     }
 
     private suspend fun handleError(
-        error: Throwable,
+        error: ErrorState,
         titleRes: StringResource,
         messageRes: StringResource,
         isSuccess: Boolean = false
     ) {
         when (error) {
-            is NoInternetException -> {
+            is ErrorState.NoInternet -> {
                 updateState { oldState ->
                     oldState.copy(
                         noInternetConnection = true,
@@ -375,12 +366,12 @@ class ExportTransactionsViewModel(
                 }
                 showSnackBar(
                     titleRes = Res.string.download_failed,
-                    messageRes = Res.string.something_went_wrong,
+                    messageRes = Res.string.no_internet_title,
                     isSuccess = false
                 )
             }
 
-            is NoDataFoundException -> {
+            is ErrorState.NoDataFound -> {
                 updateState { oldState ->
                     oldState.copy(
                         isDownloadLoading = false,
@@ -455,19 +446,13 @@ class ExportTransactionsViewModel(
 
     private fun resetDownloadState() {
         updateState { oldState ->
-            oldState.copy(
-                isDownloadLoading = false,
-                isViewAndShareButtonEnabled = true
-            )
+            oldState.copy(isDownloadLoading = false, isViewAndShareButtonEnabled = true)
         }
     }
 
     private fun resetViewAndShareState() {
         updateState { oldState ->
-            oldState.copy(
-                isViewAndShareLoading = false,
-                isDownloadButtonEnabled = true
-            )
+            oldState.copy(isViewAndShareLoading = false, isDownloadButtonEnabled = true)
         }
     }
 

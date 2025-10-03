@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.datetime.LocalDate
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.wallet.presentation.component.filter.FilterContent
+import net.thechance.mena.wallet.presentation.component.FilterContent
 import net.thechance.mena.wallet.presentation.model.FilterType
 import net.thechance.mena.wallet.presentation.screen.export.ExportTransactionsListener
 import net.thechance.mena.wallet.presentation.screen.export.ExportTransactionsState
