@@ -22,6 +22,8 @@ import mena.dukan_presentation.generated.resources.ic_add_image
 import mena.dukan_presentation.generated.resources.upload_dukan_image
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import net.thechance.mena.dukan.presentation.util.file.ImageFile
+import net.thechance.mena.dukan.presentation.util.file.PlatformImageFile
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -29,7 +31,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun UploadProductImage(
     modifier: Modifier = Modifier,
-    onUploadImageClick: (imageFile: PlatformFile) -> Unit = {},
+    onUploadImageClick: (imageFile: ImageFile) -> Unit = {},
     isUploadingImageEnabled: Boolean = false
 ) {
 
@@ -41,7 +43,7 @@ fun UploadProductImage(
     val filePicker = rememberFilePickerLauncher(type = FileKitType.Image) { file ->
         file?.let { imageFile ->
             scope.launch {
-                onUploadImageClick(imageFile)
+                onUploadImageClick(PlatformImageFile(imageFile))
             }
         }
     }

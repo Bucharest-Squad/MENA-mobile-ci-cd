@@ -1,6 +1,7 @@
 package net.thechance.mena.dukan.presentation.viewModel.createProduct
 
 import androidx.compose.ui.graphics.ImageBitmap
+import com.attafitamim.krop.core.images.ImageSrc
 import com.attafitamim.krop.filekit.toImageSrc
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.dialogs.compose.util.toImageBitmap
@@ -24,7 +25,10 @@ import net.thechance.mena.dukan.domain.repository.ShelfRepository
 import net.thechance.mena.dukan.presentation.component.SnackBarType
 import net.thechance.mena.dukan.presentation.component.SnackBarUiState
 import net.thechance.mena.dukan.presentation.component.productImage.ProductImageState
+import net.thechance.mena.dukan.presentation.util.file.ImageFile
 import net.thechance.mena.dukan.presentation.util.imageCrop.toPngByteArray
+import net.thechance.mena.dukan.presentation.util.rounded
+import net.thechance.mena.dukan.presentation.util.toFileName
 import net.thechance.mena.dukan.presentation.viewModel.base.BaseViewModel
 import org.jetbrains.compose.resources.StringResource
 import kotlin.math.round
@@ -93,14 +97,14 @@ class CreateProductViewModel(
         }
     }
 
-    override fun onUploadImageClick(image: PlatformFile) {
+    override fun onUploadImageClick(image: ImageFile) {
         tryToExecute(
             block = { onUploadImageBlock(image) },
             onError = ::onErrorSnackBar
         )
     }
 
-    private suspend fun onUploadImageBlock(image: PlatformFile) {
+    private suspend fun onUploadImageBlock(image: ImageFile) {
         if (isUploadImageValid(image).not())
             awaitCancellation()
 
@@ -113,8 +117,7 @@ class CreateProductViewModel(
         }
     }
 
-    private suspend fun isUploadImageValid(image: PlatformFile): Boolean {
-
+    private suspend fun isUploadImageValid(image: ImageFile): Boolean {
         val imageSizeInMegabyte = image.size().toDouble() / BYTES_PER_MEGABYTE
         val imageBitmap = image.toImageBitmap()
         val imageAspectRatio = imageBitmap.width.toFloat() / imageBitmap.height.toFloat()
@@ -355,7 +358,7 @@ class CreateProductViewModel(
             productUiState.price.toDouble() < PRICE_EXCLUSIVE_LOWER_BOUND -> Res.string.error_price_not_positive
             productUiState.description.length !in MIN_DESCRIPTION_LENGTH..MAX_DESCRIPTION_LENGTH -> Res.string.error_description_length
             else -> null
-        } as StringResource?
+        }
     }
 
     companion object {
@@ -371,8 +374,3 @@ class CreateProductViewModel(
     }
 }
 
-private fun Double.rounded(): Double = (round(this * 100) / 100)
-@OptIn(ExperimentalTime::class)
-private fun ByteArray.toFileName(): String {
-    return "${Clock.System.now().toEpochMilliseconds()}+product_image"
-}
