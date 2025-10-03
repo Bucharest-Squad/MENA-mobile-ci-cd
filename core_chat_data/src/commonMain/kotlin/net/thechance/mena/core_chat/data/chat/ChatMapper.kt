@@ -51,7 +51,7 @@ fun Message.toSendMessageRequestDto() = SendMessageDto(
 fun Message.toMessageEntity(): MessageEntity {
     return MessageEntity(
         id = this.id.toString(),
-        senderId = this.senderId?.toString() ?: "",
+        senderId = this.senderId.toString(),
         text = this.text,
         timestamp = this.sendAt.toInstant().toEpochMilliseconds(),
         chatId = this.chatId.toString(),
@@ -67,7 +67,7 @@ fun Message.toMessageEntity(): MessageEntity {
 fun MessageEntity.toMessageDomain(): Message {
     return Message(
         id = Uuid.parse(this.id),
-        senderId = if (this.senderId.isEmpty()) null else Uuid.parse(this.senderId),
+        senderId = Uuid.parse(this.senderId),
         chatId = Uuid.parse(this.chatId),
         text = this.text,
         sendAt = Instant.fromEpochMilliseconds(this.timestamp).toLocalDateTime(),
