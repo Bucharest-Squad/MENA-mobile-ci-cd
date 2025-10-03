@@ -33,7 +33,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun TopAppBar(
     modifier: Modifier = Modifier,
-    onAddDukanIconClicked: () -> Unit,
+    onDukanIconClicked: () -> Unit,
     dukanButtonStatus: MainScreenUiState.DukanStatusUi,
 ) {
     AppBar(
@@ -47,7 +47,7 @@ fun TopAppBar(
         trailingContent = {
             DukanIconButton(
                 dukanButtonStatus = dukanButtonStatus,
-                onAddDukanIconClicked = onAddDukanIconClicked
+                onDukanIconClicked = onDukanIconClicked
             )
         }
     )
@@ -56,7 +56,7 @@ fun TopAppBar(
 @Composable
 private fun DukanIconButton(
     dukanButtonStatus: MainScreenUiState.DukanStatusUi,
-    onAddDukanIconClicked: () -> Unit,
+    onDukanIconClicked: () -> Unit,
 ) {
     AnimatedContent(
         targetState = dukanButtonStatus,
@@ -64,40 +64,52 @@ private fun DukanIconButton(
         label = stringResource(resource = Res.string.dukan_button)
     )
     { dukanStatus ->
-        Box(
-            modifier = Modifier
-                .size(40.dp)
-                .background(
-                    color = Theme.colorScheme.background.surfaceLow,
-                    shape = RoundedCornerShape(Theme.radius.md)
-                )
-                .clip(shape = RoundedCornerShape(Theme.radius.md))
-                .clickable(onClick = onAddDukanIconClicked),
-            contentAlignment = Alignment.Center
-        ) {
-            when (dukanStatus) {
-                MainScreenUiState.DukanStatusUi.None -> {
-                    Icon(
-                        painter = painterResource(resource = Res.drawable.ic_add_dukan),
-                        contentDescription = stringResource(resource = Res.string.add_dukan_icon)
-                    )
-                }
-
-                MainScreenUiState.DukanStatusUi.Pending -> {
-                    Icon(
-                        painter = painterResource(resource = Res.drawable.ic_dukan),
-                        contentDescription = stringResource(resource = Res.string.dukan_icon)
-                    )
-                }
-
-                MainScreenUiState.DukanStatusUi.Approved -> {
-                    Icon(
-                        painter = painterResource(resource = Res.drawable.ic_dukan),
-                        contentDescription = stringResource(resource = Res.string.dukan_icon)
-                    )
+        when (dukanStatus) {
+            MainScreenUiState.DukanStatusUi.Loading -> {}
+            else -> {
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .background(
+                            color = Theme.colorScheme.background.surfaceLow,
+                            shape = RoundedCornerShape(Theme.radius.md)
+                        )
+                        .clip(shape = RoundedCornerShape(Theme.radius.md))
+                        .clickable(onClick = onDukanIconClicked),
+                    contentAlignment = Alignment.Center
+                ) {
+                    DukanIcon(dukanStatus)
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun DukanIcon(dukanStatus: MainScreenUiState.DukanStatusUi) {
+    when (dukanStatus) {
+        MainScreenUiState.DukanStatusUi.None -> {
+            Icon(
+                painter = painterResource(resource = Res.drawable.ic_add_dukan),
+                contentDescription = stringResource(resource = Res.string.add_dukan_icon)
+            )
+        }
+
+        MainScreenUiState.DukanStatusUi.Pending -> {
+            Icon(
+                painter = painterResource(resource = Res.drawable.ic_dukan),
+                contentDescription = stringResource(resource = Res.string.dukan_icon)
+            )
+        }
+
+        MainScreenUiState.DukanStatusUi.Approved -> {
+            Icon(
+                painter = painterResource(resource = Res.drawable.ic_dukan),
+                contentDescription = stringResource(resource = Res.string.dukan_icon)
+            )
+        }
+
+        MainScreenUiState.DukanStatusUi.Loading -> {}
     }
 }
 
@@ -114,7 +126,7 @@ private fun TopAppBarPreview() {
         ) {
             TopAppBar(
                 dukanButtonStatus = MainScreenUiState.DukanStatusUi.None,
-                onAddDukanIconClicked = {})
+                onDukanIconClicked = {})
         }
     }
 }
