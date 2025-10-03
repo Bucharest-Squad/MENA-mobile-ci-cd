@@ -27,7 +27,7 @@ val identityDataModule = module {
             engine = get(),
             baseUrl = get<String>(named("baseUrl")),
             settings = get(),
-            refreshToken = { get<AuthorizationService>().getAccessToken() }
+            refreshToken = { get<AuthorizationService>().refreshToken() }
         )
     }
 }
