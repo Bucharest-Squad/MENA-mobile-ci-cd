@@ -12,13 +12,14 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 import net.thechance.mena.core_chat.domain.entity.MessageStatus as DomainMessageStatus
 
-abstract class MessageUiState(
-    open val id: Uuid = Uuid.random(),
-    open val senderId: Uuid? = null,
-    open val chatId: Uuid = Uuid.random(),
-    open val sendTime: LocalDateTime,
-    open val status: MessageStatusUiState,
-    open val isMine: Boolean,
+data class TextMessageUiState(
+    val id: Uuid = Uuid.random(),
+    val senderId: Uuid = Uuid.random(),
+    val chatId: Uuid = Uuid.random(),
+    val sendTime: LocalDateTime,
+    val status: MessageStatusUiState,
+    val isMine: Boolean,
+    val text: String
 )
 
 enum class MessageStatusUiState {
@@ -29,29 +30,12 @@ enum class MessageStatusUiState {
 }
 
 data class MarkedMessageUiState(
-    val message: MessageUiState,
+    val message: TextMessageUiState,
     val isMarkedLastInSeries: Boolean,
     val showMessageInfo: Boolean = false
 )
 
-data class TextMessageUiState(
-    override val id: Uuid = Uuid.random(),
-    override val senderId: Uuid? = null,
-    override val chatId: Uuid = Uuid.random(),
-    override val sendTime: LocalDateTime,
-    override val status: MessageStatusUiState,
-    override val isMine: Boolean,
-    val text: String
-) : MessageUiState(
-    id,
-    senderId,
-    chatId,
-    sendTime,
-    status,
-    isMine
-)
-
-fun List<MessageUiState>.markLastInSeries(): List<MarkedMessageUiState> {
+fun List<TextMessageUiState>.markLastInSeries(): List<MarkedMessageUiState> {
     return this.mapIndexed { index, message ->
         val nextIsMine = this.getOrNull(index - 1)?.isMine
         val isLastInSeries = nextIsMine != message.isMine

@@ -105,7 +105,7 @@ class ChatViewModel(
         )
     }
 
-    private fun onSendMessageSuccess(message: MessageUiState) {
+    private fun onSendMessageSuccess(message: TextMessageUiState) {
         val updatedMessages =
             state.value.uiMessages.filterNot { it.id == message.id && it.sendTime == message.sendTime }
         updateState {
@@ -116,9 +116,8 @@ class ChatViewModel(
         }
     }
 
-    private fun onSendMessageError(message: MessageUiState) {
-        when (message) {
-            is TextMessageUiState ->updateStateWithNewMessage(message.copy(status = MessageStatusUiState.FAILED))}
+    private fun onSendMessageError(message: TextMessageUiState) {
+        updateStateWithNewMessage(message.copy(status = MessageStatusUiState.FAILED))
     }
 
     override fun onMessageClicked(messageId: Uuid) {
@@ -140,14 +139,13 @@ class ChatViewModel(
     }
 
 
-    override fun onFailedMessageClicked(message: MessageUiState) {
+    override fun onFailedMessageClicked(message: TextMessageUiState) {
         updateState {
             it.copy(
                 isResendMessageDialogVisible = true,
                 failedMessageToReSend = message
             )
         }
-        onResendMessageClicked()
     }
 
     override fun onDeleteFailedMessageClicked() {
@@ -169,27 +167,24 @@ class ChatViewModel(
         updateState { it.copy(isResendMessageDialogVisible = false) }
         val failedMessage = state.value.failedMessageToReSend
         updateState { s ->
-            val messageIndex = s.uiMessages.indexOfFirst { it.id == failedMessage?.id }
+            val updatedMessages = s.uiMessages.toMutableList().mapIndexed { index, message ->
+                if (message.id == failedMessage?.id) {
+                    failedMessage.copy(status = MessageStatusUiState.SENDING)
+                } else {
+                    message
+                }
+            }
             s.copy(
-                uiMessages = s.uiMessages.toMutableList().apply {
-                    this[messageIndex] = (this[messageIndex] as TextMessageUiState).copy(
-                        status = MessageStatusUiState.SENDING
-                    )
-                },
+                uiMessages = updatedMessages,
                 failedMessageToReSend = null,
             )
         }
         failedMessage?.let { message ->
-            when (message) {
-                is TextMessageUiState -> {
-                    tryToExecute(
-                        execute = { chatRepository.sendMessage(message.toEntity()) },
-                        onSuccess = { onSendMessageSuccess(message) },
-                        onError = { onSendMessageError(message) },
-                    )
-                }
-            }
-
+            tryToExecute(
+                execute = { chatRepository.sendMessage(message.toEntity()) },
+                onSuccess = { onSendMessageSuccess(message) },
+                onError = { onSendMessageError(message) },
+            )
         }
     }
 
@@ -278,8 +273,9 @@ class ChatViewModel(
         readerId?.let { readerId ->
             updateState {
                 val updatedMessages = it.uiMessages.toMutableList().map { message ->
-                    if (message.senderId.toString() != readerId && message is TextMessageUiState) {
-                    message.copy(status = MessageStatusUiState.READ)
+                    if (message.senderId.toString() != readerId && message.status == MessageStatusUiState.SENT) {
+                        println("${message.text} :    ${message.senderId} != $readerId")
+                        message.copy(status = MessageStatusUiState.READ)
                     } else {
                         message
                     }
@@ -292,7 +288,7 @@ class ChatViewModel(
         }
     }
 
-    private fun updateStateWithNewMessage(newMessage: MessageUiState) {
+    private fun updateStateWithNewMessage(newMessage: TextMessageUiState) {
         updateState { s ->
             val merged =
                 s.uiMessages.toMutableList().apply { add(0, newMessage) }.distinctBy { it.id }
@@ -301,7 +297,7 @@ class ChatViewModel(
         }
     }
 
-    private fun buildListItems(uiMessages: List<MessageUiState>): List<ChatListItem> {
+    private fun buildListItems(uiMessages: List<TextMessageUiState>): List<ChatListItem> {
         val marked = uiMessages.sortedByDescending { it.sendTime }.markLastInSeries()
         return marked.withDateSeparators()
     }
