@@ -2,7 +2,7 @@ package net.thechance.mena.identity.presentation.di
 
 import net.thechance.mena.identity.presentation.screen.forgetPassword.ForgetPasswordScreenViewModel
 import net.thechance.mena.identity.presentation.screen.forgetPasswordOtp.OtpScreenViewModel
-import net.thechance.mena.identity.presentation.screen.login.LoginScreenModel
+import net.thechance.mena.identity.presentation.screen.login.LoginScreenViewModel
 import net.thechance.mena.identity.presentation.screen.profile.ProfileScreenViewModel
 import net.thechance.mena.identity.presentation.screen.register.RegisterScreenModel
 import net.thechance.mena.identity.presentation.screen.resetPassword.ResetPasswordScreenViewModel
@@ -15,7 +15,7 @@ const val APP_VERSION = "appVersion"
 val identityScreensModule = module {
 
     single { get<String>(named(APP_VERSION)) }
-    factoryOf(::LoginScreenModel)
+    factoryOf(::LoginScreenViewModel)
     factoryOf(::RegisterScreenModel)
     factoryOf(::ForgetPasswordScreenViewModel)
     factoryOf(::OtpScreenViewModel)

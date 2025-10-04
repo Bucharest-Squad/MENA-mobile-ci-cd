@@ -9,7 +9,7 @@ import net.thechance.mena.identity.presentation.base.ErrorState
 import net.thechance.mena.identity.presentation.bottomSheet.countryPicker.menaCountries.MenaCountry
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
 
-class LoginScreenModel(
+class LoginScreenViewModel(
     private val loginUseCase: LoginUseCase,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : BaseScreenModel<LoginScreenUIState, LoginScreenUIEffect>(LoginScreenUIState()),

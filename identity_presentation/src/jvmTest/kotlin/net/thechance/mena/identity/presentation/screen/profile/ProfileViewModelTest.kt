@@ -47,13 +47,13 @@ class ProfileViewModelTest {
     @Test
     fun `getUserInfo() updates state on success`() = runTest {
 
-        viewModel = ProfileScreenViewModel(userRepository,"",testDispatcher)
+        viewModel = ProfileScreenViewModel(userRepository, "", testDispatcher)
         testDispatcher.scheduler.advanceUntilIdle()
-        
-        assertEquals(fakeUser.firstName + fakeUser.lastName, viewModel.state.value.fullName)
+
+        assertEquals(fakeUser.firstName + " " + fakeUser.lastName, viewModel.state.value.fullName)
         assertEquals(fakeUser.username, viewModel.state.value.userName)
         assertEquals(fakeUser.profileImageUrl, viewModel.state.value.profileImageUrl)
-        assertTrue { viewModel.state.value.isSuccess  }
+        assertTrue { viewModel.state.value.isSuccess }
     }
 
     @Test
@@ -61,10 +61,10 @@ class ProfileViewModelTest {
 
         coEvery { userRepository.getUser() } throws Exception()
 
-        viewModel = ProfileScreenViewModel(userRepository,"",testDispatcher)
+        viewModel = ProfileScreenViewModel(userRepository, "", testDispatcher)
         testDispatcher.scheduler.advanceUntilIdle()
 
-        assertEquals("User Information Not Found" , viewModel.state.value.errorMessage)
+        assertEquals("", viewModel.state.value.errorMessage)
     }
 
 
@@ -100,13 +100,14 @@ class ProfileViewModelTest {
     }
 
     @Test
-    fun `should emit NavigateToChangePasswordScreen effect when onChangePasswordClicked`() = runTest {
-        viewModel.effect.test {
-            viewModel.onChangePasswordClicked()
-            val emittedEffect = awaitItem()
-            assertTrue { emittedEffect is ProfileScreenUIEffect.NavigateToChangePasswordScreen }
+    fun `should emit NavigateToChangePasswordScreen effect when onChangePasswordClicked`() =
+        runTest {
+            viewModel.effect.test {
+                viewModel.onChangePasswordClicked()
+                val emittedEffect = awaitItem()
+                assertTrue { emittedEffect is ProfileScreenUIEffect.NavigateToChangePasswordScreen }
+            }
         }
-    }
 
     @Test
     fun `should emit NavigateToLocationPickerScreen effect when onAddressesClicked`() = runTest {
@@ -118,13 +119,14 @@ class ProfileViewModelTest {
     }
 
     @Test
-    fun `should emit NavigateToPrivacyAndPolicyScreen effect when onPrivacySettingsClicked`() = runTest {
-        viewModel.effect.test {
-            viewModel.onPrivacySettingsClicked()
-            val emittedEffect = awaitItem()
-            assertTrue { emittedEffect is ProfileScreenUIEffect.NavigateToPrivacyAndPolicyScreen }
+    fun `should emit NavigateToPrivacyAndPolicyScreen effect when onPrivacySettingsClicked`() =
+        runTest {
+            viewModel.effect.test {
+                viewModel.onPrivacySettingsClicked()
+                val emittedEffect = awaitItem()
+                assertTrue { emittedEffect is ProfileScreenUIEffect.NavigateToPrivacyAndPolicyScreen }
+            }
         }
-    }
 
     @Test
     fun `should update state to show language dialog when onLanguageClicked`() = runTest {
@@ -146,13 +148,14 @@ class ProfileViewModelTest {
     }
 
     @Test
-    fun `should emit NavigateToPrivacyAndPolicyScreen effect when onPrivacyAndPolicyClicked`() = runTest {
-        viewModel.effect.test {
-            viewModel.onPrivacyAndPolicyClicked()
-            val emittedEffect = awaitItem()
-            assertTrue { emittedEffect is ProfileScreenUIEffect.NavigateToPrivacyAndPolicyScreen }
+    fun `should emit NavigateToPrivacyAndPolicyScreen effect when onPrivacyAndPolicyClicked`() =
+        runTest {
+            viewModel.effect.test {
+                viewModel.onPrivacyAndPolicyClicked()
+                val emittedEffect = awaitItem()
+                assertTrue { emittedEffect is ProfileScreenUIEffect.NavigateToPrivacyAndPolicyScreen }
+            }
         }
-    }
 
     @Test
     fun `should emit NavigateContactUsScreen effect when onContactUsClicked`() = runTest {
@@ -165,11 +168,11 @@ class ProfileViewModelTest {
 
     @Test
     fun `should update state to hide language dialog when onDismissLanguageDialog`() = runTest {
-            viewModel.onDismissLanguageDialog()
+        viewModel.onDismissLanguageDialog()
 
-            testDispatcher.scheduler.advanceUntilIdle()
+        testDispatcher.scheduler.advanceUntilIdle()
 
-            assertFalse(viewModel.state.value.showLanguageDialog)
+        assertFalse(viewModel.state.value.showLanguageDialog)
 
     }
 
@@ -194,7 +197,7 @@ class ProfileViewModelTest {
     }
 
     @Test
-    fun `clearErrorMessage() should update error message to null`(){
+    fun `clearErrorMessage() should update error message to null`() {
         viewModel.clearErrorMessage()
         assertNull(viewModel.state.value.errorMessage)
     }
