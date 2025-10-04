@@ -35,10 +35,14 @@ import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.trends.presentation.navigation.LocalNavController
 import net.thechance.mena.trends.presentation.navigation.Route
+import net.thechance.mena.trends.presentation.shared.base.ErrorState
+import net.thechance.mena.trends.presentation.shared.base.toStringResource
 import net.thechance.mena.trends.presentation.shared.component.NextButton
 import net.thechance.mena.trends.presentation.shared.component.UploadVideoCard
 import net.thechance.mena.trends.presentation.shared.component.VideoLoadingCardItem
+import net.thechance.mena.trends.presentation.shared.component.snackbar.TrendsSnackBar
 import net.thechance.mena.trends.presentation.shared.model.FileUiState
+import net.thechance.mena.trends.presentation.shared.model.SnackBarStatus
 import net.thechance.mena.trends.presentation.shared.model.VideoAction
 import net.thechance.mena.trends.presentation.shared.util.ObserveAsEffect
 import net.thechance.mena.trends.presentation.shared.util.video_util.getMimeTypeFromExtension
@@ -88,7 +92,17 @@ private fun UploadReelScreenContent(
     )
 
     Scaffold(
-        topBar = { UploadReelScreenTopBar(onBackClick = listener::onBackClick) }
+        topBar = { UploadReelScreenTopBar(onBackClick = listener::onBackClick) },
+        snakeBar = {
+            state.errorState?.let { errorState ->
+                if (errorState == ErrorState.FileTooLarge || errorState == ErrorState.DurationTooLarge) {
+                    TrendsSnackBar(
+                        message = stringResource(errorState.toStringResource()),
+                        status = SnackBarStatus.Error
+                    )
+                }
+            }
+        }
     ) {
         Column(
             modifier = Modifier
