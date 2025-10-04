@@ -15,15 +15,18 @@ import kotlinx.serialization.json.Json
 import net.thechance.mena.core_chat.data.chat.dto.ChatDto
 import net.thechance.mena.core_chat.data.chat.dto.MarkAsReadRequest
 import net.thechance.mena.core_chat.data.chat.dto.MessageDto
+import net.thechance.mena.core_chat.data.chat.dto.MessageEvent
 import net.thechance.mena.core_chat.data.chat.dto.SendMessageDto
 import net.thechance.mena.core_chat.data.chat.utils.WebSocketManager
-import net.thechance.mena.core_chat.data.chat.dto.MessageEvent
+import net.thechance.mena.core_chat.data.database.dao.MessageDao
+import net.thechance.mena.core_chat.data.database.entity.MessageEntity
 import net.thechance.mena.core_chat.data.network.ApiConstants.CHAT_ENDPOINT
 import net.thechance.mena.core_chat.data.network.ApiConstants.CHAT_HISTORY_ENDPOINT
 import net.thechance.mena.core_chat.data.shared.BaseRepository
 import net.thechance.mena.core_chat.data.shared.dto.PagedDataDto
 import net.thechance.mena.core_chat.domain.entity.Chat
 import net.thechance.mena.core_chat.domain.entity.Message
+import net.thechance.mena.core_chat.domain.entity.MessageStatus
 import net.thechance.mena.core_chat.domain.exception.NotFoundException
 import net.thechance.mena.core_chat.domain.exception.SendMessageFailedException
 import net.thechance.mena.core_chat.domain.repository.ChatRepository
@@ -36,6 +39,7 @@ class ChatRepositoryImpl(
     private val client: HttpClient,
     private val webSocketManager: WebSocketManager,
     private val authenticationRepository: AuthenticationRepository,
+    private val messageDao: MessageDao,
     private val json: Json,
 ) : ChatRepository, BaseRepository {
 
@@ -59,6 +63,10 @@ class ChatRepositoryImpl(
         }?.data?.mapNotNull { it.toDomain() } ?: emptyList()
     }
 
+    override suspend fun deleteMessage(message: Message) {
+        messageDao.deleteMessage(message.id.toString())
+    }
+
     override suspend fun getChatByContactUserId(userId: Uuid): Chat {
         return tryNetworkCall<ChatDto>(
             bodyType = typeInfo<ChatDto>()
@@ -72,6 +80,11 @@ class ChatRepositoryImpl(
         }?.toDomain() ?: throw NotFoundException("Chat not found")
     }
 
+    override suspend fun getLocalMessages(chatId: Uuid): List<Message> {
+        val failedEntities = messageDao.getMessagesByChat(chatId.toString())
+        return failedEntities.map { it.toMessageDomain() }
+    }
+
     override fun subscribeToMessages(chatId: Uuid): Flow<Message> {
         scope.launch {
             initializeWebsocketConnection(chatId.toString())
@@ -80,13 +93,29 @@ class ChatRepositoryImpl(
     }
 
     override suspend fun sendMessage(message: Message) {
-        if (webSocketManager.isConnected()) {
-            webSocketManager.sendTextFrame(
-                destination = SEND_MESSAGE_DESTINATION,
-                payload = json.encodeToString<SendMessageDto>(message.toSendMessageRequestDto())
+        val updatedMessage = message.copy(status = MessageStatus.LOADING).toMessageEntity()
+        messageDao.insertMessage(updatedMessage)
+        try {
+            if (webSocketManager.isConnected()) {
+                val messageJson = json.encodeToString(
+                    SendMessageDto.serializer(),
+                    message.toSendMessageRequestDto()
+                )
+                webSocketManager.sendTextFrame(
+                    destination = SEND_MESSAGE_DESTINATION,
+                    payload = messageJson
+
+                )
+                messageDao.deleteMessage(updatedMessage.id)
+            } else {
+                throw SendMessageFailedException("Failed to send message")
+            }
+        } catch (e: Exception) {
+            messageDao.updateMessageStatus(
+                updatedMessage.id,
+                MessageEntity.MessageStatus.FAILED
             )
-        } else {
-            throw SendMessageFailedException("Failed to send message")
+            throw SendMessageFailedException("Failed to send message: ${e.message}")
         }
     }
 

@@ -11,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import net.thechance.mena.core_chat.presentation.screen.chat.ChatListItem
 import net.thechance.mena.core_chat.presentation.screen.chat.ChatUiState
-import net.thechance.mena.core_chat.presentation.screen.chat.MessageUiState
 import net.thechance.mena.core_chat.presentation.screen.chat.TextMessageUiState
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
@@ -23,7 +22,7 @@ fun ChatListItem(
     item: ChatListItem,
     chat: ChatUiState,
     onMessageClick: (Uuid) -> Unit,
-    onFailedMessageClick: (MessageUiState) -> Unit,
+    onFailedMessageClick: (TextMessageUiState) -> Unit,
     modifier: Modifier = Modifier
 ) {
     when (item) {
@@ -46,7 +45,7 @@ fun ChatListItem(
                 horizontalArrangement = if (markedMessage.message.isMine) Arrangement.End else Arrangement.Start
             ) {
                 TextMessageItem(
-                    message = markedMessage.message as TextMessageUiState, // temporal casting until more MessageTypes involved
+                    message = markedMessage.message,
                     chatAvatarUrl = chat.avatarUrl,
                     showMessageInfo = markedMessage.showMessageInfo,
                     isMarkedLastInSeries = markedMessage.isMarkedLastInSeries,

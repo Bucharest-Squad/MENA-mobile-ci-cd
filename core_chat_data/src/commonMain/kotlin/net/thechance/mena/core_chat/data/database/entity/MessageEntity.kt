@@ -12,11 +12,11 @@ data class MessageEntity(
     @ColumnInfo(name = "timestamp") val timestamp: Long,
     @ColumnInfo(name = "chat_id") val chatId: String,
     @ColumnInfo(name = "message_status") val status: MessageStatus,
-)
-
-enum class MessageStatus {
-    SENDING,
-    SENT,
-    READ,
-    FAILED
+) {
+    enum class MessageStatus {
+        SENDING,
+        SENT,
+        READ,
+        FAILED
+    }
 }
