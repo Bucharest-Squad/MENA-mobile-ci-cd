@@ -129,7 +129,7 @@ class UserRepositoryImplTest {
 
             every { userDao.getUser() } returns flowOf(fakeProfileResponse.toDomain().toEntity())
 
-            userRepositoryImpl.getUser()
+            userRepositoryImpl.getUser().first()
 
             coVerify(exactly = 0) { userDao.upsert(any()) }
 
