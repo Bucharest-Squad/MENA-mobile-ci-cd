@@ -91,24 +91,25 @@ fun BaseMessageLayout(
             verticalAlignment = Alignment.Bottom,
             horizontalArrangement = Arrangement.spacedBy(Theme.spacing._8)
         ) {
-            Box(
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .size(24.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                if (!message.isMine && isMarkedLastInSeries) {
-                    AsyncImage(
-                        modifier = Modifier.fillMaxSize(),
-                        model = chatAvatarUrl,
-                        placeholder = painterResource(Res.drawable.ic_profile_placeholder),
-                        error = painterResource(Res.drawable.ic_profile_placeholder),
-                        contentScale = ContentScale.Crop,
-                        contentDescription = "Contact photo",
-                    )
+            if (!message.isMine) {
+                Box(
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .size(24.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (isMarkedLastInSeries) {
+                        AsyncImage(
+                            modifier = Modifier.fillMaxSize(),
+                            model = chatAvatarUrl,
+                            placeholder = painterResource(Res.drawable.ic_profile_placeholder),
+                            error = painterResource(Res.drawable.ic_profile_placeholder),
+                            contentScale = ContentScale.Crop,
+                            contentDescription = "Contact photo",
+                        )
+                    }
                 }
             }
-
             Box(
                 modifier = Modifier
                     .padding(start = messagePaddingStart, end = messagePaddingEnd)
