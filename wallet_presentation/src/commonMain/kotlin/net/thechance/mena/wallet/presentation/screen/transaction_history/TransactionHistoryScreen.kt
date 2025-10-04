@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,15 +20,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.datetime.LocalDate
 import mena.wallet_presentation.generated.resources.Res
 import mena.wallet_presentation.generated.resources.back_button
 import mena.wallet_presentation.generated.resources.ic_arrow_left
 import mena.wallet_presentation.generated.resources.ic_share
+import mena.wallet_presentation.generated.resources.pick_end_date
+import mena.wallet_presentation.generated.resources.pick_start_date
 import mena.wallet_presentation.generated.resources.share
 import mena.wallet_presentation.generated.resources.transactions_history
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import net.thechance.mena.wallet.presentation.component.DatePickerBottomSheet
 import net.thechance.mena.wallet.presentation.component.ErrorView
 import net.thechance.mena.wallet.presentation.component.SnackBarContainer
 import net.thechance.mena.wallet.presentation.component.WalletScaffold
@@ -46,7 +49,6 @@ import org.koin.compose.viewmodel.koinViewModel
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
-@OptIn(ExperimentalUuidApi::class)
 @Composable
 fun TransactionHistoryScreen(
     viewModel: TransactionHistoryViewModel = koinViewModel(),
@@ -77,7 +79,6 @@ fun TransactionHistoryContent(
     interactionListener: TransactionHistoryInteractionListener
 ) {
     WalletScaffold(
-        modifier = Modifier.statusBarsPadding(),
         topBar = {
             AppBar(
                 title = stringResource(Res.string.transactions_history),
@@ -98,31 +99,41 @@ fun TransactionHistoryContent(
                     )
                 }
             )
-        },
-        overlays = {
-            bottomSheet(state.isFilterVisible) { isVisible ->
+        }, overlays = {
+            bottomSheet(state.isFilterVisible) {
                 TransactionFilterBottomSheet(
-                    isVisible = isVisible,
                     uiState = state.filterState,
                     onDismiss = interactionListener::onDismissFilter,
                     onClickAddFilter = interactionListener::onApplyFilterClicked,
                     onResetClicked = interactionListener::onResetFilterClicked,
                     onTypeToggled = interactionListener::selectFilterType,
                     onStatusSelected = interactionListener::selectFilterStatus,
-                    onFromClick = {
-                        // TODO: Show date picker
+                    onStartDateClicked = interactionListener::onStartDateClicked,
+                    onEndDateClicked = interactionListener::onEndDateClicked
+                )
+            }
+            bottomSheet(isVisible = state.filterState.isDateBottomSheetVisible) {
+                DatePickerBottomSheet(
+                    defaultSelectedDate = when (state.filterState.datePickerMode) {
+                        TransactionFilterState.DatePickerMode.START_DATE -> state.filterState.defaultStartDate
+                        TransactionFilterState.DatePickerMode.END_DATE -> state.filterState.defaultEndDate
                     },
-                    onToClick = {
-                        // TODO: Show date picker
-                    }
+                    title = when (state.filterState.datePickerMode) {
+                        TransactionFilterState.DatePickerMode.START_DATE -> stringResource(Res.string.pick_start_date)
+                        TransactionFilterState.DatePickerMode.END_DATE -> stringResource(Res.string.pick_end_date)
+                    },
+                    onPickClick = { day, month, year ->
+                        val pickedDate = LocalDate(year, month, day)
+                        interactionListener.onPickDateClicked(pickedDate)
+                    },
+                    onDismiss = interactionListener::onDismissDatePicker
                 )
             }
         },
         snackBar = { SnackBarContainer(snackBarState = state.snackBar) },
         errorState = state.errorState,
-        onRetry = { interactionListener.onRetryLoadTransactionHistoryClicked() }
-    ) {
-
+        onRetry = { interactionListener.onRetryLoadTransactionHistoryClicked() })
+    {
         when {
             state.isLoading -> {
                 Box(modifier = Modifier.fillMaxSize()) {
@@ -138,7 +149,8 @@ fun TransactionHistoryContent(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(Theme.colorScheme.background.surface)
-                        .padding(horizontal = 16.dp, vertical = 16.dp),
+                        .padding(horizontal = 16.dp),
+                    contentPadding = PaddingValues(vertical = 16.dp)
                 ) {
                     item {
                         if (state.history.isNotEmpty() || state.filterState.activeFilterCount != 0) {
@@ -180,13 +192,15 @@ fun TransactionHistoryContent(
                                         interactionListener.onTransactionCardClicked(transaction.id)
                                     }
                                 )
-                                Box(
-                                    modifier = Modifier
-                                        .padding(top = 4.dp)
-                                        .fillMaxWidth()
-                                        .height(1.dp)
-                                        .background(Theme.colorScheme.stroke)
-                                )
+                                if (state.history.last() != transaction) {
+                                    Box(
+                                        modifier = Modifier
+                                            .padding(top = 4.dp)
+                                            .fillMaxWidth()
+                                            .height(1.dp)
+                                            .background(Theme.colorScheme.stroke)
+                                    )
+                                }
                             }
                         }
                     }

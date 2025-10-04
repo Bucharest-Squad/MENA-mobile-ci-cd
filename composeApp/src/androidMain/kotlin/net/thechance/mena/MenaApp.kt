@@ -7,7 +7,7 @@ class MenaApp : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        initKoin {
+        initKoin{
             androidContext(this@MenaApp)
         }
     }

@@ -41,17 +41,18 @@ fun ScaffoldScope.TransactionFilterBottomSheet(
     onDismiss: () -> Unit,
     onClickAddFilter: () -> Unit,
     onResetClicked: () -> Unit,
+    onStartDateClicked: () -> Unit,
+    onEndDateClicked: () -> Unit,
     onTypeToggled: (FilterType) -> Unit,
     onStatusSelected: (FilterStatus) -> Unit,
-    onFromClick: () -> Unit,
-    onToClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     BottomSheet(
         isVisible = isVisible,
         onDismissRequest = onDismiss,
         skipPartiallyExpanded = true,
-        modifier = modifier.navigationBarsPadding(),
+        modifier = modifier
+            .navigationBarsPadding(),
         stickyFooterContent = {
             StickyFooterContent(
                 hasActiveFilters = uiState.hasActiveFilters,
@@ -68,12 +69,12 @@ fun ScaffoldScope.TransactionFilterBottomSheet(
             FilterContent(
                 selectedTypes = uiState.selectedTypes,
                 selectedStatus = uiState.selectedStatus,
-                fromDate = uiState.fromDate?.toString() ?: "",
-                toDate = uiState.toDate?.toString() ?: "",
+                startDate = uiState.startDate?.toString() ?: "",
+                endDate = uiState.endDate?.toString() ?: "",
                 onTypeSelected = onTypeToggled,
                 onStatusSelected = onStatusSelected,
-                onFromClick = onFromClick,
-                onToClick = onToClick
+                onStartDateClicked = onStartDateClicked,
+                onEndDateClicked = onEndDateClicked
             )
         }
     )
@@ -91,7 +92,7 @@ private fun StickyFooterContent(
             .fillMaxWidth()
             .background(Theme.colorScheme.background.surface)
             .padding(horizontal = 16.dp)
-            .padding(top = 16.dp, bottom = 24.dp)
+            .padding(bottom = 24.dp)
             .padding(
                 bottom = WindowInsets.navigationBars.asPaddingValues()
                     .calculateBottomPadding()
@@ -144,10 +145,10 @@ private fun TransactionFilterBottomSheetPreview() {
                         onDismiss = {},
                         onResetClicked = {},
                         onClickAddFilter = {},
-                        onToClick = {},
-                        onFromClick = {},
                         onTypeToggled = {},
-                        onStatusSelected = {}
+                        onStatusSelected = {},
+                        onStartDateClicked = {},
+                        onEndDateClicked = {}
                     )
                 }
             }

@@ -4,12 +4,12 @@ import com.russhwolf.settings.Settings
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import net.thechance.mena.identity.data.dataSource.local.setting.accessToken
-import net.thechance.mena.identity.data.dataSource.local.setting.refreshToken
 import net.thechance.mena.identity.data.dataSource.remote.dto.AuthenticationResponse
 import net.thechance.mena.identity.data.dataSource.remote.dto.LoginRequestDto
 import net.thechance.mena.identity.data.dataSource.remote.dto.RefreshRequestDto
+import net.thechance.mena.identity.data.dataSource.local.setting.accessToken
 import net.thechance.mena.identity.data.utils.postJson
+import net.thechance.mena.identity.data.dataSource.local.setting.refreshToken
 import net.thechance.mena.identity.data.utils.safeWrapper
 import net.thechance.mena.identity.domain.entity.PhoneNumber
 import net.thechance.mena.identity.domain.repository.AuthenticationRepository
@@ -48,7 +48,7 @@ class AuthenticationRepositoryImpl(
         settings.refreshToken = authInfo.refreshToken
     }
 
-    override fun observeTokenChange(): StateFlow<String> {
+    override fun observeTokenChange(): StateFlow<String>{
         return observableToken
     }
 

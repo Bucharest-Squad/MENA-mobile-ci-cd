@@ -28,10 +28,10 @@ expect val IdentityPlatformModule: Module
 val identityDataModule = module {
     single { CIO.create() }
 
-    single<UserRepository>{
+    single<UserRepository> {
         UserRepositoryImpl(
             client = get(named(IDENTITY_CLIENT)),
-            userDao =  get()
+            userDao = get()
         )
     }
     singleOf(::ResetPasswordRepositoryImpl) bind ResetPasswordRepository::class
@@ -55,6 +55,14 @@ val identityDataModule = module {
     single { provideDatabaseBuilder() }
     single<IdentityDatabase> { getRoomDatabase(builder = get()) }
     single<UserDao> { get<IdentityDatabase>().getUserDao() }
+
+    single { provideDatabaseBuilder() }
+    single<IdentityDatabase> { getRoomDatabase(builder = get()) }
+
+    single<UserDao> { get<IdentityDatabase>().getUserDao() }
+
+    singleOf(::AuthenticationRepositoryImpl) bind AuthenticationRepository::class
+    singleOf(::ResetPasswordRepositoryImpl) bind ResetPasswordRepository::class
 }
 
 fun getRoomDatabase(builder: RoomDatabase.Builder<IdentityDatabase>): IdentityDatabase {

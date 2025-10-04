@@ -10,19 +10,19 @@ import net.thechance.mena.identity.presentation.bottomSheet.countryPicker.menaCo
 import net.thechance.mena.identity.presentation.bottomSheet.countryPicker.selectByCountry
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
 
-class LoginScreenViewModel(
+class LoginScreenModel(
     private val loginUseCase: LoginUseCase,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : BaseScreenModel<LoginScreenUIState, LoginScreenUIEffect>(LoginScreenUIState()),
     LoginScreenInteractionListener {
 
     override fun onLoginClicked() {
-        updateState { copy(isLoading = true , errorMessage = null ) }
+        updateState { copy(isLoading = true, errorMessage = null) }
         tryToExecute(
             function = ::onLogin,
             onSuccess = ::onLoginSuccess,
             onError = ::onErrorAccrue,
-            dispatcher
+            dispatcher = dispatcher
         )
     }
 
