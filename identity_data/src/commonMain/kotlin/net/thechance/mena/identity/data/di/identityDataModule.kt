@@ -59,7 +59,11 @@ val identityDataModule = module {
     single<IdentityDatabase> { getRoomDatabase(builder = get()) }
     single<UserDao> { get<IdentityDatabase>().getUserDao() }
 
-    singleOf(::ResetPasswordRepositoryImpl) bind ResetPasswordRepository::class
+    single<ResetPasswordRepository> {
+        ResetPasswordRepositoryImpl(
+            client = get(named("IdentityClient"))
+        )
+    }
 }
 
 fun getRoomDatabase(builder: RoomDatabase.Builder<IdentityDatabase>): IdentityDatabase {
