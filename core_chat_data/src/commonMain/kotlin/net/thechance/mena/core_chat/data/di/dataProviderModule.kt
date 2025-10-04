@@ -9,13 +9,14 @@ import net.thechance.mena.core_chat.data.database.dao.MessageDao
 import net.thechance.mena.core_chat.data.database.getChatDatabase
 import org.koin.core.scope.Scope
 import org.koin.dsl.module
+import org.koin.core.qualifier.named
 
 internal val dataProviderModule = module {
     single { createContactsProvider() }
     single { createSettingsDataStore() }
-    single { getDatabaseBuilder() }
+    single(named("ChatDatabaseBuilder")) { getDatabaseBuilder() }
 
-    single<ChatDatabase> { getChatDatabase(get()) }
+    single<ChatDatabase> { getChatDatabase(get(named("ChatDatabaseBuilder"))) }
     single<MessageDao> { get<ChatDatabase>().getMessageDao() }
 }
 
