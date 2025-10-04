@@ -6,6 +6,7 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotEmpty
 import assertk.assertions.isNotNull
+import assertk.assertions.isTrue
 import dev.mokkery.answering.returns
 import dev.mokkery.every
 import dev.mokkery.everySuspend
@@ -15,6 +16,7 @@ import dev.mokkery.verifySuspend
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.respond
 import io.ktor.http.HttpStatusCode
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.test.runTest
 import net.thechance.mena.core_chat.data.chat.dto.MessageDto
 import net.thechance.mena.core_chat.data.chat.utils.WebSocketManager
@@ -193,5 +195,44 @@ class ChatRepositoryImplTest {
         val flow = repository.observeReadMessages()
         assertThat(flow).isNotNull()
     }
+    @Test
+    fun `should return local messages from database when getLocalMessages is called`() = runTest {
+        val message1 = createMessage(senderId = userId, chatId = chatId)
+        val message2 = createMessage(senderId = userId, chatId = chatId)
+        val messageEntities = listOf(
+            message1.toMessageEntity(),
+            message2.toMessageEntity()
+        )
 
+        everySuspend { messageDao.getMessagesByChat(chatId.toString()) } returns messageEntities
+
+        val result = repository.getLocalMessages(chatId)
+
+        assertThat(result).isNotEmpty()
+        assertThat(result.size).isEqualTo(2)
+        verifySuspend { messageDao.getMessagesByChat(chatId.toString()) }
+    }
+
+    @Test
+    fun `should return empty list when no local messages exist for chat`() = runTest {
+        everySuspend { messageDao.getMessagesByChat(chatId.toString()) } returns emptyList()
+
+        val result = repository.getLocalMessages(chatId)
+
+        assertThat(result.isEmpty()).isTrue()
+        verifySuspend { messageDao.getMessagesByChat(chatId.toString()) }
+    }
+
+    @Test
+    fun `should return flow when subscribeToMessages is called`() = runTest {
+        everySuspend { authRepository.getAccessToken() } returns "test-token"
+        everySuspend { webSocketManager.connect(any(), any()) } returns Unit
+        everySuspend { webSocketManager.subscribe(any()) } returns Unit
+        everySuspend { webSocketManager.sendTextFrame(any(), any()) } returns Unit
+        every { webSocketManager.incomingMessages } returns MutableSharedFlow<String>().apply { tryEmit("test-message") }
+
+        val flow = repository.subscribeToMessages(chatId)
+
+        assertThat(flow).isNotNull()
+    }
 }
