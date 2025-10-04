@@ -50,7 +50,7 @@ fun TransactionsListContent(
                 activeFilterCount = state.filterState.activeFilterCount,
                 hasActiveFilters = state.filterState.hasActiveFilters,
                 onClick = interactionListener::onFilterClicked,
-                modifier = Modifier.padding(horizontal = 16.dp)
+                modifier = Modifier.padding(top= 8.dp).padding(horizontal = 16.dp)
             )
         }
 
@@ -58,7 +58,7 @@ fun TransactionsListContent(
             modifier = modifier
                 .background(Theme.colorScheme.background.surface)
                 .padding(horizontal = 16.dp),
-            contentPadding = PaddingValues(top = 8.dp, bottom = 16.dp),
+            contentPadding = PaddingValues(bottom = 16.dp),
             state = listState
         ) {
 
@@ -80,7 +80,6 @@ fun TransactionsListContent(
                     if (state.history.last() != transaction) {
                         Box(
                             modifier = Modifier
-                                .padding(top = 4.dp)
                                 .fillMaxWidth()
                                 .height(1.dp)
                                 .background(Theme.colorScheme.stroke)
