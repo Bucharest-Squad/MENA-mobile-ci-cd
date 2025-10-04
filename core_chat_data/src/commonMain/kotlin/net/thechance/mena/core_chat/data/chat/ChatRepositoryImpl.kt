@@ -19,6 +19,7 @@ import net.thechance.mena.core_chat.data.chat.dto.MessageEvent
 import net.thechance.mena.core_chat.data.chat.dto.SendMessageDto
 import net.thechance.mena.core_chat.data.chat.utils.WebSocketManager
 import net.thechance.mena.core_chat.data.database.dao.MessageDao
+import net.thechance.mena.core_chat.data.database.entity.MessageEntity
 import net.thechance.mena.core_chat.data.network.ApiConstants.CHAT_ENDPOINT
 import net.thechance.mena.core_chat.data.network.ApiConstants.CHAT_HISTORY_ENDPOINT
 import net.thechance.mena.core_chat.data.shared.BaseRepository
@@ -112,7 +113,7 @@ class ChatRepositoryImpl(
         } catch (e: Exception) {
             messageDao.updateMessageStatus(
                 updatedMessage.id,
-                net.thechance.mena.core_chat.data.database.entity.MessageStatus.FAILED
+                MessageEntity.MessageStatus.FAILED
             )
             throw SendMessageFailedException("Failed to send message: ${e.message}")
         }

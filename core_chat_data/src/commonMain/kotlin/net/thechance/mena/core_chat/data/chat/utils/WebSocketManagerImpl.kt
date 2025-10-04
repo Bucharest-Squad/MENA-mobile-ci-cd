@@ -76,7 +76,7 @@ class WebSocketManagerImpl(
                 } catch (_: CancellationException) {
                     println("WebSocket job cancelled")
                     break
-                }catch (e: Exception) {
+                } catch (e: Exception) {
                     println("WebSocket reconnect error: ${e.message}")
                     isActiveSession = false
                     session = null
@@ -88,16 +88,10 @@ class WebSocketManagerImpl(
 
     override suspend fun disconnect() {
         shouldReconnect = false
+        session?.close()
 
-        try {
-            session?.close()
-            println("WebSocket closed by client")
-        } catch (e: Exception) {
-            println("Error while disconnecting: ${e.message}")
-        } finally {
-            isActiveSession = false
-            session = null
-        }
+        isActiveSession = false
+        session = null
 
         connectionJob?.cancelAndJoin()
         connectionJob = null

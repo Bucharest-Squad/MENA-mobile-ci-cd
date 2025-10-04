@@ -61,10 +61,10 @@ fun Message.toMessageEntity(): MessageEntity {
         timestamp = this.sendAt.toInstant().toEpochMilliseconds(),
         chatId = this.chatId.toString(),
         status = when (status) {
-            MessageStatus.LOADING -> net.thechance.mena.core_chat.data.database.entity.MessageStatus.SENDING
-            MessageStatus.SENT -> net.thechance.mena.core_chat.data.database.entity.MessageStatus.SENT
-            MessageStatus.FAILED -> net.thechance.mena.core_chat.data.database.entity.MessageStatus.FAILED
-            MessageStatus.READ -> net.thechance.mena.core_chat.data.database.entity.MessageStatus.READ
+            MessageStatus.LOADING -> MessageEntity.MessageStatus.SENDING
+            MessageStatus.SENT -> MessageEntity.MessageStatus.SENT
+            MessageStatus.FAILED -> MessageEntity.MessageStatus.FAILED
+            MessageStatus.READ -> MessageEntity.MessageStatus.READ
         }
     )
 }
@@ -77,10 +77,10 @@ fun MessageEntity.toMessageDomain(): Message {
         text = this.text,
         sendAt = Instant.fromEpochMilliseconds(this.timestamp).toLocalDateTime(),
         status = when (this.status) {
-            net.thechance.mena.core_chat.data.database.entity.MessageStatus.SENDING -> MessageStatus.LOADING
-            net.thechance.mena.core_chat.data.database.entity.MessageStatus.SENT -> MessageStatus.SENT
-            net.thechance.mena.core_chat.data.database.entity.MessageStatus.FAILED -> MessageStatus.FAILED
-            net.thechance.mena.core_chat.data.database.entity.MessageStatus.READ -> MessageStatus.READ
+            MessageEntity.MessageStatus.SENDING -> MessageStatus.LOADING
+            MessageEntity.MessageStatus.SENT -> MessageStatus.SENT
+            MessageEntity.MessageStatus.FAILED -> MessageStatus.FAILED
+            MessageEntity.MessageStatus.READ -> MessageStatus.READ
         }
     )
 }
