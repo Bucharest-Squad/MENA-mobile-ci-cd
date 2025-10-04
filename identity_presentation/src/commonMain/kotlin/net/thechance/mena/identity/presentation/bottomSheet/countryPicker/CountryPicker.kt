@@ -34,6 +34,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun ScaffoldScope.CountryPicker(
+    isVisible: Boolean,
     isEnabled: Boolean,
     countries: List<SelectableCountryItemUiState>,
     onSelectCountryItem: (MenaCountry) -> Unit,
@@ -42,6 +43,7 @@ fun ScaffoldScope.CountryPicker(
     modifier: Modifier = Modifier
 ) {
     BottomSheet(
+        isVisible = isVisible,
         onDismissRequest = onDismiss,
         modifier = modifier
             .navigationBarsPadding(),
@@ -105,6 +107,7 @@ private fun CountryPickerPreview() {
             overlays = {
                 bottomSheet(true) {
                     CountryPicker(
+                        isVisible = it,
                         isEnabled = true,
                         countries = List(18) {
                             SelectableCountryItemUiState(

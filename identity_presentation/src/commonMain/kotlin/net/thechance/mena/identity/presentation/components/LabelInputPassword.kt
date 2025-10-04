@@ -25,6 +25,7 @@ fun LabelInputPassword(
     onChangePassword: (String) -> Unit,
     onTogglePasswordVisibility: () -> Unit,
     label: String,
+    errorMessage: String? = null,
     modifier: Modifier = Modifier
 ) {
     Column(modifier) {
@@ -36,7 +37,7 @@ fun LabelInputPassword(
         )
         TextField(
             value = password,
-            onValueChanged = { onChangePassword(it) },
+            onValueChanged = onChangePassword::invoke,
             hint = "",
             trailingIcon = painterResource(
                 if (isPasswordVisible) Res.drawable.ic_open_eye
@@ -48,7 +49,9 @@ fun LabelInputPassword(
             modifier = Modifier.fillMaxWidth(),
             visualTransformation = if (isPasswordVisible) VisualTransformation.None
             else PasswordVisualTransformation(),
-            onTrailingIconClick = onTogglePasswordVisibility::invoke
+            onTrailingIconClick = onTogglePasswordVisibility::invoke,
+            isError = errorMessage != null,
+            errorMessage = errorMessage
         )
     }
 }

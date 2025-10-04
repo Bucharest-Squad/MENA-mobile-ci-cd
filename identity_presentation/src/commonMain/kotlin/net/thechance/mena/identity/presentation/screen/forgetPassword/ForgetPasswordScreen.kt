@@ -3,10 +3,13 @@ package net.thechance.mena.identity.presentation.screen.forgetPassword
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.Navigator
 import mena.identity_presentation.generated.resources.Res
@@ -28,10 +31,10 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 class ForgetPasswordScreen : BaseScreen<
-        ForgetPasswordScreenViewModel,
-        ForgetPasswordScreenUIState,
-        ForgetPasswordScreenUIEffect,
-        ForgetPasswordScreenInteractionListener>() {
+    ForgetPasswordScreenViewModel,
+    ForgetPasswordScreenUIState,
+    ForgetPasswordScreenUIEffect,
+    ForgetPasswordScreenInteractionListener>() {
     @Composable
     override fun Content() {
         InitScreen(getScreenModel())
@@ -42,10 +45,17 @@ class ForgetPasswordScreen : BaseScreen<
         state: ForgetPasswordScreenUIState,
         listener: ForgetPasswordScreenInteractionListener
     ) {
+        val keyboardController = LocalSoftwareKeyboardController.current
+        LaunchedEffect(state.showCountryBottomSheet) {
+            if (state.showCountryBottomSheet)
+                keyboardController?.hide()
+        }
+
         Scaffold(
             overlays = {
-                bottomSheet(isVisible = state.showCountryBottomSheet) {
+                bottomSheet(isVisible = state.showCountryBottomSheet) {showBottomSheet ->
                     CountryPicker(
+                        isVisible = showBottomSheet,
                         isEnabled = state.countryPickerUIState.isEnabled,
                         countries = state.countryPickerUIState.countries,
                         onSelectCountryItem = listener::onSelectCountryItem,
@@ -86,7 +96,8 @@ class ForgetPasswordScreen : BaseScreen<
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 12.dp, top = 24.dp)
-                )
+                        .imePadding()
+                    )
             }
         }
         ErrorSnackBar(

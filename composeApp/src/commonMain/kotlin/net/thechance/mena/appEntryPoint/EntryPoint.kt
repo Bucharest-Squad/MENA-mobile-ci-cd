@@ -1,5 +1,6 @@
 package net.thechance.mena.appEntryPoint
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,11 +14,25 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import mena.composeapp.generated.resources.Res
+import mena.composeapp.generated.resources.dukan
+import mena.composeapp.generated.resources.faith
+import mena.composeapp.generated.resources.home
+import mena.composeapp.generated.resources.ic_dukan
+import mena.composeapp.generated.resources.ic_dukan_selected
+import mena.composeapp.generated.resources.ic_faith
+import mena.composeapp.generated.resources.ic_faith_selected
+import mena.composeapp.generated.resources.ic_home
+import mena.composeapp.generated.resources.ic_home_selected
+import mena.composeapp.generated.resources.ic_profile
+import mena.composeapp.generated.resources.ic_profile_selected
+import mena.composeapp.generated.resources.ic_trends
+import mena.composeapp.generated.resources.ic_trends_selected
+import mena.composeapp.generated.resources.profile
+import mena.composeapp.generated.resources.trends
 import net.thechance.mena.core_chat.api.CoreChatApi
 import net.thechance.mena.designsystem.presentation.component.bottomNavigation.BottomNavigationBar
-import net.thechance.mena.designsystem.presentation.component.bottomNavigation.BottomNavigationItem
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.dukan.api.DukanApi
 import net.thechance.mena.faith.api.FaithApi
@@ -25,11 +40,13 @@ import net.thechance.mena.identity.api.IdentityFeatureApi
 import net.thechance.mena.identity.domain.service.AuthorizationService
 import net.thechance.mena.trends.api.TrendsApi
 import net.thechance.mena.wallet.api.WalletApi
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 
 
 @Composable
-fun EntryPoint(){
+fun EntryPoint() {
     val identityApi = koinInject<IdentityFeatureApi>()
     val authorizationService = koinInject<AuthorizationService>()
 
@@ -43,7 +60,7 @@ fun EntryPoint(){
 }
 
 @Composable
-private fun LoggedInContainer(){
+private fun LoggedInContainer() {
     var activeFeature: Feature by remember { mutableStateOf(Feature.CHAT) }
     Column(
         Modifier
@@ -54,15 +71,47 @@ private fun LoggedInContainer(){
             .background(Theme.colorScheme.background.surfaceHigh)
     ) {
         FeatureContent(activeFeature)
-        BottomNavigationBar(onItemClick = { navBarItem ->
-            //TODO: refactor this work around with refactoring bottom navbar
-            activeFeature = navBarItem.toFeature()
-        })
+        BottomNavigationBar {
+            bottomNavigationItem(
+                selectedIcon = painterResource(Res.drawable.ic_home_selected),
+                notSelectedIcon = painterResource(Res.drawable.ic_home),
+                title = stringResource(Res.string.home),
+                entry = { activeFeature = Feature.CHAT }
+            )
+
+            bottomNavigationItem(
+                selectedIcon = painterResource(Res.drawable.ic_dukan_selected),
+                notSelectedIcon = painterResource(Res.drawable.ic_dukan),
+                title = stringResource(Res.string.dukan),
+                entry = { activeFeature = Feature.DUKAN }
+            )
+
+            bottomNavigationItem(
+                selectedIcon = painterResource(Res.drawable.ic_trends_selected),
+                notSelectedIcon = painterResource(Res.drawable.ic_trends),
+                title = stringResource(Res.string.trends),
+                entry = { activeFeature = Feature.TREND }
+            )
+
+            bottomNavigationItem(
+                selectedIcon = painterResource(Res.drawable.ic_faith_selected),
+                notSelectedIcon = painterResource(Res.drawable.ic_faith),
+                title = stringResource(Res.string.faith),
+                entry = { activeFeature = Feature.FAITH }
+            )
+
+            bottomNavigationItem(
+                selectedIcon = painterResource(Res.drawable.ic_profile_selected),
+                notSelectedIcon = painterResource(Res.drawable.ic_profile),
+                title = stringResource(Res.string.profile),
+                entry = { activeFeature = Feature.PROFILE }
+            )
+        }
     }
 }
 
 @Composable
-private fun ColumnScope.FeatureContent(activeFeature: Feature){
+private fun ColumnScope.FeatureContent(activeFeature: Feature) {
     val identityApi = koinInject<IdentityFeatureApi>()
     val dukanApi = koinInject<DukanApi>()
     val trendsApi = koinInject<TrendsApi>()
@@ -71,30 +120,19 @@ private fun ColumnScope.FeatureContent(activeFeature: Feature){
     val walletApi = koinInject<WalletApi>()
 
     Box(Modifier.weight(1f)) {
-        when(activeFeature){
-            Feature.CHAT -> chatApi.TabEntry()
-            Feature.DUKAN -> dukanApi.TabEntry()
-            Feature.TREND -> trendsApi.TabEntry()
-            Feature.FAITH -> faithApi.TabEntry()
-            Feature.PROFILE -> identityApi.ProfileTabEntry()
-            Feature.WALLET -> walletApi.WalletEntry()
+        Crossfade(targetState = activeFeature) { feature ->
+            when (feature) {
+                Feature.CHAT -> chatApi.TabEntry()
+                Feature.DUKAN -> dukanApi.TabEntry()
+                Feature.TREND -> trendsApi.TabEntry()
+                Feature.FAITH -> faithApi.TabEntry()
+                Feature.PROFILE -> identityApi.ProfileTabEntry()
+                Feature.WALLET -> walletApi.WalletEntry()
+            }
         }
     }
 }
 
-private enum class Feature{
+private enum class Feature {
     CHAT, DUKAN, TREND, FAITH, PROFILE, WALLET
-}
-
-//TODO: refactor this work around with refactoring bottom navbar
-private fun BottomNavigationItem.toFeature(): Feature{
-    return when(this.title) {
-        "Home" -> Feature.CHAT
-        "Dukan" -> Feature.DUKAN
-        "Trends" -> Feature.TREND
-        "Faith" -> Feature.FAITH
-        "Profile" -> Feature.PROFILE
-        "Wallet" -> Feature.WALLET
-        else -> throw Exception("Unsupported feature, or invalid tab name")
-    }
 }
