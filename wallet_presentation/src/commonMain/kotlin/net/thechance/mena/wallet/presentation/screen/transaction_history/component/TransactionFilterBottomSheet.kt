@@ -36,6 +36,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun ScaffoldScope.TransactionFilterBottomSheet(
+    isVisible: Boolean,
     uiState: TransactionFilterState,
     onDismiss: () -> Unit,
     onClickAddFilter: () -> Unit,
@@ -47,6 +48,7 @@ fun ScaffoldScope.TransactionFilterBottomSheet(
     modifier: Modifier = Modifier
 ) {
     BottomSheet(
+        isVisible = isVisible,
         onDismissRequest = onDismiss,
         skipPartiallyExpanded = true,
         modifier = modifier
@@ -138,6 +140,7 @@ private fun TransactionFilterBottomSheetPreview() {
             overlays = {
                 bottomSheet(true) {
                     TransactionFilterBottomSheet(
+                        isVisible = it,
                         uiState = TransactionFilterState(),
                         onDismiss = {},
                         onResetClicked = {},

@@ -31,10 +31,10 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 class ForgetPasswordScreen : BaseScreen<
-        ForgetPasswordScreenViewModel,
-        ForgetPasswordScreenUIState,
-        ForgetPasswordScreenUIEffect,
-        ForgetPasswordScreenInteractionListener>() {
+    ForgetPasswordScreenViewModel,
+    ForgetPasswordScreenUIState,
+    ForgetPasswordScreenUIEffect,
+    ForgetPasswordScreenInteractionListener>() {
     @Composable
     override fun Content() {
         InitScreen(getScreenModel())
@@ -53,8 +53,9 @@ class ForgetPasswordScreen : BaseScreen<
 
         Scaffold(
             overlays = {
-                bottomSheet(isVisible = state.showCountryBottomSheet) {
+                bottomSheet(isVisible = state.showCountryBottomSheet) {showBottomSheet ->
                     CountryPicker(
+                        isVisible = showBottomSheet,
                         isEnabled = state.countryPickerUIState.isEnabled,
                         countries = state.countryPickerUIState.countries,
                         onSelectCountryItem = listener::onSelectCountryItem,
