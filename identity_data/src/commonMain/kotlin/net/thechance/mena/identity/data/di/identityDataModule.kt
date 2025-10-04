@@ -16,7 +16,6 @@ import net.thechance.mena.identity.domain.service.AuthorizationService
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
-import org.koin.dsl.bind
 import org.koin.dsl.module
 
 expect val IdentityPlatformModule: Module
@@ -41,7 +40,11 @@ val identityDataModule = module {
     single { provideDatabaseBuilder() }
     single<IdentityDatabase> { getRoomDatabase(builder = get()) }
     single<UserDao> { get<IdentityDatabase>().getUserDao() }
-    singleOf(::ResetPasswordRepositoryImpl) bind ResetPasswordRepository::class
+    single<ResetPasswordRepository> {
+        ResetPasswordRepositoryImpl(
+            client = get(named("IdentityClient"))
+        )
+    }
 }
 fun getRoomDatabase(builder: RoomDatabase.Builder<IdentityDatabase>): IdentityDatabase {
     return builder
