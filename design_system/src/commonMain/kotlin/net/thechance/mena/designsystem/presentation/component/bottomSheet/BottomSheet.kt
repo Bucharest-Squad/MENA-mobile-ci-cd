@@ -286,6 +286,8 @@ private fun SimpleBottomSheetPreview() {
                                 TestList()
                                 TestList()
                                 TestList()
+                                TestList()
+                                TestList()
                             }
                         })
                 }
@@ -320,7 +322,7 @@ private fun RowScope.TestList() {
                     .clip(RoundedCornerShape(12.dp))
                     .background(Theme.colorScheme.background.surfaceLow)
                     .padding(10.dp),
-                text = "Test($index)",
+                text = "Test number: ($index)",
                 style = Theme.typography.body.medium
             )
         }
