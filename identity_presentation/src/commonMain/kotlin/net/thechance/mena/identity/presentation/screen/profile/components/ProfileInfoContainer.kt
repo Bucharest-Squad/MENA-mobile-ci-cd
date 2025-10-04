@@ -19,7 +19,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import coil3.ImageLoader
 import coil3.compose.AsyncImage
+import coil3.compose.LocalPlatformContext
+import coil3.network.ktor3.KtorNetworkFetcherFactory
+import io.ktor.client.HttpClient
 import mena.identity_presentation.generated.resources.Res
 import mena.identity_presentation.generated.resources.profile_profile_picture_content_description
 import net.thechance.mena.designsystem.presentation.component.text.Text
@@ -27,6 +31,9 @@ import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.koinInject
+import org.koin.core.qualifier.named
+
 
 @Composable
 fun ProfileInfoContainer(
@@ -36,6 +43,8 @@ fun ProfileInfoContainer(
     modifier: Modifier = Modifier,
 ) {
     val shadowColor = Color(0x0F111D2E)
+    val networkClient = koinInject<HttpClient>(named("IdentityClient"))
+
     Column(
         modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -63,12 +72,17 @@ fun ProfileInfoContainer(
                     )
             ) {
                 AsyncImage(
+                    model = profilePicture,
+                    imageLoader = ImageLoader.Builder(LocalPlatformContext.current)
+                        .components {
+                            add(KtorNetworkFetcherFactory(networkClient))
+                        }
+                        .build(),
+                    contentScale = ContentScale.Crop,
+                    contentDescription = stringResource(Res.string.profile_profile_picture_content_description),
                     modifier = Modifier
                         .size(88.dp)
                         .clip(CircleShape),
-                    model = profilePicture,
-                    contentScale = ContentScale.Crop,
-                    contentDescription = stringResource(Res.string.profile_profile_picture_content_description),
                 )
             }
 
