@@ -50,7 +50,7 @@ fun TransactionsListContent(
                 activeFilterCount = state.filterState.activeFilterCount,
                 hasActiveFilters = state.filterState.hasActiveFilters,
                 onClick = interactionListener::onFilterClicked,
-                modifier = Modifier.padding(top= 8.dp).padding(horizontal = 16.dp)
+                modifier = Modifier.padding(top= 12.dp).padding(horizontal = 16.dp)
             )
         }
 
