@@ -33,6 +33,7 @@ import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.trends.presentation.navigation.LocalNavController
 import net.thechance.mena.trends.presentation.navigation.Route
+import net.thechance.mena.trends.presentation.shared.base.ErrorState
 import net.thechance.mena.trends.presentation.shared.base.toStringResource
 import net.thechance.mena.trends.presentation.shared.component.NextButton
 import net.thechance.mena.trends.presentation.shared.component.UploadVideoCard
@@ -93,10 +94,12 @@ private fun UploadReelScreenContent(
         topBar = { UploadReelScreenTopBar(onBackClick = listener::onBackClick) },
         snakeBar = {
             state.errorState?.let { errorState ->
-                TrendsSnackBar(
-                    message = stringResource(errorState.toStringResource()),
-                    status = SnackBarStatus.Error
-                )
+                if (errorState == ErrorState.FileTooLarge || errorState == ErrorState.DurationTooLarge) {
+                    TrendsSnackBar(
+                        message = stringResource(errorState.toStringResource()),
+                        status = SnackBarStatus.Error
+                    )
+                }
             }
         }
     ) {
