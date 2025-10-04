@@ -62,6 +62,10 @@ class ChatRepositoryImpl(
         }?.data?.mapNotNull { it.toDomain() } ?: emptyList()
     }
 
+    override suspend fun deleteMessage(message: Message) {
+        messageDao.deleteMessage(message.id.toString())
+    }
+
     override suspend fun getChatByContactUserId(userId: Uuid): Chat {
         return tryNetworkCall<ChatDto>(
             bodyType = typeInfo<ChatDto>()

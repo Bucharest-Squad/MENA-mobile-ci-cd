@@ -217,6 +217,8 @@ class ChatViewModelTest {
             )
         }
 
+        everySuspend { repository.deleteMessage(any()) } returns Unit
+
         chatViewModel.onDeleteFailedMessageClicked()
         testDispatcher.scheduler.advanceUntilIdle()
 

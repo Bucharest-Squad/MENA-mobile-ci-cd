@@ -151,16 +151,23 @@ class ChatViewModel(
 
     override fun onDeleteFailedMessageClicked() {
         state.value.failedMessageToReSend?.let { failedMessage ->
-            updateState { s ->
-                val updatedMessages = s.uiMessages.filterNot { it.id == failedMessage.id }
-                    .sortedByDescending { it.sendTime }
-                s.copy(
-                    uiMessages = updatedMessages,
-                    chatListItems = buildListItems(updatedMessages),
-                    failedMessageToReSend = null,
-                    isResendMessageDialogVisible = false
-                )
-            }
+            tryToExecute(
+                execute = { chatRepository.deleteMessage(failedMessage.toEntity()) },
+                onSuccess = { onDeleteFailedMessageSuccess(failedMessage) }
+            )
+        }
+    }
+
+    private fun onDeleteFailedMessageSuccess(failedMessage: TextMessageUiState) {
+        updateState { s ->
+            val updatedMessages = s.uiMessages.filterNot { it.id == failedMessage.id }
+                .sortedByDescending { it.sendTime }
+            s.copy(
+                uiMessages = updatedMessages,
+                chatListItems = buildListItems(updatedMessages),
+                failedMessageToReSend = null,
+                isResendMessageDialogVisible = false
+            )
         }
     }
 
