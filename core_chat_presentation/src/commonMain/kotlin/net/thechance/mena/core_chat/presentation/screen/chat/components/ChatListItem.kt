@@ -42,17 +42,17 @@ fun ChatListItem(
         is ChatListItem.Message -> {
             val markedMessage = item.data
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = modifier.fillMaxWidth(),
                 horizontalArrangement = if (markedMessage.message.isMine) Arrangement.End else Arrangement.Start
             ) {
                 TextMessageItem(
                     message = markedMessage.message as TextMessageUiState, // temporal casting until more MessageTypes involved
-                    chatAvatarUrl = if (markedMessage.isMarkedLastInSeries) chat.avatarUrl else null,
+                    chatAvatarUrl = chat.avatarUrl,
                     showMessageInfo = markedMessage.showMessageInfo,
                     isMarkedLastInSeries = markedMessage.isMarkedLastInSeries,
                     onClick = { onMessageClick(markedMessage.message.id) },
                     onFailClick = { onFailedMessageClick(markedMessage.message) },
-                    modifier = modifier
+                    modifier = Modifier
                 )
             }
         }

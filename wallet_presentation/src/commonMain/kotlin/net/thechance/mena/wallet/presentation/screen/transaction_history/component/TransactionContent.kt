@@ -25,9 +25,7 @@ fun TransactionContent(
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = if (transactionStatus.contentRes == Res.string.failed) Arrangement.spacedBy(
-            4.dp
-        ) else Arrangement.spacedBy(8.dp)
+        verticalArrangement = if (transactionStatus.contentRes == Res.string.failed) Arrangement.spacedBy(4.dp) else Arrangement.spacedBy(8.dp)
     ) {
         TransactionTitleAndAmount(
             transactionTitle = transactionTitle,

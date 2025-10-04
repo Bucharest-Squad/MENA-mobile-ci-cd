@@ -58,7 +58,7 @@ class TransactionHistoryViewModel(
     }
 
     override fun onResetFilterClicked() {
-        updateState { it.copy(filterState = TransactionFilterState()) }
+        updateState { it.copy(filterState = TransactionFilterState(), isFilterVisible = false) }
         resetPaginator()
     }
 
@@ -73,9 +73,6 @@ class TransactionHistoryViewModel(
     private fun resetPaginator() {
         updateState {
             it.copy(
-                filterState = it.filterState.copy(
-                    isLoading = true
-                ),
                 history = emptyList(),
                 isLoading = true
             )
