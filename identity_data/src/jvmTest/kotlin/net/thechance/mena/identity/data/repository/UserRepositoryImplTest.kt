@@ -174,10 +174,10 @@ class UserRepositoryImplTest {
 
         val result = userRepositoryImpl.getUser()
 
-        assertEquals(fakeProfileResponse.firstName, result.first().firstName)
-        assertEquals(fakeProfileResponse.username, result.first().username)
-        assertEquals(fakeProfileResponse.lastName, result.first().lastName)
-        assertEquals(fakeProfileResponse.profileImageUrl, result.first().profileImageUrl)
+        assertEquals(fakeProfileResponse.firstName, result.first()?.firstName)
+        assertEquals(fakeProfileResponse.username, result.first()?.username)
+        assertEquals(fakeProfileResponse.lastName, result.first()?.lastName)
+        assertEquals(fakeProfileResponse.profileImageUrl, result.first()?.profileImageUrl)
 
     }
 
