@@ -34,11 +34,17 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import mena.design_system.generated.resources.Res
 import mena.design_system.generated.resources.checkmark
+import mena.design_system.generated.resources.dukan
+import mena.design_system.generated.resources.home
 import mena.design_system.generated.resources.ic_arrow_left
 import mena.design_system.generated.resources.ic_check_circle
 import mena.design_system.generated.resources.ic_cheese_cake
 import mena.design_system.generated.resources.ic_chip
 import mena.design_system.generated.resources.ic_close_circle
+import mena.design_system.generated.resources.ic_dukan
+import mena.design_system.generated.resources.ic_dukan_selected
+import mena.design_system.generated.resources.ic_home
+import mena.design_system.generated.resources.ic_home_selected
 import mena.design_system.generated.resources.ic_iraq
 import mena.design_system.generated.resources.ic_profile
 import mena.design_system.generated.resources.ic_user
@@ -66,6 +72,7 @@ import net.thechance.mena.designsystem.presentation.component.textField.TextFiel
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Preview
@@ -404,9 +411,23 @@ private fun PreviewComponentsLight() {
                 isScrollable = false
             ) {
                 BottomNavigationBar(
-                    onItemClick = {},
-                    modifier = Modifier.fillMaxWidth()
-                )
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    bottomNavigationItem(
+                        selectedIcon = painterResource(Res.drawable.ic_home_selected),
+                        notSelectedIcon = painterResource(Res.drawable.ic_home),
+                        title = stringResource(Res.string.home),
+                        entry = { }
+                    )
+
+                    bottomNavigationItem(
+                        selectedIcon = painterResource(Res.drawable.ic_dukan_selected),
+                        notSelectedIcon = painterResource(Res.drawable.ic_dukan),
+                        title = stringResource(Res.string.dukan),
+                        entry = { }
+                    )
+                }
             }
 
             PreviewSnackBarComponent()

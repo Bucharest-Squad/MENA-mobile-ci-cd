@@ -93,8 +93,9 @@ fun TransactionHistoryContent(
                 }
             )
         }, overlays = {
-            bottomSheet(state.isFilterVisible) {
+            bottomSheet(state.isFilterVisible) { isVisible ->
                 TransactionFilterBottomSheet(
+                    isVisible = isVisible,
                     uiState = state.filterState,
                     onDismiss = interactionListener::onDismissFilter,
                     onClickAddFilter = interactionListener::onApplyFilterClicked,
@@ -106,8 +107,9 @@ fun TransactionHistoryContent(
                     isVisible = it
                 )
             }
-            bottomSheet(isVisible = state.filterState.isDateBottomSheetVisible) {
+            bottomSheet(isVisible = state.filterState.isDateBottomSheetVisible) { isVisible ->
                 DatePickerBottomSheet(
+                    isVisible = isVisible,
                     defaultSelectedDate = when (state.filterState.datePickerMode) {
                         TransactionFilterState.DatePickerMode.START_DATE -> state.filterState.defaultStartDate
                         TransactionFilterState.DatePickerMode.END_DATE -> state.filterState.defaultEndDate

@@ -3,6 +3,7 @@ package net.thechance.mena.identity.presentation.screen.forgetPasswordOtp
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
@@ -110,7 +111,8 @@ data class OtpScreen(
                         seconds
                     ),
                     onActionClick = listener::onClickResend,
-                    isEnabled = state.isResendEnabled
+                    isEnabled = state.isResendEnabled,
+                    modifier = Modifier.imePadding()
                 )
             }
         }

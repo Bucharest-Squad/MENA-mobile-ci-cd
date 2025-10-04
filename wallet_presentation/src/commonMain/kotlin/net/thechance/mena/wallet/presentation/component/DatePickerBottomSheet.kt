@@ -68,6 +68,7 @@ import kotlin.time.ExperimentalTime
 @OptIn(ExperimentalTime::class)
 @Composable
 fun ScaffoldScope.DatePickerBottomSheet(
+    isVisible: Boolean,
     title: String = stringResource(Res.string.pick_start_date),
     minYear: Int = 2000,
     maxYear: Int = Clock.System.now()
@@ -78,6 +79,7 @@ fun ScaffoldScope.DatePickerBottomSheet(
     modifier: Modifier = Modifier
 ) {
     BottomSheet(
+        isVisible = isVisible,
         skipPartiallyExpanded = true,
         onDismissRequest = onDismiss,
         modifier = modifier.navigationBarsPadding(),

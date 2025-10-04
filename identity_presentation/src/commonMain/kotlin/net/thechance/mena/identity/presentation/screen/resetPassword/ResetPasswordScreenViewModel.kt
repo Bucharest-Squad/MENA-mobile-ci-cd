@@ -23,7 +23,14 @@ class ResetPasswordScreenViewModel(
     }
 
     override fun onChangeConfirmPassword(password: String) {
-        updateState { copy(confirmPassword = password) }
+        updateState {
+            copy(
+                confirmPassword = password,
+                confirmPasswordErrorMessage = if (password != newPassword)
+                    "Confirm password doesn't match the new password"
+                else null,
+            )
+        }
         checkResetButtonEnabled()
     }
 
@@ -86,13 +93,16 @@ class ResetPasswordScreenViewModel(
 
     private fun checkResetButtonEnabled() {
         updateState {
-            val newPassword = newPassword
-            val confirmPassword = confirmPassword
-
             val isPasswordsMatch = newPassword.isNotBlank() && newPassword == confirmPassword
             val isPasswordSecure = passwordValidator.isValid(newPassword)
 
-            copy(isResetEnabled = isPasswordsMatch && isPasswordSecure)
+            copy(
+                newPasswordErrorMessage = if (!isPasswordSecure)
+                    "Password must be at least 8 characters long and contain at least one uppercase letter and one digit."
+                else null,
+                isResetEnabled = isPasswordsMatch && isPasswordSecure
+            )
         }
     }
+
 }
