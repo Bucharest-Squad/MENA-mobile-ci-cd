@@ -1,4 +1,4 @@
-package net.thechance.mena.identity.data.utils
+package net.thechance.mena.identity.data.dataSource.local.setting
 
 import com.russhwolf.settings.Settings
 
