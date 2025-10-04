@@ -44,7 +44,7 @@ class UserRepositoryImplTest {
     private val testDispatcher = StandardTestDispatcher()
 
     private var userRepositoryImpl = UserRepositoryImpl(
-        client, userDao
+        client, userDao, testDispatcher
     )
 
     @Before
@@ -123,7 +123,6 @@ class UserRepositoryImplTest {
     @Test
     fun `getUser() should not call saveUserInfo when remote throws exception`() =
         runTest {
-
             val client = mockHttpClientError(HttpStatusCode.Unauthorized)
             userRepositoryImpl = UserRepositoryImpl(client, userDao)
 
