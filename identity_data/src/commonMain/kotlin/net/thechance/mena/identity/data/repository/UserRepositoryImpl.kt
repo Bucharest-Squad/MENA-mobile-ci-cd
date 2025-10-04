@@ -23,7 +23,7 @@ class UserRepositoryImpl(
     private val userDao: UserDao,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : UserRepository {
-    override suspend fun getUser(): Flow<User> {
+    override suspend fun getUser(): Flow<User?> {
         CoroutineScope(dispatcher).launch {
             try {
                 val user: ProfileResponseDto = client.getJson(path = PROFILE)
@@ -34,7 +34,7 @@ class UserRepositoryImpl(
 
         return userDao.getUser()
             .map { userEntity ->
-                userEntity?.toDomain() ?: throw Exception("User Not Found")
+                userEntity?.toDomain()
             }
             .flowOn(Dispatchers.IO)
     }

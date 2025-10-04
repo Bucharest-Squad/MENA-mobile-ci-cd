@@ -23,7 +23,7 @@ import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 
-abstract class BaseScreenModel<S, E>(initialState: S) : ScreenModel{
+abstract class BaseScreenModel<S, E>(initialState: S) : ScreenModel {
 
     private val _state = MutableStateFlow(initialState)
     val state = _state.asStateFlow()
@@ -38,7 +38,7 @@ abstract class BaseScreenModel<S, E>(initialState: S) : ScreenModel{
         dispatcher: CoroutineDispatcher = Dispatchers.IO,
         inScope: CoroutineScope = screenModelScope,
     ): Job {
-        return runWithErrorCheck(onError, inScope,dispatcher) {
+        return runWithErrorCheck(onError, inScope, dispatcher) {
             function()
             onSuccess()
         }
@@ -57,15 +57,15 @@ abstract class BaseScreenModel<S, E>(initialState: S) : ScreenModel{
     }
 
     protected fun <T> tryToCollect(
-        function: suspend () -> Flow<T>,
+        function: suspend () -> Flow<T?>,
         onNewValue: (T) -> Unit,
         onError: (ErrorState) -> Unit,
-        dispatcher: CoroutineDispatcher ,
+        dispatcher: CoroutineDispatcher,
         inScope: CoroutineScope = screenModelScope,
     ): Job {
-        return runWithErrorCheck(onError, inScope ,dispatcher) {
+        return runWithErrorCheck(onError, inScope, dispatcher) {
             function().distinctUntilChanged().collectLatest {
-                onNewValue(it)
+                it?.let { onNewValue(it) }
             }
         }
     }
