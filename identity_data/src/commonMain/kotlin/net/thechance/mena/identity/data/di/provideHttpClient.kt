@@ -51,6 +51,7 @@ internal fun provideHttpClient(
                     BearerTokens(settings.accessToken, settings.refreshToken)
                 }
                 sendWithoutRequest { request ->
+                    request.url.encodedPath in whitelistPicture ||
                     request.url.encodedPath !in whiteListEndPoints
                 }
             }
@@ -65,6 +66,10 @@ internal fun provideHttpClient(
 const val NETWORK_TIMEOUT_MS = 15_000L
 private val whiteListEndPoints = listOf(
     LOGIN_ENDPOINT, REFRESH_ENDPOINT
+)
+
+private val whitelistPicture = listOf(
+    "i.pinimg.com", "cdn.marketplaceevents.com", "wallpapers.com"
 )
 
 
