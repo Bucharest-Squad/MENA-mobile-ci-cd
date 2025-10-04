@@ -83,7 +83,6 @@ fun ScaffoldScope.DatePickerBottomSheet(
         skipPartiallyExpanded = true,
         onDismissRequest = onDismiss,
         modifier = modifier.navigationBarsPadding(),
-        isVisible = true,
         sheetContent = {
             DatePickerBottomSheetContent(
                 title = title,
