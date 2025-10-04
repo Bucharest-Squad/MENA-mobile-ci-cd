@@ -23,6 +23,7 @@ import coil3.ImageLoader
 import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import coil3.network.ktor3.KtorNetworkFetcherFactory
+import coil3.svg.SvgDecoder
 import io.ktor.client.HttpClient
 import mena.identity_presentation.generated.resources.Res
 import mena.identity_presentation.generated.resources.profile_profile_picture_content_description
@@ -76,6 +77,7 @@ fun ProfileInfoContainer(
                     imageLoader = ImageLoader.Builder(LocalPlatformContext.current)
                         .components {
                             add(KtorNetworkFetcherFactory(networkClient))
+                            add(SvgDecoder.Factory())
                         }
                         .build(),
                     contentScale = ContentScale.Crop,
