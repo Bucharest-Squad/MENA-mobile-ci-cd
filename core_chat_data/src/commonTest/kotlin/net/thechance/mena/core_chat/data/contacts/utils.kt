@@ -28,6 +28,7 @@ import net.thechance.mena.core_chat.data.contacts.dto.ContactDto
 import net.thechance.mena.core_chat.data.contacts.fakes.createChatDto
 import net.thechance.mena.core_chat.data.contacts.fakes.createMessageDto
 import net.thechance.mena.core_chat.data.contacts.fakes.sampleContactDto
+import net.thechance.mena.core_chat.data.database.dao.MessageDao
 import net.thechance.mena.core_chat.data.network.ApiConstants.CHAT_ENDPOINT
 import net.thechance.mena.core_chat.data.network.ApiConstants.CHAT_HISTORY_ENDPOINT
 import net.thechance.mena.core_chat.data.network.ApiConstants.CONTACTS_ENDPOINT
@@ -134,6 +135,7 @@ fun createChatRepository(
     httpClient: HttpClient? = null,
     webSocketManager: WebSocketManager,
     authenticationRepository: AuthenticationRepository,
+    messageDao: MessageDao,
     chatHistoryResponse: (suspend MockRequestHandleScope.() -> HttpResponseData)? = null,
     chatResponse: (suspend MockRequestHandleScope.() -> HttpResponseData)? = null
 ): ChatRepositoryImpl {
@@ -145,6 +147,7 @@ fun createChatRepository(
         client = httpClient ?: defaultClient,
         webSocketManager = webSocketManager,
         authenticationRepository = authenticationRepository,
+        messageDao = messageDao,
         json = jsonSerialization,
     )
 }
