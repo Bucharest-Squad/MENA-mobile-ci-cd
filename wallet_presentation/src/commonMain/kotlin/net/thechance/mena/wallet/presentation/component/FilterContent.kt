@@ -93,7 +93,7 @@ private fun TransactionTypesRow(
         modifier = Modifier.padding(top = 12.dp, bottom = 16.dp)
     ) {
         items(FilterType.entries) { type ->
-            Chip(
+            WalletChip(
                 text = stringResource(type.labelRes),
                 isSelected = selectedTypes?.contains(type) == true,
                 onClick = { onTypeSelected(type) }
@@ -112,7 +112,7 @@ private fun TransactionStatusRow(
         modifier = Modifier.padding(top = 12.dp, bottom = 16.dp)
     ) {
         items(FilterStatus.entries) { status ->
-            Chip(
+            WalletChip(
                 text = stringResource(status.labelRes),
                 isSelected = selectedStatus == status,
                 onClick = {
