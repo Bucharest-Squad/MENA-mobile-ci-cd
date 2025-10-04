@@ -55,7 +55,7 @@ internal fun provideHttpClient(
                 }
                 sendWithoutRequest { request ->
                     val path = request.url.encodedPath.removePrefix("/")
-                    path !in whiteListEndPoints
+                    path !in whiteListEndPoints || path in whitelistPicture
                 }
             }
         }
@@ -68,5 +68,9 @@ internal fun provideHttpClient(
 
 const val NETWORK_TIMEOUT_MS = 15_000L
 private val whiteListEndPoints = listOf(
-    LOGIN_ENDPOINT, REFRESH_ENDPOINT, REQUEST_OTP, VERIFY_OTP ,RESET_PASSWORD
+    LOGIN_ENDPOINT, REFRESH_ENDPOINT, REQUEST_OTP, VERIFY_OTP, RESET_PASSWORD
+)
+
+private val whitelistPicture = listOf(
+    "i.pinimg.com", "cdn.marketplaceevents.com", "wallpapers.com"
 )

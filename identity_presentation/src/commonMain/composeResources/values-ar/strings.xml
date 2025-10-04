@@ -22,7 +22,6 @@
     <string name="tunisia">تونس</string>
     <string name="uae">الإمارات العربية المتحدة</string>
     <string name="yemen">اليمن</string>
-
     <string name="reset_password">إعادة تعيين كلمة المرور</string>
     <string name="new_password_title">كلمة المرور الجديدة</string>
     <string name="reset_password_description">يرجى إدخال كلمة المرور الجديدة والتأكد من تذكرها في المرة القادمة</string>
@@ -30,4 +29,27 @@
     <string name="confirm_password_label">تأكيد كلمة المرور</string>
     <string name="reset">إعادة تعيين</string>
     <string name="error">خطأ</string>
+    <!-- Profile Screen Strings -->
+    <string name="profile_title">الملف الشخصي</string>
+    <string name="profile_account_settings_header">إعدادات الحساب</string>
+    <string name="profile_edit_profile_info">تعديل معلومات الملف الشخصي</string>
+    <string name="profile_change_password">تغيير كلمة المرور</string>
+    <string name="profile_addresses">العناوين</string>
+    <string name="profile_privacy_settings">إعدادات الخصوصية</string>
+    <string name="profile_app_settings_header">إعدادات التطبيق</string>
+    <string name="profile_language">اللغة</string>
+    <string name="profile_language_english">الإنجليزية</string>
+    <string name="profile_language_arabic">العربية</string>
+    <string name="profile_theme">المظهر</string>
+    <string name="profile_theme_light">فاتح</string>
+    <string name="profile_theme_dark">داكن</string>
+    <string name="profile_other_header">أخرى</string>
+    <string name="profile_privacy_and_policy">الخصوصية والسياسات</string>
+    <string name="profile_contact_us">اتصل بنا</string>
+    <string name="profile_invite_friends_title">اجعل MENA مليئًا بالأصدقاء</string>
+    <string name="profile_invite_friends_subtitle">ادعُ أصدقائك</string>
+    <string name="profile_edit_profile_icon_content_description">أيقونة تعديل معلومات الملف الشخصي</string>
+    <string name="profile_profile_picture_content_description">صورة الملف الشخصي</string>
+    <string name="profile_share_icon_content_description">أيقونة المشاركة</string>
+    <string name="profile_invite_friends_icon_content_description">أيقونة دعوة الأصدقاء</string>
 </resources>

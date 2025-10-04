@@ -16,28 +16,27 @@ import net.thechance.mena.identity.presentation.bottomSheet.countryPicker.menaCo
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 
 class LoginViewModelTest {
-
     private lateinit var useCase: LoginUseCase
-    private lateinit var viewModel: LoginScreenModel
+    private lateinit var viewModel: LoginScreenViewModel
     private val testDispatcher: TestDispatcher = StandardTestDispatcher()
 
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
         useCase = mockk(relaxed = true)
-        viewModel = LoginScreenModel(useCase,testDispatcher)
+        viewModel = LoginScreenViewModel(useCase, testDispatcher)
 
     }
 
 
     private fun setupValidCountry() {
         viewModel.onSelectCountryItem(selectedCountry)
-        viewModel.onClickConfirmButton()
     }
 
     @Test
@@ -58,7 +57,7 @@ class LoginViewModelTest {
     }
 
     @Test
-    fun `should show invalid mobile number message when mobile number is wrong`() = runTest{
+    fun `should show invalid mobile number message when mobile number is wrong`() = runTest {
 
         val errorMessage = "Invalid mobile number"
         coEvery { useCase.login(any(), any(), any()) } throws InvalidMobileNumberException("")
@@ -71,7 +70,6 @@ class LoginViewModelTest {
 
 
     }
-
 
 
     @Test
@@ -109,7 +107,7 @@ class LoginViewModelTest {
 
             testDispatcher.scheduler.advanceUntilIdle()
 
-            assertTrue { viewModel.state.value.countryPickerUIState.currentCountry == selectedCountry }
+            assertTrue { viewModel.state.value.currentCountry == selectedCountry }
 
         }
 
@@ -150,7 +148,6 @@ class LoginViewModelTest {
         val phoneNumber = "1100661617"
 
         viewModel.onSelectCountryItem(selectedCountry)
-        viewModel.onClickConfirmButton()
         viewModel.onPhoneChanged(phoneNumber)
 
         testDispatcher.scheduler.advanceUntilIdle()
@@ -250,6 +247,11 @@ class LoginViewModelTest {
 
         }
 
+    @Test
+    fun `clearErrorMessage() should update error message to null`() {
+        viewModel.clearErrorMessage()
+        assertNull(viewModel.state.value.errorMessage)
+    }
 
     companion object {
         val selectedCountry: MenaCountry = MenaCountry.EGYPT

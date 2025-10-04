@@ -6,6 +6,8 @@ import net.thechance.mena.identity.presentation.base.BaseScreenModel
 class RegisterScreenModel :
     BaseScreenModel<RegisterScreenUIState, RegisterScreenUIEffect>(RegisterScreenUIState()),
     RegisterScreenInteractionListener {
-
+    override fun onBackButtonClicked() {
+        sendNewEffect(RegisterScreenUIEffect.NavigateBack)
+    }
 }
 
