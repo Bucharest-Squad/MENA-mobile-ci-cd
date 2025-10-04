@@ -30,12 +30,10 @@ import net.thechance.mena.identity.data.dataSource.local.database.dao.UserDao
 import net.thechance.mena.identity.data.dto.profile.ProfileResponseDto
 import net.thechance.mena.identity.data.mapper.toDomain
 import net.thechance.mena.identity.data.mapper.toEntity
-import net.thechance.mena.identity.domain.entity.User
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertIs
 
 @OptIn(ExperimentalCoroutinesApi::class)
 
@@ -160,8 +158,9 @@ class UserRepositoryImplTest {
         coEvery { userDao.upsert(any()) } returns Unit
         every { userDao.getUser() } returns flowOf(fakeProfileResponse.toDomain().toEntity())
 
-        userRepositoryImpl.getUser()
+        val result  = userRepositoryImpl.getUser().first()
 
+        testDispatcher.scheduler.advanceUntilIdle()
         coVerify(exactly = 1) { userDao.upsert(fakeProfileResponse.toDomain().toEntity()) }
     }
 
