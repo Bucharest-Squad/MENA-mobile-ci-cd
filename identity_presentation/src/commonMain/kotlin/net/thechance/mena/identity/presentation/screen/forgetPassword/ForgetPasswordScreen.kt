@@ -47,11 +47,9 @@ class ForgetPasswordScreen : BaseScreen<
                 bottomSheet(isVisible = state.showCountryBottomSheet) {showBottomSheet ->
                     CountryPicker(
                         isVisible = showBottomSheet,
-                        isEnabled = state.countryPickerUIState.isEnabled,
-                        countries = state.countryPickerUIState.countries,
-                        onSelectCountryItem = listener::onSelectCountryItem,
+                        currentCountry = state.currentCountry,
                         onDismiss = listener::onDismissBottomSheet,
-                        onClickConfirm = listener::onClickConfirmButton
+                        onClickConfirm = listener::onSelectCountryItem,
                     )
                 }
             },
@@ -71,8 +69,8 @@ class ForgetPasswordScreen : BaseScreen<
                 LabeledInputPhoneNumber(
                     phoneNumber = state.phoneNumber,
                     onPhoneChange = listener::onChangePhone,
-                    countryCode = state.countryPickerUIState.currentCountry.callingCode,
-                    countryFlag = painterResource(state.countryPickerUIState.currentCountry.flagImage),
+                    countryCode = state.currentCountry.callingCode,
+                    countryFlag = painterResource(state.currentCountry.flagImage),
                     onClickCountry = listener::onClickCountry
                 )
 

@@ -66,11 +66,9 @@ class LoginScreen : BaseScreen<
                 bottomSheet(state.showCountryBottomSheet) { showBottomSheet ->
                     CountryPicker(
                         isVisible = showBottomSheet,
-                        isEnabled = state.countryPickerUIState.isEnabled,
-                        countries = state.countryPickerUIState.countries,
-                        onSelectCountryItem = listener::onSelectCountryItem,
+                        currentCountry = state.currentCountry,
+                        onClickConfirm = listener::onSelectCountryItem,
                         onDismiss = listener::onDismissBottomSheet,
-                        onClickConfirm = listener::onClickConfirmButton
                     )
                 }
             }
@@ -89,8 +87,8 @@ class LoginScreen : BaseScreen<
                     LabeledInputPhoneNumber(
                         phoneNumber = state.phoneNumber,
                         onPhoneChange = listener::onPhoneChanged,
-                        countryCode = state.countryPickerUIState.currentCountry.callingCode,
-                        countryFlag = painterResource(state.countryPickerUIState.currentCountry.flagImage),
+                        countryCode = state.currentCountry.callingCode,
+                        countryFlag = painterResource(state.currentCountry.flagImage),
                         onClickCountry = listener::onPhoneCodeClicked
                     )
 
