@@ -18,7 +18,6 @@ import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.test.runTest
 import net.thechance.mena.core_chat.data.chat.dto.MessageDto
 import net.thechance.mena.core_chat.data.chat.utils.WebSocketManager
-import net.thechance.mena.core_chat.data.database.dao.MessageDao
 import net.thechance.mena.core_chat.data.contacts.createChatRepository
 import net.thechance.mena.core_chat.data.contacts.createHttpClient
 import net.thechance.mena.core_chat.data.contacts.defaultChatHistoryResponse
@@ -26,6 +25,7 @@ import net.thechance.mena.core_chat.data.contacts.defaultChatResponse
 import net.thechance.mena.core_chat.data.contacts.fakes.createMessage
 import net.thechance.mena.core_chat.data.contacts.jsonHeaders
 import net.thechance.mena.core_chat.data.contacts.mockErrorPagedResponse
+import net.thechance.mena.core_chat.data.database.dao.MessageDao
 import net.thechance.mena.core_chat.domain.exception.NotFoundException
 import net.thechance.mena.core_chat.domain.exception.SendMessageFailedException
 import net.thechance.mena.identity.domain.repository.AuthenticationRepository
@@ -78,6 +78,19 @@ class ChatRepositoryImplTest {
         val result = repository.loadMessages(chatId)
 
         assertThat(result).isNotEmpty()
+    }
+
+    @Test
+    fun `should delete message from local database when deleteMessage is called`() = runTest {
+        val message = createMessage(
+            senderId = userId,
+            chatId = chatId,
+        )
+        everySuspend { messageDao.deleteMessage(any()) } returns Unit
+
+        repository.deleteMessage(message)
+
+        verifySuspend { messageDao.deleteMessage(message.id.toString()) }
     }
 
     @Test
