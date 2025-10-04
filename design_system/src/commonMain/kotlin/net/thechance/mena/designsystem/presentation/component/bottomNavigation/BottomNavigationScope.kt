@@ -21,7 +21,7 @@ data class BottomNavigationItem(
     val entry: () -> Unit,
 )
 
-internal class NavigationScopeImpl : BottomNavigationScope {
+internal class BottomNavigationScopeImpl : BottomNavigationScope {
     val items = mutableListOf<BottomNavigationItem>()
 
     override fun bottomNavigationItem(

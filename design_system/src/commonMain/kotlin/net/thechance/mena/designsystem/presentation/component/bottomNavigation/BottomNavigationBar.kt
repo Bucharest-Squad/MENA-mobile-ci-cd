@@ -29,7 +29,7 @@ fun BottomNavigationBar(
     modifier: Modifier = Modifier,
     content: @Composable BottomNavigationScope.() -> Unit = {},
 ) {
-    val scope = remember { NavigationScopeImpl() }.apply {
+    val scope = remember { BottomNavigationScopeImpl() }.apply {
         items.clear()
         content()
     }
