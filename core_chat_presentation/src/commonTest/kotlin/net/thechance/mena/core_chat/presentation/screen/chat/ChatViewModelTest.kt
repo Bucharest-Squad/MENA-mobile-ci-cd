@@ -66,6 +66,8 @@ class ChatViewModelTest {
     @Test
     fun `init should update chat list when its loaded messages successfully`() {
         everySuspend { repository.loadMessages(chatId) } returns messages
+        everySuspend { repository.getLocalMessages(chatId) } returns emptyList()
+
 
         chatViewModel = ChatViewModel(repository, chatArgs, effector, testDispatcher)
 
