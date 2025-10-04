@@ -61,7 +61,6 @@ val identityDataModule = module {
 
     single<UserDao> { get<IdentityDatabase>().getUserDao() }
 
-    singleOf(::AuthenticationRepositoryImpl) bind AuthenticationRepository::class
     singleOf(::ResetPasswordRepositoryImpl) bind ResetPasswordRepository::class
 }
 

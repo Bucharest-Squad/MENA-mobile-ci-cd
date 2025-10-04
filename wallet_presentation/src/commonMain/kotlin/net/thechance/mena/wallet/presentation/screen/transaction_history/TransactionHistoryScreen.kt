@@ -109,7 +109,8 @@ fun TransactionHistoryContent(
                     onTypeToggled = interactionListener::selectFilterType,
                     onStatusSelected = interactionListener::selectFilterStatus,
                     onStartDateClicked = interactionListener::onStartDateClicked,
-                    onEndDateClicked = interactionListener::onEndDateClicked
+                    onEndDateClicked = interactionListener::onEndDateClicked,
+                    isVisible = it
                 )
             }
             bottomSheet(isVisible = state.filterState.isDateBottomSheetVisible) {

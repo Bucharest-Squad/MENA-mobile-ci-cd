@@ -41,7 +41,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 class LoginScreen : BaseScreen<
-        LoginScreenViewModel,
+        LoginScreenModel,
         LoginScreenUIState,
         LoginScreenUIEffect,
         LoginScreenInteractionListener>() {
