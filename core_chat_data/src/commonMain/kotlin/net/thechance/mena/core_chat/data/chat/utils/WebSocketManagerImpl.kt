@@ -11,22 +11,28 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import net.thechance.mena.core_chat.data.network.ApiConstants.WEB_SOCKETS_ENDPOINT
+import kotlin.coroutines.cancellation.CancellationException
 
 
 class WebSocketManagerImpl(
     private val baseUrl: String,
     private val client: HttpClient,
 ) : WebSocketManager {
+    private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
-    private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
     private var session: DefaultClientWebSocketSession? = null
     private var isActiveSession = false
-    private var shouldReconnect = true
+    private var shouldReconnect = false
+    private var connectionJob: Job? = null
 
     private val _incomingMessages = MutableSharedFlow<String>(extraBufferCapacity = 64)
     override val incomingMessages: SharedFlow<String> = _incomingMessages
@@ -41,9 +47,10 @@ class WebSocketManagerImpl(
         onConnected: suspend () -> Unit
     ) {
         if (isActiveSession) return
+        shouldReconnect = true
 
-        scope.launch(exceptionHandler) {
-            while (shouldReconnect) {
+        connectionJob = scope.launch(exceptionHandler) {
+            while (shouldReconnect && isActive) {
                 try {
                     client.webSocket(
                         urlString = getConstructWebSocketUrl(baseUrl),
@@ -56,6 +63,7 @@ class WebSocketManagerImpl(
 
                         // Listen for incoming frames
                         for (frame in incoming) {
+                            if (!isActive) break
                             if (frame is Frame.Text) {
                                 val text = frame.readText()
                                 when {
@@ -65,22 +73,23 @@ class WebSocketManagerImpl(
                             }
                         }
                     }
-                } catch (e: Exception) {
+                } catch (_: CancellationException) {
+                    println("WebSocket job cancelled")
+                    break
+                }catch (e: Exception) {
                     println("WebSocket reconnect error: ${e.message}")
                     isActiveSession = false
                     session = null
-                    delay(RECONNECT_DELAY)
+                    if (shouldReconnect) delay(RECONNECT_DELAY)
                 }
             }
         }
     }
 
     override suspend fun disconnect() {
+        shouldReconnect = false
+
         try {
-            if (isActiveSession) {
-                sendFrame("DISCONNECT\n\n\u0000")
-                println("STOMP DISCONNECT sent")
-            }
             session?.close()
             println("WebSocket closed by client")
         } catch (e: Exception) {
@@ -89,6 +98,9 @@ class WebSocketManagerImpl(
             isActiveSession = false
             session = null
         }
+
+        connectionJob?.cancelAndJoin()
+        connectionJob = null
     }
 
     private suspend fun sendFrame(raw: String) {

@@ -3,6 +3,7 @@
 package net.thechance.mena.core_chat.presentation.screen.chat
 
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.datetime.LocalDateTime
@@ -306,6 +307,7 @@ class ChatViewModel(
         super.onCleared()
         println("Disconnected")
         tryToExecute(
+            coroutineScope = CoroutineScope(Dispatchers.IO), // Required to avoid cancellation
             execute = { chatRepository.disconnect() }
         )
     }
