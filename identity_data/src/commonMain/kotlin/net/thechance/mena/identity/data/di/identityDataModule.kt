@@ -51,14 +51,12 @@ val identityDataModule = module {
             refreshToken = { get<AuthorizationService>().refreshToken() }
         )
     }
-
     single { provideDatabaseBuilder() }
     single<IdentityDatabase> { getRoomDatabase(builder = get()) }
     single<UserDao> { get<IdentityDatabase>().getUserDao() }
 
     single { provideDatabaseBuilder() }
     single<IdentityDatabase> { getRoomDatabase(builder = get()) }
-
     single<UserDao> { get<IdentityDatabase>().getUserDao() }
 
     singleOf(::ResetPasswordRepositoryImpl) bind ResetPasswordRepository::class
