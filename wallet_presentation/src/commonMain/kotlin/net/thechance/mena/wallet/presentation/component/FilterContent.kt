@@ -20,7 +20,6 @@ import mena.wallet_presentation.generated.resources.select_date
 import mena.wallet_presentation.generated.resources.status
 import mena.wallet_presentation.generated.resources.to
 import mena.wallet_presentation.generated.resources.type
-import net.thechance.mena.designsystem.presentation.component.chip.Chip
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.component.textField.TextField
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
