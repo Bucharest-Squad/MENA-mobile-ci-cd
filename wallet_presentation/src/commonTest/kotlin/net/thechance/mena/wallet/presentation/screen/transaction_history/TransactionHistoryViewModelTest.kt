@@ -8,9 +8,7 @@ import dev.mokkery.matcher.any
 import dev.mokkery.mock
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -26,6 +24,7 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -34,6 +33,7 @@ class TransactionHistoryViewModelTest {
 
     private val transactionRepository = mock<TransactionRepository>(mode = MockMode.autofill)
     private val testDispatcher = StandardTestDispatcher()
+    private lateinit var viewModel: TransactionHistoryViewModel
 
     @BeforeTest
     fun setup() {
@@ -48,7 +48,8 @@ class TransactionHistoryViewModelTest {
     @Test
     fun `state should not have error when repository returns value`() = runTest(testDispatcher) {
         everySuspend { transactionRepository.getTransactionHistory(0, 20, any()) } returns history
-        val viewModel = TransactionHistoryViewModel(transactionRepository)
+
+        viewModel = TransactionHistoryViewModel(transactionRepository)
         advanceUntilIdle()
 
         viewModel.state.test {
@@ -60,40 +61,36 @@ class TransactionHistoryViewModelTest {
 
     @Test
     fun `should send NavigateBack effect when onBackClicked is called`() = runTest(testDispatcher) {
-        everySuspend {
-            transactionRepository.getTransactionHistory(PAGE, PAGE_SIZE, any())
-        } returns emptyList()
+        everySuspend { transactionRepository.getTransactionHistory(0, 20, any()) } returns history
 
-        val viewModel = TransactionHistoryViewModel(transactionRepository)
+        viewModel = TransactionHistoryViewModel(transactionRepository)
         advanceUntilIdle()
 
-        val effects = mutableListOf<TransactionHistoryEffect>()
-        val job = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-            viewModel.uiEffect.collect { effects.add(it) }
+        viewModel.uiEffect.test {
+            viewModel.onBackClicked()
+
+            val effect = awaitItem()
+            assertTrue(effect is TransactionHistoryEffect.NavigateBack)
+            cancelAndIgnoreRemainingEvents()
         }
-        viewModel.onBackClicked()
-        advanceUntilIdle()
-
-        assertEquals(1, effects.size)
-        assertEquals(TransactionHistoryEffect.NavigateBack, effects.first())
-        job.cancel()
     }
 
     @Test
     fun `should send NavigateToTransactionDetails effect when onTransactionCardClicked is called`() =
         runTest(testDispatcher) {
-            everySuspend {
-                transactionRepository.getTransactionHistory(PAGE, PAGE_SIZE, any())
-            } returns emptyList()
+            everySuspend { transactionRepository.getTransactionHistory(0, 20, any()) } returns history
 
-            val viewModel = TransactionHistoryViewModel(transactionRepository)
-            val id = Uuid.random()
+            viewModel = TransactionHistoryViewModel(transactionRepository)
             advanceUntilIdle()
 
+            val testTransactionId = Uuid.random()
+
             viewModel.uiEffect.test {
-                viewModel.onTransactionCardClicked(id)
+                viewModel.onTransactionCardClicked(testTransactionId)
+
                 val effect = awaitItem()
-                assertEquals(TransactionHistoryEffect.NavigateToTransactionDetails(id), effect)
+                assertTrue(effect is TransactionHistoryEffect.NavigateToTransactionDetails)
+                assertEquals(testTransactionId, (effect as TransactionHistoryEffect.NavigateToTransactionDetails).id)
                 cancelAndIgnoreRemainingEvents()
             }
         }
@@ -101,22 +98,21 @@ class TransactionHistoryViewModelTest {
     @Test
     fun `should send NavigateToExportTransaction effect when onExportClicked is called`() =
         runTest(testDispatcher) {
-            everySuspend {
-                transactionRepository.getTransactionHistory(PAGE, PAGE_SIZE, any())
-            } returns emptyList()
+            everySuspend { transactionRepository.getTransactionHistory(0, 20, any()) } returns history
 
-            val viewModel = TransactionHistoryViewModel(transactionRepository)
+            viewModel = TransactionHistoryViewModel(transactionRepository)
             advanceUntilIdle()
 
             viewModel.uiEffect.test {
                 viewModel.onExportClicked()
+
                 val effect = awaitItem()
-                assertEquals(TransactionHistoryEffect.NavigateToExportTransaction, effect)
+                assertTrue(effect is TransactionHistoryEffect.NavigateToExportTransaction)
                 cancelAndIgnoreRemainingEvents()
             }
         }
 
-    companion object {
+    private companion object {
         val history = listOf(
             Transaction(
                 id = Uuid.random(),
