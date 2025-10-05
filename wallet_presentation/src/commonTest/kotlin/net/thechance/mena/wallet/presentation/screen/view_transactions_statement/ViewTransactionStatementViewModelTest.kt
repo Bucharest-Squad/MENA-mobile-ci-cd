@@ -15,7 +15,9 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import net.thechance.mena.wallet.domain.repository.StatementRepository
+import net.thechance.mena.wallet.presentation.base.ErrorState
 import net.thechance.mena.wallet.presentation.base.UiState
+import net.thechance.mena.wallet.presentation.base.UiState.*
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -59,7 +61,7 @@ class ViewTransactionStatementViewModelTest {
         initViewModel()
 
         val finalState = viewModel.state.value
-        assertTrue(finalState.statement is UiState.Success)
+        assertTrue(finalState.statement is Success)
         assertContentEquals(statement, finalState.statement.data)
     }
 
@@ -103,7 +105,7 @@ class ViewTransactionStatementViewModelTest {
 
             initViewModel()
             val finalState = viewModel.state.value
-            assertTrue(finalState.statement is UiState.Error)
+            assertTrue(finalState.statement is Error)
         }
 
     @Test
@@ -116,6 +118,18 @@ class ViewTransactionStatementViewModelTest {
                 advanceUntilIdle()
                 expectNoEvents()
             }
+        }
+
+    @Test
+    fun `state should update with NoDataFound error when the fetched statement is empty`() =
+        runTest(testDispatcher) {
+            everySuspend { repository.getTransactionsPdf(null) } returns ByteArray(0)
+
+            initViewModel()
+
+            val finalState = viewModel.state.value
+            assertTrue(finalState.statement is Success)
+            assertTrue(finalState.statement.data.isEmpty())
         }
 
     private fun TestScope.initViewModel() {
