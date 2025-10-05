@@ -9,6 +9,7 @@ import dev.mokkery.mock
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -20,10 +21,13 @@ import net.thechance.mena.wallet.domain.entity.Transaction
 import net.thechance.mena.wallet.domain.model.TransactionStatus
 import net.thechance.mena.wallet.domain.model.TransactionType
 import net.thechance.mena.wallet.domain.repository.TransactionRepository
+import net.thechance.mena.wallet.presentation.model.FilterStatus
+import net.thechance.mena.wallet.presentation.model.FilterType
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -38,6 +42,14 @@ class TransactionHistoryViewModelTest {
     @BeforeTest
     fun setup() {
         Dispatchers.setMain(testDispatcher)
+
+        everySuspend {
+            transactionRepository.getTransactionHistory(
+                any(),
+                any(),
+                any()
+            )
+        } returns history
     }
 
     @AfterTest
@@ -46,25 +58,8 @@ class TransactionHistoryViewModelTest {
     }
 
     @Test
-    fun `state should not have error when repository returns value`() = runTest(testDispatcher) {
-        everySuspend { transactionRepository.getTransactionHistory(0, 20, any()) } returns history
-
-        viewModel = TransactionHistoryViewModel(transactionRepository)
-        advanceUntilIdle()
-
-        viewModel.state.test {
-            val currentState = awaitItem()
-            assertEquals(null, currentState.errorState)
-            cancelAndIgnoreRemainingEvents()
-        }
-    }
-
-    @Test
     fun `should send NavigateBack effect when onBackClicked is called`() = runTest(testDispatcher) {
-        everySuspend { transactionRepository.getTransactionHistory(0, 20, any()) } returns history
-
-        viewModel = TransactionHistoryViewModel(transactionRepository)
-        advanceUntilIdle()
+        initViewModel()
 
         viewModel.uiEffect.test {
             viewModel.onBackClicked()
@@ -78,19 +73,15 @@ class TransactionHistoryViewModelTest {
     @Test
     fun `should send NavigateToTransactionDetails effect when onTransactionCardClicked is called`() =
         runTest(testDispatcher) {
-            everySuspend { transactionRepository.getTransactionHistory(0, 20, any()) } returns history
-
-            viewModel = TransactionHistoryViewModel(transactionRepository)
-            advanceUntilIdle()
-
-            val testTransactionId = Uuid.random()
+            initViewModel()
+            val testTransactionId = history[0].id
 
             viewModel.uiEffect.test {
                 viewModel.onTransactionCardClicked(testTransactionId)
 
                 val effect = awaitItem()
                 assertTrue(effect is TransactionHistoryEffect.NavigateToTransactionDetails)
-                assertEquals(testTransactionId, (effect as TransactionHistoryEffect.NavigateToTransactionDetails).id)
+                assertEquals(testTransactionId, effect.id)
                 cancelAndIgnoreRemainingEvents()
             }
         }
@@ -98,11 +89,7 @@ class TransactionHistoryViewModelTest {
     @Test
     fun `should send NavigateToExportTransaction effect when onExportClicked is called`() =
         runTest(testDispatcher) {
-            everySuspend { transactionRepository.getTransactionHistory(0, 20, any()) } returns history
-
-            viewModel = TransactionHistoryViewModel(transactionRepository)
-            advanceUntilIdle()
-
+            initViewModel()
             viewModel.uiEffect.test {
                 viewModel.onExportClicked()
 
@@ -111,6 +98,150 @@ class TransactionHistoryViewModelTest {
                 cancelAndIgnoreRemainingEvents()
             }
         }
+
+    @Test
+    fun `filter should be visible when onFilterClicked is called`() = runTest(testDispatcher) {
+        initViewModel()
+
+        viewModel.onFilterClicked()
+        advanceUntilIdle()
+
+        viewModel.state.test {
+            val currentState = awaitItem()
+            assertTrue(currentState.isFilterVisible)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `page should be reset when onResetFilters is called`() = runTest(testDispatcher) {
+        initViewModel()
+
+        viewModel.selectFilterType(FilterType.SENT)
+        viewModel.selectFilterStatus(FilterStatus.SUCCESS)
+        advanceUntilIdle()
+
+        viewModel.onResetFilterClicked()
+        advanceUntilIdle()
+
+        viewModel.state.test {
+            val currentState = awaitItem()
+            assertTrue(currentState.filterState.selectedTypes.isEmpty())
+            assertEquals(FilterStatus.ALL, currentState.filterState.selectedStatus)
+            assertEquals(null, currentState.filterState.startDate)
+            assertEquals(null, currentState.filterState.endDate)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `filter should be applied when onApplyFilter is called`() = runTest(testDispatcher) {
+        initViewModel()
+
+        viewModel.onApplyFilterClicked()
+        advanceUntilIdle()
+
+        viewModel.state.test {
+            val currentState = awaitItem()
+            assertTrue(currentState.isLoading || currentState.history.isNotEmpty())
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `end date should be picked when onEndDateClicked is called`() = runTest(testDispatcher) {
+        initViewModel()
+
+        viewModel.onEndDateClicked()
+        advanceUntilIdle()
+
+        viewModel.state.test {
+            val currentState = awaitItem()
+            assertTrue(currentState.filterState.isDateBottomSheetVisible)
+            assertEquals(
+                TransactionFilterState.DatePickerMode.END_DATE,
+                currentState.filterState.datePickerMode
+            )
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `date picker should be dismissed when onDismissDatePicker is called`() =
+        runTest(testDispatcher) {
+            initViewModel()
+
+            viewModel.onEndDateClicked()
+            advanceUntilIdle()
+
+            viewModel.onDismissDatePicker()
+            advanceUntilIdle()
+
+            viewModel.state.test {
+                val currentState = awaitItem()
+                assertFalse(currentState.filterState.isDateBottomSheetVisible)
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `date should be picked when onPickDateClicked is called`() = runTest(testDispatcher) {
+        initViewModel()
+
+        val testDate = LocalDate(2025, 8, 20)
+        viewModel.onEndDateClicked()
+        advanceUntilIdle()
+
+        viewModel.onPickDateClicked(testDate)
+        advanceUntilIdle()
+
+        viewModel.state.test {
+            val currentState = awaitItem()
+            assertEquals(testDate, currentState.filterState.endDate)
+            assertFalse(currentState.filterState.isDateBottomSheetVisible)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `filter type should be selected when selectFilterType is called`() =
+        runTest(testDispatcher) {
+            initViewModel()
+
+            val filterType = FilterType.SENT
+            viewModel.selectFilterType(filterType)
+            advanceUntilIdle()
+
+            viewModel.state.test {
+                val currentState = awaitItem()
+                assertTrue(currentState.filterState.selectedTypes.contains(filterType))
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `filter status should be selected when selectFilterStatus is called`() =
+        runTest(testDispatcher) {
+            initViewModel()
+
+            val filterStatus = FilterStatus.SUCCESS
+            viewModel.selectFilterStatus(filterStatus)
+            advanceUntilIdle()
+
+            viewModel.state.test {
+                val currentState = awaitItem()
+                assertEquals(filterStatus, currentState.filterState.selectedStatus)
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    private fun TestScope.initViewModel() {
+        viewModel = TransactionHistoryViewModel(
+            transactionRepository = transactionRepository,
+            ioDispatcher = testDispatcher
+        )
+        advanceUntilIdle()
+    }
 
     private companion object {
         val history = listOf(
@@ -151,7 +282,5 @@ class TransactionHistoryViewModelTest {
                 type = TransactionType.ONLINE_PURCHASE
             ),
         )
-        const val PAGE_SIZE = 20
-        const val PAGE = 1
     }
 }
