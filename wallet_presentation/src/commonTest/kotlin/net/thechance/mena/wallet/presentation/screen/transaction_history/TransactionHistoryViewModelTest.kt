@@ -235,6 +235,40 @@ class TransactionHistoryViewModelTest {
             }
         }
 
+    @Test
+    fun `should load transactions when onNextPageRequested `() =
+        runTest(testDispatcher) {
+            initViewModel()
+
+            viewModel.onNextPageRequested()
+            advanceUntilIdle()
+
+            viewModel.state.test {
+                val currentState = awaitItem()
+                assertTrue(currentState.history.isNotEmpty())
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `page should be reset when onRetryLoadTransactions is called`() =
+        runTest(testDispatcher) {
+            initViewModel()
+
+            viewModel.selectFilterType(FilterType.SENT)
+            viewModel.selectFilterStatus(FilterStatus.SUCCESS)
+            advanceUntilIdle()
+
+            viewModel.onRetryLoadTransactionHistoryClicked()
+            advanceUntilIdle()
+
+            viewModel.state.test {
+                val currentState = awaitItem()
+                assertTrue(currentState.history.isNotEmpty())
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
     private fun TestScope.initViewModel() {
         viewModel = TransactionHistoryViewModel(
             transactionRepository = transactionRepository,
