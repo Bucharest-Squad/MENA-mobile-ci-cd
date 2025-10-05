@@ -85,8 +85,9 @@ private fun ExportTransactionScreenContent(
             )
         },
         overlays = {
-            bottomSheet(isVisible = state.isDateBottomSheetVisible) {
+            bottomSheet(isVisible = state.isDateBottomSheetVisible) { isVisible ->
                 DatePickerBottomSheet(
+                    isVisible = isVisible,
                     defaultSelectedDate = when (state.datePickerMode) {
                         ExportTransactionsState.DatePickerMode.START_DATE -> state.defaultStartDate
                         ExportTransactionsState.DatePickerMode.END_DATE -> state.defaultEndDate

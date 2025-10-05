@@ -26,7 +26,8 @@ internal val repositoryModule = module {
             client = get(named(CHAT_CLIENT)),
             json = get(named(CHAT_JSON)),
             authenticationRepository = get(),
-            webSocketManager = get()
+            webSocketManager = get(),
+            messageDao = get()
         )
     }
 }

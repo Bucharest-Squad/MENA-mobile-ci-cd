@@ -1,6 +1,6 @@
 package net.thechance.mena.identity.presentation.screen.login
 
-import net.thechance.mena.identity.presentation.bottomSheet.countryPicker.CountryPickerUIState
+import net.thechance.mena.identity.presentation.bottomSheet.countryPicker.menaCountries.MenaCountry
 
 data class LoginScreenUIState(
     val phoneNumber: String = "",
@@ -10,5 +10,5 @@ data class LoginScreenUIState(
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
     val isLoginEnabled: Boolean = false,
-    val countryPickerUIState: CountryPickerUIState = CountryPickerUIState()
+    val currentCountry: MenaCountry = MenaCountry.IRAQ,
 )
