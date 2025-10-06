@@ -103,4 +103,10 @@
     <string name="unknown_error_title">خطأ غير معروف</string>
     <string name="unknown_error_description">حدث خطأ غير معروف. يرجى المحاولة مرة أخرى.</string>
 
+    <string name="confirm_payment_header">تأكيد الدفع</string>
+    <string name="confirm_payment_content_success">لديك %1$s فضة في المحفظة</string>
+    <string name="confirm_payment_content_failed">لديك فقط %1$s فضة في محفظتك، وهذا لا يكفي.</string>
+    <string name="You_are_about_to_pay">أنت على وشك الدفع</string>
+    <string name="pay_amount">%1$s ادفع</string>
+
 </resources>
