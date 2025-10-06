@@ -41,4 +41,23 @@ interface AyahDao {
     """
     )
     suspend fun getAyahContent(ayahNumber: Int, surahId: Int): String
+
+
+    @Query(
+        """
+                SELECT *
+                FROM ayat
+                WHERE aya_text_emlaey LIKE :query
+        """
+    )
+    suspend fun searchAyah(query: String): List<AyahDto>
+
+    @Query(
+        """
+                SELECT *
+                FROM ayat
+                WHERE aya_text_emlaey LIKE :query AND sura_no = :surahId
+        """
+    )
+    suspend fun searchAyahBySura(surahId: Int, query: String): List<AyahDto>
 }
