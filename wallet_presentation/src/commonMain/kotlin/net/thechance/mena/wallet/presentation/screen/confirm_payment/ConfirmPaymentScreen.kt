@@ -34,11 +34,16 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun ConfirmPaymentScreen(
     onNavigateBackClicked: () -> Unit,
-    viewModel: ConfirmPaymentViewModel = koinViewModel()
+    receiverId: String,
+    amount: Double,
+    viewModel: ConfirmPaymentViewModel = koinViewModel(
+        parameters = { parametersOf(receiverId, amount) }
+    )
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 

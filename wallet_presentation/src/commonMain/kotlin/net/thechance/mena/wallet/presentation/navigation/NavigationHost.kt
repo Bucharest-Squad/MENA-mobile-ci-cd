@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import net.thechance.mena.wallet.presentation.screen.confirm_payment.ConfirmPaymentScreen
 import net.thechance.mena.wallet.presentation.screen.export.ExportTransactionScreen
 import net.thechance.mena.wallet.presentation.screen.transaction_details.TransactionDetailsScreen
 import net.thechance.mena.wallet.presentation.screen.transaction_history.TransactionHistoryScreen
@@ -52,6 +53,9 @@ fun NavigationHost(
                 onNavigateBackClicked = navigateBack,
                 navigateToTransactionHistory = {
                     navController.navigate(TransactionsHistoryScreenRoute)
+                },
+                navigateToPaymentScreen = { amount, receiverId ->
+                    navController.navigate(ConfirmPaymentScreenRoute(amount = amount, id = receiverId))
                 }
             )
         }
@@ -85,6 +89,13 @@ fun NavigationHost(
             ViewTransactionStatementScreen(
                 onNavigateBackClicked = { navController.popBackStack() },
                 filterParams = filterParams
+            )
+        }
+        composable<ConfirmPaymentScreenRoute> { backStackEntry ->
+            ConfirmPaymentScreen(
+                onNavigateBackClicked = navController::popBackStack,
+                receiverId = backStackEntry.toRoute<ConfirmPaymentScreenRoute>().id,
+                amount = backStackEntry.toRoute<ConfirmPaymentScreenRoute>().amount
             )
         }
     }

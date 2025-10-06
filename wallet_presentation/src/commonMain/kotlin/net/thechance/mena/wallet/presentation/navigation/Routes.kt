@@ -35,3 +35,9 @@ data class ViewTransactionsStatementScreenRoute(
     val startDate: String? = null,
     val endDate: String? = null,
 ): WalletRoute()
+
+@Serializable
+data class ConfirmPaymentScreenRoute(
+    val amount: Double,
+    val id: String
+): WalletRoute()
