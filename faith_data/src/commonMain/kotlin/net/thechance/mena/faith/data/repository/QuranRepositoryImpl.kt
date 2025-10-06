@@ -31,11 +31,11 @@ class QuranRepositoryImpl(val ayahDao: AyahDao) : QuranRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getLastAyah(): Ayah {
+    override suspend fun getLastAyahForTilawah(): Ayah {
         TODO("Not yet implemented")
     }
 
-    override suspend fun saveLastAyah(ayah: Ayah) {
+    override suspend fun saveLastAyahForTilawah(ayah: Ayah) {
         TODO("Not yet implemented")
     }
 }

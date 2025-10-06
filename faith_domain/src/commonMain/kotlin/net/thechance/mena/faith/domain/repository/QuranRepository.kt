@@ -8,6 +8,6 @@ interface QuranRepository {
     suspend fun getAyatOfSurah(surahId: Int): List<Ayah>
     suspend fun searchForAyahInSurah(surahId: Int, query: String): List<Ayah>
     suspend fun searchForAyahInQuran(query: String): List<Ayah>
-    suspend fun getLastAyah(): Ayah
-    suspend fun saveLastAyah(ayah: Ayah)
+    suspend fun getLastAyahForTilawah(): Ayah
+    suspend fun saveLastAyahForTilawah(ayah: Ayah)
 }
