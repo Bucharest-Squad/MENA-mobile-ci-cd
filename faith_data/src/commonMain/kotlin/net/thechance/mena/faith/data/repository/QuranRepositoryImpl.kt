@@ -19,4 +19,19 @@ class QuranRepositoryImpl(val ayahDao: AyahDao) : QuranRepository {
         executeLocalSafely {
             ayahDao.getAyatOfSurah(surahId).map { it.toAyah() }
         }
+
+    override suspend fun searchAyah(query: String): List<Ayah> =
+        executeLocalSafely {
+            ayahDao.searchAyah(query).map { it.toAyah() }
+        }
+
+
+    override suspend fun searchAyahInSurah(
+        query: String,
+        surahId: Int
+    ): List<Ayah> =
+        executeLocalSafely {
+            ayahDao.searchAyahInSura(surahId, query).map { it.toAyah() }
+        }
+
 }
