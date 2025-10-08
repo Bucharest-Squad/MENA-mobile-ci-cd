@@ -2,6 +2,8 @@ package net.thechance.mena.wallet.data.repository.payment
 
 import io.ktor.client.request.parameter
 import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 import net.thechance.mena.wallet.data.dto.PaymentConfirmationDto
 import net.thechance.mena.wallet.data.exceptions.safeApiCall
 import net.thechance.mena.wallet.data.mapper.toEntity
@@ -20,6 +22,7 @@ class PaymentRepositoryImpl(private val networkClient: NetworkClient): PaymentRe
         val requestBody = PaymentConfirmationRequest(receiverId, amount)
         return safeApiCall<PaymentConfirmationDto> {
             networkClient.post(CONFIRM_PAYMENT_PATH) {
+                contentType(ContentType.Application.Json)
                 setBody(requestBody)
             }
         }.toEntity()
