@@ -7,8 +7,12 @@ import net.thechance.mena.faith.data.database.AyahDao
 import net.thechance.mena.faith.data.mapper.ayahBookmark.toAyahBookmark
 import net.thechance.mena.faith.data.mapper.toAyah
 import net.thechance.mena.faith.data.mapper.toSurah
+import net.thechance.mena.faith.data.remote.dto.PageResponse
 import net.thechance.mena.faith.data.remote.dto.bookmark.AddBookmarkRequest
+import net.thechance.mena.faith.data.remote.dto.bookmark.AyahBookmarkDto
 import net.thechance.mena.faith.data.remote.service.BookmarkApiService
+import net.thechance.mena.faith.data.utils.executeApiSafely
+import net.thechance.mena.faith.data.utils.executeLocalSafely
 import net.thechance.mena.faith.domain.entity.AyahBookmark
 import net.thechance.mena.faith.domain.repository.BookmarkRepository
 import kotlin.time.ExperimentalTime
@@ -21,30 +25,44 @@ class BookmarkRepositoryImpl(
 ) : BookmarkRepository {
 
     override suspend fun addAyahBookmark(surahId: Int, ayahNumber: Int): AyahBookmark {
-        val dto = bookmarkApiService.addBookmark(AddBookmarkRequest(surahId, ayahNumber))
-        val surah = ayahDao.getSurah(surahId)
-        val ayah = ayahDao.getAyah(surahId, ayahNumber)
+        val bookmarkDto = executeApiSafely<AyahBookmarkDto> {
+            bookmarkApiService.addBookmark(AddBookmarkRequest(surahId, ayahNumber))
+        }
+        val surah = executeLocalSafely { ayahDao.getSurah(surahId) }
+        val ayah = executeLocalSafely { ayahDao.getAyah(surahId, ayahNumber) }
 
         return AyahBookmark(
-            id = dto.id.toInt(),
+            id = bookmarkDto.id.toInt(),
             surah = surah.toSurah(),
             ayah = ayah.toAyah(),
-            createdAt = Instant.parse(dto.createdAt)
+            createdAt = Instant.parse(bookmarkDto.createdAt)
         )
     }
 
     override suspend fun getAyahBookmarks(pageNumber: Int, pageSize: Int): List<AyahBookmark> {
-        val response = bookmarkApiService.getBookmarks(pageNumber, pageSize)
+        val response = executeApiSafely<PageResponse<AyahBookmarkDto>> {
+            bookmarkApiService.getBookmarks(pageNumber, pageSize)
+        }
         return response.items.mapAsync {
             it.toAyahBookmark(
-                fetchSurah = ayahDao::getSurah,
-                fetchAyah = ayahDao::getAyah
+                fetchSurah = { surahId ->
+                    executeLocalSafely {
+                        ayahDao.getSurah(surahId)
+                    }
+                },
+                fetchAyah = { ayahId, surahId ->
+                    executeLocalSafely {
+                        ayahDao.getAyah(ayahId, surahId)
+                    }
+                }
             )
         }
     }
 
     override suspend fun deleteAyahBookmark(ayahBookmarkId: Int) {
-        bookmarkApiService.deleteBookmark(ayahBookmarkId)
+        executeApiSafely<Unit> {
+            bookmarkApiService.deleteBookmark(ayahBookmarkId)
+        }
     }
 
     private suspend fun <DTO, ENTITY> Collection<DTO>.mapAsync(transform: suspend (DTO) -> ENTITY): List<ENTITY> {
@@ -53,4 +71,3 @@ class BookmarkRepositoryImpl(
         }
     }
 }
-

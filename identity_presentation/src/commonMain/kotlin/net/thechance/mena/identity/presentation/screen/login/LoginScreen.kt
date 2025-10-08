@@ -40,9 +40,8 @@ import net.thechance.mena.identity.presentation.screen.register.RegisterScreen
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
-class LoginScreen(
-) : BaseScreen<
-        LoginScreenModel,
+class LoginScreen : BaseScreen<
+        LoginScreenViewModel,
         LoginScreenUIState,
         LoginScreenUIEffect,
         LoginScreenInteractionListener>() {
@@ -64,13 +63,12 @@ class LoginScreen(
 
         Scaffold(
             overlays = {
-                bottomSheet(state.showCountryBottomSheet) {
+                bottomSheet(state.showCountryBottomSheet) { showBottomSheet ->
                     CountryPicker(
-                        isEnabled = state.countryPickerUIState.isEnabled,
-                        countries = state.countryPickerUIState.countries,
-                        onSelectCountryItem = listener::onSelectCountryItem,
+                        isVisible = showBottomSheet,
+                        currentCountry = state.currentCountry,
+                        onClickConfirm = listener::onSelectCountryItem,
                         onDismiss = listener::onDismissBottomSheet,
-                        onClickConfirm = listener::onClickConfirmButton
                     )
                 }
             }
@@ -89,8 +87,8 @@ class LoginScreen(
                     LabeledInputPhoneNumber(
                         phoneNumber = state.phoneNumber,
                         onPhoneChange = listener::onPhoneChanged,
-                        countryCode = state.countryPickerUIState.currentCountry.callingCode,
-                        countryFlag = painterResource(state.countryPickerUIState.currentCountry.flagImage),
+                        countryCode = state.currentCountry.callingCode,
+                        countryFlag = painterResource(state.currentCountry.flagImage),
                         onClickCountry = listener::onPhoneCodeClicked
                     )
 
@@ -140,7 +138,7 @@ class LoginScreen(
         when (effect) {
             is LoginScreenUIEffect.NavigateToRegister -> navigator.push(RegisterScreen())
             LoginScreenUIEffect.NavigateToForgotPassword -> navigator.push(ForgetPasswordScreen())
-            LoginScreenUIEffect.NavigateToHome -> TODO()
+            LoginScreenUIEffect.NavigateToHome -> {}
         }
     }
 }

@@ -14,7 +14,7 @@ import net.thechance.mena.wallet.presentation.screen.transaction_history.Transac
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
- fun TransactionContent(
+fun TransactionContent(
     transactionTitle: String,
     transactionTimeAndDate: String,
     amount: String,

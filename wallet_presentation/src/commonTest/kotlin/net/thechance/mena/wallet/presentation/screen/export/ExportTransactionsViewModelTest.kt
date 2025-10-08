@@ -29,15 +29,17 @@ import net.thechance.mena.wallet.domain.exceptions.NoDataFoundException
 import net.thechance.mena.wallet.domain.exceptions.NoInternetException
 import net.thechance.mena.wallet.domain.model.TransactionFilterParams
 import net.thechance.mena.wallet.domain.repository.StatementRepository
+import net.thechance.mena.wallet.domain.repository.TransactionRepository
 import net.thechance.mena.wallet.presentation.model.CustomToastState
-import net.thechance.mena.wallet.presentation.model.SnackBarState
 import net.thechance.mena.wallet.presentation.model.FilterType
+import net.thechance.mena.wallet.presentation.model.SnackBarState
 import net.thechance.mena.wallet.presentation.screen.export.file_saver.FileSaver
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 import kotlin.time.ExperimentalTime
 
@@ -46,6 +48,7 @@ import kotlin.time.ExperimentalTime
 class ExportTransactionsViewModelTest {
     private val repository = mock<StatementRepository>(mode = MockMode.autofill)
     private val fileSaver = mock<FileSaver>(mode = MockMode.autofill)
+    private val transactionRepository = mock<TransactionRepository>(mode = MockMode.autofill)
     private val testDispatcher = StandardTestDispatcher()
     private lateinit var viewModel: ExportTransactionsViewModel
 
@@ -154,14 +157,24 @@ class ExportTransactionsViewModelTest {
         }
 
     @Test
-    fun `should update startDate when onFromDateClicked is called`() = runTest {
+    fun `should update startDate when user picks start date`() = runTest {
+        everySuspend {
+            transactionRepository.getFirstTransactionDate()
+        } returns LocalDate(2025, 9, 1)
         initViewModel()
 
         viewModel.state.test {
             skipItems(1)
-            viewModel.onFromDateClicked()
+            viewModel.onStartDateClicked()
+            advanceUntilIdle()
+            skipItems(1)
+
+            val selectedDate = LocalDate(2025, 9, 15)
+            viewModel.onPickDateClicked(selectedDate)
+
             val state = awaitItem()
-            assertEquals("2025/09/01", state.startDate)
+            assertEquals(selectedDate, state.startDate)
+            cancelAndIgnoreRemainingEvents()
         }
     }
 
@@ -171,9 +184,16 @@ class ExportTransactionsViewModelTest {
 
         viewModel.state.test {
             skipItems(1)
-            viewModel.onToDateClicked()
+            viewModel.onEndDateClicked()
+
             val state = awaitItem()
-            assertEquals("2025/09/27", state.endDate)
+            assertTrue(state.isDateBottomSheetVisible)
+            assertEquals(
+                ExportTransactionsState.DatePickerMode.END_DATE,
+                state.datePickerMode
+            )
+            assertNotNull(state.defaultEndDate)
+
         }
     }
 
@@ -631,6 +651,7 @@ class ExportTransactionsViewModelTest {
 
     private fun TestScope.initViewModel() {
         viewModel = ExportTransactionsViewModel(
+            transactionRepository = transactionRepository,
             statementRepository = repository,
             fileSaver = fileSaver,
             ioDispatcher = testDispatcher

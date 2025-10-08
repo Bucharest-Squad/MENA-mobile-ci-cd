@@ -1,15 +1,29 @@
+@file:OptIn(ExperimentalUuidApi::class)
+
 package net.thechance.mena.core_chat.data.contacts
 
-import kotlin.test.Test
-import kotlin.test.assertFailsWith
 import assertk.assertThat
-import assertk.assertions.*
-import net.thechance.mena.core_chat.data.contacts.dto.ContactDto
+import assertk.assertions.containsExactly
+import assertk.assertions.hasSize
+import assertk.assertions.isEmpty
+import assertk.assertions.isEqualTo
+import assertk.assertions.isFalse
+import assertk.assertions.isNotNull
+import assertk.assertions.isNull
+import assertk.assertions.isTrue
 import net.thechance.mena.core_chat.data.contacts.fakes.createContactDto
 import net.thechance.mena.core_chat.data.contacts.fakes.createDeviceContact
 import net.thechance.mena.core_chat.data.contacts.fakes.createPagedDataDto
-import net.thechance.mena.core_chat.data.shared.dto.PagedDataDto
+import net.thechance.mena.core_chat.data.source.remote.dto.ContactDto
+import net.thechance.mena.core_chat.data.source.remote.dto.PagedDataDto
+import net.thechance.mena.core_chat.data.source.remote.mapper.toDomain
+import net.thechance.mena.core_chat.data.source.remote.mapper.toListOfContactCreationRequestDto
+import net.thechance.mena.core_chat.data.source.remote.mapper.toPagedListOfContacts
 import net.thechance.mena.core_chat.domain.exception.ContactsFetchFailedException
+import kotlin.test.Test
+import kotlin.test.assertFailsWith
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 
 class ContactMappersTest {
@@ -111,7 +125,7 @@ class ContactMappersTest {
         assertThat(contact.firstName).isEqualTo("")
         assertThat(contact.lastName).isEqualTo("")
         assertThat(contact.phone).isEqualTo("")
-        assertThat(contact.isMenaUser).isFalse()
+        assertThat(contact.menaUserId).isEqualTo(null)
         assertThat(contact.imageUrl).isNull()
     }
 
@@ -121,7 +135,7 @@ class ContactMappersTest {
             firstName = "Bilal",
             lastName = "Azzam",
             phone = "456",
-            isMenaUser = true,
+            menaUserId = Uuid.random().toString(),
             imageUrl = "url"
         )
 
@@ -130,7 +144,7 @@ class ContactMappersTest {
         assertThat(contact.firstName).isEqualTo("Bilal")
         assertThat(contact.lastName).isEqualTo("Azzam")
         assertThat(contact.phone).isEqualTo("456")
-        assertThat(contact.isMenaUser).isTrue()
+        assertThat(contact.menaUserId).isNotNull()
         assertThat(contact.imageUrl).isEqualTo("url")
     }
 

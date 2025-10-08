@@ -1,6 +1,7 @@
 package net.thechance.mena.identity.data.utils
 
 import io.ktor.client.plugins.ClientRequestException
+import io.ktor.client.plugins.HttpRequestTimeoutException
 import io.ktor.http.HttpStatusCode
 import io.ktor.util.network.UnresolvedAddressException
 import net.thechance.mena.identity.domain.exception.InvalidCredentialsException
@@ -24,6 +25,7 @@ suspend fun <T> safeWrapper(block: suspend () -> T): T {
     } catch (e: Exception) {
         when(e){
             is UnresolvedAddressException -> throw NoNetworkException()
+            is HttpRequestTimeoutException -> throw NoNetworkException()
             else -> throw e
         }
     }

@@ -13,8 +13,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import net.thechance.mena.core_chat.presentation.screen.chat.ChatListItem
-import net.thechance.mena.core_chat.presentation.screen.chat.ChatUiState
-import net.thechance.mena.core_chat.presentation.screen.chat.MessageUiState
+import net.thechance.mena.core_chat.presentation.screen.chat.TextMessageUiState
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -22,9 +21,9 @@ import kotlin.uuid.Uuid
 @Composable
 fun ChatList(
     items: List<ChatListItem>,
-    chat: ChatUiState,
+    chatAvatarUrl: String,
     onMessageClick: (Uuid) -> Unit,
-    onFailedMessageClick: (MessageUiState) -> Unit
+    onFailedMessageClick: (TextMessageUiState) -> Unit
 ) {
 
     val chatListState = rememberLazyListState()
@@ -54,13 +53,13 @@ fun ChatList(
             val isLastItem = items.indexOf(item) == 0
             val paddingBottom = if (isLastItem)
                 0.dp
-            else if (item is ChatListItem.Message && (item.data.isMarkedLastInSeries || item.data.showMessageInfo))
+            else if (item is ChatListItem.Message && (item.data.isMarkedLastInSeries))
                 Theme.spacing._16
             else
                 Theme.spacing._2
             ChatListItem(
                 item = item,
-                chat = chat,
+                chatAvatarUrl = chatAvatarUrl,
                 onMessageClick = onMessageClick,
                 onFailedMessageClick = onFailedMessageClick,
                 modifier = Modifier.padding(bottom = paddingBottom)

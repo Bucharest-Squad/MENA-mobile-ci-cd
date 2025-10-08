@@ -4,11 +4,12 @@ package net.thechance.mena.core_chat.presentation.screen.chat.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -21,13 +22,16 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import kotlinx.datetime.LocalDateTime
+import mena.core_chat_presentation.generated.resources.Res
+import mena.core_chat_presentation.generated.resources.ic_profile_placeholder
 import net.thechance.mena.core_chat.presentation.screen.chat.MessageStatusUiState
-import net.thechance.mena.core_chat.presentation.screen.chat.MessageUiState
 import net.thechance.mena.core_chat.presentation.screen.chat.TextMessageUiState
+import net.thechance.mena.core_chat.presentation.utils.noHoverClickable
 import net.thechance.mena.core_chat.presentation.utils.now
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.time.ExperimentalTime
 import kotlin.uuid.ExperimentalUuidApi
@@ -35,7 +39,7 @@ import kotlin.uuid.Uuid
 
 @Composable
 fun BaseMessageLayout(
-    message: MessageUiState,
+    message: TextMessageUiState,
     showMessageInfo: Boolean,
     isMarkedLastInSeries: Boolean,
     modifier: Modifier = Modifier,
@@ -44,19 +48,14 @@ fun BaseMessageLayout(
     onMessageClick: () -> Unit = {},
     content: @Composable () -> Unit,
 ) {
-    val messageBackground = if (message.isMine)
-        Theme.colorScheme.background.surfaceLow
-    else
-        Theme.colorScheme.brand.brandVariant
-
-    val showSenderAvatar = chatAvatarUrl != null
+    val messageBackground =
+        if (message.isMine) Theme.colorScheme.background.surfaceLow
+        else Theme.colorScheme.brand.brandVariant
 
     val messagePaddingStart = if (message.isMine)
         Theme.spacing._24
-    else if (showSenderAvatar)
-        Theme.spacing._8
     else
-        Theme.spacing._32
+        Theme.spacing._8
 
     val messagePaddingEnd = if (message.isMine) 0.dp else Theme.spacing._8
 
@@ -81,34 +80,45 @@ fun BaseMessageLayout(
         Alignment.Start
     else
         Alignment.End
+    val messageAlignment = if (message.isMine) Alignment.End else Alignment.Start
 
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(Theme.spacing._2),
+        horizontalAlignment = messageAlignment
     ) {
         Row(
-            verticalAlignment = Alignment.Bottom
+            verticalAlignment = Alignment.Bottom,
+            horizontalArrangement = Arrangement.spacedBy(Theme.spacing._8)
         ) {
-            if (!message.isMine && showSenderAvatar) {
-                AsyncImage(
+            if (!message.isMine) {
+                Box(
                     modifier = Modifier
-                        .size(Theme.spacing._24)
-                        .clip(CircleShape),
-                    model = chatAvatarUrl,
-                    contentScale = ContentScale.Crop,
-                    contentDescription = "Sender Avatar",
-                )
+                        .clip(CircleShape)
+                        .size(24.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (isMarkedLastInSeries) {
+                        AsyncImage(
+                            modifier = Modifier.fillMaxSize(),
+                            model = chatAvatarUrl,
+                            placeholder = painterResource(Res.drawable.ic_profile_placeholder),
+                            error = painterResource(Res.drawable.ic_profile_placeholder),
+                            contentScale = ContentScale.Crop,
+                            contentDescription = "Contact photo",
+                        )
+                    }
+                }
             }
-
             Box(
                 modifier = Modifier
                     .padding(start = messagePaddingStart, end = messagePaddingEnd)
                     .clip(messageShape)
+                    .noHoverClickable(onClick = onMessageClick)
                     .background(
                         color = messageBackground,
                         shape = messageShape
                     )
-                    .clickable(onClick = onMessageClick)
                     .padding(
                         horizontal = Theme.spacing._8,
                         vertical = Theme.spacing._4
@@ -120,8 +130,7 @@ fun BaseMessageLayout(
         }
         AnimatedVisibility(
             visible = showMessageInfo || isMarkedLastInSeries,
-            modifier = Modifier
-                .align(messageInfoAlignment)
+            modifier = Modifier.align(messageInfoAlignment)
         ) {
             MessageInfo(
                 messageTime = message.sendTime,
@@ -141,8 +150,7 @@ fun BaseMessageLayout(
 private fun PreviewBaseMessageLayout() {
     MenaTheme {
         Box(
-            modifier = Modifier
-                .background(Theme.colorScheme.background.surface)
+            modifier = Modifier.fillMaxWidth()
         ) {
             BaseMessageLayout(
                 message = TextMessageUiState(
@@ -162,7 +170,6 @@ private fun PreviewBaseMessageLayout() {
                 )
             }
         }
-
     }
 }
 

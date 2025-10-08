@@ -10,19 +10,24 @@ import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import net.thechance.mena.identity.domain.service.AuthorizationService
 
 
 expect val platformHttpClientEngineFactory: HttpClientEngineFactory<HttpClientEngineConfig>
 
 
-fun buildClient(): HttpClient {
+fun buildClient(
+    authorizationService: AuthorizationService,
+    baseUrl: String
+): HttpClient {
     return HttpClient(platformHttpClientEngineFactory) {
 
         defaultRequest {
-            url("")
+            url(baseUrl)
         }
 
         install(ContentNegotiation) {
@@ -38,15 +43,28 @@ fun buildClient(): HttpClient {
 
         install(Logging) {
             level = LogLevel.ALL
+            logger = object : Logger {
+                override fun log(message: String) {
+                    println("Dukan Client: $message")
+                }
+            }
         }
 
         install(Auth) {
             bearer {
                 loadTokens {
-                    val access = ""
-                    val refresh = ""
+                    BearerTokens(
+                        accessToken = authorizationService.getAccessToken(),
+                        refreshToken = authorizationService.refreshToken()
+                    )
+                }
 
-                    BearerTokens(access, refresh)
+                refreshTokens {
+                    val newAccessToken = authorizationService.refreshToken()
+                    BearerTokens(
+                        accessToken = newAccessToken,
+                        refreshToken = authorizationService.refreshToken()
+                    )
                 }
             }
         }

@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 interface ChatRoute
 
 @Serializable
-data object ChatsRoute : ChatRoute
+data object HomeRoute : ChatRoute
 
 @Serializable
 data object WalletRoute : ChatRoute
@@ -17,4 +17,9 @@ data object ContactsRoute : ChatRoute
 data class SyncContactsRoute(val forceSync: Boolean) : ChatRoute
 
 @Serializable
-data class ChatDetailsRoute(val chatId: String) : ChatRoute
+data class ChatDetailsRoute(
+    val chatId: String,
+    val chatName: String,
+    val chatImageUrl: String,
+    val chatRequesterId: String
+) : ChatRoute

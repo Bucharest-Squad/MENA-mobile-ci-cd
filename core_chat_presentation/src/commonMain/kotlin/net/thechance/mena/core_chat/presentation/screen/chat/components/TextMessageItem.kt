@@ -4,12 +4,10 @@ package net.thechance.mena.core_chat.presentation.screen.chat.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import kotlinx.datetime.LocalDateTime
 import net.thechance.mena.core_chat.presentation.screen.chat.MessageStatusUiState
 import net.thechance.mena.core_chat.presentation.screen.chat.TextMessageUiState
@@ -55,16 +53,14 @@ private fun PreviewTextMessageItem() {
     MenaTheme {
         Box(
             modifier = Modifier
-                .fillMaxSize()
-                .background(Theme.colorScheme.background.surface)
-                .padding(12.dp),
+                .fillMaxWidth()
+                .background(Theme.colorScheme.background.surface),
             contentAlignment = Alignment.BottomStart
         ) {
             TextMessageItem(
                 modifier = Modifier,
                 message = TextMessageUiState(
                     id = Uuid.random(),
-                    senderId = Uuid.random(),
                     sendTime = LocalDateTime.now(),
                     status = MessageStatusUiState.READ,
                     isMine = false,
@@ -73,8 +69,6 @@ private fun PreviewTextMessageItem() {
                 showMessageInfo = true,
                 isMarkedLastInSeries = true
             )
-
-
         }
     }
 }

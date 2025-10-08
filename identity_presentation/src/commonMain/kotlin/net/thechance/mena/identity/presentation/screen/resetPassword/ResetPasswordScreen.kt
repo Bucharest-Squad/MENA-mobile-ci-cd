@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -89,6 +90,7 @@ class ResetPasswordScreen() :
                         onChangePassword = listener::onChangeNewPassword,
                         onTogglePasswordVisibility = listener::onToggleNewPasswordVisibility,
                         label = stringResource(Res.string.new_password_title),
+                        errorMessage = state.newPasswordErrorMessage,
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
 
@@ -98,6 +100,7 @@ class ResetPasswordScreen() :
                         onChangePassword = listener::onChangeConfirmPassword,
                         onTogglePasswordVisibility = listener::onToggleConfirmPasswordVisibility,
                         label = stringResource(Res.string.confirm_password_label),
+                        errorMessage = state.confirmPasswordErrorMessage,
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
 
@@ -108,10 +111,11 @@ class ResetPasswordScreen() :
                         onClick = listener::onClickResetPassword,
                         isEnabled = state.isResetEnabled,
                         isLoading = state.isLoading,
-                        contentPadding = PaddingValues(vertical = Theme.spacing._12),
+                        contentPadding = PaddingValues(vertical = 13.dp),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(bottom = Theme.spacing._24)
+                            .padding(bottom = Theme.spacing._12)
+                            .imePadding()
                     )
                 }
 

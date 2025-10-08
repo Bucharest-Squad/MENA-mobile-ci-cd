@@ -15,10 +15,13 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.http.encodedPath
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import net.thechance.mena.identity.data.dataSource.local.setting.accessToken
+import net.thechance.mena.identity.data.dataSource.local.setting.refreshToken
 import net.thechance.mena.identity.data.repository.AuthenticationRepositoryImpl.Companion.LOGIN_ENDPOINT
 import net.thechance.mena.identity.data.repository.AuthenticationRepositoryImpl.Companion.REFRESH_ENDPOINT
-import net.thechance.mena.identity.data.utils.accessToken
-import net.thechance.mena.identity.data.utils.refreshToken
+import net.thechance.mena.identity.data.repository.ResetPasswordRepositoryImpl.Companion.REQUEST_OTP
+import net.thechance.mena.identity.data.repository.ResetPasswordRepositoryImpl.Companion.RESET_PASSWORD
+import net.thechance.mena.identity.data.repository.ResetPasswordRepositoryImpl.Companion.VERIFY_OTP
 
 internal fun provideHttpClient(
     engine: HttpClientEngine, settings: Settings, baseUrl: String, refreshToken: suspend () -> Unit
@@ -51,7 +54,8 @@ internal fun provideHttpClient(
                     BearerTokens(settings.accessToken, settings.refreshToken)
                 }
                 sendWithoutRequest { request ->
-                    request.url.encodedPath !in whiteListEndPoints
+                    val path = request.url.encodedPath.removePrefix("/")
+                    path !in whiteListEndPoints || path in whitelistPicture
                 }
             }
         }
@@ -64,8 +68,9 @@ internal fun provideHttpClient(
 
 const val NETWORK_TIMEOUT_MS = 15_000L
 private val whiteListEndPoints = listOf(
-    LOGIN_ENDPOINT, REFRESH_ENDPOINT
+    LOGIN_ENDPOINT, REFRESH_ENDPOINT, REQUEST_OTP, VERIFY_OTP, RESET_PASSWORD
 )
 
-
-
+private val whitelistPicture = listOf(
+    "i.pinimg.com", "cdn.marketplaceevents.com", "wallpapers.com"
+)

@@ -3,6 +3,7 @@ package net.thechance.mena.wallet.presentation.screen.view_transactions_statemen
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import net.thechance.mena.wallet.domain.model.TransactionFilterParams
 import net.thechance.mena.wallet.domain.repository.StatementRepository
 import net.thechance.mena.wallet.presentation.base.BaseViewModel
 import net.thechance.mena.wallet.presentation.base.ErrorState
@@ -17,30 +18,21 @@ class ViewTransactionStatementViewModel(
 ) : BaseViewModel<ViewTransactionStatementScreenState, ViewTransactionStatementEffect>
     (ViewTransactionStatementScreenState()), ViewTransactionStatementInteractionListener {
 
-    init {
-        fetchLastStatement()
-    }
-
-    private fun fetchLastStatement() {
+    fun getStatementPdf(filterParams: TransactionFilterParams?) {
         tryToExecute(
-            onStart = { updateState { currentState.copy(statement = UiState.Loading) } },
-            callee = { statementRepository.getStoredTransactionsPdf() },
+            onStart = {
+                updateState {
+                    currentState.copy(
+                        statement = UiState.Loading,
+                        filterParams = filterParams
+                    )
+                }
+            },
+            callee = { statementRepository.getTransactionsPdf(filterParams) },
             onSuccess = ::onSuccessFetchPdf,
             onError = ::onErrorFetchPdf,
             dispatcher = dispatcherIO
         )
-    }
-
-    private fun onSuccessFetchPdf(pdf: ByteArray?) {
-        if (pdf == null) {
-            updateState { it.copy(statement = UiState.Error(ErrorState.NoDataFound)) }
-        } else {
-            updateState { it.copy(statement = UiState.Success(pdf)) }
-        }
-    }
-
-    private fun onErrorFetchPdf(error: ErrorState) {
-        updateState { it.copy(statement = UiState.Error(error)) }
     }
 
     override fun onNavigateBackClicked() {
@@ -55,6 +47,18 @@ class ViewTransactionStatementViewModel(
     }
 
     override fun onRetryClicked() {
-        fetchLastStatement()
+        getStatementPdf(currentState.filterParams)
+    }
+
+    private fun onSuccessFetchPdf(pdf: ByteArray?) {
+        if (pdf == null) {
+            updateState { it.copy(statement = UiState.Error(ErrorState.NoDataFound)) }
+        } else {
+            updateState { it.copy(statement = UiState.Success(pdf)) }
+        }
+    }
+
+    private fun onErrorFetchPdf(error: ErrorState) {
+        updateState { it.copy(statement = UiState.Error(error)) }
     }
 }

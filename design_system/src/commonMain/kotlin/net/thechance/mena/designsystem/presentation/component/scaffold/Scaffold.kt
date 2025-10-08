@@ -65,6 +65,6 @@ fun Scaffold(
     }
 
     scope.items.forEach {
-            it.content(scope)
+            it.content(scope, it.isVisible)
     }
 }

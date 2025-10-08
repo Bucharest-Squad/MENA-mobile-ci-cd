@@ -8,5 +8,7 @@ data class ResetPasswordScreenUIState(
     val isLoading: Boolean = false,
     val isResetEnabled: Boolean = false,
     val errorMessage: String? = null,
+    val newPasswordErrorMessage: String? = null,
+    val confirmPasswordErrorMessage: String? = null,
     val isDialogVisible: Boolean = false
 )

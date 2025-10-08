@@ -1,3 +1,5 @@
 package net.thechance.mena.identity.presentation.screen.register
 
-class RegisterScreenUIEffect
+sealed class RegisterScreenUIEffect {
+     object NavigateBack : RegisterScreenUIEffect()
+}
