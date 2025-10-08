@@ -65,5 +65,4 @@ class ConfirmPaymentViewModel(
         updateState { it.copy(isLoading = true, errorState = null) }
         getPaymentConfirmation()
     }
-
 }
