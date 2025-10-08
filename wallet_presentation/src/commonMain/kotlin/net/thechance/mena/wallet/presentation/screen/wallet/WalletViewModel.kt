@@ -97,4 +97,8 @@ class WalletViewModel(
     override fun onTransactionHistoryClicked() {
         sendEffect(WalletEffect.NavigateToTransactionHistory)
     }
+
+    override fun onPaymentClicked(amount: Double, receiverId: String) {
+        sendEffect(WalletEffect.NavigateToPaymentScreen(amount, receiverId))
+    }
 }

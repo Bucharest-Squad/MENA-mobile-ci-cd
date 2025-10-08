@@ -14,8 +14,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import mena.wallet_presentation.generated.resources.Res
 import mena.wallet_presentation.generated.resources.back_button
+import mena.wallet_presentation.generated.resources.confirm_payment_header
 import mena.wallet_presentation.generated.resources.ic_arrow_left
 import mena.wallet_presentation.generated.resources.ic_clock
+import mena.wallet_presentation.generated.resources.ic_send
 import mena.wallet_presentation.generated.resources.my_wallet
 import mena.wallet_presentation.generated.resources.transactions_history
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
@@ -32,11 +34,14 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 @Composable
 fun WalletMainScreen(
     onNavigateBackClicked: () -> Unit,
     navigateToTransactionHistory: () -> Unit,
+    navigateToPaymentScreen: (Double, String) -> Unit,
     viewModel: WalletViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -44,13 +49,14 @@ fun WalletMainScreen(
     ObserveAsEffect(
         effect = viewModel.uiEffect,
         onEffect = { effect ->
-            onWalletEffect(effect, onNavigateBackClicked, navigateToTransactionHistory)
+            onWalletEffect(effect, onNavigateBackClicked, navigateToTransactionHistory, navigateToPaymentScreen)
         }
     )
 
     WalletContent(state = state, interactionListener = viewModel)
 }
 
+@OptIn(ExperimentalUuidApi::class)
 @Composable
 private fun WalletContent(
     state: WalletScreenState,
@@ -96,6 +102,15 @@ private fun WalletContent(
                     .fillMaxWidth()
                     .padding(top = 24.dp)
             )
+            LabeledButtonWithCircularIcon(
+                icon = painterResource(Res.drawable.ic_send),
+                contentDescription = stringResource(Res.string.confirm_payment_header),
+                label = stringResource(Res.string.confirm_payment_header),
+                onClick = { interactionListener.onPaymentClicked(amount = 222.22, receiverId = Uuid.random().toString()) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 24.dp)
+            )
         }
     }
 }
@@ -103,11 +118,13 @@ private fun WalletContent(
 private fun onWalletEffect(
     effect: WalletEffect,
     onNavigateBackClicked: () -> Unit,
-    navigateToTransactionHistory: () -> Unit
+    navigateToTransactionHistory: () -> Unit,
+    navigateToPaymentScreen: (Double, String) -> Unit
 ) {
     when (effect) {
         WalletEffect.NavigateBack -> onNavigateBackClicked()
         WalletEffect.NavigateToTransactionHistory -> navigateToTransactionHistory()
+        is WalletEffect.NavigateToPaymentScreen -> navigateToPaymentScreen(effect.amount, effect.receiverId)
     }
 }
 
@@ -123,6 +140,7 @@ private fun WalletScreenPreview() {
                 override fun onBackClicked() {}
                 override fun onRetryLoadBalanceClicked() {}
                 override fun onTransactionHistoryClicked() {}
+                override fun onPaymentClicked(amount: Double, receiverId: String) {}
             }
         )
     }
