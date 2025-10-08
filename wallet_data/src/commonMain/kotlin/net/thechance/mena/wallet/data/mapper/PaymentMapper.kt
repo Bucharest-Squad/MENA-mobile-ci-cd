@@ -7,6 +7,6 @@ import net.thechance.mena.wallet.domain.model.TransactionStatus
 fun PaymentConfirmationDto.toEntity() = PaymentConfirmation(
     balance = currentBalance?: 0.0,
     receiverName = recipientName ?: "",
-    receiverImg = recipientImageUrl ?: "",
+    receiverImg = recipientImageUrl,
     status = if (isValid == true) TransactionStatus.SUCCESS else TransactionStatus.FAILED
 )

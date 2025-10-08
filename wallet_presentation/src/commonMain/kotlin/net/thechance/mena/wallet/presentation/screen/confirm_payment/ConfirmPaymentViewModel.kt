@@ -9,7 +9,10 @@ import net.thechance.mena.wallet.presentation.base.BaseViewModel
 import net.thechance.mena.wallet.presentation.base.ErrorState
 import org.koin.android.annotation.KoinViewModel
 import org.koin.core.annotation.Provided
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
+@OptIn(ExperimentalUuidApi::class)
 @KoinViewModel
 class ConfirmPaymentViewModel(
     @Provided private val receiverId: String,
@@ -28,7 +31,7 @@ class ConfirmPaymentViewModel(
         tryToExecute(
             callee = {
                 paymentRepository.getPaymentConfirmation(
-                    receiverId = receiverId,
+                    receiverId = Uuid.parse(receiverId),
                     amount = amount
                 )
             },

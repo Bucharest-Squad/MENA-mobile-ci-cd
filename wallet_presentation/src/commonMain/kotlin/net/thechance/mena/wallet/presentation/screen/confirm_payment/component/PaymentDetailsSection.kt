@@ -77,7 +77,7 @@ internal fun PaymentDetailsSection(
 private fun PaymentInfoSection(
     amount: String,
     receiverName: String,
-    receiverImage: String,
+    receiverImage: String?,
     modifier: Modifier = Modifier,
 ){
     Column(
@@ -133,7 +133,7 @@ private fun PaymentAmount(
 private fun ReceiverInfo(
     modifier: Modifier = Modifier,
     receiverName: String,
-    receiverImage: String,
+    receiverImage: String?,
 ){
     Row(
         modifier = modifier.padding(top = Theme.spacing._24).fillMaxWidth(),
@@ -145,14 +145,16 @@ private fun ReceiverInfo(
             style = Theme.typography.body.small,
             color = Theme.colorScheme.shadeSecondary
         )
-        AsyncImage(
-            modifier = Modifier
-                .padding(start = Theme.spacing._8)
-                .clip(CircleShape)
-                .size(20.dp),
-            model = receiverImage,
-            contentDescription = stringResource(Res.string.silver_coin),
-        )
+        receiverImage?.let {
+            AsyncImage(
+                modifier = Modifier
+                    .padding(start = Theme.spacing._8)
+                    .clip(CircleShape)
+                    .size(20.dp),
+                model = receiverImage,
+                contentDescription = stringResource(Res.string.silver_coin),
+            )
+        }
         Text(
             modifier = Modifier.padding(start = Theme.spacing._4),
             text = receiverName,

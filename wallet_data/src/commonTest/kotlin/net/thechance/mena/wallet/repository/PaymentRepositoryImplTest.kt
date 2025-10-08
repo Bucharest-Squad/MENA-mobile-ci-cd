@@ -32,7 +32,7 @@ class PaymentRepositoryImplTest {
         networkClient = createNetworkClient(postRespond = paymentConfirmation1SuccessResponse)
         paymentRepository = PaymentRepositoryImpl(networkClient)
 
-        val result = paymentRepository.getPaymentConfirmation(receiver1Id.toString(),amount1)
+        val result = paymentRepository.getPaymentConfirmation(receiver1Id,amount1)
 
         assertEquals(paymentConfirmation1, result)
     }
@@ -44,7 +44,7 @@ class PaymentRepositoryImplTest {
         paymentRepository = PaymentRepositoryImpl(networkClient)
 
         assertFailsWith<Exception> {
-            paymentRepository.getPaymentConfirmation(receiver1Id.toString(),amount1)
+            paymentRepository.getPaymentConfirmation(receiver1Id,amount1)
         }
     }
 
