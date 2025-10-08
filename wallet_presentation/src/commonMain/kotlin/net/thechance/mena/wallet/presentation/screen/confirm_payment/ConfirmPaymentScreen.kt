@@ -37,6 +37,7 @@ fun ConfirmPaymentScreen(
     onNavigateBackClicked: () -> Unit,
     receiverId: String,
     amount: Double,
+    navigateToPaymentResultScreen: (String, Double) -> Unit,
     viewModel: ConfirmPaymentViewModel = koinViewModel(
         parameters = { parametersOf(receiverId, amount) }
     )
@@ -46,7 +47,11 @@ fun ConfirmPaymentScreen(
     ObserveAsEffect(
         effect = viewModel.uiEffect,
         onEffect = { effect ->
-            onConfirmPaymentEffect(effect = effect, onNavigateBackClicked = onNavigateBackClicked)
+            onConfirmPaymentEffect(
+                effect = effect,
+                onNavigateBackClicked = onNavigateBackClicked,
+                navigateToPaymentResultScreen = navigateToPaymentResultScreen
+            )
         }
     )
 
@@ -117,9 +122,13 @@ private fun ConfirmPaymentScreenContent(
 private fun onConfirmPaymentEffect(
     effect: ConfirmPaymentEffect,
     onNavigateBackClicked: () -> Unit,
+    navigateToPaymentResultScreen: (String, Double) -> Unit
 ) {
     when (effect) {
         ConfirmPaymentEffect.NavigateBack -> onNavigateBackClicked()
+        is ConfirmPaymentEffect.NavigateToPaymentResultScreen -> {
+            navigateToPaymentResultScreen(effect.receiverId, effect.amount)
+        }
     }
 }
 

@@ -95,7 +95,10 @@ fun NavigationHost(
             ConfirmPaymentScreen(
                 onNavigateBackClicked = navController::popBackStack,
                 receiverId = backStackEntry.toRoute<ConfirmPaymentScreenRoute>().id,
-                amount = backStackEntry.toRoute<ConfirmPaymentScreenRoute>().amount
+                amount = backStackEntry.toRoute<ConfirmPaymentScreenRoute>().amount,
+                navigateToPaymentResultScreen = { receiverId, amount ->
+
+                }
             )
         }
     }
