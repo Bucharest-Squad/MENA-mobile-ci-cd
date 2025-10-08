@@ -1,6 +1,5 @@
 package net.thechance.mena.wallet.presentation.screen.confirm_payment.component
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import mena.wallet_presentation.generated.resources.Res
 import mena.wallet_presentation.generated.resources.You_are_about_to_pay
 import mena.wallet_presentation.generated.resources.confirm_payment_content_failed
@@ -44,7 +45,11 @@ internal fun PaymentDetailsSection(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        PaymentInfoSection(amount = paymentUiState.amount, receiverName = paymentUiState.receiverName)
+        PaymentInfoSection(
+            amount = paymentUiState.amount,
+            receiverName = paymentUiState.receiverName,
+            receiverImage = paymentUiState.receiverImage
+        )
 
         Text(
             modifier = Modifier.padding(top = Theme.spacing._16).fillMaxWidth(),
@@ -72,6 +77,7 @@ internal fun PaymentDetailsSection(
 private fun PaymentInfoSection(
     amount: String,
     receiverName: String,
+    receiverImage: String,
     modifier: Modifier = Modifier,
 ){
     Column(
@@ -94,7 +100,7 @@ private fun PaymentInfoSection(
 
         PaymentAmount(amount = amount)
 
-        ReceiverInfo(receiverName = receiverName)
+        ReceiverInfo(receiverName = receiverName, receiverImage = receiverImage)
     }
 }
 
@@ -126,7 +132,8 @@ private fun PaymentAmount(
 @Composable
 private fun ReceiverInfo(
     modifier: Modifier = Modifier,
-    receiverName: String
+    receiverName: String,
+    receiverImage: String,
 ){
     Row(
         modifier = modifier.padding(top = Theme.spacing._24).fillMaxWidth(),
@@ -138,11 +145,12 @@ private fun ReceiverInfo(
             style = Theme.typography.body.small,
             color = Theme.colorScheme.shadeSecondary
         )
-        Image(
+        AsyncImage(
             modifier = Modifier
                 .padding(start = Theme.spacing._8)
+                .clip(CircleShape)
                 .size(20.dp),
-            painter = painterResource(Res.drawable.img_silver),
+            model = receiverImage,
             contentDescription = stringResource(Res.string.silver_coin),
         )
         Text(
@@ -159,9 +167,7 @@ private fun ReceiverInfo(
 private fun PaymentDetailsSectionPreview(){
     MenaTheme {
         Scaffold {
-            PaymentDetailsSection(
-                paymentUiState = PaymentUiState()
-            )
+            PaymentDetailsSection(paymentUiState = PaymentUiState())
         }
     }
 }
