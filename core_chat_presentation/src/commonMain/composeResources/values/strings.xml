@@ -28,5 +28,8 @@
     <string name="error_cant_subscribe_to_new_messages">Not Connected!</string>
     <string name="error_cant_get_messages">Couldn't Get Messages!</string>
     <string name="contact_not_mena_user">This Contact Is Not Mena User!</string>
+    <string name="mena">Mena</string>
+    <string name="chats">Chats</string>
+
 
 </resources>
