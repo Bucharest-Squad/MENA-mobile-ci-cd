@@ -24,18 +24,18 @@ class QuranRepositoryImpl(val ayahDao: AyahDao) : QuranRepository {
         surahId: Int,
         query: String
     ): List<Ayah> {
-        TODO("Not yet implemented")
+        //Not yet implemented
     }
 
     override suspend fun searchForAyahInQuran(query: String): List<Ayah> {
-        TODO("Not yet implemented")
+        //Not yet implemented
     }
 
     override suspend fun getLastAyahForTilawah(): Ayah {
-        TODO("Not yet implemented")
+        //Not yet implemented
     }
 
     override suspend fun saveLastAyahForTilawah(ayah: Ayah) {
-        TODO("Not yet implemented")
+        //Not yet implemented
     }
 }
