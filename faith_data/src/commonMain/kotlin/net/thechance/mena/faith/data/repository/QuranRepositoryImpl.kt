@@ -25,14 +25,17 @@ class QuranRepositoryImpl(val ayahDao: AyahDao) : QuranRepository {
         query: String
     ): List<Ayah> {
         //Not yet implemented
+        return emptyList()
     }
 
     override suspend fun searchForAyahInQuran(query: String): List<Ayah> {
         //Not yet implemented
+        return emptyList()
     }
 
     override suspend fun getLastAyahForTilawah(): Ayah {
         //Not yet implemented
+        return Ayah(number = 1, surahId = 1, content = "", plainContent = "")
     }
 
     override suspend fun saveLastAyahForTilawah(ayah: Ayah) {
