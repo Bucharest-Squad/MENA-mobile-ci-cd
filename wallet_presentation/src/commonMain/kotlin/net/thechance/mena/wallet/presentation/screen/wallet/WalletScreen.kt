@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalUuidApi::class)
+
 package net.thechance.mena.wallet.presentation.screen.wallet
 
 import androidx.compose.foundation.background
@@ -41,7 +43,7 @@ import kotlin.uuid.Uuid
 fun WalletMainScreen(
     onNavigateBackClicked: () -> Unit,
     navigateToTransactionHistory: () -> Unit,
-    navigateToPaymentScreen: (Double, String) -> Unit,
+    navigateToPaymentScreen: (Double, Uuid) -> Unit,
     viewModel: WalletViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -106,7 +108,7 @@ private fun WalletContent(
                 icon = painterResource(Res.drawable.ic_send),
                 contentDescription = stringResource(Res.string.confirm_payment_header),
                 label = stringResource(Res.string.confirm_payment_header),
-                onClick = { interactionListener.onPaymentClicked(amount = 222.22, receiverId = Uuid.random().toString()) },
+                onClick = { interactionListener.onPaymentClicked(amount = 222.22, receiverId = Uuid.parse("7a4d98f2-c9ef-4a9e-8d47-91a45b8854b9")) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 24.dp)
@@ -119,7 +121,7 @@ private fun onWalletEffect(
     effect: WalletEffect,
     onNavigateBackClicked: () -> Unit,
     navigateToTransactionHistory: () -> Unit,
-    navigateToPaymentScreen: (Double, String) -> Unit
+    navigateToPaymentScreen: (Double, Uuid) -> Unit
 ) {
     when (effect) {
         WalletEffect.NavigateBack -> onNavigateBackClicked()
@@ -140,7 +142,7 @@ private fun WalletScreenPreview() {
                 override fun onBackClicked() {}
                 override fun onRetryLoadBalanceClicked() {}
                 override fun onTransactionHistoryClicked() {}
-                override fun onPaymentClicked(amount: Double, receiverId: String) {}
+                override fun onPaymentClicked(amount: Double, receiverId: Uuid) {}
             }
         )
     }

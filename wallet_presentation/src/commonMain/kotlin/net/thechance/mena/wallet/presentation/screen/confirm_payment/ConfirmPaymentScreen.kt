@@ -39,7 +39,7 @@ fun ConfirmPaymentScreen(
     amount: Double,
     navigateToPaymentResultScreen: (String, Double) -> Unit,
     viewModel: ConfirmPaymentViewModel = koinViewModel(
-        parameters = { parametersOf(receiverId, amount) }
+        parameters = { parametersOf(ConfirmPaymentArgs(receiverId, amount)) }
     )
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()

@@ -15,13 +15,14 @@ import kotlin.uuid.Uuid
 @OptIn(ExperimentalUuidApi::class)
 @KoinViewModel
 class ConfirmPaymentViewModel(
-    @Provided private val receiverId: String,
-    @Provided private val amount: Double,
+    @Provided private val args: ConfirmPaymentArgs,
     @Provided private val paymentRepository: PaymentRepository,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : BaseViewModel<ConfirmPaymentScreenState, ConfirmPaymentEffect>(
     ConfirmPaymentScreenState()
 ), ConfirmPaymentInteractionListener {
+    private val receiverId = args.receiverId
+    private val amount = args.amount
 
     init {
         getPaymentConfirmation()

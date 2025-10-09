@@ -48,8 +48,7 @@ class ConfirmPaymentViewModelTest {
             everySuspend { paymentRepository.getPaymentConfirmation(any(), any()) } returns paymentConfirmation1
 
             val viewModel = ConfirmPaymentViewModel(
-                receiverId = receiver1Id.toString(),
-                amount = amount1,
+                args = ConfirmPaymentArgs(receiver1Id.toString(), amount1),
                 paymentRepository = paymentRepository,
                 ioDispatcher = testDispatcher
             )
@@ -68,8 +67,7 @@ class ConfirmPaymentViewModelTest {
             everySuspend { paymentRepository.getPaymentConfirmation(any(), any()) } returns paymentConfirmation1
 
             val viewModel = ConfirmPaymentViewModel(
-                receiverId = receiver1Id.toString(),
-                amount = amount1,
+                args = ConfirmPaymentArgs(receiver1Id.toString(), amount1),
                 paymentRepository = paymentRepository,
                 ioDispatcher = testDispatcher
             )
@@ -92,8 +90,7 @@ class ConfirmPaymentViewModelTest {
             everySuspend { paymentRepository.getPaymentConfirmation(any(), any()) } throws expectedError
 
             val viewModel = ConfirmPaymentViewModel(
-                receiverId = receiver1Id.toString(),
-                amount = amount1,
+                args = ConfirmPaymentArgs(receiver1Id.toString(), amount1),
                 paymentRepository = paymentRepository,
                 ioDispatcher = testDispatcher
             )
@@ -111,8 +108,7 @@ class ConfirmPaymentViewModelTest {
         everySuspend { paymentRepository.getPaymentConfirmation(any(), any()) } returns paymentConfirmation1
 
         val viewModel = ConfirmPaymentViewModel(
-            receiverId = receiver1Id.toString(),
-            amount = amount1,
+            args = ConfirmPaymentArgs(receiver1Id.toString(), amount1),
             paymentRepository = paymentRepository,
             ioDispatcher = testDispatcher
         )
@@ -128,8 +124,7 @@ class ConfirmPaymentViewModelTest {
         everySuspend { paymentRepository.getPaymentConfirmation(any(), any()) } returns paymentConfirmation1
 
         val viewModel = ConfirmPaymentViewModel(
-            receiverId = receiver1Id.toString(),
-            amount = amount1,
+            args = ConfirmPaymentArgs(receiver1Id.toString(), amount1),
             paymentRepository = paymentRepository,
             ioDispatcher = testDispatcher
         )
