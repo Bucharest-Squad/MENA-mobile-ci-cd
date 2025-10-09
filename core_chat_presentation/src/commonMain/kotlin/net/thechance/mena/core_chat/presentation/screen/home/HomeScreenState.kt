@@ -6,7 +6,7 @@ import kotlin.uuid.Uuid
 data class HomeScreenState(
     val isLoading: Boolean = false,
     val isSynced: Boolean = false,
-    val balance : Double = 0.0,
+    val balance: Double = 0.0,
     val chats: List<HomeUiState> = fakeData
 ) {
     data class HomeUiState @OptIn(ExperimentalUuidApi::class) constructor(
@@ -37,8 +37,7 @@ val fakeData = listOf(
         time = "12:33 PM",
         status = HomeScreenState.HomeUiState.Status.UnRead(12),
         isMine = false,
-    ),
-    HomeScreenState.HomeUiState(
+    ), HomeScreenState.HomeUiState(
         id = Uuid.random(),
         name = "Maryam Saleh",
         imageUrl = "https://i.ibb.co/DjJLNHm/ef7bf477a8366d411f62a575dc169f0858ca1fec.jpg",
@@ -46,8 +45,7 @@ val fakeData = listOf(
         time = "11:24 PM",
         status = HomeScreenState.HomeUiState.Status.Read,
         isMine = true,
-    ),
-    HomeScreenState.HomeUiState(
+    ), HomeScreenState.HomeUiState(
         id = Uuid.random(),
         name = "Ayad Saddon",
         imageUrl = null,
@@ -55,8 +53,7 @@ val fakeData = listOf(
         time = "Yesterday",
         status = HomeScreenState.HomeUiState.Status.UnRead(3),
         isMine = false,
-    ),
-    HomeScreenState.HomeUiState(
+    ), HomeScreenState.HomeUiState(
         id = Uuid.random(),
         name = "Aseel Rahman",
         imageUrl = "https://i.ibb.co/k2tY9Pcf/f538e7ed045b525721bd578ffa86d22fb58a9245.jpg",
@@ -64,8 +61,7 @@ val fakeData = listOf(
         time = "17-03-2025",
         status = HomeScreenState.HomeUiState.Status.Received,
         isMine = false,
-    ),
-    HomeScreenState.HomeUiState(
+    ), HomeScreenState.HomeUiState(
         id = Uuid.random(),
         name = "The princess 👑",
         imageUrl = "https://i.ibb.co/XrjSgT95/6a9470e240d86a266e0d9fa666c6fce3e0659d2e.jpg",
@@ -73,8 +69,7 @@ val fakeData = listOf(
         time = "17-03-2025",
         status = HomeScreenState.HomeUiState.Status.Received,
         isMine = false,
-    ),
-    HomeScreenState.HomeUiState(
+    ), HomeScreenState.HomeUiState(
         id = Uuid.random(),
         name = "Mansour Mogyad Ibrahee...",
         imageUrl = "https://i.ibb.co/m5TCtW9w/afe181934c9bdfd994e1a0f1a9e8ecbb935908a9.jpg",
@@ -82,8 +77,7 @@ val fakeData = listOf(
         time = "17-03-2025",
         status = HomeScreenState.HomeUiState.Status.Sent,
         isMine = true,
-    ),
-    HomeScreenState.HomeUiState(
+    ), HomeScreenState.HomeUiState(
         id = Uuid.random(),
         name = "Maha Fares",
         imageUrl = "https://i.ibb.co/0RG3LYJB/10a780bcc5534f15472c4f67093c27d7ea30d861.jpg",
@@ -91,8 +85,7 @@ val fakeData = listOf(
         time = "19-03-2025",
         status = HomeScreenState.HomeUiState.Status.Read,
         isMine = false,
-    ),
-    HomeScreenState.HomeUiState(
+    ), HomeScreenState.HomeUiState(
         id = Uuid.random(),
         name = "Aseel Rahman",
         imageUrl = "https://i.ibb.co/tPYDxg0L/cedbd762f4ea4d209b0187b254769d0b89988d8e.jpg",
