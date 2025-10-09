@@ -5,7 +5,6 @@ import net.thechance.mena.dukan.domain.entity.Dukan
 import net.thechance.mena.dukan.domain.entity.Color
 import net.thechance.mena.dukan.domain.entity.DukanDetails
 import net.thechance.mena.dukan.domain.entity.MyDukanStatus
-import net.thechance.mena.dukan.domain.entity.Shelf
 
 interface DukanRepository {
     suspend fun createDukan(dukan: Dukan)

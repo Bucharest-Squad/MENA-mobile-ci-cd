@@ -12,7 +12,6 @@ import net.thechance.mena.dukan.data.repository.dto.DukanColorsResponse
 import net.thechance.mena.dukan.data.repository.dto.DukanDetailsDto
 import net.thechance.mena.dukan.data.repository.dto.DukanNameResponse
 import net.thechance.mena.dukan.data.repository.dto.MyDukanStatusDto
-import net.thechance.mena.dukan.data.repository.dto.ShelfPageResponse
 import net.thechance.mena.dukan.data.repository.mapper.toCategoryList
 import net.thechance.mena.dukan.data.repository.mapper.toColorsList
 import net.thechance.mena.dukan.data.repository.mapper.toCreateDukanRequest
@@ -25,7 +24,6 @@ import net.thechance.mena.dukan.domain.entity.Color
 import net.thechance.mena.dukan.domain.entity.Dukan
 import net.thechance.mena.dukan.domain.entity.DukanDetails
 import net.thechance.mena.dukan.domain.entity.MyDukanStatus
-import net.thechance.mena.dukan.domain.entity.Shelf
 import net.thechance.mena.dukan.domain.repository.DukanRepository
 
 class DukanRepositoryImpl(
