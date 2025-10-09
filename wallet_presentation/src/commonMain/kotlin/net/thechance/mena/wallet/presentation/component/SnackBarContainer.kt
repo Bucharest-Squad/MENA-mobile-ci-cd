@@ -51,7 +51,14 @@ fun SnackBarContainer(
     ) {
         SnackBar(
             title = snackBarState.titleRes?.let { stringResource(it) } ?: "",
-            message = snackBarState.messageRes?.let { stringResource(it) } ?: "",
+            message = when {
+                snackBarState.messageText != null && snackBarState.messageRes != null -> {
+                    "${stringResource(snackBarState.messageRes)} ${snackBarState.messageText}"
+                }
+                snackBarState.messageText != null -> snackBarState.messageText
+                snackBarState.messageRes != null -> stringResource(snackBarState.messageRes)
+                else -> ""
+            },
             leadingIcon = painterResource(leadingIcon),
             modifier = modifier,
             tint = tint

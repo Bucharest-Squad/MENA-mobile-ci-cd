@@ -32,7 +32,8 @@ import net.thechance.mena.wallet.presentation.base.ErrorState
 import net.thechance.mena.wallet.presentation.model.CustomToastState
 import net.thechance.mena.wallet.presentation.model.FilterType
 import net.thechance.mena.wallet.presentation.model.SnackBarState
-import net.thechance.mena.wallet.presentation.screen.export.file_saver.FileSaver
+import net.thechance.mena.wallet.presentation.utils.FileSaveResult
+import net.thechance.mena.wallet.presentation.utils.PdfHandler
 import org.jetbrains.compose.resources.StringResource
 import org.koin.android.annotation.KoinViewModel
 import org.koin.core.annotation.Provided
@@ -43,7 +44,7 @@ import kotlin.time.ExperimentalTime
 class ExportTransactionsViewModel(
     @Provided private val transactionRepository: TransactionRepository,
     @Provided private val statementRepository: StatementRepository,
-    @Provided private val fileSaver: FileSaver,
+    @Provided private val pdfHandler: PdfHandler,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : BaseViewModel<ExportTransactionsState, ExportTransactionsEffect>(
     ExportTransactionsState()
@@ -320,24 +321,24 @@ class ExportTransactionsViewModel(
 
     private suspend fun saveFile(pdfBytes: ByteArray) {
         try {
-            val isFileSaved = fileSaver.saveFile(
-                suggestedName = "transactions",
-                extension = "pdf",
-                bytes = pdfBytes
-            )
+            val isFileSaved = pdfHandler.downloadPdf(pdfData = pdfBytes, fileName = "statement")
             resetDownloadState()
-            if (isFileSaved) {
-                showSnackBar(
-                    titleRes = Res.string.download_complete,
-                    messageRes = Res.string.download_success,
-                    isSuccess = true
-                )
-            } else {
-                showSnackBar(
-                    titleRes = Res.string.download_failed,
-                    messageRes = Res.string.something_went_wrong,
-                    isSuccess = false
-                )
+            when(isFileSaved){
+                is FileSaveResult.Success -> {
+                    showSnackBar(
+                        titleRes = Res.string.download_complete,
+                        messageRes = Res.string.download_success,
+                        messageText = isFileSaved.filePath,
+                        isSuccess = true
+                    )
+                }
+                is FileSaveResult.Error -> {
+                    showSnackBar(
+                        titleRes = Res.string.download_failed,
+                        messageRes = Res.string.something_went_wrong,
+                        isSuccess = false
+                    )
+                }
             }
         } catch (_: Exception) {
             resetDownloadState()
@@ -395,7 +396,8 @@ class ExportTransactionsViewModel(
 
     private suspend fun showSnackBar(
         titleRes: StringResource,
-        messageRes: StringResource,
+        messageRes: StringResource? = null,
+        messageText: String? = null,
         isSuccess: Boolean,
         durationMillis: Long = 3000L
     ) {
@@ -405,6 +407,7 @@ class ExportTransactionsViewModel(
                     isVisible = true,
                     titleRes = titleRes,
                     messageRes = messageRes,
+                    messageText = messageText,
                     isSuccess = isSuccess
                 )
             )

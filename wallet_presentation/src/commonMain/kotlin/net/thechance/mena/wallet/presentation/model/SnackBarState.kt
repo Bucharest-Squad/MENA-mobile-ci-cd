@@ -6,5 +6,6 @@ data class SnackBarState(
     val isVisible: Boolean = false,
     val titleRes: StringResource? = null,
     val messageRes: StringResource? = null,
+    val messageText: String? = null,
     val isSuccess: Boolean = true
 )
