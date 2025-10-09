@@ -7,7 +7,8 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
-import net.thechance.mena.dukan.data.repository.dto.ShelfResponse
+import net.thechance.mena.dukan.data.repository.dto.ShelfDto
+import net.thechance.mena.dukan.data.repository.dto.ShelfPageResponse
 import net.thechance.mena.dukan.data.repository.mapper.toCreateShelfRequest
 import net.thechance.mena.dukan.data.repository.mapper.toShelfList
 import net.thechance.mena.dukan.data.repository.util.safeApiCall
@@ -28,7 +29,7 @@ class ShelfRepositoryImpl(
     }
 
     override suspend fun getMyDukanShelves(): List<Shelf> {
-        return safeApiCall<List<ShelfResponse>> {
+        return safeApiCall<List<ShelfDto>> {
             client.get("$BASE_URL/shelf")
         }.toShelfList()
     }
@@ -38,6 +39,17 @@ class ShelfRepositoryImpl(
             client.delete(urlString = "$BASE_URL/shelf/$shelfId")
         }
     }
+
+    override suspend fun getShelvesByDukanId(
+        dukanId: Int,
+        totalPages: Int,
+        pageSize: Int
+    ): List<Shelf> {
+        return safeApiCall<ShelfPageResponse> {
+            client.get("$BASE_URL/shelf/$dukanId?page=$totalPages&size=$pageSize")
+        }.content.toShelfList()
+    }
+
 
     companion object {
         private const val BASE_URL = "/dukan"

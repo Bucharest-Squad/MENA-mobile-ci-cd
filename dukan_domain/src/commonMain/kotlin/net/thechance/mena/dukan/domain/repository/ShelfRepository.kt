@@ -6,4 +6,9 @@ interface ShelfRepository {
     suspend fun createShelf(shelf: Shelf)
     suspend fun getMyDukanShelves(): List<Shelf>
     suspend fun deleteShelf(shelfId: String)
+    suspend fun getShelvesByDukanId(
+        dukanId: Int,
+        totalPages: Int,
+        pageSize: Int
+    ): List<Shelf>
 }
