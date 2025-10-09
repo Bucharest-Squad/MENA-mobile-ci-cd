@@ -63,6 +63,7 @@ class ConfirmPaymentViewModel(
 
     override fun onPayButtonClicked() {
         updateState { it.copy(isPayBtnLoading = true) }
+        sendEffect(ConfirmPaymentEffect.NavigateToPaymentResultScreen(receiverId, amount))
     }
 
     override fun onRefresh() {
