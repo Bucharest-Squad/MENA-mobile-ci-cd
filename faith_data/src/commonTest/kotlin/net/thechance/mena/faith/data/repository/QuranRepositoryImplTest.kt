@@ -99,7 +99,7 @@ class QuranRepositoryImplTest {
         everySuspend { mockDao.searchForAyahInSurah(surahId, query) } returns emptyList()
 
         // When
-        val result = repository.searchAyahInSurah(query, surahId)
+        val result = repository.searchForAyahInSurah(surahId, query)
 
         // Then
         assertTrue(result.isEmpty())
