@@ -8,5 +8,5 @@ data class ShelfDto(
     @SerialName("id")
     val id: String,
     @SerialName("title")
-    val name: String
+    val title: String
 )
