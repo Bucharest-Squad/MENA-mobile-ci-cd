@@ -50,7 +50,7 @@ interface AyahDao {
                 WHERE aya_text_emlaey LIKE :query
         """
     )
-    suspend fun searchAyah(query: String): List<AyahDto>
+    suspend fun searchForAyahInQuran(query: String): List<AyahDto>
 
     @Query(
         """
@@ -59,5 +59,5 @@ interface AyahDao {
                 WHERE aya_text_emlaey LIKE :query AND sura_no = :surahId
         """
     )
-    suspend fun searchAyahInSura(surahId: Int, query: String): List<AyahDto>
+    suspend fun searchForAyahInSurah(surahId: Int, query: String): List<AyahDto>
 }

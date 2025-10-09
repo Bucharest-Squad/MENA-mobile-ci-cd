@@ -67,13 +67,13 @@ internal class MockAyahDao : AyahDao {
         return getAyah(ayahNumber, surahId).content
     }
 
-    override suspend fun searchAyah(query: String): List<AyahDto> {
+    override suspend fun searchForAyahInQuran(query: String): List<AyahDto> {
         return ayahBySurah.values.flatten().filter {
             it.plainContent.contains(query)
         }
     }
 
-    override suspend fun searchAyahInSura(
+    override suspend fun searchForAyahInSurah(
         surahId: Int,
         query: String
     ): List<AyahDto> {
