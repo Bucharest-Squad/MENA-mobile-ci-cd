@@ -60,8 +60,7 @@ fun DukanNavHost() {
                 CreateProductScreen()
             }
             composable<DukanRoute.DukanDetails> { backStackEntry ->
-                val route: DukanRoute.DukanDetails = backStackEntry.toRoute()
-                DukanDetailsScreen(route.dukanId)
+                DukanDetailsScreen()
             }
             composable<DukanRoute.ShelfDetails> { backStackEntry ->
                 val route: DukanRoute.ShelfDetails = backStackEntry.toRoute()

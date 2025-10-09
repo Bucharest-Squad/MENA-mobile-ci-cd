@@ -1,14 +1,24 @@
 package net.thechance.mena.dukan.presentation.viewModel.dukanDetails
 
+import net.thechance.mena.dukan.presentation.util.pagination.PagingData
+
 data class DukanDetailsUiState(
-    val name: String = "",
-    val imageUrl: String = "",
-    val style: Style = Style.NO_IMAGE,
-    val color: ColorUiState = ColorUiState(),
-    val coordinates: Coordinates = Coordinates(),
+    val dukanInfo: DukanInfo = DukanInfo(),
+    val isDukanInfoLoading: Boolean = true,
+    val errorMessage: String? = null,
     val bestSellingProducts: List<ProductUiState> = emptyList(),
-    val shelves: List<ShelfUiState> = emptyList(),
+    val shelves: PagingData<ShelfUiState> = PagingData(),
+    val shelvesState: ShelvesState = ShelvesState.LOADING,
+    val shelfIdSelected: String = ""
 ) {
+    data class DukanInfo(
+        val name: String = "",
+        val imageUrl: String = "",
+        val style: Style = Style.NO_IMAGE,
+        val color: Long = 0L,
+        val coordinates: Coordinates = Coordinates(),
+    )
+
     data class Coordinates(
         val latitude: Double = 0.0,
         val longitude: Double = 0.0,
@@ -20,23 +30,22 @@ data class DukanDetailsUiState(
         NO_IMAGE
     }
 
-    data class ColorUiState(
+    data class ShelfUiState(
         val id: String = "",
-        val color: Long = 0L
+        val name: String = ""
     )
+
+    enum class ShelvesState {
+        LOADING,
+        LOADED,
+        EMPTY
+    }
 
     data class ProductUiState(
         val id: String,
         val name: String,
         val imageUrl: String,
         val price: Double,
-        val description: String,
-        val shelfId: String,
-    )
-
-    data class ShelfUiState(
-        val id: String,
-        val name: String,
-        val products: List<ProductUiState>
+        val description: String
     )
 }
