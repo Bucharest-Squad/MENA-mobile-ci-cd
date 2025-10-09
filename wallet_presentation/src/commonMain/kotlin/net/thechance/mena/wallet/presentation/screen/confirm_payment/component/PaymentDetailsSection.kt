@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -29,6 +30,7 @@ import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.wallet.presentation.screen.confirm_payment.ConfirmPaymentScreenState.PaymentUiState
+import net.thechance.mena.wallet.presentation.screen.confirm_payment.GetUserMessage
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -52,17 +54,10 @@ internal fun PaymentDetailsSection(
 
         Text(
             modifier = Modifier.padding(top = Theme.spacing._16).fillMaxWidth(),
-            text = if (paymentUiState.status) {
-                stringResource(
-                    Res.string.confirm_payment_content_success,
-                    paymentUiState.balance
-                )
-            } else {
-                stringResource(
-                    Res.string.confirm_payment_content_failed,
-                    paymentUiState.balance
-                )
-            },
+            text = GetUserMessage(
+                paymentStatus = paymentUiState.status,
+                balance = paymentUiState.balance
+            ),
             style = Theme.typography.body.small,
             color = if (paymentUiState.status) Theme.colorScheme.shadeSecondary else Theme.colorScheme.error,
             textAlign = TextAlign.Center
@@ -149,6 +144,7 @@ private fun ReceiverInfo(
                     .clip(CircleShape)
                     .size(20.dp),
                 model = receiverImage,
+                contentScale = ContentScale.Crop,
                 contentDescription = stringResource(Res.string.silver_coin),
             )
         }
