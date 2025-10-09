@@ -3,7 +3,9 @@ package net.thechance.mena.dukan.domain.repository
 import net.thechance.mena.dukan.domain.entity.Category
 import net.thechance.mena.dukan.domain.entity.Dukan
 import net.thechance.mena.dukan.domain.entity.Color
+import net.thechance.mena.dukan.domain.entity.DukanDetails
 import net.thechance.mena.dukan.domain.entity.MyDukanStatus
+import net.thechance.mena.dukan.domain.entity.Shelf
 
 interface DukanRepository {
     suspend fun createDukan(dukan: Dukan)
@@ -13,4 +15,5 @@ interface DukanRepository {
     suspend fun isDukanNameTaken(name: String): Boolean
     suspend fun getMyDukanStatus(): MyDukanStatus?
     suspend fun uploadDukanImage(fileName: String, fileBytes: ByteArray): String
+    suspend fun getDukanDetailsByDukanId(dukanId:Int): DukanDetails
 }
