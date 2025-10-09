@@ -48,13 +48,12 @@ fun ChatCard(
     ) {
         Box(
             modifier = Modifier.padding(end = Theme.spacing._8)
+                .size(48.dp)
                 .clip(CircleShape)
                 .background(
                     color = Theme.colorScheme.background.surfaceLow,
                     shape = CircleShape
-                )
-                .size(48.dp)
-                .padding(10.dp),
+                ),
             contentAlignment = Alignment.Center
         ) {
             AsyncImage(
