@@ -78,7 +78,7 @@ class DukanRepositoryImpl(
         return safeApiCall {
             client.post("$BASE_URL/image") {
                 setBody(
-                    buildSinglePartFormData(fileName, fileBytes,"file")
+                    buildSinglePartFormData(fileName, fileBytes, "file")
                 )
             }
         }
@@ -92,8 +92,8 @@ class DukanRepositoryImpl(
     }
 
 
-    override suspend fun getDukanDetailsByDukanId(dukanId: Int): DukanDetails {
-        return safeApiCall<DukanDetailsDto>{
+    override suspend fun getDukanDetailsByDukanId(dukanId: String): DukanDetails {
+        return safeApiCall<DukanDetailsDto> {
             client.get("$BASE_URL/$dukanId")
         }.toDukanDetails()
     }
