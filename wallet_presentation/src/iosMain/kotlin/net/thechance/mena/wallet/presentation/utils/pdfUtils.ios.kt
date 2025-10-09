@@ -198,6 +198,8 @@ actual class PdfHandler {
     }
 
     private companion object {
+        // Chosen as a good balance between rendering time and image sharpness
+        const val IMAGE_SCALE = 1.67f
         private const val DOWNLOAD_DIR_BASE = "Documents"
         private const val DOWNLOAD_DIR_ROOT = "MENA"
     }

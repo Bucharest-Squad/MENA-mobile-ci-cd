@@ -70,7 +70,7 @@ actual class PdfHandler{
                     renderer.close()
                     fileDescriptor.close()
                 }
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 return@withContext emptyList()
             }
         }
@@ -165,6 +165,8 @@ actual class PdfHandler{
     }
 
     private companion object {
+        // Chosen as a good balance between rendering time and image sharpness
+        const val IMAGE_SCALE = 1.67f
         private const val DOWNLOAD_DIR_ROOT = "MENA"
         private const val MIME_TYPE = "application/pdf"
     }
