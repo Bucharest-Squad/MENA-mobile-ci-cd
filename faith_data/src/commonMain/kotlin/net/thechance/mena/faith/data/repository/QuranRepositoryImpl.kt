@@ -20,18 +20,25 @@ class QuranRepositoryImpl(val ayahDao: AyahDao) : QuranRepository {
             ayahDao.getAyatOfSurah(surahId).map { it.toAyah() }
         }
 
-    override suspend fun searchAyah(query: String): List<Ayah> =
-        executeLocalSafely {
-            ayahDao.searchAyah(query).map { it.toAyah() }
-        }
+    override suspend fun getLastAyahForTilawah(): Ayah {
+        //Not yet implemented
+        return Ayah(number = 1, surahId = 1, content = "", plainContent = "")
+    }
 
+    override suspend fun saveLastAyahForTilawah(ayah: Ayah) {
+        //Not yet implemented
+    }
 
-    override suspend fun searchAyahInSurah(
-        query: String,
-        surahId: Int
+    override suspend fun searchForAyahInSurah(
+        surahId: Int,
+        query: String
     ): List<Ayah> =
         executeLocalSafely {
             ayahDao.searchAyahInSura(surahId, query).map { it.toAyah() }
         }
 
+    override suspend fun searchForAyahInQuran(query: String): List<Ayah> =
+        executeLocalSafely {
+            ayahDao.searchAyah(query).map { it.toAyah() }
+        }
 }
