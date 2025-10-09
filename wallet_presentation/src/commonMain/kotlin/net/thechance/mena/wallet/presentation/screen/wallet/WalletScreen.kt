@@ -16,6 +16,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import mena.wallet_presentation.generated.resources.Res
 import mena.wallet_presentation.generated.resources.back_button
+import mena.wallet_presentation.generated.resources.download
+import mena.wallet_presentation.generated.resources.downloaded_statements
 import mena.wallet_presentation.generated.resources.confirm_payment_header
 import mena.wallet_presentation.generated.resources.ic_arrow_left
 import mena.wallet_presentation.generated.resources.ic_clock
@@ -43,6 +45,7 @@ import kotlin.uuid.Uuid
 fun WalletMainScreen(
     onNavigateBackClicked: () -> Unit,
     navigateToTransactionHistory: () -> Unit,
+    navigateToStatementsHistory: () -> Unit,
     navigateToPaymentScreen: (Double, Uuid) -> Unit,
     viewModel: WalletViewModel = koinViewModel(),
 ) {
@@ -51,7 +54,13 @@ fun WalletMainScreen(
     ObserveAsEffect(
         effect = viewModel.uiEffect,
         onEffect = { effect ->
-            onWalletEffect(effect, onNavigateBackClicked, navigateToTransactionHistory, navigateToPaymentScreen)
+            onWalletEffect(
+                effect = effect,
+                onNavigateBackClicked = onNavigateBackClicked,
+                navigateToTransactionHistory = navigateToTransactionHistory,
+                navigateToStatementsHistory = navigateToStatementsHistory,
+                navigateToPaymentScreen = navigateToPaymentScreen
+            )
         }
     )
 
@@ -102,7 +111,17 @@ private fun WalletContent(
                 onClick = interactionListener::onTransactionHistoryClicked,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 24.dp)
+                    .padding(top = Theme.spacing._24)
+            )
+
+            LabeledButtonWithCircularIcon(
+                icon = painterResource(Res.drawable.download),
+                contentDescription = stringResource(Res.string.downloaded_statements),
+                label = stringResource(Res.string.downloaded_statements),
+                onClick = interactionListener::onStatementHistoryClicked,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = Theme.spacing._16)
             )
             LabeledButtonWithCircularIcon(
                 icon = painterResource(Res.drawable.ic_send),
@@ -121,11 +140,13 @@ private fun onWalletEffect(
     effect: WalletEffect,
     onNavigateBackClicked: () -> Unit,
     navigateToTransactionHistory: () -> Unit,
+    navigateToStatementsHistory: () -> Unit,
     navigateToPaymentScreen: (Double, Uuid) -> Unit
 ) {
     when (effect) {
         WalletEffect.NavigateBack -> onNavigateBackClicked()
         WalletEffect.NavigateToTransactionHistory -> navigateToTransactionHistory()
+        WalletEffect.NavigateToStatementHistory -> navigateToStatementsHistory()
         is WalletEffect.NavigateToPaymentScreen -> navigateToPaymentScreen(effect.amount, effect.receiverId)
     }
 }
@@ -142,6 +163,7 @@ private fun WalletScreenPreview() {
                 override fun onBackClicked() {}
                 override fun onRetryLoadBalanceClicked() {}
                 override fun onTransactionHistoryClicked() {}
+                override fun onStatementHistoryClicked() {}
                 override fun onPaymentClicked(amount: Double, receiverId: Uuid) {}
             }
         )

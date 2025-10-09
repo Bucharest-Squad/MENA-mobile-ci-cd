@@ -8,5 +8,6 @@ interface WalletInteractionListener {
     fun onBackClicked()
     fun onRetryLoadBalanceClicked()
     fun onTransactionHistoryClicked()
+    fun onStatementHistoryClicked()
     fun onPaymentClicked(amount: Double, receiverId: Uuid)
 }

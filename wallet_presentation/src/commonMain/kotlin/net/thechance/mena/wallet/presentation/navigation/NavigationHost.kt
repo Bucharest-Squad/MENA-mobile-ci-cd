@@ -10,6 +10,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import net.thechance.mena.wallet.presentation.screen.confirm_payment.ConfirmPaymentScreen
 import net.thechance.mena.wallet.presentation.screen.export.ExportTransactionScreen
+import net.thechance.mena.wallet.presentation.screen.statementsHistory.StatementHistoryScreen
 import net.thechance.mena.wallet.presentation.screen.transaction_details.TransactionDetailsScreen
 import net.thechance.mena.wallet.presentation.screen.transaction_history.TransactionHistoryScreen
 import net.thechance.mena.wallet.presentation.screen.view_transactions_statement.ViewTransactionStatementScreen
@@ -54,8 +55,12 @@ fun NavigationHost(
                 navigateToTransactionHistory = {
                     navController.navigate(TransactionsHistoryScreenRoute)
                 },
-                navigateToPaymentScreen = {amount, receiverId ->
-                    navController.navigate(ConfirmPaymentScreenRoute(
+                navigateToStatementsHistory = {
+                    navController.navigate(StatementsHistoryScreenRoute)
+                },
+                navigateToPaymentScreen = { amount, receiverId ->
+                    navController.navigate(
+                        ConfirmPaymentScreenRoute(
                             amount = amount,
                             id = receiverId.toString()
                         )
@@ -89,11 +94,23 @@ fun NavigationHost(
             )
         }
         composable<ViewTransactionsStatementScreenRoute> { backStackEntry ->
-            val filterParams = backStackEntry.toRoute<ViewTransactionsStatementScreenRoute>().toFilterParams()
+            val filterParams =
+                backStackEntry.toRoute<ViewTransactionsStatementScreenRoute>().toFilterParams()
             ViewTransactionStatementScreen(
                 onNavigateBackClicked = { navController.popBackStack() },
                 filterParams = filterParams
             )
+        }
+
+        composable<StatementsHistoryScreenRoute> {
+            StatementHistoryScreen(
+                onNavigateBackClicked = { navController.popBackStack() },
+                navigateToStatementDetails = { navController.navigate(StatementDetailsScreenRoute(id = it.toString())) },
+            )
+        }
+
+        composable<StatementDetailsScreenRoute> { backStackEntry ->
+            DummyScreen(title = "Statement Details")
         }
         composable<ConfirmPaymentScreenRoute> { backStackEntry ->
             ConfirmPaymentScreen(
