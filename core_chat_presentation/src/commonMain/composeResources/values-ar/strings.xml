@@ -35,4 +35,7 @@
 
     <string name="today">اليوم</string>
     <string name="yesterday">الأمس</string>
+    <string name="cancel">الغاء</string>
+    <string name="photo">صوره</string>
+    <string name="camera">الكاميرا</string>
 </resources>
