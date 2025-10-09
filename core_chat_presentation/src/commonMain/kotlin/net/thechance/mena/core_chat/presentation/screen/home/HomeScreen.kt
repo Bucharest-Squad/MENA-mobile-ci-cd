@@ -125,7 +125,7 @@ fun HomeScreen(
         ) {
             AppBar(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 18.dp),
-                title = stringResource(Res.string.mena),
+                title =stringResource(Res.string.mena),
                 trailingContent = {
                     Text(
                         text = "${viewModel.state.value.balance}",
