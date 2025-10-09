@@ -44,13 +44,11 @@ fun CalibrateDeviceScreen(
     ObserveAsEffect(viewModel.uiEffect) { effect ->
         when (effect) {
             is CalibrateDeviceEffect.NavigateBack -> navController.navigateUp()
-            else -> {}
+            is CalibrateDeviceEffect.NavigateToQiblah -> {}
         }
     }
 
-    Content(
-        listener = viewModel
-    )
+    Content(listener = viewModel)
 }
 
 @Composable
@@ -61,69 +59,77 @@ private fun Content(
         topBar = {
             AppBar(
                 title = stringResource(Res.string.calibrate_device),
-                contentPadding = PaddingValues(
-                    horizontal = Theme.spacing._16, vertical = Theme.spacing._8
-                ),
-                leadingContent = { BackIcon() },
+                leadingContent = {
+                    BackIcon()
+                },
                 onLeadingClick = listener::onBackClick,
             )
         },
         bottomBar = {
-            Box {
-                Button(
-                    onClick = listener::onContinueClick,
-                    content = {
-                        Text(
-                            text = stringResource(Res.string.continue_btn),
-                            style = Theme.typography.label.medium,
-                            color = Theme.colorScheme.primary.onPrimary
-                        )
-                    },
-                    containerColor = Theme.colorScheme.primary.primary,
-                    contentPadding = PaddingValues(vertical = 13.dp),
-                    modifier = Modifier.fillMaxWidth()
-                        .padding(
-                            start = Theme.spacing._16,
-                            end = Theme.spacing._16,
-                            bottom = Theme.spacing._24
-                        )
-                        .clip(shape = RoundedCornerShape(Theme.radius.md))
-                )
-            }
+            ContinueButton(listener = listener)
         },
         content = {
-            Column(
-                verticalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .background(color = Theme.colorScheme.background.surface)
-                    .padding(horizontal = Theme.spacing._16)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = 120.dp)
-                        .background(
-                            color = Theme.colorScheme.background.surfaceLow,
-                            shape = RoundedCornerShape(Theme.radius.xl)
-                        )
-                ) {
-                    AsyncImage(
-                        model = Res.getUri("drawable/loading_qiblah.gif"),
-                        contentDescription = stringResource(Res.string.calibrate_device_animation),
-                        modifier = Modifier
-                            .size(64.dp)
-                            .align(Alignment.Center)
-                    )
-                }
-                Text(
-                    text = stringResource(Res.string.motion_configuration),
-                    style = Theme.typography.label.medium,
-                    color = Theme.colorScheme.shadePrimary,
-                    modifier = Modifier.padding(vertical = Theme.spacing._16)
-                )
-            }
+            ConfigurationMessage()
         }
     )
+}
+
+@Composable
+private fun ContinueButton(
+    listener: CalibrateDeviceInteractionListener
+) {
+    Button(
+        onClick = listener::onContinueClick,
+        content = {
+            Text(
+                text = stringResource(Res.string.continue_btn),
+                style = Theme.typography.label.medium,
+                color = Theme.colorScheme.primary.onPrimary
+            )
+        },
+        containerColor = Theme.colorScheme.primary.primary,
+        contentPadding = PaddingValues(vertical = 13.dp),
+        modifier = Modifier.fillMaxWidth()
+            .padding(
+                start = Theme.spacing._16,
+                end = Theme.spacing._16,
+                bottom = Theme.spacing._24
+            )
+            .clip(shape = RoundedCornerShape(Theme.radius.md))
+    )
+}
+
+@Composable
+private fun ConfigurationMessage() {
+    Column(
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = Theme.spacing._16)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = 120.dp)
+                .background(
+                    color = Theme.colorScheme.background.surfaceLow,
+                    shape = RoundedCornerShape(Theme.radius.xl)
+                )
+        ) {
+            AsyncImage(
+                model = Res.getUri("drawable/loading_qiblah.gif"),
+                contentDescription = stringResource(Res.string.calibrate_device_animation),
+                modifier = Modifier
+                    .size(64.dp)
+                    .align(Alignment.Center)
+            )
+        }
+        Text(
+            text = stringResource(Res.string.motion_configuration),
+            style = Theme.typography.label.medium,
+            color = Theme.colorScheme.shadePrimary,
+            modifier = Modifier.padding(vertical = Theme.spacing._16)
+        )
+    }
 }
