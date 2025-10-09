@@ -1,15 +1,15 @@
-package net.thechance.mena.core_chat.presentation.screen.chats
+package net.thechance.mena.core_chat.presentation.screen.home
 
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
-data class ChatsScreenState(
+data class HomeScreenState(
     val isLoading: Boolean = false,
     val isSynced: Boolean = false,
     val balance : Double = 0.0,
-    val chats: List<ChatUiState> = emptyList()
+    val chats: List<HomeUiState> = emptyList()
 ) {
-    data class ChatUiState @OptIn(ExperimentalUuidApi::class) constructor(
+    data class HomeUiState @OptIn(ExperimentalUuidApi::class) constructor(
         val id: Uuid,
         val name: String,
         val imageUrl: String?,

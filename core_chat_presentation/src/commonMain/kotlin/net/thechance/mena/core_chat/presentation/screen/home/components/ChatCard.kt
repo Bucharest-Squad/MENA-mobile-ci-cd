@@ -1,4 +1,4 @@
-package net.thechance.mena.core_chat.presentation.screen.chats.components
+package net.thechance.mena.core_chat.presentation.screen.home.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,7 +24,7 @@ import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.ic_message_read
 import mena.core_chat_presentation.generated.resources.ic_message_sent
 import mena.core_chat_presentation.generated.resources.ic_profile_placeholder
-import net.thechance.mena.core_chat.presentation.screen.chats.ChatsScreenState
+import net.thechance.mena.core_chat.presentation.screen.home.HomeScreenState
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
@@ -36,7 +36,7 @@ import kotlin.uuid.Uuid
 
 @Composable
 fun ChatCard(
-    chats: ChatsScreenState.ChatUiState,
+    chats: HomeScreenState.HomeUiState,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -72,7 +72,7 @@ fun ChatCard(
 }
 
     @Composable
-    private fun TimeAndStatus(chats: ChatsScreenState.ChatUiState) {
+    private fun TimeAndStatus(chats: HomeScreenState.HomeUiState) {
         Column(
             modifier = Modifier.padding(vertical = Theme.spacing._4),
             horizontalAlignment = Alignment.End,
@@ -84,13 +84,13 @@ fun ChatCard(
                 color = Theme.colorScheme.shadeSecondary
             )
             if (chats.isMine) {
-                if (chats.status is ChatsScreenState.ChatUiState.Status.Sent) {
+                if (chats.status is HomeScreenState.HomeUiState.Status.Sent) {
                     Icon(
                         painter = painterResource(Res.drawable.ic_message_sent),
                         contentDescription = null,
                         tint = Theme.colorScheme.shadeTertiary
                     )
-                } else if (chats.status is ChatsScreenState.ChatUiState.Status.Read) {
+                } else if (chats.status is HomeScreenState.HomeUiState.Status.Read) {
                     Icon(
                         painter = painterResource(Res.drawable.ic_message_read),
                         contentDescription = null,
@@ -98,7 +98,7 @@ fun ChatCard(
                     )
                 }
             } else {
-                if (chats.status is ChatsScreenState.ChatUiState.Status.UnRead) {
+                if (chats.status is HomeScreenState.HomeUiState.Status.UnRead) {
                     Text(
                         text = "12",
                         style = Theme.typography.label.small,
@@ -117,7 +117,7 @@ fun ChatCard(
     }
 
     @Composable
-    private fun RowScope.NameAndLastMessage(chats: ChatsScreenState.ChatUiState) {
+    private fun RowScope.NameAndLastMessage(chats: HomeScreenState.HomeUiState) {
         Column(
             modifier = Modifier.padding(vertical = Theme.spacing._4).weight(1f)
                 .padding(end = Theme.spacing._4),
@@ -146,13 +146,13 @@ fun ChatCard(
     private fun ChatCardPreview() {
         MenaTheme {
             ChatCard(
-                chats = ChatsScreenState.ChatUiState(
+                chats = HomeScreenState.HomeUiState(
                     id = Uuid.random(),
                     name = "mona",
                     imageUrl = "https://i.ibb.co/DjJLNHm/ef7bf477a8366d411f62a575dc169f0858ca1fec.jpg",
                     lastMessage = "https://i.ibb.co/DjJLNHm/ef7bf477a8366d411f62a575dc169f0858ca1fec.jpg",
                     time = "12:34 AM",
-                    status = ChatsScreenState.ChatUiState.Status.Sent,
+                    status = HomeScreenState.HomeUiState.Status.Sent,
                     isMine = true,
                 )
             )
