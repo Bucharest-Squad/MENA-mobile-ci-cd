@@ -25,6 +25,7 @@ import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.ic_message_read
 import mena.core_chat_presentation.generated.resources.ic_message_sent
 import mena.core_chat_presentation.generated.resources.ic_profile_placeholder
+import net.thechance.mena.core_chat.presentation.screen.contacts.components.CircularAvatar
 import net.thechance.mena.core_chat.presentation.screen.home.HomeScreenState
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.text.Text
@@ -46,25 +47,11 @@ fun ChatCard(
             .clickable { },
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        Box(
+        CircularAvatar(
+            contactImageUri = chats.imageUrl,
+            size = 48.dp,
             modifier = Modifier.padding(end = Theme.spacing._8)
-                .size(48.dp)
-                .clip(CircleShape)
-                .background(
-                    color = Theme.colorScheme.background.surfaceLow,
-                    shape = CircleShape
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            AsyncImage(
-                modifier = Modifier.fillMaxSize(),
-                model = chats.imageUrl,
-                placeholder = painterResource(Res.drawable.ic_profile_placeholder),
-                error = painterResource(Res.drawable.ic_profile_placeholder),
-                contentScale = ContentScale.Crop,
-                contentDescription = "Contact photo",
-            )
-        }
+        )
         NameAndLastMessage(chats)
         TimeAndStatus(chats)
     }
