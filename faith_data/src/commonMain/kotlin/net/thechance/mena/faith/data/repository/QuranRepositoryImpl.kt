@@ -1,6 +1,7 @@
 package net.thechance.mena.faith.data.repository
 
 import net.thechance.mena.faith.data.database.AyahDao
+import net.thechance.mena.faith.data.database.AyahDto
 import net.thechance.mena.faith.data.mapper.toAyah
 import net.thechance.mena.faith.data.mapper.toSurah
 import net.thechance.mena.faith.data.utils.executeLocalSafely
@@ -34,11 +35,11 @@ class QuranRepositoryImpl(val ayahDao: AyahDao) : QuranRepository {
         query: String
     ): List<Ayah> =
         executeLocalSafely {
-            ayahDao.searchForAyahInSurah(surahId, query).map { it.toAyah() }
+            ayahDao.searchForAyahInSurah(surahId, query).map(AyahDto::toAyah)
         }
 
     override suspend fun searchForAyahInQuran(query: String): List<Ayah> =
         executeLocalSafely {
-            ayahDao.searchForAyahInQuran(query).map { it.toAyah() }
+            ayahDao.searchForAyahInQuran(query).map(AyahDto::toAyah)
         }
 }
