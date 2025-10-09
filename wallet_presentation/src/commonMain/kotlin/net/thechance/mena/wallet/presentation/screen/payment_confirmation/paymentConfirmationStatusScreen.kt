@@ -87,7 +87,7 @@ fun PaymentConfirmationStatusScreen(
             ) {
                 Icon(
                     painter = image,
-                    contentDescription = null
+                    contentDescription = title
                 )
                 Text(
                     text = title,
