@@ -1,6 +1,6 @@
 package net.thechance.mena.dukan.data.repository.mapper
 
-import net.thechance.mena.dukan.data.repository.dto.ShelfResponse
+import net.thechance.mena.dukan.data.repository.dto.ShelfDto
 import net.thechance.mena.dukan.domain.entity.Shelf
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -84,7 +84,7 @@ class ShelfMappersTest {
     @Test
     fun `List of ShelfResponse to ShelfList maps empty list correctly`() {
         // Given
-        val shelfResponses = emptyList<ShelfResponse>()
+        val shelfResponses = emptyList<ShelfDto>()
 
         // When
         val shelves = shelfResponses.toShelfList()
@@ -99,13 +99,13 @@ private fun fakeShelf() = Shelf(
     name = "Test Shelf"
 )
 
-private fun fakeShelfResponse() = ShelfResponse(
+private fun fakeShelfResponse() = ShelfDto(
     id = "1",
     title = "Shelf 1"
 )
 
 private fun fakeShelfResponses() = listOf(
-    ShelfResponse(id = "1", title = "Shelf 1"),
-    ShelfResponse(id = "2", title = "Shelf 2"),
-    ShelfResponse(id = "3", title = "Shelf 3")
+    ShelfDto(id = "1", title = "Shelf 1"),
+    ShelfDto(id = "2", title = "Shelf 2"),
+    ShelfDto(id = "3", title = "Shelf 3")
 )
