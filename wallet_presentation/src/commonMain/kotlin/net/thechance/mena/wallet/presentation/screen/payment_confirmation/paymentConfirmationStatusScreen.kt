@@ -1,4 +1,4 @@
-package net.thechance.mena.wallet.presentation.screen.payment_confirmation_failed
+package net.thechance.mena.wallet.presentation.screen.payment_confirmation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
