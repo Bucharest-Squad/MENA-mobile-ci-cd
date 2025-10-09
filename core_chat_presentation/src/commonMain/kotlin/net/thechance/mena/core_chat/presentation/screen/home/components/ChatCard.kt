@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -99,19 +100,23 @@ fun ChatCard(
                 }
             } else {
                 if (chats.status is HomeScreenState.HomeUiState.Status.UnRead) {
-                    Text(
-                        text = "12",
-                        style = Theme.typography.label.small,
-                        color = Theme.colorScheme.primary.onPrimary,
+                    Box(
                         modifier = Modifier
+                            .size(20.dp)
                             .clip(CircleShape)
                             .background(
                                 color = Theme.colorScheme.brand.brand,
                                 shape = CircleShape
-                            )
-                            .size(20.dp)
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                    Text(
+                        text = "12",
+                        style = Theme.typography.label.small,
+                        color = Theme.colorScheme.primary.onPrimary,
+                        textAlign = TextAlign.Center,
                     )
-                }
+                }}
             }
         }
     }
@@ -152,7 +157,7 @@ fun ChatCard(
                     imageUrl = "https://i.ibb.co/DjJLNHm/ef7bf477a8366d411f62a575dc169f0858ca1fec.jpg",
                     lastMessage = "https://i.ibb.co/DjJLNHm/ef7bf477a8366d411f62a575dc169f0858ca1fec.jpg",
                     time = "12:34 AM",
-                    status = HomeScreenState.HomeUiState.Status.Sent,
+                    status = HomeScreenState.HomeUiState.Status.Read,
                     isMine = true,
                 )
             )
