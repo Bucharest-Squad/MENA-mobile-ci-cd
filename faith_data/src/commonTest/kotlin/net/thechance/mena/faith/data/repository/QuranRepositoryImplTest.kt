@@ -102,8 +102,6 @@ class QuranRepositoryImplTest {
         assertTrue(result.isEmpty())
     }
 
-
-
     private companion object {
         const val AL_FATIHAH_NAME = "Al-Fatihah"
         const val AL_BAQARAH_NAME = "Al-Baqarah"

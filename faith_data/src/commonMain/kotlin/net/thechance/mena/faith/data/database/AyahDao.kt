@@ -42,7 +42,6 @@ interface AyahDao {
     )
     suspend fun getAyahContent(ayahNumber: Int, surahId: Int): String
 
-
     @Query(
         """
                 SELECT *
