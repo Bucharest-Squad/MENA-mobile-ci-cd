@@ -50,7 +50,7 @@ class ShelfMappersTest {
         val shelfResponses = fakeShelfResponses()
 
         // When
-        val shelves = shelfResponses.toShelfList()
+        val shelves = shelfResponses.map { it.toShelf() }
 
         // Then
         assertEquals(3, shelves.size)
@@ -62,7 +62,7 @@ class ShelfMappersTest {
         val shelfResponses = fakeShelfResponses()
 
         // When
-        val shelves = shelfResponses.toShelfList()
+        val shelves = shelfResponses.map { it.toShelf() }
 
         // Then
         assertEquals("1", shelves[0].id)
@@ -74,7 +74,7 @@ class ShelfMappersTest {
         val shelfResponses = fakeShelfResponses()
 
         // When
-        val shelves = shelfResponses.toShelfList()
+        val shelves = shelfResponses.map { it.toShelf() }
 
         // Then
         assertEquals("Shelf 1", shelves[0].name)
@@ -87,7 +87,7 @@ class ShelfMappersTest {
         val shelfResponses = emptyList<ShelfDto>()
 
         // When
-        val shelves = shelfResponses.toShelfList()
+        val shelves = shelfResponses.map { it.toShelf() }
 
         // Then
         assertEquals(0, shelves.size)

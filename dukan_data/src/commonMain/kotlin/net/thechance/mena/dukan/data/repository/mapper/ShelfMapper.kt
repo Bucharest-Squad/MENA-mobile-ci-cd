@@ -14,7 +14,3 @@ fun ShelfDto.toShelf(): Shelf {
         name = title
     )
 }
-
-fun List<ShelfDto>.toShelfList(): List<Shelf> {
-    return map { it.toShelf() }
-}
