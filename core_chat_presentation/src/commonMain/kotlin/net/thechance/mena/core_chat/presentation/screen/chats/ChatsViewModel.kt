@@ -10,7 +10,7 @@ import net.thechance.mena.core_chat.presentation.shared.BaseViewModel
 class ChatsViewModel(
     private val contactsRepository: ContactsRepository,
     effector: ChatEffector
-) : BaseViewModel<ChatsUiState>(ChatsUiState(), effector) {
+) : BaseViewModel<ChatsScreenState>(ChatsScreenState(), effector) {
 
     fun onNewChatClicked() {
         tryToExecute(
