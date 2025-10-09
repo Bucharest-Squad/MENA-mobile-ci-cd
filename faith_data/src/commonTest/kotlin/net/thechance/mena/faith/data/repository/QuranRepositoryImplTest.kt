@@ -81,11 +81,10 @@ class QuranRepositoryImplTest {
     @Test
     fun `searchForAyahInQuran Should return empty list when no ayah match the query`() = runTest {
         // Given
-        val query = "nonexistent"
-        everySuspend { mockDao.searchForAyahInQuran(query) } returns emptyList()
+        everySuspend { mockDao.searchForAyahInQuran("nonexistent") } returns emptyList()
 
         // When
-        val result = repository.searchForAyahInQuran(query)
+        val result = repository.searchForAyahInQuran("nonexistent")
 
         // Then
         assertTrue(result.isEmpty())
@@ -94,12 +93,10 @@ class QuranRepositoryImplTest {
     @Test
     fun `searchForAyahInSurah Should return empty list when no ayah match the query in the specified surah`() = runTest {
         // Given
-        val query = "nonexistent"
-        val surahId = 1
-        everySuspend { mockDao.searchForAyahInSurah(surahId, query) } returns emptyList()
+        everySuspend { mockDao.searchForAyahInSurah(1, "nonexistent") } returns emptyList()
 
         // When
-        val result = repository.searchForAyahInSurah(surahId, query)
+        val result = repository.searchForAyahInSurah(1, "nonexistent")
 
         // Then
         assertTrue(result.isEmpty())
