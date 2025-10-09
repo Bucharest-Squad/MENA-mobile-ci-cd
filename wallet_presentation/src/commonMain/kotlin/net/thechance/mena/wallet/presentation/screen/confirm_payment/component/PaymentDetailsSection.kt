@@ -28,7 +28,6 @@ import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.wallet.domain.model.TransactionStatus
 import net.thechance.mena.wallet.presentation.screen.confirm_payment.ConfirmPaymentScreenState.PaymentUiState
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -53,21 +52,19 @@ internal fun PaymentDetailsSection(
 
         Text(
             modifier = Modifier.padding(top = Theme.spacing._16).fillMaxWidth(),
-            text =when(paymentUiState.status){
-                TransactionStatus.SUCCESS -> stringResource(
+            text = if (paymentUiState.status) {
+                stringResource(
                     Res.string.confirm_payment_content_success,
                     paymentUiState.balance
                 )
-                TransactionStatus.FAILED -> stringResource(
+            } else {
+                stringResource(
                     Res.string.confirm_payment_content_failed,
                     paymentUiState.balance
                 )
             },
             style = Theme.typography.body.small,
-            color = when(paymentUiState.status){
-                TransactionStatus.SUCCESS -> Theme.colorScheme.shadeSecondary
-                TransactionStatus.FAILED -> Theme.colorScheme.error
-            },
+            color = if (paymentUiState.status) Theme.colorScheme.shadeSecondary else Theme.colorScheme.error,
             textAlign = TextAlign.Center
         )
     }
@@ -79,7 +76,7 @@ private fun PaymentInfoSection(
     receiverName: String,
     receiverImage: String?,
     modifier: Modifier = Modifier,
-){
+) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -108,7 +105,7 @@ private fun PaymentInfoSection(
 private fun PaymentAmount(
     amount: String,
     modifier: Modifier = Modifier
-){
+) {
     Row(
         modifier = modifier.padding(top = Theme.spacing._8).fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -134,7 +131,7 @@ private fun ReceiverInfo(
     modifier: Modifier = Modifier,
     receiverName: String,
     receiverImage: String?,
-){
+) {
     Row(
         modifier = modifier.padding(top = Theme.spacing._24).fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -166,7 +163,7 @@ private fun ReceiverInfo(
 
 @Preview
 @Composable
-private fun PaymentDetailsSectionPreview(){
+private fun PaymentDetailsSectionPreview() {
     MenaTheme {
         Scaffold {
             PaymentDetailsSection(paymentUiState = PaymentUiState())

@@ -16,7 +16,6 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import net.thechance.mena.wallet.domain.model.PaymentConfirmation
-import net.thechance.mena.wallet.domain.model.TransactionStatus
 import net.thechance.mena.wallet.domain.repository.PaymentRepository
 import net.thechance.mena.wallet.presentation.base.ErrorState
 import kotlin.test.AfterTest
@@ -146,7 +145,7 @@ class ConfirmPaymentViewModelTest {
         const val balance1_ui = "500,045.0102"
         const val amount1_ui = "5,000"
         const val receiverName1 = "nour"
-        val status1 = TransactionStatus.SUCCESS
+        val status1 = true
         const val receiverImg1 = "https://media.istockphoto.com/id/469738422/photo/large-boulders-on-lake-shore-at-sunset-minnesota-usa.jpg?s=612x612&w=0&k=20&c=4FzViDygZ8CgixTqt3VOudLJUP8uoSeh2UlD_qHYkAw="
 
         val paymentConfirmation1 = PaymentConfirmation(

@@ -14,7 +14,6 @@ import kotlinx.coroutines.test.runTest
 import net.thechance.mena.wallet.data.network_client.NetworkClient
 import net.thechance.mena.wallet.data.repository.payment.PaymentRepositoryImpl
 import net.thechance.mena.wallet.domain.model.PaymentConfirmation
-import net.thechance.mena.wallet.domain.model.TransactionStatus
 import net.thechance.mena.wallet.repository.utils.createNetworkClient
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -60,7 +59,7 @@ class PaymentRepositoryImplTest {
             balance = balance1,
             receiverName = receiverName1,
             receiverImg = receiverImg1,
-            status = TransactionStatus.SUCCESS
+            status = true
         )
 
         val paymentConfirmation1SuccessResponse: suspend MockRequestHandleScope.(HttpRequestData) -> HttpResponseData =

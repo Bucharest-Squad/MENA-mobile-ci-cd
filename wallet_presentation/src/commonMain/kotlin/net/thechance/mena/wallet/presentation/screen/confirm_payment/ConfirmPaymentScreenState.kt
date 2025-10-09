@@ -13,7 +13,7 @@ data class ConfirmPaymentScreenState(
         val amount: String = "",
         val receiverName: String = "",
         val receiverImage: String? = null,
-        val status: TransactionStatus = TransactionStatus.FAILED,
+        val status: Boolean = false,
         val balance: String = ""
     )
 }

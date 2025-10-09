@@ -108,7 +108,7 @@ private fun ConfirmPaymentScreenContent(
 
                     PayButton(
                         isPayBtnLoading = state.isPayBtnLoading,
-                        isEnabled = state.paymentUiState.status == TransactionStatus.SUCCESS,
+                        isEnabled = state.paymentUiState.status,
                         onClick = interactionListener::onPayButtonClicked,
                         payAmount = state.paymentUiState.amount
                     )

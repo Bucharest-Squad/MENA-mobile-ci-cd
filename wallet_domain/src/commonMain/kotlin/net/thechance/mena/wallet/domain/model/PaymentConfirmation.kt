@@ -4,5 +4,5 @@ data class PaymentConfirmation(
     val balance: Double,
     val receiverName: String,
     val receiverImg: String?,
-    val status: TransactionStatus
+    val status: Boolean
 )

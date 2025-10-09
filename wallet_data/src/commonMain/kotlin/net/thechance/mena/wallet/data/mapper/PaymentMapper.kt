@@ -8,5 +8,5 @@ fun PaymentConfirmationDto.toEntity() = PaymentConfirmation(
     balance = currentBalance?: 0.0,
     receiverName = recipientName ?: "",
     receiverImg = recipientImageUrl,
-    status = if (isValid == true) TransactionStatus.SUCCESS else TransactionStatus.FAILED
+    status = isValid == true
 )
