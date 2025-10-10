@@ -51,6 +51,8 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.coil.compose)
             implementation(libs.coil.gif)
+            implementation(libs.kotlinx.datetime)
+
         }
         iosMain.dependencies {
 
