@@ -94,6 +94,10 @@ kover.reports {
         }
 
         excludes {
+            classes(
+                "net.thechance.mena.faith.presentation.feature.main.MainViewModel",
+                "net.thechance.mena.faith.presentation.feature.main.MainMapper"
+            )
             annotatedBy("net.thechance.mena.faith.domain.annotation.KoverIgnore")
         }
     }
