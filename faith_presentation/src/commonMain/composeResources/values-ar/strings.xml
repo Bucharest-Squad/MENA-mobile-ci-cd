@@ -66,4 +66,27 @@
     <string name="error_no_internet">لا يوجد اتصال بالإنترنت. يرجى التحقق من الشبكة.</string>
     <string name="error_unauthorized">لست مخولاً للقيام بهذا الإجراء.</string>
     <string name="error_network">خطأ في الشبكة. يرجى المحاولة لاحقاً.</string>
+
+    <string name="faith_title">الإيمان</string>
+    <string name="sunrise_time_label">وقت الشروق</string>
+    <string name="location">الموقع</string>
+    <string name="am_label">صباحًا</string>
+    <string name="pm_label">مساءً</string>
+    <string name="tilawah">تلاوة</string>
+    <string name="quran_kareem">القرآن الكريم</string>
+    <string name="qiblah_direction">اتجاه القبلة</string>
+    <string name="nearby_mosques">المساجد القريبة</string>
+    <string name="continue_tilawah">تابع التلاوة</string>
+    <string name="ayah_number_format">آية رقم %1$s</string>
+    <string name="fajr">الفجر</string>
+    <string name="dhuhr">الظهر</string>
+    <string name="asr">العصر</string>
+    <string name="maghrib">المغرب</string>
+    <string name="isha">العشاء</string>
+    <string name="sunrise">الشروق</string>
+    <string name="unknown_surah">سورة غير معروفة</string>
+    <string name="ayah_number">الآية رقم %1$d</string>
+
+
+
 </resources>
