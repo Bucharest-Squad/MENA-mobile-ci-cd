@@ -6,6 +6,7 @@ import kotlin.uuid.Uuid
 data class HomeScreenState(
     val isLoading: Boolean = false,
     val isSynced: Boolean = false,
+    val isError: Boolean = false,
     val balance: Double = 0.0,
     val chats: List<ChatUiState> = fakeData
 ) {

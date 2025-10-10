@@ -32,7 +32,7 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @Composable
-fun ChatCard(
+fun ChatItem(
     chat: HomeScreenState.ChatUiState,
     modifier: Modifier = Modifier
 ) {
@@ -129,9 +129,9 @@ private fun RowScope.NameAndLastMessage(chat: HomeScreenState.ChatUiState) {
 @OptIn(ExperimentalUuidApi::class)
 @Composable
 @Preview
-private fun ChatCardPreview() {
+private fun ChatItemPreview() {
     MenaTheme {
-        ChatCard(
+        ChatItem(
             chat = HomeScreenState.ChatUiState(
                 id = Uuid.random(),
                 name = "mona",

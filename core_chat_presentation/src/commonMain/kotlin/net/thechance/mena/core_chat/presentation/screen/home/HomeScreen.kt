@@ -19,10 +19,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.chats
-import mena.core_chat_presentation.generated.resources.coin
+import mena.core_chat_presentation.generated.resources.ic_coin
 import mena.core_chat_presentation.generated.resources.ic_plus
 import mena.core_chat_presentation.generated.resources.mena
-import net.thechance.mena.core_chat.presentation.screen.home.components.ChatCard
+import net.thechance.mena.core_chat.presentation.screen.home.components.ChatItem
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.button.FabButton
 import net.thechance.mena.designsystem.presentation.component.text.Text
@@ -63,10 +63,9 @@ private fun HomeContent(
                             text = "134",
                             color = Theme.colorScheme.shadeSecondary,
                             style = Theme.typography.label.small,
-                            modifier = Modifier.padding(vertical = Theme.spacing._4),
                         )
                         Image(
-                            painter = painterResource(Res.drawable.coin),
+                            painter = painterResource(Res.drawable.ic_coin),
                             contentDescription = null,
                             modifier = Modifier.size(24.dp)
                                 .clickable { viewModel.onWalletClicked() })
@@ -85,7 +84,7 @@ private fun HomeContent(
                 verticalArrangement = Arrangement.spacedBy(Theme.spacing._16)
             ) {
                 items(viewModel.state.value.chats.size) {
-                    ChatCard(
+                    ChatItem(
                         chat = viewModel.state.value.chats[it],
                     )
                 }
