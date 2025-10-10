@@ -23,6 +23,7 @@ import net.thechance.mena.dukan.data.repository.dto.DukanCategoryDto
 import net.thechance.mena.dukan.data.repository.dto.DukanCategoryResponse
 import net.thechance.mena.dukan.data.repository.dto.DukanColorDto
 import net.thechance.mena.dukan.data.repository.dto.DukanColorsResponse
+import net.thechance.mena.dukan.data.repository.dto.DukanDetailsDto
 import net.thechance.mena.dukan.data.repository.dto.DukanNameResponse
 import net.thechance.mena.dukan.data.repository.dto.MyDukanStatusDto
 import net.thechance.mena.dukan.data.repository.dto.PageResponseDto
@@ -142,6 +143,25 @@ fun MockRequestHandleScope.defaultPagedShelvesResponse() = respond(
     headers = jsonHeaders
 )
 
+fun MockRequestHandleScope.defaultDukanDetailsResponse() = respond(
+    content = jsonSerialization.encodeToString(
+        DukanDetailsDto.serializer(),
+        DukanDetailsDto(
+            id = "dukan123",
+            ownerId = "owner456",
+            name = "Test Dukan",
+            imageUrl = "http://example.com/image.png",
+            address = "123 Test St, Cairo, Egypt",
+            color = DukanColorDto("Red", "#FF0000"),
+            style = "WIDE_IMAGE",
+            latitude = 30.0444,
+            longitude = 31.2357
+        )
+    ),
+    status = HttpStatusCode.OK,
+    headers = jsonHeaders
+)
+
 fun createDukanHttpClient(
     createResponse: (suspend MockRequestHandleScope.() -> HttpResponseData)? = null,
     stylesResponse: (suspend MockRequestHandleScope.() -> HttpResponseData)? = null,
@@ -153,6 +173,7 @@ fun createDukanHttpClient(
     deleteResponse: (suspend MockRequestHandleScope.() -> HttpResponseData)? = null,
     shelvesResponse: (suspend MockRequestHandleScope.() -> HttpResponseData)? = null,
     pagedShelvesResponse: (suspend MockRequestHandleScope.(request: HttpRequestData) -> HttpResponseData)? = null,
+    dukanDetailsResponse: (suspend MockRequestHandleScope.() -> HttpResponseData)? = null,
 ): HttpClient {
     val shelfId = "1"
     val dukanId = "dukan123"
@@ -171,7 +192,7 @@ fun createDukanHttpClient(
             "/dukan/shelf/$shelfId" -> deleteResponse?.invoke(this) ?: defaultDeleteShelfResponse()
             "/dukan/shelf/$dukanId" ->
                 pagedShelvesResponse?.invoke(this, request) ?: defaultPagedShelvesResponse()
-
+            "/dukan/$dukanId" -> dukanDetailsResponse?.invoke(this) ?: defaultDukanDetailsResponse()
             else -> respond("", HttpStatusCode.BadRequest, jsonHeaders)
         }
     }) {
@@ -205,6 +226,7 @@ fun createDukanRepository(
     statusResponse: (suspend MockRequestHandleScope.() -> HttpResponseData)? = null,
     uploadResponse: (suspend MockRequestHandleScope.() -> HttpResponseData)? = null,
     nameResponse: (suspend MockRequestHandleScope.() -> HttpResponseData)? = null,
+    dukanDetailsResponse: (suspend MockRequestHandleScope.() -> HttpResponseData)? = null,
 ): DukanRepositoryImpl {
     return DukanRepositoryImpl(
         client = createDukanHttpClient(
@@ -214,7 +236,8 @@ fun createDukanRepository(
             colorsResponse,
             statusResponse,
             uploadResponse,
-            nameResponse
+            nameResponse,
+            dukanDetailsResponse = dukanDetailsResponse,
         )
     )
 }
