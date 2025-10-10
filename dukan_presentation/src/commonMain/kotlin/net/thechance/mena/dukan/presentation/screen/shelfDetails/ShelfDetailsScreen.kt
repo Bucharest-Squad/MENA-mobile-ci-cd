@@ -21,8 +21,6 @@ import net.thechance.mena.dukan.presentation.util.OnSystemBackPressed
 import net.thechance.mena.dukan.presentation.util.pagination.Pager
 import net.thechance.mena.dukan.presentation.util.pagination.PagingConfig
 import net.thechance.mena.dukan.presentation.util.pagination.PagingSource
-import net.thechance.mena.dukan.presentation.util.pagination.PagingSource.LoadParams
-import net.thechance.mena.dukan.presentation.util.pagination.PagingSource.LoadResult
 import net.thechance.mena.dukan.presentation.util.stubPreviews.PreviewDukanDetailsInteractionListener
 import net.thechance.mena.dukan.presentation.viewModel.dukanDetails.DukanDetailsEffects
 import net.thechance.mena.dukan.presentation.viewModel.dukanDetails.DukanDetailsInteractionListener
@@ -54,7 +52,7 @@ fun ShelfDetailsScreen(
         shelfName = shelfName,
         state = state,
         listener = viewModel,
-        pager = viewModel.productsShelfView(shelfId)
+        pager = viewModel.pagerProduct
     )
 
 }

@@ -11,7 +11,6 @@ import net.thechance.mena.dukan.domain.repository.DukanRepository
 import net.thechance.mena.dukan.domain.repository.ProductRepository
 import net.thechance.mena.dukan.domain.repository.ShelfRepository
 import net.thechance.mena.dukan.presentation.screen.dukanDetails.DukanDetailsArgs
-import net.thechance.mena.dukan.presentation.util.pagination.Pager
 import net.thechance.mena.dukan.presentation.util.pagination.PagingData
 import net.thechance.mena.dukan.presentation.util.pagination.base.createPagingSource
 import net.thechance.mena.dukan.presentation.viewModel.base.BaseViewModel
@@ -78,6 +77,17 @@ class DukanDetailsViewModel(
             shelves.items.isEmpty() -> DukanDetailsUiState.ShelvesState.EMPTY
             else -> DukanDetailsUiState.ShelvesState.LOADED
         }
+        if (state.value.dukanInfo.style != DukanDetailsUiState.Style.WIDE_IMAGE) {
+            viewModelScope.launch {
+                shelves.copy(
+                    items = shelves.items.map {
+                        it.copy(
+                            products = getInitialProductsForShelf(it.id)
+                        )
+                    }
+                )
+            }
+        }
         updateState {
             copy(
                 shelves = shelves,
@@ -87,23 +97,35 @@ class DukanDetailsViewModel(
         }
     }
 
+    private suspend fun getInitialProductsForShelf(shelfId: String): List<DukanDetailsUiState.ProductUiState> {
+        val product = productRepository.getProductsByShelfId(shelfId, 1, 6).items
+        return product.map { it.toUiState() }
+    }
 
-    private val nestedProductPagers =
-        mutableMapOf<String, Pager<Int, DukanDetailsUiState.ProductUiState>>()
-
-    private fun getProductsPager(shelfId: String): Pager<Int, DukanDetailsUiState.ProductUiState> {
-        return nestedProductPagers.getOrPut(shelfId) {
-            createPagingSource(
-                mapper = { it.toUiState() }
-            ) { pageNumber ->
-                productRepository.getProductsByShelfId(
-                    shelfId = shelfId,
-                    page = pageNumber,
-                    size = 20
-                )
-            }
+    private fun collectProducts() {
+        tryToCollect(
+            block = { pagerProduct.flow },
+            onCollect = ::onProductsLoaded
+        )
+        viewModelScope.launch {
+            pagerProduct.load()
         }
     }
+
+    private fun onProductsLoaded(products: PagingData<DukanDetailsUiState.ProductUiState>) {
+        val productsState = when {
+            products.isLoading && products.items.isEmpty() -> DukanDetailsUiState.ProductsState.LOADING
+            products.items.isEmpty() -> DukanDetailsUiState.ProductsState.EMPTY
+            else -> DukanDetailsUiState.ProductsState.LOADED
+        }
+        updateState {
+            copy(
+                productsShelf = products,
+                productsState = productsState,
+            )
+        }
+    }
+
 
     override fun onBackClicked() {
         emitEffect(DukanDetailsEffects.NavigateBack)
@@ -113,24 +135,21 @@ class DukanDetailsViewModel(
         updateState {
             copy(shelfIdSelected = id)
         }
-        val pagerProduct = getProductsPager(id)
-        viewModelScope.launch {
-            pagerProduct.load()
+        if (state.value.dukanInfo.style == DukanDetailsUiState.Style.WIDE_IMAGE) {
+            collectProducts()
         }
     }
 
 
     override fun onViewAllShelfProductsClicked(id: String, name: String) {
         emitEffect(DukanDetailsEffects.NavigateToViewAllShelfProducts(id, name))
+        collectProducts()
     }
 
     override fun onViewDukanOnMapClicked(latitude: Double, longitude: Double) {
         emitEffect(DukanDetailsEffects.NavigateToViewDukanOnMap(latitude, longitude))
     }
 
-    fun productsShelfView(id: String): Pager<Int, DukanDetailsUiState.ProductUiState> {
-        return getProductsPager(id)
-    }
 
     val pagerShelf = createPagingSource(
         mapper = { it.toUiState() }
@@ -139,6 +158,15 @@ class DukanDetailsViewModel(
             dukanId = dukanId,
             page = it,
             pageSize = 20
+        )
+    }
+    val pagerProduct = createPagingSource(
+        mapper = { it.toUiState() }
+    ) {
+        productRepository.getProductsByShelfId(
+            shelfId = state.value.shelfIdSelected,
+            page = it,
+            size = 20
         )
     }
 }
