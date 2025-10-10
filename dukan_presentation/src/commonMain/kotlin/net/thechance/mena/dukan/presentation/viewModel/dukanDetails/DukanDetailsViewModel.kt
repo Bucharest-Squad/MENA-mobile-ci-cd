@@ -109,11 +109,14 @@ class DukanDetailsViewModel(
         emitEffect(DukanDetailsEffects.NavigateBack)
     }
 
-    override fun onShelfClicked(id: String): Pager<Int, DukanDetailsUiState.ProductUiState> {
+    override fun onShelfClicked(id: String) {
         updateState {
             copy(shelfIdSelected = id)
         }
-        return getProductsPager(id)
+        val pagerProduct = getProductsPager(id)
+        viewModelScope.launch {
+            pagerProduct.load()
+        }
     }
 
 
@@ -125,7 +128,7 @@ class DukanDetailsViewModel(
         emitEffect(DukanDetailsEffects.NavigateToViewDukanOnMap(latitude, longitude))
     }
 
-    override fun productsShelfView(id: String): Pager<Int, DukanDetailsUiState.ProductUiState> {
+    fun productsShelfView(id: String): Pager<Int, DukanDetailsUiState.ProductUiState> {
         return getProductsPager(id)
     }
 
