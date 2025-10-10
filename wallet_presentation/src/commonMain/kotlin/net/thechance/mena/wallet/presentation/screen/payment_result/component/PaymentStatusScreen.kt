@@ -1,4 +1,4 @@
-package net.thechance.mena.wallet.presentation.screen.payment_result
+package net.thechance.mena.wallet.presentation.screen.payment_result.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
