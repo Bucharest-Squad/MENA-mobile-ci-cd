@@ -1,4 +1,4 @@
-package net.thechance.mena.wallet.presentation.screen.payment_confirmation
+package net.thechance.mena.wallet.presentation.screen.payment_result
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -37,7 +37,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun PaymentConfirmationStatusScreen(
+fun PaymentStatusScreen(
     image: Painter = painterResource(Res.drawable.transaction_failed),
     appBarTitle: String = "",
     title: String = stringResource(Res.string.transaction_failed),
@@ -64,79 +64,122 @@ fun PaymentConfirmationStatusScreen(
                     onLeadingClick = onBackClicked
                 )
             }
-
-        },
-
-        ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.Center)
-                    .padding(bottom = 150.dp)
-                    .background(
-                        color = Theme.colorScheme.background.surfaceLow,
-                        shape = RoundedCornerShape(Theme.radius.lg)
-                    )
-                    .padding(vertical = 24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Icon(
-                    painter = image,
-                    contentDescription = title
-                )
-                Text(
-                    text = title,
-                    color = Theme.colorScheme.shadePrimary,
-                    style = Theme.typography.title.small,
-                )
-                Text(
-                    text = description,
-                    color = Theme.colorScheme.shadeSecondary,
-                    style = Theme.typography.label.extraSmall,
-                    modifier = Modifier
-                        .padding(top = 8.dp)
-                )
-            }
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomCenter)
-            ) {
-                PrimaryButton(
-                    text = primaryButtonText,
-                    onClick = onPrimaryButtonClick,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 8.dp),
-                    contentPadding = PaddingValues(vertical = 13.dp)
-                )
-
-                OutlinedButton(
-                    text = stringResource(Res.string.close),
-                    onClick = onOutlinedButtonClicked,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 6.dp, bottom = 12.dp),
-                    contentPadding = PaddingValues(vertical = 13.dp),
-                )
-            }
         }
-
+    ) {
+        PaymentStatusContent(
+            image = image,
+            title = title,
+            description = description,
+            primaryButtonText = primaryButtonText,
+            onPrimaryButtonClick = onPrimaryButtonClick,
+            onOutlinedButtonClicked = onOutlinedButtonClicked
+        )
     }
+}
 
+@Composable
+private fun PaymentStatusContent(
+    image: Painter,
+    title: String,
+    description: String,
+    primaryButtonText: String,
+    onPrimaryButtonClick: () -> Unit,
+    onOutlinedButtonClicked: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        PaymentResultCard(
+            image = image,
+            title = title,
+            description = description,
+            modifier = Modifier.align(Alignment.Center)
+        )
+
+        PaymentStatusButtons(
+            primaryButtonText = primaryButtonText,
+            onPrimaryButtonClick = onPrimaryButtonClick,
+            onOutlinedButtonClicked = onOutlinedButtonClicked,
+            modifier = Modifier.align(Alignment.BottomCenter)
+        )
+    }
+}
+
+@Composable
+fun PaymentStatusButtons(
+    primaryButtonText: String,
+    onPrimaryButtonClick: () -> Unit,
+    onOutlinedButtonClicked: () -> Unit,
+    modifier: Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+    ) {
+        PrimaryButton(
+            text = primaryButtonText,
+            onClick = onPrimaryButtonClick,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp),
+            contentPadding = PaddingValues(vertical = 13.dp)
+        )
+
+        OutlinedButton(
+            text = stringResource(Res.string.close),
+            onClick = onOutlinedButtonClicked,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 6.dp, bottom = 12.dp),
+            contentPadding = PaddingValues(vertical = 13.dp),
+        )
+    }
+}
+
+@Composable
+private fun PaymentResultCard(
+    image: Painter,
+    title: String,
+    description: String,
+    modifier: Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(bottom = 150.dp)
+            .background(
+                color = Theme.colorScheme.background.surfaceLow,
+                shape = RoundedCornerShape(Theme.radius.lg)
+            )
+            .padding(vertical = 24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Icon(
+            painter = image,
+            contentDescription = title
+        )
+        Text(
+            text = title,
+            color = Theme.colorScheme.shadePrimary,
+            style = Theme.typography.title.small,
+        )
+        Text(
+            text = description,
+            color = Theme.colorScheme.shadeSecondary,
+            style = Theme.typography.label.extraSmall,
+            modifier = Modifier
+                .padding(top = 8.dp)
+        )
+    }
 }
 
 @Composable
 @Preview
 private fun PaymentConfirmationStatusLostConnectionScreenPreview() {
     MenaTheme {
-        PaymentConfirmationStatusScreen()
+        PaymentStatusScreen()
     }
 }
 
@@ -144,16 +187,17 @@ private fun PaymentConfirmationStatusLostConnectionScreenPreview() {
 @Preview
 private fun PaymentConfirmationStatusUnknownErrorScreenPreview() {
     MenaTheme {
-        PaymentConfirmationStatusScreen(
+        PaymentStatusScreen(
             description = stringResource(Res.string.payment_failed_description)
         )
     }
 }
+
 @Composable
 @Preview
 private fun PaymentConfirmationStatusSuccessfulScreenPreview() {
     MenaTheme {
-        PaymentConfirmationStatusScreen(
+        PaymentStatusScreen(
             hasAppBar = false,
             image = painterResource(Res.drawable.transaction_success),
             primaryButtonText = stringResource(Res.string.show_transaction_details),
