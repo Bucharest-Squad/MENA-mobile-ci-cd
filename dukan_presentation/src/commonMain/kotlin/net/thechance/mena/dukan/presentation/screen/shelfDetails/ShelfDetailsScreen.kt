@@ -17,6 +17,10 @@ import net.thechance.mena.dukan.presentation.navigation.LocalNavController
 import net.thechance.mena.dukan.presentation.screen.dukanDetails.components.ManageShelfProducts
 import net.thechance.mena.dukan.presentation.util.OnSystemBackPressed
 import net.thechance.mena.dukan.presentation.util.pagination.Pager
+import net.thechance.mena.dukan.presentation.util.pagination.PagingConfig
+import net.thechance.mena.dukan.presentation.util.pagination.PagingSource
+import net.thechance.mena.dukan.presentation.util.pagination.PagingSource.LoadParams
+import net.thechance.mena.dukan.presentation.util.pagination.PagingSource.LoadResult
 import net.thechance.mena.dukan.presentation.util.stubPreviews.PreviewDukanDetailsInteractionListener
 import net.thechance.mena.dukan.presentation.viewModel.dukanDetails.DukanDetailsEffects
 import net.thechance.mena.dukan.presentation.viewModel.dukanDetails.DukanDetailsInteractionListener
@@ -94,7 +98,6 @@ private fun ShelfDetailsContent(
         ManageShelfProducts(
             state = state,
             pager = pager,
-            onCartClick = {}
         )
     }
 
@@ -108,7 +111,16 @@ private fun ShelfDetailsPreview() {
             shelfName = "Skirt",
             state = DukanDetailsUiState(),
             listener = PreviewDukanDetailsInteractionListener,
-            pager = PreviewDukanDetailsInteractionListener.pager
+            pager = Pager(
+                config = PagingConfig(),
+                pagingSourceFactory = {
+                    object : PagingSource<Int, DukanDetailsUiState.ProductUiState>() {
+                        override suspend fun load(params: LoadParams<Int>): LoadResult<Int, DukanDetailsUiState.ProductUiState> {
+                            return LoadResult.Page(emptyList(), null, null)
+                        }
+                    }
+                }
+            )
         )
     }
 }

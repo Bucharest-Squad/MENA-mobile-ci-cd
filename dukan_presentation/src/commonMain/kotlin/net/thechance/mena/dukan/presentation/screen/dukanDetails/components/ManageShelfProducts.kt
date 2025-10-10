@@ -21,7 +21,6 @@ import net.thechance.mena.dukan.presentation.viewModel.dukanDetails.DukanDetails
 fun ManageShelfProducts(
     state: DukanDetailsUiState,
     pager: Pager<Int, DukanDetailsUiState.ProductUiState>,
-    onCartClick: (DukanDetailsUiState.ProductUiState) -> Unit
 ) {
     AnimatedContent(
         targetState = state.productsState,
@@ -50,7 +49,6 @@ fun ManageShelfProducts(
 
 //            DukanDetailsUiState.ProductsState.LOADED -> ProductsList(
 //                products = state,
-//                onCartClick = onCartClick,
 //                pager = pager
 //            )
 
