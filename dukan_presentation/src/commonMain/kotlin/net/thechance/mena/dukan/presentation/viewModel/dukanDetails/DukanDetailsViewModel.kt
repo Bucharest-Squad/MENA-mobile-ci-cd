@@ -2,6 +2,9 @@ package net.thechance.mena.dukan.presentation.viewModel.dukanDetails
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 import net.thechance.mena.dukan.domain.entity.DukanDetails
 import net.thechance.mena.dukan.domain.repository.DukanRepository
@@ -17,8 +20,12 @@ class DukanDetailsViewModel(
     private val dukanRepository: DukanRepository,
     private val shelfRepository: ShelfRepository,
     private val productRepository: ProductRepository,
+    defaultDispatcher: CoroutineDispatcher = Dispatchers.IO,
     savedStateHandle: SavedStateHandle,
-) : BaseViewModel<DukanDetailsUiState, DukanDetailsEffects>(DukanDetailsUiState()),
+) : BaseViewModel<DukanDetailsUiState, DukanDetailsEffects>(
+    DukanDetailsUiState(),
+    defaultDispatcher = defaultDispatcher
+),
     DukanDetailsInteractionListener {
     val dukanId: String = requireNotNull(savedStateHandle[DukanDetailsArgs.DUKAN_ID])
 
@@ -102,11 +109,14 @@ class DukanDetailsViewModel(
         emitEffect(DukanDetailsEffects.NavigateBack)
     }
 
-    override fun onShelfClicked(id: String): Pager<Int, DukanDetailsUiState.ProductUiState> {
+    override fun onShelfClicked(id: String) {
         updateState {
             copy(shelfIdSelected = id)
         }
-        return getProductsPager(id)
+        val pagerProduct = getProductsPager(id)
+        viewModelScope.launch {
+            pagerProduct.load()
+        }
     }
 
 
@@ -118,7 +128,7 @@ class DukanDetailsViewModel(
         emitEffect(DukanDetailsEffects.NavigateToViewDukanOnMap(latitude, longitude))
     }
 
-    override fun productsShelfView(id: String): Pager<Int, DukanDetailsUiState.ProductUiState> {
+    fun productsShelfView(id: String): Pager<Int, DukanDetailsUiState.ProductUiState> {
         return getProductsPager(id)
     }
 
