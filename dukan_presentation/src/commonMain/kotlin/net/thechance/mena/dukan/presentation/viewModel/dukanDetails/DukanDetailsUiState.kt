@@ -6,7 +6,7 @@ data class DukanDetailsUiState(
     val dukanInfo: DukanInfo = DukanInfo(),
     val isDukanInfoLoading: Boolean = true,
     val errorMessage: String? = null,
-    val bestSellingProducts: List<ProductUiState> = emptyList(),
+    val bestSellingProducts: PagingData<ProductUiState> = PagingData(),
     val shelves: PagingData<ShelfUiState> = PagingData(),
     val shelvesState: ShelvesState = ShelvesState.LOADING,
     val shelfIdSelected: String = ""
