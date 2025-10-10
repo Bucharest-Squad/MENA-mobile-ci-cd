@@ -152,19 +152,19 @@ private fun TilawahFeatureCards(
 ) {
     val featureCards = listOf(
         FeatureItem(
-            stringResource(Res.string.quran_kareem),
-            painterResource(Res.drawable.ic_quran),
-            onQuranClick
+            title = stringResource(Res.string.quran_kareem),
+            icon = painterResource(Res.drawable.ic_quran),
+            onClick = onQuranClick
         ),
         FeatureItem(
-            stringResource(Res.string.qiblah_direction),
-            painterResource(Res.drawable.ic_kaaba),
-            onQiblahClick
+            title = stringResource(Res.string.qiblah_direction),
+            icon = painterResource(Res.drawable.ic_kaaba),
+            onClick = onQiblahClick
         ),
         FeatureItem(
-            stringResource(Res.string.nearby_mosques),
-            painterResource(Res.drawable.ic_mosque),
-            onMosquesClick
+            title = stringResource(Res.string.nearby_mosques),
+            icon = painterResource(Res.drawable.ic_mosque),
+            onClick = onMosquesClick
         )
     )
 

@@ -32,6 +32,7 @@ import mena.faith_presentation.generated.resources.am_label
 import mena.faith_presentation.generated.resources.ic_column_mosque
 import mena.faith_presentation.generated.resources.ic_mosque_bg
 import mena.faith_presentation.generated.resources.ic_triangle_down
+import mena.faith_presentation.generated.resources.mosque_image_description
 import mena.faith_presentation.generated.resources.pm_label
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.text.Text
@@ -57,7 +58,7 @@ fun PrayerTimesCard(
 
         Image(
             painter = painterResource(Res.drawable.ic_mosque_bg),
-            contentDescription = null,
+            contentDescription =  stringResource(Res.string.mosque_image_description),
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .fillMaxWidth(0.35f)
@@ -68,7 +69,7 @@ fun PrayerTimesCard(
 
         Image(
             painter = painterResource(Res.drawable.ic_column_mosque),
-            contentDescription = null,
+            contentDescription =  stringResource(Res.string.mosque_image_description),
             modifier = Modifier
                 .align(Alignment.CenterStart)
                 .fillMaxHeight()
