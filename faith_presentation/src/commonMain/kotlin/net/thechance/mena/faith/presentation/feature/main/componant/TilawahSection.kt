@@ -32,10 +32,12 @@ import mena.faith_presentation.generated.resources.ic_kaaba
 import mena.faith_presentation.generated.resources.ic_mosque
 import mena.faith_presentation.generated.resources.ic_quran
 import mena.faith_presentation.generated.resources.ic_quran_play
+import mena.faith_presentation.generated.resources.mosque_image_description
 import mena.faith_presentation.generated.resources.navigate_next
 import mena.faith_presentation.generated.resources.nearby_mosques
 import mena.faith_presentation.generated.resources.qiblah_direction
 import mena.faith_presentation.generated.resources.quran_kareem
+import mena.faith_presentation.generated.resources.surah_al_fatiha
 import mena.faith_presentation.generated.resources.tilawah
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.text.Text
@@ -56,7 +58,8 @@ fun TilawahSection(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = Theme.spacing._16)
+            .padding(horizontal = Theme.spacing._16),
+        verticalArrangement = Arrangement.spacedBy(Theme.spacing._12)
     ) {
         TilawahHeader(tilawahUiState, onContinueTilawahClick)
 
@@ -86,11 +89,11 @@ private fun TilawahHeader(
             .clip(RoundedCornerShape(Theme.radius.md))
             .clickable { onContinueTilawahClick() }
             .background(Theme.colorScheme.background.surfaceLow)
-            .padding(Theme.spacing._8)
+
     ) {
         Row(
             modifier = Modifier.fillMaxWidth()
-                .padding(bottom =  Theme.spacing._16),
+                .padding( Theme.spacing._8),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
@@ -112,7 +115,8 @@ private fun TilawahHeader(
                 verticalArrangement = Arrangement.spacedBy(Theme.spacing._4)
             ) {
                 Text(
-                    text = tilawahUiState?.surahName ?: "Al-Fatiha",
+                    text = tilawahUiState?.surahName ?: stringResource(Res.string.surah_al_fatiha)
+                    ,
                     style = Theme.typography.label.medium,
                     color = Theme.colorScheme.shadePrimary
                 )
@@ -203,7 +207,7 @@ private fun SmallFeatureCard(
     ) {
         Image(
             painter = painterResource(Res.drawable.ic_column_mosque),
-            contentDescription = null,
+            stringResource(Res.string.mosque_image_description),
             modifier = Modifier
                 .align(Alignment.CenterEnd)
                 .fillMaxHeight()
@@ -227,7 +231,7 @@ private fun SmallFeatureCard(
             ) {
                 Icon(
                     painter = icon,
-                    contentDescription = null,
+                    contentDescription = title,
                     tint = Theme.colorScheme.primary.primary,
                     modifier = Modifier.size(28.dp)
                         .padding(bottom = Theme.spacing._4)

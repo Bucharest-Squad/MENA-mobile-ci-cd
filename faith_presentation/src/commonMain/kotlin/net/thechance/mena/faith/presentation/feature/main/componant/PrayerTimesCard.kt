@@ -116,8 +116,8 @@ fun PrayerTimesCard(
         }
 
         val offsetAdjustment = when {
-            rowWidth > 1500f -> 42.dp
-            else -> 10.dp
+            rowWidth > 1500f -> 38.dp
+            else -> 8.dp
         }
 
         val itemWidth = if (prayerTimesUiState.prayers.isNotEmpty()) {

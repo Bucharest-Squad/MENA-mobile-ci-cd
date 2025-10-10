@@ -3,6 +3,7 @@ package net.thechance.mena.faith.presentation.feature.main.componant
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -27,25 +28,23 @@ fun SunriseTimeRow(
             .fillMaxWidth()
             .padding(horizontal = Theme.spacing._16, vertical = Theme.spacing._24),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Icon(
-                painter = icon,
-                contentDescription = null,
-                tint = Theme.colorScheme.primary.primary,
-                modifier = Modifier.size(20.dp)
-            )
 
-            Text(
-                text = title,
-                color = Theme.colorScheme.shadePrimary,
-                style = Theme.typography.label.medium
-            )
-        }
+        Icon(
+            painter = icon,
+            contentDescription = null,
+            tint = Theme.colorScheme.primary.primary,
+            modifier = Modifier.size(20.dp)
+                .padding(end = Theme.spacing._8)
+        )
+
+        Text(
+            text = title,
+            color = Theme.colorScheme.shadePrimary,
+            style = Theme.typography.label.medium
+        )
+
+        Spacer(modifier = Modifier.weight(1f))
 
         Text(
             text = time,
