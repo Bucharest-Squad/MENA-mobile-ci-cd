@@ -5,8 +5,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import mena.dukan_presentation.generated.resources.Res
+import mena.dukan_presentation.generated.resources.back_arrow
 import mena.dukan_presentation.generated.resources.ic_arrow_left
 import mena.dukan_presentation.generated.resources.ic_shopping_basket
+import mena.dukan_presentation.generated.resources.shopping_basket_icon
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBarOptionContainer
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
@@ -27,6 +29,7 @@ import net.thechance.mena.dukan.presentation.viewModel.dukanDetails.DukanDetails
 import net.thechance.mena.dukan.presentation.viewModel.dukanDetails.DukanDetailsUiState
 import net.thechance.mena.dukan.presentation.viewModel.dukanDetails.DukanDetailsViewModel
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -73,7 +76,7 @@ private fun ShelfDetailsContent(
                 leadingContent = {
                     Icon(
                         painter = painterResource(Res.drawable.ic_arrow_left),
-                        contentDescription = "ic_back"
+                        contentDescription = stringResource(Res.string.back_arrow)
                     )
                 },
                 onLeadingClick = { listener::onBackClicked },
@@ -88,7 +91,7 @@ private fun ShelfDetailsContent(
                     ) {
                         Icon(
                             painter = painterResource(Res.drawable.ic_shopping_basket),
-                            contentDescription = "cart"
+                            contentDescription = stringResource(Res.string.shopping_basket_icon)
                         )
                     }
                 }

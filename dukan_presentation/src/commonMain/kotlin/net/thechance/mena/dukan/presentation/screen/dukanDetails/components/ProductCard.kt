@@ -32,6 +32,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import mena.dukan_presentation.generated.resources.Res
+import mena.dukan_presentation.generated.resources.add_shopping_basket
 import mena.dukan_presentation.generated.resources.ic_add_shopping_basket
 import mena.dukan_presentation.generated.resources.koin_icon
 import mena.dukan_presentation.generated.resources.product_image
@@ -160,7 +161,7 @@ private fun ProductCart(
     ) {
         Icon(
             painter = painterResource(Res.drawable.ic_add_shopping_basket),
-            contentDescription = "cart",
+            contentDescription = stringResource(Res.string.add_shopping_basket),
             modifier = modifier
                 .size(16.dp)
         )

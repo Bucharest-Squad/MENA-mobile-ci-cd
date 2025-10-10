@@ -78,4 +78,6 @@
     <string name="shopping_basket_icon">shopping basket icon</string>
     <string name="favorite_icon">الأيقونة المفضلة</string>
     <string name="share_icon">أيقونة المشاركة</string>
+    <string name="remove_product">حذف المنتج</string>
+
 </resources>

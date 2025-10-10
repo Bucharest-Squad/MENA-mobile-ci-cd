@@ -12,12 +12,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import mena.dukan_presentation.generated.resources.Res
+import mena.dukan_presentation.generated.resources.add
 import mena.dukan_presentation.generated.resources.add_icon
+import mena.dukan_presentation.generated.resources.add_product
 import mena.dukan_presentation.generated.resources.remove_01
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun SetProductQuantity(
@@ -35,7 +38,7 @@ fun SetProductQuantity(
     ) {
         Icon(
             painter = painterResource(Res.drawable.remove_01),
-            contentDescription = "add product",
+            contentDescription = stringResource(Res.string.remove_product) ,
             tint = Theme.colorScheme.primary.primary,
             modifier = modifier
                 .clip(RoundedCornerShape(size = Theme.radius.full))
@@ -52,7 +55,7 @@ fun SetProductQuantity(
         )
         Icon(
             painter = painterResource(Res.drawable.add_icon),
-            contentDescription = "remove product",
+            contentDescription = stringResource(Res.string.add_product),
             modifier = modifier
                 .clip(RoundedCornerShape(size = Theme.radius.full))
                 .background(
