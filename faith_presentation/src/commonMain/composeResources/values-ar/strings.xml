@@ -85,7 +85,6 @@
     <string name="qiblah_direction">اتجاه القبلة</string>
     <string name="nearby_mosques">المساجد القريبة</string>
     <string name="continue_tilawah">تابع التلاوة</string>
-    <string name="ayah_number_format">آية رقم %1$s</string>
     <string name="fajr">الفجر</string>
     <string name="dhuhr">الظهر</string>
     <string name="asr">العصر</string>
@@ -94,6 +93,7 @@
     <string name="sunrise">الشروق</string>
     <string name="unknown_surah">سورة غير معروفة</string>
     <string name="ayah_number">الآية رقم %1$d</string>
+    <string name="navigate_next">الانتقال للشاشة التالية</string>
 
 
 

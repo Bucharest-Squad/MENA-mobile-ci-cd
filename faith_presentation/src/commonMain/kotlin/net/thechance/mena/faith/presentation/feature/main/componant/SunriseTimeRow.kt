@@ -25,7 +25,7 @@ fun SunriseTimeRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 24.dp),
+            .padding(horizontal = Theme.spacing._16, vertical = Theme.spacing._24),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {

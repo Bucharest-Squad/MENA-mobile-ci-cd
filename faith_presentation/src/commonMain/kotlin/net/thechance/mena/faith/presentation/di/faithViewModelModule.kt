@@ -34,11 +34,6 @@ internal val faithViewModelModule = module {
             repository = get()
         )
     }
-    viewModel  {
-        MainViewModel(
-            quranRepository = get(),
-            prayerTimeRepository = get()
-        )
-    }
+    viewModelOf(::MainViewModel)
 
 }

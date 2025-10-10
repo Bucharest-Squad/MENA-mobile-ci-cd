@@ -1,6 +1,7 @@
 package net.thechance.mena.faith.presentation.feature.main.componant
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -8,11 +9,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -25,6 +24,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import mena.faith_presentation.generated.resources.Res
+import mena.faith_presentation.generated.resources.ayah_number
 import mena.faith_presentation.generated.resources.continue_tilawah
 import mena.faith_presentation.generated.resources.ic_arrow_right
 import mena.faith_presentation.generated.resources.ic_column_mosque
@@ -32,12 +32,12 @@ import mena.faith_presentation.generated.resources.ic_kaaba
 import mena.faith_presentation.generated.resources.ic_mosque
 import mena.faith_presentation.generated.resources.ic_quran
 import mena.faith_presentation.generated.resources.ic_quran_play
+import mena.faith_presentation.generated.resources.navigate_next
 import mena.faith_presentation.generated.resources.nearby_mosques
 import mena.faith_presentation.generated.resources.qiblah_direction
 import mena.faith_presentation.generated.resources.quran_kareem
 import mena.faith_presentation.generated.resources.tilawah
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
-import net.thechance.mena.designsystem.presentation.component.image.Image
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.faith.presentation.feature.main.TilawahUiState
@@ -49,6 +49,99 @@ import org.jetbrains.compose.resources.stringResource
 fun TilawahSection(
     tilawahUiState: TilawahUiState?,
     onContinueTilawahClick: () -> Unit,
+    onQuranClick: () -> Unit,
+    onQiblahClick: () -> Unit,
+    onMosquesClick: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = Theme.spacing._16)
+    ) {
+        TilawahHeader(tilawahUiState, onContinueTilawahClick)
+
+        TilawahFeatureCards(
+            onQuranClick = onQuranClick,
+            onQiblahClick = onQiblahClick,
+            onMosquesClick = onMosquesClick
+        )
+    }
+}
+
+@Composable
+private fun TilawahHeader(
+    tilawahUiState: TilawahUiState?,
+    onContinueTilawahClick: () -> Unit
+) {
+    Text(
+        text = stringResource(Res.string.tilawah),
+        style = Theme.typography.title.medium,
+        color = Theme.colorScheme.shadePrimary,
+        modifier = Modifier.padding(bottom = Theme.spacing._8)
+    )
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(Theme.radius.md))
+            .clickable { onContinueTilawahClick() }
+            .background(Theme.colorScheme.background.surfaceLow)
+            .padding(Theme.spacing._8)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth()
+                .padding(bottom =  Theme.spacing._16),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(RoundedCornerShape(Theme.radius.md))
+                    .background(Theme.colorScheme.background.surfaceHigh),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    painter = painterResource(Res.drawable.ic_quran_play),
+                    contentDescription = stringResource(Res.string.quran_kareem),
+                    tint = Theme.colorScheme.primary.primary,
+                    modifier = Modifier.size(22.dp)
+                )
+            }
+            Column(
+                modifier = Modifier.padding(start = Theme.spacing._8),
+                verticalArrangement = Arrangement.spacedBy(Theme.spacing._4)
+            ) {
+                Text(
+                    text = tilawahUiState?.surahName ?: "Al-Fatiha",
+                    style = Theme.typography.label.medium,
+                    color = Theme.colorScheme.shadePrimary
+                )
+                Text(
+                    text = tilawahUiState?.ayahNumber ?: stringResource(Res.string.ayah_number),
+                    style = Theme.typography.label.small,
+                    color = Theme.colorScheme.shadeSecondary
+                )
+            }
+            Spacer(modifier = Modifier.weight(1f))
+
+            Text(
+                text = stringResource(Res.string.continue_tilawah),
+                style = Theme.typography.label.medium,
+                color = Theme.colorScheme.primary.primary,
+
+                )
+            Icon(
+                painter = painterResource(Res.drawable.ic_arrow_right),
+                contentDescription = stringResource(Res.string.navigate_next),
+                tint = Theme.colorScheme.primary.primary,
+                modifier = Modifier.size(18.dp)
+            )
+        }
+    }
+}
+
+@Composable
+private fun TilawahFeatureCards(
     onQuranClick: () -> Unit,
     onQiblahClick: () -> Unit,
     onMosquesClick: () -> Unit
@@ -71,105 +164,28 @@ fun TilawahSection(
         )
     )
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-    ) {
-        Text(
-            text = stringResource(Res.string.tilawah),
-            style = Theme.typography.title.medium,
-            color = Theme.colorScheme.shadePrimary
-        )
-
-        Spacer(modifier = Modifier.height(14.dp))
-
-        Box(
+    featureCards.chunked(2).forEach { rowCards ->
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(Theme.radius.md))
-                .clickable { onContinueTilawahClick() }
-                .background(Theme.colorScheme.background.surfaceLow)
-                .padding(8.dp)
+                .padding(bottom = Theme.spacing._8),
+            horizontalArrangement = Arrangement.spacedBy(Theme.spacing._8)
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clip(RoundedCornerShape(Theme.radius.md))
-                            .background(Theme.colorScheme.background.surfaceHigh),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            painter = painterResource(Res.drawable.ic_quran_play),
-                            contentDescription = null,
-                            tint = Theme.colorScheme.primary.primary,
-                            modifier = Modifier.size(22.dp)
-                        )
-                    }
-                    Column(
-                        modifier = Modifier.padding(start = 8.dp),
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        Text(
-                            text = "Al Baqraa",
-                            style = Theme.typography.label.medium,
-                            color = Theme.colorScheme.shadePrimary
-                        )
-                        Text(
-                            text = "Aya No 178",
-                            style = Theme.typography.label.small,
-                            color = Theme.colorScheme.shadeSecondary
-                        )
-                    }
-                }
-
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = stringResource(Res.string.continue_tilawah),
-                        style = Theme.typography.label.medium,
-                        color = Theme.colorScheme.primary.primary
-                    )
-                    Icon(
-                        painter = painterResource(Res.drawable.ic_arrow_right),
-                        contentDescription = null,
-                        tint = Theme.colorScheme.primary.primary,
-                        modifier = Modifier.size(18.dp)
-                    )
-                }
+            rowCards.forEach { card ->
+                SmallFeatureCard(
+                    icon = card.icon,
+                    title = card.title,
+                    onClick = card.onClick,
+                    modifier = Modifier.weight(1f)
+                )
             }
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        featureCards.chunked(2).forEach { rowCards ->
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                rowCards.forEach { card ->
-                    SmallFeatureCard(
-                        icon = card.icon,
-                        title = card.title,
-                        onClick = card.onClick,
-                        modifier = Modifier.weight(1f)
-                    )
-                }
-                repeat(2 - rowCards.size) {
-                    Spacer(modifier = Modifier.weight(1f))
-                }
-            }
-            if (rowCards != featureCards.chunked(2).last()) {
-                Spacer(modifier = Modifier.height(8.dp))
+            repeat(2 - rowCards.size) {
+                Spacer(modifier = Modifier.weight(1f))
             }
         }
     }
 }
+
 
 @Composable
 private fun SmallFeatureCard(
@@ -180,7 +196,6 @@ private fun SmallFeatureCard(
 ) {
     Box(
         modifier = modifier
-            .aspectRatio(1.4f)
             .clip(RoundedCornerShape(Theme.radius.md))
             .background(Theme.colorScheme.background.surfaceLow)
             .clickable { onClick() },
@@ -199,7 +214,7 @@ private fun SmallFeatureCard(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(start = 12.dp),
+                .padding(start = Theme.spacing._12),
             verticalArrangement = Arrangement.Center,
         ) {
             Box(
@@ -215,9 +230,9 @@ private fun SmallFeatureCard(
                     contentDescription = null,
                     tint = Theme.colorScheme.primary.primary,
                     modifier = Modifier.size(28.dp)
+                        .padding(bottom = Theme.spacing._4)
                 )
             }
-            Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = title,
                 style = Theme.typography.title.small,

@@ -1,6 +1,7 @@
 package net.thechance.mena.faith.presentation.feature.main.componant
 
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -34,7 +34,6 @@ import mena.faith_presentation.generated.resources.ic_mosque_bg
 import mena.faith_presentation.generated.resources.ic_triangle_down
 import mena.faith_presentation.generated.resources.pm_label
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
-import net.thechance.mena.designsystem.presentation.component.image.Image
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.faith.presentation.feature.main.PrayerTimesUiState
@@ -51,14 +50,10 @@ fun PrayerTimesCard(
 
     Box(
         modifier = Modifier.aspectRatio(2.65f)
+            .padding(bottom = Theme.spacing._8, start = Theme.spacing._16, end = Theme.spacing._16)
+            .clip(RoundedCornerShape(Theme.radius.lg))
+            .background(Theme.colorScheme.background.surfaceLow)
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp)
-                .clip(RoundedCornerShape(Theme.radius.lg))
-                .background(Theme.colorScheme.background.surfaceLow)
-        )
 
         Image(
             painter = painterResource(Res.drawable.ic_mosque_bg),
@@ -77,18 +72,17 @@ fun PrayerTimesCard(
             modifier = Modifier
                 .align(Alignment.CenterStart)
                 .fillMaxHeight()
-                .width(100.dp),
+                .offset(x = (16).dp),
             contentScale = ContentScale.Fit,
         )
 
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
+                .fillMaxSize()
                 .onGloballyPositioned { coordinates ->
                     rowWidth = coordinates.size.width.toFloat()
                 }
-                .padding(horizontal = 16.dp, vertical = 12.dp),
+                .padding(horizontal = Theme.spacing._16, vertical = Theme.spacing._12),
             verticalAlignment = Alignment.Bottom,
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
@@ -99,7 +93,7 @@ fun PrayerTimesCard(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = prayer.displayName,
+                        text = stringResource(prayer.displayName),
                         color = Theme.colorScheme.secondary.secondaryText,
                         style = Theme.typography.label.small
                     )

@@ -107,7 +107,9 @@
     <string name="isha">Isha</string>
     <string name="sunrise">Sunrise</string>
     <string name="unknown_surah">Unknown Surah</string>
-    <string name="ayah_number">Aya No %5$d</string>
+    <string name="ayah_number">Aya No %1$d</string>
+    <string name="navigate_next">Navigate to next screen</string>
+
 
 
 

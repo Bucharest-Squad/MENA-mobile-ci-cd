@@ -2,6 +2,7 @@ package net.thechance.mena.faith.presentation.feature.main
 
 import net.thechance.mena.faith.domain.entity.PrayerName
 import net.thechance.mena.faith.domain.entity.PrayerTime
+import org.jetbrains.compose.resources.StringResource
 
 data class MainScreenState(
     val isLoading: Boolean = false,
@@ -25,7 +26,7 @@ data class TilawahUiState(
 
 data class PrayerUiModel(
     val name: PrayerName,
-    val displayName: String,
+    val displayName: StringResource,
     val time: String,
     val isAM: Boolean
 )
