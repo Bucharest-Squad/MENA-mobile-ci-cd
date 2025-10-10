@@ -52,7 +52,7 @@ fun ProductsHeader(
                 painter = painterResource(Res.drawable.ic_arrow_right),
                 tint = Theme.colorScheme.primary.primary,
                 contentDescription = stringResource(Res.string.arrow_right_icon),
-                modifier = Modifier.size(40.dp)
+                modifier = Modifier.size(16.dp)
             )
         }
 

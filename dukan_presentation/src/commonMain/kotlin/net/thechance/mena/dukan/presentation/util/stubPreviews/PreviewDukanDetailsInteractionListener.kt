@@ -1,6 +1,8 @@
 package net.thechance.mena.dukan.presentation.util.stubPreviews
 
 import net.thechance.mena.dukan.presentation.util.pagination.Pager
+import net.thechance.mena.dukan.presentation.util.pagination.PagingConfig
+import net.thechance.mena.dukan.presentation.util.pagination.PagingSource
 import net.thechance.mena.dukan.presentation.viewModel.dukanDetails.DukanDetailsInteractionListener
 import net.thechance.mena.dukan.presentation.viewModel.dukanDetails.DukanDetailsUiState
 
@@ -9,7 +11,7 @@ object PreviewDukanDetailsInteractionListener : DukanDetailsInteractionListener 
     }
 
     override fun onShelfClicked(id: String): Pager<Int, DukanDetailsUiState.ProductUiState> {
-        TODO("Not yet implemented")
+        return pager
     }
 
     override fun onViewAllShelfProductsClicked(id: String, name: String) {
@@ -19,6 +21,17 @@ object PreviewDukanDetailsInteractionListener : DukanDetailsInteractionListener 
     }
 
     override fun productsShelfView(id: String): Pager<Int, DukanDetailsUiState.ProductUiState> {
-        TODO("Not yet implemented")
+        return pager
     }
+
+    val pager = Pager(
+        config = PagingConfig(),
+        pagingSourceFactory = {
+            object : PagingSource<Int, DukanDetailsUiState.ProductUiState>() {
+                override suspend fun load(params: LoadParams<Int>): LoadResult<Int, DukanDetailsUiState.ProductUiState> {
+                    return LoadResult.Page(emptyList(), null, null)
+                }
+            }
+        },
+    )
 }
