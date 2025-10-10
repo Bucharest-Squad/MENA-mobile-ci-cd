@@ -14,7 +14,7 @@ import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.dukan.presentation.navigation.LocalNavController
-import net.thechance.mena.dukan.presentation.screen.manageDukan.content.ManageDukanProducts
+import net.thechance.mena.dukan.presentation.screen.dukanDetails.components.ManageShelfProducts
 import net.thechance.mena.dukan.presentation.util.OnSystemBackPressed
 import net.thechance.mena.dukan.presentation.util.pagination.Pager
 import net.thechance.mena.dukan.presentation.util.stubPreviews.PreviewDukanDetailsInteractionListener
@@ -22,7 +22,6 @@ import net.thechance.mena.dukan.presentation.viewModel.dukanDetails.DukanDetails
 import net.thechance.mena.dukan.presentation.viewModel.dukanDetails.DukanDetailsInteractionListener
 import net.thechance.mena.dukan.presentation.viewModel.dukanDetails.DukanDetailsUiState
 import net.thechance.mena.dukan.presentation.viewModel.dukanDetails.DukanDetailsViewModel
-import net.thechance.mena.dukan.presentation.viewModel.manageDukan.ManageDukanUiState
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
@@ -48,7 +47,7 @@ fun ShelfDetailsScreen(
         shelfName = shelfName,
         state = state,
         listener = viewModel,
-//        pager = viewModel.nestedProductPagers
+        pager = viewModel.productsShelfView(shelfId)
     )
 
 }
@@ -59,7 +58,7 @@ private fun ShelfDetailsContent(
     shelfName: String,
     state: DukanDetailsUiState,
     listener: DukanDetailsInteractionListener,
-//    pager: Pager<Int, DukanDetailsUiState.ProductUiState>
+    pager: Pager<Int, DukanDetailsUiState.ProductUiState>
 ) {
     OnSystemBackPressed(listener::onBackClicked)
 
@@ -92,11 +91,11 @@ private fun ShelfDetailsContent(
             )
         }
     ) {
-//        ManageDukanProducts(
-//            state = ManageDukanUiState(),
-//            pager = pager,
-//            onProductClick = {}
-//        )
+        ManageShelfProducts(
+            state = state,
+            pager = pager,
+            onCartClick = {}
+        )
     }
 
 }
@@ -109,6 +108,7 @@ private fun ShelfDetailsPreview() {
             shelfName = "Skirt",
             state = DukanDetailsUiState(),
             listener = PreviewDukanDetailsInteractionListener,
+            pager = PreviewDukanDetailsInteractionListener.pager
         )
     }
 }

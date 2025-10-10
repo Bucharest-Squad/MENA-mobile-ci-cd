@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.dukan.presentation.component.productCard.LoadingProductCard
 import net.thechance.mena.dukan.presentation.util.pagination.Pager
-import net.thechance.mena.dukan.presentation.viewModel.dukanDetails.DukanDetailsInteractionListener
 import net.thechance.mena.dukan.presentation.viewModel.dukanDetails.DukanDetailsUiState
 
 @Composable
