@@ -47,12 +47,12 @@ class ShelfRepositoryImpl(
 
     override suspend fun getShelvesByDukanId(
         dukanId: String,
-        page: Int,
+        pageNumber: Int,
         pageSize: Int
     ): PagedResult<Shelf> {
         return safeApiCall<PageResponseDto<ShelfDto>> {
             client.get("$BASE_URL/shelf/$dukanId") {
-                parameter("page", page)
+                parameter("page", pageNumber)
                 parameter("size", pageSize)
             }
         }.toDomain(mapper = ShelfDto::toShelf)

@@ -9,7 +9,7 @@ interface ShelfRepository {
     suspend fun deleteShelf(shelfId: String)
     suspend fun getShelvesByDukanId(
         dukanId: String,
-        page: Int,
+        pageNumber: Int,
         pageSize: Int
     ):PagedResult<Shelf>
 }
