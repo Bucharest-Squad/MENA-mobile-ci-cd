@@ -112,13 +112,13 @@ private fun Content(
             item { PrayerTimesCard(prayerTimesUiState = uiState.prayerTimesUiState) }
 
             item {
-                if (uiState.hijriDate.isNotEmpty()) {
-                    Text(
-                        text = uiState.hijriDate,
-                        color = Theme.colorScheme.shadeSecondary,
-                        style = Theme.typography.label.extraSmall
-                    )
-                }
+
+                Text(
+                    text = uiState.hijriDate,
+                    color = Theme.colorScheme.shadeSecondary,
+                    style = Theme.typography.label.extraSmall
+                )
+
             }
 
             item {
