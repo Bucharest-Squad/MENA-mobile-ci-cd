@@ -12,10 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import mena.dukan_presentation.generated.resources.Res
-import mena.dukan_presentation.generated.resources.add
 import mena.dukan_presentation.generated.resources.add_icon
 import mena.dukan_presentation.generated.resources.add_product
 import mena.dukan_presentation.generated.resources.remove_01
+import mena.dukan_presentation.generated.resources.remove_product
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
