@@ -91,9 +91,10 @@
     <string name="maghrib">المغرب</string>
     <string name="isha">العشاء</string>
     <string name="sunrise">الشروق</string>
-    <string name="unknown_surah">سورة غير معروفة</string>
     <string name="ayah_number">الآية رقم %1$d</string>
     <string name="navigate_next">الانتقال للشاشة التالية</string>
+    <string name="surah_al_fatiha">الفاتحة</string>
+    <string name="mosque_image_description">أيقونة المسجد</string>
 
 
 

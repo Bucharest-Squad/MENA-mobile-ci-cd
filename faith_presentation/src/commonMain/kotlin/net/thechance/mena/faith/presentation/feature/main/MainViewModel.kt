@@ -25,6 +25,10 @@ class MainViewModel(
 ), MainInteractionListener {
 
     init {
+        initializeScreenData()
+    }
+
+    private fun initializeScreenData() {
         loadPrayerTimes()
         loadLastAyahForTilawah()
     }
@@ -68,11 +72,15 @@ class MainViewModel(
     }
 
     private fun onGetLastAyahForTilawahSuccess(ayah: Ayah) {
-        updateState { currentState ->
-            currentState.copy(
-                tilawahUiState = ayah.toTilawahUiState()
-            )
-        }
+        tryToExecute(
+            execute = { ayah.toTilawahUiState() },
+            onSuccess = { tilawahState ->
+                updateState { currentState ->
+                    currentState.copy(tilawahUiState = tilawahState)
+                }
+            },
+            dispatcher = dispatcher
+        )
     }
 
     override fun onContinueTilawahClick(surahId: Int, surahName: String) =

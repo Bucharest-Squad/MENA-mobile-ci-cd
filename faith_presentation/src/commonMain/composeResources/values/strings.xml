@@ -109,6 +109,8 @@
     <string name="unknown_surah">Unknown Surah</string>
     <string name="ayah_number">Aya No %1$d</string>
     <string name="navigate_next">Navigate to next screen</string>
+    <string name="surah_al_fatiha">Al-Fatiha</string>
+    <string name="mosque_image_description">Mosque icon</string>
 
 
 

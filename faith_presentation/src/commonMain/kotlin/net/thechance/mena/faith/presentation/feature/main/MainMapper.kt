@@ -4,16 +4,19 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import mena.faith_presentation.generated.resources.Res
 import mena.faith_presentation.generated.resources.asr
+import mena.faith_presentation.generated.resources.ayah_number
 import mena.faith_presentation.generated.resources.dhuhr
 import mena.faith_presentation.generated.resources.fajr
 import mena.faith_presentation.generated.resources.isha
 import mena.faith_presentation.generated.resources.maghrib
 import mena.faith_presentation.generated.resources.sunrise
+import mena.faith_presentation.generated.resources.surah_al_fatiha
 import net.thechance.mena.faith.domain.entity.Ayah
 import net.thechance.mena.faith.domain.entity.PrayerName
 import net.thechance.mena.faith.domain.entity.PrayerTime
 import net.thechance.mena.faith.domain.entity.Surah
 import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.getString
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
@@ -103,17 +106,18 @@ object MainMapper {
         return prayerTimes.firstOrNull()?.hijriDate ?: ""
     }
 
-    fun Ayah.toTilawahUiState(): TilawahUiState {
+
+    suspend fun Ayah.toTilawahUiState(): TilawahUiState {
         val surahName = Surah.SurahOrder.entries
             .find { it.order == this.surahId }
-            ?.name ?: "Unknown Surah"
-
+            ?.name ?: getString(Res.string.surah_al_fatiha)
+        val ayahLabel = getString(Res.string.ayah_number, number)
         return TilawahUiState(
             surahName = surahName,
-            ayahNumber = "Aya No $number",
+            ayahNumber = ayahLabel,
             surahId = this.surahId
-
         )
     }
+
 }
 
