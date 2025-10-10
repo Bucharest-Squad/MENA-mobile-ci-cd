@@ -12,12 +12,13 @@ import androidx.compose.ui.Modifier
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.dukan.presentation.util.pagination.LoadMoreOnScroll
 import net.thechance.mena.dukan.presentation.util.pagination.Pager
+import net.thechance.mena.dukan.presentation.util.pagination.PagingData
 import net.thechance.mena.dukan.presentation.viewModel.dukanDetails.DukanDetailsUiState
 
 
 @Composable
 fun ProductsList(
-    products: List<DukanDetailsUiState.ProductUiState>,
+    products: PagingData<DukanDetailsUiState.ProductUiState>,
     pager: Pager<Int, DukanDetailsUiState.ProductUiState>,
     modifier: Modifier = Modifier,
 ) {
@@ -35,7 +36,7 @@ fun ProductsList(
         ),
         state = lazyListState
     ) {
-        items(products) { product ->
+        items(products.items) { product ->
             ProductCard(
                 modifier = Modifier,
                 productUiState = product,

@@ -47,10 +47,10 @@ fun ManageShelfProducts(
                 }
             }
 
-//            DukanDetailsUiState.ProductsState.LOADED -> ProductsList(
-//                products = state,
-//                pager = pager
-//            )
+            DukanDetailsUiState.ProductsState.LOADED -> ProductsList(
+                products = state.productsShelf,
+                pager = pager
+            )
 
             else -> {}
         }
