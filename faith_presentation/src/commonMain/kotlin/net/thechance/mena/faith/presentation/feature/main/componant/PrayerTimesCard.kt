@@ -51,14 +51,13 @@ fun PrayerTimesCard(
 
     Box(
         modifier = Modifier.aspectRatio(2.65f)
-            .padding(bottom = Theme.spacing._8, start = Theme.spacing._16, end = Theme.spacing._16)
             .clip(RoundedCornerShape(Theme.radius.lg))
             .background(Theme.colorScheme.background.surfaceLow)
     ) {
 
         Image(
             painter = painterResource(Res.drawable.ic_mosque_bg),
-            contentDescription =  stringResource(Res.string.mosque_image_description),
+            contentDescription = stringResource(Res.string.mosque_image_description),
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .fillMaxWidth(0.35f)
@@ -69,7 +68,7 @@ fun PrayerTimesCard(
 
         Image(
             painter = painterResource(Res.drawable.ic_column_mosque),
-            contentDescription =  stringResource(Res.string.mosque_image_description),
+            contentDescription = stringResource(Res.string.mosque_image_description),
             modifier = Modifier
                 .align(Alignment.CenterStart)
                 .fillMaxHeight()
