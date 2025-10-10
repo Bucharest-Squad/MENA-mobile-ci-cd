@@ -1,4 +1,4 @@
-package net.thechance.mena.dukan.presentation.screen.dukanDetails.component
+package net.thechance.mena.dukan.presentation.screen.dukanDetails.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
