@@ -43,20 +43,6 @@ class ConfirmPaymentViewModel(
         )
     }
 
-    private fun onGetPaymentConfirmationSuccess(paymentConfirmation: PaymentConfirmation){
-        updateState {
-            it.copy(isLoading = false, paymentUiState = paymentConfirmation.toUi(amount))
-        }
-    }
-
-    private fun onGetPaymentConfirmationError(errorState: ErrorState){
-        updateState { it.copy(isLoading = false, errorState = errorState) }
-    }
-
-    private fun onGetPaymentConfirmationStart(){
-        updateState { it.copy(isLoading = true) }
-    }
-
     override fun onBackButtonClicked() {
         sendEffect(ConfirmPaymentEffect.NavigateBack)
     }
@@ -69,5 +55,19 @@ class ConfirmPaymentViewModel(
     override fun onRefresh() {
         updateState { it.copy(isLoading = true, errorState = null) }
         getPaymentConfirmation()
+    }
+
+    private fun onGetPaymentConfirmationSuccess(paymentConfirmation: PaymentConfirmation){
+        updateState {
+            it.copy(isLoading = false, paymentUiState = paymentConfirmation.toUi(amount))
+        }
+    }
+
+    private fun onGetPaymentConfirmationError(errorState: ErrorState){
+        updateState { it.copy(isLoading = false, errorState = errorState) }
+    }
+
+    private fun onGetPaymentConfirmationStart(){
+        updateState { it.copy(isLoading = true) }
     }
 }

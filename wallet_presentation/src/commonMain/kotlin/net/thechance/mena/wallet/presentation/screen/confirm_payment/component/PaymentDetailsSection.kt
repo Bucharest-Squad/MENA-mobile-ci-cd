@@ -19,8 +19,6 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import mena.wallet_presentation.generated.resources.Res
 import mena.wallet_presentation.generated.resources.You_are_about_to_pay
-import mena.wallet_presentation.generated.resources.confirm_payment_content_failed
-import mena.wallet_presentation.generated.resources.confirm_payment_content_success
 import mena.wallet_presentation.generated.resources.img_silver
 import mena.wallet_presentation.generated.resources.silver_coin
 import mena.wallet_presentation.generated.resources.to
@@ -53,7 +51,9 @@ internal fun PaymentDetailsSection(
         )
 
         Text(
-            modifier = Modifier.padding(top = Theme.spacing._16).fillMaxWidth(),
+            modifier = Modifier
+                .padding(top = Theme.spacing._16)
+                .fillMaxWidth(),
             text = GetUserMessage(
                 paymentStatus = paymentUiState.status,
                 balance = paymentUiState.balance
@@ -102,7 +102,9 @@ private fun PaymentAmount(
     modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = modifier.padding(top = Theme.spacing._8).fillMaxWidth(),
+        modifier = modifier
+            .padding(top = Theme.spacing._8)
+            .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
@@ -128,7 +130,9 @@ private fun ReceiverInfo(
     receiverImage: String?,
 ) {
     Row(
-        modifier = modifier.padding(top = Theme.spacing._24).fillMaxWidth(),
+        modifier = modifier
+            .padding(top = Theme.spacing._24)
+            .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {

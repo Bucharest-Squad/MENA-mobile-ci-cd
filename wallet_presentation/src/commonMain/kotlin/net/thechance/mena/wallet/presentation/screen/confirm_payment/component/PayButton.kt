@@ -31,7 +31,9 @@ fun PayButton(
     modifier: Modifier = Modifier
 ) {
     Button(
-        modifier = modifier.fillMaxWidth().heightIn(min = 48.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .heightIn(min = 48.dp),
         isLoading = isPayBtnLoading,
         isEnabled = isEnabled,
         containerColor = Theme.colorScheme.primary.primary,
