@@ -4,12 +4,16 @@ import net.thechance.mena.faith.data.database.AyahDao
 import net.thechance.mena.faith.data.database.AyahDto
 import net.thechance.mena.faith.data.mapper.toAyah
 import net.thechance.mena.faith.data.mapper.toSurah
+import net.thechance.mena.faith.data.utils.SearchAlgorithm
 import net.thechance.mena.faith.data.utils.executeLocalSafely
 import net.thechance.mena.faith.domain.entity.Ayah
 import net.thechance.mena.faith.domain.entity.Surah
 import net.thechance.mena.faith.domain.repository.QuranRepository
 
-class QuranRepositoryImpl(val ayahDao: AyahDao) : QuranRepository {
+class QuranRepositoryImpl(
+    val ayahDao: AyahDao,
+    val searchAlgorithm: SearchAlgorithm,
+) : QuranRepository {
 
     override suspend fun getAllSur(): List<Surah> =
         executeLocalSafely {
@@ -32,14 +36,14 @@ class QuranRepositoryImpl(val ayahDao: AyahDao) : QuranRepository {
 
     override suspend fun searchForAyahInSurah(
         surahId: Int,
-        query: String
+        query: String,
     ): List<Ayah> =
         executeLocalSafely {
-            ayahDao.searchForAyahInSurah(surahId, query).map(AyahDto::toAyah)
-        }
+            ayahDao.getAyatOfSurah(surahId).map(AyahDto::toAyah)
+        }.filter { searchAlgorithm.isContainsQuery(it.plainContent, query) }
 
     override suspend fun searchForAyahInQuran(query: String): List<Ayah> =
         executeLocalSafely {
-            ayahDao.searchForAyahInQuran(query).map(AyahDto::toAyah)
-        }
+            ayahDao.getAllAyat().map(AyahDto::toAyah)
+        }.filter { searchAlgorithm.isContainsQuery(it.plainContent, query) }
 }

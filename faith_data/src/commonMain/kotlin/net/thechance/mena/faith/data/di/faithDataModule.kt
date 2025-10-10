@@ -9,6 +9,8 @@ import net.thechance.mena.faith.data.remote.service.BookmarkApiService
 import net.thechance.mena.faith.data.remote.service.createBookmarkApiService
 import net.thechance.mena.faith.data.repository.BookmarkRepositoryImpl
 import net.thechance.mena.faith.data.repository.QuranRepositoryImpl
+import net.thechance.mena.faith.data.utils.KnuthMorrisPrattSearchAlgorithm
+import net.thechance.mena.faith.data.utils.SearchAlgorithm
 import net.thechance.mena.faith.domain.repository.BookmarkRepository
 import net.thechance.mena.faith.domain.repository.QuranRepository
 import org.koin.core.module.dsl.singleOf
@@ -37,6 +39,10 @@ val faithDataModule = module {
 
     single<BookmarkApiService> {
         get<Ktorfit>(named("faithKtorfit")).createBookmarkApiService()
+    }
+
+    single<SearchAlgorithm> {
+        KnuthMorrisPrattSearchAlgorithm()
     }
 
     singleOf(::BookmarkRepositoryImpl) bind BookmarkRepository::class
