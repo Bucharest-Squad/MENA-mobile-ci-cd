@@ -50,7 +50,7 @@ fun ShelfDetailsScreen(
         shelfName = shelfName,
         state = state,
         listener = viewModel,
-        pager = viewModel.productsShelfView(shelfId)
+        pager = viewModel.pagerProduct
     )
 
 }
