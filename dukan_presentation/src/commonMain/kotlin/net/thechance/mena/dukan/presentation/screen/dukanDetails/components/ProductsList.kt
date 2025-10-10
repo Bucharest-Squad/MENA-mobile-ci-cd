@@ -20,7 +20,6 @@ fun ProductsList(
     products: List<DukanDetailsUiState.ProductUiState>,
     pager: Pager<Int, DukanDetailsUiState.ProductUiState>,
     modifier: Modifier = Modifier,
-    onCartClick: (DukanDetailsUiState.ProductUiState) -> Unit = {},
 ) {
     val lazyListState = rememberLazyListState()
 
@@ -38,11 +37,8 @@ fun ProductsList(
     ) {
         items(products) { product ->
             ProductCard(
-                modifier = Modifier.animateItem(),
+                modifier = Modifier,
                 productUiState = product,
-                onCartClick = {
-                    onCartClick(product)
-                }
             )
         }
     }
