@@ -37,7 +37,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun PaymentStatus(
+fun PaymentStatusContent(
     image: Painter = painterResource(Res.drawable.transaction_failed),
     title: String = stringResource(Res.string.transaction_failed),
     description: String = stringResource(Res.string.connection_lost_try_again),
@@ -65,7 +65,7 @@ fun PaymentStatus(
             }
         }
     ) {
-        PaymentStatusContent(
+        PaymentStatusBody(
             image = image,
             title = title,
             description = description,
@@ -77,7 +77,7 @@ fun PaymentStatus(
 }
 
 @Composable
-private fun PaymentStatusContent(
+private fun PaymentStatusBody(
     image: Painter,
     title: String,
     description: String,
@@ -178,7 +178,7 @@ private fun PaymentResultCard(
 @Preview
 private fun PaymentConfirmationStatusLostConnectionScreenPreview() {
     MenaTheme {
-        PaymentStatus()
+        PaymentStatusContent()
     }
 }
 
@@ -186,7 +186,7 @@ private fun PaymentConfirmationStatusLostConnectionScreenPreview() {
 @Preview
 private fun PaymentConfirmationStatusUnknownErrorScreenPreview() {
     MenaTheme {
-        PaymentStatus(
+        PaymentStatusContent(
             description = stringResource(Res.string.payment_failed_description)
         )
     }
@@ -196,7 +196,7 @@ private fun PaymentConfirmationStatusUnknownErrorScreenPreview() {
 @Preview
 private fun PaymentConfirmationStatusSuccessfulScreenPreview() {
     MenaTheme {
-        PaymentStatus(
+        PaymentStatusContent(
             hasAppBar = false,
             image = painterResource(Res.drawable.transaction_success),
             primaryButtonText = stringResource(Res.string.show_transaction_details),
