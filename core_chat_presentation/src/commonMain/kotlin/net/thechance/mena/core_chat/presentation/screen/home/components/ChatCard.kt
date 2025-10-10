@@ -33,7 +33,7 @@ import kotlin.uuid.Uuid
 
 @Composable
 fun ChatCard(
-    chats: HomeScreenState.HomeUiState,
+    chat: HomeScreenState.ChatUiState,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -42,36 +42,36 @@ fun ChatCard(
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         CircularAvatar(
-            contactImageUri = chats.imageUrl,
+            contactImageUri = chat.imageUrl,
             size = 48.dp,
             modifier = Modifier.padding(end = Theme.spacing._8)
         )
-        NameAndLastMessage(chats)
-        TimeAndStatus(chats)
+        NameAndLastMessage(chat)
+        TimeAndStatus(chat)
     }
 
 }
 
 @Composable
-private fun TimeAndStatus(chats: HomeScreenState.HomeUiState) {
+private fun TimeAndStatus(chat: HomeScreenState.ChatUiState) {
     Column(
         modifier = Modifier.padding(vertical = Theme.spacing._4),
         horizontalAlignment = Alignment.End,
         verticalArrangement = Arrangement.spacedBy(Theme.spacing._2, Alignment.Top)
     ) {
         Text(
-            text = chats.time,
+            text = chat.lastMessage.time,
             style = Theme.typography.label.small,
             color = Theme.colorScheme.shadeSecondary
         )
-        if (chats.isMine) {
-            if (chats.status is HomeScreenState.HomeUiState.Status.Sent) {
+        if (chat.lastMessage.isMine) {
+            if (chat.status is HomeScreenState.ChatUiState.Status.Sent) {
                 Icon(
                     painter = painterResource(Res.drawable.ic_message_sent),
                     contentDescription = null,
                     tint = Theme.colorScheme.shadeTertiary
                 )
-            } else if (chats.status is HomeScreenState.HomeUiState.Status.Read) {
+            } else if (chat.status is HomeScreenState.ChatUiState.Status.Read) {
                 Icon(
                     painter = painterResource(Res.drawable.ic_message_read),
                     contentDescription = null,
@@ -79,7 +79,7 @@ private fun TimeAndStatus(chats: HomeScreenState.HomeUiState) {
                 )
             }
         } else {
-            if (chats.status is HomeScreenState.HomeUiState.Status.UnRead) {
+            if (chat.status is HomeScreenState.ChatUiState.Status.UnRead) {
                 Box(
                     modifier = Modifier
                         .size(20.dp)
@@ -91,8 +91,8 @@ private fun TimeAndStatus(chats: HomeScreenState.HomeUiState) {
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = chats.status.count.toString(),
-                        style = Theme.typography.label.small,
+                        text = chat.status.count.toString(),
+                        style = Theme.typography.label.extraSmall,
                         color = Theme.colorScheme.primary.onPrimary,
                         textAlign = TextAlign.Center,
                     )
@@ -103,22 +103,22 @@ private fun TimeAndStatus(chats: HomeScreenState.HomeUiState) {
 }
 
 @Composable
-private fun RowScope.NameAndLastMessage(chats: HomeScreenState.HomeUiState) {
+private fun RowScope.NameAndLastMessage(chat: HomeScreenState.ChatUiState) {
     Column(
         modifier = Modifier.padding(vertical = Theme.spacing._4).weight(1f)
             .padding(end = Theme.spacing._4),
         verticalArrangement = Arrangement.spacedBy(Theme.spacing._2)
     ) {
         Text(
-            text = chats.name,
+            text = chat.name,
             style = Theme.typography.label.medium,
             color = Theme.colorScheme.shadePrimary,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
         Text(
-            text = chats.lastMessage,
-            style = Theme.typography.label.small,
+            text = chat.lastMessage.text,
+            style = Theme.typography.label.extraSmall,
             color = Theme.colorScheme.shadeTertiary,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
@@ -132,14 +132,16 @@ private fun RowScope.NameAndLastMessage(chats: HomeScreenState.HomeUiState) {
 private fun ChatCardPreview() {
     MenaTheme {
         ChatCard(
-            chats = HomeScreenState.HomeUiState(
+            chat = HomeScreenState.ChatUiState(
                 id = Uuid.random(),
                 name = "mona",
                 imageUrl = "https://i.ibb.co/DjJLNHm/ef7bf477a8366d411f62a575dc169f0858ca1fec.jpg",
-                lastMessage = "https://i.ibb.co/DjJLNHm/ef7bf477a8366d411f62a575dc169f0858ca1fec.jpg",
-                time = "12:34 AM",
-                status = HomeScreenState.HomeUiState.Status.Read,
-                isMine = true,
+                lastMessage = HomeScreenState.ChatUiState.MessageUiState(
+                    time = "12:33 PM",
+                    isMine = false,
+                    text = "Hi, how are you?",
+                ),
+                status = HomeScreenState.ChatUiState.Status.UnRead(2),
             )
         )
     }
