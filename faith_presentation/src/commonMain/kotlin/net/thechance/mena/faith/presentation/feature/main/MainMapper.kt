@@ -1,123 +1,119 @@
-package net.thechance.mena.faith.presentation.feature.main.mapper
+package net.thechance.mena.faith.presentation.feature.main
 
-import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import mena.faith_presentation.generated.resources.Res
+import mena.faith_presentation.generated.resources.asr
+import mena.faith_presentation.generated.resources.dhuhr
+import mena.faith_presentation.generated.resources.fajr
+import mena.faith_presentation.generated.resources.isha
+import mena.faith_presentation.generated.resources.maghrib
+import mena.faith_presentation.generated.resources.sunrise
 import net.thechance.mena.faith.domain.entity.Ayah
 import net.thechance.mena.faith.domain.entity.PrayerName
 import net.thechance.mena.faith.domain.entity.PrayerTime
 import net.thechance.mena.faith.domain.entity.Surah
-import net.thechance.mena.faith.presentation.feature.main.PrayerTimesUiState
-import net.thechance.mena.faith.presentation.feature.main.PrayerUiModel
-import net.thechance.mena.faith.presentation.feature.main.TilawahUiState
+import org.jetbrains.compose.resources.StringResource
 import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
+object MainMapper {
+    private val PRAYER_ORDER = listOf(
+        PrayerName.FAJR,
+        PrayerName.DHUHR,
+        PrayerName.ASR,
+        PrayerName.MAGHRIB,
+        PrayerName.ISHA
+    )
 
-private val PRAYER_ORDER = listOf(
-    PrayerName.FAJR,
-    PrayerName.DHUHR,
-    PrayerName.ASR,
-    PrayerName.MAGHRIB,
-    PrayerName.ISHA
-)
+    @OptIn(ExperimentalTime::class)
+    fun formatTime(instant: Instant): String {
+        val instant = Instant.fromEpochMilliseconds(instant.toEpochMilliseconds())
+        val localDateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
 
-@OptIn(ExperimentalTime::class)
-fun formatTime(instant: kotlin.time.Instant): String {
-    val kotlinxInstant = Instant.fromEpochMilliseconds(instant.toEpochMilliseconds())
-    val localDateTime = kotlinxInstant.toLocalDateTime(TimeZone.currentSystemDefault())
+        val hour = localDateTime.hour.toString().padStart(2, '0')
+        val minute = localDateTime.minute.toString().padStart(2, '0')
 
-    val hour = localDateTime.hour.toString().padStart(2, '0')
-    val minute = localDateTime.minute.toString().padStart(2, '0')
-
-    return "$hour:$minute"
-}
-
-fun getDisplayName(prayerName: PrayerName): String {
-    return when (prayerName) {
-        PrayerName.FAJR -> "Fajr"
-        PrayerName.DHUHR -> "Dhuhr"
-        PrayerName.ASR -> "Asr"
-        PrayerName.MAGHRIB -> "Maghrib"
-        PrayerName.ISHA -> "Isha"
-        PrayerName.SUNRISE -> "Sunrise"
+        return "$hour:$minute"
     }
-}
 
-@OptIn(ExperimentalTime::class)
-fun isAM(instant: kotlin.time.Instant): Boolean {
-    val kotlinxInstant = Instant.fromEpochMilliseconds(instant.toEpochMilliseconds())
-    val localDateTime = kotlinxInstant.toLocalDateTime(TimeZone.currentSystemDefault())
-    return localDateTime.hour < 12
-}
-
-@OptIn(ExperimentalTime::class)
-fun mapToPrayerTimesUiState(
-    prayerTimes: List<PrayerTime>,
-    now: kotlin.time.Instant
-): PrayerTimesUiState {
-    val prayerMap = prayerTimes.associateBy { it.name }
-
-    val prayers = PRAYER_ORDER.mapNotNull { prayerName ->
-        prayerMap[prayerName]?.let { prayer ->
-            PrayerUiModel(
-                name = prayer.name,
-                displayName = getDisplayName(prayer.name),
-                time = formatTime(prayer.time),
-                isAM = isAM(prayer.time)
-            )
+    fun getPrayerDisplayNameResource(prayerName: PrayerName): StringResource {
+        return when (prayerName) {
+            PrayerName.FAJR -> Res.string.fajr
+            PrayerName.DHUHR -> Res.string.dhuhr
+            PrayerName.ASR -> Res.string.asr
+            PrayerName.MAGHRIB -> Res.string.maghrib
+            PrayerName.ISHA -> Res.string.isha
+            PrayerName.SUNRISE -> Res.string.sunrise
         }
     }
 
-    val currentPrayerIndex = getCurrentPrayerIndex(prayerTimes, now)
-
-    return PrayerTimesUiState(
-        prayers = prayers,
-        currentPrayerIndex = currentPrayerIndex
-    )
-}
-
-@OptIn(ExperimentalTime::class)
-private fun getCurrentPrayerIndex(prayerTimes: List<PrayerTime>, now: kotlin.time.Instant): Int {
-    val sortedPrayers = prayerTimes
-        .filter { it.name != PrayerName.SUNRISE }
-        .sortedBy { it.time }
-
-    for (i in sortedPrayers.indices) {
-        val current = sortedPrayers[i]
-        val next = sortedPrayers.getOrNull(i + 1)
-
-        if (now < current.time) {
-            return PRAYER_ORDER.indexOf(current.name)
-        } else if (next == null || now < next.time) {
-            return PRAYER_ORDER.indexOf(current.name)
-        }
+    @OptIn(ExperimentalTime::class)
+    fun isAM(instant: Instant): Boolean {
+        val kotlinxInstant = Instant.fromEpochMilliseconds(instant.toEpochMilliseconds())
+        val localDateTime = kotlinxInstant.toLocalDateTime(TimeZone.currentSystemDefault())
+        return localDateTime.hour < 12
     }
 
-    return 0
-}
+    @OptIn(ExperimentalTime::class)
+    fun List<PrayerTime>.toUi(now: Instant): PrayerTimesUiState {
+        val prayerTimesMap = associateBy { it.name }
+        val prayerTimesUi = PRAYER_ORDER.mapNotNull { prayerTimesMap[it]?.toUi() }
 
-@OptIn(ExperimentalTime::class)
-fun getSunriseTime(prayerTimes: List<PrayerTime>): String {
-    return prayerTimes
-        .firstOrNull { it.name == PrayerName.SUNRISE }
-        ?.let { formatTime(it.time) }
-        ?: ""
-}
+        val currentPrayer = getCurrentPrayer(this, now)
+        val currentPrayerIndex = PRAYER_ORDER.indexOf(currentPrayer)
 
-fun getHijriDate(prayerTimes: List<PrayerTime>): String {
-    return prayerTimes.firstOrNull()?.hijriDate ?: ""
-}
+        return PrayerTimesUiState(
+            prayers = prayerTimesUi,
+            currentPrayerIndex = currentPrayerIndex
+        )
+    }
 
-fun Ayah.toTilawahUiState(): TilawahUiState {
-    val surahName = Surah.SurahOrder.entries
-        .find { it.order == this.surahId }
-        ?.name ?: "Unknown Surah"
-
-    return TilawahUiState(
-        surahName = surahName,
-        ayahNumber = "Aya No $number",
-        surahId = this.surahId
-
+    @OptIn(ExperimentalTime::class)
+    private fun PrayerTime.toUi(): PrayerUiModel = PrayerUiModel(
+        name = this.name,
+        displayName = getPrayerDisplayNameResource(this.name),
+        time = formatTime(this.time),
+        isAM = isAM(this.time)
     )
+
+
+    @OptIn(ExperimentalTime::class)
+    private fun getCurrentPrayer(prayerTimes: List<PrayerTime>, now: Instant): PrayerName {
+        val sortedPrayers = prayerTimes
+            .filter { it.name != PrayerName.SUNRISE }
+            .sortedBy { it.time }
+
+        if (now >= sortedPrayers.last().time) {
+            return sortedPrayers.last().name
+        }
+
+        return sortedPrayers.firstOrNull { now < it.time }?.name ?: sortedPrayers.first().name
+    }
+
+    @OptIn(ExperimentalTime::class)
+    fun getSunriseTime(prayerTimes: List<PrayerTime>): String {
+        return prayerTimes
+            .firstOrNull { it.name == PrayerName.SUNRISE }
+            ?.let { formatTime(it.time) }
+            ?: ""
+    }
+
+    fun getHijriDate(prayerTimes: List<PrayerTime>): String {
+        return prayerTimes.firstOrNull()?.hijriDate ?: ""
+    }
+
+    fun Ayah.toTilawahUiState(): TilawahUiState {
+        val surahName = Surah.SurahOrder.entries
+            .find { it.order == this.surahId }
+            ?.name ?: "Unknown Surah"
+
+        return TilawahUiState(
+            surahName = surahName,
+            ayahNumber = "Aya No $number",
+            surahId = this.surahId
+
+        )
+    }
 }
 
