@@ -3,17 +3,16 @@ package net.thechance.mena.faith.presentation.feature.main
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
-import mena.faith_presentation.generated.resources.Res
-import mena.faith_presentation.generated.resources.error_unknown
+import net.thechance.mena.faith.domain.entity.Ayah
 import net.thechance.mena.faith.domain.entity.Location
+import net.thechance.mena.faith.domain.entity.PrayerTime
 import net.thechance.mena.faith.domain.repository.PrayerTimeRepository
 import net.thechance.mena.faith.domain.repository.QuranRepository
 import net.thechance.mena.faith.presentation.base.BaseViewModel
-import net.thechance.mena.faith.presentation.base.SnackBarState
-import net.thechance.mena.faith.presentation.feature.main.mapper.getHijriDate
-import net.thechance.mena.faith.presentation.feature.main.mapper.getSunriseTime
-import net.thechance.mena.faith.presentation.feature.main.mapper.mapToPrayerTimesUiState
-import net.thechance.mena.faith.presentation.feature.main.mapper.toTilawahUiState
+import net.thechance.mena.faith.presentation.feature.main.MainMapper.getHijriDate
+import net.thechance.mena.faith.presentation.feature.main.MainMapper.getSunriseTime
+import net.thechance.mena.faith.presentation.feature.main.MainMapper.toTilawahUiState
+import net.thechance.mena.faith.presentation.feature.main.MainMapper.toUi
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
@@ -35,41 +34,45 @@ class MainViewModel(
         tryToExecute(
             execute = {
                 val defaultLocation = Location(latitude = 30.0444, longitude = 31.2357)
-                val now = Clock.System.now()
                 prayerTimeRepository.getPrayerTimes(
-                    date = now,
+                    date = Clock.System.now(),
                     location = defaultLocation
                 )
             },
             onStart = { updateState { it.copy(isLoading = true) } },
-            onSuccess = { prayerTimes ->
-                val now = Clock.System.now()
-                updateState {
-                    it.copy(
-                        prayerTimes = prayerTimes,
-                        prayerTimesUiState = mapToPrayerTimesUiState(prayerTimes, now),
-                        hijriDate = getHijriDate(prayerTimes),
-                        sunriseTime = getSunriseTime(prayerTimes)
-                    )
-                }
-            },
-            onError = { showErrorSnackBar() },
+            onSuccess = { prayerTimes -> onGetPrayerTimesSuccess(prayerTimes) },
             onFinally = { updateState { it.copy(isLoading = false) } },
             dispatcher = dispatcher
         )
     }
 
+    @OptIn(ExperimentalTime::class)
+    private fun
+            onGetPrayerTimesSuccess(prayerTimes: List<PrayerTime>) {
+        updateState { currentState ->
+            currentState.copy(
+                prayerTimes = prayerTimes,
+                prayerTimesUiState = prayerTimes.toUi(Clock.System.now()),
+                hijriDate = getHijriDate(prayerTimes),
+                sunriseTime = getSunriseTime(prayerTimes)
+            )
+        }
+    }
+
     private fun loadLastAyahForTilawah() {
         tryToExecute(
             execute = { quranRepository.getLastAyahForTilawah() },
-            onSuccess = { ayah ->
-                updateState {
-                    it.copy(tilawahUiState = ayah.toTilawahUiState())
-                }
-            },
-            onError = { showErrorSnackBar() },
+            onSuccess = { ayah -> onGetLastAyahForTilawahSuccess(ayah) },
             dispatcher = dispatcher
         )
+    }
+
+    private fun onGetLastAyahForTilawahSuccess(ayah: Ayah) {
+        updateState { currentState ->
+            currentState.copy(
+                tilawahUiState = ayah.toTilawahUiState()
+            )
+        }
     }
 
     override fun onContinueTilawahClick(surahId: Int, surahName: String) =
@@ -80,11 +83,4 @@ class MainViewModel(
     override fun onQiblahClick() = sendEffect(MainScreenEffect.NavigateToQiblah)
 
     override fun onMosquesClick() = sendEffect(MainScreenEffect.NavigateToMosques)
-
-    private fun showErrorSnackBar() {
-        showSnackBar(
-            message = Res.string.error_unknown,
-            status = SnackBarState.Status.Error
-        )
-    }
 }
