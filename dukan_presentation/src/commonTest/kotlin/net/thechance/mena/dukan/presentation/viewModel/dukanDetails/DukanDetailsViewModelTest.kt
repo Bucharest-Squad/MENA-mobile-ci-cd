@@ -23,7 +23,7 @@ import net.thechance.mena.dukan.domain.repository.DukanRepository
 import net.thechance.mena.dukan.domain.repository.ProductRepository
 import net.thechance.mena.dukan.domain.repository.ShelfRepository
 import net.thechance.mena.dukan.domain.util.PagedResult
-import net.thechance.mena.dukan.presentation.screen.dukanDetails.DukanDetailsArgs
+import net.thechance.mena.dukan.presentation.navigation.SavedStateHandleArgs.DUKAN_ID
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -45,46 +45,27 @@ class DukanDetailsViewModelTest {
     @BeforeTest
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-        savedStateHandle = SavedStateHandle(mapOf(DukanDetailsArgs.DUKAN_ID to "dukan_123"))
+        savedStateHandle = SavedStateHandle(mapOf(DUKAN_ID to "dukan_123"))
 
         everySuspend { dukanRepository.getDukanDetailsByDukanId(any()) } returns dummyDukanDetails()
         everySuspend {
-            shelfRepository.getShelvesByDukanId(
-                any(),
-                any(),
-                any()
-            )
+            shelfRepository.getShelvesByDukanId(any(), any(), any())
         } returns PagedResult(
             items = dummyShelves(),
-            totalItems = 3,
             currentPage = 1,
-            totalPages = 1,
-            hasNext = false,
-            hasPrevious = false
+            totalItems = 3L,
+            totalPages = 1
         )
         everySuspend {
-            productRepository.getProductsByShelfId(
-                any(),
-                any(),
-                any()
-            )
+            productRepository.getProductsByShelfId(any(), any(), any())
         } returns PagedResult(
             items = emptyList(),
-            totalItems = 0,
             currentPage = 1,
-            totalPages = 1,
-            hasNext = false,
-            hasPrevious = false
+            totalItems = 0L,
+            totalPages = 1
         )
 
-
-        dukanDetailsViewModel = DukanDetailsViewModel(
-            dukanRepository = dukanRepository,
-            shelfRepository = shelfRepository,
-            productRepository = productRepository,
-            defaultDispatcher = testDispatcher,
-            savedStateHandle = savedStateHandle
-        )
+        dukanDetailsViewModel = createViewModel()
     }
 
     @AfterTest
@@ -93,105 +74,116 @@ class DukanDetailsViewModelTest {
     }
 
     @Test
-    fun `init SHOULD load dukan details and update state correctly`() = runTest {
+    fun `init SHOULD set isDukanInfoLoading to false after successful load`() = runTest {
+        // When
         advanceUntilIdle()
-
         val state = dukanDetailsViewModel.state.value
+        // Then
         assertFalse(state.isDukanInfoLoading)
     }
 
 
     @Test
-    fun `init SHOULD handle dukan details loading error`() = runTest {
-        val errorMessage = "Network Error"
-        everySuspend { dukanRepository.getDukanDetailsByDukanId(any()) } throws Exception(
-            errorMessage
-        )
+    fun `init SHOULD set isDukanInfoLoading to false when details loading fails`() = runTest {
+        // Given
+        everySuspend { dukanRepository.getDukanDetailsByDukanId(any()) } throws Exception("Network Error")
 
-        dukanDetailsViewModel = DukanDetailsViewModel(
-            dukanRepository = dukanRepository,
-            shelfRepository = shelfRepository,
-            productRepository = productRepository,
-            defaultDispatcher = testDispatcher,
-            savedStateHandle = savedStateHandle
-        )
+        // When
+        val errorViewModel = createViewModel()
         advanceUntilIdle()
+        val state = errorViewModel.state.value
 
-        val state = dukanDetailsViewModel.state.value
+        // Then
         assertFalse(state.isDukanInfoLoading)
     }
 
     @Test
     fun `onShelfClicked SHOULD update selected shelf id in state`() = runTest {
+        // Given
         advanceUntilIdle()
         val newShelfId = "shelf_2"
 
-        dukanDetailsViewModel.updateState { copy(shelfIdSelected = "shelf_1") }
-        dukanDetailsViewModel.state.test {
-            val initialState = awaitItem()
-            assertEquals("shelf_1", initialState.shelfIdSelected)
+        // When
+        dukanDetailsViewModel.onShelfClicked(newShelfId)
+        val state = dukanDetailsViewModel.state.value
 
-            dukanDetailsViewModel.onShelfClicked(newShelfId)
+        // Then
+        assertEquals(newShelfId, state.shelfIdSelected)
+    }
 
-            val updatedState = awaitItem()
-            assertEquals(newShelfId, updatedState.shelfIdSelected)
+    @Test
+    fun `onShelfClicked SHOULD load correct number of products`() = runTest {
+        // Given
+        val targetShelfId = "shelf_1"
+        setupProductsForShelf(targetShelfId)
 
+        // When
+        dukanDetailsViewModel.onShelfClicked(targetShelfId)
+        val pager = dukanDetailsViewModel.pagerProduct
+        pager.load()
+        advanceUntilIdle()
+
+        // Then
+        pager.flow.test {
+            assertEquals(1, awaitItem().items.size)
             cancelAndIgnoreRemainingEvents()
         }
     }
 
     @Test
-    fun `onShelfClicked SHOULD return pager that loads correct products when style is wide image`() =
-        runTest {
-            val targetShelfId = "shelf_1"
-            dukanDetailsViewModel.updateState {
-                copy(
-                    dukanInfo = dukanInfo.copy(style = DukanDetailsUiState.Style.WIDE_IMAGE)
-                )
-            }
-            everySuspend {
-                productRepository.getProductsByShelfId(
-                    shelfId = targetShelfId,
-                    page = any(),
-                    size = any()
-                )
-            } returns PagedResult(
-                items = fakeProducts(),
-                totalItems = 1,
-                currentPage = 1,
-                totalPages = 1,
-                hasNext = false,
-                hasPrevious = false
-            )
-            dukanDetailsViewModel.onShelfClicked(targetShelfId)
+    fun `onShelfClicked SHOULD load product with correct ID`() = runTest {
+        // Given
+        val targetShelfId = "shelf_1"
+        setupProductsForShelf(targetShelfId)
 
+        // When
+        dukanDetailsViewModel.onShelfClicked(targetShelfId)
+        val pager = dukanDetailsViewModel.pagerProduct
+        pager.load()
+        advanceUntilIdle()
 
-            val pager = dukanDetailsViewModel.pagerProduct
-            pager.load()
-            advanceUntilIdle()
-
-            pager.flow.test {
-                val productsPagingData = awaitItem()
-                assertEquals(1, productsPagingData.items.size)
-                assertEquals("product_1", productsPagingData.items.first().id)
-                assertEquals("Laptop", productsPagingData.items.first().name)
-                cancelAndIgnoreRemainingEvents()
-            }
+        // Then
+        pager.flow.test {
+            assertEquals("product_1", awaitItem().items.first().id)
+            cancelAndIgnoreRemainingEvents()
         }
+    }
 
+    @Test
+    fun `onShelfClicked SHOULD load product with correct name`() = runTest {
+        // Given
+        val targetShelfId = "shelf_1"
+        setupProductsForShelf(targetShelfId)
+
+        // When
+        dukanDetailsViewModel.onShelfClicked(targetShelfId)
+        val pager = dukanDetailsViewModel.pagerProduct
+        pager.load()
+        advanceUntilIdle()
+
+        // Then
+        pager.flow.test {
+            assertEquals("Laptop", awaitItem().items.first().name)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
 
     @Test
     fun `getProductsPager SHOULD return the same cached pager instance for the same shelfId`() =
         runTest {
+            // When
             val pagerInstance1 = dukanDetailsViewModel.onShelfClicked("shelf_1")
             val pagerInstance2 = dukanDetailsViewModel.onShelfClicked("shelf_1")
 
+            // Then
             assertTrue(pagerInstance1 === pagerInstance2)
         }
 
     @Test
     fun `when onBackClicked SHOULD emit NavigateBack effect`() = runTest {
+        // Then
         dukanDetailsViewModel.effect.test {
+            // When
             dukanDetailsViewModel.onBackClicked()
             assertEquals(DukanDetailsEffects.NavigateBack, awaitItem())
             cancelAndIgnoreRemainingEvents()
@@ -199,32 +191,56 @@ class DukanDetailsViewModelTest {
     }
 
     @Test
-    fun `when onViewAllShelfProductsClicked SHOULD emit NavigateToViewAllShelfProducts effect`() =
-        runTest {
-            val shelfId = "id123"
-            val shelfName = "shelf"
-            dukanDetailsViewModel.effect.test {
-                dukanDetailsViewModel.onViewAllShelfProductsClicked(shelfId, shelfName)
-                assertEquals(
-                    DukanDetailsEffects.NavigateToViewAllShelfProducts(shelfId, shelfName),
-                    awaitItem()
-                )
-                cancelAndIgnoreRemainingEvents()
-            }
-        }
+    fun `when onViewAllShelfProductsClicked SHOULD emit correct navigation effect`() = runTest {
+        // Given
+        val shelfId = "id123"
+        val shelfName = "shelf"
 
-    @Test
-    fun `when onViewDukanOnMapClicked SHOULD emit NavigateToViewDukanOnMap effect`() = runTest {
-        val lat = 28.0
-        val lon = 29.0
+        // Then
         dukanDetailsViewModel.effect.test {
-            dukanDetailsViewModel.onViewDukanOnMapClicked(lat, lon)
+            // When
+            dukanDetailsViewModel.onViewAllShelfProductsClicked(shelfId, shelfName)
             assertEquals(
-                DukanDetailsEffects.NavigateToViewDukanOnMap(lat, lon),
+                DukanDetailsEffects.NavigateToViewAllShelfProducts(shelfId, shelfName),
                 awaitItem()
             )
             cancelAndIgnoreRemainingEvents()
         }
+    }
+
+    @Test
+    fun `when onViewDukanOnMapClicked SHOULD emit correct navigation effect`() = runTest {
+        // Given
+        val lat = 28.0
+        val lon = 29.0
+
+        // Then
+        dukanDetailsViewModel.effect.test {
+            // When
+            dukanDetailsViewModel.onViewDukanOnMapClicked(lat, lon)
+            assertEquals(DukanDetailsEffects.NavigateToViewDukanOnMap(lat, lon), awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+
+    private fun createViewModel() = DukanDetailsViewModel(
+        dukanRepository = dukanRepository,
+        shelfRepository = shelfRepository,
+        productRepository = productRepository,
+        defaultDispatcher = testDispatcher,
+        savedStateHandle = savedStateHandle
+    )
+
+    private fun setupProductsForShelf(shelfId: String) {
+        everySuspend {
+            productRepository.getProductsByShelfId(shelfId = shelfId, page = any(), size = any())
+        } returns PagedResult(
+            items = fakeProducts(),
+            currentPage = 1,
+            totalItems = 1L,
+            totalPages = 1
+        )
     }
 }
 
@@ -256,32 +272,3 @@ private fun fakeProducts(): List<Product> = listOf(
         createdAt = "2025-10-10T12:00:00Z"
     )
 )
-
-private val fakeProductsState = listOf(
-    DukanDetailsUiState.ProductUiState(
-        id = "product_1",
-        name = "Laptop",
-        imageUrl = "",
-        price = 1200.0,
-        description = "A cool laptop"
-    )
-)
-
-private val fakeShelvesStateWithProducts = listOf(
-    DukanDetailsUiState.ShelfUiState(
-        id = "shelf_1",
-        name = "Electronics",
-        products = fakeProductsState
-    ),
-    DukanDetailsUiState.ShelfUiState(
-        id = "shelf_2",
-        name = "Clothing",
-        products = fakeProductsState
-    ),
-    DukanDetailsUiState.ShelfUiState(
-        id = "shelf_3",
-        name = "Books",
-        products = fakeProductsState
-    )
-)
-
