@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import net.thechance.mena.dukan.presentation.component.productCard.ProductCard
 import net.thechance.mena.dukan.presentation.util.pagination.LoadMoreOnScroll
 import net.thechance.mena.dukan.presentation.util.pagination.Pager
 import net.thechance.mena.dukan.presentation.util.pagination.PagingData
@@ -20,6 +21,7 @@ import net.thechance.mena.dukan.presentation.viewModel.dukanDetails.DukanDetails
 fun ProductsList(
     products: PagingData<DukanDetailsUiState.ProductUiState>,
     pager: Pager<Int, DukanDetailsUiState.ProductUiState>,
+    cartProductIcon: @Composable () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val lazyListState = rememberLazyListState()
@@ -39,10 +41,14 @@ fun ProductsList(
         items(products.items) { product ->
             ProductCard(
                 modifier = Modifier,
-                productUiState = product,
+                productName = product.name,
+                productImageUrl = product.imageUrl,
+                productDescription = product.description,
+                productCardBackground = Theme.colorScheme.background.surfaceLow,
+                productPrice = product.price,
+                productAction = { cartProductIcon() },
             )
         }
     }
 }
-
 
