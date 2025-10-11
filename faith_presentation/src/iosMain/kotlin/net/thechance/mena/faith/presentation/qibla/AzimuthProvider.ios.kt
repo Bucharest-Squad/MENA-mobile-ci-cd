@@ -1,6 +1,7 @@
+package net.thechance.mena.faith.presentation.qibla
+
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import net.thechance.mena.faith.presentation.qibla.AzimuthProvider
 import platform.CoreLocation.CLHeading
 import platform.CoreLocation.CLLocationManager
 import platform.CoreLocation.CLLocationManagerDelegateProtocol
@@ -13,6 +14,7 @@ class IOSAzimuthProvider : NSObject(), AzimuthProvider, CLLocationManagerDelegat
 
     override fun startListening() {
         locationManager.delegate = this
+        locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingHeading()
     }
 

@@ -1,6 +1,7 @@
 package net.thechance.mena.faith.presentation.di
 
 import net.thechance.mena.faith.presentation.qibla.AndroidAzimuthProvider
+import net.thechance.mena.faith.presentation.qibla.AzimuthProvider
 import net.thechance.mena.faith.presentation.util.ClipboardManager
 import net.thechance.mena.faith.presentation.util.ClipboardManagerImp
 import org.koin.core.module.Module
@@ -10,5 +11,5 @@ import org.koin.dsl.module
 
 internal actual fun platformModule(): Module = module {
     singleOf(::ClipboardManagerImp).bind<ClipboardManager>()
-    singleOf(::AndroidAzimuthProvider)
+    singleOf(::AndroidAzimuthProvider).bind<AzimuthProvider>()
 }
