@@ -9,7 +9,6 @@ import net.thechance.mena.wallet.domain.repository.TransactionRepository
 import net.thechance.mena.wallet.presentation.base.BaseViewModel
 import net.thechance.mena.wallet.presentation.base.ErrorState
 import net.thechance.mena.wallet.presentation.model.SnackBarState
-import org.jetbrains.compose.resources.StringResource
 import org.koin.android.annotation.KoinViewModel
 import org.koin.core.annotation.Provided
 import kotlin.uuid.ExperimentalUuidApi
@@ -86,8 +85,8 @@ class TransactionDetailsViewModel(
     }
 
     suspend fun showSnackBar(
-        titleRes: StringResource,
-        messageRes: StringResource,
+        title: String,
+        message: String,
         isSuccess: Boolean,
         durationMillis: Long = 3000L
     ) {
@@ -95,8 +94,8 @@ class TransactionDetailsViewModel(
             oldState.copy(
                 snackBar = SnackBarState(
                     isVisible = true,
-                    titleRes = titleRes,
-                    messageRes = messageRes,
+                    title = title,
+                    message = message,
                     isSuccess = isSuccess
                 )
             )

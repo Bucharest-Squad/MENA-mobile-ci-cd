@@ -19,6 +19,7 @@ import org.koin.core.annotation.Single
 import org.koin.core.context.GlobalContext
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.IOException
 
 @Single
 actual class PdfHandler{
@@ -99,18 +100,14 @@ actual class PdfHandler{
         context.startActivity(chooserIntent)
     }
 
-    actual suspend fun downloadPdf(pdfData: ByteArray, fileName: String): FileSaveResult {
+    actual suspend fun downloadPdf(pdfData: ByteArray, fileName: String): String {
         return withContext(Dispatchers.IO) {
-            try {
-                val specialFileName = generateSpecialFileName(fileName)
+            val specialFileName = generateSpecialFileName(fileName)
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    saveToMediaStore(specialFileName, pdfData)
-                } else {
-                    saveToLegacyStorage(specialFileName, pdfData)
-                }
-            } catch (_: Exception) {
-                FileSaveResult.Error
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                saveToMediaStore(specialFileName, pdfData)
+            } else {
+                saveToLegacyStorage(specialFileName, pdfData)
             }
         }
     }
@@ -121,53 +118,49 @@ actual class PdfHandler{
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
-    private fun saveToMediaStore(fileName: String, bytes: ByteArray): FileSaveResult {
-        return try {
-            val resolver = context.contentResolver
-            val contentValues = ContentValues().apply {
-                put(MediaStore.MediaColumns.DISPLAY_NAME, "$fileName.pdf")
-                put(MediaStore.MediaColumns.MIME_TYPE, MIME_TYPE)
-                put(MediaStore.MediaColumns.RELATIVE_PATH, "${Environment.DIRECTORY_DOWNLOADS}/$DOWNLOAD_DIR_ROOT")
-            }
-
-            val uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, contentValues)
-
-            uri?.let {
-                resolver.openOutputStream(it)?.use { outputStream ->
-                    outputStream.write(bytes)
-                }
-                FileSaveResult.Success("${Environment.DIRECTORY_DOWNLOADS}/$DOWNLOAD_DIR_ROOT/$fileName.pdf")
-            } ?: FileSaveResult.Error
-        } catch (_: Exception) {
-            FileSaveResult.Error
+    private fun saveToMediaStore(fileName: String, bytes: ByteArray): String {
+        val resolver = context.contentResolver
+        val contentValues = ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, "$fileName.pdf")
+            put(MediaStore.MediaColumns.MIME_TYPE, MIME_TYPE)
+            put(MediaStore.MediaColumns.RELATIVE_PATH, "$DOWNLOAD_DIR_BASE/$APP_DOWNLOADS_FOLDER")
         }
+
+        val uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, contentValues)
+            ?: throw IOException()
+
+        resolver.openOutputStream(uri)?.use { outputStream ->
+            outputStream.write(bytes)
+        } ?: throw IOException()
+
+        val localizedDownloads = Environment.getExternalStoragePublicDirectory(
+            Environment.DIRECTORY_DOWNLOADS
+        ).name
+
+        return "$localizedDownloads/$APP_DOWNLOADS_FOLDER/$fileName.pdf"
     }
 
     @Suppress("DEPRECATION")
-    private fun saveToLegacyStorage(fileName: String, bytes: ByteArray): FileSaveResult {
-        return try {
-            val downloadsDir = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DOWNLOADS
-            )
-            val menaFolder = File(downloadsDir, DOWNLOAD_DIR_ROOT)
+    private fun saveToLegacyStorage(fileName: String, bytes: ByteArray): String {
+        val downloadsDir = Environment.getExternalStoragePublicDirectory(
+            Environment.DIRECTORY_DOWNLOADS
+        )
+        val menaFolder = File(downloadsDir, APP_DOWNLOADS_FOLDER)
 
-            if (!menaFolder.exists()) {
-                menaFolder.mkdirs()
-            }
-
-            val file = File(menaFolder, "$fileName.pdf")
-            file.writeBytes(bytes)
-
-            FileSaveResult.Success(file.absolutePath)
-        } catch (_: Exception) {
-            FileSaveResult.Error
+        if (!menaFolder.exists() && !menaFolder.mkdirs()) {
+            throw IOException()
         }
+
+        val file = File(menaFolder, "$fileName.pdf")
+        file.writeBytes(bytes)
+
+        return "${downloadsDir.name}/$APP_DOWNLOADS_FOLDER/$fileName.pdf"
     }
 
     private companion object {
-        // Chosen as a good balance between rendering time and image sharpness
         const val IMAGE_SCALE = 1.67f
-        private const val DOWNLOAD_DIR_ROOT = "MENA"
-        private const val MIME_TYPE = "application/pdf"
+        const val DOWNLOAD_DIR_BASE = "Download"
+        const val APP_DOWNLOADS_FOLDER = "MENA"
+        const val MIME_TYPE = "application/pdf"
     }
 }

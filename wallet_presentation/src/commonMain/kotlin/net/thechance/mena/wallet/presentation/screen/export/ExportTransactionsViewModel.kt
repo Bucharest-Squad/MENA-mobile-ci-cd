@@ -32,9 +32,9 @@ import net.thechance.mena.wallet.presentation.base.ErrorState
 import net.thechance.mena.wallet.presentation.model.CustomToastState
 import net.thechance.mena.wallet.presentation.model.FilterType
 import net.thechance.mena.wallet.presentation.model.SnackBarState
-import net.thechance.mena.wallet.presentation.utils.FileSaveResult
 import net.thechance.mena.wallet.presentation.utils.PdfHandler
 import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.getString
 import org.koin.android.annotation.KoinViewModel
 import org.koin.core.annotation.Provided
 import kotlin.time.Clock
@@ -155,7 +155,7 @@ class ExportTransactionsViewModel(
         tryToExecute(
             onStart = ::onDownloadStart,
             callee = ::generateTransactionsFile,
-            onSuccess = { pdfBytes -> saveFile(pdfBytes) },
+            onSuccess = { pdfBytes -> downloadFile(pdfBytes) },
             onError = { error -> handleDownloadError(error) },
             dispatcher = ioDispatcher
         )
@@ -170,8 +170,8 @@ class ExportTransactionsViewModel(
     private fun showInvalidDatesSnackBar() {
         viewModelScope.launch {
             showSnackBar(
-                titleRes = Res.string.error,
-                messageRes = Res.string.start_date_must_be_before_end_date,
+                title = getString(Res.string.error),
+                message = getString(Res.string.start_date_must_be_before_end_date),
                 isSuccess = false
             )
         }
@@ -224,8 +224,8 @@ class ExportTransactionsViewModel(
     private suspend fun onGetFirstTransactionDateError(throwable: ErrorState) {
         handleError(
             error = throwable,
-            titleRes = Res.string.error,
-            messageRes = Res.string.failed_to_load_date_picker,
+            title = getString(Res.string.error),
+            message = getString(Res.string.failed_to_load_date_picker),
             isSuccess = false
         )
     }
@@ -263,8 +263,8 @@ class ExportTransactionsViewModel(
         resetViewAndShareState()
         handleError(
             error = error,
-            titleRes = Res.string.error,
-            messageRes = Res.string.error_failed_view,
+            title = getString(Res.string.error),
+            message = getString(Res.string.error_failed_view),
             isSuccess = false
         )
     }
@@ -313,39 +313,27 @@ class ExportTransactionsViewModel(
         resetDownloadState()
         handleError(
             error = error,
-            titleRes = Res.string.download_failed,
-            messageRes = Res.string.something_went_wrong,
+            title = getString(Res.string.download_failed),
+            message = getString(Res.string.something_went_wrong),
             isSuccess = false
         )
     }
 
-    private suspend fun saveFile(pdfBytes: ByteArray) {
+    private suspend fun downloadFile(pdfBytes: ByteArray) {
         try {
-            val isFileSaved = pdfHandler.downloadPdf(pdfData = pdfBytes, fileName = "statement")
+            val filePath = pdfHandler.downloadPdf(pdfData = pdfBytes, fileName = "statement")
+
             resetDownloadState()
-            when(isFileSaved){
-                is FileSaveResult.Success -> {
-                    showSnackBar(
-                        titleRes = Res.string.download_complete,
-                        messageRes = Res.string.download_success,
-                        messageText = isFileSaved.filePath,
-                        isSuccess = true
-                    )
-                }
-                is FileSaveResult.Error -> {
-                    showSnackBar(
-                        titleRes = Res.string.download_failed,
-                        messageRes = Res.string.something_went_wrong,
-                        isSuccess = false
-                    )
-                }
-            }
+            showSnackBar(
+                title = getString(Res.string.download_complete),
+                message = getString(Res.string.download_success, filePath),
+                isSuccess = true
+            )
         } catch (_: Exception) {
             resetDownloadState()
-            handleError(
-                error = ErrorState.Unknown,
-                titleRes = Res.string.download_failed,
-                messageRes = Res.string.something_went_wrong,
+            showSnackBar(
+                title = getString(Res.string.download_failed),
+                message = getString(Res.string.something_went_wrong),
                 isSuccess = false
             )
         }
@@ -353,8 +341,8 @@ class ExportTransactionsViewModel(
 
     private suspend fun handleError(
         error: ErrorState,
-        titleRes: StringResource,
-        messageRes: StringResource,
+        title: String,
+        message: String,
         isSuccess: Boolean = false
     ) {
         when (error) {
@@ -367,8 +355,8 @@ class ExportTransactionsViewModel(
                     )
                 }
                 showSnackBar(
-                    titleRes = Res.string.download_failed,
-                    messageRes = Res.string.no_internet_title,
+                    title = getString(Res.string.download_failed),
+                    message = getString(Res.string.no_internet_title),
                     isSuccess = false
                 )
             }
@@ -386,8 +374,8 @@ class ExportTransactionsViewModel(
 
             else -> {
                 showSnackBar(
-                    titleRes = titleRes,
-                    messageRes = messageRes,
+                    title = title,
+                    message = message,
                     isSuccess = isSuccess
                 )
             }
@@ -395,9 +383,8 @@ class ExportTransactionsViewModel(
     }
 
     private suspend fun showSnackBar(
-        titleRes: StringResource,
-        messageRes: StringResource? = null,
-        messageText: String? = null,
+        title: String,
+        message: String,
         isSuccess: Boolean,
         durationMillis: Long = 3000L
     ) {
@@ -405,9 +392,8 @@ class ExportTransactionsViewModel(
             oldState.copy(
                 snackBar = SnackBarState(
                     isVisible = true,
-                    titleRes = titleRes,
-                    messageRes = messageRes,
-                    messageText = messageText,
+                    title = title,
+                    message = message,
                     isSuccess = isSuccess
                 )
             )

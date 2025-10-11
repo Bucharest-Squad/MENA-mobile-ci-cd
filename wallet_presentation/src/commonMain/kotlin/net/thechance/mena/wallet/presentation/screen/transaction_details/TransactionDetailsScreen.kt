@@ -30,7 +30,7 @@ import net.thechance.mena.wallet.presentation.screen.transaction_details.compone
 import net.thechance.mena.wallet.presentation.screen.wallet.component.ThreeDotsLoadingIndicator
 import net.thechance.mena.wallet.presentation.utils.ImageSharer
 import net.thechance.mena.wallet.presentation.utils.ObserveAsEffect
-import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -157,7 +157,7 @@ private suspend fun onTransactionDetailsEffect(
     onNavigateBackClicked: () -> Unit,
     shareImage: suspend (ByteArray, String, String) -> Unit,
     captureImage: suspend () -> Unit,
-    showSnackBar: suspend (StringResource, StringResource, Boolean) -> Unit,
+    showSnackBar: suspend (String, String, Boolean) -> Unit,
     onCaptureError: () -> Unit
 ) {
     when (effect) {
@@ -170,13 +170,17 @@ private suspend fun onTransactionDetailsEffect(
         TransactionDetailsEffect.CaptureImage -> {
             try {
                 captureImage()
-            }catch (e: Throwable){
+            }catch (_: Throwable){
                 onCaptureError()
             }
         }
 
         TransactionDetailsEffect.showErrorSnackBar -> {
-            showSnackBar(Res.string.error,Res.string.share_transaction_details_error_msg,false)
+            showSnackBar(
+                getString(Res.string.error),
+                getString(Res.string.share_transaction_details_error_msg),
+                false
+            )
         }
     }
 }

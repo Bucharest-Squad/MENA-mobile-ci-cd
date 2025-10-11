@@ -50,15 +50,8 @@ fun SnackBarContainer(
                     ),
     ) {
         SnackBar(
-            title = snackBarState.titleRes?.let { stringResource(it) } ?: "",
-            message = when {
-                snackBarState.messageText != null && snackBarState.messageRes != null -> {
-                    "${stringResource(snackBarState.messageRes)} ${snackBarState.messageText}"
-                }
-                snackBarState.messageText != null -> snackBarState.messageText
-                snackBarState.messageRes != null -> stringResource(snackBarState.messageRes)
-                else -> ""
-            },
+            title = snackBarState.title ?: "",
+            message = snackBarState.message ?: "",
             leadingIcon = painterResource(leadingIcon),
             modifier = modifier,
             tint = tint
@@ -73,8 +66,8 @@ private fun SnackBarContainerFailPreview() {
         SnackBarContainer(
             snackBarState = SnackBarState(
                 isVisible = true,
-                titleRes = Res.string.error,
-                messageRes = Res.string.balance_fetch_error_description,
+                title = stringResource(Res.string.error),
+                message = stringResource(Res.string.balance_fetch_error_description),
                 isSuccess = false
             )
         )
@@ -88,8 +81,8 @@ private fun SnackBarContainerSuccessPreview() {
         SnackBarContainer(
             snackBarState = SnackBarState(
                 isVisible = true,
-                titleRes = Res.string.error,
-                messageRes = Res.string.balance_fetch_error_description,
+                title = stringResource(Res.string.error),
+                message = stringResource(Res.string.balance_fetch_error_description),
                 isSuccess =  true
             )
         )

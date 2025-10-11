@@ -25,6 +25,7 @@ import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.format.DateTimeFormat
 import kotlinx.datetime.format.char
 import kotlinx.datetime.toLocalDateTime
+import kotlinx.io.IOException
 import net.thechance.mena.wallet.domain.exceptions.NoDataFoundException
 import net.thechance.mena.wallet.domain.exceptions.NoInternetException
 import net.thechance.mena.wallet.domain.model.TransactionFilterParams
@@ -33,7 +34,6 @@ import net.thechance.mena.wallet.domain.repository.TransactionRepository
 import net.thechance.mena.wallet.presentation.model.CustomToastState
 import net.thechance.mena.wallet.presentation.model.FilterType
 import net.thechance.mena.wallet.presentation.model.SnackBarState
-import net.thechance.mena.wallet.presentation.utils.FileSaveResult
 import net.thechance.mena.wallet.presentation.utils.PdfHandler
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
@@ -238,7 +238,7 @@ class ExportTransactionsViewModelTest {
         everySuspend { repository.getTransactionsPdf(any()) } returns byteArrayOf(1, 2, 3)
         everySuspend {
             pdfHandler.downloadPdf(any(), any())
-        } returns FileSaveResult.Success("MENA/statement_123.pdf")
+        } returns "MENA/statement_123.pdf"
 
         initViewModel()
 
@@ -306,7 +306,7 @@ class ExportTransactionsViewModelTest {
         } returns byteArrayOf(1, 2, 3)
         everySuspend {
             pdfHandler.downloadPdf(any(), any())
-        } returns FileSaveResult.Success("MENA/statement_123.pdf")
+        } returns "MENA/statement_123.pdf"
 
         initViewModel()
 
@@ -330,7 +330,7 @@ class ExportTransactionsViewModelTest {
         } returns byteArrayOf(1, 2, 3)
         everySuspend {
             pdfHandler.downloadPdf(any(), any())
-        } returns FileSaveResult.Error
+        } throws IOException()
 
         initViewModel()
 
@@ -373,7 +373,7 @@ class ExportTransactionsViewModelTest {
         } returns byteArrayOf(1, 2, 3)
         everySuspend {
             pdfHandler.downloadPdf(any(), any())
-        } returns FileSaveResult.Success("MENA/statement_123.pdf")
+        } returns "MENA/statement_123.pdf"
 
         initViewModel()
 
@@ -538,7 +538,7 @@ class ExportTransactionsViewModelTest {
         everySuspend { repository.getTransactionsPdf(any()) } returns byteArrayOf(1, 2, 3)
         everySuspend {
             pdfHandler.downloadPdf(any(), any())
-        } returns FileSaveResult.Success("MENA/statement_123.pdf")
+        } returns "MENA/statement_123.pdf"
 
         initViewModel()
         viewModel.state.test {
@@ -601,7 +601,7 @@ class ExportTransactionsViewModelTest {
         everySuspend { repository.getTransactionsPdf(any()) } returns byteArrayOf(1, 2, 3)
         everySuspend {
             pdfHandler.downloadPdf(any(), any())
-        } returns FileSaveResult.Success("MENA/statement_123.pdf")
+        } returns "MENA/statement_123.pdf"
 
         initViewModel()
         viewModel.state.test {
@@ -625,7 +625,7 @@ class ExportTransactionsViewModelTest {
         everySuspend { repository.getTransactionsPdf(any()) } returns byteArrayOf(1, 2, 3)
         everySuspend {
             pdfHandler.downloadPdf(any(), any())
-        } returns FileSaveResult.Success("Downloads/MENA/statement_1234567890.pdf")
+        } returns "Downloads/MENA/statement_1234567890.pdf"
 
         initViewModel()
 
@@ -636,7 +636,7 @@ class ExportTransactionsViewModelTest {
             val state = awaitItem()
             assertSnackBarState(true, state.snackBar)
             assertTrue(state.snackBar.isSuccess)
-            assertNotNull(state.snackBar.messageText)
+            assertNotNull(state.snackBar.message)
 
             cancelAndIgnoreRemainingEvents()
         }
