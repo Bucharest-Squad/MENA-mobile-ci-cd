@@ -27,6 +27,7 @@ import net.thechance.mena.wallet.domain.model.TransactionStatus
 import net.thechance.mena.wallet.domain.model.TransactionType
 import net.thechance.mena.wallet.domain.repository.TransactionRepository
 import net.thechance.mena.wallet.presentation.base.ErrorState
+import net.thechance.mena.wallet.presentation.model.SnackBarState
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -57,7 +58,7 @@ class TransactionDetailsViewModelTest {
 
             val viewModel = TransactionDetailsViewModel(
                 transactionRepository = transactionRepository,
-                transactionId = transaction1Id.toString(),
+                transactionDetailsArgs = TransactionDetailsArgs(transaction1Id.toString()),
                 ioDispatcher = testDispatcher
             )
 
@@ -76,7 +77,7 @@ class TransactionDetailsViewModelTest {
 
             val viewModel = TransactionDetailsViewModel(
                 transactionRepository = transactionRepository,
-                transactionId = transaction1Id.toString(),
+                transactionDetailsArgs = TransactionDetailsArgs(transaction1Id.toString()),
                 ioDispatcher = testDispatcher
             )
 
@@ -111,7 +112,7 @@ class TransactionDetailsViewModelTest {
 
             val viewModel = TransactionDetailsViewModel(
                 transactionRepository = transactionRepository,
-                transactionId = transaction1Id.toString(),
+                transactionDetailsArgs = TransactionDetailsArgs(transaction1Id.toString()),
                 ioDispatcher = testDispatcher
             )
 
@@ -129,7 +130,7 @@ class TransactionDetailsViewModelTest {
 
         val viewModel = TransactionDetailsViewModel(
             transactionRepository = transactionRepository,
-            transactionId = transaction1Id.toString(),
+            transactionDetailsArgs = TransactionDetailsArgs(transaction1Id.toString()),
             ioDispatcher = testDispatcher
         )
 
@@ -146,7 +147,7 @@ class TransactionDetailsViewModelTest {
 
             val viewModel = TransactionDetailsViewModel(
                 transactionRepository = transactionRepository,
-                transactionId = transaction1Id.toString(),
+                transactionDetailsArgs = TransactionDetailsArgs(transaction1Id.toString()),
                 ioDispatcher = testDispatcher
             )
             viewModel.state.test {
@@ -164,7 +165,7 @@ class TransactionDetailsViewModelTest {
 
             val viewModel = TransactionDetailsViewModel(
                 transactionRepository = transactionRepository,
-                transactionId = transaction1Id.toString(),
+                transactionDetailsArgs = TransactionDetailsArgs(transaction1Id.toString()),
                 ioDispatcher = testDispatcher
             )
             viewModel.uiEffect.test {
@@ -181,7 +182,7 @@ class TransactionDetailsViewModelTest {
             val byteArray = byteArrayOf()
             val viewModel = TransactionDetailsViewModel(
                 transactionRepository = transactionRepository,
-                transactionId = transaction1Id.toString(),
+                transactionDetailsArgs = TransactionDetailsArgs(transaction1Id.toString()),
                 ioDispatcher = testDispatcher
             )
 
@@ -203,7 +204,7 @@ class TransactionDetailsViewModelTest {
             val byteArray = byteArrayOf()
             val viewModel = TransactionDetailsViewModel(
                 transactionRepository = transactionRepository,
-                transactionId = transaction1Id.toString(),
+                transactionDetailsArgs = TransactionDetailsArgs(transaction1Id.toString()),
                 ioDispatcher = testDispatcher
             )
             viewModel.uiEffect.test {
@@ -226,7 +227,7 @@ class TransactionDetailsViewModelTest {
         val byteArray = byteArrayOf()
         val viewModel = TransactionDetailsViewModel(
             transactionRepository = transactionRepository,
-            transactionId = transaction1Id.toString(),
+            transactionDetailsArgs = TransactionDetailsArgs(transaction1Id.toString()),
             ioDispatcher = testDispatcher
         )
 
@@ -248,7 +249,7 @@ class TransactionDetailsViewModelTest {
         val byteArray = byteArrayOf()
         val viewModel = TransactionDetailsViewModel(
             transactionRepository = transactionRepository,
-            transactionId = transaction1Id.toString(),
+            transactionDetailsArgs = TransactionDetailsArgs(transaction1Id.toString()),
             ioDispatcher = testDispatcher
         )
 
@@ -267,7 +268,7 @@ class TransactionDetailsViewModelTest {
 
         val viewModel = TransactionDetailsViewModel(
             transactionRepository = transactionRepository,
-            transactionId = transaction1Id.toString(),
+            transactionDetailsArgs = TransactionDetailsArgs(transaction1Id.toString()),
             ioDispatcher = testDispatcher
         )
 

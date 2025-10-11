@@ -21,11 +21,13 @@ import kotlin.uuid.Uuid
 @OptIn(ExperimentalUuidApi::class)
 @KoinViewModel
 class TransactionDetailsViewModel(
-    @Provided private val transactionId: String,
+    @Provided private val transactionDetailsArgs: TransactionDetailsArgs,
     @Provided val transactionRepository: TransactionRepository,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : BaseViewModel<TransactionDetailsScreenState, TransactionDetailsEffect>(
     TransactionDetailsScreenState()), TransactionDetailsInteractionListener {
+
+    val id = transactionDetailsArgs.id
 
     init {
         getTransactionDetails()
@@ -35,7 +37,7 @@ class TransactionDetailsViewModel(
         tryToExecute(
             callee = {
                 transactionRepository.getTransactionById(
-                    transactionId = Uuid.parse(transactionId)
+                    transactionId = Uuid.parse(id)
                 )
             },
             onSuccess = ::onGetTransactionDetailsSuccess,
@@ -70,10 +72,11 @@ class TransactionDetailsViewModel(
 
     @OptIn(ExperimentalUuidApi::class)
     override fun onScreenShotCaptured(byteArray: ByteArray, fileName: String) {
-        sendEffect(TransactionDetailsEffect.ShareImage(
-            imageBytes = byteArray,
-            fileName = "$fileName.png",
-            mimeType = IMAGE_TYPE
+        sendEffect(
+            TransactionDetailsEffect.ShareImage(
+                imageBytes = byteArray,
+                fileName = "$fileName.png",
+                mimeType = IMAGE_TYPE
             )
         )
         stopButtonLoading()
