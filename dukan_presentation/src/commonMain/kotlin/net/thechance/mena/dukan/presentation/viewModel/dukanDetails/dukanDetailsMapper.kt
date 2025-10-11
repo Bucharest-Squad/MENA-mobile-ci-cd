@@ -1,10 +1,10 @@
 package net.thechance.mena.dukan.presentation.viewModel.dukanDetails
 
-import net.thechance.mena.dukan.domain.entity.DukanDetails
+import net.thechance.mena.dukan.domain.entity.Dukan
 import net.thechance.mena.dukan.domain.entity.Product
 import net.thechance.mena.dukan.domain.entity.Shelf
 
-fun DukanDetails.toUiState() = DukanDetailsUiState.DukanInfo(
+fun Dukan.toUiState() = DukanDetailsUiState.DukanInfo(
     name = name,
     imageUrl = imageUrl,
     coordinates = DukanDetailsUiState.Coordinates(

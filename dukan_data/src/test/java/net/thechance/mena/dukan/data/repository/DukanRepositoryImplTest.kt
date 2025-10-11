@@ -12,7 +12,6 @@ import net.thechance.mena.dukan.data.repository.mockEngine.dukan.jsonHeaders
 import net.thechance.mena.dukan.domain.entity.Category
 import net.thechance.mena.dukan.domain.entity.Color
 import net.thechance.mena.dukan.domain.entity.Dukan
-import net.thechance.mena.dukan.domain.entity.DukanDetails
 import net.thechance.mena.dukan.domain.entity.MyDukanStatus
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -145,7 +144,7 @@ class DukanRepositoryImplTest {
         assertEquals("Test Dukan", details.name)
         assertEquals("123 Test St, Cairo, Egypt", details.address)
         assertEquals(Color("Red", "#FF0000"), details.color)
-        assertEquals(DukanDetails.Style.WIDE_IMAGE, details.style)
+        assertEquals(Dukan.Style.WIDE_IMAGE, details.style)
         assertEquals(30.0444, details.coordinates.latitude)
     }
 

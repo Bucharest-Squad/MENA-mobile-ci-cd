@@ -15,14 +15,13 @@ import net.thechance.mena.dukan.data.repository.dto.MyDukanStatusDto
 import net.thechance.mena.dukan.data.repository.mapper.toCategoryList
 import net.thechance.mena.dukan.data.repository.mapper.toColorsList
 import net.thechance.mena.dukan.data.repository.mapper.toCreateDukanRequest
-import net.thechance.mena.dukan.data.repository.mapper.toDukanDetails
+import net.thechance.mena.dukan.data.repository.mapper.toDukan
 import net.thechance.mena.dukan.data.repository.mapper.toMyDukanStatus
 import net.thechance.mena.dukan.data.repository.util.buildSinglePartFormData
 import net.thechance.mena.dukan.data.repository.util.safeApiCall
 import net.thechance.mena.dukan.domain.entity.Category
 import net.thechance.mena.dukan.domain.entity.Color
 import net.thechance.mena.dukan.domain.entity.Dukan
-import net.thechance.mena.dukan.domain.entity.DukanDetails
 import net.thechance.mena.dukan.domain.entity.MyDukanStatus
 import net.thechance.mena.dukan.domain.repository.DukanRepository
 
@@ -92,10 +91,10 @@ class DukanRepositoryImpl(
     }
 
 
-    override suspend fun getDukanDetailsByDukanId(dukanId: String): DukanDetails {
+    override suspend fun getDukanDetailsByDukanId(dukanId: String): Dukan {
         return safeApiCall<DukanDetailsDto> {
             client.get("$BASE_URL/$dukanId")
-        }.toDukanDetails()
+        }.toDukan()
     }
 
 

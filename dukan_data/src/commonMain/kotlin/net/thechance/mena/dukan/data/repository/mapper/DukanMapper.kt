@@ -1,5 +1,6 @@
 package net.thechance.mena.dukan.data.repository.mapper
 
+import kotlinx.serialization.SerialName
 import net.thechance.mena.dukan.data.repository.dto.CreateDukanRequest
 import net.thechance.mena.dukan.data.repository.dto.DukanCategoryDto
 import net.thechance.mena.dukan.data.repository.dto.DukanColorDto
@@ -8,7 +9,6 @@ import net.thechance.mena.dukan.data.repository.dto.MyDukanStatusDto
 import net.thechance.mena.dukan.domain.entity.Category
 import net.thechance.mena.dukan.domain.entity.Color
 import net.thechance.mena.dukan.domain.entity.Dukan
-import net.thechance.mena.dukan.domain.entity.DukanDetails
 import net.thechance.mena.dukan.domain.entity.MyDukanStatus
 
 fun Dukan.toCreateDukanRequest(): CreateDukanRequest {
@@ -51,13 +51,13 @@ fun MyDukanStatusDto.toMyDukanStatus(): MyDukanStatus {
 }
 
 
-fun DukanDetailsDto.toDukanDetails(): DukanDetails {
-    return DukanDetails(
+fun DukanDetailsDto.toDukan(): Dukan {
+    return Dukan(
         id = id,
         name = name,
         imageUrl = imageUrl,
         address = address,
-        coordinates = DukanDetails.Coordinates(
+        coordinates = Dukan.Coordinates(
             latitude = latitude,
             longitude = longitude
         ),
@@ -65,6 +65,8 @@ fun DukanDetailsDto.toDukanDetails(): DukanDetails {
             id = color.id,
             hexCode = color.hexCode
         ),
-        style = DukanDetails.Style.valueOf(style)
+        style = Dukan.Style.valueOf(style),
+        categories = emptySet(),
+        status = Dukan.Status.APPROVED
     )
 }

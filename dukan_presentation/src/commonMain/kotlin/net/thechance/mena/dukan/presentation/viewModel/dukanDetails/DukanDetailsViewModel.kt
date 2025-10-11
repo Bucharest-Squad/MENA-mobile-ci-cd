@@ -6,7 +6,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
-import net.thechance.mena.dukan.domain.entity.DukanDetails
+import net.thechance.mena.dukan.domain.entity.Dukan
 import net.thechance.mena.dukan.domain.repository.DukanRepository
 import net.thechance.mena.dukan.domain.repository.ProductRepository
 import net.thechance.mena.dukan.domain.repository.ShelfRepository
@@ -42,7 +42,7 @@ class DukanDetailsViewModel(
         )
     }
 
-    private fun onLoadDukanDetailsSuccess(dukanDetails: DukanDetails) {
+    private fun onLoadDukanDetailsSuccess(dukanDetails: Dukan) {
         updateState {
             copy(
                 dukanInfo = dukanDetails.toUiState(),

@@ -16,7 +16,7 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import net.thechance.mena.dukan.domain.entity.Color
-import net.thechance.mena.dukan.domain.entity.DukanDetails
+import net.thechance.mena.dukan.domain.entity.Dukan
 import net.thechance.mena.dukan.domain.entity.Product
 import net.thechance.mena.dukan.domain.entity.Shelf
 import net.thechance.mena.dukan.domain.repository.DukanRepository
@@ -229,14 +229,16 @@ class DukanDetailsViewModelTest {
     }
 }
 
-private fun dummyDukanDetails() = DukanDetails(
+private fun dummyDukanDetails() = Dukan(
     id = "dukan_123",
     name = "Test Dukan",
     address = "123 Test Street",
     imageUrl = "https://example.com/image.png",
-    coordinates = DukanDetails.Coordinates(latitude = 30.0, longitude = 31.0),
+    coordinates = Dukan.Coordinates(latitude = 30.0, longitude = 31.0),
     color = Color(id = "color_1", hexCode = "#FF0000"),
-    style = DukanDetails.Style.WIDE_IMAGE,
+    style = Dukan.Style.WIDE_IMAGE,
+    categories = emptySet(),
+    status = Dukan.Status.APPROVED,
 )
 
 private fun dummyShelves() = listOf(
