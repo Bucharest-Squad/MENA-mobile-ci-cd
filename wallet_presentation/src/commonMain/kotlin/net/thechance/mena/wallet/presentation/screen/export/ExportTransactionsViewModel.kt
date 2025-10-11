@@ -319,25 +319,33 @@ class ExportTransactionsViewModel(
         )
     }
 
-    private suspend fun downloadFile(pdfBytes: ByteArray) {
-        try {
-            val filePath = pdfHandler.downloadPdf(pdfData = pdfBytes, fileName = "statement")
-
-            resetDownloadState()
-            showSnackBar(
-                title = getString(Res.string.download_complete),
-                message = getString(Res.string.download_success, filePath),
-                isSuccess = true
-            )
-        } catch (_: Exception) {
-            resetDownloadState()
-            showSnackBar(
-                title = getString(Res.string.download_failed),
-                message = getString(Res.string.something_went_wrong),
-                isSuccess = false
-            )
-        }
+    private fun downloadFile(pdfBytes: ByteArray) {
+        tryToExecute(
+            callee = { pdfHandler.downloadPdf(pdfData = pdfBytes, fileName = "statement") },
+            onSuccess = ::onDownloadSuccess,
+            onError = ::onDownloadFailure,
+            dispatcher = ioDispatcher
+        )
     }
+
+    private suspend fun onDownloadSuccess(filePath: String) {
+        resetDownloadState()
+        showSnackBar(
+            title = getString(Res.string.download_complete),
+            message = getString(Res.string.download_success, filePath),
+            isSuccess = true
+        )
+    }
+
+    private suspend fun onDownloadFailure(error: ErrorState) {
+        resetDownloadState()
+        showSnackBar(
+            title = getString(Res.string.download_failed),
+            message = getString(Res.string.something_went_wrong),
+            isSuccess = false
+        )
+    }
+
 
     private suspend fun handleError(
         error: ErrorState,
