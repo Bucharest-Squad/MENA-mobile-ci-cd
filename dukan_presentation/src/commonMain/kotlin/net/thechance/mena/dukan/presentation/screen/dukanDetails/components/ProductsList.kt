@@ -14,13 +14,13 @@ import net.thechance.mena.dukan.presentation.component.productCard.ProductCard
 import net.thechance.mena.dukan.presentation.util.pagination.LoadMoreOnScroll
 import net.thechance.mena.dukan.presentation.util.pagination.Pager
 import net.thechance.mena.dukan.presentation.util.pagination.PagingData
-import net.thechance.mena.dukan.presentation.viewModel.dukanDetails.DukanDetailsUiState
+import net.thechance.mena.dukan.presentation.viewModel.shelfDetails.ShelfDetailsUiState
 
 
 @Composable
 fun ProductsList(
-    products: PagingData<DukanDetailsUiState.ProductUiState>,
-    pager: Pager<Int, DukanDetailsUiState.ProductUiState>,
+    products: PagingData<ShelfDetailsUiState.ProductUiState>,
+    pager: Pager<Int, ShelfDetailsUiState.ProductUiState>,
     cartProductIcon: @Composable () -> Unit,
     modifier: Modifier = Modifier,
 ) {

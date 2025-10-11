@@ -26,6 +26,9 @@ import net.thechance.mena.dukan.presentation.viewModel.dukanDetails.DukanDetails
 import net.thechance.mena.dukan.presentation.viewModel.dukanDetails.DukanDetailsInteractionListener
 import net.thechance.mena.dukan.presentation.viewModel.dukanDetails.DukanDetailsUiState
 import net.thechance.mena.dukan.presentation.viewModel.dukanDetails.DukanDetailsViewModel
+import net.thechance.mena.dukan.presentation.viewModel.shelfDetails.ShelfDetailsInteractionListener
+import net.thechance.mena.dukan.presentation.viewModel.shelfDetails.ShelfDetailsUiState
+import net.thechance.mena.dukan.presentation.viewModel.shelfDetails.ShelfDetailsViewModel
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -35,7 +38,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun ShelfDetailsScreen(
     shelfId: String,
     shelfName: String,
-    viewModel: DukanDetailsViewModel = koinViewModel()
+    viewModel: ShelfDetailsViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsState()
     val navController = LocalNavController.current
@@ -59,9 +62,9 @@ fun ShelfDetailsScreen(
 @Composable
 private fun ShelfDetailsContent(
     shelfName: String,
-    state: DukanDetailsUiState,
-    listener: DukanDetailsInteractionListener,
-    pager: Pager<Int, DukanDetailsUiState.ProductUiState>
+    state: ShelfDetailsUiState,
+    listener: ShelfDetailsInteractionListener,
+    pager: Pager<Int, ShelfDetailsUiState.ProductUiState>
 ) {
     OnSystemBackPressed(listener::onBackClicked)
 
@@ -108,13 +111,15 @@ private fun ShelfDetailsPreview() {
     MenaTheme {
         ShelfDetailsContent(
             shelfName = "Skirt",
-            state = DukanDetailsUiState(),
-            listener = PreviewDukanDetailsInteractionListener,
+            state = ShelfDetailsUiState(),
+            listener = object : ShelfDetailsInteractionListener {
+                override fun onBackClicked() {}
+            },
             pager = Pager(
                 config = PagingConfig(),
                 pagingSourceFactory = {
-                    object : PagingSource<Int, DukanDetailsUiState.ProductUiState>() {
-                        override suspend fun load(params: LoadParams<Int>): LoadResult<Int, DukanDetailsUiState.ProductUiState> {
+                    object : PagingSource<Int, ShelfDetailsUiState.ProductUiState>() {
+                        override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ShelfDetailsUiState.ProductUiState> {
                             return LoadResult.Page(emptyList(), null, null)
                         }
                     }

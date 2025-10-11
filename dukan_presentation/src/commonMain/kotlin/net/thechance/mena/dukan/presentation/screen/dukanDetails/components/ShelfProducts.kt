@@ -27,14 +27,14 @@ import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.dukan.presentation.component.productCard.LoadingProductCard
 import net.thechance.mena.dukan.presentation.util.animation.fadeTransitionSpec
 import net.thechance.mena.dukan.presentation.util.pagination.Pager
-import net.thechance.mena.dukan.presentation.viewModel.dukanDetails.DukanDetailsUiState
+import net.thechance.mena.dukan.presentation.viewModel.shelfDetails.ShelfDetailsUiState
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun ShelfProducts(
-    state: DukanDetailsUiState,
-    pager: Pager<Int, DukanDetailsUiState.ProductUiState>,
+    state: ShelfDetailsUiState,
+    pager: Pager<Int, ShelfDetailsUiState.ProductUiState>,
 ) {
     AnimatedContent(
         targetState = state.productsState,
@@ -44,7 +44,7 @@ fun ShelfProducts(
         label = "ProductContentAnimation"
     ) { target ->
         when (target) {
-            DukanDetailsUiState.ProductsState.LOADING -> {
+            ShelfDetailsUiState.ProductsState.LOADING -> {
                 LazyColumn(
                     modifier = Modifier.fillMaxWidth()
                         .padding(top = Theme.spacing._8),
@@ -60,7 +60,7 @@ fun ShelfProducts(
                 }
             }
 
-            DukanDetailsUiState.ProductsState.LOADED -> ProductsList(
+            ShelfDetailsUiState.ProductsState.LOADED -> ProductsList(
                 products = state.productsShelf,
                 pager = pager,
                 cartProductIcon = {
@@ -70,7 +70,7 @@ fun ShelfProducts(
                 }
             )
 
-            DukanDetailsUiState.ProductsState.EMPTY -> {}
+            ShelfDetailsUiState.ProductsState.EMPTY -> {}
         }
     }
 }
@@ -104,7 +104,7 @@ private fun ProductCart(
 
 @Composable
 private fun CartOrQuantityProductComponent(
-    productUiState: DukanDetailsUiState
+    productUiState: ShelfDetailsUiState
 ) {
     AnimatedContent(
         targetState = productUiState.showProductQuantity,
