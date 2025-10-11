@@ -42,7 +42,6 @@ fun ProductCard(
     productUiState: DukanDetailsUiState.ProductUiState,
     modifier: Modifier = Modifier
 ) {
-
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -52,24 +51,7 @@ fun ProductCard(
             ).height(104.dp)
             .padding(Theme.spacing._4),
     ) {
-        Box(
-            modifier = Modifier.background(
-                color = Theme.colorScheme.background.surfaceLow,
-                shape = RoundedCornerShape(
-                    topStart = Theme.radius.md,
-                    bottomStart = Theme.radius.md
-                )
-            )
-        ) {
-            AsyncImage(
-                model = productUiState.imageUrl,
-                contentDescription = stringResource(Res.string.product_image),
-                modifier = Modifier
-                    .size(96.dp)
-                    .clip(RoundedCornerShape(Theme.radius.sm)),
-                contentScale = ContentScale.Crop
-            )
-        }
+        ProductImage(productUiState = productUiState)
         Column(
             modifier = Modifier
                 .weight(1f)
@@ -118,11 +100,33 @@ fun ProductCard(
                     }
                 }
             }
-
         }
     }
 }
-
+@Composable
+private fun ProductImage(
+    productUiState: DukanDetailsUiState.ProductUiState,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier.background(
+            color = Theme.colorScheme.background.surfaceLow,
+            shape = RoundedCornerShape(
+                topStart = Theme.radius.md,
+                bottomStart = Theme.radius.md
+            )
+        )
+    ) {
+        AsyncImage(
+            model = productUiState.imageUrl,
+            contentDescription = stringResource(Res.string.product_image),
+            modifier = Modifier
+                .size(96.dp)
+                .clip(RoundedCornerShape(Theme.radius.sm)),
+            contentScale = ContentScale.Crop
+        )
+    }
+}
 @Composable
 private fun ProductCart(
     onClick: () -> Unit,
