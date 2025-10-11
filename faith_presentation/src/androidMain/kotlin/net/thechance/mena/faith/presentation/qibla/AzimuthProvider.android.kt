@@ -6,29 +6,28 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlin.math.roundToInt
 
 
-class AndroidAzimuthProvider(private val context: Context) : AzimuthProvider, SensorEventListener {
+actual class AzimuthProvider(private val context: Context) : SensorEventListener {
 
     private val _azimuth = MutableStateFlow(0f)
-    override val azimuthFlow = _azimuth.asStateFlow()
+    actual val azimuthFlow: Flow<Float> = _azimuth
 
     private var sensorManager: SensorManager? = null
     private var accelValues = FloatArray(3)
     private var magnetValues = FloatArray(3)
-
     private var initialized = false
 
-    fun initialize() {
+    init {
         sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
         initialized = true
     }
 
-    override fun startListening() {
-        if (!initialized) throw IllegalStateException("AzimuthProvider not initialized — call initialize() first.")
+    actual fun startListening() {
+        if (!initialized)
+            throw IllegalStateException("AzimuthProvider not initialized — call initialize() first.")
 
         sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)?.also {
             sensorManager?.registerListener(this, it, SensorManager.SENSOR_DELAY_UI)
@@ -38,7 +37,7 @@ class AndroidAzimuthProvider(private val context: Context) : AzimuthProvider, Se
         }
     }
 
-    override fun stopListening() {
+    actual fun stopListening() {
         sensorManager?.unregisterListener(this)
     }
 
@@ -55,11 +54,9 @@ class AndroidAzimuthProvider(private val context: Context) : AzimuthProvider, Se
             SensorManager.getOrientation(rotationMatrix, orientationValues)
             val azimuthInDegrees = Math.toDegrees(orientationValues[0].toDouble()).toFloat()
             val normalized = (azimuthInDegrees + 360) % 360
-            _azimuth.value = normalized.roundToInt().toFloat()
+            _azimuth.value = normalized
         }
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) = Unit
 }
-
-

@@ -1,28 +1,19 @@
 package net.thechance.mena.faith.presentation.qibla
 
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import platform.CoreLocation.CLHeading
-import platform.CoreLocation.CLLocationManager
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import platform.CoreLocation.CLLocationManagerDelegateProtocol
 import platform.darwin.NSObject
 
-class IOSAzimuthProvider : NSObject(), AzimuthProvider, CLLocationManagerDelegateProtocol {
-    private val locationManager = CLLocationManager()
-    private val _azimuth = MutableStateFlow(0f)
-    override val azimuthFlow = _azimuth.asStateFlow()
+actual class AzimuthProvider : NSObject(), CLLocationManagerDelegateProtocol {
 
-    override fun startListening() {
-        locationManager.delegate = this
-        locationManager.requestWhenInUseAuthorization()
-        locationManager.startUpdatingHeading()
+
+    actual val azimuthFlow: Flow<Float> = flowOf(0f)
+
+
+    actual fun startListening() {
     }
 
-    override fun stopListening() {
-        locationManager.stopUpdatingHeading()
-    }
-
-    override fun locationManager(manager: CLLocationManager, didUpdateHeading: CLHeading) {
-        _azimuth.value = didUpdateHeading.magneticHeading.toFloat()
+    actual fun stopListening() {
     }
 }
