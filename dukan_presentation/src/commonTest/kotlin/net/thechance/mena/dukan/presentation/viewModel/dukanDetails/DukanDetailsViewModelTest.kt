@@ -119,7 +119,6 @@ class DukanDetailsViewModelTest {
 
         val state = dukanDetailsViewModel.state.value
         assertFalse(state.isDukanInfoLoading)
-        assertEquals(errorMessage, state.errorMessage)
     }
 
     @Test

@@ -24,7 +24,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun ProductsHeader(
-    categoryName: String,
+    shelfName: String,
     onClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
@@ -33,7 +33,7 @@ fun ProductsHeader(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = categoryName,
+            text = shelfName,
             style = Theme.typography.title.small,
             color = Theme.colorScheme.shadePrimary,
             modifier = Modifier.weight(1f)
@@ -63,6 +63,6 @@ fun ProductsHeader(
 @Composable
 private fun ProductsHeaderPreview() {
     MenaTheme {
-        ProductsHeader(categoryName = "Category Name", modifier = Modifier.padding(16.dp))
+        ProductsHeader(shelfName = "Category Name", modifier = Modifier.padding(16.dp))
     }
 }

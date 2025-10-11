@@ -5,7 +5,6 @@ import net.thechance.mena.dukan.presentation.util.pagination.PagingData
 data class DukanDetailsUiState(
     val dukanInfo: DukanInfo = DukanInfo(),
     val isDukanInfoLoading: Boolean = true,
-    val errorMessage: String? = null,
     val bestSellingProducts: PagingData<ProductUiState> = PagingData(),
     val shelves: PagingData<ShelfUiState> = PagingData(),
     val shelvesState: ShelvesState = ShelvesState.LOADING,
