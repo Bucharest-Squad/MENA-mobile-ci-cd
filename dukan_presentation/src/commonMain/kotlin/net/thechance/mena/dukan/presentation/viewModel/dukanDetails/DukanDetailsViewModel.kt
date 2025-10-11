@@ -10,7 +10,7 @@ import net.thechance.mena.dukan.domain.entity.Dukan
 import net.thechance.mena.dukan.domain.repository.DukanRepository
 import net.thechance.mena.dukan.domain.repository.ProductRepository
 import net.thechance.mena.dukan.domain.repository.ShelfRepository
-import net.thechance.mena.dukan.presentation.screen.dukanDetails.DukanDetailsArgs
+import net.thechance.mena.dukan.presentation.navigation.SavedStateHandleArgs.DUKAN_ID
 import net.thechance.mena.dukan.presentation.util.pagination.PagingData
 import net.thechance.mena.dukan.presentation.util.pagination.base.createPagingSource
 import net.thechance.mena.dukan.presentation.viewModel.base.BaseViewModel
@@ -26,7 +26,7 @@ class DukanDetailsViewModel(
     defaultDispatcher = defaultDispatcher
 ),
     DukanDetailsInteractionListener {
-    val dukanId: String = requireNotNull(savedStateHandle[DukanDetailsArgs.DUKAN_ID])
+    val dukanId: String = requireNotNull(savedStateHandle[DUKAN_ID])
 
     init {
         loadDukanDetails()

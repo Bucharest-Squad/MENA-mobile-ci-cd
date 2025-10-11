@@ -23,7 +23,7 @@ import net.thechance.mena.dukan.domain.repository.DukanRepository
 import net.thechance.mena.dukan.domain.repository.ProductRepository
 import net.thechance.mena.dukan.domain.repository.ShelfRepository
 import net.thechance.mena.dukan.domain.util.PagedResult
-import net.thechance.mena.dukan.presentation.screen.dukanDetails.DukanDetailsArgs
+import net.thechance.mena.dukan.presentation.navigation.SavedStateHandleArgs.DUKAN_ID
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -45,7 +45,7 @@ class DukanDetailsViewModelTest {
     @BeforeTest
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-        savedStateHandle = SavedStateHandle(mapOf(DukanDetailsArgs.DUKAN_ID to "dukan_123"))
+        savedStateHandle = SavedStateHandle(mapOf(DUKAN_ID to "dukan_123"))
 
         everySuspend { dukanRepository.getDukanDetailsByDukanId(any()) } returns dummyDukanDetails()
         everySuspend {
