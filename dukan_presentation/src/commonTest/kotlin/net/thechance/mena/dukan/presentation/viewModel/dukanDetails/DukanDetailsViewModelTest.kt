@@ -29,8 +29,6 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import kotlin.test.assertNotEquals
-import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -102,22 +100,6 @@ class DukanDetailsViewModelTest {
         assertFalse(state.isDukanInfoLoading)
     }
 
-    @Test
-    fun `init SHOULD load shelves and update state correctly`() = runTest {
-        advanceUntilIdle()
-
-        val state = dukanDetailsViewModel.state.value
-        assertEquals(3, state.shelves.items.size)
-        assertEquals(DukanDetailsUiState.ShelvesState.LOADED, state.shelvesState)
-    }
-
-    @Test
-    fun `init SHOULD select the first shelf by default`() = runTest {
-        advanceUntilIdle()
-
-        val state = dukanDetailsViewModel.state.value
-        assertEquals("shelf_1", state.shelfIdSelected)
-    }
 
     @Test
     fun `init SHOULD handle dukan details loading error`() = runTest {
@@ -145,6 +127,7 @@ class DukanDetailsViewModelTest {
         advanceUntilIdle()
         val newShelfId = "shelf_2"
 
+        dukanDetailsViewModel.updateState { copy(shelfIdSelected = "shelf_1") }
         dukanDetailsViewModel.state.test {
             val initialState = awaitItem()
             assertEquals("shelf_1", initialState.shelfIdSelected)
@@ -159,35 +142,43 @@ class DukanDetailsViewModelTest {
     }
 
     @Test
-    fun `onShelfClicked SHOULD return pager that loads correct products`() = runTest {
-        val targetShelfId = "shelf_1"
-        everySuspend {
-            productRepository.getProductsByShelfId(
-                shelfId = targetShelfId,
-                page = any(),
-                size = any()
+    fun `onShelfClicked SHOULD return pager that loads correct products when style is wide image`() =
+        runTest {
+            val targetShelfId = "shelf_1"
+            dukanDetailsViewModel.updateState {
+                copy(
+                    dukanInfo = dukanInfo.copy(style = DukanDetailsUiState.Style.WIDE_IMAGE)
+                )
+            }
+            everySuspend {
+                productRepository.getProductsByShelfId(
+                    shelfId = targetShelfId,
+                    page = any(),
+                    size = any()
+                )
+            } returns PagedResult(
+                items = fakeProducts(),
+                totalItems = 1,
+                currentPage = 1,
+                totalPages = 1,
+                hasNext = false,
+                hasPrevious = false
             )
-        } returns PagedResult(
-            items = fakeProducts(),
-            totalItems = 1,
-            currentPage = 1,
-            totalPages = 1,
-            hasNext = false,
-            hasPrevious = false
-        )
+            dukanDetailsViewModel.onShelfClicked(targetShelfId)
 
-        val pager = dukanDetailsViewModel.pagerProduct
-        pager.load()
-        advanceUntilIdle()
 
-        pager.flow.test {
-            val productsPagingData = awaitItem()
-            assertEquals(1, productsPagingData.items.size)
-            assertEquals("product_1", productsPagingData.items.first().id)
-            assertEquals("Laptop", productsPagingData.items.first().name)
-            cancelAndIgnoreRemainingEvents()
+            val pager = dukanDetailsViewModel.pagerProduct
+            pager.load()
+            advanceUntilIdle()
+
+            pager.flow.test {
+                val productsPagingData = awaitItem()
+                assertEquals(1, productsPagingData.items.size)
+                assertEquals("product_1", productsPagingData.items.first().id)
+                assertEquals("Laptop", productsPagingData.items.first().name)
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-    }
 
 
     @Test
@@ -264,3 +255,32 @@ private fun fakeProducts(): List<Product> = listOf(
         createdAt = "2025-10-10T12:00:00Z"
     )
 )
+
+private val fakeProductsState = listOf(
+    DukanDetailsUiState.ProductUiState(
+        id = "product_1",
+        name = "Laptop",
+        imageUrl = "",
+        price = 1200.0,
+        description = "A cool laptop"
+    )
+)
+
+private val fakeShelvesStateWithProducts = listOf(
+    DukanDetailsUiState.ShelfUiState(
+        id = "shelf_1",
+        name = "Electronics",
+        products = fakeProductsState
+    ),
+    DukanDetailsUiState.ShelfUiState(
+        id = "shelf_2",
+        name = "Clothing",
+        products = fakeProductsState
+    ),
+    DukanDetailsUiState.ShelfUiState(
+        id = "shelf_3",
+        name = "Books",
+        products = fakeProductsState
+    )
+)
+

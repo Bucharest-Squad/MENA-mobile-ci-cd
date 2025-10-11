@@ -22,7 +22,7 @@ class DukanDetailsUiStateTest {
         assertEquals(PagingData(), state.shelves)
         assertEquals(DukanDetailsUiState.ShelvesState.LOADING, state.shelvesState)
         assertEquals(DukanDetailsUiState.ProductsState.LOADING, state.productsState)
-        assertEquals("", state.shelfIdSelected)
+        assertEquals(null, state.shelfIdSelected)
         assertEquals("", state.dukanInfo.name)
         assertEquals("", state.dukanInfo.imageUrl)
         assertEquals(DukanDetailsUiState.Style.NO_IMAGE, state.dukanInfo.style)
