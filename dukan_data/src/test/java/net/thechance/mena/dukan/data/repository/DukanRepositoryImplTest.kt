@@ -122,9 +122,8 @@ class DukanRepositoryImplTest {
         assertEquals("https://cdn.example.com/dukan/image.png", url)
     }
 
-    // ADD THESE NEW TESTS FOR getDukanDetailsByDukanId
     @Test
-    fun `getDukanDetailsByDukanId returns mapped DukanDetails on success`() = runTest {
+    fun `getDukanDetailsByDukanId should call the underlying service`() = runTest {
         // Arrange
         val dukanId = "dukan123"
         var called = false
@@ -136,15 +135,87 @@ class DukanRepositoryImplTest {
         )
 
         // Act
+        repo.getDukanDetailsByDukanId(dukanId)
+
+        // Assert
+        assertTrue(called, "The service should have been called.")
+    }
+
+    @Test
+    fun `getDukanDetailsByDukanId should map id correctly`() = runTest {
+        // Arrange
+        val dukanId = "dukan123"
+        val repo = createDukanRepository(dukanDetailsResponse = { defaultDukanDetailsResponse() })
+
+        // Act
         val details = repo.getDukanDetailsByDukanId(dukanId)
 
         // Assert
-        assertTrue(called)
         assertEquals("dukan123", details.id)
+    }
+
+    @Test
+    fun `getDukanDetailsByDukanId should map name correctly`() = runTest {
+        // Arrange
+        val dukanId = "dukan123"
+        val repo = createDukanRepository(dukanDetailsResponse = { defaultDukanDetailsResponse() })
+
+        // Act
+        val details = repo.getDukanDetailsByDukanId(dukanId)
+
+        // Assert
         assertEquals("Test Dukan", details.name)
+    }
+
+    @Test
+    fun `getDukanDetailsByDukanId should map address correctly`() = runTest {
+        // Arrange
+        val dukanId = "dukan123"
+        val repo = createDukanRepository(dukanDetailsResponse = { defaultDukanDetailsResponse() })
+
+        // Act
+        val details = repo.getDukanDetailsByDukanId(dukanId)
+
+        // Assert
         assertEquals("123 Test St, Cairo, Egypt", details.address)
+    }
+
+    @Test
+    fun `getDukanDetailsByDukanId should map color correctly`() = runTest {
+        // Arrange
+        val dukanId = "dukan123"
+        val repo = createDukanRepository(dukanDetailsResponse = { defaultDukanDetailsResponse() })
+
+        // Act
+        val details = repo.getDukanDetailsByDukanId(dukanId)
+
+        // Assert
         assertEquals(Color("Red", "#FF0000"), details.color)
+    }
+
+    @Test
+    fun `getDukanDetailsByDukanId should map style correctly`() = runTest {
+        // Arrange
+        val dukanId = "dukan123"
+        val repo = createDukanRepository(dukanDetailsResponse = { defaultDukanDetailsResponse() })
+
+        // Act
+        val details = repo.getDukanDetailsByDukanId(dukanId)
+
+        // Assert
         assertEquals(Dukan.Style.WIDE_IMAGE, details.style)
+    }
+
+    @Test
+    fun `getDukanDetailsByDukanId should map latitude correctly`() = runTest {
+        // Arrange
+        val dukanId = "dukan123"
+        val repo = createDukanRepository(dukanDetailsResponse = { defaultDukanDetailsResponse() })
+
+        // Act
+        val details = repo.getDukanDetailsByDukanId(dukanId)
+
+        // Assert
         assertEquals(30.0444, details.coordinates.latitude)
     }
 

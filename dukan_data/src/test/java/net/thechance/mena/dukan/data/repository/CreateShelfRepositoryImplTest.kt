@@ -1,5 +1,6 @@
 package net.thechance.mena.dukan.data.repository
 
+import io.ktor.client.engine.mock.MockRequestHandleScope
 import io.ktor.client.engine.mock.respond
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.test.runTest
@@ -200,74 +201,158 @@ class CreateShelfRepositoryImplTest {
     }
 
     @Test
-    fun `getShelvesByDukanId calls correct endpoint and returns correct data`() = runTest {
+    fun `getShelvesByDukanId should call the service`() = runTest {
+        // Given
+        var called = false
+        val repository = createShelfRepository(
+            pagedShelvesResponse = {
+                called = true
+                defaultPagedShelvesResponse()
+            }
+        )
+        // When
+        repository.getShelvesByDukanId("dukan123", 0, 2)
+        // Then
+        assertTrue(called)
+    }
+
+    @Test
+    fun `getShelvesByDukanId should call the correct endpoint path`() = runTest {
         // Given
         val dukanId = "dukan123"
-        val page = 0
-        val pageSize = 2
-        var called = false
         var actualUrl = ""
         val repository = createShelfRepository(
             pagedShelvesResponse = { request ->
-                called = true
                 actualUrl = request.url.toString()
                 defaultPagedShelvesResponse()
             }
         )
-
         // When
-        val result = repository.getShelvesByDukanId(dukanId, page, pageSize)
-
+        repository.getShelvesByDukanId(dukanId, 0, 2)
         // Then
-        assertTrue(called)
         assertTrue(actualUrl.contains("/dukan/shelf/$dukanId"))
+    }
+
+    @Test
+    fun `getShelvesByDukanId should include correct page parameter`() = runTest {
+        // Given
+        val page = 0
+        var actualUrl = ""
+        val repository = createShelfRepository(
+            pagedShelvesResponse = { request ->
+                actualUrl = request.url.toString()
+                defaultPagedShelvesResponse()
+            }
+        )
+        // When
+        repository.getShelvesByDukanId("dukan123", page, 2)
+        // Then
         assertTrue(actualUrl.contains("page=$page"))
+    }
+
+    @Test
+    fun `getShelvesByDukanId should include correct size parameter`() = runTest {
+        // Given
+        val pageSize = 2
+        var actualUrl = ""
+        val repository = createShelfRepository(
+            pagedShelvesResponse = { request ->
+                actualUrl = request.url.toString()
+                defaultPagedShelvesResponse()
+            }
+        )
+        // When
+        repository.getShelvesByDukanId("dukan123", 0, pageSize)
+        // Then
         assertTrue(actualUrl.contains("size=$pageSize"))
+    }
+
+    @Test
+    fun `getShelvesByDukanId should return correct number of items`() = runTest {
+        // Given
+        val repository =
+            createShelfRepository(pagedShelvesResponse = { defaultPagedShelvesResponse() })
+        // When
+        val result = repository.getShelvesByDukanId("dukan123", 0, 2)
+        // Then
         assertEquals(2, result.items.size)
+    }
+
+    @Test
+    fun `getShelvesByDukanId should map item id correctly`() = runTest {
+        // Given
+        val repository =
+            createShelfRepository(pagedShelvesResponse = { defaultPagedShelvesResponse() })
+        // When
+        val result = repository.getShelvesByDukanId("dukan123", 0, 2)
+        // Then
         assertEquals("1", result.items[0].id)
+    }
+
+    @Test
+    fun `getShelvesByDukanId should map currentPage correctly`() = runTest {
+        // Given
+        val repository =
+            createShelfRepository(pagedShelvesResponse = { defaultPagedShelvesResponse() })
+        // When
+        val result = repository.getShelvesByDukanId("dukan123", 0, 2)
+        // Then
         assertEquals(0, result.currentPage)
+    }
+
+    @Test
+    fun `getShelvesByDukanId should map totalPages correctly`() = runTest {
+        // Given
+        val repository =
+            createShelfRepository(pagedShelvesResponse = { defaultPagedShelvesResponse() })
+        // When
+        val result = repository.getShelvesByDukanId("dukan123", 0, 2)
+        // Then
         assertEquals(5, result.totalPages)
+    }
+
+    @Test
+    fun `getShelvesByDukanId should map hasNext correctly`() = runTest {
+        // Given
+        val repository =
+            createShelfRepository(pagedShelvesResponse = { defaultPagedShelvesResponse() })
+        // When
+        val result = repository.getShelvesByDukanId("dukan123", 0, 2)
+        // Then
         assertTrue(result.hasNext)
     }
 
     @Test
-    fun `getShelvesByDukanId handles empty list response`() = runTest {
+    fun `getShelvesByDukanId when response is empty should return an empty list`() = runTest {
         // Given
-        val dukanId = "dukan123"
-        val repository = createShelfRepository(
-            pagedShelvesResponse = { request ->
-                respond(
-                    content = """
-                        {
-                            "content": [],
-                            "number": 0,
-                            "size": 10,
-                            "totalPages": 0,
-                            "totalElements": 0,
-                            "first": true,
-                            "last": true
-                        }
-                    """.trimIndent(),
-                    status = HttpStatusCode.OK,
-                    headers = jsonHeaders
-                )
-            }
-        )
+        val repository = createShelfRepository(pagedShelvesResponse = { emptyPagedResponse() })
 
         // When
-        val result = repository.getShelvesByDukanId(dukanId, 0, 10)
+        val result = repository.getShelvesByDukanId("dukan123", 0, 10)
 
         // Then
         assertTrue(result.items.isEmpty())
+    }
+
+    @Test
+    fun `getShelvesByDukanId when response is empty should return zero total items`() = runTest {
+        // Given
+        val repository = createShelfRepository(pagedShelvesResponse = { emptyPagedResponse() })
+
+        // When
+        val result = repository.getShelvesByDukanId("dukan123", 0, 10)
+
+        // Then
         assertEquals(0, result.totalItems)
     }
+
 
     @Test
     fun `getShelvesByDukanId handles error response`() = runTest {
         // Given
         val dukanId = "dukan123"
         val repository = createShelfRepository(
-            pagedShelvesResponse = { request ->
+            pagedShelvesResponse = {
                 respond("", HttpStatusCode.BadRequest, jsonHeaders)
             }
         )
@@ -282,4 +367,20 @@ class CreateShelfRepositoryImplTest {
 private fun fakeShelf() = Shelf(
     id = "123",
     name = "Test Shelf",
+)
+
+private fun MockRequestHandleScope.emptyPagedResponse() = respond(
+    content = """
+        {
+            "content": [],
+            "number": 0,
+            "size": 10,
+            "totalPages": 0,
+            "totalElements": 0,
+            "first": true,
+            "last": true
+        }
+    """.trimIndent(),
+    status = HttpStatusCode.OK,
+    headers = jsonHeaders
 )
