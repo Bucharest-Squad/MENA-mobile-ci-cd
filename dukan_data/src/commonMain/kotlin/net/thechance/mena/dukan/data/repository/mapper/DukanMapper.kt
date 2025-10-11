@@ -1,6 +1,5 @@
 package net.thechance.mena.dukan.data.repository.mapper
 
-import kotlinx.serialization.SerialName
 import net.thechance.mena.dukan.data.repository.dto.CreateDukanRequest
 import net.thechance.mena.dukan.data.repository.dto.DukanCategoryDto
 import net.thechance.mena.dukan.data.repository.dto.DukanColorDto

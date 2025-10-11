@@ -1,7 +1,6 @@
 package net.thechance.mena.dukan.presentation.screen.dukanDetails.components
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
@@ -25,10 +24,9 @@ fun ManageShelfProducts(
     AnimatedContent(
         targetState = state.productsState,
         transitionSpec = {
-            fadeIn(animationSpec = tween(300)) togetherWith
-                    fadeOut(animationSpec = tween(300))
+            fadeIn() togetherWith fadeOut()
         },
-        label = "ContentAnimation"
+        label = "ProductContentAnimation"
     ) { target ->
         when (target) {
             DukanDetailsUiState.ProductsState.LOADING -> {
@@ -52,7 +50,7 @@ fun ManageShelfProducts(
                 pager = pager
             )
 
-            else -> {}
+            DukanDetailsUiState.ProductsState.EMPTY -> {}
         }
     }
 }

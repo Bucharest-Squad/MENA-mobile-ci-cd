@@ -42,6 +42,7 @@ import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.dukan.presentation.component.productCard.PriceWithIcon
 import net.thechance.mena.dukan.presentation.component.productCard.ProductInfo
+import net.thechance.mena.dukan.presentation.util.animation.fadeTransitionSpec
 import net.thechance.mena.dukan.presentation.viewModel.dukanDetails.DukanDetailsUiState
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -53,7 +54,6 @@ fun ProductCard(
     productUiState: DukanDetailsUiState.ProductUiState,
     modifier: Modifier = Modifier
 ) {
-    var showProductQuantity by remember { mutableStateOf(false) }
 
     Row(
         modifier = modifier
@@ -110,17 +110,8 @@ fun ProductCard(
                 Spacer(modifier = Modifier.weight(1f))
 
                 AnimatedContent(
-                    targetState = showProductQuantity,
-                    transitionSpec ={ (
-                            fadeIn(animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing))
-                                    togetherWith fadeOut(animationSpec = tween(durationMillis = 300, easing = FastOutLinearInEasing)))
-                        .using(SizeTransform(
-                            sizeAnimationSpec = { _, _ ->
-                                tween(durationMillis = 300, easing = LinearOutSlowInEasing)
-                            }
-                        )
-                        )
-                    } ,
+                    targetState = productUiState.showProductQuantity,
+                    transitionSpec ={ fadeTransitionSpec() } ,
                     label = "CartToQuantity"
                 ) {
                     if (it) {
@@ -131,7 +122,9 @@ fun ProductCard(
                     } else {
                         ProductCart(
                             onClick = {
-                                showProductQuantity = true
+                                productUiState.copy(
+                                    showProductQuantity = true
+                                )
                             },
                         )
                     }
