@@ -54,10 +54,7 @@ class DukanDetailsViewModel(
 
     private fun onLoadDukanDetailsError(throwable: Throwable) {
         updateState {
-            copy(
-                isDukanInfoLoading = false,
-                errorMessage = throwable.message
-            )
+            copy(isDukanInfoLoading = false)
         }
     }
 
@@ -77,6 +74,18 @@ class DukanDetailsViewModel(
             shelves.items.isEmpty() -> DukanDetailsUiState.ShelvesState.EMPTY
             else -> DukanDetailsUiState.ShelvesState.LOADED
         }
+        updateProductsShelves(shelves)
+        updateState {
+            copy(
+                shelves = shelves,
+                shelvesState = shelfState,
+                shelfIdSelected = shelves.items.firstOrNull()?.id.orEmpty()
+            )
+        }
+        loadProductsForSelectedShelf()
+    }
+
+    private fun updateProductsShelves(shelves: PagingData<DukanDetailsUiState.ShelfUiState>) {
         if (state.value.dukanInfo.style != DukanDetailsUiState.Style.WIDE_IMAGE) {
             viewModelScope.launch {
                 shelves.copy(
@@ -88,49 +97,42 @@ class DukanDetailsViewModel(
                 )
             }
         }
-        updateState {
-            copy(
-                shelves = shelves,
-                shelvesState = shelfState,
-                shelfIdSelected = shelves.items.firstOrNull()?.id.orEmpty()
-            )
-        }
-        loadProductsForSelectedShelf()
     }
 
     private suspend fun getInitialProductsForShelf(shelfId: String): List<DukanDetailsUiState.ProductUiState> {
-        val product = productRepository.getProductsByShelfId(shelfId, 1, 6).items
+        val maxProducts = 6
+        val page = 1
+        val product = productRepository.getProductsByShelfId(shelfId, page, maxProducts).items
         return product.map { it.toUiState() }
     }
 
     private fun loadProductsForSelectedShelf() {
-        val selectedShelf = state.value.shelfIdSelected
-        selectedShelf?.let { shelf ->
-            viewModelScope.launch {
-                pagerProduct.refresh()
-            }
-            loadProductsFromRepository()
-            viewModelScope.launch {
-                pagerProduct.refresh()
-            }
+        viewModelScope.launch {
+            pagerProduct.refresh()
+        }
+        loadProductsFromRepository()
+        viewModelScope.launch {
+            pagerProduct.refresh()
         }
     }
 
     private fun loadProductsFromRepository() {
         tryToCollect(
-            onStart = {
-                updateState {
-                    copy(
-                        productsState = DukanDetailsUiState.ProductsState.LOADING,
-                        productsShelf = PagingData()
-                    )
-                }
-            },
+            onStart = ::onProductsStart,
             block = { pagerProduct.flow },
             onCollect = ::onProductsLoaded
         )
         viewModelScope.launch {
             pagerProduct.load()
+        }
+    }
+
+    private fun onProductsStart() {
+        updateState {
+            copy(
+                productsState = DukanDetailsUiState.ProductsState.LOADING,
+                productsShelf = PagingData()
+            )
         }
     }
 
@@ -168,6 +170,12 @@ class DukanDetailsViewModel(
 
     override fun onViewAllShelfProductsClicked(id: String, name: String) {
         emitEffect(DukanDetailsEffects.NavigateToViewAllShelfProducts(id, name))
+        updateState {
+            copy(
+                shelfIdSelected = id,
+                productsShelf = PagingData()
+            )
+        }
         loadProductsForSelectedShelf()
     }
 
@@ -189,7 +197,7 @@ class DukanDetailsViewModel(
         mapper = { it.toUiState() }
     ) {
         productRepository.getProductsByShelfId(
-            shelfId = state.value.shelfIdSelected!!,
+            shelfId = state.value.shelfIdSelected.toString(),
             page = it,
             size = 20
         )

@@ -6,7 +6,6 @@ import net.thechance.mena.dukan.presentation.util.pagination.PagingData
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
-import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -17,7 +16,6 @@ class DukanDetailsUiStateTest {
         val state = DukanDetailsUiState()
 
         assertTrue(state.isDukanInfoLoading)
-        assertNull(state.errorMessage)
         assertEquals(PagingData(), state.bestSellingProducts)
         assertEquals(PagingData(), state.shelves)
         assertEquals(DukanDetailsUiState.ShelvesState.LOADING, state.shelvesState)
