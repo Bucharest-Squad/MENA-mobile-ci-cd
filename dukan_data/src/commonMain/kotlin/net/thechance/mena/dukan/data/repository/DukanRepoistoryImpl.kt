@@ -22,6 +22,7 @@ import net.thechance.mena.dukan.domain.entity.Color
 import net.thechance.mena.dukan.domain.entity.Dukan
 import net.thechance.mena.dukan.domain.entity.MyDukanStatus
 import net.thechance.mena.dukan.domain.repository.DukanRepository
+import net.thechance.mena.dukan.domain.util.PagedResult
 
 class DukanRepositoryImpl(
     private val client: HttpClient
@@ -79,6 +80,20 @@ class DukanRepositoryImpl(
                 )
             }
         }
+    }
+
+    override suspend fun getEditorPicksDukans(
+        page: Int,
+        size: Int
+    ): PagedResult<Dukan> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getBestAroundDukans(
+        page: Int,
+        size: Int
+    ): PagedResult<Dukan> {
+        TODO("Not yet implemented")
     }
 
     override suspend fun isDukanNameTaken(name: String): Boolean {
