@@ -11,7 +11,7 @@ data class DukanDetailsUiState(
     val shelvesState: ShelvesState = ShelvesState.LOADING,
     val productsShelf: PagingData<ProductUiState> = PagingData(),
     val productsState: ProductsState = ProductsState.LOADING,
-    val shelfIdSelected: String = ""
+    val shelfIdSelected: String? = null
 ) {
     data class DukanInfo(
         val name: String = "",

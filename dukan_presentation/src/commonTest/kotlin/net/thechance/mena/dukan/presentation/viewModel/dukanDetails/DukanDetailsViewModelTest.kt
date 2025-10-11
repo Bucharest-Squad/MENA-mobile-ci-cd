@@ -176,7 +176,7 @@ class DukanDetailsViewModelTest {
             hasPrevious = false
         )
 
-        val pager = dukanDetailsViewModel.onShelfClicked(targetShelfId)
+        val pager = dukanDetailsViewModel.pagerProduct
         pager.load()
         advanceUntilIdle()
 
@@ -189,15 +189,6 @@ class DukanDetailsViewModelTest {
         }
     }
 
-    @Test
-    fun `getProductsPager SHOULD create and cache a new pager for a new shelfId`() = runTest {
-        val pager1 = dukanDetailsViewModel.onShelfClicked("shelf_1")
-        val pager2 = dukanDetailsViewModel.onShelfClicked("shelf_2")
-
-        assertNotNull(pager1)
-        assertNotNull(pager2)
-        assertNotEquals(pager1, pager2)
-    }
 
     @Test
     fun `getProductsPager SHOULD return the same cached pager instance for the same shelfId`() =
