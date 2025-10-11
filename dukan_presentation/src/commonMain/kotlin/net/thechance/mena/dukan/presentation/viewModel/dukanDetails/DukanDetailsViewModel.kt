@@ -30,7 +30,6 @@ class DukanDetailsViewModel(
 
     init {
         loadDukanDetails()
-        loadShelvesFromRepository()
     }
 
     private fun loadDukanDetails() {
@@ -50,6 +49,7 @@ class DukanDetailsViewModel(
                 isDukanInfoLoading = false
             )
         }
+        loadShelvesFromRepository()
     }
 
     private fun onLoadDukanDetailsError(throwable: Throwable) {
