@@ -21,11 +21,7 @@ import net.thechance.mena.dukan.presentation.util.OnSystemBackPressed
 import net.thechance.mena.dukan.presentation.util.pagination.Pager
 import net.thechance.mena.dukan.presentation.util.pagination.PagingConfig
 import net.thechance.mena.dukan.presentation.util.pagination.PagingSource
-import net.thechance.mena.dukan.presentation.util.stubPreviews.PreviewDukanDetailsInteractionListener
-import net.thechance.mena.dukan.presentation.viewModel.dukanDetails.DukanDetailsEffects
-import net.thechance.mena.dukan.presentation.viewModel.dukanDetails.DukanDetailsInteractionListener
-import net.thechance.mena.dukan.presentation.viewModel.dukanDetails.DukanDetailsUiState
-import net.thechance.mena.dukan.presentation.viewModel.dukanDetails.DukanDetailsViewModel
+import net.thechance.mena.dukan.presentation.viewModel.shelfDetails.ShelfDetailsEffects
 import net.thechance.mena.dukan.presentation.viewModel.shelfDetails.ShelfDetailsInteractionListener
 import net.thechance.mena.dukan.presentation.viewModel.shelfDetails.ShelfDetailsUiState
 import net.thechance.mena.dukan.presentation.viewModel.shelfDetails.ShelfDetailsViewModel
@@ -45,8 +41,7 @@ fun ShelfDetailsScreen(
 
     ObserveAsEffect(viewModel.effect) { effect ->
         when (effect) {
-            DukanDetailsEffects.NavigateBack -> navController.popBackStack()
-            else -> {}
+            ShelfDetailsEffects.NavigateBack -> navController.popBackStack()
         }
     }
     ShelfDetailsContent(
