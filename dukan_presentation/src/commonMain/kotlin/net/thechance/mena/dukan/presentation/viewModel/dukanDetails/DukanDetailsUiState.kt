@@ -45,11 +45,11 @@ data class DukanDetailsUiState(
     }
 
     data class ProductUiState(
-        val id: String,
-        val name: String,
-        val imageUrl: String,
-        val price: Double,
-        val description: String
+        val id: String = "",
+        val name: String = "",
+        val imageUrl: String = "",
+        val price: Double = 0.0,
+        val description: String = ""
     )
 
     enum class ProductsState {
