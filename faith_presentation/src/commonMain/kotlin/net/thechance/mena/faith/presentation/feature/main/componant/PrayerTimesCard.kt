@@ -103,14 +103,11 @@ fun PrayerTimesCard(
                         style = Theme.typography.title.medium
                     )
                     Text(
-                        text = if (prayer.isAM)
-                            stringResource(Res.string.am_label)
-                        else
-                            stringResource(Res.string.pm_label),
+                        text = if (prayer.isAM) stringResource(Res.string.am_label)
+                        else stringResource(Res.string.pm_label),
                         style = Theme.typography.label.small,
                         color = Theme.colorScheme.shadeSecondary
                     )
-
                 }
             }
         }
@@ -120,11 +117,7 @@ fun PrayerTimesCard(
             else -> 8.dp
         }
 
-        val itemWidth = if (prayerTimesUiState.prayers.isNotEmpty()) {
-            rowWidth / prayerTimesUiState.prayers.size
-        } else {
-            0f
-        }
+        val itemWidth = if (prayerTimesUiState.prayers.isNotEmpty()) rowWidth / prayerTimesUiState.prayers.size else 0f
 
         val indicatorOffsetPx by animateDpAsState(
             targetValue = with(LocalDensity.current) {

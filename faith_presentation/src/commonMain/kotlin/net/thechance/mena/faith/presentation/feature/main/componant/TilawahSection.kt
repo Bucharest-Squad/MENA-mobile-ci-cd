@@ -40,8 +40,7 @@ fun TilawahSection(
     modifier: Modifier
 ) {
     Column(
-        modifier = modifier
-            .fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(Theme.spacing._12)
     ) {
         Text(

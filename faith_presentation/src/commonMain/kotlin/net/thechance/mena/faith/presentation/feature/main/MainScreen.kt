@@ -93,35 +93,7 @@ private fun Content(
     listener: MainInteractionListener
 ) {
     Scaffold(
-        topBar = {
-            AppBar(
-                title = stringResource(Res.string.faith_title),
-                trailingContent = {
-                    Row(
-                        modifier = Modifier
-                            .background(
-                                color = Theme.colorScheme.background.surfaceLow,
-                                shape = RoundedCornerShape(Theme.radius.full)
-                            )
-                            .padding(horizontal = Theme.spacing._8, vertical = Theme.spacing._4),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(Theme.spacing._4)
-                    ) {
-                        Icon(
-                            painter = painterResource(Res.drawable.ic_location),
-                            contentDescription = stringResource(Res.string.location),
-                            tint = Theme.colorScheme.shadePrimary,
-                            modifier = Modifier.size(16.dp)
-                        )
-                        Text(
-                            text = "Baghdad, Iraq",
-                            color = Theme.colorScheme.shadePrimary,
-                            style = Theme.typography.label.small
-                        )
-                    }
-                }
-            )
-        }
+        topBar = { MainTopBar() }
     ) {
         val featureCards = listOf(
             FeatureItem(
@@ -182,20 +154,49 @@ private fun Content(
             }
 
             items(featureCards) { card ->
-
-                SmallFeatureCard(
+                FeatureNavigationCard(
                     icon = card.icon,
                     title = card.title,
                     onClick = card.onClick,
                 )
-
             }
         }
     }
 }
 
 @Composable
-private fun SmallFeatureCard(
+private fun MainTopBar() {
+    AppBar(
+        title = stringResource(Res.string.faith_title),
+        trailingContent = {
+            Row(
+                modifier = Modifier
+                    .background(
+                        color = Theme.colorScheme.background.surfaceLow,
+                        shape = RoundedCornerShape(Theme.radius.full)
+                    )
+                    .padding(horizontal = Theme.spacing._8, vertical = Theme.spacing._4),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(Theme.spacing._4)
+            ) {
+                Icon(
+                    painter = painterResource(Res.drawable.ic_location),
+                    contentDescription = stringResource(Res.string.location),
+                    tint = Theme.colorScheme.shadePrimary,
+                    modifier = Modifier.size(16.dp)
+                )
+                Text(
+                    text = "Baghdad, Iraq",
+                    color = Theme.colorScheme.shadePrimary,
+                    style = Theme.typography.label.small
+                )
+            }
+        }
+    )
+}
+
+@Composable
+private fun FeatureNavigationCard(
     icon: Painter,
     title: String,
     onClick: () -> Unit,
