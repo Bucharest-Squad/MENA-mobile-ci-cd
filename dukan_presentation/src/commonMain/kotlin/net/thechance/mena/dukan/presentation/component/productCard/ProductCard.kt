@@ -34,15 +34,15 @@ fun ProductCard(
     productImageUrl: String,
     productDescription: String,
     productPrice: Double,
+    modifier: Modifier = Modifier,
     productCardBackground: Color? = null,
     productAction: @Composable () -> Unit,
-    modifier: Modifier = Modifier
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
             .background(
-                color = productCardBackground?: Theme.colorScheme.background.surface,
+                color = productCardBackground?: Color.Transparent,
                 shape = RoundedCornerShape(size = Theme.radius.md)
             ).height(104.dp)
             .padding(Theme.spacing._4),
