@@ -89,16 +89,12 @@ kover.reports {
                 "net.thechance.mena.faith.presentation.feature.quran.bookmark.BookmarkViewModel",
                 "net.thechance.mena.faith.presentation.feature.quran.sur.SurViewModel",
                 "net.thechance.mena.faith.presentation.feature.quran.surah.SurahViewModel",
+                "net.thechance.mena.faith.presentation.feature.main.MainViewModel",
                 "*MapperKt",
             )
         }
 
         excludes {
-            classes(
-                "net.thechance.mena.faith.presentation.feature.main.MainViewModel",
-                "net.thechance.mena.faith.presentation.feature.main.*",
-                "net.thechance.mena.faith.presentation.util.extentions.*"
-            )
             annotatedBy("net.thechance.mena.faith.domain.annotation.KoverIgnore")
         }
     }
