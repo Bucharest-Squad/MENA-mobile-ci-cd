@@ -25,6 +25,7 @@ import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.error
 import mena.core_chat_presentation.generated.resources.error_cant_get_messages
 import net.thechance.mena.core_chat.domain.entity.Message
+import net.thechance.mena.core_chat.domain.entity.MessageContent
 import net.thechance.mena.core_chat.domain.entity.MessageStatus
 import net.thechance.mena.core_chat.domain.repository.ChatRepository
 import net.thechance.mena.core_chat.presentation.components.SnackBarData
@@ -71,12 +72,15 @@ class ChatViewModelTest {
         chatViewModel = ChatViewModel(repository, chatArgs, effector, testDispatcher)
         testDispatcher.scheduler.advanceUntilIdle()
 
-        assertThat(chatViewModel.state.value.chatListItems.currentUiMessages())
+        assertThat(
+            chatViewModel.state.value.chatListItems.currentUiMessages()
+                .map { it.copy(isLastInSeries = false, isVisibleMessageInfo = false) }
+        )
             .isEqualTo(messages.map { it.toUi(chatRequesterId) }.reversed())
     }
 
     @Test
-    fun `init should send snack bar effect when its loading the messages failed`() {
+    fun `init should send snack bar effect when its LOADING the messages failed`() {
         everySuspend { repository.loadMessages(chatId) } throws Exception()
 
         chatViewModel = ChatViewModel(repository, chatArgs, effector, testDispatcher)
@@ -99,7 +103,10 @@ class ChatViewModelTest {
         chatViewModel = ChatViewModel(repository, chatArgs, effector, testDispatcher)
         testDispatcher.scheduler.advanceUntilIdle()
 
-        assertThat(chatViewModel.state.value.chatListItems.currentUiMessages()).isEqualTo(
+        assertThat(
+            chatViewModel.state.value.chatListItems.currentUiMessages()
+                .map { it.copy(isLastInSeries = false, isVisibleMessageInfo = false) }
+        ).isEqualTo(
             listOf(messages.first().toUi(chatRequesterId))
         )
     }
@@ -167,7 +174,7 @@ class ChatViewModelTest {
         val first = chatViewModel.state.value.chatListItems.currentUiMessages().first()
         assertThat(first.chatId).isEqualTo(chatId)
         assertThat(first.isMine).isTrue()
-        assertThat(first.status).isEqualTo(MessageStatusUiState.FAILED)
+        assertThat(first.status).isEqualTo(MessageStatus.FAILED)
         assertThat(chatViewModel.state.value.inputMessage).isEmpty()
     }
 
@@ -223,7 +230,9 @@ class ChatViewModelTest {
 
         chatViewModel.onResendMessageClicked()
 
-        assertThat(chatViewModel.state.value.chatListItems.currentUiMessages().first().status).isEqualTo(MessageStatusUiState.SENDING)
+        assertThat(
+            chatViewModel.state.value.chatListItems.currentUiMessages().first().status
+        ).isEqualTo(MessageStatus.LOADING)
 
         val sentMessage = failedMessage.toEntity().copy(status = MessageStatus.SENT)
         everySuspend { repository.loadMessages(chatId) } returns listOf(sentMessage)
@@ -233,7 +242,7 @@ class ChatViewModelTest {
 
         val finalMessages = chatViewModel.state.value.chatListItems.currentUiMessages()
         if (finalMessages.isNotEmpty()) {
-            assertThat(finalMessages.first().status).isEqualTo(MessageStatusUiState.SENT)
+            assertThat(finalMessages.first().status).isEqualTo(MessageStatus.SENT)
         } else {
             verifySuspend { repository.sendMessage(any()) }
         }
@@ -251,44 +260,40 @@ class ChatViewModelTest {
 
         chatViewModel.onResendMessageClicked()
 
-        assertThat(chatViewModel.state.value.chatListItems.currentUiMessages().first().status).isEqualTo(MessageStatusUiState.SENDING)
+        assertThat(
+            chatViewModel.state.value.chatListItems.currentUiMessages().first().status
+        ).isEqualTo(MessageStatus.LOADING)
         testDispatcher.scheduler.advanceUntilIdle()
-        assertThat(chatViewModel.state.value.chatListItems.currentUiMessages().first().status).isEqualTo(MessageStatusUiState.FAILED)
+        assertThat(
+            chatViewModel.state.value.chatListItems.currentUiMessages().first().status
+        ).isEqualTo(MessageStatus.FAILED)
     }
 
     @Test
     fun `onMessageClicked should toggle showMessageInfo when message with id exists`() {
         val message = messages.first()
-        val markedMessageUiState = MarkedMessageUiState(
-            message = message.toUi(chatRequesterId),
-            isMarkedLastInSeries = false,
-            showMessageInfo = false
-        )
-        val chatListItem = ChatListItem.Message(markedMessageUiState)
+        val messageUiState = message.toUi(chatRequesterId)
+        val chatListItem = ChatListItem.Message(messageUiState)
         chatViewModel.updateState { it.copy(chatListItems = listOf(chatListItem)) }
 
         chatViewModel.onMessageClicked(message.id)
         testDispatcher.scheduler.advanceUntilIdle()
 
         val updatedItem = chatViewModel.state.value.chatListItems.first() as ChatListItem.Message
-        assertThat(updatedItem.data.showMessageInfo).isTrue()
+        assertThat(updatedItem.data.isVisibleMessageInfo).isTrue()
 
         chatViewModel.onMessageClicked(message.id)
         testDispatcher.scheduler.advanceUntilIdle()
 
         val toggledBack = chatViewModel.state.value.chatListItems.first() as ChatListItem.Message
-        assertThat(toggledBack.data.showMessageInfo).isFalse()
+        assertThat(toggledBack.data.isVisibleMessageInfo).isFalse()
     }
 
     @Test
     fun `onMessageClicked should not change items when message id does not exist`() {
         val message = messages.first()
-        val markedMessageUiState = MarkedMessageUiState(
-            message = message.toUi(chatRequesterId),
-            isMarkedLastInSeries = false,
-            showMessageInfo = false
-        )
-        val chatListItem = ChatListItem.Message(markedMessageUiState)
+        val messageUiState = message.toUi(chatRequesterId)
+        val chatListItem = ChatListItem.Message(messageUiState)
         chatViewModel.updateState { it.copy(chatListItems = listOf(chatListItem)) }
 
         val nonExistentId = Uuid.parse("99999999-9999-9999-9999-999999999999")
@@ -296,23 +301,33 @@ class ChatViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
 
         val result = chatViewModel.state.value.chatListItems.first() as ChatListItem.Message
-        assertThat(result.data.showMessageInfo).isEqualTo(markedMessageUiState.showMessageInfo)
+        assertThat(result.data.isVisibleMessageInfo).isEqualTo(messageUiState.isVisibleMessageInfo)
     }
 
 
-    private fun List<ChatListItem>.currentUiMessages(): List<TextMessageUiState> =
+
+    @Test
+    fun `onSendImageClicked should update message to FAILED status after failed repository call`() {
+
+
+        val imageByteArray = byteArrayOf(1, 2, 3)
+        val imageByteArrays = listOf(imageByteArray)
+        everySuspend { repository.sendMessage(any()) } throws Exception("Failed to send")
+
+        chatViewModel.onSendImageClicked(imageByteArrays)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val firstMessage = chatViewModel.state.value.chatListItems.currentUiMessages().first()
+        assertThat(firstMessage.status).isEqualTo(MessageStatus.FAILED)
+    }
+
+    private fun List<ChatListItem>.currentUiMessages(): List<MessageUiState> =
         filterIsInstance<ChatListItem.Message>()
-            .map { it.data.message }
+            .map { it.data }
             .sortedByDescending { it.sendTime }
 
-    private fun TextMessageUiState.toChatListMessage(): ChatListItem.Message =
-        ChatListItem.Message(
-            MarkedMessageUiState(
-                message = this,
-                isMarkedLastInSeries = false,
-                showMessageInfo = false
-            )
-        )
+    private fun MessageUiState.toChatListMessage(): ChatListItem.Message =
+        ChatListItem.Message(this)
 
     private companion object {
 
@@ -330,17 +345,17 @@ class ChatViewModelTest {
                     message1Id,
                     chatRequesterId,
                     chatId,
-                    "Hello, World",
                     LocalDateTime.now(),
-                    MessageStatus.SENT
+                    MessageStatus.SENT,
+                    MessageContent.Text("Hello, World")
                 ),
                 Message(
                     message2Id,
                     chatRequesterId,
                     chatId,
-                    "Hello, World2",
                     LocalDateTime.now(),
-                    MessageStatus.SENT
+                    MessageStatus.SENT,
+                    MessageContent.Text("Hello, World2")
                 )
             )
     }
