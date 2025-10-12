@@ -7,9 +7,6 @@ import androidx.room.RewriteQueriesToDropUnusedColumns
 @Dao
 @RewriteQueriesToDropUnusedColumns
 interface AyahDao {
-    @Query("SELECT * FROM ayat")
-    suspend fun getAllAyat(): List<AyahDto>
-
     @Query("""
     SELECT *
     FROM ayat 
