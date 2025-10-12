@@ -32,7 +32,6 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun ShelfDetailsScreen(
-    shelfId: String,
     shelfName: String,
     viewModel: ShelfDetailsViewModel = koinViewModel()
 ) {

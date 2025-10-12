@@ -19,17 +19,6 @@ class ShelfDetailsUiStateTest {
         assertEquals(ShelfDetailsUiState.ProductsState.LOADING, state.productsState)
     }
 
-    @Test
-    fun `default state SHOULD have empty shelf name`() = runTest {
-        val state = ShelfDetailsUiState()
-        assertEquals("", state.shelfName)
-    }
-
-    @Test
-    fun `default state SHOULD have empty shelf id`() = runTest {
-        val state = ShelfDetailsUiState()
-        assertEquals("", state.shelfId)
-    }
 
     @Test
     fun `default state SHOULD have false showProductQuantity`() = runTest {
