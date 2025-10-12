@@ -1,4 +1,4 @@
-package net.thechance.mena.dukan.presentation.screen.manageDukan.compnent
+package net.thechance.mena.dukan.presentation.screen.dukanDetails.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -9,25 +9,20 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.dukan.presentation.component.productCard.EditProductIcon
 import net.thechance.mena.dukan.presentation.component.productCard.ProductCard
 import net.thechance.mena.dukan.presentation.util.pagination.LoadMoreOnScroll
 import net.thechance.mena.dukan.presentation.util.pagination.Pager
-import net.thechance.mena.dukan.presentation.util.pagination.PagingConfig
-import net.thechance.mena.dukan.presentation.util.stubPreviews.FakeProductPagingSource
-import net.thechance.mena.dukan.presentation.util.stubPreviews.fakeProducts
-import net.thechance.mena.dukan.presentation.viewModel.manageDukan.ProductUiState
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import net.thechance.mena.dukan.presentation.util.pagination.PagingData
+import net.thechance.mena.dukan.presentation.viewModel.shelfDetails.ShelfDetailsUiState
 
 
 @Composable
 fun ProductsList(
-    products: List<ProductUiState>,
-    pager: Pager<Int, ProductUiState>,
+    products: PagingData<ShelfDetailsUiState.ProductUiState>,
+    pager: Pager<Int, ShelfDetailsUiState.ProductUiState>,
+    cartProductIcon: @Composable () -> Unit,
     modifier: Modifier = Modifier,
-    onProductClick: (ProductUiState) -> Unit = {},
 ) {
     val lazyListState = rememberLazyListState()
 
@@ -43,34 +38,17 @@ fun ProductsList(
         ),
         state = lazyListState
     ) {
-        items(products) { product ->
+        items(products.items) { product ->
             ProductCard(
-                modifier = Modifier.animateItem(),
+                modifier = Modifier,
                 productName = product.name,
                 productImageUrl = product.imageUrl,
-                productDescription = product.description ?: "",
-                productPrice = product.price,
+                productDescription = product.description,
                 productCardBackground = Theme.colorScheme.background.surfaceLow,
-                productAction = {
-                    EditProductIcon(onClick = {
-                        onProductClick(product)
-                    })
-                }
+                productPrice = product.price,
+                productAction = { cartProductIcon() },
             )
         }
     }
 }
 
-@Preview
-@Composable
-private fun ProductsLayoutPreview() {
-    MenaTheme {
-        ProductsList(
-            fakeProducts(),
-            pager = Pager(
-                config = PagingConfig(),
-                pagingSourceFactory = { FakeProductPagingSource() }
-            ),
-        )
-    }
-}
