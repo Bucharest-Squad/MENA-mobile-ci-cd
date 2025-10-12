@@ -52,4 +52,8 @@
     <string name="profile_profile_picture_content_description">صورة الملف الشخصي</string>
     <string name="profile_share_icon_content_description">أيقونة المشاركة</string>
     <string name="profile_invite_friends_icon_content_description">أيقونة دعوة الأصدقاء</string>
+
+    <!--    crop image-->
+    <string name="save">حفظ</string>
+    <string name="upload_another_image">رفع صورة أخرى</string>
 </resources>

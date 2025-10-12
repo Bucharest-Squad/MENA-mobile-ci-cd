@@ -81,4 +81,8 @@
     <string name="profile_profile_picture_content_description">Profile Picture</string>
     <string name="profile_share_icon_content_description">Share Icon</string>
     <string name="profile_invite_friends_icon_content_description">Invite Friends Icon</string>
+
+    <!--    crop image-->
+    <string name="save">Save</string>
+    <string name="upload_another_image">Upload another image</string>
 </resources>
