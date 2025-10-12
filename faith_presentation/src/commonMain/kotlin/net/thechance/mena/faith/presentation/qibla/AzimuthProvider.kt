@@ -3,7 +3,7 @@ package net.thechance.mena.faith.presentation.qibla
 import kotlinx.coroutines.flow.Flow
 
 
-interface AzimuthProvider {
+expect class AzimuthProvider {
     val azimuthFlow: Flow<Float>
     fun startListening()
     fun stopListening()
