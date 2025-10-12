@@ -154,7 +154,7 @@ private fun Content(
             }
 
             items(featureCards) { card ->
-                FeatureNavigationCard(
+                FaithFeatureCard(
                     icon = card.icon,
                     title = card.title,
                     onClick = card.onClick,
@@ -196,7 +196,7 @@ private fun MainTopBar() {
 }
 
 @Composable
-private fun FeatureNavigationCard(
+private fun FaithFeatureCard(
     icon: Painter,
     title: String,
     onClick: () -> Unit,
