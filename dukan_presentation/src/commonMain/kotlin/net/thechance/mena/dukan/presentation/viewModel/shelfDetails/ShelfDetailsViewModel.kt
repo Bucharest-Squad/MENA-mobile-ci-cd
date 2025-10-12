@@ -8,6 +8,7 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 import net.thechance.mena.dukan.domain.repository.ProductRepository
 import net.thechance.mena.dukan.presentation.navigation.SavedStateHandleArgs.SHELF_ID
+import net.thechance.mena.dukan.presentation.navigation.SavedStateHandleArgs.SHELF_NAME
 import net.thechance.mena.dukan.presentation.util.pagination.PagingData
 import net.thechance.mena.dukan.presentation.util.pagination.base.createPagingSource
 import net.thechance.mena.dukan.presentation.viewModel.base.BaseViewModel
@@ -21,6 +22,7 @@ class ShelfDetailsViewModel(
     defaultDispatcher = defaultDispatcher
 ), ShelfDetailsInteractionListener {
     val shelfId: String = requireNotNull(savedStateHandle[SHELF_ID])
+    val shelfName : String = requireNotNull(savedStateHandle[SHELF_NAME])
 
     init {
         loadProductsFromRepository()
