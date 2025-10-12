@@ -32,7 +32,6 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun ShelfDetailsScreen(
-    shelfName: String,
     viewModel: ShelfDetailsViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsState()
@@ -44,7 +43,7 @@ fun ShelfDetailsScreen(
         }
     }
     ShelfDetailsContent(
-        shelfName = shelfName,
+        shelfName = viewModel.shelfName,
         state = state,
         listener = viewModel,
         pager = viewModel.pagerProduct

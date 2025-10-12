@@ -22,7 +22,7 @@ class ShelfDetailsViewModel(
     defaultDispatcher = defaultDispatcher
 ), ShelfDetailsInteractionListener {
     val shelfId: String = requireNotNull(savedStateHandle[SHELF_ID])
-    val shelfName : String = requireNotNull(savedStateHandle[SHELF_NAME])
+    val shelfName: String = requireNotNull(savedStateHandle[SHELF_NAME])
 
     init {
         loadProductsFromRepository()
