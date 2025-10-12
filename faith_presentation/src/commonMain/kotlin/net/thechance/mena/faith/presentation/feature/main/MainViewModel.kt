@@ -9,8 +9,6 @@ import net.thechance.mena.faith.domain.entity.PrayerTime
 import net.thechance.mena.faith.domain.repository.PrayerTimeRepository
 import net.thechance.mena.faith.domain.repository.QuranRepository
 import net.thechance.mena.faith.presentation.base.BaseViewModel
-import net.thechance.mena.faith.presentation.feature.main.MainMapper.toTilawahUiState
-import net.thechance.mena.faith.presentation.feature.main.MainMapper.toUi
 import net.thechance.mena.faith.presentation.util.extentions.getHijriDate
 import net.thechance.mena.faith.presentation.util.extentions.getSunriseTime
 import kotlin.time.Clock
