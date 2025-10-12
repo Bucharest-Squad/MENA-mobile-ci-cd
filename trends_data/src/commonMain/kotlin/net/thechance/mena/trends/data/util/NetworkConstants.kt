@@ -9,10 +9,13 @@ internal object NetworkConstants {
     const val USER_STATUS_ENDPOINT = "user/categories/status"
     const val THUMBNAIL_ENDPOINT = "thumbnail"
 
+    const val IDENTITY_PATH = "identity"
+    const val PROFILE_ENDPOINT = "profile/me"
+
     // Parameters
     const val PAGE_PARAMETER = "page"
 
-    //keys
+    //key
     const val VIDEO = "video"
     const val THUMBNAIL = "thumbnail"
 }
