@@ -3,6 +3,7 @@ package net.thechance.mena.dukan.presentation.viewModel.shelfDetails
 import net.thechance.mena.dukan.presentation.util.pagination.PagingData
 
 data class ShelfDetailsUiState(
+    val shelfName: String = "",
     val productsShelf: PagingData<ProductUiState> = PagingData(),
     val productsState: ProductsState = ProductsState.LOADING,
     val showProductQuantity: Boolean = false

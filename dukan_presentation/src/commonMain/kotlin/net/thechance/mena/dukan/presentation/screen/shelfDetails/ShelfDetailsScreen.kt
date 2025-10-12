@@ -43,7 +43,6 @@ fun ShelfDetailsScreen(
         }
     }
     ShelfDetailsContent(
-        shelfName = viewModel.shelfName,
         state = state,
         listener = viewModel,
         pager = viewModel.pagerProduct
@@ -54,7 +53,6 @@ fun ShelfDetailsScreen(
 
 @Composable
 private fun ShelfDetailsContent(
-    shelfName: String,
     state: ShelfDetailsUiState,
     listener: ShelfDetailsInteractionListener,
     pager: Pager<Int, ShelfDetailsUiState.ProductUiState>
@@ -64,7 +62,7 @@ private fun ShelfDetailsContent(
     Scaffold(
         topBar = {
             AppBar(
-                title = shelfName,
+                title = state.shelfName,
                 leadingContent = {
                     Icon(
                         painter = painterResource(Res.drawable.ic_arrow_left),
@@ -103,7 +101,6 @@ private fun ShelfDetailsContent(
 private fun ShelfDetailsPreview() {
     MenaTheme {
         ShelfDetailsContent(
-            shelfName = "Skirt",
             state = ShelfDetailsUiState(),
             listener = object : ShelfDetailsInteractionListener {
                 override fun onBackClicked() {}

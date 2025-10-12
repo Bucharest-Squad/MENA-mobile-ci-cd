@@ -25,6 +25,7 @@ class ShelfDetailsViewModel(
     val shelfName: String = requireNotNull(savedStateHandle[SHELF_NAME])
 
     init {
+        updateState { copy(shelfName = shelfName) }
         loadProductsFromRepository()
     }
 
