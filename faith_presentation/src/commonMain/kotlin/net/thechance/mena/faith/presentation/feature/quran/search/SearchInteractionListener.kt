@@ -4,5 +4,5 @@ interface SearchInteractionListener {
     fun onQueryChange(query: String)
     fun onClearQueryClick()
     fun onBackClick()
-    fun onSearchResultClick(surahId: Int? = null, ayahId: Int)
+    fun onSearchResultClick(surahId: Int, ayahId: Int)
 }
