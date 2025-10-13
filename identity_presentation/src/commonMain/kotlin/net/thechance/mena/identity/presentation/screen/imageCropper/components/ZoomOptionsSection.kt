@@ -4,7 +4,6 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.height
@@ -31,12 +30,17 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun ColumnScope.ZoomOptionsSection(
+fun ZoomOptionsSection(
     onResetClick: () -> Unit,
     isZoomInEnabled: Boolean,
     isZoomOutEnabled: Boolean,
-    onZoomInClicked: () -> Unit = {},
-    onZoomOutClicked: () -> Unit = {}
+    onZoomInClicked: () -> Unit,
+    onZoomOutClicked: () -> Unit,
+    modifier: Modifier = Modifier,
+    zoomInIcon: Painter = painterResource(Res.drawable.ic_add),
+    zoomOutIcon: Painter = painterResource(Res.drawable.ic_remove),
+    enabledColor: Color = Theme.colorScheme.primary.primary,
+    disabledColor: Color = Theme.colorScheme.disabled
 ) {
     val zoomOutButtonBackground by animateColorAsState(
         targetValue = when (isZoomOutEnabled) {
@@ -53,26 +57,29 @@ fun ColumnScope.ZoomOptionsSection(
         label = "zoomInButtonBackground"
     )
 
-    Row(
-        Modifier
-            .align(Alignment.CenterHorizontally)
-            .padding(top = 12.dp)
-            .clip(RoundedCornerShape(Theme.radius.full))
-            .background(Theme.colorScheme.background.surfaceLow)
-            .padding(horizontal = 12.dp, vertical = 6.dp)
-    ) {
+    val zoomInIconTint by animateColorAsState(
+        targetValue = if (isZoomInEnabled) enabledColor else disabledColor
+    )
+
+    val zoomOutIconTint by animateColorAsState(
+        targetValue = if (isZoomOutEnabled) enabledColor else disabledColor
+    )
+
+    Row(modifier = modifier) {
         ZoomButton(
-            painter = painterResource(Res.drawable.ic_remove),
+            painter = zoomOutIcon,
             contentDescription = "zoom out",
             backgroundColor = zoomOutButtonBackground,
+            iconTint = zoomOutIconTint,
             isEnabled = isZoomOutEnabled,
             onZoomClicked = onZoomOutClicked
         )
 
         ZoomButton(
-            painter = painterResource(Res.drawable.ic_add),
+            painter = zoomInIcon,
             contentDescription = "zoom in",
             backgroundColor = zoomInButtonBackground,
+            iconTint = zoomInIconTint,
             isEnabled = isZoomInEnabled,
             onZoomClicked = onZoomInClicked,
             modifier = Modifier.padding(start = 4.dp)
@@ -93,17 +100,11 @@ private fun ZoomButton(
     painter: Painter,
     contentDescription: String,
     backgroundColor: Color,
+    iconTint: Color,
     onZoomClicked: () -> Unit,
     modifier: Modifier = Modifier,
     isEnabled: Boolean
 ) {
-    val disabledColor = Theme.colorScheme.disabled
-    val enabledColor = Theme.colorScheme.primary.primary
-
-    val iconTint by animateColorAsState(
-        targetValue = if (isEnabled) enabledColor else disabledColor
-    )
-
     Icon(
         painter = painter,
         contentDescription = contentDescription,

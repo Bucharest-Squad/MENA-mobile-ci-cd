@@ -3,9 +3,10 @@ package net.thechance.mena.identity.presentation.screen.imageCropper.components
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectTransformGestures
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.BlendMode
@@ -14,6 +15,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntSize
 
 @Composable
@@ -23,9 +25,19 @@ fun ImageCropperSection(
     scale: Float,
     translation: Offset,
     modifier: Modifier = Modifier,
-    onTransformation: (gestureZoom: Float, size: IntSize, pan: Offset) -> Unit
+    onTransformation: (gestureZoom: Float, pan: Offset) -> Unit,
+    updateImageSize: (IntSize) -> Unit
 ) {
-    Box(modifier) {
+    val density = LocalDensity.current
+
+    BoxWithConstraints(modifier) {
+
+        LaunchedEffect(Unit) {
+            with(density) {
+                updateImageSize(IntSize(maxWidth.roundToPx(), maxHeight.roundToPx()))
+            }
+        }
+
         Image(
             painter = image,
             contentDescription = contentDescription,
@@ -40,7 +52,7 @@ fun ImageCropperSection(
                 )
                 .pointerInput(Unit) {
                     detectTransformGestures { _, pan, gestureZoom, _ ->
-                        onTransformation(gestureZoom, size, pan)
+                        onTransformation(gestureZoom, pan)
                     }
                 }
         )
