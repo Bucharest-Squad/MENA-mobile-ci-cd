@@ -92,4 +92,25 @@
     <string name="add_location_button">Add location</string>
     <string name="location_saved_empty_desc">No saved locations icon</string>
 
+    <string name="edit_profile_information">Edit profile information</string>
+    <string name="options">Options</string>
+    <string name="back">Back</string>
+
+    <string name="pick_start_date">Pick the start date</string>
+    <string name="pick_end_date">Pick the end date</string>
+    <string name="month_january">January</string>
+    <string name="month_february">February</string>
+    <string name="month_march">March</string>
+    <string name="month_april">April</string>
+    <string name="month_may">May</string>
+    <string name="month_june">June</string>
+    <string name="month_july">July</string>
+    <string name="month_august">August</string>
+    <string name="month_september">September</string>
+    <string name="month_october">October</string>
+    <string name="month_november">November</string>
+    <string name="month_december">December</string>
+
+
+
 </resources>
