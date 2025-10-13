@@ -54,14 +54,16 @@ class SearchViewModel(
         sendEffect(SearchEffect.NavigateBack())
     }
 
-    override fun onSearchResultClick(surahId: Int, ayahId: Int) {
-        sendEffect(
-            SearchEffect.NavigateToSurah(
-                surahId,
-                ayahId,
-                Surah.SurahOrder.entries[surahId - 1].name
+    override fun onSearchResultClick(surahId: Int?, ayahId: Int) {
+        surahId?.let {
+            sendEffect(
+                SearchEffect.NavigateToSurah(
+                    surahId,
+                    ayahId,
+                    Surah.SurahOrder.entries[surahId - 1].name
+                )
             )
-        )
+        } ?: sendEffect(SearchEffect.NavigateBack(ayahId))
     }
 
     private fun handleHint() {
