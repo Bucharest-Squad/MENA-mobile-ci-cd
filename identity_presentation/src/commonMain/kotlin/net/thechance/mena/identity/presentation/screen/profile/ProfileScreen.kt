@@ -35,6 +35,7 @@ import net.thechance.mena.designsystem.presentation.component.snackbar.SnackBar
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.identity.presentation.base.BaseScreen
+import net.thechance.mena.identity.presentation.screen.editProfile.EditUserProfileScreen
 import net.thechance.mena.identity.presentation.screen.profile.components.AccountSettingsSection
 import net.thechance.mena.identity.presentation.screen.profile.components.AppSettingsSection
 import net.thechance.mena.identity.presentation.screen.profile.components.InviteFriendsCard
@@ -122,8 +123,7 @@ class ProfileScreen : BaseScreen<
                         enter = expandVertically(),
                         exit = shrinkVertically(),
                         modifier = Modifier.fillMaxWidth()
-                    )
-                    {
+                    ) {
                         ProfileInfoContainer(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -133,23 +133,28 @@ class ProfileScreen : BaseScreen<
                             userName = state.userName,
                         )
                     }
+
                     InviteFriendsCard(
                         onCLick = listener::onInviteFriendsClicked
                     )
+
                     AccountSettingsSection(
                         onEditProfileInfoClicked = listener::onEditProfileInfoClicked,
                         onChangePasswordClicked = listener::onChangePasswordClicked,
                         onAddressesClicked = listener::onAddressesClicked,
                         onPrivacySettingsClicked = listener::onPrivacySettingsClicked
                     )
+
                     AppSettingsSection(
                         onLanguageClicked = listener::onLanguageClicked,
                         onThemeClicked = listener::onThemeClicked
                     )
+
                     OtherSettingsSection(
                         onPrivacyAndPolicyClicked = listener::onPrivacyAndPolicyClicked,
                         onContactUsClicked = listener::onContactUsClicked
                     )
+
                     Text(
                         modifier = Modifier
                             .padding(vertical = Theme.spacing._16)
@@ -159,6 +164,7 @@ class ProfileScreen : BaseScreen<
                         color = Theme.colorScheme.shadeSecondary,
                     )
                 }
+
                 AnimatedVisibility(
                     visible = state.errorMessage?.isNotEmpty() ?: false,
                     enter = slideInHorizontally(initialOffsetX = { it }),
@@ -173,6 +179,7 @@ class ProfileScreen : BaseScreen<
                             .padding(horizontal = Theme.spacing._16)
                     )
                 }
+
                 LaunchedEffect(state.errorMessage) {
                     delay(3000)
                     listener.clearErrorMessage()
@@ -186,7 +193,7 @@ class ProfileScreen : BaseScreen<
     ) {
         when (effect) {
             ProfileScreenUIEffect.NavigateToEditProfileScreen -> {
-                navigator.push(RegisterScreen())
+                navigator.push(EditUserProfileScreen())
             }
 
             ProfileScreenUIEffect.NavigateToLocationPickerScreen -> {

@@ -1,5 +1,6 @@
 package net.thechance.mena.identity.presentation.di
 
+import net.thechance.mena.identity.presentation.screen.editProfile.EditUserProfileViewModel
 import net.thechance.mena.identity.presentation.screen.forgetPassword.ForgetPasswordScreenViewModel
 import net.thechance.mena.identity.presentation.screen.forgetPasswordOtp.OtpScreenViewModel
 import net.thechance.mena.identity.presentation.screen.login.LoginScreenViewModel
@@ -20,5 +21,6 @@ val identityScreensModule = module {
     factoryOf(::ForgetPasswordScreenViewModel)
     factoryOf(::OtpScreenViewModel)
     factoryOf(::ProfileScreenViewModel)
+    factoryOf(::EditUserProfileViewModel)
     factoryOf(::ResetPasswordScreenViewModel)
 }
