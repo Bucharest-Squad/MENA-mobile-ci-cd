@@ -10,4 +10,6 @@ data class UserEntity(
     val firstName: String,
     val lastName: String,
     val profileImageUrl: String,
+    val birthDate: String,
+    val gender: Int,
 )

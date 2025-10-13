@@ -27,9 +27,11 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import kotlinx.serialization.json.Json
 import net.thechance.mena.identity.data.dataSource.local.database.dao.UserDao
+import net.thechance.mena.identity.data.dto.GenderCode
 import net.thechance.mena.identity.data.dto.profile.ProfileResponseDto
 import net.thechance.mena.identity.data.mapper.toDomain
 import net.thechance.mena.identity.data.mapper.toEntity
+import net.thechance.mena.identity.domain.entity.Gender
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -157,7 +159,7 @@ class UserRepositoryImplTest {
         coEvery { userDao.upsert(any()) } returns Unit
         every { userDao.getUser() } returns flowOf(fakeProfileResponse.toDomain().toEntity())
 
-        val result  = userRepositoryImpl.getUser().first()
+        val result = userRepositoryImpl.getUser().first()
 
         testDispatcher.scheduler.advanceUntilIdle()
         coVerify(exactly = 1) { userDao.upsert(fakeProfileResponse.toDomain().toEntity()) }
@@ -177,7 +179,7 @@ class UserRepositoryImplTest {
         assertEquals(fakeProfileResponse.firstName, result.first()?.firstName)
         assertEquals(fakeProfileResponse.username, result.first()?.username)
         assertEquals(fakeProfileResponse.lastName, result.first()?.lastName)
-        assertEquals(fakeProfileResponse.profileImageUrl, result.first()?.profileImageUrl)
+        assertEquals(fakeProfileResponse.imageUrl, result.first()?.profileImageUrl)
 
     }
 
@@ -186,6 +188,8 @@ class UserRepositoryImplTest {
         firstName = "The",
         lastName = "Chance",
         username = "TheChance@test.com",
-        profileImageUrl = ""
+        imageUrl = "",
+        birthDate = "1999-01-01",
+        gender = GenderCode.MALE,
     )
 }
