@@ -41,7 +41,7 @@ class MainMapperKtTest {
     @Test
     fun `isAM should return true for morning times`() {
         // Given
-        val morningInstant = Instant.fromEpochSeconds(8 * 3600)
+        val morningInstant = Instant.fromEpochSeconds(MORNING_EIGHT_AM_SECONDS)
         // When
         val result = isAM(morningInstant)
 
@@ -66,12 +66,12 @@ class MainMapperKtTest {
         // Given
         val now = Instant.fromEpochSeconds(10_000)
         val prayers = listOf(
-            PrayerTime(PrayerName.ISHA, now + 13.hours, "1446-01-01"),
-            PrayerTime(PrayerName.FAJR, now, "1446-01-01"),
-            PrayerTime(PrayerName.SUNRISE, now + 2.hours, "1446-01-01"),
-            PrayerTime(PrayerName.DHUHR, now + 5.hours, "1446-01-01"),
-            PrayerTime(PrayerName.ASR, now + 8.hours, "1446-01-01"),
-            PrayerTime(PrayerName.MAGHRIB, now + 11.hours, "1446-01-01")
+            PrayerTime(PrayerName.ISHA, now + 13.hours, DEFAULT_HIJRI_DATE),
+            PrayerTime(PrayerName.FAJR, now, DEFAULT_HIJRI_DATE),
+            PrayerTime(PrayerName.SUNRISE, now + 2.hours, DEFAULT_HIJRI_DATE),
+            PrayerTime(PrayerName.DHUHR, now + 5.hours, DEFAULT_HIJRI_DATE),
+            PrayerTime(PrayerName.ASR, now + 8.hours, DEFAULT_HIJRI_DATE),
+            PrayerTime(PrayerName.MAGHRIB, now + 11.hours, DEFAULT_HIJRI_DATE)
         )
 
         // When
@@ -92,11 +92,11 @@ class MainMapperKtTest {
         // Given
         val base = Instant.fromEpochSeconds(10_000)
         val prayers = listOf(
-            PrayerTime(PrayerName.FAJR, base + 1.hours, "1446-01-01"),
-            PrayerTime(PrayerName.DHUHR, base + 5.hours, "1446-01-01"),
-            PrayerTime(PrayerName.ASR, base + 8.hours, "1446-01-01"),
-            PrayerTime(PrayerName.MAGHRIB, base + 11.hours, "1446-01-01"),
-            PrayerTime(PrayerName.ISHA, base + 13.hours, "1446-01-01")
+            PrayerTime(PrayerName.FAJR, base + 1.hours, DEFAULT_HIJRI_DATE),
+            PrayerTime(PrayerName.DHUHR, base + 5.hours, DEFAULT_HIJRI_DATE),
+            PrayerTime(PrayerName.ASR, base + 8.hours, DEFAULT_HIJRI_DATE),
+            PrayerTime(PrayerName.MAGHRIB, base + 11.hours, DEFAULT_HIJRI_DATE),
+            PrayerTime(PrayerName.ISHA, base + 13.hours, DEFAULT_HIJRI_DATE)
         )
 
         // When
@@ -115,9 +115,9 @@ class MainMapperKtTest {
         // Given
         val base = Instant.fromEpochSeconds(10_000)
         val prayers = listOf(
-            PrayerTime(PrayerName.FAJR, base, "1446-01-01"),
-            PrayerTime(PrayerName.DHUHR, base + 5.hours, "1446-01-01"),
-            PrayerTime(PrayerName.ASR, base + 8.hours, "1446-01-01")
+            PrayerTime(PrayerName.FAJR, base, DEFAULT_HIJRI_DATE),
+            PrayerTime(PrayerName.DHUHR, base + 5.hours, DEFAULT_HIJRI_DATE),
+            PrayerTime(PrayerName.ASR, base + 8.hours, DEFAULT_HIJRI_DATE)
         )
 
         // When
@@ -133,9 +133,9 @@ class MainMapperKtTest {
         // Given
         val now = Instant.fromEpochSeconds(10_000)
         val prayers = listOf(
-            PrayerTime(PrayerName.FAJR, now, "1446-01-01"),
-            PrayerTime(PrayerName.DHUHR, now + 5.hours, "1446-01-01"),
-            PrayerTime(PrayerName.ISHA, now + 13.hours, "1446-01-01")
+            PrayerTime(PrayerName.FAJR, now, DEFAULT_HIJRI_DATE),
+            PrayerTime(PrayerName.DHUHR, now + 5.hours, DEFAULT_HIJRI_DATE),
+            PrayerTime(PrayerName.ISHA, now + 13.hours, DEFAULT_HIJRI_DATE)
         )
 
         // When
@@ -144,5 +144,12 @@ class MainMapperKtTest {
         // Then
         assertEquals(3, uiState.prayers.size)
         assertNotNull(uiState.currentPrayerIndex)
+    }
+
+    companion object {
+        private const val SECONDS_IN_HOUR: Long = 3600
+        private const val MORNING_EIGHT_AM_SECONDS: Long = 8 * SECONDS_IN_HOUR
+        private const val DEFAULT_HIJRI_DATE = "1446-01-01"
+
     }
 }
