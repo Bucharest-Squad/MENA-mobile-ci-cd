@@ -9,6 +9,8 @@ import net.thechance.mena.faith.domain.entity.PrayerTime
 import net.thechance.mena.faith.domain.repository.PrayerTimeRepository
 import net.thechance.mena.faith.domain.repository.QuranRepository
 import net.thechance.mena.faith.presentation.base.BaseViewModel
+import net.thechance.mena.faith.presentation.util.DefaultResourceProvider
+import net.thechance.mena.faith.presentation.util.ResourceProvider
 import net.thechance.mena.faith.presentation.util.extentions.getHijriDate
 import net.thechance.mena.faith.presentation.util.extentions.getSunriseTime
 import kotlin.time.Clock
@@ -18,8 +20,9 @@ class MainViewModel(
     private val quranRepository: QuranRepository,
     private val prayerTimeRepository: PrayerTimeRepository,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
+    override val resourceProvider: ResourceProvider = DefaultResourceProvider()
 ) : BaseViewModel<MainScreenState, MainScreenEffect>(
-    initialState = MainScreenState()
+    initialState = MainScreenState(),resourceProvider
 ), MainInteractionListener {
 
     init {

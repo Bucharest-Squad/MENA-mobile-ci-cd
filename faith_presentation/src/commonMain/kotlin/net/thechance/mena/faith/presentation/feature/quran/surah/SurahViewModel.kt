@@ -6,7 +6,6 @@ import kotlinx.coroutines.IO
 import mena.faith_presentation.generated.resources.Res
 import mena.faith_presentation.generated.resources.bookmark_added_successfully
 import mena.faith_presentation.generated.resources.copied_ayah_failed
-import mena.faith_presentation.generated.resources.copied_ayah_successfully
 import net.thechance.mena.faith.domain.entity.Surah
 import net.thechance.mena.faith.domain.repository.BookmarkRepository
 import net.thechance.mena.faith.domain.repository.QuranRepository
@@ -14,6 +13,8 @@ import net.thechance.mena.faith.presentation.base.BaseViewModel
 import net.thechance.mena.faith.presentation.base.SnackBarState
 import net.thechance.mena.faith.presentation.feature.quran.surah.args.ISurahArgs
 import net.thechance.mena.faith.presentation.util.ClipboardManager
+import net.thechance.mena.faith.presentation.util.DefaultResourceProvider
+import net.thechance.mena.faith.presentation.util.ResourceProvider
 
 class SurahViewModel(
     private val surahArgs: ISurahArgs,
@@ -21,8 +22,9 @@ class SurahViewModel(
     private val clipboardManager: ClipboardManager,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val bookmarkRepository: BookmarkRepository,
+    override val resourceProvider: ResourceProvider = DefaultResourceProvider()
 ) : BaseViewModel<SurahScreenState, SurahScreenEffect>(
-    initialState = SurahScreenState(surahId = surahArgs.surahId, surahName = surahArgs.surahName)
+    initialState = SurahScreenState(surahId = surahArgs.surahId, surahName = surahArgs.surahName),resourceProvider
 ), SurahInteractionListener {
 
     init {
@@ -98,9 +100,9 @@ class SurahViewModel(
         }
     }
 
-    private fun onAddBookmarkSuccess() {
+    private suspend fun onAddBookmarkSuccess() {
         showSnackBar(
-            message = Res.string.bookmark_added_successfully,
+            message = resourceProvider.getString(Res.string.bookmark_added_successfully),
             status = SnackBarState.Status.Success
         )
     }
@@ -116,7 +118,7 @@ class SurahViewModel(
         sendEffect(SurahScreenEffect.ShareAyah(ayahContent))
     }
 
-    private fun onCopySuccess(ayahContent: String) {
+    private suspend fun onCopySuccess(ayahContent: String) {
         showSuccessSnackBar()
         updateState {
             it.copy(
@@ -127,16 +129,16 @@ class SurahViewModel(
         }
     }
 
-    private fun showSuccessSnackBar() {
+    private suspend fun showSuccessSnackBar() {
         showSnackBar(
-            message = Res.string.copied_ayah_successfully,
+            message = resourceProvider.getString(Res.string.copied_ayah_failed),
             status = SnackBarState.Status.Success,
         )
     }
 
-    private fun showErrorSnackBar() {
+    private suspend fun showErrorSnackBar() {
         showSnackBar(
-            message = Res.string.copied_ayah_failed,
+            message = resourceProvider.getString(Res.string.copied_ayah_failed),
             status = SnackBarState.Status.Error,
         )
     }

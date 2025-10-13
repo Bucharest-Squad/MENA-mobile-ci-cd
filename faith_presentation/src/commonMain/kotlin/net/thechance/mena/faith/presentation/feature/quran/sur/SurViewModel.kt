@@ -6,11 +6,14 @@ import kotlinx.coroutines.IO
 import net.thechance.mena.faith.domain.entity.Surah
 import net.thechance.mena.faith.domain.repository.QuranRepository
 import net.thechance.mena.faith.presentation.base.BaseViewModel
+import net.thechance.mena.faith.presentation.util.DefaultResourceProvider
+import net.thechance.mena.faith.presentation.util.ResourceProvider
 
 class SurViewModel(
     private val quranRepository: QuranRepository,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
-) : BaseViewModel<SurScreenState, SurEffect>(SurScreenState()), SurInteractionListener {
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
+    override val resourceProvider: ResourceProvider = DefaultResourceProvider()
+) : BaseViewModel<SurScreenState, SurEffect>(SurScreenState(),resourceProvider), SurInteractionListener {
 
     init {
         initializeSur()

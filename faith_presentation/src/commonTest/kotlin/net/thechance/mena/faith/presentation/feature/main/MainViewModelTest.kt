@@ -17,6 +17,7 @@ import net.thechance.mena.faith.domain.entity.PrayerName
 import net.thechance.mena.faith.domain.entity.PrayerTime
 import net.thechance.mena.faith.domain.repository.PrayerTimeRepository
 import net.thechance.mena.faith.domain.repository.QuranRepository
+import net.thechance.mena.faith.presentation.util.ResourceProvider
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -33,6 +34,7 @@ class MainViewModelTest {
     private lateinit var viewModel: MainViewModel
     private lateinit var quranRepository: QuranRepository
     private lateinit var prayerTimeRepository: PrayerTimeRepository
+    private lateinit var resourceProvider: ResourceProvider
 
     @OptIn(ExperimentalTime::class)
     @BeforeTest
@@ -41,12 +43,13 @@ class MainViewModelTest {
         testDispatcher = StandardTestDispatcher()
         quranRepository = mock(MockMode.autofill)
         prayerTimeRepository = mock(MockMode.autofill)
+        resourceProvider = mock(mode = MockMode.autofill)
 
         everySuspend { quranRepository.getLastAyahForTilawah() } returns fakeAyah
         everySuspend { prayerTimeRepository.getPrayerTimes(any(), any()) } returns fakePrayerTimes
 
         // When
-        viewModel = MainViewModel(quranRepository, prayerTimeRepository, testDispatcher)
+        viewModel = MainViewModel(quranRepository, prayerTimeRepository, testDispatcher,resourceProvider)
 
     }
 
@@ -66,7 +69,7 @@ class MainViewModelTest {
 
     @OptIn(ExperimentalTime::class)
     @Test
-    fun `init should handle prayer times error gracefully`() = runTest {
+    fun `init should handle prayer times error `() = runTest {
         // Given
         everySuspend {
             prayerTimeRepository.getPrayerTimes(

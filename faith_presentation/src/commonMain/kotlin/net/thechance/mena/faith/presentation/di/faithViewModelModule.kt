@@ -13,6 +13,8 @@ import net.thechance.mena.faith.presentation.feature.quran.sur.SurViewModel
 import net.thechance.mena.faith.presentation.feature.quran.surah.SurahViewModel
 import net.thechance.mena.faith.presentation.feature.quran.surah.args.ISurahArgs
 import net.thechance.mena.faith.presentation.feature.quran.surah.args.SurahArgsImpl
+import net.thechance.mena.faith.presentation.util.DefaultResourceProvider
+import net.thechance.mena.faith.presentation.util.ResourceProvider
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.bind
@@ -21,6 +23,7 @@ import org.koin.dsl.module
 internal val faithViewModelModule = module {
 
     factory<CoroutineDispatcher> { Dispatchers.IO }
+    single<ResourceProvider> { DefaultResourceProvider() }
 
     factoryOf(::SurahArgsImpl) bind ISurahArgs::class
     factoryOf(::SearchArgsImpl) bind ISearchArgs::class
