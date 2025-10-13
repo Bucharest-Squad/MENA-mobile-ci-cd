@@ -35,7 +35,7 @@ class MainViewModel(
             block = { editorPickDukanPager.flow },
             onCollect = ::onLoadedEditorPicksDukan
         )
-        viewModelScope.launch(context = Dispatchers.IO) {
+        viewModelScope.launch(defaultDispatcher) {
             editorPickDukanPager.load()
         }
     }
@@ -69,7 +69,7 @@ class MainViewModel(
             block = { bestNearestDukanPager.flow },
             onCollect = ::onLoadedBestNearestDukans
         )
-        viewModelScope.launch {
+        viewModelScope.launch(defaultDispatcher) {
             bestNearestDukanPager.load()
         }
     }
