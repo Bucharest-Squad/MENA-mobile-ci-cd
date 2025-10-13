@@ -95,6 +95,7 @@ kover.reports {
         }
 
         excludes {
+            packages("net.thechance.mena.faith.presentation.util.extentions")
             annotatedBy("net.thechance.mena.faith.domain.annotation.KoverIgnore")
         }
     }
