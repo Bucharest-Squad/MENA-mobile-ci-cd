@@ -3,6 +3,7 @@ package net.thechance.mena.faith.presentation.base
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -97,14 +98,17 @@ abstract class BaseViewModel<UI_STATE, UI_EFFECT>(
         delayMillis: Long = 0L
     ): Job {
         return inScope.launch(dispatcher) {
-            try {
+            val handler = CoroutineExceptionHandler { _, throwable ->
+                inScope.launch {
+                    onError(throwable)
+                }
+            }
+            inScope.launch(dispatcher + handler) {
                 onStart()
                 delay(delayMillis)
-                val result = execute()
-                onSuccess?.invoke(result)
-            } catch (throwable: Throwable) {
-                onError(throwable)
-            } finally {
+                runCatching { execute() }
+                    .onSuccess { result -> onSuccess?.invoke(result) }
+                    .onFailure { throwable -> onError(throwable) }
                 onFinally()
             }
         }

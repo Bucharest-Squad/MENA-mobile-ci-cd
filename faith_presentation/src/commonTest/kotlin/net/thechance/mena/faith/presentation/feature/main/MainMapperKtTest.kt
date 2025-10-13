@@ -21,7 +21,7 @@ import kotlin.time.Instant
 class MainMapperKtTest {
 
     @Test
-    fun `should return correct resource for each prayer`() {
+    fun `getPrayerDisplayNameResource should return correct string resource id for each prayer`() {
         // Given
         val expectedMap = mapOf(
             PrayerName.FAJR to Res.string.fajr,
