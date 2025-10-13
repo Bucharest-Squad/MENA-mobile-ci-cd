@@ -13,7 +13,7 @@ import net.thechance.mena.faith.presentation.base.BaseViewModel
 import net.thechance.mena.faith.presentation.base.SnackBarState
 import net.thechance.mena.faith.presentation.feature.quran.surah.args.ISurahArgs
 import net.thechance.mena.faith.presentation.util.ClipboardManager
-import net.thechance.mena.faith.presentation.util.DefaultResourceProvider
+import net.thechance.mena.faith.presentation.util.StringResourceProvider
 import net.thechance.mena.faith.presentation.util.ResourceProvider
 
 class SurahViewModel(
@@ -22,7 +22,7 @@ class SurahViewModel(
     private val clipboardManager: ClipboardManager,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val bookmarkRepository: BookmarkRepository,
-    override val resourceProvider: ResourceProvider = DefaultResourceProvider()
+    override val resourceProvider: ResourceProvider = StringResourceProvider()
 ) : BaseViewModel<SurahScreenState, SurahScreenEffect>(
     initialState = SurahScreenState(surahId = surahArgs.surahId, surahName = surahArgs.surahName),resourceProvider
 ), SurahInteractionListener {

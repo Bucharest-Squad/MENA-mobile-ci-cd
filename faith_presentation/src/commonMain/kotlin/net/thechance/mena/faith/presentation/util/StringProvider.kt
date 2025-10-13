@@ -6,7 +6,7 @@ interface ResourceProvider {
     suspend fun getString(resource: StringResource, vararg formatArgs: Any): String
 }
 
-class DefaultResourceProvider : ResourceProvider {
+class StringResourceProvider : ResourceProvider {
     override suspend fun getString(resource: StringResource, vararg formatArgs: Any): String {
         return if (formatArgs.isEmpty()) getString(resource) else getString(resource, *formatArgs)
     }

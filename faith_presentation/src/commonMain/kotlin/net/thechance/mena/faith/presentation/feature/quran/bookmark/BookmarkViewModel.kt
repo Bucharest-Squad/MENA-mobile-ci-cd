@@ -20,13 +20,13 @@ import net.thechance.mena.faith.domain.repository.BookmarkRepository
 import net.thechance.mena.faith.presentation.base.BaseViewModel
 import net.thechance.mena.faith.presentation.base.SnackBarState
 import net.thechance.mena.faith.presentation.base.createPagingSourceFlow
-import net.thechance.mena.faith.presentation.util.DefaultResourceProvider
+import net.thechance.mena.faith.presentation.util.StringResourceProvider
 import net.thechance.mena.faith.presentation.util.ResourceProvider
 
 class BookmarkViewModel(
     private val bookmarkRepository: BookmarkRepository,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
-    override val resourceProvider: ResourceProvider = DefaultResourceProvider()
+    override val resourceProvider: ResourceProvider = StringResourceProvider()
 ) : BaseViewModel<BookmarksScreenState, BookmarkEffect>(BookmarksScreenState(), resourceProvider),
     BookmarkInteractionListener {
 
