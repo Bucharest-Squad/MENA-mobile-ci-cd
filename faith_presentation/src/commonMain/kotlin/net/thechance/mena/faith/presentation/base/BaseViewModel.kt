@@ -118,7 +118,7 @@ abstract class BaseViewModel<UI_STATE, UI_EFFECT>(
     }
 
     protected fun <T> tryToCollect(
-        onError: (Throwable) -> Unit = ::handleError,
+        onError: suspend (Throwable) -> Unit = ::handleError,
         onEmitNewValue: (T) -> Unit = {},
         coroutineScope: CoroutineScope = viewModelScope,
         dispatcher: CoroutineDispatcher = Dispatchers.IO,
