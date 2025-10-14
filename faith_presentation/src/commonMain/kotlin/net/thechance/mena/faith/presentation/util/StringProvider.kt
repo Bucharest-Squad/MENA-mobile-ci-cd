@@ -8,6 +8,6 @@ interface ResourceProvider {
 
 class StringResourceProvider : ResourceProvider {
     override suspend fun getString(resource: StringResource, vararg formatArgs: Any): String {
-        return if (formatArgs.isEmpty()) getString(resource) else getString(resource, *formatArgs)
+        return if (formatArgs.isEmpty()) org.jetbrains.compose.resources.getString(resource) else org.jetbrains.compose.resources.getString(resource, *formatArgs)
     }
 }
