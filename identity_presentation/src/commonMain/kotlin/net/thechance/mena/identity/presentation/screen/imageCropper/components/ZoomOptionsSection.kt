@@ -31,11 +31,11 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun ZoomOptionsSection(
-    onResetClick: () -> Unit,
     isZoomInEnabled: Boolean,
     isZoomOutEnabled: Boolean,
     onZoomInClicked: () -> Unit,
     onZoomOutClicked: () -> Unit,
+    onResetClick: () -> Unit,
     modifier: Modifier = Modifier,
     zoomInIcon: Painter = painterResource(Res.drawable.ic_add),
     zoomOutIcon: Painter = painterResource(Res.drawable.ic_remove),
