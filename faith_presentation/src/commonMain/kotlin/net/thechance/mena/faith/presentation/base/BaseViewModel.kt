@@ -25,11 +25,12 @@ import mena.faith_presentation.generated.resources.error_unknown
 import net.thechance.mena.faith.domain.annotation.KoverIgnore
 import net.thechance.mena.faith.domain.exception.FaithException
 import net.thechance.mena.faith.presentation.util.ResourceProvider
+import net.thechance.mena.faith.presentation.util.StringResourceProvider
 
 @KoverIgnore
 abstract class BaseViewModel<UI_STATE, UI_EFFECT>(
     initialState: UI_STATE,
-    protected open val resourceProvider: ResourceProvider
+    private val resourceProvider: ResourceProvider = StringResourceProvider()
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(initialState)

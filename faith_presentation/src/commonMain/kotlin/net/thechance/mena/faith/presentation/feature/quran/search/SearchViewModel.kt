@@ -9,20 +9,17 @@ import net.thechance.mena.faith.domain.entity.Surah
 import net.thechance.mena.faith.domain.repository.QuranRepository
 import net.thechance.mena.faith.presentation.base.BaseViewModel
 import net.thechance.mena.faith.presentation.feature.quran.search.args.ISearchArgs
-import net.thechance.mena.faith.presentation.util.StringResourceProvider
-import net.thechance.mena.faith.presentation.util.ResourceProvider
 import net.thechance.mena.faith.presentation.util.toSearchResult
 import org.jetbrains.compose.resources.getString
 
 class SearchViewModel(
     searchArgs: ISearchArgs,
     private val repository: QuranRepository,
-    override val resourceProvider: ResourceProvider = StringResourceProvider()
 ) : BaseViewModel<SearchScreenState, SearchEffect>(
     SearchScreenState(
         searchArgs.surahId,
         searchArgs.surahName
-    ), resourceProvider
+    )
 ),
     SearchInteractionListener {
     private var searchJob: Job? = null

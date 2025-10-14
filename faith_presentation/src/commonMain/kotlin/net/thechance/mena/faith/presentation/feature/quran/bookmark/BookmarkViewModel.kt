@@ -26,8 +26,8 @@ import net.thechance.mena.faith.presentation.util.ResourceProvider
 class BookmarkViewModel(
     private val bookmarkRepository: BookmarkRepository,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
-    override val resourceProvider: ResourceProvider = StringResourceProvider()
-) : BaseViewModel<BookmarksScreenState, BookmarkEffect>(BookmarksScreenState(), resourceProvider),
+    private val resourceProvider: ResourceProvider = StringResourceProvider()
+) : BaseViewModel<BookmarksScreenState, BookmarkEffect>(BookmarksScreenState()),
     BookmarkInteractionListener {
 
     private val cachedBookmarksFlow = createBookmarksPagingSource()

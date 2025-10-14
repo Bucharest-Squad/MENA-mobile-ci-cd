@@ -22,9 +22,9 @@ class SurahViewModel(
     private val clipboardManager: ClipboardManager,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val bookmarkRepository: BookmarkRepository,
-    override val resourceProvider: ResourceProvider = StringResourceProvider()
+    private val resourceProvider: ResourceProvider = StringResourceProvider()
 ) : BaseViewModel<SurahScreenState, SurahScreenEffect>(
-    initialState = SurahScreenState(surahId = surahArgs.surahId, surahName = surahArgs.surahName),resourceProvider
+    initialState = SurahScreenState(surahId = surahArgs.surahId, surahName = surahArgs.surahName)
 ), SurahInteractionListener {
 
     init {
