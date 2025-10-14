@@ -25,6 +25,7 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import kotlinx.datetime.LocalDate
 import kotlinx.serialization.json.Json
 import net.thechance.mena.identity.data.dataSource.local.database.dao.UserDao
 import net.thechance.mena.identity.data.dto.GenderCode
@@ -32,6 +33,7 @@ import net.thechance.mena.identity.data.dto.profile.ProfileResponseDto
 import net.thechance.mena.identity.data.mapper.toDomain
 import net.thechance.mena.identity.data.mapper.toEntity
 import net.thechance.mena.identity.domain.entity.Gender
+import net.thechance.mena.identity.domain.entity.User
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -108,6 +110,20 @@ class UserRepositoryImplTest {
     }
 
     @Test
+    fun `getUser() should return null when there is no user stored`() = runTest {
+
+        val client = mockHttpClient(fakeProfileResponse)
+        userRepositoryImpl = UserRepositoryImpl(client, userDao)
+
+        coEvery { userDao.upsert(fakeProfileResponse.toDomain().toEntity()) } returns Unit
+        every { userDao.getUser() } returns flowOf(null)
+
+        val result = userRepositoryImpl.getUser()
+
+        assertEquals(result.first(), null)
+    }
+
+    @Test
     fun `getUser() should return user from local database when remote throws exception`() =
         runTest {
 
@@ -151,18 +167,12 @@ class UserRepositoryImplTest {
     }
 
     @Test
-    fun `getUser() should call saveUserInfo after successful remote fetch`() = runTest {
-
-        val client = mockHttpClient(fakeProfileResponse)
-        userRepositoryImpl = UserRepositoryImpl(client, userDao)
-
+    fun `updateUser() should call doe upsert when update user`() = runTest {
         coEvery { userDao.upsert(any()) } returns Unit
-        every { userDao.getUser() } returns flowOf(fakeProfileResponse.toDomain().toEntity())
 
-        val result = userRepositoryImpl.getUser().first()
+        userRepositoryImpl.updateUser(fakeUser)
 
-        testDispatcher.scheduler.advanceUntilIdle()
-        coVerify(exactly = 1) { userDao.upsert(fakeProfileResponse.toDomain().toEntity()) }
+        coVerify(exactly = 1) { userDao.upsert(fakeUser.toEntity()) }
     }
 
     @Test
@@ -187,9 +197,18 @@ class UserRepositoryImplTest {
     val fakeProfileResponse = ProfileResponseDto(
         firstName = "The",
         lastName = "Chance",
-        username = "TheChance@test.com",
+        username = "the_chance",
         imageUrl = "",
         birthDate = "1999-01-01",
         gender = GenderCode.MALE,
+    )
+
+    val fakeUser = User(
+        username = "the_chance",
+        firstName = "The",
+        lastName = "Chance",
+        profileImageUrl = "http://image.com",
+        birthDate = LocalDate(1900, 1, 1),
+        gender = Gender.MALE,
     )
 }
