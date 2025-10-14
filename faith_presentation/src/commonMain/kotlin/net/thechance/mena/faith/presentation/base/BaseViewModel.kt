@@ -9,10 +9,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import mena.faith_presentation.generated.resources.Res
@@ -114,6 +116,28 @@ abstract class BaseViewModel<UI_STATE, UI_EFFECT>(
             }
         }
     }
+
+    protected fun <T> tryToCollect(
+        onError: (Throwable) -> Unit = ::handleError,
+        onEmitNewValue: (T) -> Unit = {},
+        coroutineScope: CoroutineScope = viewModelScope,
+        dispatcher: CoroutineDispatcher = Dispatchers.IO,
+        block: suspend () -> Flow<T>
+    ) {
+        coroutineScope.launch(dispatcher) {
+            try {
+                block()
+                    .catch {
+                        onError(it)
+                    }.collect {
+                        onEmitNewValue(it)
+                    }
+            } catch (e: Throwable) {
+                onError(e)
+            }
+        }
+    }
+
 
     private suspend fun handleError(error: Throwable) {
         val faithError = error as? FaithException ?: FaithException.UnknownException
