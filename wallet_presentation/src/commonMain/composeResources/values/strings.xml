@@ -121,6 +121,7 @@
     <string name="confirm_payment_content_failed">You only have %1$s silvers in your wallet, which isn’t enough.</string>
     <string name="You_are_about_to_pay">You’re about to pay</string>
     <string name="pay_amount">Pay %1$s</string>
+    <string name="user_img">user image</string>
 
     <string name="transaction_successful">Transaction Successful!</string>
     <string name="show_transaction_details">Show Transaction Details</string>
