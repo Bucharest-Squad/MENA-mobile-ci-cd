@@ -133,7 +133,7 @@ class DukanRepositoryImpl(
         size: Int
     ): PagedResult<DukanPreview> {
         val response: PageResponseDto<DukanResponseDto> = safeApiCall {
-            client.get("$BASE_URL/category/$categoryId") {
+            client.get("$BASE_URL/categories/$categoryId") {
                 parameter("page", page)
                 parameter("size", size)
             }
