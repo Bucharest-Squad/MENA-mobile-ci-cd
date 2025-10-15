@@ -65,7 +65,12 @@ fun MainScreen(
                 navController.navigate(DukanRoute.DukanCategoriesScreenRoute)
 
             is MainEffect.NavigateToDukansScreenByCategory -> {
-                //ToDO: navigate to dukan screen by category
+                navController.navigate(
+                    DukanRoute.DukansScreenRoute(
+                        categoryId = effect.categoryId,
+                        categoryTitle = effect.categoryName
+                    )
+                )
             }
 
             is MainEffect.NavigateSelectedDukan -> DukanRoute.DukanDetails(effect.dukanId)
