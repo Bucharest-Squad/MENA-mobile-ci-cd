@@ -68,9 +68,7 @@ class TransactionRepositoryImpl(
 
     override suspend fun getTransactionReceiver(transactionId: Uuid): TransactionReceiver {
         return safeApiCall<TransactionReceiverDto> {
-            networkClient.get("${TRANSACTION_PATH}$RECEIVER_DETAILS"){
-                parameter(TRANSACTION_ID_PARAM, transactionId)
-            }
+            networkClient.get("${TRANSACTION_PATH}/$transactionId$RECEIVER_DETAILS")
         }.toEntity()
     }
 
@@ -79,7 +77,6 @@ class TransactionRepositoryImpl(
         const val FIRST_TRANSACTION_DATE_PATH = "$TRANSACTION_PATH/first-date"
         const val ADD_TRANSACTION = "/initiate"
         const val RECEIVER_DETAILS = "/receiver-details"
-        const val TRANSACTION_ID_PARAM = "transactionId"
     }
 
 }
