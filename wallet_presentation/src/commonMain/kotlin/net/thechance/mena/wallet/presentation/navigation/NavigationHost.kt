@@ -8,7 +8,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import net.thechance.mena.wallet.presentation.model.SubmitTransactionResultStatus
 import net.thechance.mena.wallet.presentation.screen.confirm_payment.ConfirmPaymentScreen
 import net.thechance.mena.wallet.presentation.screen.export.ExportTransactionScreen
 import net.thechance.mena.wallet.presentation.screen.payment_result.PaymentResultScreen
@@ -60,11 +59,11 @@ fun NavigationHost(
                 navigateToStatementsHistory = {
                     navController.navigate(StatementsHistoryScreenRoute)
                 },
-                navigateToPaymentScreen = { amount, receiverId ->
+                navigateToPaymentScreen = { amount, transactionId ->
                     navController.navigate(
                         ConfirmPaymentScreenRoute(
                             amount = amount,
-                            id = receiverId.toString()
+                            transactionId = transactionId.toString()
                         )
                     )
                 }
@@ -117,13 +116,13 @@ fun NavigationHost(
         composable<ConfirmPaymentScreenRoute> { backStackEntry ->
             ConfirmPaymentScreen(
                 onNavigateBackClicked = navController::popBackStack,
-                receiverId = backStackEntry.toRoute<ConfirmPaymentScreenRoute>().id,
+                transactionId = backStackEntry.toRoute<ConfirmPaymentScreenRoute>().transactionId,
                 amount = backStackEntry.toRoute<ConfirmPaymentScreenRoute>().amount,
-                navigateToPaymentResultScreen = { receiverName, amount ->
+                navigateToPaymentResultScreen = { receiverName, amount, transactionId, submitTransactionResultStatus ->
                     navController.navigate(
                         PaymentResultScreenRoute(
-                            transactionId = "",
-                            submitTransactionResultStatus = SubmitTransactionResultStatus.SUCCESS.name,
+                            transactionId = transactionId.toString(),
+                            submitTransactionResultStatus = submitTransactionResultStatus.name,
                             amount = amount,
                             receiverName = receiverName
                         )
@@ -139,9 +138,7 @@ fun NavigationHost(
                 amount = backStackEntry.toRoute<PaymentResultScreenRoute>().amount,
                 onNavigateBackClicked = { navController.popBackStack() },
                 onNavigateToTransactionDetailsClicked = { receiverId ->
-                    navController.navigate(
-                        TransactionDetailsScreenRoute(receiverId)
-                    )
+                    navController.navigate(TransactionDetailsScreenRoute(receiverId))
                 },
                 onCancelClicked = {
                     navController.popBackStack(
