@@ -1,6 +1,5 @@
 package net.thechance.mena.wallet.data.repository.transaction
 
-import io.ktor.client.request.parameter
 import io.ktor.client.request.setBody
 import kotlinx.datetime.LocalDate
 import net.thechance.mena.wallet.data.dto.FirstTransactionDateDto
