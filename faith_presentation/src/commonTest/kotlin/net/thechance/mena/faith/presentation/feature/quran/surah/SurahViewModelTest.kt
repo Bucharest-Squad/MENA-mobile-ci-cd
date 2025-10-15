@@ -31,6 +31,7 @@ class SurahViewModelTest {
     private val quranRepository: QuranRepository = mock(mode = MockMode.autofill)
     private val bookmarkRepository: BookmarkRepository = mock(mode = MockMode.autofill)
     private val clipboardManager: ClipboardManager = mock(mode = MockMode.autofill)
+    private val fakeSnackbarHandler = FakeSnackbarHandler()
 
     private val surahArgs = mock<ISurahArgs>(mode = MockMode.autofill)
 
@@ -43,7 +44,7 @@ class SurahViewModelTest {
             quranRepository = quranRepository,
             clipboardManager = clipboardManager,
             bookmarkRepository = bookmarkRepository,
-            snackbarHandler = mock(MockMode.autofill)
+            snackbarHandler = fakeSnackbarHandler
         )
     }
 

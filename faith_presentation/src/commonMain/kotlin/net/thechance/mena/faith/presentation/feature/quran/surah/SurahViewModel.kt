@@ -7,6 +7,7 @@ import kotlinx.coroutines.IO
 import mena.faith_presentation.generated.resources.Res
 import mena.faith_presentation.generated.resources.bookmark_added_successfully
 import mena.faith_presentation.generated.resources.copied_ayah_failed
+import mena.faith_presentation.generated.resources.copied_ayah_successfully
 import net.thechance.mena.faith.domain.entity.Surah
 import net.thechance.mena.faith.domain.repository.BookmarkRepository
 import net.thechance.mena.faith.domain.repository.QuranRepository
@@ -133,7 +134,7 @@ class SurahViewModel(
     }
 
     private fun showSuccessSnackBar() = showSnackBar(
-        message = Res.string.copied_ayah_failed,
+        message = Res.string.copied_ayah_successfully,
         status = SnackBarState.Status.Success,
         scope = viewModelScope
     )
