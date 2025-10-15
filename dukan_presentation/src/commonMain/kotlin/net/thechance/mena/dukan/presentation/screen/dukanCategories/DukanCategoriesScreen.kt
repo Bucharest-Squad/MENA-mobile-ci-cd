@@ -27,6 +27,7 @@ import mena.dukan_presentation.generated.resources.categories
 import mena.dukan_presentation.generated.resources.ic_arrow_left
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
+import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.dukan.presentation.component.CategoryCard
@@ -73,33 +74,35 @@ private fun DukanCategoriesContent(
     state: DukanCategoriesUiState,
     interactionListener: DukanCategoriesInteractionListener
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = Theme.colorScheme.background.surface)
-            .statusBarsPadding()
-    ) {
-        CategoriesTopAppBar(
-            onBackClick = interactionListener::onBackClicked
-        )
-
+    Scaffold(
+        topBar = {
+            CategoriesTopAppBar(onBackClick = interactionListener::onBackClicked)
+        },
+        snakeBar = {
+            state.snackBarUiState?.let { snackBarState ->
+                SnackBar(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(Theme.radius.md))
+                        .clickable(
+                            onClick = interactionListener::onDismissSnackBar,
+                            indication = null,
+                            interactionSource = null
+                        ),
+                    onDismiss = interactionListener::onDismissSnackBar,
+                    snackBarUiState = snackBarState
+                )
+            }
+        }
+    )
+    {
         CategoriesList(
             categories = state.categories,
             onCategoryClick = interactionListener::onCategoryClicked
         )
     }
 
-    state.snackBarUiState?.let { snackBarState ->
-        SnackBar(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = Theme.spacing._24)
-                .clip(RoundedCornerShape(Theme.radius.md))
-                .clickable(onClick = interactionListener::onDismissSnackBar),
-            onDismiss = interactionListener::onDismissSnackBar,
-            snackBarUiState = snackBarState
-        )
-    }
+
 }
 
 @Composable
@@ -125,13 +128,13 @@ private fun CategoriesTopAppBar(
 }
 
 @Composable
-private fun ColumnScope.CategoriesList(
+private fun CategoriesList(
     categories: List<CategoryUiState>,
-    onCategoryClick: (categoryName: String,categoryId: String) -> Unit
+    onCategoryClick: (categoryName: String, categoryId: String) -> Unit
 ) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = categoryItemSize),
-        modifier = Modifier.weight(1f),
+        modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(
             start = Theme.spacing._16,
             end = Theme.spacing._16,
@@ -149,7 +152,7 @@ private fun ColumnScope.CategoriesList(
             CategoryCard(
                 title = category.name,
                 imageUrl = category.imageUrl,
-                onClick = { onCategoryClick(category.name,category.id) },
+                onClick = { onCategoryClick(category.name, category.id) },
             )
         }
     }
