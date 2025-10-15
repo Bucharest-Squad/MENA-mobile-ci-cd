@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.dukan.presentation.component.ProductsHeader
@@ -30,7 +31,8 @@ fun ShelfWithProductsNoImageDukan(
                     shelf.name
                 )
             },
-            modifier = Modifier.fillMaxWidth().padding(bottom = Theme.spacing._8)
+            modifier = Modifier.fillMaxWidth().padding(bottom = Theme.spacing._8),
+            viewAllColor = Color(dukanColor)
         )
         shelf.products.forEachIndexed { index, product ->
             val topPadding = if (index > 0) Theme.spacing._8 else 0.dp
@@ -41,8 +43,11 @@ fun ShelfWithProductsNoImageDukan(
                 productPrice = product.price,
                 productAction = {
                     ProductActionIconNoImageDukan(
+                        inCartQuantity = product.inCartQuantity,
                         dukanColor = dukanColor,
-                        onClick = { }
+                        onAddClick = { listener.onAddToCartClick(product.id) },
+                        onPlusClick = { },
+                        onMinusClick = { }
                     )
                 },
                 modifier = Modifier.padding(top = topPadding)

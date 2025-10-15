@@ -23,26 +23,27 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun CartOrQuantityProductComponent(
-    showProductQuantity: Boolean,
-    onCartClick: () -> Unit,
+    inCartQuantity: Int,
+    onAddClick: () -> Unit,
+    onPlusClick: () -> Unit,
+    onMinusClick: () -> Unit,
     cartColor: Color? = null
 ) {
 
     AnimatedContent(
-        targetState = showProductQuantity,
+        targetState = inCartQuantity > 0,
         transitionSpec = { fadeTransitionSpec() },
         label = "CartToQuantity"
     ) {
         if (it) {
             SetProductQuantity(
-                onAddProductClick = {},
-                onRemoveProductClick = {}
+                onAddProductClick = onPlusClick,
+                onRemoveProductClick = onMinusClick
             )
         } else {
-
             ProductCart(
                 cartColor = cartColor,
-                onClick = onCartClick
+                onClick = onAddClick
             )
         }
     }
