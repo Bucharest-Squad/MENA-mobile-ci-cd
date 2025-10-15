@@ -74,7 +74,7 @@ class TransactionRepositoryImpl(
     private companion object {
         const val TRANSACTION_PATH = "wallet/transactions"
         const val FIRST_TRANSACTION_DATE_PATH = "$TRANSACTION_PATH/first-date"
-        const val ADD_TRANSACTION = "/initiate"
+        const val ADD_TRANSACTION = "/p2p/initiate"
         const val RECEIVER_DETAILS = "/receiver-details"
     }
 
