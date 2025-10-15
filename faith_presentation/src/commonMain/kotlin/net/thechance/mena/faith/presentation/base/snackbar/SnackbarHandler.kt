@@ -26,9 +26,9 @@ interface SnackbarHandler {
         status: SnackBarState.Status,
         durationMillis: Long = 3000L,
         scope: CoroutineScope,
-    )= Napier.e { "Snackbar is Empty" }
+    ) = Napier.e { "Snackbar is Empty" }
 
-    fun hideSnackBar()= Napier.e { "Snackbar is Empty" }
+    fun hideSnackBar() = Napier.e { "Snackbar is Empty" }
 
     companion object {
         val Empty = object : SnackbarHandler {
@@ -41,7 +41,7 @@ class DefaultSnackbarHandlerImpl : SnackbarHandler {
     override val snackBarState: MutableStateFlow<SnackBarState> = MutableStateFlow(SnackBarState())
 
     override fun showSnackBar(
-        message: suspend ()-> String,
+        message: suspend () -> String,
         status: SnackBarState.Status,
         durationMillis: Long,
         scope: CoroutineScope,
@@ -59,11 +59,7 @@ class DefaultSnackbarHandlerImpl : SnackbarHandler {
                 )
             }
             delay(durationMillis)
-            snackBarState.update {
-                it.copy(
-                    isVisible = false
-                )
-            }
+            snackBarState.update { it.copy(isVisible = false) }
         }
     }
 
@@ -72,7 +68,7 @@ class DefaultSnackbarHandlerImpl : SnackbarHandler {
         status: SnackBarState.Status,
         durationMillis: Long,
         scope: CoroutineScope,
-    )= showSnackBar(
+    ) = showSnackBar(
         message = { getString(message) },
         status = status,
         durationMillis = durationMillis,
