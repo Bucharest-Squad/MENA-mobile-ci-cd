@@ -26,14 +26,15 @@ import mena.faith_presentation.generated.resources.error_unauthorized
 import mena.faith_presentation.generated.resources.error_unknown
 import net.thechance.mena.faith.domain.annotation.KoverIgnore
 import net.thechance.mena.faith.domain.exception.FaithException
-import net.thechance.mena.faith.presentation.util.ResourceProvider
-import net.thechance.mena.faith.presentation.util.StringResourceProvider
+import net.thechance.mena.faith.presentation.base.snackbar.SnackBarState
+import net.thechance.mena.faith.presentation.base.snackbar.SnackbarHandler
+
 
 @KoverIgnore
 abstract class BaseViewModel<UI_STATE, UI_EFFECT>(
     initialState: UI_STATE,
-    private val resourceProvider: ResourceProvider = StringResourceProvider()
-) : ViewModel() {
+    private val snackbarHandler: SnackbarHandler = SnackbarHandler.Empty,
+) : ViewModel(), SnackbarHandler by snackbarHandler {
 
     private val _uiState = MutableStateFlow(initialState)
     val uiState = _uiState.asStateFlow()
@@ -51,42 +52,6 @@ abstract class BaseViewModel<UI_STATE, UI_EFFECT>(
     protected fun sendEffect(effect: UI_EFFECT) {
         viewModelScope.launch {
             _uiEffect.emit(effect)
-        }
-    }
-
-    fun showSnackBar(
-        message: String,
-        status: SnackBarState.Status,
-        durationMillis: Long = 3000L,
-    ) {
-        viewModelScope.launch {
-            if (snackBarState.value.isVisible) {
-                hideSnackBar()
-                delay(1000L)
-            }
-            _snackBarState.update {
-                SnackBarState(
-                    message = message,
-                    status = status,
-                    isVisible = true
-                )
-            }
-            delay(durationMillis)
-            _snackBarState.update {
-                it.copy(
-                    isVisible = false
-                )
-            }
-        }
-    }
-
-    private fun hideSnackBar() {
-        viewModelScope.launch {
-            _snackBarState.update {
-                it.copy(
-                    isVisible = false,
-                )
-            }
         }
     }
 
@@ -139,12 +104,13 @@ abstract class BaseViewModel<UI_STATE, UI_EFFECT>(
     }
 
 
-    private suspend fun handleError(error: Throwable) {
+    private fun handleError(error: Throwable) {
         val faithError = error as? FaithException ?: FaithException.UnknownException
-        val message = resourceProvider.getString(faithError.toStringResource())
+        val message = faithError.toStringResource()
         showSnackBar(
-            message,
-            SnackBarState.Status.Error
+            message = message,
+            status = SnackBarState.Status.Error,
+            scope = viewModelScope
         )
     }
 
