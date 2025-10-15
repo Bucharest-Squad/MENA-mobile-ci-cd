@@ -12,6 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import mena.dukan_presentation.generated.resources.Res
@@ -41,7 +42,8 @@ fun BestNearDukanCard(
             contentDescription = stringResource(Res.string.dukan_image),
             modifier = Modifier
                 .size(size = 60.dp)
-                .clip(RoundedCornerShape(Theme.radius.full))
+                .clip(RoundedCornerShape(Theme.radius.full)),
+            contentScale = ContentScale.Crop
         )
         Text(
             text = dukanName,
