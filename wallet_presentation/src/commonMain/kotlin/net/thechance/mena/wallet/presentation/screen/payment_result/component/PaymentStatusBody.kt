@@ -1,5 +1,7 @@
 package net.thechance.mena.wallet.presentation.screen.payment_result.component
 
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -48,70 +50,77 @@ fun PaymentStatusBody(
     receiverName: String = "",
     amount: Double = 0.0
 ) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        when (paymentStatus) {
-            SubmissionStatus.CONNECTION_LOST -> {
-                PaymentResultCard(
-                    image = painterResource(Res.drawable.transaction_failed),
-                    title = stringResource(Res.string.transaction_failed),
-                    description = stringResource(Res.string.connection_lost_try_again),
-                    paymentStatus = paymentStatus,
-                    modifier = Modifier.align(Alignment.Center)
-                )
-                PaymentStatusButtons(
-                    primaryButtonText = stringResource(Res.string.try_again),
-                    onPrimaryButtonClick = interactionListener::onTryAgainClicked,
-                    onCancelClicked = interactionListener::onCloseClicked,
-                    modifier = Modifier.align(Alignment.BottomCenter),
-                    isLoading = status.isLoading,
-                    isCloseEnabled = status.isCloseEnabled,
-                    isTryAgainEnabled = status.isTryAgainEnabled
-                )
-            }
+    Crossfade(
+        targetState = paymentStatus,
+        animationSpec = tween(durationMillis = 300),
+        label = "paymentStatusCrossfade"
+    ) { state ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            when (state) {
+                SubmissionStatus.CONNECTION_LOST -> {
+                    PaymentResultCard(
+                        image = painterResource(Res.drawable.transaction_failed),
+                        title = stringResource(Res.string.transaction_failed),
+                        description = stringResource(Res.string.connection_lost_try_again),
+                        paymentStatus = state,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                    PaymentStatusButtons(
+                        primaryButtonText = stringResource(Res.string.try_again),
+                        onPrimaryButtonClick = interactionListener::onTryAgainClicked,
+                        onCancelClicked = interactionListener::onCloseClicked,
+                        modifier = Modifier.align(Alignment.BottomCenter),
+                        isLoading = status.isLoading,
+                        isCloseEnabled = status.isCloseEnabled,
+                        isTryAgainEnabled = status.isTryAgainEnabled
+                    )
+                }
 
-            SubmissionStatus.UNKNOWN_ERROR -> {
-                PaymentResultCard(
-                    image = painterResource(Res.drawable.transaction_failed),
-                    title = stringResource(Res.string.transaction_failed),
-                    description = stringResource(Res.string.payment_failed_description),
-                    paymentStatus = paymentStatus,
-                    modifier = Modifier.align(Alignment.Center)
-                )
-                PaymentStatusButtons(
-                    primaryButtonText = stringResource(Res.string.try_again),
-                    onPrimaryButtonClick = interactionListener::onTryAgainClicked,
-                    onCancelClicked = interactionListener::onCloseClicked,
-                    modifier = Modifier.align(Alignment.BottomCenter),
-                    isLoading = status.isLoading,
-                    isCloseEnabled = status.isCloseEnabled,
-                    isTryAgainEnabled = status.isTryAgainEnabled
-                )
-            }
+                SubmissionStatus.UNKNOWN_ERROR -> {
+                    PaymentResultCard(
+                        image = painterResource(Res.drawable.transaction_failed),
+                        title = stringResource(Res.string.transaction_failed),
+                        description = stringResource(Res.string.payment_failed_description),
+                        paymentStatus = state,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                    PaymentStatusButtons(
+                        primaryButtonText = stringResource(Res.string.try_again),
+                        onPrimaryButtonClick = interactionListener::onTryAgainClicked,
+                        onCancelClicked = interactionListener::onCloseClicked,
+                        modifier = Modifier.align(Alignment.BottomCenter),
+                        isLoading = status.isLoading,
+                        isCloseEnabled = status.isCloseEnabled,
+                        isTryAgainEnabled = status.isTryAgainEnabled
+                    )
+                }
 
-            SubmissionStatus.SUCCESS -> {
-                PaymentResultCard(
-                    image = painterResource(Res.drawable.transaction_success),
-                    title = stringResource(Res.string.transaction_successful),
-                    name = receiverName,
-                    amount = amount,
-                    paymentStatus = paymentStatus,
-                    modifier = Modifier.align(Alignment.Center)
-                )
-                PaymentStatusButtons(
-                    primaryButtonText = stringResource(Res.string.show_transaction_details),
-                    onPrimaryButtonClick = interactionListener::onShowTransactionDetailsClicked,
-                    onCancelClicked = interactionListener::onCloseClicked,
-                    modifier = Modifier.align(Alignment.BottomCenter),
-                    isLoading = status.isLoading,
-                    isCloseEnabled = status.isCloseEnabled
-                )
+                SubmissionStatus.SUCCESS -> {
+                    PaymentResultCard(
+                        image = painterResource(Res.drawable.transaction_success),
+                        title = stringResource(Res.string.transaction_successful),
+                        name = receiverName,
+                        amount = amount,
+                        paymentStatus = state,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                    PaymentStatusButtons(
+                        primaryButtonText = stringResource(Res.string.show_transaction_details),
+                        onPrimaryButtonClick = interactionListener::onShowTransactionDetailsClicked,
+                        onCancelClicked = interactionListener::onCloseClicked,
+                        modifier = Modifier.align(Alignment.BottomCenter),
+                        isLoading = status.isLoading,
+                        isCloseEnabled = status.isCloseEnabled
+                    )
+                }
             }
         }
     }
+
 }
 
 @Composable
