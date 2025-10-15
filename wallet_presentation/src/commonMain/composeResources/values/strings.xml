@@ -11,7 +11,7 @@
     <string name="type">Type</string>
     <string name="status">Status</string>
     <string name="from">From</string>
-    <string name="to">To</string>
+    <string name="to">to </string>
     <string name="select_date">Select Date</string>
     <string name="sent">Sent</string>
     <string name="received">Received</string>
@@ -108,7 +108,7 @@
     <string name="unknown_error_description">An unknown error occurred. Please try again.</string>
     <string name="inflows">Inflows</string>
     <string name="outflows">Outflows</string>
-    <string name="silvers">Silvers</string>
+    <string name="silvers">silvers</string>
     <string name="date_range">%1$s - %2$s</string>
     <string name="amount_with_currency">%1$s %2$s</string>
     <string name="statements">Statements</string>

@@ -23,7 +23,8 @@ class PaymentResultViewModel(
     PaymentResultScreenState()
 ), PaymentResultInteractionListener {
     private val transactionId = Uuid.parse(paymentResultArgs.transactionId)
-    private val submissionStatus = SubmissionStatus.valueOf(paymentResultArgs.submitTransactionResultStatus)
+    private val submissionStatus =
+        SubmissionStatus.valueOf(paymentResultArgs.submitTransactionResultStatus)
 
     init {
         updateState { it.copy(paymentStatus = submissionStatus) }
@@ -47,10 +48,8 @@ class PaymentResultViewModel(
 
     private fun submitTransaction(transactionId: Uuid) {
         tryToExecute(
-            callee = {
-                paymentRepository.submitTransaction(transactionId)
-            },
-            onSuccess = { onSubmitTransactionSuccess()},
+            callee = { paymentRepository.submitTransaction(transactionId) },
+            onSuccess = { onSubmitTransactionSuccess() },
             onError = ::onSubmitTransactionFailed,
             dispatcher = ioDispatcher
         )
@@ -68,10 +67,11 @@ class PaymentResultViewModel(
     private fun onSubmitTransactionFailed(error: ErrorState) {
         updateState { it.copy(isLoading = false) }
         when (error) {
-            is ErrorState.NoInternet -> updateState { it.copy(SubmissionStatus.CONNECTION_LOST) }
-            else -> updateState {
-                it.copy(SubmissionStatus.CONNECTION_LOST)
-            }
+            is ErrorState.NoInternet ->
+                updateState { it.copy(SubmissionStatus.CONNECTION_LOST) }
+
+            else ->
+                updateState { it.copy(SubmissionStatus.CONNECTION_LOST) }
         }
     }
 }
