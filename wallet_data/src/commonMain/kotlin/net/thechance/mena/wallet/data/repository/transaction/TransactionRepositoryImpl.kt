@@ -14,7 +14,6 @@ import net.thechance.mena.wallet.data.mapper.toRequest
 import net.thechance.mena.wallet.data.network_client.NetworkClient
 import net.thechance.mena.wallet.domain.entity.Transaction
 import net.thechance.mena.wallet.domain.model.TransactionReceiver
-import net.thechance.mena.wallet.domain.model.PendingTransactionType
 import net.thechance.mena.wallet.domain.model.TransactionFilterParams
 import net.thechance.mena.wallet.domain.repository.TransactionRepository
 import org.koin.core.annotation.Single
@@ -52,7 +51,6 @@ class TransactionRepositoryImpl(
     }
 
     override suspend fun addPendingTransaction(
-        pendingTransactionType: PendingTransactionType,
         receiverId: Uuid,
         amount: Double
     ): Uuid {
@@ -61,8 +59,7 @@ class TransactionRepositoryImpl(
                 setBody(
                     PendingTransactionRequestBody(
                         amount = amount,
-                        receiverId = receiverId.toString(),
-                        type = pendingTransactionType.name
+                        receiverId = receiverId.toString()
                     )
                 )
             }
