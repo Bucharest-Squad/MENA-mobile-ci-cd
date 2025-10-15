@@ -5,7 +5,8 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
@@ -26,11 +27,11 @@ import kotlin.math.abs
 
 @Stable
 class ImageCropperUiState(
-    private val minScale: Float,
-    private val maxScale: Float,
-    imageSize: IntSize
+    val minScale: Float,
+    val maxScale: Float,
+    initialState: ImageCropperUiModel
 ) {
-    var state by mutableStateOf(ImageCropperUiModel(imageSize = imageSize))
+    var state by mutableStateOf(initialState)
 
     val isZoomInEnabled by derivedStateOf {
         state.scale < maxScale
@@ -137,9 +138,39 @@ class ImageCropperUiState(
     )
 }
 
+val saver = Saver<ImageCropperUiState, Map<String, Any>>(
+    save = { imageState ->
+        mapOf(
+            "scale" to imageState.state.scale,
+            "translation" to imageState.state.translation,
+            "imageSize" to imageState.state.imageSize,
+            "minScale" to imageState.minScale,
+            "maxScale" to imageState.maxScale
+        )
+    },
+    restore = { map ->
+        val uiModel = ImageCropperUiState.ImageCropperUiModel(
+            imageSize = map["imageSize"] as IntSize,
+            scale = map["scale"] as Float,
+            translation = map["translation"] as Offset,
+        )
+
+        ImageCropperUiState(
+            minScale = map["minScale"] as Float,
+            maxScale = map["maxScale"] as Float,
+            initialState = uiModel
+        )
+    }
+)
+
 @Composable
 fun rememberImageCropState(
     minScale: Float = 1f,
     maxScale: Float = 3f,
     imageSize: IntSize = LocalWindowInfo.current.containerSize
-) = remember(minScale, maxScale, imageSize) { ImageCropperUiState(minScale, maxScale, imageSize) }
+) = rememberSaveable(saver = saver) {
+    ImageCropperUiState(
+        minScale, maxScale,
+        ImageCropperUiState.ImageCropperUiModel(imageSize = imageSize)
+    )
+}

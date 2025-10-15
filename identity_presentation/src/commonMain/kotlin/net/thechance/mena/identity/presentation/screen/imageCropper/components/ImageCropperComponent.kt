@@ -62,7 +62,7 @@ fun ImageCropperComponent(
             onZoomOutClicked = { imagCropperUiState.zoomOut(0.1f) },
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .padding(top = 12.dp)
+                .padding(top = Theme.spacing._12)
                 .clip(RoundedCornerShape(Theme.radius.full))
                 .background(Theme.colorScheme.background.surfaceLow)
                 .padding(horizontal = 12.dp, vertical = 6.dp)
