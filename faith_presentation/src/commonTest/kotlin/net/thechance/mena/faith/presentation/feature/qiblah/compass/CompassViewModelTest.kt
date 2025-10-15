@@ -1,3 +1,5 @@
+package net.thechance.mena.faith.presentation.feature.qiblah.compass
+
 import app.cash.turbine.test
 import dev.mokkery.MockMode
 import dev.mokkery.answering.returns
@@ -15,8 +17,6 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import net.thechance.mena.faith.domain.entity.Location
 import net.thechance.mena.faith.domain.usecase.QiblahBearingCalculatorUseCase
-import net.thechance.mena.faith.presentation.feature.qiblah.compass.CompassEffect
-import net.thechance.mena.faith.presentation.feature.qiblah.compass.CompassViewModel
 import net.thechance.mena.faith.presentation.util.AzimuthProvider
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
@@ -42,14 +42,6 @@ class CompassViewModelTest {
     @AfterTest
     fun tearDown() {
         Dispatchers.resetMain()
-    }
-
-    private fun createViewModel() {
-        viewModel = CompassViewModel(
-            bearingCalculatorUseCase = useCase,
-            azimuthProvider = azimuthProvider,
-            dispatcher = testDispatcher
-        )
     }
 
     @Test
@@ -79,7 +71,7 @@ class CompassViewModelTest {
         advanceUntilIdle()
 
         // Then
-        val expectedAngle = useCase.calculateQiblahAngle(Location(29.0735549, 31.1015618))
+        val expectedAngle = useCase.calculateQiblahAngle(Location(longitude = 29.0735549, latitude = 31.1015618))
         assertEquals(expectedAngle.toFloat(), viewModel.uiState.value.qiblahAngleValue)
     }
 
@@ -131,5 +123,13 @@ class CompassViewModelTest {
             assertEquals(CompassEffect.NavigateBack, awaitItem())
             cancelAndIgnoreRemainingEvents()
         }
+    }
+
+    private fun createViewModel() {
+        viewModel = CompassViewModel(
+            bearingCalculatorUseCase = useCase,
+            azimuthProvider = azimuthProvider,
+            dispatcher = testDispatcher
+        )
     }
 }

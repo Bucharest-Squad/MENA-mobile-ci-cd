@@ -36,6 +36,7 @@ class CompassViewModel(
 
     private fun startListeningOnAzimuth() {
         tryToCollect(
+            dispatcher = dispatcher,
             block = azimuthProvider::startListening,
             onEmitNewValue = ::onAzimuthValueChange,
         )
