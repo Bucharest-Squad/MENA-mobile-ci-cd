@@ -42,8 +42,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun PaymentStatusBody(
     interactionListener: PaymentResultInteractionListener,
-    paymentStatus: SubmissionStatus = SubmissionStatus.UNKNOWN_ERROR,
-    description: String = stringResource(Res.string.connection_lost_try_again),
+    paymentStatus: SubmissionStatus = SubmissionStatus.CONNECTION_LOST,
     receiverName: String = "",
     amount: Double = 0.0
 ) {
@@ -52,45 +51,55 @@ fun PaymentStatusBody(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-
         when (paymentStatus) {
             SubmissionStatus.CONNECTION_LOST -> {
-
+                PaymentResultCard(
+                    image = painterResource(Res.drawable.transaction_failed),
+                    title = stringResource(Res.string.transaction_failed),
+                    description = stringResource(Res.string.connection_lost_try_again),
+                    paymentStatus = paymentStatus,
+                    modifier = Modifier.align(Alignment.Center)
+                )
+                PaymentStatusButtons(
+                    primaryButtonText = stringResource(Res.string.try_again),
+                    onPrimaryButtonClick = interactionListener::onTryAgainClicked,
+                    onCancelClicked = interactionListener::onCancelClicked,
+                    modifier = Modifier.align(Alignment.BottomCenter)
+                )
             }
 
-            SubmissionStatus.UNKNOWN_ERROR -> {}
+            SubmissionStatus.UNKNOWN_ERROR -> {
+                PaymentResultCard(
+                    image = painterResource(Res.drawable.transaction_failed),
+                    title = stringResource(Res.string.transaction_failed),
+                    description = stringResource(Res.string.payment_failed_description),
+                    paymentStatus = paymentStatus,
+                    modifier = Modifier.align(Alignment.Center)
+                )
+                PaymentStatusButtons(
+                    primaryButtonText = stringResource(Res.string.try_again),
+                    onPrimaryButtonClick = interactionListener::onTryAgainClicked,
+                    onCancelClicked = interactionListener::onCancelClicked,
+                    modifier = Modifier.align(Alignment.BottomCenter)
+                )
+            }
 
-            SubmissionStatus.SUCCESS -> {}
-        }
-        if (paymentStatus == SubmissionStatus.UNKNOWN_ERROR) {
-            PaymentResultCard(
-                image = painterResource(Res.drawable.transaction_failed),
-                title = stringResource(Res.string.transaction_failed),
-                description = description,
-                paymentStatus = paymentStatus,
-                modifier = Modifier.align(Alignment.Center)
-            )
-            PaymentStatusButtons(
-                primaryButtonText = stringResource(Res.string.try_again),
-                onPrimaryButtonClick = interactionListener::onTryAgainClicked,
-                onCancelClicked = interactionListener::onCancelClicked,
-                modifier = Modifier.align(Alignment.BottomCenter)
-            )
-        } else {
-            PaymentResultCard(
-                image = painterResource(Res.drawable.transaction_success),
-                title = stringResource(Res.string.transaction_successful),
-                name = receiverName,
-                amount = amount,
-                paymentStatus = paymentStatus,
-                modifier = Modifier.align(Alignment.Center)
-            )
-            PaymentStatusButtons(
-                primaryButtonText = stringResource(Res.string.show_transaction_details),
-                onPrimaryButtonClick = interactionListener::onShowTransactionDetailsClicked,
-                onCancelClicked = interactionListener::onCancelClicked,
-                modifier = Modifier.align(Alignment.BottomCenter)
-            )
+            SubmissionStatus.SUCCESS -> {
+                PaymentResultCard(
+                    image = painterResource(Res.drawable.transaction_success),
+                    title = stringResource(Res.string.transaction_successful),
+                    name = receiverName,
+                    amount = amount,
+                    paymentStatus = paymentStatus,
+                    modifier = Modifier.align(Alignment.Center)
+                )
+                PaymentStatusButtons(
+                    primaryButtonText = stringResource(Res.string.show_transaction_details),
+                    onPrimaryButtonClick = interactionListener::onShowTransactionDetailsClicked,
+                    onCancelClicked = interactionListener::onCancelClicked,
+                    modifier = Modifier.align(Alignment.BottomCenter)
+                )
+            }
         }
     }
 }

@@ -54,7 +54,8 @@ fun PaymentResultScreen(
     )
     PaymentResultScreenContent(
         receiverName = receiverName,
-        amount = amount, state = state,
+        amount = amount,
+        state = state,
         interactionListener = viewModel
     )
 }
