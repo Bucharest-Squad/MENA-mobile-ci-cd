@@ -84,15 +84,16 @@ class PaymentResultViewModel(
             it.copy(
                 isLoading = false,
                 isTryAgainEnabled = canRetry,
+                tryAgainAttempts = newAttempts,
                 isCloseEnabled = true
             )
         }
         when (error) {
             is ErrorState.NoInternet ->
-                updateState { it.copy(SubmissionStatus.CONNECTION_LOST) }
+                updateState { it.copy(paymentStatus = SubmissionStatus.CONNECTION_LOST) }
 
             else ->
-                updateState { it.copy(SubmissionStatus.UNKNOWN_ERROR) }
+                updateState { it.copy(paymentStatus = SubmissionStatus.UNKNOWN_ERROR) }
         }
     }
 
