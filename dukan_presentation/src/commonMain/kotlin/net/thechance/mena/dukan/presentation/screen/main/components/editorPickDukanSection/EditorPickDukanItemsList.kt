@@ -74,7 +74,7 @@ private fun EditorPickDukanItemsList(
     LazyColumn(
         state = lazyListState,
         verticalArrangement = Arrangement.spacedBy(Theme.spacing._8),
-        modifier = modifier
+        modifier = modifier.padding(horizontal = Theme.spacing._16)
     ) {
         items(
             items = dukans.items,

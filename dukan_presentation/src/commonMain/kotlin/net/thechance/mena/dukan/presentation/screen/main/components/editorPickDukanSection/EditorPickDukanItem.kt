@@ -45,31 +45,36 @@ fun EditorPickDukanItem(
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() },
                 onClick = { onClick() }
-            ).padding(Theme.spacing._8)
+            )
     ) {
         AsyncImage(
-            model = dukanImage,
-            contentDescription = stringResource(Res.string.dukan_image),
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
-        )
-        Text(
-            text = dukanName,
-            style = Theme.typography.title.small,
-            color = Theme.colorScheme.primary.onPrimary,
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-        )
-        Icon(
-            painter = painterResource(Res.drawable.heart_angle),
-            contentDescription = stringResource(Res.string.heart_icon),
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .background(
-                    color = Theme.colorScheme.primary.primary,
-                    shape = RoundedCornerShape(Theme.radius.full)
-                ).padding(Theme.spacing._8)
-        )
+        model = dukanImage,
+        contentDescription = stringResource(Res.string.dukan_image),
+        modifier = Modifier.fillMaxSize(),
+        contentScale = ContentScale.Crop
+    )
+        Box(
+            Modifier.fillMaxSize().padding( Theme.spacing._8)
+        ){
+            Text(
+                text = dukanName,
+                style = Theme.typography.title.small,
+                color = Theme.colorScheme.primary.onPrimary,
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+            )
+            Icon(
+                painter = painterResource(Res.drawable.heart_angle),
+                contentDescription = stringResource(Res.string.heart_icon),
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .background(
+                        color = Theme.colorScheme.primary.primary,
+                        shape = RoundedCornerShape(Theme.radius.full)
+                    ).padding(Theme.spacing._8)
+            )
+        }
+
     }
 }
 
