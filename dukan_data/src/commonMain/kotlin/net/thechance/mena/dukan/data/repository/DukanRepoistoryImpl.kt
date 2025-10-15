@@ -82,7 +82,7 @@ class DukanRepositoryImpl(
         return safeApiCall {
             client.post("$BASE_URL/image") {
                 setBody(
-                    buildSinglePartFormData(fileName, fileBytes,"file")
+                    buildSinglePartFormData(fileName, fileBytes, "file")
                 )
             }
         }
@@ -109,8 +109,8 @@ class DukanRepositoryImpl(
         val lat = 33.3128
         val lng = 44.3615
         val range = 30000
-        val dukansResponse = safeApiCall < PageResponseDto<DukanResponseDto>>{
-            client.get("$BASE_URL/nearby/best"){
+        val dukansResponse = safeApiCall<PageResponseDto<DukanResponseDto>> {
+            client.get("$BASE_URL/nearby/best") {
                 parameter("page", page)
                 parameter("size", size)
                 parameter("lat", lat)
@@ -118,13 +118,27 @@ class DukanRepositoryImpl(
                 parameter("range", range)
             }
         }
-        return dukansResponse.toDomain { it.toDomainPreview()}
+        return dukansResponse.toDomain { it.toDomainPreview() }
     }
 
     override suspend fun isDukanNameTaken(name: String): Boolean {
         return safeApiCall<DukanNameResponse> {
             client.get("$BASE_URL/available?name=$name").body()
         }.available.not()
+    }
+
+    override suspend fun getDukansByCategory(
+        categoryId: String,
+        page: Int,
+        size: Int
+    ): PagedResult<DukanPreview> {
+        val response: PageResponseDto<DukanResponseDto> = safeApiCall {
+            client.get("$BASE_URL/category/$categoryId") {
+                parameter("page", page)
+                parameter("size", size)
+            }
+        }
+        return response.toDomain(mapper = DukanResponseDto::toDomainPreview)
     }
 
     companion object {

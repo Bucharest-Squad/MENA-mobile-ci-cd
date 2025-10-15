@@ -1,8 +1,8 @@
 package net.thechance.mena.dukan.domain.repository
 
 import net.thechance.mena.dukan.domain.entity.Category
-import net.thechance.mena.dukan.domain.entity.Dukan
 import net.thechance.mena.dukan.domain.entity.Color
+import net.thechance.mena.dukan.domain.entity.Dukan
 import net.thechance.mena.dukan.domain.entity.DukanPreview
 import net.thechance.mena.dukan.domain.entity.MyDukanStatus
 import net.thechance.mena.dukan.domain.util.PagedResult
@@ -23,6 +23,12 @@ interface DukanRepository {
 
 
     suspend fun getBestAroundDukans(
+        page: Int,
+        size: Int
+    ): PagedResult<DukanPreview>
+
+    suspend fun getDukansByCategory(
+        categoryId: String,
         page: Int,
         size: Int
     ): PagedResult<DukanPreview>
