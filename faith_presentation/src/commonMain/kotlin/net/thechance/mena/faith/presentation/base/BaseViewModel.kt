@@ -28,6 +28,7 @@ import net.thechance.mena.faith.domain.annotation.KoverIgnore
 import net.thechance.mena.faith.domain.exception.FaithException
 import net.thechance.mena.faith.presentation.util.ResourceProvider
 import net.thechance.mena.faith.presentation.util.StringResourceProvider
+import org.jetbrains.compose.resources.StringResource
 
 @KoverIgnore
 abstract class BaseViewModel<UI_STATE, UI_EFFECT>(
@@ -55,7 +56,7 @@ abstract class BaseViewModel<UI_STATE, UI_EFFECT>(
     }
 
     fun showSnackBar(
-        message: String,
+        message: StringResource,
         status: SnackBarState.Status,
         durationMillis: Long = 3000L,
     ) {
@@ -66,7 +67,7 @@ abstract class BaseViewModel<UI_STATE, UI_EFFECT>(
             }
             _snackBarState.update {
                 SnackBarState(
-                    message = message,
+                    message = resourceProvider.getString(message),
                     status = status,
                     isVisible = true
                 )
@@ -92,33 +93,30 @@ abstract class BaseViewModel<UI_STATE, UI_EFFECT>(
 
     protected fun <T> tryToExecute(
         execute: suspend () -> T,
-        onSuccess: (suspend (T) -> Unit)? = null,
-        onError: suspend (Throwable) -> Unit = ::handleError,
+        onSuccess: ((T) -> Unit)? = null,
+        onError: (Throwable) -> Unit = ::handleError,
         onStart: suspend () -> Unit = {},
         onFinally: () -> Unit = {},
         dispatcher: CoroutineDispatcher = Dispatchers.IO,
         inScope: CoroutineScope = viewModelScope,
         delayMillis: Long = 0L
     ): Job {
-        return inScope.launch(dispatcher) {
-            val handler = CoroutineExceptionHandler { _, throwable ->
-                inScope.launch {
-                    onError(throwable)
-                }
-            }
-            inScope.launch(dispatcher + handler) {
-                onStart()
-                delay(delayMillis)
-                runCatching { execute() }
-                    .onSuccess { result -> onSuccess?.invoke(result) }
-                    .onFailure { throwable -> onError(throwable) }
-                onFinally()
-            }
+        val handler = CoroutineExceptionHandler { _, throwable ->
+            onError(throwable)
+        }
+
+        return inScope.launch(dispatcher + handler) {
+            onStart()
+            delay(delayMillis)
+            runCatching { execute() }
+                .onSuccess { result -> onSuccess?.invoke(result) }
+                .onFailure { throwable -> onError(throwable) }
+            onFinally()
         }
     }
 
     protected fun <T> tryToCollect(
-        onError: suspend (Throwable) -> Unit = ::handleError,
+        onError: (Throwable) -> Unit = ::handleError,
         onEmitNewValue: (T) -> Unit = {},
         coroutineScope: CoroutineScope = viewModelScope,
         dispatcher: CoroutineDispatcher = Dispatchers.IO,
@@ -139,11 +137,9 @@ abstract class BaseViewModel<UI_STATE, UI_EFFECT>(
     }
 
 
-    private suspend fun handleError(error: Throwable) {
-        val faithError = error as? FaithException ?: FaithException.UnknownException
-        val message = resourceProvider.getString(faithError.toStringResource())
+    private fun handleError(error: Throwable) {
         showSnackBar(
-            message,
+            (error as FaithException).toStringResource(),
             SnackBarState.Status.Error
         )
     }
