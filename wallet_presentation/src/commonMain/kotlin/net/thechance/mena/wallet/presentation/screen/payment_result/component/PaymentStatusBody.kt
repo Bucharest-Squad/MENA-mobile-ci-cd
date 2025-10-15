@@ -35,6 +35,7 @@ import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.wallet.presentation.model.SubmissionStatus
 import net.thechance.mena.wallet.presentation.screen.payment_result.PaymentResultInteractionListener
+import net.thechance.mena.wallet.presentation.screen.payment_result.PaymentResultScreenState
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -42,6 +43,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun PaymentStatusBody(
     interactionListener: PaymentResultInteractionListener,
+    status: PaymentResultScreenState,
     paymentStatus: SubmissionStatus = SubmissionStatus.CONNECTION_LOST,
     receiverName: String = "",
     amount: Double = 0.0
@@ -63,8 +65,11 @@ fun PaymentStatusBody(
                 PaymentStatusButtons(
                     primaryButtonText = stringResource(Res.string.try_again),
                     onPrimaryButtonClick = interactionListener::onTryAgainClicked,
-                    onCancelClicked = interactionListener::onCancelClicked,
-                    modifier = Modifier.align(Alignment.BottomCenter)
+                    onCancelClicked = interactionListener::onCloseClicked,
+                    modifier = Modifier.align(Alignment.BottomCenter),
+                    isLoading = status.isLoading,
+                    isCloseEnabled = status.isCloseEnabled,
+                    isTryAgainEnabled = status.isTryAgainEnabled
                 )
             }
 
@@ -79,8 +84,11 @@ fun PaymentStatusBody(
                 PaymentStatusButtons(
                     primaryButtonText = stringResource(Res.string.try_again),
                     onPrimaryButtonClick = interactionListener::onTryAgainClicked,
-                    onCancelClicked = interactionListener::onCancelClicked,
-                    modifier = Modifier.align(Alignment.BottomCenter)
+                    onCancelClicked = interactionListener::onCloseClicked,
+                    modifier = Modifier.align(Alignment.BottomCenter),
+                    isLoading = status.isLoading,
+                    isCloseEnabled = status.isCloseEnabled,
+                    isTryAgainEnabled = status.isTryAgainEnabled
                 )
             }
 
@@ -96,8 +104,10 @@ fun PaymentStatusBody(
                 PaymentStatusButtons(
                     primaryButtonText = stringResource(Res.string.show_transaction_details),
                     onPrimaryButtonClick = interactionListener::onShowTransactionDetailsClicked,
-                    onCancelClicked = interactionListener::onCancelClicked,
-                    modifier = Modifier.align(Alignment.BottomCenter)
+                    onCancelClicked = interactionListener::onCloseClicked,
+                    modifier = Modifier.align(Alignment.BottomCenter),
+                    isLoading = status.isLoading,
+                    isCloseEnabled = status.isCloseEnabled
                 )
             }
         }
@@ -159,7 +169,10 @@ private fun PaymentStatusButtons(
     primaryButtonText: String,
     onPrimaryButtonClick: () -> Unit,
     onCancelClicked: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isLoading: Boolean = false,
+    isCloseEnabled: Boolean = true,
+    isTryAgainEnabled: Boolean = true
 ) {
     Column(
         modifier = modifier
@@ -171,7 +184,9 @@ private fun PaymentStatusButtons(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 8.dp),
-            contentPadding = PaddingValues(vertical = 13.dp)
+            contentPadding = PaddingValues(vertical = 13.dp),
+            isLoading = isLoading,
+            isEnabled = isTryAgainEnabled
         )
 
         OutlinedButton(
@@ -181,6 +196,7 @@ private fun PaymentStatusButtons(
                 .fillMaxWidth()
                 .padding(top = 6.dp, bottom = 12.dp),
             contentPadding = PaddingValues(vertical = 13.dp),
+            isEnabled = isCloseEnabled
         )
     }
 }

@@ -34,12 +34,20 @@ class PaymentResultViewModel(
         sendEffect(PaymentResultEffect.NavigateBack)
     }
 
-    override fun onCancelClicked() {
-        sendEffect(PaymentResultEffect.NavigateToScreenBeforePaymentProcess)
+    override fun onTryAgainClicked() {
+        if (currentState.tryAgainAttempts >= 3 || currentState.isLoading) return
+        updateState { oldState ->
+            oldState.copy(
+                isLoading = true,
+                isTryAgainEnabled = false,
+                isCloseEnabled = false
+            )
+        }
+        submitTransaction(transactionId)
     }
 
-    override fun onTryAgainClicked() {
-        submitTransaction(transactionId)
+    override fun onCloseClicked() {
+        sendEffect(PaymentResultEffect.NavigateToScreenBeforePaymentProcess)
     }
 
     override fun onShowTransactionDetailsClicked() {
@@ -59,19 +67,30 @@ class PaymentResultViewModel(
         updateState {
             it.copy(
                 isLoading = false,
-                paymentStatus = SubmissionStatus.SUCCESS
+                paymentStatus = SubmissionStatus.SUCCESS,
+                isTryAgainEnabled = false,
+                isCloseEnabled = true
             )
         }
     }
 
     private fun onSubmitTransactionFailed(error: ErrorState) {
-        updateState { it.copy(isLoading = false) }
+        val newAttempts = currentState.tryAgainAttempts + 1
+        val canRetry = newAttempts < 3
+
+        updateState {
+            it.copy(
+                isLoading = false,
+                isTryAgainEnabled = canRetry,
+                isCloseEnabled = true
+            )
+        }
         when (error) {
             is ErrorState.NoInternet ->
                 updateState { it.copy(SubmissionStatus.CONNECTION_LOST) }
 
             else ->
-                updateState { it.copy(SubmissionStatus.CONNECTION_LOST) }
+                updateState { it.copy(SubmissionStatus.UNKNOWN_ERROR) }
         }
     }
 }

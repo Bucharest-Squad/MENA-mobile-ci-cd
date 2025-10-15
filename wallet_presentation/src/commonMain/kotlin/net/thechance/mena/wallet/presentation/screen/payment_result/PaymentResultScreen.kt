@@ -87,6 +87,7 @@ private fun PaymentResultScreenContent(
         PaymentStatusBody(
             receiverName = receiverName,
             amount = amount,
+            status = state,
             paymentStatus = state.paymentStatus,
             interactionListener = interactionListener
         )
