@@ -24,8 +24,8 @@ import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 fun ImageCropperComponent(
     image: Painter,
     contentDescription: String,
-    onCropImage: (imageBitmap: ImageBitmap) -> Unit,
-    onUploadAnotherImage: (ImageBitmap) -> Unit,
+    onSaveButtonClicked: (imageBitmap: ImageBitmap) -> Unit,
+    onUploadAnotherImageClicked: (ImageBitmap) -> Unit,
     modifier: Modifier = Modifier,
     imagCropperUiState: ImageCropperUiState = rememberImageCropState(),
     contentPadding: PaddingValues = PaddingValues(16.dp)
@@ -35,7 +35,6 @@ fun ImageCropperComponent(
 
     Column(
         modifier = modifier
-            .background(color = Theme.colorScheme.background.surface)
             .padding(contentPadding)
             .clipToBounds()
     ) {
@@ -77,7 +76,7 @@ fun ImageCropperComponent(
                     layoutDirection = direction
                 )
 
-                onCropImage(imageBitmap)
+                onSaveButtonClicked(imageBitmap)
             },
             modifier = Modifier
                 .padding(top = 12.dp)
@@ -85,7 +84,7 @@ fun ImageCropperComponent(
         )
 
         UploadAnotherImageButton(
-            onClick = onUploadAnotherImage,
+            onClick = onUploadAnotherImageClicked,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(top = 8.dp, bottom = 18.dp)
