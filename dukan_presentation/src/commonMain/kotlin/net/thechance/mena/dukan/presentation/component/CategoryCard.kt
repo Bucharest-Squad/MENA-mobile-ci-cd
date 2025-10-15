@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import mena.dukan_presentation.generated.resources.Res
 import mena.dukan_presentation.generated.resources.category_icon
-import mena.dukan_presentation.generated.resources.ic_error
+import mena.dukan_presentation.generated.resources.ic_no_image_loaded
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
@@ -40,7 +40,7 @@ fun CategoryCard(
     iconContainerSize: Dp = 60.dp
 ) {
     val imageState = rememberSaveable { mutableStateOf(CategoryImageState.Loading) }
-    val isCategoryButtonEnabled = imageState.value == CategoryImageState.Success
+    val isCategoryButtonEnabled = imageState.value != CategoryImageState.Loading
 
     Column(
         modifier = modifier,
@@ -59,20 +59,15 @@ fun CategoryCard(
                 .skeletonLoading(isLoading = imageState.value == CategoryImageState.Loading),
             contentAlignment = Alignment.Center
         ) {
-
-            val iconTintColor = when(imageState.value){
-                CategoryImageState.Error -> Theme.colorScheme.error
-                else -> Theme.colorScheme.primary.primary
-            }
-
             AsyncImage(
                 model = imageUrl,
                 contentDescription = stringResource(resource = Res.string.category_icon),
                 modifier = Modifier.size(iconSize),
-                colorFilter = ColorFilter.tint(color = iconTintColor),
+                colorFilter = ColorFilter.tint(color = Theme.colorScheme.primary.primary),
+                error = painterResource(Res.drawable.ic_no_image_loaded),
                 onSuccess = { imageState.value = CategoryImageState.Success },
                 onError = { imageState.value = CategoryImageState.Error },
-                error = painterResource(Res.drawable.ic_error),
+                onLoading = { imageState.value = CategoryImageState.Loading }
             )
         }
 
