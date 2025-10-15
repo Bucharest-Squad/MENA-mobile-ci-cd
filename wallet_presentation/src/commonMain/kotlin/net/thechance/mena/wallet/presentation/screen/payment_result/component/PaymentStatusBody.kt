@@ -15,12 +15,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.input.key.Key.Companion.R
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import mena.wallet_presentation.generated.resources.Res
 import mena.wallet_presentation.generated.resources.close
 import mena.wallet_presentation.generated.resources.connection_lost_try_again
 import mena.wallet_presentation.generated.resources.payment_failed_description
+import mena.wallet_presentation.generated.resources.payment_status_crossfade
 import mena.wallet_presentation.generated.resources.show_transaction_details
 import mena.wallet_presentation.generated.resources.silvers
 import mena.wallet_presentation.generated.resources.to
@@ -53,7 +55,7 @@ fun PaymentStatusBody(
     Crossfade(
         targetState = paymentStatus,
         animationSpec = tween(durationMillis = 300),
-        label = "paymentStatusCrossfade"
+        label = stringResource(Res.string.payment_status_crossfade)
     ) { state ->
         Box(
             modifier = Modifier
