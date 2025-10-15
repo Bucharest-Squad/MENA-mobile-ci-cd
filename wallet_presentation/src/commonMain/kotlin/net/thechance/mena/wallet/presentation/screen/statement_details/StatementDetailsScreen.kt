@@ -1,4 +1,4 @@
-package net.thechance.mena.wallet.presentation.screen.view_transactions_statement
+package net.thechance.mena.wallet.presentation.screen.statement_details
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,12 +22,11 @@ import mena.wallet_presentation.generated.resources.img_no_internet
 import mena.wallet_presentation.generated.resources.no_internet_content
 import mena.wallet_presentation.generated.resources.no_internet_title
 import mena.wallet_presentation.generated.resources.share_button_title
-import mena.wallet_presentation.generated.resources.view_transactions
+import mena.wallet_presentation.generated.resources.statement
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.wallet.domain.model.TransactionFilterParams
 import net.thechance.mena.wallet.presentation.base.ErrorState
 import net.thechance.mena.wallet.presentation.base.UiState
 import net.thechance.mena.wallet.presentation.component.ErrorView
@@ -37,22 +35,22 @@ import net.thechance.mena.wallet.presentation.component.WalletScaffold
 import net.thechance.mena.wallet.presentation.screen.wallet.component.ThreeDotsLoadingIndicator
 import net.thechance.mena.wallet.presentation.utils.ObserveAsEffect
 import net.thechance.mena.wallet.presentation.utils.PdfHandler
+import net.thechance.mena.wallet.presentation.utils.StorageLocation
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
-fun ViewTransactionStatementScreen(
+fun StatementDetailsScreen(
     onNavigateBackClicked: () -> Unit,
-    filterParams: TransactionFilterParams? = null,
-    viewModel: ViewTransactionStatementViewModel = koinViewModel(),
+    statementLocation: StorageLocation,
+    viewModel: StatementDetailsViewModel = koinViewModel(
+        parameters = { parametersOf(statementLocation) }
+    ),
     pdfHandler: PdfHandler = koinInject()
 ) {
-
-    LaunchedEffect(filterParams) {
-        viewModel.getStatementPdf(filterParams)
-    }
 
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -67,16 +65,16 @@ fun ViewTransactionStatementScreen(
         }
     )
 
-    ViewTransactionsStatementContent(
+    StatementDetailsContent(
         state = state,
         listener = viewModel
     )
 }
 
 @Composable
-private fun ViewTransactionsStatementContent(
-    state: ViewTransactionStatementScreenState,
-    listener: ViewTransactionStatementInteractionListener
+private fun StatementDetailsContent(
+    state: StatementDetailsScreenState,
+    listener: StatementDetailsInteractionListener
 ) {
     WalletScaffold(
         modifier = Modifier
@@ -84,7 +82,7 @@ private fun ViewTransactionsStatementContent(
             .statusBarsPadding(),
         topBar = {
             AppBar(
-                title = stringResource(Res.string.view_transactions),
+                title = stringResource(Res.string.statement),
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                 leadingContent = {
                     Icon(
@@ -145,13 +143,13 @@ fun StatementViewer(
 }
 
 private suspend fun handleEffects(
-    effect: ViewTransactionStatementEffect,
+    effect: StatementDetailsEffect,
     onNavigateBackClicked: () -> Unit,
     shareStatement: suspend (statement: ByteArray, fileName: String) -> Unit
 ) {
     when (effect) {
-        ViewTransactionStatementEffect.NavigateBack -> onNavigateBackClicked()
-        is ViewTransactionStatementEffect.ShareStatement -> {
+        StatementDetailsEffect.NavigateBack -> onNavigateBackClicked()
+        is StatementDetailsEffect.ShareStatement -> {
             shareStatement(effect.statement, "statement.pdf")
         }
     }

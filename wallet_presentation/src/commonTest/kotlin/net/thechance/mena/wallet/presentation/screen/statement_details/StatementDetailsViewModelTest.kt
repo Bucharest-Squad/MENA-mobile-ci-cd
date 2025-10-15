@@ -1,4 +1,4 @@
-package net.thechance.mena.wallet.presentation.screen.view_transactions_statement
+package net.thechance.mena.wallet.presentation.screen.statement_details
 
 import app.cash.turbine.test
 import dev.mokkery.MockMode
@@ -17,6 +17,8 @@ import kotlinx.datetime.LocalDate
 import net.thechance.mena.wallet.domain.model.StatementWithMetaData
 import net.thechance.mena.wallet.domain.repository.StatementRepository
 import net.thechance.mena.wallet.presentation.base.UiState.Success
+import net.thechance.mena.wallet.presentation.utils.PdfHandler
+import net.thechance.mena.wallet.presentation.utils.StorageLocation
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -24,10 +26,12 @@ import kotlin.test.assertContentEquals
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class ViewTransactionStatementViewModelTest {
+class StatementDetailsViewModelTest {
     private val repository = mock<StatementRepository>(mode = MockMode.autofill)
     private val testDispatcher = StandardTestDispatcher()
-    private lateinit var viewModel: ViewTransactionStatementViewModel
+    private val pdfHandler = mock<PdfHandler>(mode = MockMode.autofill)
+    private val statementLocation = StorageLocation.Cache("test_statement.pdf")
+    private lateinit var viewModel: StatementDetailsViewModel
 
     @BeforeTest
     fun setup() {
@@ -42,14 +46,14 @@ class ViewTransactionStatementViewModelTest {
     @Test
     fun `onNavigateBackClicked should send NavigateBack effect when called`() =
         runTest(testDispatcher) {
-            viewModel = ViewTransactionStatementViewModel(repository, testDispatcher)
+            viewModel = StatementDetailsViewModel(pdfHandler,statementLocation, testDispatcher)
 
             viewModel.uiEffect.test {
                 viewModel.onNavigateBackClicked()
                 advanceUntilIdle()
 
                 val effect = awaitItem()
-                assertTrue(effect is ViewTransactionStatementEffect.NavigateBack)
+                assertTrue(effect is StatementDetailsEffect.NavigateBack)
             }
         }
 
@@ -75,7 +79,7 @@ class ViewTransactionStatementViewModelTest {
             advanceUntilIdle()
 
             val effect = awaitItem()
-            assertTrue(effect is ViewTransactionStatementEffect.ShareStatement)
+            assertTrue(effect is StatementDetailsEffect.ShareStatement)
         }
     }
 
@@ -92,7 +96,7 @@ class ViewTransactionStatementViewModelTest {
 
                 val effect = awaitItem()
                 val effectStatement =
-                    (effect as ViewTransactionStatementEffect.ShareStatement).statement
+                    (effect as StatementDetailsEffect.ShareStatement).statement
                 assertContentEquals(createMockStatementWithMetadata().byteArray, effectStatement)
             }
         }
@@ -112,8 +116,7 @@ class ViewTransactionStatementViewModelTest {
         }
 
     private fun TestScope.initViewModel() {
-        viewModel = ViewTransactionStatementViewModel(repository, testDispatcher)
-        viewModel.getStatementPdf(null)
+        viewModel = StatementDetailsViewModel(pdfHandler,statementLocation, testDispatcher)
         advanceUntilIdle()
     }
 
