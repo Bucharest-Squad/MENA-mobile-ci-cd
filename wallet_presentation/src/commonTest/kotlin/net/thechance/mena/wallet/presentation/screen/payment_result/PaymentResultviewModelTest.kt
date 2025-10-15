@@ -80,7 +80,7 @@ class PaymentResultViewModelTest {
         )
 
         viewModel.uiEffect.test {
-            viewModel.onCancelClicked()
+            viewModel.onCloseClicked()
             assertEquals(PaymentResultEffect.NavigateToScreenBeforePaymentProcess, awaitItem())
         }
     }
