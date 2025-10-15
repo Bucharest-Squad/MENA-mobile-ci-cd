@@ -34,6 +34,7 @@ import net.thechance.mena.dukan.presentation.component.SnackBar
 import net.thechance.mena.dukan.presentation.navigation.LocalNavController
 import net.thechance.mena.dukan.presentation.util.ObserveAsEffect
 import net.thechance.mena.dukan.presentation.util.stubPreviews.PreviewDukanCategoriesInteractionListener
+import net.thechance.mena.dukan.presentation.util.stubPreviews.previewCategories
 import net.thechance.mena.dukan.presentation.viewModel.dukanCategories.CategoryUiState
 import net.thechance.mena.dukan.presentation.viewModel.dukanCategories.DukanCategoriesEffects
 import net.thechance.mena.dukan.presentation.viewModel.dukanCategories.DukanCategoriesInteractionListener
@@ -164,19 +165,9 @@ private fun CategoriesScreenPreview() {
             modifier = Modifier.fillMaxSize(),
         ) {
             DukanCategoriesContent(
-                state = DukanCategoriesUiState(
-                    categories = previewCategories
-                ),
+                state = DukanCategoriesUiState(categories = previewCategories),
                 interactionListener = PreviewDukanCategoriesInteractionListener
             )
         }
     }
 }
-
-private val previewCategories = listOf(
-    CategoryUiState("1", "Electronics", "electronics.jpg"),
-    CategoryUiState("2", "Clothing", "clothing.jpg"),
-    CategoryUiState("3", "Home & Kitchen", "home_kitchen.jpg"),
-    CategoryUiState("4", "Books", "books.jpg"),
-    CategoryUiState("5", "Toys & Games", "toys_games.jpg"),
-)
