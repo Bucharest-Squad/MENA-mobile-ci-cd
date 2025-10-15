@@ -77,7 +77,7 @@ class TransactionRepositoryImpl(
     private companion object {
         const val TRANSACTION_PATH = "wallet/transactions"
         const val FIRST_TRANSACTION_DATE_PATH = "$TRANSACTION_PATH/first-date"
-        const val ADD_TRANSACTION = "/add"
+        const val ADD_TRANSACTION = "/initiate"
         const val RECEIVER_DETAILS = "/receiver-details"
         const val TRANSACTION_ID_PARAM = "transactionId"
     }
