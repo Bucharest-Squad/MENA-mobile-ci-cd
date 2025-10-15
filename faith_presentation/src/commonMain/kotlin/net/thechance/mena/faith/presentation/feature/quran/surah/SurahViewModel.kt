@@ -104,13 +104,11 @@ class SurahViewModel(
         }
     }
 
-    private fun onAddBookmarkSuccess() {
-        showSnackBar(
-            message = Res.string.bookmark_added_successfully,
-            status = SnackBarState.Status.Success,
-            scope = viewModelScope
-        )
-    }
+    private fun onAddBookmarkSuccess() = showSnackBar(
+        message = Res.string.bookmark_added_successfully,
+        status = SnackBarState.Status.Success,
+        scope = viewModelScope
+    )
 
     override fun onShareClick(ayahContent: String) {
         updateState {
@@ -134,21 +132,17 @@ class SurahViewModel(
         }
     }
 
-    private fun showSuccessSnackBar() {
-        showSnackBar(
-            message = Res.string.copied_ayah_failed,
-            status = SnackBarState.Status.Success,
-            scope = viewModelScope
-        )
-    }
+    private fun showSuccessSnackBar() = showSnackBar(
+        message = Res.string.copied_ayah_failed,
+        status = SnackBarState.Status.Success,
+        scope = viewModelScope
+    )
 
-    private fun showErrorSnackBar() {
-        showSnackBar(
-            message = Res.string.copied_ayah_failed,
-            status = SnackBarState.Status.Error,
-            scope = viewModelScope
-        )
-    }
+    private fun showErrorSnackBar() = showSnackBar(
+        message = Res.string.copied_ayah_failed,
+        status = SnackBarState.Status.Error,
+        scope = viewModelScope
+    )
 
     private fun handleBasmalaVisibility(surahId: Int) {
         val isTawbah = surahId == Surah.SurahOrder.AtTawbah.order

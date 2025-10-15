@@ -39,9 +39,6 @@ abstract class BaseViewModel<UI_STATE, UI_EFFECT>(
     private val _uiState = MutableStateFlow(initialState)
     val uiState = _uiState.asStateFlow()
 
-    private val _snackBarState = MutableStateFlow(SnackBarState())
-    val snackBarState = _snackBarState.asStateFlow()
-
     private val _uiEffect = MutableSharedFlow<UI_EFFECT>()
     val uiEffect = _uiEffect.asSharedFlow()
 

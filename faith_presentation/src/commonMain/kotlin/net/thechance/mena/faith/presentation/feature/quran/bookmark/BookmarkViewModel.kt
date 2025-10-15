@@ -26,7 +26,10 @@ class BookmarkViewModel(
     private val bookmarkRepository: BookmarkRepository,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
     snackbarHandler: SnackbarHandler,
-) : BaseViewModel<BookmarksScreenState, BookmarkEffect>(BookmarksScreenState(), snackbarHandler = snackbarHandler),
+) : BaseViewModel<BookmarksScreenState, BookmarkEffect>(
+    BookmarksScreenState(),
+    snackbarHandler = snackbarHandler
+),
     BookmarkInteractionListener {
 
     private val cachedBookmarksFlow = createBookmarksPagingSource()
@@ -78,13 +81,11 @@ class BookmarkViewModel(
         }
     }
 
-    private fun onDeleteBookmarkSuccess() {
-        showSnackBar(
-            message = Res.string.bookmark_removed_successfully,
-            status = SnackBarState.Status.Success,
-            scope = viewModelScope
-        )
-    }
+    private fun onDeleteBookmarkSuccess() = showSnackBar(
+        message = Res.string.bookmark_removed_successfully,
+        status = SnackBarState.Status.Success,
+        scope = viewModelScope
+    )
 
     private fun createBookmarksPagingSource(): Flow<PagingData<AyahBookmark>> {
         return createPagingSourceFlow { pageNumber, pageSize ->

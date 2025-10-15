@@ -12,7 +12,7 @@ import org.jetbrains.compose.resources.getString
 
 
 interface SnackbarHandler {
-    val state: StateFlow<SnackBarState>
+    val snackBarState: StateFlow<SnackBarState>
 
     fun showSnackBar(
         message: suspend () -> String,
@@ -32,13 +32,13 @@ interface SnackbarHandler {
 
     companion object {
         val Empty = object : SnackbarHandler {
-            override val state = MutableStateFlow(SnackBarState())
+            override val snackBarState = MutableStateFlow(SnackBarState())
         }
     }
 }
 
 class DefaultSnackbarHandlerImpl : SnackbarHandler {
-    override val state: MutableStateFlow<SnackBarState> = MutableStateFlow(SnackBarState())
+    override val snackBarState: MutableStateFlow<SnackBarState> = MutableStateFlow(SnackBarState())
 
     override fun showSnackBar(
         message: suspend ()-> String,
@@ -47,11 +47,11 @@ class DefaultSnackbarHandlerImpl : SnackbarHandler {
         scope: CoroutineScope,
     ) {
         scope.launch {
-            if (state.value.isVisible) {
+            if (snackBarState.value.isVisible) {
                 hideSnackBar()
                 delay(1000L)
             }
-            state.update {
+            snackBarState.update {
                 SnackBarState(
                     message = message(),
                     status = status,
@@ -59,7 +59,7 @@ class DefaultSnackbarHandlerImpl : SnackbarHandler {
                 )
             }
             delay(durationMillis)
-            state.update {
+            snackBarState.update {
                 it.copy(
                     isVisible = false
                 )
@@ -79,5 +79,5 @@ class DefaultSnackbarHandlerImpl : SnackbarHandler {
         scope = scope
     )
 
-    override fun hideSnackBar() = state.update { it.copy(isVisible = false) }
+    override fun hideSnackBar() = snackBarState.update { it.copy(isVisible = false) }
 }
