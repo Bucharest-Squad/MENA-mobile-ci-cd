@@ -129,7 +129,7 @@ fun WheelDatePicker(
             VerticalPicker(
                 state = monthPagerState,
                 options = AppMonth.entries.map { stringResource(it.res) },
-                modifier = Modifier.padding(end = 32.dp),
+                modifier = Modifier.padding(end = Theme.spacing._32),
             ) {
                 val day = dayPagerState.currentPage + 1
                 val month = monthPagerState.currentPage + 1

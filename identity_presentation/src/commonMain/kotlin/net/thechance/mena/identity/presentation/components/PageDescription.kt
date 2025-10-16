@@ -57,7 +57,7 @@ internal fun PageDescription(
             color = Theme.colorScheme.shadePrimary,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 12.dp)
+                .padding(top = Theme.spacing._12)
 
         )
         Text(
@@ -66,7 +66,7 @@ internal fun PageDescription(
             color = Theme.colorScheme.shadeSecondary,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 24.dp)
+                .padding(bottom = Theme.spacing._24)
         )
     }
 }

@@ -34,12 +34,12 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun GenderToggle(gender: Gender, onGenderChange: (Gender) -> Unit) {
-    Column(modifier = Modifier.padding(top = 16.dp)) {
+    Column(modifier = Modifier.padding(top = Theme.spacing._16)) {
         Text(text = stringResource(Res.string.gender), style = Theme.typography.title.small)
 
         Row(
-            modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+            modifier = Modifier.fillMaxWidth().padding(top = Theme.spacing._16),
+            horizontalArrangement = Arrangement.spacedBy(Theme.spacing._16)
         ) {
             ToggleOption(
                 printer = painterResource(Res.drawable.male),

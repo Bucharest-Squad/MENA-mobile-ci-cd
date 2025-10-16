@@ -48,7 +48,7 @@ fun ProfileImage(
         Box(modifier = Modifier) {
             Box(
                 modifier = Modifier
-                    .padding(bottom = 16.dp)
+                    .padding(bottom = Theme.spacing._16)
                     .border(1.dp, Theme.colorScheme.stroke, CircleShape)
                     .dropShadow(
                         shape = CircleShape,
@@ -95,7 +95,7 @@ fun ProfileImage(
                         color = Theme.colorScheme.background.surface,
                         shape = CircleShape
                     )
-                    .padding(8.dp)
+                    .padding(Theme.spacing._8)
             ) {
                 Icon(
                     painter = painterResource(Res.drawable.pencil_edit),

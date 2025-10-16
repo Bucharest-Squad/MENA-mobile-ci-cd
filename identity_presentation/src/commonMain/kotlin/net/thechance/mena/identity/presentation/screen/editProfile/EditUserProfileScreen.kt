@@ -100,7 +100,7 @@ class EditUserProfileScreen : BaseScreen<
                     .verticalScroll(scrollState)
                     .background(Theme.colorScheme.background.surface)
                     .padding(horizontal = Theme.spacing._16)
-                    .padding(bottom = 16.dp),
+                    .padding(bottom = Theme.spacing._16),
             ) {
                 AppBar(
                     contentPadding = PaddingValues(horizontal = 0.dp, vertical = 14.dp),
@@ -164,13 +164,13 @@ class EditUserProfileScreen : BaseScreen<
                 )
 
                 Text(
-                    modifier = Modifier.padding(top = 16.dp),
+                    modifier = Modifier.padding(top = Theme.spacing._16),
                     text = stringResource(Res.string.date_of_birth),
                     style = Theme.typography.title.small
                 )
 
                 WheelDatePicker(
-                    modifier = Modifier.padding(top = 16.dp),
+                    modifier = Modifier.padding(top = Theme.spacing._16),
                     selectedDate = state.birthDate,
                     onDateChange = { day, month, year ->
                         listener.onChangeDate(day, month, year)
@@ -183,13 +183,13 @@ class EditUserProfileScreen : BaseScreen<
                 )
 
                 PrimaryButton(
-                    modifier = Modifier.fillMaxWidth().padding(top = 24.dp),
+                    modifier = Modifier.fillMaxWidth().padding(top = Theme.spacing._24),
                     text = stringResource(Res.string.save_changes),
                     onClick = { listener.onClickSaveButton() }
                 )
 
                 OutlinedButton(
-                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                    modifier = Modifier.fillMaxWidth().padding(top = Theme.spacing._8),
                     text = stringResource(Res.string.cancel),
                     onClick = { listener.onClickCancelButton() }
                 )

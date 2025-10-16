@@ -8,7 +8,6 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.unit.dp
 import mena.identity_presentation.generated.resources.Res
 import mena.identity_presentation.generated.resources.user_rounded
 import net.thechance.mena.designsystem.presentation.component.text.Text
@@ -23,10 +22,10 @@ fun ProfileEditText(
     value: String, onValueChange: (String) -> Unit,
     visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
-    Column(modifier = Modifier.padding(top = 16.dp)) {
+    Column(modifier = Modifier.padding(top = Theme.spacing._16)) {
         Text(text = title, style = Theme.typography.title.small)
         TextField(
-            modifier = Modifier.padding(top = 4.dp),
+            modifier = Modifier.padding(top = Theme.spacing._4),
             value = value,
             hint = "",
             onValueChanged = onValueChange,

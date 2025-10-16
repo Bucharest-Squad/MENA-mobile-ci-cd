@@ -92,7 +92,7 @@ class ResetPasswordScreen() :
                         onTogglePasswordVisibility = listener::onToggleNewPasswordVisibility,
                         label = stringResource(Res.string.new_password_title),
                         errorMessage = state.newPasswordErrorMessage,
-                        modifier = Modifier.padding(bottom = 16.dp)
+                        modifier = Modifier.padding(bottom = Theme.spacing._16)
                     )
 
                     LabelInputPassword(
@@ -102,7 +102,7 @@ class ResetPasswordScreen() :
                         onTogglePasswordVisibility = listener::onToggleConfirmPasswordVisibility,
                         label = stringResource(Res.string.confirm_password_label),
                         errorMessage = state.confirmPasswordErrorMessage,
-                        modifier = Modifier.padding(bottom = 16.dp)
+                        modifier = Modifier.padding(bottom = Theme.spacing._16)
                     )
 
                     Spacer(modifier = Modifier.weight(1f))
