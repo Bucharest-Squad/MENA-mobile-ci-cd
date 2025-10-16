@@ -55,10 +55,10 @@ import kotlin.time.ExperimentalTime
 @OptIn(ExperimentalTime::class)
 @Composable
 fun WheelDatePicker(
-    minYear: Int = 1920,
-    maxYear: Int = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).year,
     selectedDate: LocalDate?,
     modifier: Modifier = Modifier,
+    minYear: Int = 1920,
+    maxYear: Int = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).year,
     onDateChange: (day: Int, month: Int, year: Int) -> Unit,
 ) {
     val monthPagerState = rememberPagerState(
