@@ -23,9 +23,11 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.Navigator
 import kotlinx.coroutines.delay
 import mena.identity_presentation.generated.resources.Res
+import mena.identity_presentation.generated.resources.dismiss
 import mena.identity_presentation.generated.resources.error
 import mena.identity_presentation.generated.resources.ic_close_circle
 import mena.identity_presentation.generated.resources.profile_title
+import mena.identity_presentation.generated.resources.version
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.bottomSheet.BottomSheet
 import net.thechance.mena.designsystem.presentation.component.button.NegativeButton
@@ -77,7 +79,7 @@ class ProfileScreen : BaseScreen<
                             style = Theme.typography.label.small
                         )
                         NegativeButton(
-                            text = "Dismiss",
+                            text = stringResource(Res.string.dismiss),
                             onClick = listener::onDismissBottomSheet,
                         )
                     }
@@ -159,7 +161,7 @@ class ProfileScreen : BaseScreen<
                         modifier = Modifier
                             .padding(vertical = Theme.spacing._16)
                             .align(Alignment.CenterHorizontally),
-                        text = "version ${state.versionNumber}",
+                        text = "${stringResource(Res.string.version)} ${state.versionNumber}",
                         style = Theme.typography.label.small,
                         color = Theme.colorScheme.shadeSecondary,
                     )
@@ -173,7 +175,7 @@ class ProfileScreen : BaseScreen<
                 ) {
                     SnackBar(
                         title = stringResource(Res.string.error),
-                        message = state.errorMessage ?: "",
+                        message = state.errorMessage.orEmpty(),
                         leadingIcon = painterResource(Res.drawable.ic_close_circle),
                         modifier = Modifier.fillMaxWidth().padding(bottom = Theme.spacing._16)
                             .padding(horizontal = Theme.spacing._16)

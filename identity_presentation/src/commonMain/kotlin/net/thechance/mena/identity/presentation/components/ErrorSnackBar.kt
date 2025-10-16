@@ -45,7 +45,7 @@ internal fun ErrorSnackBar(
     ) {
         SnackBar(
             title = stringResource(Res.string.error),
-            message = errorMessage ?: "",
+            message = errorMessage.orEmpty(),
             leadingIcon = painterResource(Res.drawable.ic_close_circle),
             modifier = Modifier
                 .fillMaxWidth()

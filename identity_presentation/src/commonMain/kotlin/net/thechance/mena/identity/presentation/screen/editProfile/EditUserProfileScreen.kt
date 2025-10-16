@@ -25,12 +25,18 @@ import cafe.adriel.voyager.navigator.Navigator
 import kotlinx.coroutines.delay
 import mena.identity_presentation.generated.resources.Res
 import mena.identity_presentation.generated.resources.back
+import mena.identity_presentation.generated.resources.cancel
+import mena.identity_presentation.generated.resources.date_of_birth
 import mena.identity_presentation.generated.resources.edit_profile_information
 import mena.identity_presentation.generated.resources.error
+import mena.identity_presentation.generated.resources.first_name
 import mena.identity_presentation.generated.resources.ic_arrow_left
 import mena.identity_presentation.generated.resources.ic_close_circle
+import mena.identity_presentation.generated.resources.last_name
 import mena.identity_presentation.generated.resources.more_horizontal
 import mena.identity_presentation.generated.resources.options
+import mena.identity_presentation.generated.resources.save_changes
+import mena.identity_presentation.generated.resources.username
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.button.OutlinedButton
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
@@ -79,7 +85,7 @@ class EditUserProfileScreen : BaseScreen<
                 ) {
                     SnackBar(
                         title = stringResource(Res.string.error),
-                        message = state.errorMessage ?: "",
+                        message = state.errorMessage.orEmpty(),
                         leadingIcon = painterResource(Res.drawable.ic_close_circle),
                         modifier = Modifier.fillMaxWidth().padding(bottom = Theme.spacing._16)
                             .padding(horizontal = Theme.spacing._16)
@@ -135,19 +141,19 @@ class EditUserProfileScreen : BaseScreen<
                 )
 
                 ProfileEditText(
-                    title = "First name",
+                    title = stringResource(Res.string.first_name),
                     value = state.firstName,
                     onValueChange = { listener.onChangeFirstName(it) },
                 )
 
                 ProfileEditText(
-                    title = "Last name",
+                    title = stringResource(Res.string.last_name),
                     value = state.lastName,
                     onValueChange = { listener.onChangeLastName(it) },
                 )
 
                 ProfileEditText(
-                    title = "Username",
+                    title = stringResource(Res.string.username),
                     value = state.username,
                     onValueChange = { username ->
                         listener.onChangeUsername(
@@ -159,7 +165,7 @@ class EditUserProfileScreen : BaseScreen<
 
                 Text(
                     modifier = Modifier.padding(top = 16.dp),
-                    text = "Date of birth",
+                    text = stringResource(Res.string.date_of_birth),
                     style = Theme.typography.title.small
                 )
 
@@ -167,11 +173,7 @@ class EditUserProfileScreen : BaseScreen<
                     modifier = Modifier.padding(top = 16.dp),
                     selectedDate = state.birthDate,
                     onDateChange = { day, month, year ->
-                        listener.onChangeDate(
-                            day,
-                            month,
-                            year
-                        )
+                        listener.onChangeDate(day, month, year)
                     },
                 )
 
@@ -182,13 +184,13 @@ class EditUserProfileScreen : BaseScreen<
 
                 PrimaryButton(
                     modifier = Modifier.fillMaxWidth().padding(top = 24.dp),
-                    text = "Save changes",
+                    text = stringResource(Res.string.save_changes),
                     onClick = { listener.onClickSaveButton() }
                 )
 
                 OutlinedButton(
                     modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-                    text = "Cancel",
+                    text = stringResource(Res.string.cancel),
                     onClick = { listener.onClickCancelButton() }
                 )
             }

@@ -40,7 +40,7 @@ internal fun PageDescription(
             ) {
                 Image(
                     painter = painterResource(Res.drawable.mena_logo),
-                    contentDescription = "Mena Logo",
+                    contentDescription = null,
                     modifier = Modifier.size(88.dp)
                 )
                 Text(

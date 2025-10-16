@@ -29,7 +29,7 @@ fun ProfileEditText(
             modifier = Modifier.padding(top = 4.dp),
             value = value,
             hint = "",
-            onValueChanged = { onValueChange(it) },
+            onValueChanged = onValueChange,
             leadingIcon = painterResource(Res.drawable.user_rounded),
             visualTransformation = visualTransformation,
         )

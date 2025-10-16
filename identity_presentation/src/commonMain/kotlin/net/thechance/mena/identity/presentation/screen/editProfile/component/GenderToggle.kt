@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
 import mena.identity_presentation.generated.resources.Res
 import mena.identity_presentation.generated.resources.female
+import mena.identity_presentation.generated.resources.gender
 import mena.identity_presentation.generated.resources.male
 import mena.identity_presentation.generated.resources.options
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
@@ -34,7 +35,7 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun GenderToggle(gender: Gender, onGenderChange: (Gender) -> Unit) {
     Column(modifier = Modifier.padding(top = 16.dp)) {
-        Text(text = "Gender", style = Theme.typography.title.small)
+        Text(text = stringResource(Res.string.gender), style = Theme.typography.title.small)
 
         Row(
             modifier = Modifier.fillMaxWidth().padding(top = 16.dp),

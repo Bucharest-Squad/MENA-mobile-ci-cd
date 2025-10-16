@@ -32,7 +32,7 @@ internal fun AuthScreenContainer(
     ) {
         Image(
             painter = painterResource(Res.drawable.login_background),
-            contentDescription = "background",
+            contentDescription = null,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.FillBounds
         )

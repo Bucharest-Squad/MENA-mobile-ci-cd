@@ -18,6 +18,7 @@ import cafe.adriel.voyager.navigator.Navigator
 import mena.identity_presentation.generated.resources.Res
 import mena.identity_presentation.generated.resources.confirm_password_label
 import mena.identity_presentation.generated.resources.new_password_title
+import mena.identity_presentation.generated.resources.ok
 import mena.identity_presentation.generated.resources.reset
 import mena.identity_presentation.generated.resources.reset_password
 import mena.identity_presentation.generated.resources.reset_password_description
@@ -152,7 +153,7 @@ private fun ScaffoldScope.ResetPasswordDialog(
         onCancelClick = onClick::invoke,
         actionButtons = {
             TextButton(
-                text = "Ok",
+                text = stringResource(Res.string.ok),
                 onClick = onClick::invoke,
                 modifier = Modifier
                     .align(Alignment.End)
