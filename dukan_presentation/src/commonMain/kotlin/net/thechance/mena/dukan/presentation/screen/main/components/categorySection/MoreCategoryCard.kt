@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -35,23 +34,27 @@ fun MoreCategoryCard(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.width(78.dp),
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        Image(
-            painter = image,
-            contentDescription = stringResource(resource = Res.string.category_icon),
+        Box(
             modifier = Modifier
                 .background(
                     color = Theme.colorScheme.background.surfaceLow,
                     shape = RoundedCornerShape(Theme.radius.full)
                 )
-                .padding(18.dp)
+                .size(60.dp)
                 .clip(RoundedCornerShape(Theme.radius.full))
-                .clickable(onClick = onClick)
-
-        )
+                .clickable(onClick = onClick),
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                painter = image,
+                modifier = Modifier.padding(top = Theme.spacing._4),
+                contentDescription = stringResource(resource = Res.string.category_icon),
+            )
+        }
 
         Text(
             text = title,
@@ -61,7 +64,8 @@ fun MoreCategoryCard(
             minLines = 1,
             textAlign = TextAlign.Center,
             modifier = Modifier
-                .padding(horizontal = Theme.spacing._8).padding(top = Theme.spacing._4)
+                .padding(horizontal = Theme.spacing._8)
+                .padding(top = Theme.spacing._4)
         )
     }
 }
