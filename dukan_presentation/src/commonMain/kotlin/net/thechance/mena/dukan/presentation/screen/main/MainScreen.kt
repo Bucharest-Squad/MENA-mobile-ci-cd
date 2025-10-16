@@ -73,7 +73,11 @@ fun MainScreen(
                 )
             }
 
-            is MainEffect.NavigateSelectedDukan -> DukanRoute.DukanDetails(effect.dukanId)
+            is MainEffect.NavigateSelectedDukan -> {
+                navController.navigate(
+                    DukanRoute.DukanDetails(effect.dukanId)
+                )
+            }
         }
     }
 
