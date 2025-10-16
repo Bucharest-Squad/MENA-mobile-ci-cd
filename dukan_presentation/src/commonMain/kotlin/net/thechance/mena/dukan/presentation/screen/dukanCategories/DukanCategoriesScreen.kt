@@ -144,8 +144,8 @@ private fun CategoriesList(
             top = Theme.spacing._12,
             bottom = Theme.spacing._16
         ),
-        verticalArrangement = Arrangement.spacedBy(space = Theme.spacing._16),
-        horizontalArrangement = Arrangement.spacedBy(space = Theme.spacing._4),
+        verticalArrangement = Arrangement.spacedBy(space = Theme.spacing._8),
+        horizontalArrangement = Arrangement.spacedBy(space = Theme.spacing._8),
     ) {
         items(
             items = categories,

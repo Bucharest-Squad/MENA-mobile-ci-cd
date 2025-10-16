@@ -1,6 +1,7 @@
 package net.thechance.mena.dukan.presentation.screen.main.components.categorySection
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -27,19 +28,22 @@ fun CategorySection(
     onViewMoreClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val spacing = Theme.spacing._8
-
     val gridLayout = calculateGridLayout(
         screenWidth = getScreenWidth(),
         categories = categories,
         rows = rows,
-        spacing = spacing
     )
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(gridLayout.columnsCount),
-        horizontalArrangement = Arrangement.spacedBy(spacing),
-        verticalArrangement = Arrangement.spacedBy(spacing),
+        contentPadding = PaddingValues(
+            start = Theme.spacing._16,
+            end = Theme.spacing._16,
+            top = Theme.spacing._12,
+            bottom = Theme.spacing._16
+        ),
+        horizontalArrangement = Arrangement.spacedBy(Theme.spacing._8),
+        verticalArrangement = Arrangement.spacedBy(Theme.spacing._8),
         modifier = modifier
     ) {
         items(gridLayout.itemsToShow) { category ->

@@ -61,7 +61,7 @@ fun MoreCategoryCard(
             minLines = 1,
             textAlign = TextAlign.Center,
             modifier = Modifier
-                .padding(horizontal = Theme.spacing._8, vertical = Theme.spacing._4)
+                .padding(horizontal = Theme.spacing._8).padding(top = Theme.spacing._4)
         )
     }
 }

@@ -9,9 +9,8 @@ fun calculateGridLayout(
     categories: List<DukanCategoryUiState>,
     rows: Int,
     itemWidth: Dp = 80.dp,
-    spacing: Dp
 ): GridCalculation {
-    val columnsCount = ((screenWidth + spacing) / (itemWidth + spacing))
+    val columnsCount = (screenWidth / itemWidth)
         .toInt()
         .coerceAtLeast(2)
 
