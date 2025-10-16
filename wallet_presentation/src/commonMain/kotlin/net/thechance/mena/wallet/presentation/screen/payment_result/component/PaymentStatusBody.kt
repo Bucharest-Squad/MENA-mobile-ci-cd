@@ -76,8 +76,8 @@ fun PaymentStatusBody(
                         onCancelClicked = interactionListener::onCloseClicked,
                         modifier = Modifier.align(Alignment.BottomCenter),
                         isLoading = status.isLoading,
-                        isCloseEnabled = status.isCloseEnabled,
-                        isTryAgainEnabled = status.isTryAgainEnabled
+                        isCloseEnabled = status.isCloseButtonEnabled,
+                        isTryAgainEnabled = status.isTryAgainButtonEnabled
                     )
                 }
 
@@ -95,8 +95,8 @@ fun PaymentStatusBody(
                         onCancelClicked = interactionListener::onCloseClicked,
                         modifier = Modifier.align(Alignment.BottomCenter),
                         isLoading = status.isLoading,
-                        isCloseEnabled = status.isCloseEnabled,
-                        isTryAgainEnabled = status.isTryAgainEnabled
+                        isCloseEnabled = status.isCloseButtonEnabled,
+                        isTryAgainEnabled = status.isTryAgainButtonEnabled
                     )
                 }
 
@@ -115,7 +115,7 @@ fun PaymentStatusBody(
                         onCancelClicked = interactionListener::onCloseClicked,
                         modifier = Modifier.align(Alignment.BottomCenter),
                         isLoading = status.isLoading,
-                        isCloseEnabled = status.isCloseEnabled
+                        isCloseEnabled = status.isCloseButtonEnabled
                     )
                 }
             }
@@ -193,7 +193,7 @@ private fun PaymentStatusButtons(
             onClick = onPrimaryButtonClick,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 8.dp),
+                .padding(bottom = 12.dp),
             contentPadding = PaddingValues(vertical = 13.dp),
             isLoading = isLoading,
             isEnabled = isTryAgainEnabled
@@ -204,7 +204,7 @@ private fun PaymentStatusButtons(
             onClick = onCancelClicked,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 6.dp, bottom = 12.dp),
+                .padding(bottom = 24.dp),
             contentPadding = PaddingValues(vertical = 13.dp),
             isEnabled = isCloseEnabled
         )
@@ -297,73 +297,5 @@ private fun PaymentResultUnknownErrorPreview() {
                 modifier = Modifier.align(Alignment.BottomCenter)
             )
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun PaymentResultConnectionLostPreview() {
-    MenaTheme {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-        ) {
-            PaymentResultCard(
-                image = painterResource(Res.drawable.transaction_failed),
-                title = stringResource(Res.string.transaction_failed),
-                paymentStatus = SubmissionStatus.CONNECTION_LOST,
-                description = stringResource(Res.string.connection_lost_try_again),
-                modifier = Modifier.align(Alignment.Center)
-            )
-            PaymentStatusButtons(
-                primaryButtonText = stringResource(Res.string.try_again),
-                onPrimaryButtonClick = {},
-                onCancelClicked = {},
-                modifier = Modifier.align(Alignment.BottomCenter)
-            )
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun PaymentResultCardSuccessPreview() {
-    MenaTheme {
-        PaymentResultCard(
-            image = painterResource(Res.drawable.transaction_success),
-            title = "Transaction Successful",
-            paymentStatus = SubmissionStatus.SUCCESS,
-            name = "Ahmed Ali",
-            amount = 31.99,
-            modifier = Modifier.padding(16.dp)
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun PaymentResultCardConnectionLostPreview() {
-    MenaTheme {
-        PaymentResultCard(
-            image = painterResource(Res.drawable.transaction_failed),
-            title = stringResource(Res.string.transaction_failed),
-            paymentStatus = SubmissionStatus.CONNECTION_LOST,
-            description = stringResource(Res.string.connection_lost_try_again),
-            modifier = Modifier.padding(16.dp)
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun PaymentStatusButtonsPreview() {
-    MenaTheme {
-        PaymentStatusButtons(
-            primaryButtonText = "Try Again",
-            onPrimaryButtonClick = {},
-            onCancelClicked = {},
-            modifier = Modifier.padding(16.dp)
-        )
     }
 }

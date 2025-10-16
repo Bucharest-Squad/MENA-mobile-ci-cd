@@ -40,8 +40,8 @@ class PaymentResultViewModel(
         updateState { oldState ->
             oldState.copy(
                 isLoading = true,
-                isTryAgainEnabled = false,
-                isCloseEnabled = false
+                isTryAgainButtonEnabled = false,
+                isCloseButtonEnabled = false
             )
         }
         submitTransaction(transactionId)
@@ -70,8 +70,8 @@ class PaymentResultViewModel(
             it.copy(
                 isLoading = false,
                 paymentStatus = SubmissionStatus.SUCCESS,
-                isTryAgainEnabled = false,
-                isCloseEnabled = true
+                isTryAgainButtonEnabled = false,
+                isCloseButtonEnabled = true
             )
         }
     }
@@ -83,9 +83,9 @@ class PaymentResultViewModel(
         updateState {
             it.copy(
                 isLoading = false,
-                isTryAgainEnabled = canRetry,
+                isTryAgainButtonEnabled = canRetry,
                 tryAgainAttempts = newAttempts,
-                isCloseEnabled = true
+                isCloseButtonEnabled = true
             )
         }
         when (error) {
@@ -101,7 +101,7 @@ class PaymentResultViewModel(
         updateState {
             it.copy(
                 tryAgainAttempts = 0,
-                isTryAgainEnabled = true
+                isTryAgainButtonEnabled = true
             )
         }
     }
