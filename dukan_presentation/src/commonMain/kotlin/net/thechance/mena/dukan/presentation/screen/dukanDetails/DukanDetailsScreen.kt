@@ -5,8 +5,8 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import net.thechance.mena.dukan.presentation.navigation.DukanRoute
 import net.thechance.mena.dukan.presentation.navigation.LocalNavController
-import net.thechance.mena.dukan.presentation.screen.dukanDetails.content.NoImageDukanDetails
 import net.thechance.mena.dukan.presentation.screen.dukanDetails.content.SmallImageDukanDetails
+import net.thechance.mena.dukan.presentation.screen.dukanDetails.content.noImageDukanDetails.NoImageDukanDetails
 import net.thechance.mena.dukan.presentation.screen.dukanDetails.content.wideImageDukanDetails.WideImageDukanDetails
 import net.thechance.mena.dukan.presentation.util.ObserveAsEffect
 import net.thechance.mena.dukan.presentation.viewModel.dukanDetails.DukanDetailsEffects
@@ -40,11 +40,13 @@ fun DukanDetailsScreen(
             pagerShelf = viewModel.pagerShelf,
             pagerProduct = viewModel.pagerProduct
         )
+
         DukanDetailsUiState.Style.SMALL_IMAGE -> SmallImageDukanDetails(
             state,
             viewModel,
             viewModel.pagerShelf
         )
+
         DukanDetailsUiState.Style.NO_IMAGE -> NoImageDukanDetails(
             state,
             viewModel,

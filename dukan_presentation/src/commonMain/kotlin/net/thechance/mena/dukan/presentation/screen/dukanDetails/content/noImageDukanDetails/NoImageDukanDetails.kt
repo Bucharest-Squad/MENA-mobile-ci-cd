@@ -1,4 +1,4 @@
-package net.thechance.mena.dukan.presentation.screen.dukanDetails.content
+package net.thechance.mena.dukan.presentation.screen.dukanDetails.content.noImageDukanDetails
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,10 +23,6 @@ import kotlinx.coroutines.launch
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.dukan.presentation.screen.dukanDetails.components.noImageStyle.AppBarNoImageDukan
-import net.thechance.mena.dukan.presentation.screen.dukanDetails.components.noImageStyle.BestSellingNoImageDukan
-import net.thechance.mena.dukan.presentation.screen.dukanDetails.components.noImageStyle.ShelvesChipsNoImageDukan
-import net.thechance.mena.dukan.presentation.screen.dukanDetails.components.noImageStyle.shelvesWithProductsNoImageDukan
 import net.thechance.mena.dukan.presentation.util.OnSystemBackPressed
 import net.thechance.mena.dukan.presentation.util.pagination.LoadMoreOnScroll
 import net.thechance.mena.dukan.presentation.util.pagination.Pager
@@ -116,7 +112,6 @@ private fun NoImageDukanContent(
     var chipsAlpha by rememberSaveable { mutableStateOf(0f) }
     LaunchedEffect(key1 = lazyColumnListState) {
         snapshotFlow { lazyColumnListState.firstVisibleItemIndex to lazyColumnListState.layoutInfo }
-            .debounce { 10L }
             .collect { (index, layoutInfo) ->
                 synchronizeScrollsAndAlpha(
                     index,

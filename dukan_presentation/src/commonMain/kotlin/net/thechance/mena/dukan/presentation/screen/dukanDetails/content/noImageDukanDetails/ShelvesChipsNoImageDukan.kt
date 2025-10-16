@@ -1,4 +1,4 @@
-package net.thechance.mena.dukan.presentation.screen.dukanDetails.components.noImageStyle
+package net.thechance.mena.dukan.presentation.screen.dukanDetails.content.noImageDukanDetails
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -12,8 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.shadow
-import net.thechance.mena.designsystem.presentation.component.chip.Chip
+import androidx.compose.ui.graphics.Color
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import net.thechance.mena.dukan.presentation.component.ShelfChip
 import net.thechance.mena.dukan.presentation.viewModel.dukanDetails.DukanDetailsUiState
 
 @Composable
@@ -43,10 +44,11 @@ fun ShelvesChipsNoImageDukan(
         ) {
             items(count = state.shelves.items.size, key = { state.shelves.items[it].id }) {
                 val shelf = state.shelves.items[it]
-                Chip(
+                ShelfChip(
                     text = shelf.name,
                     isSelected = (shelf.id == state.shelfIdSelected),
-                    onClick = { onClickListener(shelf.id, it) }
+                    onClick = { onClickListener(shelf.id, it) },
+                    selectedBackgroundColor = Color(state.dukanInfo.color)
                 )
             }
         }

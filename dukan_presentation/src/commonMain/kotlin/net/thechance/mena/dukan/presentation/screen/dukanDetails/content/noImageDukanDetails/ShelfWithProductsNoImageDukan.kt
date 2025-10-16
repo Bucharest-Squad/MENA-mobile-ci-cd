@@ -1,4 +1,4 @@
-package net.thechance.mena.dukan.presentation.screen.dukanDetails.components.noImageStyle
+package net.thechance.mena.dukan.presentation.screen.dukanDetails.content.noImageDukanDetails
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,6 +11,7 @@ import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.dukan.presentation.component.ProductsHeader
 import net.thechance.mena.dukan.presentation.component.productCard.ProductCard
+import net.thechance.mena.dukan.presentation.screen.dukanDetails.components.ProductActionNoImageDukan
 import net.thechance.mena.dukan.presentation.util.stubPreviews.PreviewDukanDetailsInteractionListener
 import net.thechance.mena.dukan.presentation.util.stubPreviews.fakeProducts
 import net.thechance.mena.dukan.presentation.viewModel.dukanDetails.DukanDetailsInteractionListener

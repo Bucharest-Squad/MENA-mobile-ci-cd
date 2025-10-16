@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.dukan.presentation.component.productCard.LoadingProductCard
-import net.thechance.mena.dukan.presentation.screen.dukanDetails.components.noImageStyle.ProductActionNoImageDukan
 import net.thechance.mena.dukan.presentation.util.pagination.Pager
 import net.thechance.mena.dukan.presentation.viewModel.shelfDetails.ShelfDetailsInteractionListener
 import net.thechance.mena.dukan.presentation.viewModel.shelfDetails.ShelfDetailsUiState
