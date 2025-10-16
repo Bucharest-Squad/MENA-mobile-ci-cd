@@ -12,4 +12,9 @@ data class UserEntity(
     val profileImageUrl: String,
     val birthDate: String,
     val gender: Int,
-)
+) {
+    companion object {
+        const val MALE = 1
+        const val FEMALE = 2
+    }
+}

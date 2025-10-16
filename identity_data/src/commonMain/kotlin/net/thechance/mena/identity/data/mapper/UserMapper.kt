@@ -2,7 +2,6 @@ package net.thechance.mena.identity.data.mapper
 
 import kotlinx.datetime.LocalDate
 import net.thechance.mena.identity.data.dataSource.local.database.model.UserEntity
-import net.thechance.mena.identity.data.dto.GenderCode
 import net.thechance.mena.identity.data.dto.profile.ProfileResponseDto
 import net.thechance.mena.identity.data.utils.formatAsString
 import net.thechance.mena.identity.domain.entity.Gender
@@ -17,7 +16,7 @@ fun ProfileResponseDto.toDomain(): User {
         username = this.username.lowercase(),
         birthDate = LocalDate.parse(this.birthDate),
         gender = when (this.gender) {
-            GenderCode.MALE -> Gender.MALE
+            UserEntity.MALE -> Gender.MALE
             else -> Gender.FEMALE
         }
     )
@@ -42,7 +41,7 @@ fun UserEntity.toDomain(): User {
         username = this.username.lowercase(),
         birthDate = LocalDate.parse(this.birthDate),
         gender = when (this.gender) {
-            GenderCode.MALE -> Gender.MALE
+            UserEntity.MALE -> Gender.MALE
             else -> Gender.FEMALE
         }
     )
@@ -56,8 +55,8 @@ fun User.toEntity(): UserEntity {
         username = this.username.lowercase(),
         birthDate = this.birthDate.formatAsString(),
         gender = when (this.gender) {
-            Gender.MALE -> GenderCode.MALE
-            else -> GenderCode.FEMALE
+            Gender.MALE -> UserEntity.MALE
+            else -> UserEntity.FEMALE
         }
     )
 }

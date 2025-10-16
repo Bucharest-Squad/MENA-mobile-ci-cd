@@ -18,9 +18,8 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import kotlinx.datetime.LocalDate
-import kotlinx.serialization.json.Json
 import net.thechance.mena.identity.data.dataSource.local.database.dao.UserDao
-import net.thechance.mena.identity.data.dto.GenderCode
+import net.thechance.mena.identity.data.dataSource.local.database.model.UserEntity
 import net.thechance.mena.identity.data.dto.profile.ProfileResponseDto
 import net.thechance.mena.identity.data.mapper.toDomain
 import net.thechance.mena.identity.data.mapper.toEntity
@@ -160,7 +159,7 @@ class UserRepositoryImplTest {
         username = "the_chance",
         imageUrl = "",
         birthDate = "1999-01-01",
-        gender = GenderCode.MALE,
+        gender = UserEntity.MALE,
     )
 
     val fakeUser = User(
