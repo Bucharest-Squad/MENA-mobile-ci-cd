@@ -81,7 +81,7 @@ class ImageCropperScreen(
     override fun onEffect(effect: ImageCropperScreenEffect, navigator: Navigator) {
         when (effect) {
             is ImageCropperScreenEffect.NavigateBackToEditProfile -> navigator.pop()
-            is ImageCropperScreenEffect.NavigateBackToProfile -> {
+            is ImageCropperScreenEffect.NavigateBackToEditProfileWithImage -> {
                 onResult(effect.imageBytes)
                 navigator.pop()
             }

@@ -4,5 +4,6 @@ import androidx.compose.ui.graphics.ImageBitmap
 
 sealed class ImageCropperScreenEffect {
     object NavigateBackToEditProfile : ImageCropperScreenEffect()
-    class NavigateBackToProfile(val imageBytes: ImageBitmap) : ImageCropperScreenEffect()
+    class NavigateBackToEditProfileWithImage(val imageBytes: ImageBitmap) :
+        ImageCropperScreenEffect()
 }

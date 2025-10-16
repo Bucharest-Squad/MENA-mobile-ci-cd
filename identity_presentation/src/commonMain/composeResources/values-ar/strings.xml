@@ -67,7 +67,6 @@
     <!-- Add Edit Location Screen -->
     <string name="add_location">إضافة موقع</string>
     <string name="edit_location">تعديل الموقع</string>
-    <string name="save">حفظ</string>
     <string name="location">الموقع</string>
     <string name="pick_on_map">( اختر على الخريطة )</string>
     <string name="address">العنوان</string>

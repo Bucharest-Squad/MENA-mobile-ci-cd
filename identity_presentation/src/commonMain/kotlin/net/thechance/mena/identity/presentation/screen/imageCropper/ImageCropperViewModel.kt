@@ -10,7 +10,7 @@ class ImageCropperViewModel(
 ), ImageCropperInteractionListener {
 
     override fun onCropImage(imageBitmap: ImageBitmap) {
-        sendNewEffect(ImageCropperScreenEffect.NavigateBackToProfile(imageBitmap))
+        sendNewEffect(ImageCropperScreenEffect.NavigateBackToEditProfileWithImage(imageBitmap))
     }
 
     override fun onChangeImage(imageBitmap: ImageBitmap) {
