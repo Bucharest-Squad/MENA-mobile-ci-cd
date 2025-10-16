@@ -1,15 +1,7 @@
 package net.thechance.mena.identity.data.repository
 
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.mock.MockEngine
-import io.ktor.client.engine.mock.respond
-import io.ktor.client.engine.mock.respondError
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.http.ContentType
-import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
-import io.ktor.http.headersOf
-import io.ktor.serialization.kotlinx.json.json
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -32,6 +24,8 @@ import net.thechance.mena.identity.data.dto.GenderCode
 import net.thechance.mena.identity.data.dto.profile.ProfileResponseDto
 import net.thechance.mena.identity.data.mapper.toDomain
 import net.thechance.mena.identity.data.mapper.toEntity
+import net.thechance.mena.identity.data.utils.mockHttpClient
+import net.thechance.mena.identity.data.utils.mockHttpClientError
 import net.thechance.mena.identity.domain.entity.Gender
 import net.thechance.mena.identity.domain.entity.User
 import org.junit.After
@@ -59,40 +53,6 @@ class UserRepositoryImplTest {
     @After
     fun tearDown() {
         Dispatchers.resetMain()
-    }
-
-    private fun mockHttpClient(response: ProfileResponseDto): HttpClient {
-        return HttpClient(MockEngine) {
-            install(ContentNegotiation) {
-                json()
-            }
-            engine {
-                addHandler { request ->
-                    respond(
-                        content = Json.encodeToString(response),
-                        status = HttpStatusCode.OK,
-                        headers = headersOf(
-                            HttpHeaders.ContentType, ContentType.Application.Json.toString()
-                        )
-                    )
-                }
-            }
-        }
-    }
-
-    private fun mockHttpClientError(status: HttpStatusCode): HttpClient {
-        return HttpClient(MockEngine) {
-            install(ContentNegotiation) {
-                json()
-            }
-            engine {
-                addHandler {
-                    respondError(
-                        status = status
-                    )
-                }
-            }
-        }
     }
 
     @Test
