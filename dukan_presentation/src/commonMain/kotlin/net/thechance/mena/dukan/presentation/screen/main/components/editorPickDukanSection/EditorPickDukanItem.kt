@@ -19,8 +19,8 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import mena.dukan_presentation.generated.resources.Res
 import mena.dukan_presentation.generated.resources.dukan_image
-import mena.dukan_presentation.generated.resources.heart_angle
 import mena.dukan_presentation.generated.resources.heart_icon
+import mena.dukan_presentation.generated.resources.ic_favorite
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
@@ -64,7 +64,7 @@ fun EditorPickDukanItem(
                     .align(Alignment.BottomStart)
             )
             Icon(
-                painter = painterResource(Res.drawable.heart_angle),
+                painter = painterResource(Res.drawable.ic_favorite),
                 contentDescription = stringResource(Res.string.heart_icon),
                 modifier = Modifier
                     .align(Alignment.TopEnd)
@@ -74,7 +74,6 @@ fun EditorPickDukanItem(
                     ).padding(Theme.spacing._8)
             )
         }
-
     }
 }
 

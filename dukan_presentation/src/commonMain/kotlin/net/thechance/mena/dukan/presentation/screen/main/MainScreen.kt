@@ -117,16 +117,17 @@ private fun MainContent(
                 onCategoryClick = listener::onCategorySelectedClick,
                 onViewMoreClick = listener::onViewMoreButtonClick,
             )
-
-            Text(
-                text = stringResource(Res.string.best_dukans_around_you),
-                style = Theme.typography.title.small,
-                color = Theme.colorScheme.shadePrimary,
-                modifier = Modifier.padding(
-                    start = Theme.spacing._16,
-                    top = Theme.spacing._16
+            if (state.bestNearestDukans.items.isNotEmpty()) {
+                Text(
+                    text = stringResource(Res.string.best_dukans_around_you),
+                    style = Theme.typography.title.small,
+                    color = Theme.colorScheme.shadePrimary,
+                    modifier = Modifier.padding(
+                        start = Theme.spacing._16,
+                        top = Theme.spacing._16
+                    )
                 )
-            )
+            }
 
             BestNearestDukanSection(
                 state = state,
