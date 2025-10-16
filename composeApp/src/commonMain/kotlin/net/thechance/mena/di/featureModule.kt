@@ -39,7 +39,6 @@ val featureModule = module {
 
         faithPresentationModule,
         faithDataModule,
-        faithDomainModule,
         WalletDataModule().module,
         WalletDomainModule().module,
         WalletPresentationModule().module,
