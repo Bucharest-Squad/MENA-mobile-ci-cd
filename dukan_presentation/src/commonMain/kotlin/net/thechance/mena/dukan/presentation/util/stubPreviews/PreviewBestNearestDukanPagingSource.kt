@@ -4,7 +4,7 @@ import net.thechance.mena.dukan.domain.util.PagedResult
 import net.thechance.mena.dukan.presentation.util.pagination.base.BasePagingSource
 import net.thechance.mena.dukan.presentation.viewModel.mainScreen.MainScreenUiState
 
-object BestNearestDukanPagingSource :
+object PreviewBestNearestDukanPagingSource :
     BasePagingSource<MainScreenUiState.BestNearestDukanUiState>() {
     override suspend fun onFetchPage(pageNumber: Int): PagedResult<MainScreenUiState.BestNearestDukanUiState> {
         return PagedResult(

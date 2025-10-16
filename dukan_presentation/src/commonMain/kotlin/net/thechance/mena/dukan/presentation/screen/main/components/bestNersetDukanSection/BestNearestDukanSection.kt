@@ -16,7 +16,7 @@ import net.thechance.mena.dukan.presentation.util.pagination.LoadMoreOnScroll
 import net.thechance.mena.dukan.presentation.util.pagination.Pager
 import net.thechance.mena.dukan.presentation.util.pagination.PagingConfig
 import net.thechance.mena.dukan.presentation.util.pagination.PagingData
-import net.thechance.mena.dukan.presentation.util.stubPreviews.BestNearestDukanPagingSource
+import net.thechance.mena.dukan.presentation.util.stubPreviews.PreviewBestNearestDukanPagingSource
 import net.thechance.mena.dukan.presentation.util.stubPreviews.fakeBestNearestDuknas
 import net.thechance.mena.dukan.presentation.viewModel.mainScreen.MainScreenUiState
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -98,7 +98,7 @@ private fun BestNearestDukanSectionPreview() {
             dukans = PagingData(items = fakeBestNearestDuknas()),
             pager = Pager(
                 config = PagingConfig(),
-                pagingSourceFactory = { BestNearestDukanPagingSource }
+                pagingSourceFactory = { PreviewBestNearestDukanPagingSource }
             ),
             onDukanClick = {}
         )

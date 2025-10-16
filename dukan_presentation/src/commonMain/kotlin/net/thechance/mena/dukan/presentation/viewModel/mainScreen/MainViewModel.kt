@@ -22,8 +22,8 @@ class MainViewModel(
     initialState = MainScreenUiState(),
     defaultDispatcher = dispatcher
 ), MainInteractionListener {
-     lateinit var bestNearestDukanPager: Pager<Int, MainScreenUiState.BestNearestDukanUiState>
-     lateinit var editorPickDukanPager: Pager<Int, MainScreenUiState.EditorPickDukanUiState>
+    lateinit var bestNearestDukanPager: Pager<Int, MainScreenUiState.BestNearestDukanUiState>
+    lateinit var editorPickDukanPager: Pager<Int, MainScreenUiState.EditorPickDukanUiState>
 
     init {
         initPagers()
@@ -102,7 +102,9 @@ class MainViewModel(
 
     private fun getCategories() {
         tryToExecute(
-            onStart = { updateState { copy(dukanState = MainScreenUiState.DukanState(status = DukanStatusUi.Loading)) } },
+            onStart = {
+                setLoadingState()
+            },
             block = ::getCategoriesBlock,
             onSuccess = ::onGetCategoriesSuccess,
             onError = ::onGetCategoriesError
@@ -131,11 +133,15 @@ class MainViewModel(
 
     private fun getDukanState() {
         tryToExecute(
-            onStart = { updateState { copy(dukanState = MainScreenUiState.DukanState(status = DukanStatusUi.Loading)) } },
+            onStart = ::setLoadingState,
             block = ::getDukanStateBlock,
             onSuccess = ::onGetDukanStateSuccess,
             onError = ::onGetDukanStateError
         )
+    }
+
+    private fun setLoadingState() {
+        updateState { copy(dukanState = MainScreenUiState.DukanState(status = DukanStatusUi.Loading)) }
     }
 
     private suspend fun getDukanStateBlock(): MainScreenUiState.DukanState? {
@@ -187,7 +193,8 @@ class MainViewModel(
     override fun onEditorPickDukanClick(dukanId: String) {
         emitEffect(MainEffect.NavigateSelectedDukan(dukanId))
     }
-    fun initPagers(){
+
+    fun initPagers() {
         bestNearestDukanPager = createPagingSource(
             mapper = { it.toBestNearestUiState() }
         ) { currentPage ->

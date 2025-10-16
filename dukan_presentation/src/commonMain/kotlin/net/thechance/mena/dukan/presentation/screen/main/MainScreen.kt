@@ -31,8 +31,8 @@ import net.thechance.mena.dukan.presentation.util.ObserveAsEffect
 import net.thechance.mena.dukan.presentation.util.pagination.Pager
 import net.thechance.mena.dukan.presentation.util.pagination.PagingConfig
 import net.thechance.mena.dukan.presentation.util.pagination.PagingData
-import net.thechance.mena.dukan.presentation.util.stubPreviews.BestNearestDukanPagingSource
-import net.thechance.mena.dukan.presentation.util.stubPreviews.EditorPickDukanItemsListPagingSource
+import net.thechance.mena.dukan.presentation.util.stubPreviews.PreviewBestNearestDukanPagingSource
+import net.thechance.mena.dukan.presentation.util.stubPreviews.PreviewEditorPickDukanItemsListPagingSource
 import net.thechance.mena.dukan.presentation.util.stubPreviews.PreviewMainScreenInteractionListener
 import net.thechance.mena.dukan.presentation.util.stubPreviews.fakeBestNearestDuknas
 import net.thechance.mena.dukan.presentation.util.stubPreviews.fakeDukans
@@ -179,11 +179,11 @@ private fun MainScreenPreview() {
                 ),
                 editorPickDukanPager = Pager(
                     config = PagingConfig(),
-                    pagingSourceFactory = { EditorPickDukanItemsListPagingSource }
+                    pagingSourceFactory = { PreviewEditorPickDukanItemsListPagingSource }
                 ),
                 bestNearestDukanPager = Pager(
                     config = PagingConfig(),
-                    pagingSourceFactory = { BestNearestDukanPagingSource }
+                    pagingSourceFactory = { PreviewBestNearestDukanPagingSource }
                 )
             )
         }

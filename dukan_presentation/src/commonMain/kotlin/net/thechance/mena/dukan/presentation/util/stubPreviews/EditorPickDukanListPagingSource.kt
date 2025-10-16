@@ -4,7 +4,7 @@ import net.thechance.mena.dukan.domain.util.PagedResult
 import net.thechance.mena.dukan.presentation.util.pagination.base.BasePagingSource
 import net.thechance.mena.dukan.presentation.viewModel.mainScreen.MainScreenUiState
 
-object EditorPickDukanItemsListPagingSource :
+object PreviewEditorPickDukanItemsListPagingSource :
     BasePagingSource<MainScreenUiState.EditorPickDukanUiState>() {
     override suspend fun onFetchPage(pageNumber: Int): PagedResult<MainScreenUiState.EditorPickDukanUiState> {
         return PagedResult(
