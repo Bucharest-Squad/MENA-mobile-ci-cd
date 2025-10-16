@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.dukan.presentation.component.productCard.LoadingProductCard
-import net.thechance.mena.dukan.presentation.screen.dukanDetails.components.noImageStyle.ProductActionIconNoImageDukan
+import net.thechance.mena.dukan.presentation.screen.dukanDetails.components.noImageStyle.ProductActionNoImageDukan
 import net.thechance.mena.dukan.presentation.util.pagination.Pager
 import net.thechance.mena.dukan.presentation.viewModel.shelfDetails.ShelfDetailsInteractionListener
 import net.thechance.mena.dukan.presentation.viewModel.shelfDetails.ShelfDetailsUiState
@@ -71,7 +71,7 @@ fun ShelfProducts(
                     ) { style ->
                         when (style) {
                             Style.SMALL_IMAGE -> {
-                                CartOrQuantityProductComponent(
+                                ProductActionIconSmallImageDukan(
                                     inCartQuantity = state.productsShelf.items.first { it.id == productId }.inCartQuantity,
                                     onAddClick = { listener.onAddToCartClick(productId) },
                                     onPlusClick = { },
@@ -81,7 +81,7 @@ fun ShelfProducts(
                             }
 
                             else -> {
-                                ProductActionIconNoImageDukan(
+                                ProductActionNoImageDukan(
                                     inCartQuantity = state.productsShelf.items.first { it.id == productId }.inCartQuantity,
                                     onAddClick = { listener.onAddToCartClick(productId) },
                                     onPlusClick = { },

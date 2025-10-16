@@ -16,13 +16,15 @@ import mena.dukan_presentation.generated.resources.Res
 import mena.dukan_presentation.generated.resources.add_shopping_basket
 import mena.dukan_presentation.generated.resources.ic_add_shopping_basket
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
+import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.dukan.presentation.util.animation.fadeTransitionSpec
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun CartOrQuantityProductComponent(
+fun ProductActionIconSmallImageDukan(
     inCartQuantity: Int,
     onAddClick: () -> Unit,
     onPlusClick: () -> Unit,
@@ -38,7 +40,8 @@ fun CartOrQuantityProductComponent(
         if (it) {
             SetProductQuantity(
                 onAddProductClick = onPlusClick,
-                onRemoveProductClick = onMinusClick
+                onRemoveProductClick = onMinusClick,
+                cartColor = cartColor
             )
         } else {
             ProductCart(
@@ -76,3 +79,30 @@ private fun ProductCart(
     }
 }
 
+@Preview()
+@Composable
+private fun ProductActionIconSmallImageDukanPreview() {
+    MenaTheme {
+        ProductActionIconSmallImageDukan(
+            inCartQuantity = 0,
+            cartColor = Color(0xFFFB5B5D),
+            onAddClick = {},
+            onPlusClick = {},
+            onMinusClick = {}
+        )
+    }
+}
+
+@Preview()
+@Composable
+private fun ProductActionHasQuantitySmallImageDukanPreview() {
+    MenaTheme {
+        ProductActionIconSmallImageDukan(
+            inCartQuantity = 1,
+            cartColor = Color(0xFFFB5B5D),
+            onAddClick = {},
+            onPlusClick = {},
+            onMinusClick = {}
+        )
+    }
+}
