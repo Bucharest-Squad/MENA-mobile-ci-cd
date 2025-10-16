@@ -83,7 +83,7 @@ fun PrayerTimesCard(prayerTimesUiState: PrayerTimesUiState?) {
             itemsIndexed(prayerTimesUiState.prayers) { index, prayer ->
                 PrayerItem(
                     prayer = prayer,
-                    isCurrentPrayer = index == prayerTimesUiState.currentPrayerIndex,
+                    isNextPrayer = index == prayerTimesUiState.nextPrayerIndex,
                 )
             }
         }
@@ -93,7 +93,7 @@ fun PrayerTimesCard(prayerTimesUiState: PrayerTimesUiState?) {
 @Composable
 private fun PrayerItem(
     prayer: PrayerUiModel,
-    isCurrentPrayer: Boolean,
+    isNextPrayer: Boolean,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -130,7 +130,7 @@ private fun PrayerItem(
             )
         }
 
-        if (isCurrentPrayer) {
+        if (isNextPrayer) {
             Icon(
                 painter = painterResource(Res.drawable.ic_triangle_down),
                 contentDescription = null,

@@ -43,11 +43,20 @@ fun List<PrayerTime>.toUi(now: Instant): PrayerTimesUiState {
     val prayerTimesUi = PRAYER_ORDER.mapNotNull { prayerTimesMap[it]?.toUi() }
 
     val currentPrayer = getCurrentPrayer(this, now)
-    val currentPrayerIndex = PRAYER_ORDER.indexOf(currentPrayer)
+    val nextPrayerIndex =
+        PRAYER_ORDER
+            .indexOf(currentPrayer)
+            .let {
+                when (it) {
+                    -1 -> 0
+                    PRAYER_ORDER.lastIndex -> 0
+                    else -> it + 1
+                }
+            }
 
     return PrayerTimesUiState(
         prayers = prayerTimesUi,
-        currentPrayerIndex = currentPrayerIndex
+        nextPrayerIndex = nextPrayerIndex
     )
 }
 

@@ -15,7 +15,7 @@ data class MainScreenState(
 
 data class PrayerTimesUiState(
     val prayers: List<PrayerUiModel>,
-    val currentPrayerIndex: Int
+    val nextPrayerIndex: Int
 )
 
 data class TilawahUiState(
