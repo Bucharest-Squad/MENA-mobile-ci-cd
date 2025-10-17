@@ -1,5 +1,7 @@
 package net.thechance.mena.dukan.presentation.screen.dukanDetails.components
 
+import androidx.compose.foundation.gestures.snapping.SnapPosition
+import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -37,7 +39,7 @@ fun SmallImageProductContent(
         state = lazyListState
     ) {
         state.shelves.items.forEach { shelf ->
-            stickyHeader(key = shelf.id) {
+            item(key = shelf.id) {
                 ProductsHeader(
                     viewAllColor = Color(state.dukanInfo.color),
                     shelfName = shelf.name,
@@ -72,16 +74,21 @@ private fun ProductsShelf(
         shelf.products.chunked(2)
     }
     val lazyListState = rememberLazyListState()
+    val flingBehavior = rememberSnapFlingBehavior(
+        lazyListState = lazyListState,
+        snapPosition = SnapPosition.Center
+    )
 
     LazyRow(
         state = lazyListState,
         contentPadding = PaddingValues(Theme.spacing._16),
-        horizontalArrangement = Arrangement.spacedBy(Theme.spacing._8)
+        horizontalArrangement = Arrangement.spacedBy(Theme.spacing._8),
+        flingBehavior = flingBehavior
     ) {
 
         itemsIndexed(items = productPairs) { index, pair ->
             Column(
-                modifier = Modifier.fillParentMaxWidth(if (index == productPairs.lastIndex) 1f else 0.95f),
+                modifier = Modifier.fillParentMaxWidth(0.95f),
                 verticalArrangement = Arrangement.spacedBy(Theme.spacing._8)
             ) {
                 pair.forEach { product ->
