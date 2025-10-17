@@ -1,5 +1,6 @@
 package net.thechance.mena.identity.presentation.screen.editProfile
 
+import androidx.compose.ui.graphics.ImageBitmap
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -93,6 +94,34 @@ class EditUserProfileViewModel(
 
     override fun clearErrorMessage() {
         updateState { copy(errorMessage = null) }
+    }
+
+    override fun onClickEditImage() {
+        updateState { copy(showEditImageDialog = true) }
+    }
+
+    override fun onDismissEditImageDialog() {
+        updateState { copy(showEditImageDialog = false) }
+    }
+
+    override fun onRemoveProfileImage() {
+        updateState {
+            copy(
+                profileImageUrl = "",
+                profileImageBitmap = null,
+            )
+        }
+    }
+
+    override fun onRequireCropImage(imageBitmap: ImageBitmap) {
+        sendNewEffect(
+            EditUserProfileUIEffect.NavigateToCropScreen(
+                imageBitmap = imageBitmap,
+                onResult = { croppedImageBitmap ->
+                    updateState { copy(profileImageBitmap = croppedImageBitmap) }
+                }
+            )
+        )
     }
 
     private fun onErrorOccurred(errorState: ErrorState) {

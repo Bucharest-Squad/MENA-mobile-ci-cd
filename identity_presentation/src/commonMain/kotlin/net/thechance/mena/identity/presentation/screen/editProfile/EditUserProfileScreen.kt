@@ -16,12 +16,17 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.Navigator
+import io.github.vinceglb.filekit.dialogs.FileKitType
+import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
+import io.github.vinceglb.filekit.dialogs.compose.util.toImageBitmap
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import mena.identity_presentation.generated.resources.Res
 import mena.identity_presentation.generated.resources.back
 import mena.identity_presentation.generated.resources.cancel
@@ -50,6 +55,9 @@ import net.thechance.mena.identity.presentation.screen.editProfile.component.AtP
 import net.thechance.mena.identity.presentation.screen.editProfile.component.GenderToggle
 import net.thechance.mena.identity.presentation.screen.editProfile.component.ProfileEditText
 import net.thechance.mena.identity.presentation.screen.editProfile.component.ProfileImage
+import net.thechance.mena.identity.presentation.screen.editProfile.dialog.GetImageDialog
+import net.thechance.mena.identity.presentation.screen.imageCropper.ImageCropperScreen
+import net.thechance.mena.identity.presentation.util.rememberCameraPicker
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import sv.lib.squircleshape.SquircleShape
@@ -70,6 +78,20 @@ class EditUserProfileScreen : BaseScreen<
         listener: EditUserProfileInteractionListener,
     ) {
         val scrollState = rememberScrollState()
+
+        val scope = rememberCoroutineScope()
+        val galleryPicker = rememberFilePickerLauncher(type = FileKitType.Image) { file ->
+            file?.let { image ->
+                scope.launch {
+                    listener.onRequireCropImage(imageBitmap = image.toImageBitmap())
+                }
+            }
+        }
+
+        val cameraImagePicker = rememberCameraPicker { imageBitmap ->
+            listener.onRequireCropImage(imageBitmap)
+        }
+
         LaunchedEffect(state.errorMessage) {
             delay(3000)
             listener.clearErrorMessage()
@@ -89,6 +111,17 @@ class EditUserProfileScreen : BaseScreen<
                         leadingIcon = painterResource(Res.drawable.ic_close_circle),
                         modifier = Modifier.fillMaxWidth().padding(bottom = Theme.spacing._16)
                             .padding(horizontal = Theme.spacing._16)
+                    )
+                }
+            },
+            overlays = {
+                dialog(state.showEditImageDialog) {
+                    GetImageDialog(
+                        isVisible = it,
+                        onDismiss = { listener.onDismissEditImageDialog() },
+                        onUploadImage = { galleryPicker.launch() },
+                        onTakeImageFromCamera = { cameraImagePicker.launch() },
+                        onRemoveImage = { listener.onRemoveProfileImage() },
                     )
                 }
             }
@@ -134,10 +167,12 @@ class EditUserProfileScreen : BaseScreen<
                 )
 
                 ProfileImage(
+                    profileImageUrl = state.profileImageUrl,
+                    profileImageBitmap = state.profileImageBitmap,
                     modifier = Modifier
                         .fillMaxWidth()
                         .align(Alignment.CenterHorizontally),
-                    profilePicture = state.profileImageUrl,
+                    onEditClicked = { listener.onClickEditImage() },
                 )
 
                 ProfileEditText(
@@ -203,6 +238,13 @@ class EditUserProfileScreen : BaseScreen<
     ) {
         when (effect) {
             EditUserProfileUIEffect.NavigateBackToProfile -> navigator.pop()
+            is EditUserProfileUIEffect.NavigateToCropScreen -> {
+                val cropperScreen = ImageCropperScreen(
+                    image = effect.imageBitmap,
+                    onResult = effect.onResult
+                )
+                navigator.push(cropperScreen)
+            }
         }
     }
 }
