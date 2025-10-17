@@ -42,7 +42,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-internal fun ReelHomeScreen(
+internal fun HomeScreen(
     viewModel: HomeViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -57,7 +57,7 @@ internal fun ReelHomeScreen(
                 navController.navigate(Route.UploadReel)
 
             is HomeUiEffect.NavigateToChangeTags ->
-                navController.navigate(Route.Categories)
+                navController.navigate(Route.UpdateCategories)
 
             is HomeUiEffect.NavigateToManageMyTrends ->
                 navController.navigate(Route.ManageReels)

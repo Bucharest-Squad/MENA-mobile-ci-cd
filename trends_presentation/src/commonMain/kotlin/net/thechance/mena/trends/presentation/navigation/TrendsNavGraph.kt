@@ -11,7 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import net.thechance.mena.trends.presentation.screen.category_pick.CategoryPickScreen
 import net.thechance.mena.trends.presentation.screen.category_publish.CategoryPublishScreen
-import net.thechance.mena.trends.presentation.screen.home.ReelHomeScreen
+import net.thechance.mena.trends.presentation.screen.home.HomeScreen
 import net.thechance.mena.trends.presentation.screen.main_container.MainContainerScreen
 import net.thechance.mena.trends.presentation.screen.manage_my_trends.ManageTrendsScreen
 import net.thechance.mena.trends.presentation.screen.update_categories.UpdateCategoriesScreen
@@ -66,7 +66,7 @@ fun TrendsNavHost() {
             }
 
             composable<Route.ReelHome> {
-                ReelHomeScreen()
+                HomeScreen()
             }
         }
     }
