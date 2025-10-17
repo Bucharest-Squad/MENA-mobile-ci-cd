@@ -95,7 +95,8 @@ fun ProfileImage(
                 modifier = Modifier
                     .size(32.dp)
                     .align(Alignment.BottomCenter)
-                    .background(Theme.colorScheme.primary.primary, CircleShape)
+                    .clip(CircleShape)
+                    .background(Theme.colorScheme.primary.primary)
                     .clickable(onClick = onEditClicked)
                     .border(
                         width = 1.dp,
