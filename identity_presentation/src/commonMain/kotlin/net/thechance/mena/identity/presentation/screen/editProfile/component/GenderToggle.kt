@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -31,6 +30,7 @@ import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.identity.domain.entity.Gender
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import sv.lib.squircleshape.SquircleShape
 
 @Composable
 fun GenderToggle(gender: Gender, onGenderChange: (Gender) -> Unit) {
@@ -78,10 +78,10 @@ private fun RowScope.ToggleOption(
     Box(
         modifier = Modifier
             .weight(1f)
-            .clip(RoundedCornerShape(16.dp))
+            .clip(SquircleShape(Theme.radius.xl))
             .fillMaxWidth()
             .aspectRatio(1f)
-            .clip(RoundedCornerShape(Theme.radius.md))
+            .clip(SquircleShape(Theme.radius.xl))
             .background(animateBackground)
             .clickable(onClick = { onChange() })
             .padding(10.dp)

@@ -19,7 +19,6 @@ import androidx.compose.foundation.pager.PagerSnapDistance
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -48,6 +47,7 @@ import net.thechance.mena.identity.presentation.util.AppMonth
 import net.thechance.mena.identity.presentation.util.getNumberOfDaysInMonth
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import sv.lib.squircleshape.SquircleShape
 import kotlin.math.absoluteValue
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
@@ -167,7 +167,7 @@ fun WheelDatePicker(
 private fun ChoiceIndicator(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(Theme.radius.md))
+            .clip(SquircleShape(Theme.radius.md))
             .height(28.dp)
             .background(Theme.colorScheme.background.surfaceHigh)
     )

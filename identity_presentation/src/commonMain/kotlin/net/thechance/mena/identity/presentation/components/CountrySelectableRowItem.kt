@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,6 +26,7 @@ import net.thechance.mena.identity.presentation.bottomSheet.countryPicker.menaCo
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import sv.lib.squircleshape.SquircleShape
 
 @Composable
 internal fun CountrySelectableRowItem(
@@ -50,9 +50,9 @@ internal fun CountrySelectableRowItem(
             .fillMaxWidth()
             .background(
                 color = animatedCountryItemColor,
-                shape = RoundedCornerShape(Theme.radius.lg)
+                shape = SquircleShape(Theme.radius.lg)
             )
-            .clip(RoundedCornerShape(Theme.radius.lg))
+            .clip(SquircleShape(Theme.radius.lg))
             .clickable(
                 enabled = !isSelected,
                 onClick = {

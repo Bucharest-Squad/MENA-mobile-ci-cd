@@ -96,6 +96,15 @@ fun ProfileImage(
                         shape = CircleShape
                     )
                     .padding(Theme.spacing._8)
+                    .dropShadow(
+                        shape = CircleShape,
+                        shadow = Shadow(
+                            radius = 8.dp,
+                            spread = 0.dp,
+                            color = shadowColor,
+                            offset = DpOffset(x = 0.dp, y = 4.dp)
+                        )
+                    )
             ) {
                 Icon(
                     painter = painterResource(Res.drawable.pencil_edit),

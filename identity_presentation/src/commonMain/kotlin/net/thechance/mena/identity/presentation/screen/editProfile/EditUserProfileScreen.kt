@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -53,6 +52,7 @@ import net.thechance.mena.identity.presentation.screen.editProfile.component.Pro
 import net.thechance.mena.identity.presentation.screen.editProfile.component.ProfileImage
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import sv.lib.squircleshape.SquircleShape
 
 class EditUserProfileScreen : BaseScreen<
         EditUserProfileViewModel,
@@ -108,7 +108,7 @@ class EditUserProfileScreen : BaseScreen<
                     leadingContent = {
                         Icon(
                             modifier = Modifier
-                                .clip(RoundedCornerShape(Theme.radius.md))
+                                .clip(SquircleShape(Theme.radius.md))
                                 .background(Theme.colorScheme.background.surfaceLow)
                                 .clickable(onClick = { listener.onClickCancelButton() }),
                             painter = painterResource(Res.drawable.ic_arrow_left),
@@ -118,7 +118,7 @@ class EditUserProfileScreen : BaseScreen<
                     trailingContent = {
                         Icon(
                             modifier = Modifier
-                                .clip(RoundedCornerShape(Theme.radius.md))
+                                .clip(SquircleShape(Theme.radius.md))
                                 .background(Theme.colorScheme.background.surfaceLow)
                                 .clickable(
                                     onClick = {
