@@ -31,9 +31,10 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalCoroutinesApi::class)
-
 class UserRepositoryImplTest {
 
     private val client = mockk<HttpClient>()
@@ -129,8 +130,7 @@ class UserRepositoryImplTest {
     fun `updateUser() should call doe upsert when update user`() = runTest {
         coEvery { userDao.upsert(any()) } returns Unit
 
-        userRepositoryImpl.updateUser(fakeUser)
-
+        userRepositoryImpl.updateUser(fakeUser, true, null)
         coVerify(exactly = 1) { userDao.upsert(fakeUser.toEntity()) }
     }
 
@@ -154,6 +154,7 @@ class UserRepositoryImplTest {
 
 
     val fakeProfileResponse = ProfileResponseDto(
+        id = "1bfbf5d8-145d-40e9-abae-8335df3f0a81",
         firstName = "The",
         lastName = "Chance",
         username = "the_chance",
@@ -162,7 +163,9 @@ class UserRepositoryImplTest {
         gender = UserEntity.MALE,
     )
 
+    @OptIn(ExperimentalUuidApi::class)
     val fakeUser = User(
+        id = Uuid.parse("1bfbf5d8-145d-40e9-abae-8335df3f0a81"),
         username = "the_chance",
         firstName = "The",
         lastName = "Chance",
