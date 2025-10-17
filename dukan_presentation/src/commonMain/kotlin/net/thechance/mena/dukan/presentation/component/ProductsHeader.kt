@@ -58,7 +58,6 @@ fun ProductsHeader(
                 contentDescription = stringResource(Res.string.arrow_right_icon),
             )
         }
-
     }
 }
 

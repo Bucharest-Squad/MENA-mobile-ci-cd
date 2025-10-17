@@ -31,6 +31,7 @@ fun ShelfProducts(
     } else {
         Theme.colorScheme.background.surfaceLow
     }
+    val isAddToCartVisible = false // TODO: Remove when implement the Cart
 
     AnimatedContent(
         targetState = state.productsState,
@@ -61,35 +62,36 @@ fun ShelfProducts(
                 pager = pager,
                 productCardBackground = productCardBackground,
                 cartProductIcon = { productId ->
-                    AnimatedContent(
-                        targetState = state.dukanStyle,
-                        transitionSpec = {
-                            fadeIn() togetherWith fadeOut()
-                        },
-                        label = "CartProductIconAnimation"
-                    ) { style ->
-                        when (style) {
-                            Style.SMALL_IMAGE -> {
-                                ProductActionIconSmallImageDukan(
-                                    inCartQuantity = state.productsShelf.items.first { it.id == productId }.inCartQuantity,
-                                    onAddClick = { listener.onAddToCartClick(productId) },
-                                    onPlusClick = { },
-                                    onMinusClick = { },
-                                    cartColor = Color(state.dukancolor)
-                                )
-                            }
+                    if (isAddToCartVisible)
+                        AnimatedContent(
+                            targetState = state.dukanStyle,
+                            transitionSpec = {
+                                fadeIn() togetherWith fadeOut()
+                            },
+                            label = "CartProductIconAnimation"
+                        ) { style ->
+                            when (style) {
+                                Style.SMALL_IMAGE -> {
+                                    ProductActionIconSmallImageDukan(
+                                        inCartQuantity = state.productsShelf.items.first { it.id == productId }.inCartQuantity,
+                                        onAddClick = { listener.onAddToCartClick(productId) },
+                                        onPlusClick = { },
+                                        onMinusClick = { },
+                                        cartColor = Color(state.dukancolor)
+                                    )
+                                }
 
-                            else -> {
-                                ProductActionNoImageDukan(
-                                    inCartQuantity = state.productsShelf.items.first { it.id == productId }.inCartQuantity,
-                                    onAddClick = { listener.onAddToCartClick(productId) },
-                                    onPlusClick = { },
-                                    onMinusClick = { },
-                                    dukanColor = state.dukancolor,
-                                )
+                                else -> {
+                                    ProductActionNoImageDukan(
+                                        inCartQuantity = state.productsShelf.items.first { it.id == productId }.inCartQuantity,
+                                        onAddClick = { listener.onAddToCartClick(productId) },
+                                        onPlusClick = { },
+                                        onMinusClick = { },
+                                        dukanColor = state.dukancolor,
+                                    )
+                                }
                             }
                         }
-                    }
                 }
             )
 
