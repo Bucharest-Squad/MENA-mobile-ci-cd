@@ -60,7 +60,7 @@ class ChatViewModelTest {
         everySuspend { repository.getChatById(chatId) } returns mockChat
         everySuspend { repository.loadMessages(chatId) } returns emptyList()
         everySuspend { repository.getLocalMessages(chatId) } returns emptyList()
-        every { repository.subscribeToMessages(chatId) } returns flowOf()
+        every { repository.getMessages(chatId) } returns flowOf()
         every { repository.observeReadMessages() } returns flowOf()
 
         chatViewModel = ChatViewModel(repository, chatArgs, effector, permissionsController, testDispatcher)
@@ -77,7 +77,7 @@ class ChatViewModelTest {
         everySuspend { repository.getChatById(chatId) } returns mockChat
         everySuspend { repository.loadMessages(chatId) } returns messages
         everySuspend { repository.getLocalMessages(chatId) } returns emptyList()
-        every { repository.subscribeToMessages(chatId) } returns flowOf()
+        every { repository.getMessages(chatId) } returns flowOf()
         every { repository.observeReadMessages() } returns flowOf()
 
         chatViewModel = ChatViewModel(repository, chatArgs, effector, permissionsController, testDispatcher)
@@ -95,7 +95,7 @@ class ChatViewModelTest {
         everySuspend { repository.getChatById(chatId) } returns mockChat
         everySuspend { repository.loadMessages(chatId) } throws Exception()
         everySuspend { repository.getLocalMessages(chatId) } returns emptyList()
-        every { repository.subscribeToMessages(chatId) } returns flowOf()
+        every { repository.getMessages(chatId) } returns flowOf()
         every { repository.observeReadMessages() } returns flowOf()
 
         chatViewModel = ChatViewModel(repository, chatArgs, effector, permissionsController, testDispatcher)
@@ -116,7 +116,7 @@ class ChatViewModelTest {
         everySuspend { repository.getChatById(chatId) } returns mockChat
         everySuspend { repository.loadMessages(chatId) } returns emptyList()
         everySuspend { repository.getLocalMessages(chatId) } returns emptyList()
-        every { repository.subscribeToMessages(chatId) } returns flowOf(messages.first())
+        every { repository.getMessages(chatId) } returns flowOf(messages.first())
         every { repository.observeReadMessages() } returns flowOf()
 
         chatViewModel = ChatViewModel(repository, chatArgs, effector, permissionsController, testDispatcher)
@@ -427,7 +427,8 @@ class ChatViewModelTest {
                     chatId,
                     LocalDateTime.now(),
                     MessageStatus.SENT,
-                    MessageContent.Text("Hello, World")
+                    MessageContent.Text("Hello, World"),
+                    true
                 ),
                 Message(
                     message2Id,
@@ -435,7 +436,8 @@ class ChatViewModelTest {
                     chatId,
                     LocalDateTime.now(),
                     MessageStatus.SENT,
-                    MessageContent.Text("Hello, World2")
+                    MessageContent.Text("Hello, World2"),
+                    false
                 )
             )
     }
