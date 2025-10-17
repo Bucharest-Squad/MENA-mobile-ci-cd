@@ -17,4 +17,5 @@ data class EditUserProfileUIState @OptIn(ExperimentalUuidApi::class) constructor
     val isLoading: Boolean = false,
     val isSuccess: Boolean = false,
     val errorMessage: String? = null,
+    val shouldUpdateImage: Boolean = false,
 )

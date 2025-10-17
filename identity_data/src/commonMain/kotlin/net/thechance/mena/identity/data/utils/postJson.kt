@@ -15,6 +15,7 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.serializer
 
 suspend inline fun <reified T, reified R> HttpClient.postJson(
     requestDto: T,
@@ -37,7 +38,7 @@ suspend inline fun <reified T, reified R> HttpClient.postFileWithData(
     path: String,
     dataKey: String,
     requestDto: T,
-    fileName: String,
+    fileKey: String,
     imageByteArray: ByteArray?
 ): R {
     val response: HttpResponse = submitFormWithBinaryData(
@@ -45,26 +46,19 @@ suspend inline fun <reified T, reified R> HttpClient.postFileWithData(
         formData = formData {
             append(
                 key = dataKey,
-                value = Json.encodeToString(requestDto),
+                value = Json.encodeToString(serializer<T>(), requestDto),
                 Headers.build {
                     append(HttpHeaders.ContentType, ContentType.Application.Json.toString())
-                    append(
-                        name = HttpHeaders.ContentDisposition,
-                        value = "form-data; name=\"$dataKey\""
-                    )
                 }
             )
 
             imageByteArray?.let {
                 append(
-                    key = "file",
+                    key = fileKey,
                     value = imageByteArray,
                     Headers.build {
                         append(HttpHeaders.ContentType, ContentType.Image.JPEG.toString())
-                        append(
-                            name = HttpHeaders.ContentDisposition,
-                            value = "form-data; name=\"file\"; filename=\"${fileName}\""
-                        )
+                        append(HttpHeaders.ContentDisposition, "filename=image.jpeg")
                     }
                 )
             }

@@ -108,7 +108,7 @@ class EditUserProfileViewModel(
             )
             userRepository.updateUser(
                 user = user,
-                shouldUpdateImage = true,
+                shouldUpdateImage = value.shouldUpdateImage,
                 imageByteArray = value.profileImageBitmap?.encodeToByteArray()
             )
         }

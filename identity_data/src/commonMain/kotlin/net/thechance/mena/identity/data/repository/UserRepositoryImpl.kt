@@ -57,7 +57,7 @@ class UserRepositoryImpl(
                 path = PROFILE,
                 dataKey = "user",
                 requestDto = user.toRequest(shouldUpdateImage),
-                fileName = "${user.id}.jpg",
+                fileKey = "file",
                 imageByteArray = imageByteArray
             )
             userDao.upsert(user.toEntity())
