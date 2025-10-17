@@ -41,10 +41,7 @@ fun LoadingProductCard(
         Box(
             modifier = Modifier.background(
                 color = Theme.colorScheme.background.surfaceHigh,
-                shape = RoundedCornerShape(
-                    topStart = Theme.radius.md,
-                    bottomStart = Theme.radius.md
-                )
+                shape = RoundedCornerShape( Theme.radius.md)
             )
         ) {
             Box(

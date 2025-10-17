@@ -50,10 +50,7 @@ fun ProductCard(
         Box(
             modifier = Modifier.background(
                 color = Theme.colorScheme.background.surfaceLow,
-                shape = RoundedCornerShape(
-                    topStart = Theme.radius.md,
-                    bottomStart = Theme.radius.md
-                )
+                shape = RoundedCornerShape( Theme.radius.md)
             )
         ) {
             AsyncImage(
