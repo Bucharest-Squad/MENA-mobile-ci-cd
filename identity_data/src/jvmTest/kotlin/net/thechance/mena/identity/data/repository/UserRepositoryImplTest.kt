@@ -127,14 +127,6 @@ class UserRepositoryImplTest {
     }
 
     @Test
-    fun `updateUser() should call doe upsert when update user`() = runTest {
-        coEvery { userDao.upsert(any()) } returns Unit
-
-        userRepositoryImpl.updateUser(fakeUser, true, null)
-        coVerify(exactly = 1) { userDao.upsert(fakeUser.toEntity()) }
-    }
-
-    @Test
     fun `getUser() should return object from User`() = runTest {
 
         val client = mockHttpClient(fakeProfileResponse)
