@@ -3,7 +3,6 @@ package net.thechance.mena.identity.presentation.screen.editProfile
 import androidx.compose.ui.graphics.ImageBitmap
 import kotlinx.datetime.LocalDate
 import net.thechance.mena.identity.domain.entity.Gender
-import net.thechance.mena.identity.domain.util.getCurrentDate
 import kotlin.uuid.ExperimentalUuidApi
 
 data class EditUserProfileUIState @OptIn(ExperimentalUuidApi::class) constructor(
@@ -12,7 +11,7 @@ data class EditUserProfileUIState @OptIn(ExperimentalUuidApi::class) constructor
     val lastName: String = "",
     val profileImageUrl: String = "",
     val profileImageBitmap: ImageBitmap? = null,
-    val birthDate: LocalDate = getCurrentDate(),
+    val birthDate: LocalDate? = null,
     val gender: Gender = Gender.MALE,
     val showEditImageDialog: Boolean = false,
     val isLoading: Boolean = false,

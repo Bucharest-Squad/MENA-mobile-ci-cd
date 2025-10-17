@@ -8,6 +8,7 @@ import kotlinx.datetime.LocalDate
 import net.thechance.mena.identity.domain.entity.Gender
 import net.thechance.mena.identity.domain.entity.User
 import net.thechance.mena.identity.domain.repository.UserRepository
+import net.thechance.mena.identity.domain.util.getCurrentDate
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
 import net.thechance.mena.identity.presentation.base.ErrorState
 import kotlin.uuid.ExperimentalUuidApi
@@ -102,7 +103,7 @@ class EditUserProfileViewModel(
                 lastName = value.lastName,
                 username = value.username.lowercase(),
                 profileImageUrl = value.profileImageUrl,
-                birthDate = value.birthDate,
+                birthDate = value.birthDate ?: getCurrentDate(),
                 gender = value.gender,
             )
             userRepository.updateUser(
