@@ -33,8 +33,7 @@ fun ShareIcon(
                 },
             )
             .padding(10.dp)
-            .size(20.dp)
-        ,
+            .size(20.dp),
         painter = painterResource(Res.drawable.ic_share),
         contentDescription = stringResource(Res.string.profile_share_icon_content_description),
     )
