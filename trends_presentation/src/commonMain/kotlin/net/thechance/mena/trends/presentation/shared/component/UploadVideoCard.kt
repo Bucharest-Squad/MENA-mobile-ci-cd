@@ -1,6 +1,5 @@
 package net.thechance.mena.trends.presentation.shared.component
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -57,49 +56,51 @@ internal fun UploadVideoCard(
                 ),
             contentAlignment = Alignment.Center
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Icon(
-                    modifier = Modifier.size(40.dp),
-                    painter = painterResource(Res.drawable.ic_trend_upload),
-                    contentDescription = null,
-                    tint = Theme.colorScheme.brand.brand
-                )
-                Text(
-                    modifier = Modifier.padding(top = Theme.spacing._12),
-                    text = stringResource(Res.string.upload_your_video),
-                    style = Theme.typography.label.medium,
-                    color = Theme.colorScheme.primary.primary
-                )
-                Text(
-                    modifier = Modifier.padding(top = Theme.spacing._4),
-                    text = stringResource(Res.string.available_video_format),
-                    style = Theme.typography.label.extraSmall,
-                    color = Theme.colorScheme.shadeSecondary
-                )
-            }
-            AnimatedVisibility(isLoading) {
+            if (isLoading) {
                 ThumbnailLoading(
                     modifier = Modifier.matchParentSize()
                 )
+            } else {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        modifier = Modifier.size(40.dp),
+                        painter = painterResource(Res.drawable.ic_trend_upload),
+                        contentDescription = null,
+                        tint = Theme.colorScheme.brand.brand
+                    )
+                    Text(
+                        modifier = Modifier.padding(top = Theme.spacing._12),
+                        text = stringResource(Res.string.upload_your_video),
+                        style = Theme.typography.label.medium,
+                        color = Theme.colorScheme.primary.primary
+                    )
+                    Text(
+                        modifier = Modifier.padding(top = Theme.spacing._4),
+                        text = stringResource(Res.string.available_video_format),
+                        style = Theme.typography.label.extraSmall,
+                        color = Theme.colorScheme.shadeSecondary
+                    )
+                }
+
+                thumbnail?.let {
+                    AsyncImage(
+                        modifier = Modifier.fillMaxWidth(),
+                        model = thumbnail,
+                        contentDescription = stringResource(Res.string.thumbnail_description),
+                        contentScale = ContentScale.Crop
+                    )
+                }
             }
             thumbnail?.let {
-                AsyncImage(
-                    modifier = Modifier.fillMaxWidth(),
-                    model = thumbnail,
-                    contentDescription = stringResource(Res.string.thumbnail_description),
-                    contentScale = ContentScale.Crop
+                EditButton(
+                    modifier = Modifier
+                        .offset(y = 16.dp)
+                        .align(Alignment.BottomCenter),
+                    onClick = onEditClick
                 )
             }
-        }
-        thumbnail?.let {
-            EditButton(
-                modifier = Modifier
-                    .offset(y = 16.dp)
-                    .align(Alignment.BottomCenter),
-                onClick = onEditClick
-            )
         }
     }
 }
@@ -114,7 +115,11 @@ private fun ThumbnailLoading(
             .background(color = Theme.colorScheme.background.surfaceLow),
         contentAlignment = Alignment.Center
     ) {
-        DotsProgressIndicator()
+        DotsProgressIndicator(
+            dotSize = 12.dp,
+            spaceBetween = 4.dp,
+            numberOfDots = 4,
+        )
     }
 }
 
