@@ -5,12 +5,18 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridScope
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -29,6 +35,7 @@ import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import net.thechance.mena.dukan.presentation.component.SkeletonOverlayShape
 import net.thechance.mena.dukan.presentation.component.productCard.PriceWithIcon
 import net.thechance.mena.dukan.presentation.viewModel.dukanDetails.DukanDetailsUiState
 import org.jetbrains.compose.resources.painterResource
@@ -102,15 +109,7 @@ fun LazyGridScope.ProductsGridSection(
     val productCount = 6
     when (state.productsState) {
         DukanDetailsUiState.ProductsState.LOADING -> {
-            items(count = productCount) {
-                ProductCard(
-                    imageUrl = "",
-                    title = "...",
-                    price = "...",
-                    onClick = {},
-                    isEnabled = false
-                )
-            }
+            productCardSkeletonGrid(productCount)
         }
 
         DukanDetailsUiState.ProductsState.LOADED -> {
@@ -130,6 +129,68 @@ fun LazyGridScope.ProductsGridSection(
     }
 }
 
+private fun LazyGridScope.productCardSkeletonGrid(productCount: Int) {
+    items(count = productCount) {
+        ProductCardSkeleton()
+    }
+}
+
+@Composable
+private fun ProductCardSkeleton(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier
+            .size(width = 160.dp, height = 240.dp)
+            .clip(RoundedCornerShape(Theme.radius.sm))
+            .background(Theme.colorScheme.background.surfaceLow)
+    ) {
+        SkeletonOverlayShape(
+            modifier = Modifier
+                .padding(4.dp)
+                .fillMaxWidth()
+                .height(176.dp)
+                .clip(RoundedCornerShape(Theme.radius.sm))
+        )
+        ProductCardDetailsSkeleton()
+    }
+
+
+}
+
+@Composable
+private fun ProductCardDetailsSkeleton(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier
+            .padding(top = Theme.spacing._12)
+            .fillMaxWidth()
+            .height(40.dp)
+            .padding(horizontal = Theme.spacing._4)
+    ) {
+        SkeletonOverlayShape(
+            modifier = Modifier
+                .size(height = Theme.spacing._16, width = 144.dp)
+        )
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(vertical = 2.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            SkeletonOverlayShape(
+                modifier = Modifier
+                    .height(Theme.spacing._24)
+                    .width(84.dp)
+                    .padding(top = 2.dp)
+            )
+            SkeletonOverlayShape(
+                modifier = Modifier
+                    .padding(start = Theme.spacing._4)
+                    .clip(CircleShape)
+                    .size(20.dp)
+            )
+        }
+    }
+}
+
 @Preview(showBackground = true, name = "Product Card")
 @Composable
 private fun ProductCardPreview() {
@@ -141,5 +202,22 @@ private fun ProductCardPreview() {
             onClick = {},
             modifier = Modifier.padding(8.dp)
         )
+    }
+}
+
+@Preview(showBackground = true, name = "Product Card Loading")
+@Composable
+private fun ProductCardSkeletonGridPreview() {
+    MenaTheme {
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            productCardSkeletonGrid(productCount = 6)
+        }
     }
 }
