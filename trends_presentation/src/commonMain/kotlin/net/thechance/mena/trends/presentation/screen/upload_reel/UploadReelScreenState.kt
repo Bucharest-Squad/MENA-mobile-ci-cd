@@ -14,6 +14,7 @@ data class UploadReelScreenState(
     val sizeUploaded: String = "",
     val isNextButtonEnabled: Boolean = false,
     val isNextButtonLoading: Boolean = false,
+    val isThumbnailLoading: Boolean = false,
     val errorState: ErrorState? = null
 ) {
     val isUploadVideoCardEnabled: Boolean
