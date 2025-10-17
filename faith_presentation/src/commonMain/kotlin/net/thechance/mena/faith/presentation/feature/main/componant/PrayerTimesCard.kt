@@ -42,40 +42,36 @@ fun PrayerTimesCard(prayerTimesUiState: PrayerTimesUiState?) {
     if (prayerTimesUiState == null) return
 
     Box(
-        modifier =
-            Modifier
-                .aspectRatio(2.65f)
-                .clip(RoundedCornerShape(Theme.radius.lg))
-                .background(Theme.colorScheme.background.surfaceLow),
+        modifier = Modifier
+            .aspectRatio(2.65f)
+            .clip(RoundedCornerShape(Theme.radius.lg))
+            .background(Theme.colorScheme.background.surfaceLow),
     ) {
         Image(
             painter = painterResource(Res.drawable.ic_mosque_bg),
             contentDescription = stringResource(Res.string.mosque_image_description),
-            modifier =
-                Modifier
-                    .align(Alignment.TopEnd)
-                    .fillMaxWidth(0.35f)
-                    .aspectRatio(1f)
-                    .offset(y = (-38).dp, x = (-8).dp),
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .fillMaxWidth(0.35f)
+                .aspectRatio(1f)
+                .offset(y = (-38).dp, x = (-8).dp),
             contentScale = ContentScale.Fit,
         )
 
         Image(
             painter = painterResource(Res.drawable.ic_column_mosque),
             contentDescription = stringResource(Res.string.mosque_image_description),
-            modifier =
-                Modifier
-                    .align(Alignment.CenterStart)
-                    .fillMaxHeight()
-                    .padding(start = 22.dp),
+            modifier = Modifier
+                .align(Alignment.CenterStart)
+                .fillMaxHeight()
+                .padding(start = 22.dp),
             contentScale = ContentScale.Crop,
         )
 
         LazyRow(
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .align(Alignment.BottomCenter),
+            modifier = Modifier
+                .fillMaxSize()
+                .align(Alignment.BottomCenter),
             verticalAlignment = Alignment.Bottom,
             horizontalArrangement = Arrangement.SpaceEvenly,
             contentPadding = PaddingValues(horizontal = Theme.spacing._12),
@@ -101,10 +97,9 @@ private fun PrayerItem(
         contentAlignment = Alignment.Center,
     ) {
         Column(
-            modifier =
-                Modifier
-                    .padding(bottom = Theme.spacing._12)
-                    .padding(horizontal = Theme.spacing._2, vertical = Theme.spacing._8),
+            modifier = Modifier
+                .padding(bottom = Theme.spacing._12)
+                .padding(horizontal = Theme.spacing._2, vertical = Theme.spacing._8),
             verticalArrangement = Arrangement.spacedBy(Theme.spacing._4),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -119,12 +114,8 @@ private fun PrayerItem(
                 style = Theme.typography.title.medium,
             )
             Text(
-                text =
-                    if (prayer.isAM) {
-                        stringResource(Res.string.am_label)
-                    } else {
-                        stringResource(Res.string.pm_label)
-                    },
+                text = if (prayer.isAM) stringResource(Res.string.am_label)
+                        else stringResource(Res.string.pm_label),
                 style = Theme.typography.label.small,
                 color = Theme.colorScheme.secondary.secondaryText,
             )
@@ -135,10 +126,9 @@ private fun PrayerItem(
                 painter = painterResource(Res.drawable.ic_triangle_down),
                 contentDescription = null,
                 tint = Theme.colorScheme.secondary.secondaryText,
-                modifier =
-                    Modifier
-                        .align(Alignment.BottomCenter)
-                        .size(Theme.spacing._16),
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .size(Theme.spacing._16),
             )
         }
     }
