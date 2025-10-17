@@ -66,6 +66,21 @@ class EditUserProfileViewModel(
     }
 
     override fun onClickSaveButton() {
+        if (state.value.username.isEmpty()) {
+            updateState { copy(errorMessage = "Please enter the Username field") }
+            return
+        }
+        if (state.value.firstName.isEmpty()) {
+            updateState { copy(errorMessage = "Please enter the First name field") }
+            return
+        }
+        if (state.value.lastName.isEmpty()) {
+            updateState { copy(errorMessage = "Please enter the Last name field") }
+            return
+        }
+
+        updateState { copy(isLoading = true) }
+
         tryToExecute(
             function = ::onSave,
             onError = ::onErrorOccurred,
@@ -99,6 +114,7 @@ class EditUserProfileViewModel(
     }
 
     private fun onSaveSuccess() {
+        updateState { copy(isLoading = false) }
         sendNewEffect(EditUserProfileUIEffect.NavigateBackToProfile)
     }
 
