@@ -138,28 +138,24 @@ private fun MainContent(
                 onDukanClick = listener::onNearestDukanClick,
                 pager = bestNearestDukanPager,
                 modifier = Modifier
-                    .padding(
-                        start = Theme.spacing._16,
-                        top = Theme.spacing._8
-                    ),
             )
 
-            Text(
-                stringResource(Res.string.editor_pick_dukans),
-                style = Theme.typography.title.small,
-                color = Theme.colorScheme.shadePrimary,
-                modifier = Modifier.padding(
-                    top = Theme.spacing._16,
-                    start = Theme.spacing._16,
-                    bottom = Theme.spacing._12
-                )
-            )
-
-            EditorPickDukanItemsSection(
-                state = state,
-                onDukanClick = listener::onEditorPickDukanClick,
-                pager = editorPickDukanPager,
-            )
+//            Text(
+//                stringResource(Res.string.editor_pick_dukans),
+//                style = Theme.typography.title.small,
+//                color = Theme.colorScheme.shadePrimary,
+//                modifier = Modifier.padding(
+//                    top = Theme.spacing._16,
+//                    start = Theme.spacing._16,
+//                    bottom = Theme.spacing._12
+//                )
+//            )
+//
+//            EditorPickDukanItemsSection(
+//                state = state,
+//                onDukanClick = listener::onEditorPickDukanClick,
+//                pager = editorPickDukanPager,
+//            )
         }
     }
 }

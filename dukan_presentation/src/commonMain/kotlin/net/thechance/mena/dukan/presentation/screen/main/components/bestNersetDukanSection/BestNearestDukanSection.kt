@@ -74,7 +74,11 @@ private fun BestNearestDukanList(
     LazyRow(
         state = lazyListState,
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(Theme.spacing._8)
+        horizontalArrangement = Arrangement.spacedBy(Theme.spacing._8),
+        contentPadding = PaddingValues(
+            horizontal = Theme.spacing._16,
+            vertical = Theme.spacing._8
+        )
     ) {
         items(
             items = dukans.items,
