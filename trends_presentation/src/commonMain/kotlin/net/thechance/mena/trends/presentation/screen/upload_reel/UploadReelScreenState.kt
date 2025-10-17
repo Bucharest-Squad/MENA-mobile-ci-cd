@@ -18,7 +18,7 @@ data class UploadReelScreenState(
     val errorState: ErrorState? = null
 ) {
     val isUploadVideoCardEnabled: Boolean
-        get() = uploadingState.isIdle || uploadingState.isFailed
+        get() = (uploadingState.isIdle || uploadingState.isFailed) && isThumbnailLoading.not()
 
     enum class UploadingReelState {
         IDLE,
