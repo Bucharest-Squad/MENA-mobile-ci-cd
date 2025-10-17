@@ -24,6 +24,7 @@ fun ShelfWithProductsNoImageDukan(
     listener: DukanDetailsInteractionListener,
     dukanColor: Long,
 ) {
+    val isAddToCartVisible = false // TODO: Remove when implement Cart
     Column(
         Modifier.padding(horizontal = Theme.spacing._16)
             .padding(top = Theme.spacing._16)
@@ -47,13 +48,15 @@ fun ShelfWithProductsNoImageDukan(
                 productDescription = product.description,
                 productPrice = product.price,
                 productAction = {
-                    ProductActionNoImageDukan(
-                        inCartQuantity = product.inCartQuantity,
-                        dukanColor = dukanColor,
-                        onAddClick = { listener.onAddToCartClick(product.id) },
-                        onPlusClick = { },
-                        onMinusClick = { }
-                    )
+                    if (isAddToCartVisible) {
+                        ProductActionNoImageDukan(
+                            inCartQuantity = product.inCartQuantity,
+                            dukanColor = dukanColor,
+                            onAddClick = { listener.onAddToCartClick(product.id) },
+                            onPlusClick = { },
+                            onMinusClick = { }
+                        )
+                    }
                 },
                 modifier = Modifier.padding(top = topPadding)
             )
