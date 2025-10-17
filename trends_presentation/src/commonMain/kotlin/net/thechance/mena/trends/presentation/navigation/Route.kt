@@ -10,9 +10,6 @@ internal sealed interface Route {
     data object UpdateCategories : Route
 
     @Serializable
-    data object Trends : Route
-
-    @Serializable
     data class ReelDetails(val reelId: String) : Route
 
     @Serializable
@@ -29,4 +26,7 @@ internal sealed interface Route {
 
     @Serializable
     data class CategoriesPublish(val trendId : String, val description : String) : Route
+
+    @Serializable
+    data object ReelHome : Route
 }
