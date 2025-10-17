@@ -1,4 +1,4 @@
-package net.thechance.mena.trends.presentation.screen.show_real
+package net.thechance.mena.trends.presentation.screen.home
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
