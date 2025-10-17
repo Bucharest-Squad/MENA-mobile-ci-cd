@@ -83,24 +83,24 @@ internal fun UploadVideoCard(
                         color = Theme.colorScheme.shadeSecondary
                     )
                 }
-
-                thumbnail?.let {
-                    AsyncImage(
-                        modifier = Modifier.fillMaxWidth(),
-                        model = thumbnail,
-                        contentDescription = stringResource(Res.string.thumbnail_description),
-                        contentScale = ContentScale.Crop
-                    )
-                }
             }
+
             thumbnail?.let {
-                EditButton(
-                    modifier = Modifier
-                        .offset(y = 16.dp)
-                        .align(Alignment.BottomCenter),
-                    onClick = onEditClick
+                AsyncImage(
+                    modifier = Modifier.fillMaxWidth(),
+                    model = thumbnail,
+                    contentDescription = stringResource(Res.string.thumbnail_description),
+                    contentScale = ContentScale.Crop
                 )
             }
+        }
+        thumbnail?.let {
+            EditButton(
+                modifier = Modifier
+                    .offset(y = 16.dp)
+                    .align(Alignment.BottomCenter),
+                onClick = onEditClick
+            )
         }
     }
 }
