@@ -1,5 +1,6 @@
 package net.thechance.mena.trends.presentation.shared.component
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -78,7 +79,7 @@ internal fun UploadVideoCard(
                     color = Theme.colorScheme.shadeSecondary
                 )
             }
-            if (isLoading) {
+            AnimatedVisibility(isLoading) {
                 ThumbnailLoading(
                     modifier = Modifier.matchParentSize()
                 )
@@ -108,7 +109,9 @@ private fun ThumbnailLoading(
     modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = modifier,
+        modifier = modifier
+            .dashedBorder(color = Theme.colorScheme.brand.brand, cornerRadius = Theme.radius.xl)
+            .background(color = Theme.colorScheme.background.surfaceLow),
         contentAlignment = Alignment.Center
     ) {
         DotsProgressIndicator()
