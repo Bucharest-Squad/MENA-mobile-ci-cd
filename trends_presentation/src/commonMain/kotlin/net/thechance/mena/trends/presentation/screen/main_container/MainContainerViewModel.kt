@@ -48,4 +48,8 @@ internal class MainContainerViewModel(
     fun navigateToUploadReel() {
         sendEffect(MainContainerEffect.NavigateToUploadReel)
     }
+
+    fun navigateToUpdateCategories() {
+        sendEffect(MainContainerEffect.NavigateToUpdateCategories)
+    }
 }

@@ -57,6 +57,15 @@ class MainContainerViewModelTest {
     }
 
     @Test
+    fun `navigateToUpdateCategories should navigate to update interests screen`() = runTest {
+        viewModel.navigateToUpdateCategories()
+        viewModel.effect.test {
+            assertThat(awaitItem()).isEqualTo(MainContainerEffect.NavigateToUpdateCategories)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
     fun `navigateToCategories should navigate to categories screen when when user categories are not set`() =
         runTest {
             viewModel.handleGetIsUserCategorySet(isUserCategorySet = false)
