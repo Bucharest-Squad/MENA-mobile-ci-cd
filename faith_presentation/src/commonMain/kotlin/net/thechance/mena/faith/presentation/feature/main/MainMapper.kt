@@ -48,9 +48,9 @@ fun List<PrayerTime>.toUi(now: Instant): PrayerTimesUiState {
             .indexOf(currentPrayer)
             .let {
                 when (it) {
-                    -1 -> 0
-                    PRAYER_ORDER.lastIndex -> 0
-                    else -> it + 1
+                    -1 -> PRAYER_ORDER.first().ordinal
+                    PRAYER_ORDER.lastIndex -> PRAYER_ORDER.first().ordinal
+                    else -> it.inc()
                 }
             }
 
@@ -74,9 +74,9 @@ private fun getCurrentPrayer(prayerTimes: List<PrayerTime>, now: Instant): Praye
         .filter { it.name != PrayerName.SUNRISE }
         .sortedBy { it.time }
 
-    if (now >= sortedPrayers.last().time) sortedPrayers.last().name
+    if (now >= sortedPrayers.last().time) return sortedPrayers.last().name
 
-    return sortedPrayers.firstOrNull { now < it.time }?.name ?: sortedPrayers.first().name
+    return sortedPrayers.lastOrNull { now >= it.time }?.name ?: sortedPrayers.first().name
 }
 
 suspend fun LastAyahForTilawah.toTilawahUiState(): TilawahUiState {
