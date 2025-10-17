@@ -1,4 +1,4 @@
-package net.thechance.mena.dukan.presentation.screen.dukanDetails.components.noImageStyle
+package net.thechance.mena.dukan.presentation.screen.dukanDetails.components
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background

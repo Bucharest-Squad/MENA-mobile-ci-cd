@@ -1,4 +1,4 @@
-package net.thechance.mena.dukan.presentation.screen.dukanDetails.components.noImageStyle
+package net.thechance.mena.dukan.presentation.screen.dukanDetails.content.noImageDukanDetails
 
 import androidx.compose.runtime.Composable
 import net.thechance.mena.dukan.presentation.viewModel.dukanDetails.DukanDetailsInteractionListener
