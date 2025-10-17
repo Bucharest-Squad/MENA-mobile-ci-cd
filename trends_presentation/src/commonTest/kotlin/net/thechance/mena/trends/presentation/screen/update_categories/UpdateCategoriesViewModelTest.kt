@@ -1,4 +1,4 @@
-package net.thechance.mena.trends.presentation.screen.category_pick
+package net.thechance.mena.trends.presentation.screen.update_categories
 
 import app.cash.turbine.test
 import assertk.assertThat
@@ -19,10 +19,10 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class CategoryPickViewModelTest : TestExtensions() {
+class UpdateCategoriesViewModelTest : TestExtensions() {
     private val repository: CategoryRepository = mock<CategoryRepository>(mode = MockMode.autofill)
     private val viewModel by lazy {
-        CategoryPickViewModel(
+        UpdateCategoriesViewModel(
             repository = repository,
             defaultDispatcher = testDispatcher
         )
@@ -34,7 +34,7 @@ class CategoryPickViewModelTest : TestExtensions() {
     }
 
     @Test
-    fun `loadCategories should start loading when initially called`() =
+    fun `getCategories should start loading when initially called`() =
         runTest(testDispatcher) {
             viewModel.state.test {
                 val state = awaitItem()
@@ -43,7 +43,7 @@ class CategoryPickViewModelTest : TestExtensions() {
         }
 
     @Test
-    fun `loadCategories should return categories with success when repository returns value`() =
+    fun `getCategories should return categories with success when repository returns value`() =
         runTest(testDispatcher) {
             viewModel.state.test {
                 skipItems(1)
@@ -54,20 +54,20 @@ class CategoryPickViewModelTest : TestExtensions() {
         }
 
     @Test
-    fun `loadCategories should throw exception when initially called`() =
+    fun `getCategories should throw exception when initially called`() =
         runTest(testDispatcher) {
             everySuspend { repository.getAllCategories() } throws Exception()
 
             viewModel.state.test {
                 skipItems(1)
                 val state = awaitItem()
-                assertThat(state.error).isNotNull()
+                assertThat(state.errorState).isNotNull()
                 cancelAndIgnoreRemainingEvents()
             }
         }
 
     @Test
-    fun `loadCategories should end loading when initially called`() =
+    fun `getCategories should end loading when initially called`() =
         runTest(testDispatcher) {
             viewModel.state.test {
                 skipItems(2)
@@ -101,39 +101,38 @@ class CategoryPickViewModelTest : TestExtensions() {
 
         viewModel.effect.test {
             val effect = awaitItem()
-            assertTrue(effect is CategoryPickScreenEffect.NavigateBack)
+            assertTrue(effect is UpdateCategoriesScreenEffect.NavigateBack)
             cancelAndIgnoreRemainingEvents()
         }
     }
 
     @Test
-    fun `onNextClick should called updateUserInterestedCategories from repository with success`() =
+    fun `onSaveClick should sendEffect NavigateToTrends when patchUserCategories is successful`() =
         runTest(testDispatcher) {
-            val selectedIds = listOf(categories.first().id)
-            everySuspend { repository.updateUserCategories(selectedIds) } returns Unit
+            everySuspend { repository.patchUserCategories(any(), any()) } returns Unit
 
-            viewModel.onNextClick()
+            viewModel.onSaveClick()
 
             viewModel.effect.test {
                 val effect = awaitItem()
-                assertTrue(effect is CategoryPickScreenEffect.NavigateToHome)
+                assertTrue(effect is UpdateCategoriesScreenEffect.NavigateToTrends)
                 cancelAndIgnoreRemainingEvents()
             }
         }
 
     @Test
-    fun `onNextClick should throw exception when called`() =
+    fun `onSaveClick should set errorState when patchUserCategories throws exception`() =
         runTest(testDispatcher) {
             everySuspend {
-                repository.updateUserCategories(any())
+                repository.patchUserCategories(any(), any())
             } throws Exception()
 
-            viewModel.onNextClick()
+            viewModel.onSaveClick()
             testDispatcher.scheduler.advanceUntilIdle()
 
             viewModel.state.test {
                 val state = awaitItem()
-                assertThat(state.error).isNotNull()
+                assertThat(state.errorState).isNotNull()
                 cancelAndIgnoreRemainingEvents()
             }
         }
