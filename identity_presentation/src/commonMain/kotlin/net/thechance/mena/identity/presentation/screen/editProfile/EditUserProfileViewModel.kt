@@ -1,5 +1,6 @@
 package net.thechance.mena.identity.presentation.screen.editProfile
 
+import io.github.vinceglb.filekit.dialogs.compose.util.encodeToByteArray
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -9,12 +10,16 @@ import net.thechance.mena.identity.domain.entity.User
 import net.thechance.mena.identity.domain.repository.UserRepository
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
 import net.thechance.mena.identity.presentation.base.ErrorState
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 class EditUserProfileViewModel(
     private val userRepository: UserRepository,
     val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : BaseScreenModel<EditUserProfileUIState, EditUserProfileUIEffect>(EditUserProfileUIState()),
     EditUserProfileInteractionListener {
+    @OptIn(ExperimentalUuidApi::class)
+    var userId: Uuid? = null
 
     init {
         getUserInfo()
@@ -29,8 +34,10 @@ class EditUserProfileViewModel(
         )
     }
 
+    @OptIn(ExperimentalUuidApi::class)
     private fun updateUserInfo(user: User) {
         updateState {
+            userId = user.id
             copy(
                 username = user.username.lowercase(),
                 firstName = user.firstName,
@@ -66,17 +73,29 @@ class EditUserProfileViewModel(
         )
     }
 
+    @OptIn(ExperimentalUuidApi::class)
     private suspend fun onSave() {
-        val value = state.value
-        val user = User(
-            firstName = value.firstName,
-            lastName = value.lastName,
-            username = value.username.lowercase(),
-            profileImageUrl = value.profileImageUrl,
-            birthDate = value.birthDate,
-            gender = value.gender,
-        )
-        userRepository.updateUser(user)
+        if (userId == null) {
+            onErrorOccurred(ErrorState.InvalidMobileNumber)
+            return
+        }
+        userId?.let { userId ->
+            val value = state.value
+            val user = User(
+                id = userId,
+                firstName = value.firstName,
+                lastName = value.lastName,
+                username = value.username.lowercase(),
+                profileImageUrl = value.profileImageUrl,
+                birthDate = value.birthDate,
+                gender = value.gender,
+            )
+            userRepository.updateUser(
+                user = user,
+                shouldUpdateImage = true,
+                imageByteArray = value.profileImageBitmap?.encodeToByteArray()
+            )
+        }
     }
 
     private fun onSaveSuccess() {

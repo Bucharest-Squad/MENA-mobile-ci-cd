@@ -68,14 +68,14 @@ class UserRepositoryImpl(
         return UpdateProfileRequestDto(
             firstName = this.firstName,
             lastName = this.lastName,
-            profileImageUrl = this.profileImageUrl,
+            imageUrl = this.profileImageUrl,
             username = this.username,
             birthDate = this.birthDate.formatAsString(),
             gender = when (this.gender) {
                 Gender.MALE -> UserEntity.MALE
                 else -> UserEntity.MALE
             },
-            shouldUpdateImage = shouldUpdateImage
+            updateImage = shouldUpdateImage
         )
     }
 
