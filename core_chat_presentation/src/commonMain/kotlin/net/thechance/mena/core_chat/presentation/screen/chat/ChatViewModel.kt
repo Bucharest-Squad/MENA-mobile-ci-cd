@@ -12,6 +12,7 @@ import mena.core_chat_presentation.generated.resources.error
 import mena.core_chat_presentation.generated.resources.error_cant_get_messages
 import mena.core_chat_presentation.generated.resources.error_cant_subscribe_to_new_messages
 import mena.core_chat_presentation.generated.resources.error_failed_to_download_image
+import mena.core_chat_presentation.generated.resources.error_get_user_info
 import mena.core_chat_presentation.generated.resources.image_saved_successfully
 import mena.core_chat_presentation.generated.resources.permission_denied_title
 import mena.core_chat_presentation.generated.resources.success
@@ -21,7 +22,9 @@ import net.thechance.mena.core_chat.domain.entity.MarkMessageAsReadEvent
 import net.thechance.mena.core_chat.domain.entity.Message
 import net.thechance.mena.core_chat.domain.entity.MessageContent
 import net.thechance.mena.core_chat.domain.entity.MessageStatus
+import net.thechance.mena.core_chat.domain.entity.User
 import net.thechance.mena.core_chat.domain.repository.ChatRepository
+import net.thechance.mena.core_chat.domain.repository.UserRepository
 import net.thechance.mena.core_chat.presentation.components.SnackBarData
 import net.thechance.mena.core_chat.presentation.navigation.ChatEffector
 import net.thechance.mena.core_chat.presentation.shared.BaseViewModel
@@ -34,6 +37,7 @@ import kotlin.uuid.Uuid
 
 class ChatViewModel(
     private val chatRepository: ChatRepository,
+    private val userRepository: UserRepository,
     chatArgs: ChatArgs,
     effector: ChatEffector,
     private val permissionsController: PermissionsController,
@@ -45,7 +49,7 @@ class ChatViewModel(
 
     init {
         val chatId = getUuidOrNull(chatArgs.chatId)
-
+        getUserInfo()
         updateState { state ->
             state.copy(
                 chatId = chatId,
@@ -64,6 +68,28 @@ class ChatViewModel(
         }
     }
 
+    private fun getUserInfo(){
+        tryToExecute(
+            execute = { userRepository.getUserInfo() },
+            onSuccess = ::onGetUserDataSuccess,
+            onError = ::onGetUserDataError
+        )
+    }
+
+    private fun onGetUserDataSuccess(user: User) {
+        updateState { state -> state.copy(userData = UserData(
+            firstName = user.firstName,
+            lastName = user.lastName,
+            imageUrl = user.imageUrl.orEmpty()
+        )) }
+    }
+    private fun onGetUserDataError(t: Throwable) {
+        showSnackBar(
+            titleStringResource = Res.string.error,
+            messageStringResource = Res.string.error_get_user_info,
+            isError = true
+        )
+    }
     private fun onGetChatSuccess(chat: Chat) {
         updateState { state ->
             state.copy(
