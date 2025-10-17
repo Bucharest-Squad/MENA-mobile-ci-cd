@@ -1,4 +1,4 @@
-package net.thechance.mena.trends.presentation.shared.mapper
+package net.thechance.mena.trends.presentation.shared.model.mapper
 
 import net.thechance.mena.trends.domain.entity.Category
 import net.thechance.mena.trends.presentation.shared.model.CategoryUiState
