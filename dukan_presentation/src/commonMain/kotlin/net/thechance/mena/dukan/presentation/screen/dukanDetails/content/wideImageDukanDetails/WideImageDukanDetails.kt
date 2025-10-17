@@ -31,7 +31,8 @@ fun WideImageDukanDetails(
     pagerShelf: Pager<Int, DukanDetailsUiState.ShelfUiState>,
     pagerProduct: Pager<Int, DukanDetailsUiState.ProductUiState>
 ) {
-    OnSystemBackPressed { listener::onBackClicked }
+    OnSystemBackPressed(listener::onBackClicked)
+
     val gridState = rememberLazyGridState()
     gridState.LoadMoreOnScroll(pagerProduct)
     Scaffold(
@@ -46,7 +47,12 @@ fun WideImageDukanDetails(
         LazyVerticalGrid(
             state = gridState,
             columns = GridCells.Adaptive(minSize = 160.dp),
-            contentPadding = PaddingValues(horizontal = Theme.spacing._16),
+            contentPadding = PaddingValues(
+                start = Theme.spacing._16,
+                end = Theme.spacing._16,
+                top = Theme.spacing._4,
+                bottom = Theme.spacing._16
+            ),
             verticalArrangement = Arrangement.spacedBy(Theme.spacing._16),
             horizontalArrangement = Arrangement.spacedBy(Theme.spacing._8)
         ) {

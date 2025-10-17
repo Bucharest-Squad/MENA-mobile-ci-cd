@@ -3,7 +3,6 @@ package net.thechance.mena.dukan.presentation.screen.shelfDetails
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.graphics.Color
 import mena.dukan_presentation.generated.resources.Res
 import mena.dukan_presentation.generated.resources.back_arrow
 import mena.dukan_presentation.generated.resources.ic_arrow_left
@@ -61,8 +60,7 @@ private fun ShelfDetailsContent(
 ) {
     OnSystemBackPressed(listener::onBackClicked)
 
-    val dukanColor =
-        if (state.dukancolor != 0L) Color(state.dukancolor) else Theme.colorScheme.primary.primary
+    val dukanColor = Theme.colorScheme.primary.primary
 
     Scaffold(
         topBar = {
@@ -74,7 +72,7 @@ private fun ShelfDetailsContent(
                         contentDescription = stringResource(Res.string.back_arrow)
                     )
                 },
-                onLeadingClick = { listener::onBackClicked },
+                onLeadingClick = listener::onBackClicked,
                 trailingContent = {
                     AppBarOptionContainer(
                         // when the cart contains products

@@ -36,7 +36,7 @@ fun SmallImageDukanDetails(
     listener: DukanDetailsInteractionListener,
     pager: Pager<Int, DukanDetailsUiState.ShelfUiState>
 ) {
-    OnSystemBackPressed { listener::onBackClicked }
+    OnSystemBackPressed(listener::onBackClicked)
 
     Scaffold(
         topBar = {
@@ -95,7 +95,7 @@ private fun SmallImageAppBar(
                 contentDescription = stringResource(Res.string.back_arrow)
             )
         },
-        onLeadingClick = { listener::onBackClicked },
+        onLeadingClick = listener::onBackClicked,
         trailingContent = {
             AppBarOptionContainer(
                 onClick = {},
