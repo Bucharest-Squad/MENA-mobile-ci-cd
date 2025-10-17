@@ -46,7 +46,7 @@ fun CategorySection(
         ),
         horizontalArrangement = Arrangement.spacedBy(Theme.spacing._8),
         verticalArrangement = Arrangement.spacedBy(Theme.spacing._8),
-        modifier = modifier.height(200.dp)
+        modifier = modifier.height(200.dp),
     ) {
         items(gridLayout.itemsToShow) { category ->
             CategoryCard(
