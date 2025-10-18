@@ -144,6 +144,14 @@ class UserRepositoryImplTest {
 
     }
 
+    @Test
+    fun `updateUser() should call upsert user when try to update user`() = runTest {
+        val client = mockHttpClient(fakeProfileResponse)
+        userRepositoryImpl = UserRepositoryImpl(client, userDao)
+        userRepositoryImpl.updateUser(fakeUser, false, null)
+        coVerify { userDao.upsert(any()) }
+    }
+
 
     val fakeProfileResponse = ProfileResponseDto(
         id = "1bfbf5d8-145d-40e9-abae-8335df3f0a81",
