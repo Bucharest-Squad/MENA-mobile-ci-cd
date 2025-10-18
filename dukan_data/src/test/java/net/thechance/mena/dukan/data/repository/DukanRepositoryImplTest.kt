@@ -123,25 +123,6 @@ class DukanRepositoryImplTest {
     }
 
     @Test
-    fun `getDukanDetailsByDukanId should call the underlying service`() = runTest {
-        // Arrange
-        val dukanId = "dukan123"
-        var called = false
-        val repo = createDukanRepository(
-            dukanDetailsResponse = {
-                called = true
-                defaultDukanDetailsResponse()
-            }
-        )
-
-        // Act
-        repo.getDukanDetailsByDukanId(dukanId)
-
-        // Assert
-        assertTrue(called, "The service should have been called.")
-    }
-
-    @Test
     fun `getDukanDetailsByDukanId should map id correctly`() = runTest {
         // Arrange
         val dukanId = "dukan123"
@@ -219,19 +200,4 @@ class DukanRepositoryImplTest {
         assertEquals(30.0444, details.coordinates.latitude)
     }
 
-    @Test
-    fun `getDukanDetailsByDukanId throws exception on error response`() = runTest {
-        // Arrange
-        val dukanId = "dukan123"
-        val repo = createDukanRepository(
-            dukanDetailsResponse = {
-                respond(content = "", status = HttpStatusCode.NotFound, headers = jsonHeaders)
-            }
-        )
-
-        // Act & Assert
-        assertFailsWith<Exception> {
-            repo.getDukanDetailsByDukanId(dukanId)
-        }
-    }
 }

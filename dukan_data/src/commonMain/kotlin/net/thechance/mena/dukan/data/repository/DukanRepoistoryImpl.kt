@@ -31,9 +31,11 @@ import net.thechance.mena.dukan.domain.entity.DukanPreview
 import net.thechance.mena.dukan.domain.entity.MyDukanStatus
 import net.thechance.mena.dukan.domain.repository.DukanRepository
 import net.thechance.mena.dukan.domain.util.PagedResult
+import net.thechance.mena.identity.domain.service.LocationService
 
 class DukanRepositoryImpl(
-    private val client: HttpClient
+    private val client: HttpClient,
+    val locationService: LocationService
 ) : DukanRepository {
     override suspend fun createDukan(dukan: Dukan) {
         safeApiCall<Unit> {
@@ -107,9 +109,9 @@ class DukanRepositoryImpl(
         page: Int,
         size: Int
     ): PagedResult<DukanPreview> {
-        //todo inject user active location here ......
-        val lat = 33.3128
-        val lng = 44.3615
+        val location = locationService.getUserAddresses().first{it.isActive}
+        val lat = location.latitude
+        val lng = location.longitude
         val range = 30000
         val dukansResponse = safeApiCall<PageResponseDto<DukanResponseDto>> {
             client.get("$BASE_URL/nearby/best") {

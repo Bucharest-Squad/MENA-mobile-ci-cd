@@ -2,12 +2,14 @@ package net.thechance.mena.dukan.presentation.screen.main.components.categorySec
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import mena.dukan_presentation.generated.resources.Res
 import mena.dukan_presentation.generated.resources.menu_circle
 import mena.dukan_presentation.generated.resources.view_more
@@ -44,7 +46,7 @@ fun CategorySection(
         ),
         horizontalArrangement = Arrangement.spacedBy(Theme.spacing._8),
         verticalArrangement = Arrangement.spacedBy(Theme.spacing._8),
-        modifier = modifier
+        modifier = modifier.height(200.dp),
     ) {
         items(gridLayout.itemsToShow) { category ->
             CategoryCard(

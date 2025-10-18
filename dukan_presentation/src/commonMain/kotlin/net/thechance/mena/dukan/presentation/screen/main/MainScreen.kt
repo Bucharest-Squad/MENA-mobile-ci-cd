@@ -6,10 +6,19 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.flow.distinctUntilChanged
 import mena.dukan_presentation.generated.resources.Res
 import mena.dukan_presentation.generated.resources.best_dukans_around_you
 import mena.dukan_presentation.generated.resources.editor_pick_dukans
@@ -44,6 +53,9 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
+val categorySectionItemKey = "0"
+val bestAroundSectionItemKey = "1"
+val editorPickSectionItemKey = "2"
 @Composable
 fun MainScreen(
     viewModel: MainViewModel = koinViewModel()
@@ -105,61 +117,79 @@ private fun MainContent(
             )
         },
     ) {
-        Column {
-            Text(
-                text = stringResource(Res.string.what_do_you_need),
-                style = Theme.typography.title.small,
-                color = Theme.colorScheme.shadePrimary,
-                modifier = Modifier.padding(
-                    start = Theme.spacing._16,
-                    bottom = Theme.spacing._8
-                )
-            )
 
-            CategorySection(
-                categories = state.categories,
-                onCategoryClick = listener::onCategorySelectedClick,
-                onViewMoreClick = listener::onViewMoreButtonClick,
-            )
-            if (state.bestNearestDukans.items.isNotEmpty()) {
+        var isEditorPickSectionScrollingEnabled by remember { mutableStateOf(false) }
+        val mainListState = rememberLazyListState()
+        LaunchedEffect(mainListState) {
+            snapshotFlow {
+                mainListState.layoutInfo.visibleItemsInfo.any { it.key == bestAroundSectionItemKey }
+            }.distinctUntilChanged()
+                .collect { isBestAroundVisible ->
+                    isEditorPickSectionScrollingEnabled = !isBestAroundVisible
+                }
+        }
+        LazyColumn (
+            state = mainListState
+        ){
+            item(categorySectionItemKey){
                 Text(
-                    text = stringResource(Res.string.best_dukans_around_you),
+                    text = stringResource(Res.string.what_do_you_need),
                     style = Theme.typography.title.small,
                     color = Theme.colorScheme.shadePrimary,
                     modifier = Modifier.padding(
                         start = Theme.spacing._16,
-                        top = Theme.spacing._16
+                        bottom = Theme.spacing._8
                     )
+                )
+
+                CategorySection(
+                    categories = state.categories,
+                    onCategoryClick = listener::onCategorySelectedClick,
+                    onViewMoreClick = listener::onViewMoreButtonClick,
                 )
             }
 
-            BestNearestDukanSection(
-                state = state,
-                onDukanClick = listener::onNearestDukanClick,
-                pager = bestNearestDukanPager,
-                modifier = Modifier
-                    .padding(
-                        start = Theme.spacing._16,
-                        top = Theme.spacing._8
-                    ),
-            )
+            item(bestAroundSectionItemKey){
+                if (state.bestNearestDukans.items.isNotEmpty()) {
+                    Text(
+                        text = stringResource(Res.string.best_dukans_around_you),
+                        style = Theme.typography.title.small,
+                        color = Theme.colorScheme.shadePrimary,
+                        modifier = Modifier.padding(
+                            start = Theme.spacing._16,
+                            top = Theme.spacing._16
+                        )
+                    )
+                }
 
-            Text(
-                stringResource(Res.string.editor_pick_dukans),
-                style = Theme.typography.title.small,
-                color = Theme.colorScheme.shadePrimary,
-                modifier = Modifier.padding(
-                    top = Theme.spacing._16,
-                    start = Theme.spacing._16,
-                    bottom = Theme.spacing._12
+                BestNearestDukanSection(
+                    state = state,
+                    onDukanClick = listener::onNearestDukanClick,
+                    pager = bestNearestDukanPager,
+                    modifier = Modifier
                 )
-            )
+            }
 
-            EditorPickDukanItemsSection(
-                state = state,
-                onDukanClick = listener::onEditorPickDukanClick,
-                pager = editorPickDukanPager,
-            )
+            item(editorPickSectionItemKey){
+                Text(
+                    stringResource(Res.string.editor_pick_dukans),
+                    style = Theme.typography.title.small,
+                    color = Theme.colorScheme.shadePrimary,
+                    modifier = Modifier.padding(
+                        top = Theme.spacing._16,
+                        start = Theme.spacing._16,
+                        bottom = Theme.spacing._12
+                    )
+                )
+
+                EditorPickDukanItemsSection(
+                    state = state,
+                    onDukanClick = listener::onEditorPickDukanClick,
+                    pager = editorPickDukanPager,
+                    isScrollingEnabled = isEditorPickSectionScrollingEnabled
+                )
+            }
+
         }
     }
 }
