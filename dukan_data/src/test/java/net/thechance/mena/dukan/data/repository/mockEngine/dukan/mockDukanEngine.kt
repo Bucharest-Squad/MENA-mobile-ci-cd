@@ -30,6 +30,11 @@ import net.thechance.mena.dukan.data.repository.dto.PageResponseDto
 import net.thechance.mena.dukan.data.repository.dto.ShelfDto
 import net.thechance.mena.dukan.data.repository.mockEngine.jsonHeaders
 import net.thechance.mena.dukan.data.repository.mockEngine.jsonSerialization
+import net.thechance.mena.identity.domain.entity.Address
+import net.thechance.mena.identity.domain.repository.AddressesRepository
+import net.thechance.mena.identity.domain.service.LocationService
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 val jsonSerialization = Json { ignoreUnknownKeys = true }
 val jsonHeaders = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString())
@@ -238,6 +243,35 @@ fun createDukanRepository(
             uploadResponse,
             nameResponse,
             dukanDetailsResponse = dukanDetailsResponse,
-        )
+        ),
+        locationService = LocationService(FakeAddressesRepository())
     )
+}
+
+@OptIn(ExperimentalUuidApi::class)
+private class FakeAddressesRepository : AddressesRepository {
+    override suspend fun createAddress(address: Address) {}
+    override suspend fun editAddress(address: Address) {}
+    override suspend fun getUserAddresses(): List<Address> {
+        return listOf(
+            Address(
+                latitude = 30.0444,
+                longitude = 31.2357,
+                addressLine = "Main Street, Cairo, Egypt",
+                addressType = "Home",
+                otherAddressType = null,
+                isActive = true
+            ),
+            Address(
+                latitude = 30.0419,
+                longitude = 31.2357,
+                addressLine = "Tahrir Square, Cairo, Egypt",
+                addressType = "Work",
+                otherAddressType = null,
+                isActive = false
+            )
+        )
+    }
+
+    override suspend fun deleteAddress(addressId: Uuid) {}
 }
