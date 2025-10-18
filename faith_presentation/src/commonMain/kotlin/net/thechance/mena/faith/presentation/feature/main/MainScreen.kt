@@ -202,7 +202,7 @@ private fun MainTopBar() {
                     modifier = Modifier.size(16.dp)
                 )
                 Text(
-                    text = "Baghdad, Iraq",
+                    text = "Cairo, Egypt",
                     color = Theme.colorScheme.shadePrimary,
                     style = Theme.typography.label.small
                 )
