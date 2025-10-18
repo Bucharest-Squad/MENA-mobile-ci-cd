@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -26,6 +27,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import mena.faith_presentation.generated.resources.Res
 import mena.faith_presentation.generated.resources.faith_title
 import mena.faith_presentation.generated.resources.ic_column_mosque
@@ -61,7 +65,16 @@ fun MainScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val navController = LocalNavController.current
+    val lifecycleOwner = LocalLifecycleOwner.current
 
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) viewModel.refreshTilawah()
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
     ObserveAsEffect(viewModel.uiEffect) { effect ->
         when (effect) {
             is MainScreenEffect.NavigateToSurah -> {
