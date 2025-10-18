@@ -88,7 +88,8 @@ private fun EditorPickDukanItemsList(
             state = lazyListState,
             verticalArrangement = Arrangement.spacedBy(Theme.spacing._8),
             modifier = modifier.padding(horizontal = Theme.spacing._16),
-            userScrollEnabled = scrollingEnabled
+            userScrollEnabled = scrollingEnabled,
+            contentPadding = PaddingValues(bottom = Theme.spacing._8)
         ) {
             items(
                 items = dukans.items,
