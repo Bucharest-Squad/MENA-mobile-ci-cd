@@ -16,20 +16,15 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.Navigator
-import dev.icerock.moko.permissions.compose.BindEffect
-import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
 import io.github.vinceglb.filekit.dialogs.FileKitType
 import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
 import io.github.vinceglb.filekit.dialogs.compose.util.toImageBitmap
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import mena.identity_presentation.generated.resources.Res
@@ -65,7 +60,6 @@ import net.thechance.mena.identity.presentation.screen.imageCropper.ImageCropper
 import net.thechance.mena.identity.presentation.util.rememberCameraPicker
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.koinInject
 import sv.lib.squircleshape.SquircleShape
 
 class EditUserProfileScreen : BaseScreen<
@@ -75,17 +69,7 @@ class EditUserProfileScreen : BaseScreen<
         EditUserProfileInteractionListener>() {
     @Composable
     override fun Content() {
-        val factory = rememberPermissionsControllerFactory()
-        val controller = remember(factory) { factory.createPermissionsController() }
-
-        BindEffect(controller)
-
-        val viewModel = EditUserProfileViewModel(
-            userRepository = koinInject(),
-            permissionsController = controller,
-            dispatcher = Dispatchers.IO
-        )
-        InitScreen(viewModel = viewModel)
+        InitScreen(getScreenModel())
     }
 
     @Composable

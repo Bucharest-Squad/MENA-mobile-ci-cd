@@ -1,9 +1,6 @@
 package net.thechance.mena.identity.presentation.screen.editProfile
 
 import androidx.compose.ui.graphics.ImageBitmap
-import dev.icerock.moko.permissions.DeniedAlwaysException
-import dev.icerock.moko.permissions.Permission
-import dev.icerock.moko.permissions.PermissionsController
 import io.github.vinceglb.filekit.dialogs.compose.util.encodeToByteArray
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -15,12 +12,13 @@ import net.thechance.mena.identity.domain.repository.UserRepository
 import net.thechance.mena.identity.domain.util.getCurrentDate
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
 import net.thechance.mena.identity.presentation.base.ErrorState
+import net.thechance.mena.identity.presentation.util.PermissionManager
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 class EditUserProfileViewModel(
     private val userRepository: UserRepository,
-    private val permissionsController: PermissionsController,
+    private val permissionManager: PermissionManager,
     val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : BaseScreenModel<EditUserProfileUIState, EditUserProfileUIEffect>(EditUserProfileUIState()),
     EditUserProfileInteractionListener {
@@ -172,12 +170,10 @@ class EditUserProfileViewModel(
     }
 
     private suspend fun onAskForCameraPermission() {
-        try {
-            permissionsController.providePermission(permission = Permission.CAMERA)
-            updateState { copy(isCameraOpen = true) }
-        } catch (_: DeniedAlwaysException) {
-            permissionsController.openAppSettings()
-        }
+        permissionManager.requestCameraPermission(
+            onGranted = { updateState { copy(isCameraOpen = true) } },
+            onDenied = { updateState { copy(errorMessage = "Camera permission required") } }
+        )
     }
 
     override fun afterCameraOpened() {

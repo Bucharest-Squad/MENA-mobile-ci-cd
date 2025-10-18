@@ -52,9 +52,6 @@ kotlin {
             implementation(projects.designSystem)
             implementation(libs.bundles.filekit)
 
-            api(libs.moko.permissions)
-            api(libs.moko.permissions.compose)
-
             implementation(libs.squircle.shape)
             implementation(compose.runtime)
             implementation(compose.foundation)
