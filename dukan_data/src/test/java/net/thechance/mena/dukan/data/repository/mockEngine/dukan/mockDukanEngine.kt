@@ -197,9 +197,7 @@ fun createDukanHttpClient(
             "/dukan/shelf/$shelfId" -> deleteResponse?.invoke(this) ?: defaultDeleteShelfResponse()
             "/dukan/shelf/$dukanId" ->
                 pagedShelvesResponse?.invoke(this, request) ?: defaultPagedShelvesResponse()
-
             "/dukan/$dukanId" -> dukanDetailsResponse?.invoke(this) ?: defaultDukanDetailsResponse()
-
             else -> respond("", HttpStatusCode.BadRequest, jsonHeaders)
         }
     }) {
@@ -244,7 +242,7 @@ fun createDukanRepository(
             statusResponse,
             uploadResponse,
             nameResponse,
-            dukanDetailsResponse
+            dukanDetailsResponse = dukanDetailsResponse
         ),
         locationService = LocationService(FakeAddressesRepository())
     )
