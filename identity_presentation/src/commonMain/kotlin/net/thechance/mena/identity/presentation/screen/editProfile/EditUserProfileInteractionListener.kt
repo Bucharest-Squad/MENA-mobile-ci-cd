@@ -17,4 +17,6 @@ interface EditUserProfileInteractionListener : BaseInteractionListener {
     fun onDismissEditImageDialog()
     fun onRemoveProfileImage()
     fun onRequireCropImage(imageBitmap: ImageBitmap)
+    fun onClickCamera()
+    fun changeOpenCamera()
 }

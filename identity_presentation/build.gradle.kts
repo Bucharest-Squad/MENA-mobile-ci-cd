@@ -40,6 +40,8 @@ kotlin {
             implementation(projects.designSystem)
             implementation(libs.bundles.filekit)
 
+            implementation(libs.moko.permissions)
+            implementation(libs.moko.permissions.compose)
 
             implementation(libs.squircle.shape)
             implementation(compose.runtime)

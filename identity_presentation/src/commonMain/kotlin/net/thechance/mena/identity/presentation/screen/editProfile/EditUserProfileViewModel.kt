@@ -1,6 +1,8 @@
 package net.thechance.mena.identity.presentation.screen.editProfile
 
 import androidx.compose.ui.graphics.ImageBitmap
+import dev.icerock.moko.permissions.Permission
+import dev.icerock.moko.permissions.PermissionsController
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -13,6 +15,7 @@ import net.thechance.mena.identity.presentation.base.ErrorState
 
 class EditUserProfileViewModel(
     private val userRepository: UserRepository,
+    private val permissionsController: PermissionsController,
     val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : BaseScreenModel<EditUserProfileUIState, EditUserProfileUIEffect>(EditUserProfileUIState()),
     EditUserProfileInteractionListener {
@@ -122,6 +125,22 @@ class EditUserProfileViewModel(
                 }
             )
         )
+    }
+
+    override fun onClickCamera() {
+        tryToExecute(
+            function = { permissionsController.providePermission(permission = Permission.CAMERA) },
+            onSuccess = { onCameraPermissionGranted() },
+            onError = ::onErrorOccurred
+        )
+    }
+
+    private fun onCameraPermissionGranted() {
+        updateState { copy(isCameraOpen = true) }
+    }
+
+    override fun changeOpenCamera() {
+        updateState { copy(isCameraOpen = false) }
     }
 
     private fun onErrorOccurred(errorState: ErrorState) {
