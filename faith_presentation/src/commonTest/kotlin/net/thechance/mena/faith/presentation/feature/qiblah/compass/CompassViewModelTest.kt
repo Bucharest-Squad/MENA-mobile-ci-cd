@@ -71,7 +71,7 @@ class CompassViewModelTest {
         advanceUntilIdle()
 
         // Then
-        val expectedAngle = useCase.calculateQiblahAngle(Location(longitude = 29.0735549, latitude = 31.1015618))
+        val expectedAngle = useCase.calculateQiblahAngle(Location(longitude = 31.1760627, latitude = 30.0594628))
         assertEquals(expectedAngle.toFloat(), viewModel.uiState.value.qiblahAngleValue)
     }
 

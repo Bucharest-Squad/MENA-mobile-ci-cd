@@ -133,6 +133,13 @@ private fun AyatOfSurah(
     }
     var textLayoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
     var chunkAyat by remember { mutableStateOf(listOf<Ayah>()) }
+    TrackFirstVisibleAyah(
+        lazyListState = lazyListState,
+        ayahChunks = ayahChunks,
+        isBasmalaVisible = state.isBasmalaVisible,
+        listener = listener,
+        textLayoutResult = textLayoutResult
+    )
     HandleInitialScroll(
         initialAyahToScroll = state.initialAyahToScroll,
         selectedAyahIndex = state.selectedAyahIndex,
@@ -174,6 +181,11 @@ private fun AyatOfSurah(
         }
     }
     HideAyahActionButtonsOnScroll(lazyListState, state, listener)
+    LaunchedEffect(state.isBasmalaVisible) {
+        if (state.isBasmalaVisible) {
+            listener.onFirstVisibleAyahChanged(state.ayatOfSurah.firstOrNull()?.number ?: 1)
+        }
+    }
 }
 
 @Composable
@@ -246,6 +258,62 @@ private fun HandleInitialScroll(
             onInitialScrollDone()
         }
     }
+}
+
+@Composable
+private fun TrackFirstVisibleAyah(
+    lazyListState: LazyListState,
+    ayahChunks: List<List<Ayah>>,
+    isBasmalaVisible: Boolean,
+    listener: SurahInteractionListener,
+    textLayoutResult: TextLayoutResult?
+) {
+    var lastReportedAyahNumber by remember { mutableStateOf<Int?>(null) }
+
+    LaunchedEffect(lazyListState, textLayoutResult) {
+        snapshotFlow {
+            lazyListState.firstVisibleItemIndex to lazyListState.firstVisibleItemScrollOffset
+        }
+            .collect { (firstVisibleIndex, scrollOffset) ->
+                val chunkIndex = if (isBasmalaVisible) firstVisibleIndex - 1
+                else firstVisibleIndex
+
+                if (chunkIndex >= 0 && chunkIndex < ayahChunks.size && textLayoutResult != null) {
+                    val chunk = ayahChunks[chunkIndex]
+
+                    val firstVisibleAyahNumber = getFirstVisibleAyahInChunk(
+                        chunk = chunk,
+                        textLayoutResult = textLayoutResult,
+                        scrollOffset = scrollOffset
+                    )
+
+                    if (firstVisibleAyahNumber != null && firstVisibleAyahNumber != lastReportedAyahNumber) {
+                        lastReportedAyahNumber = firstVisibleAyahNumber
+                        listener.onFirstVisibleAyahChanged(firstVisibleAyahNumber)
+                    }
+                }
+            }
+    }
+}
+
+private fun getFirstVisibleAyahInChunk(
+    chunk: List<Ayah>,
+    textLayoutResult: TextLayoutResult,
+    scrollOffset: Int
+): Int? {
+    var currentCharPosition = 0
+
+    chunk.forEach { ayah ->
+        val ayahLength = ayah.content.length
+        val lineForOffset = textLayoutResult.getLineForOffset(currentCharPosition)
+        val lineTop = textLayoutResult.getLineTop(lineForOffset)
+
+        if (lineTop.toInt() >= scrollOffset) return ayah.number
+
+        currentCharPosition += ayahLength + 1
+    }
+
+    return chunk.firstOrNull()?.number
 }
 
 private const val AYAT_PER_PAGE = 70

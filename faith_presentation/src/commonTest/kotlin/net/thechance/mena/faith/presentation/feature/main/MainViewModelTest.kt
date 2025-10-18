@@ -92,10 +92,10 @@ class MainViewModelTest {
 
         // When
         viewModel.uiEffect.test {
-            viewModel.onContinueTilawahClick(SURAH_ID, SURAH_NAME)
+            viewModel.onContinueTilawahClick(SURAH_ID, SURAH_NAME, AYAH_NUMBER)
 
             // Then
-            assertEquals(MainScreenEffect.NavigateToSurah(SURAH_ID, SURAH_NAME), awaitItem())
+            assertEquals(MainScreenEffect.NavigateToSurah(SURAH_ID, SURAH_NAME,AYAH_NUMBER), awaitItem())
         }
     }
 
@@ -156,7 +156,7 @@ class MainViewModelTest {
     private companion object {
         const val SURAH_ID = 1
         const val SURAH_NAME = "Al-Fatihah"
-
+        const val AYAH_NUMBER = 1
         @OptIn(ExperimentalTime::class)
         private val now = Instant.fromEpochSeconds(1_700_000_000)
 
