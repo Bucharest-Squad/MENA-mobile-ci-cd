@@ -127,12 +127,16 @@ class EditUserProfileViewModel(
         )
     }
 
-    override fun onClickCamera() {
+    override fun onTakeImageFromCamera() {
         tryToExecute(
-            function = { permissionsController.providePermission(permission = Permission.CAMERA) },
-            onSuccess = { onCameraPermissionGranted() },
+            function = ::onAskForCameraPermission,
+            onSuccess = ::onCameraPermissionGranted,
             onError = ::onErrorOccurred
         )
+    }
+
+    private suspend fun onAskForCameraPermission() {
+        permissionsController.providePermission(permission = Permission.CAMERA)
     }
 
     private fun onCameraPermissionGranted() {

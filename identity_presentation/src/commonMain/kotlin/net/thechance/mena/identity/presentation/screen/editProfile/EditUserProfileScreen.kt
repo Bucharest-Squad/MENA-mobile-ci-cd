@@ -143,7 +143,7 @@ class EditUserProfileScreen : BaseScreen<
                         isVisible = it,
                         onDismiss = { listener.onDismissEditImageDialog() },
                         onUploadImage = { galleryPicker.launch() },
-                        onTakeImageFromCamera = { listener.onClickCamera() },
+                        onTakeImageFromCamera = { listener.onTakeImageFromCamera() },
                         onRemoveImage = { listener.onRemoveProfileImage() },
                     )
                 }
