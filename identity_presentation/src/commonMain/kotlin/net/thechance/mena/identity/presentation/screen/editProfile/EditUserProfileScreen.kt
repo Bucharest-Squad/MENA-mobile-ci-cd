@@ -44,6 +44,7 @@ import mena.identity_presentation.generated.resources.username
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.button.OutlinedButton
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
+import net.thechance.mena.designsystem.presentation.component.dialog.Dialog
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.component.snackbar.SnackBar
@@ -131,6 +132,16 @@ class EditUserProfileScreen : BaseScreen<
                         onRemoveImage = { listener.onRemoveProfileImage() },
                     )
                 }
+
+                dialog(state.showLogoutDialog) {
+                    Dialog(
+                        isVisible = it,
+                        title = "HI",
+                        message = "Not Yet Implemented",
+                        onDismiss = listener::onDismissLogoutDialog,
+                        actionButtons = {}
+                    )
+                }
             }
         ) {
             Column(
@@ -157,11 +168,7 @@ class EditUserProfileScreen : BaseScreen<
                             modifier = Modifier
                                 .clip(SquircleShape(Theme.radius.md))
                                 .background(Theme.colorScheme.background.surfaceLow)
-                                .clickable(
-                                    onClick = {
-                                        //todo open logout dialog
-                                    },
-                                )
+                                .clickable(onClick = { listener.onClickShowLogoutOptions() })
                                 .padding(10.dp)
                                 .size(20.dp),
                             painter = painterResource(Res.drawable.more_horizontal),

@@ -126,6 +126,10 @@ class EditUserProfileViewModel(
         sendNewEffect(EditUserProfileUIEffect.NavigateBackToProfile)
     }
 
+    override fun onClickShowLogoutOptions() {
+        updateState { copy(showLogoutDialog = true) }
+    }
+
     override fun onChangeDate(day: Int, month: Int, year: Int) {
         updateState { copy(birthDate = LocalDate(year, month, day)) }
     }
@@ -140,6 +144,10 @@ class EditUserProfileViewModel(
 
     override fun onDismissEditImageDialog() {
         updateState { copy(showEditImageDialog = false) }
+    }
+
+    override fun onDismissLogoutDialog() {
+        updateState { copy(showLogoutDialog = false) }
     }
 
     override fun onRemoveProfileImage() {
