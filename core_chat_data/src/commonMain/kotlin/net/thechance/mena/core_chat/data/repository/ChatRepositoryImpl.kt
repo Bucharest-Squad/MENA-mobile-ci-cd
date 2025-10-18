@@ -11,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
@@ -29,7 +30,7 @@ import net.thechance.mena.core_chat.data.source.remote.mapper.toPagedListOfChatS
 import net.thechance.mena.core_chat.data.source.remote.network.ImageDownloader
 import net.thechance.mena.core_chat.data.source.remote.network.WebSocketManager
 import net.thechance.mena.core_chat.data.utils.MessageEvent
-import net.thechance.mena.core_chat.data.utils.buildMultiPartFormData
+import net.thechance.mena.core_chat.data.utils.buildImageMultiPartFormData
 import net.thechance.mena.core_chat.domain.entity.Chat
 import net.thechance.mena.core_chat.domain.entity.ChatSummary
 import net.thechance.mena.core_chat.domain.entity.ImagesSource
@@ -109,7 +110,7 @@ class ChatRepositoryImpl(
         }?.toDomain() ?: throw NotFoundException("Chat not found")
     }
 
-    override suspend fun getLocalMessages(chatId: Uuid): List<Message> {
+    override fun getLocalMessages(chatId: Uuid): Flow<List<Message>> {
         val failedEntities = messageDao.getMessagesByChat(chatId.toString())
         return failedEntities.map { it.toDomain() }
     }
@@ -146,10 +147,18 @@ class ChatRepositoryImpl(
                         if (source is ImagesSource.Local)
                             source.byteArrays
                         else throw SendMessageFailedException("Failed to send message: Corrupted images")
+                    var remainingImages = byteArrays.toMutableList()
                     sendImagesMessage(
                         imageNames = byteArrays.mapIndexed { index, _ -> "image_$index" },
                         images = byteArrays,
-                        chatId = message.chatId
+                        chatId = message.chatId,
+                        onSuccessImage = { image ->
+                            remainingImages = remainingImages.apply { remove(image) }
+                            messageDao.updateMessageImages(
+                                id = updatedMessage.id,
+                                images = remainingImages
+                            )
+                        }
                     )
                 }
             }
@@ -182,19 +191,38 @@ class ChatRepositoryImpl(
     private suspend fun sendImagesMessage(
         imageNames: List<String>,
         images: List<ByteArray>,
-        chatId: Uuid
-    ): MessageDto {
-        if (images.size != imageNames.size) throw SendMessageFailedException("imageNames and images must have the same size.")
+        chatId: Uuid,
+        onSuccessImage: suspend (ByteArray) -> Unit = {}
+    ) {
+        if (images.size != imageNames.size)
+            throw SendMessageFailedException("imageNames and images must have the same size.")
 
         val files = imageNames.zip(images)
 
-        return tryNetworkCall<MessageDto>(
-            bodyType = typeInfo<MessageDto>()
-        ) {
-            client.post("$IMAGES_ENDPOINT/$chatId") {
-                setBody(files.buildMultiPartFormData(fieldName = IMAGES_FILES_PARAM))
+        var messageId: String? = null
+
+        files.forEachIndexed { index, imageFile ->
+            val multipart = imageFile.buildImageMultiPartFormData(
+                fieldName = IMAGES_FILES_PARAM,
+                chatId = chatId.toString(),
+                messageId = messageId
+            )
+
+            val messageResponse = tryNetworkCall<MessageDto>(
+                bodyType = typeInfo<MessageDto>()
+            ) {
+                client.post(IMAGES_ENDPOINT) {
+                    setBody(multipart)
+                }
             }
-        } ?: throw SendMessageFailedException("Failed to upload images")
+
+            if (messageResponse != null ) onSuccessImage(imageFile.second)
+
+            if (messageId == null && messageResponse != null) {
+                messageId = messageResponse.id
+            }
+        }
+
     }
 
     override fun observeReadMessages(): Flow<MarkMessageAsReadEvent> {
@@ -256,7 +284,7 @@ class ChatRepositoryImpl(
         const val PRIVATE_MESSAGES = "/private/messages"
         const val CHAT_ENDPOINT = "/chat"
         const val IMAGES_ENDPOINT = "/chat/image"
-        const val IMAGES_FILES_PARAM = "images"
+        const val IMAGES_FILES_PARAM = "image"
         const val CHAT_HISTORY_ENDPOINT = "/chat/history"
         const val CHAT_SUMMARY_ENDPOINT = "/chat/chatsSummary"
     }
