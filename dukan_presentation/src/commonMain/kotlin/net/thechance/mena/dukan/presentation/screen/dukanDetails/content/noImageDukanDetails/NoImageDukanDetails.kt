@@ -1,30 +1,15 @@
 package net.thechance.mena.dukan.presentation.screen.dukanDetails.content.noImageDukanDetails
 
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListLayoutInfo
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
-import androidx.compose.ui.Modifier
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.launch
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
-import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.dukan.presentation.util.OnSystemBackPressed
-import net.thechance.mena.dukan.presentation.util.pagination.LoadMoreOnScroll
 import net.thechance.mena.dukan.presentation.util.pagination.Pager
 import net.thechance.mena.dukan.presentation.util.pagination.PagingConfig
 import net.thechance.mena.dukan.presentation.util.pagination.PagingData
@@ -61,42 +46,6 @@ fun NoImageDukanDetails(
     }
 }
 
-private const val SHELVES_OFFSET = 2 // BestSelling + ShelvesChips
-private fun synchronizeScrollsAndAlpha(
-    index: Int,
-    layoutInfo: LazyListLayoutInfo,
-    state: DukanDetailsUiState,
-    listener: DukanDetailsInteractionListener,
-    coroutineScope: CoroutineScope,
-    lazyRowListState: LazyListState,
-    chipsAlphaUpdate: (Float) -> Unit
-) {
-    val shelfIndex = index - SHELVES_OFFSET
-    if (shelfIndex >= 0 && shelfIndex < state.shelves.items.size) {
-        val shelfId = state.shelves.items[shelfIndex].id
-        if (shelfId != state.shelfIdSelected) {
-            listener.onShelfClicked(shelfId)
-            coroutineScope.launch {
-                lazyRowListState.animateScrollToItem(shelfIndex)
-            }
-        }
-    }
-
-    val isBestSellingVisible = layoutInfo.visibleItemsInfo
-        .any { it.key == "BestSelling" }
-
-    val lastItem = layoutInfo.visibleItemsInfo.lastOrNull()
-    val isScrolledToBottom = if (lastItem != null) {
-        val isLastItem = lastItem.index == layoutInfo.totalItemsCount - 1
-        val isCompletelyVisible = lastItem.offset + lastItem.size <= layoutInfo.viewportEndOffset
-        isLastItem && isCompletelyVisible
-    } else {
-        false
-    }
-
-    chipsAlphaUpdate(if (isBestSellingVisible || isScrolledToBottom) 0f else 1f)
-}
-
 @OptIn(FlowPreview::class)
 @Composable
 private fun NoImageDukanContent(
@@ -104,58 +53,29 @@ private fun NoImageDukanContent(
     listener: DukanDetailsInteractionListener,
     pagerShelves: Pager<Int, ShelfUiState>
 ) {
-    val lazyRowListState = rememberLazyListState()
-    lazyRowListState.LoadMoreOnScroll(pagerShelves)
-    val lazyColumnListState = rememberLazyListState()
-    lazyColumnListState.LoadMoreOnScroll(pagerShelves)
-    val coroutineScope = rememberCoroutineScope()
-    var chipsAlpha by rememberSaveable { mutableStateOf(0f) }
-    LaunchedEffect(key1 = lazyColumnListState) {
-        snapshotFlow { lazyColumnListState.firstVisibleItemIndex to lazyColumnListState.layoutInfo }
-            .collect { (index, layoutInfo) ->
-                synchronizeScrollsAndAlpha(
-                    index,
-                    layoutInfo,
+
+
+    AnimatedContent(
+        targetState = state.shelvesState
+    ) {
+        when (it) {
+            ShelvesState.LOADING -> {
+                NoImageDukanShelvesProductsLoading()
+            }
+
+            ShelvesState.LOADED -> {
+                NoImageDukanShelvesProducts(
                     state,
                     listener,
-                    coroutineScope,
-                    lazyRowListState
-                ) { alpha -> chipsAlpha = alpha }
+                    pagerShelves
+                )
             }
+
+            ShelvesState.EMPTY -> {}
+        }
     }
 
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(vertical = Theme.spacing._8),
-        state = lazyColumnListState
-    ) {
-        item(key = "BestSelling") {
-            BestSellingNoImageDukan(
-                state = state,
-                listener = listener
-            )
-        }
-
-        stickyHeader(key = "ShelvesChips") {
-            ShelvesChipsNoImageDukan(
-                state = state,
-                lazyRowState = lazyRowListState,
-                onClickListener = { shelfId, index ->
-                    listener.onShelfClicked(shelfId)
-                    coroutineScope.launch {
-                        lazyColumnListState.animateScrollToItem(index + SHELVES_OFFSET)
-                    }
-                },
-                alpha = chipsAlpha
-            )
-        }
-        shelvesWithProductsNoImageDukan(
-            state = state,
-            listener = listener
-        )
-    }
 }
-
 
 @Preview
 @Composable
