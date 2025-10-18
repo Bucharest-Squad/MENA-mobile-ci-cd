@@ -147,14 +147,11 @@ class EditUserProfileScreen : BaseScreen<
                     title = stringResource(Res.string.edit_profile_information),
                     leadingContent = {
                         Icon(
-                            modifier = Modifier
-                                .clip(SquircleShape(Theme.radius.md))
-                                .background(Theme.colorScheme.background.surfaceLow)
-                                .clickable(onClick = { listener.onClickCancelButton() }),
                             painter = painterResource(Res.drawable.ic_arrow_left),
                             contentDescription = stringResource(Res.string.back),
                         )
                     },
+                    onLeadingClick = { listener.onClickCancelButton() },
                     trailingContent = {
                         Icon(
                             modifier = Modifier
