@@ -24,7 +24,7 @@ class CompassViewModel(
     private fun getQiblahAngle() {
         tryToExecute(
             dispatcher = dispatcher,
-            execute = bearingCalculatorUseCase::calculateQiblahAngle,
+            execute = { bearingCalculatorUseCase.calculateQiblahAngle(uiState.value.currentLocationUi.toLocation()) },
             onSuccess = ::onGetQiblahSuccess
         )
     }
