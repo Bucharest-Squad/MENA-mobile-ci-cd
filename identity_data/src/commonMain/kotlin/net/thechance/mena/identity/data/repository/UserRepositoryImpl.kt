@@ -73,7 +73,7 @@ class UserRepositoryImpl(
             birthDate = this.birthDate.formatAsString(),
             gender = when (this.gender) {
                 Gender.MALE -> UserEntity.MALE
-                else -> UserEntity.MALE
+                else -> UserEntity.FEMALE
             },
             updateImage = shouldUpdateImage
         )
