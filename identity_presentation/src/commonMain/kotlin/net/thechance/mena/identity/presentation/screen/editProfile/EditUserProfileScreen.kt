@@ -93,11 +93,11 @@ class EditUserProfileScreen : BaseScreen<
             listener.onRequireCropImage(imageBitmap)
         }
 
-        LaunchedEffect(state.isCameraOpen) {
-            if (state.isCameraOpen) {
+        LaunchedEffect(state.showCamera) {
+            if (state.showCamera) {
                 cameraImagePicker.launch()
             }
-            listener.afterCameraOpened()
+            listener.onOpenCamera()
         }
 
         LaunchedEffect(state.errorMessage) {

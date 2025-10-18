@@ -15,9 +15,9 @@ data class EditUserProfileUIState @OptIn(ExperimentalUuidApi::class) constructor
     val gender: Gender = Gender.MALE,
     val showEditImageDialog: Boolean = false,
     val showLogoutDialog: Boolean = false,
+    val showCamera: Boolean = false,
     val isLoading: Boolean = false,
     val isSuccess: Boolean = false,
     val errorMessage: String? = null,
     val shouldUpdateImage: Boolean = false,
-    val isCameraOpen: Boolean = false,
 )

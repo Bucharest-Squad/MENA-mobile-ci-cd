@@ -184,13 +184,13 @@ class EditUserProfileViewModel(
 
     private suspend fun onAskForCameraPermission() {
         permissionManager.requestCameraPermission(
-            onGranted = { updateState { copy(isCameraOpen = true) } },
+            onGranted = { updateState { copy(showCamera = true) } },
             onDenied = { updateState { copy(errorMessage = "Camera permission required") } }
         )
     }
 
-    override fun afterCameraOpened() {
-        updateState { copy(isCameraOpen = false) }
+    override fun onOpenCamera() {
+        updateState { copy(showCamera = false) }
     }
 
     private fun onErrorOccurred(errorState: ErrorState) {
