@@ -181,6 +181,11 @@ private fun AyatOfSurah(
         }
     }
     HideAyahActionButtonsOnScroll(lazyListState, state, listener)
+    LaunchedEffect(state.isBasmalaVisible) {
+        if (state.isBasmalaVisible) {
+            listener.onFirstVisibleAyahChanged(state.ayatOfSurah.firstOrNull()?.number ?: 1)
+        }
+    }
 }
 
 @Composable
