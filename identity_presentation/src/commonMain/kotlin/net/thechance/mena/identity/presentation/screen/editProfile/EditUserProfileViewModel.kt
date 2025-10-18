@@ -1,6 +1,7 @@
 package net.thechance.mena.identity.presentation.screen.editProfile
 
 import androidx.compose.ui.graphics.ImageBitmap
+import dev.icerock.moko.permissions.DeniedAlwaysException
 import dev.icerock.moko.permissions.Permission
 import dev.icerock.moko.permissions.PermissionsController
 import io.github.vinceglb.filekit.dialogs.compose.util.encodeToByteArray
@@ -166,17 +167,17 @@ class EditUserProfileViewModel(
     override fun onTakeImageFromCamera() {
         tryToExecute(
             function = ::onAskForCameraPermission,
-            onSuccess = ::onCameraPermissionGranted,
             onError = ::onErrorOccurred
         )
     }
 
     private suspend fun onAskForCameraPermission() {
-        permissionsController.providePermission(permission = Permission.CAMERA)
-    }
-
-    private fun onCameraPermissionGranted() {
-        updateState { copy(isCameraOpen = true) }
+        try {
+            permissionsController.providePermission(permission = Permission.CAMERA)
+            updateState { copy(isCameraOpen = true) }
+        } catch (_: DeniedAlwaysException) {
+            permissionsController.openAppSettings()
+        }
     }
 
     override fun afterCameraOpened() {
