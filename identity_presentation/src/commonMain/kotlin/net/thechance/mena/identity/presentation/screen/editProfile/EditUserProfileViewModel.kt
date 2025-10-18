@@ -164,7 +164,12 @@ class EditUserProfileViewModel(
             EditUserProfileUIEffect.NavigateToCropScreen(
                 imageBitmap = imageBitmap,
                 onResult = { croppedImageBitmap ->
-                    updateState { copy(profileImageBitmap = croppedImageBitmap) }
+                    updateState {
+                        copy(
+                            profileImageBitmap = croppedImageBitmap,
+                            shouldUpdateImage = true
+                        )
+                    }
                 }
             )
         )
