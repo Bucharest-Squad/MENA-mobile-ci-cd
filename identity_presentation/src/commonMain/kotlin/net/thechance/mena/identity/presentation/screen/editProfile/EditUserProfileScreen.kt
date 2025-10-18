@@ -241,9 +241,10 @@ class EditUserProfileScreen : BaseScreen<
                 )
 
                 PrimaryButton(
+                    isLoading = state.isLoading,
                     modifier = Modifier.fillMaxWidth().padding(top = Theme.spacing._24),
                     text = stringResource(Res.string.save_changes),
-                    onClick = { listener.onClickSaveButton() }
+                    onClick = { listener.onClickSaveButton() },
                 )
 
                 OutlinedButton(

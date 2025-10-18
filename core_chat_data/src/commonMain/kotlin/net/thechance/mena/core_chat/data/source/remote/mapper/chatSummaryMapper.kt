@@ -16,7 +16,10 @@ import kotlin.uuid.ExperimentalUuidApi
 fun PagedDataDto<ChatSummaryDto>.toPagedListOfChatSummary(): PagedData<ChatSummary> {
     val pagedData = this
     return PagedData(
-        data = pagedData.data.orEmpty().toListOfChatSummary(),
+        data = pagedData.data
+            .orEmpty()
+            .toListOfChatSummary()
+            .filter { chatSummary -> chatSummary.lastMessage != null },
         totalItems = pagedData.totalItems ?: 0,
         isLastPage = (pagedData.pageNumber ?: 0) >= (pagedData.totalPages ?: 0)
     )
@@ -28,17 +31,18 @@ private fun List<ChatSummaryDto>.toListOfChatSummary(): List<ChatSummary> {
 
 @OptIn(ExperimentalTime::class)
 fun ChatSummaryDto.toDomain(): ChatSummary? {
-    val sendAt = Instant.parse(lastMessage.sentAt).toLocalDateTime(TimeZone.currentSystemDefault())
-
+    val lastMessage = lastMessage?.let {
+        ChatSummary.Message(
+            content = lastMessage.content,
+            sendAt = Instant.parse(lastMessage.sentAt).toLocalDateTime(TimeZone.currentSystemDefault()),
+            isMine = lastMessage.isMine
+        )
+    }
     return ChatSummary(
         id = getUuidOrNull(id) ?: return null,
         name = name,
         imageUrl = imageUrl.orEmpty(),
-        lastMessage = ChatSummary.Message(
-            content = lastMessage.content,
-            sendAt = sendAt,
-            isMine = lastMessage.isMine == true
-        ),
+        lastMessage = lastMessage,
         unReadMessagesCount = unReadMessagesCount
     )
 }
