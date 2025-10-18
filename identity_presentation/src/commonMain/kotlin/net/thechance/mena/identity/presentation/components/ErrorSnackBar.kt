@@ -25,6 +25,7 @@ import net.thechance.mena.identity.presentation.screen.addresses.SnackBarUiState
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
+
 @Composable
 internal fun ErrorSnackBar(
     errorMessage: String?,

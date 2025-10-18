@@ -1,4 +1,4 @@
-package net.thechance.mena.identity.presentation.screen.addresses
+package net.thechance.mena.identity.presentation.screen.addresses.AddEditLocation
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -28,21 +28,23 @@ import net.thechance.mena.identity.domain.entity.AddressType
 import net.thechance.mena.identity.presentation.base.BaseScreen
 import net.thechance.mena.identity.presentation.components.AddressTypeSection
 import net.thechance.mena.identity.presentation.components.AuthAppBar
+import net.thechance.mena.identity.presentation.screen.addresses.AddressUIState
+import net.thechance.mena.identity.presentation.screen.addresses.SnackBarUiState
 import net.thechance.mena.identity.presentation.screen.addresses.component.MapSection
 import net.thechance.mena.identity.presentation.screen.addresses.pickLocation.PickLocationScreen
-import net.thechance.mena.identity.presentation.screen.addresses.pickLocation.AddressModel
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.core.parameter.parametersOf
 
 class AddEditLocationScreen(
-    private val addressModel: AddressModel?,
-) : BaseScreen<
-    AddEditLocationScreenViewModel,
-    AddLocationScreenUIState,
-    AddEditLocationScreenUIEffect,
-    AddEditLocationScreenInteractionListener>()
-{
+    val onSuccess: (SnackBarUiState?) -> Unit,
+    private val addressModel: AddressUIState?,
+
+    ) : BaseScreen<
+        AddEditLocationScreenViewModel,
+        AddLocationScreenUIState,
+        AddEditLocationScreenUIEffect,
+        AddEditLocationScreenInteractionListener>() {
 
     @Composable
     override fun Content() {
@@ -80,7 +82,8 @@ class AddEditLocationScreen(
             LazyColumn(
                 modifier = Modifier
                     .background(color = Theme.colorScheme.background.surface)
-                    .padding(horizontal = Theme.spacing._16)
+                    .padding(horizontal = Theme.spacing._16),
+                contentPadding = PaddingValues(bottom = Theme.spacing._16)
             ) {
 
                 item {
@@ -100,7 +103,9 @@ class AddEditLocationScreen(
                     TextField(
                         value = state.address,
                         title = stringResource(Res.string.address),
-                        onValueChanged = listener::onChangeAddress,
+                        onValueChanged = { newAddress ->
+                            listener.onChangeAddress(newAddress)
+                        },
                         readOnly = true,
                         enabled = false,
                         hint = "",
@@ -112,7 +117,11 @@ class AddEditLocationScreen(
                 item {
                     AddressTypeSection(
                         selectedAddressType = state.addressType,
-                        onClickAddressType = listener::onClickAddressType,
+                        onClickAddressType = { newType ->
+                            listener.onClickAddressType(newType)
+                        },
+                        addressType = state.otherAddress?:""
+
                     )
                 }
 
@@ -133,9 +142,16 @@ class AddEditLocationScreen(
         navigator: Navigator
     ) {
         when (effect) {
-            AddEditLocationScreenUIEffect.NavigateBack -> navigator.pop()
+            is AddEditLocationScreenUIEffect.NavigateBack -> {
+                onSuccess(effect.snackBarUiState)
+                navigator.pop()
+            }
+
             is AddEditLocationScreenUIEffect.NavigateToMap -> navigator.push(
-                PickLocationScreen(addressModel = effect.addressModel, onUpdateLocation = effect.onUpdateLocation)
+                PickLocationScreen(
+                    addressModel = effect.addressModel,
+                    onUpdateLocation = effect.onUpdateLocation
+                )
             )
         }
     }
@@ -149,9 +165,10 @@ private fun OtherAddressType(
     otherAddressType: String?,
     onChangeOtherAddressType: (String) -> Unit,
     modifier: Modifier = Modifier,
-) {
+
+    ) {
     AnimatedVisibility(
-        visible = selectedAddressType == AddressType.Other,
+        visible = (otherAddressType != null),
         enter = expandVertically(
             animationSpec = tween(durationMillis = 500)
         ),

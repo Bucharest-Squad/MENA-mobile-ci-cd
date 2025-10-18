@@ -12,6 +12,8 @@ import kotlinx.coroutines.test.setMain
 import net.thechance.mena.identity.domain.entity.AddressType
 import net.thechance.mena.identity.domain.exception.UnAuthorizedException
 import net.thechance.mena.identity.domain.repository.AddressesRepository
+import net.thechance.mena.identity.presentation.screen.addresses.AddEditLocation.AddEditLocationScreenUIEffect
+import net.thechance.mena.identity.presentation.screen.addresses.AddEditLocation.AddEditLocationScreenViewModel
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -235,7 +237,7 @@ class AddEditLocationScreenViewModelTest {
     fun `changeIsSaveEnabled() should be false when otherAddressType is null`() = runTest {
         viewModel.onChangeAddress(addressLine)
 
-        viewModel.onClickAddressType(AddressType.Other)
+        viewModel.onClickAddressType(AddressType.Other(""))
 
         viewModel.onChangeOtherAddressType(" ")
 
@@ -247,7 +249,7 @@ class AddEditLocationScreenViewModelTest {
     fun `changeIsSaveEnabled() should be false when otherAddressType is empty`() = runTest {
         viewModel.onChangeAddress(addressLine)
 
-        viewModel.onClickAddressType(AddressType.Other)
+        viewModel.onClickAddressType(AddressType.Other(""))
 
         assertTrue { !viewModel.state.value.isSaveEnabled }
 
@@ -301,7 +303,7 @@ class AddEditLocationScreenViewModelTest {
                 otherAddress = null,
                 isActive = false
             )
-            viewModel.onClickAddressType(AddressType.Other)
+            viewModel.onClickAddressType(AddressType.Other(""))
 
 
             assertTrue { !viewModel.state.value.isSaveEnabled }
@@ -321,7 +323,7 @@ class AddEditLocationScreenViewModelTest {
                 otherAddress = null,
                 isActive = false
             )
-            viewModel.onClickAddressType(AddressType.Other)
+            viewModel.onClickAddressType(AddressType.Other(""))
             viewModel.onChangeOtherAddressType(" ")
 
 
@@ -379,7 +381,7 @@ class AddEditLocationScreenViewModelTest {
                 otherAddress = null,
                 isActive = false
             )
-            viewModel.onClickAddressType(AddressType.Other)
+            viewModel.onClickAddressType(AddressType.Other("Apartment"))
             viewModel.onChangeOtherAddressType("Apartment")
 
             assertTrue { viewModel.state.value.isSaveEnabled }

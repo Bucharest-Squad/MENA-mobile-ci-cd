@@ -13,7 +13,8 @@
     <string name="unexpected_error">Something went wrong</string>
     <string name="is_main_address_error">Can't Delete Active Address</string>
     <string name="success">Success</string>
-
+    <string name="add_location_successfully">Add Location Successfully</string>
+    <string name="edit_location_successfully">Edit Location Successfully</string>
 
     <string name="pick_your_country">Pick Your Country</string>
     <string name="country_flag_image">Country Flag Image</string>
@@ -124,6 +125,7 @@
     <string name="my_location_app_bar_title">My locations</string>
 
     <string name="address_deleted_successfully">Address deleted successfully</string>
+    <string name="address_activated_successfully">Address Activated successfully</string>
 
     <!--    crop image-->
 

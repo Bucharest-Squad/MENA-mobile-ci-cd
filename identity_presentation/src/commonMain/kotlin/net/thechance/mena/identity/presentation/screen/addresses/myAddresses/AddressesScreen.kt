@@ -1,4 +1,4 @@
-package net.thechance.mena.identity.presentation.screen.addresses
+package net.thechance.mena.identity.presentation.screen.addresses.myAddresses
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,6 +21,8 @@ import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.identity.presentation.base.BaseScreen
 import net.thechance.mena.identity.presentation.components.AddressSnackBar
 import net.thechance.mena.identity.presentation.components.NoSavedLocationsLayout
+import net.thechance.mena.identity.presentation.screen.addresses.AddEditLocation.AddEditLocationScreen
+import net.thechance.mena.identity.presentation.screen.addresses.AddressesScreenUIState
 import net.thechance.mena.identity.presentation.screen.addresses.component.AddressCard
 import net.thechance.mena.identity.presentation.screen.addresses.component.MyAddressesAppBar
 import org.jetbrains.compose.resources.stringResource
@@ -92,27 +94,37 @@ class AddressesScreen :
                             isMainAddress = it.isMainAddress,
                             addressDetails = it.addressDetails,
                             onDeleteClick = { listener.onDeleteAddressClicked(it.id!!) },
+                            onClickAddress = { listener.onClickAddress(it.id!!) },
+                            animateToCurrentLocation = state.animateToCurrentLocation
+                            ,longitude = it.coordinates.longitude,
+                            latitude = it.coordinates.latitude,
                         )
                     }
                 }
             }
 
-            if (state.addresses.isEmpty()) {
+            if (state.addresses.isEmpty() && !state.isLoading) {
                 NoSavedLocationsLayout(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(horizontal = 28.dp),
-                    onAddLocationClicked = { listener::onAddButtonClicked }
+                    onAddLocationClicked = listener::onAddButtonClicked
                 )
             }
         }
 
     override fun onEffect(
-        effect: AddressesScreenUIEffect, navigator: Navigator
+        effect: AddressesScreenUIEffect,
+        navigator: Navigator
     ) {
         when (effect) {
             AddressesScreenUIEffect.NavigateBack -> navigator.pop()
-            is AddressesScreenUIEffect.NavigateToAddressDetailsScreen -> {}
+            is AddressesScreenUIEffect.NavigateToAddressDetailsScreen -> {
+                navigator.push(AddEditLocationScreen(
+                    addressModel = effect.addressUIState,
+                    onSuccess = effect.onSuccess
+                ))
+            }
             }
         }
     }
