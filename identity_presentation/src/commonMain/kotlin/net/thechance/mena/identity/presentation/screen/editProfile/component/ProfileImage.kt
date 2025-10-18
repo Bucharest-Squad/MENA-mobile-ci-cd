@@ -124,7 +124,7 @@ fun ProfileImage(
 }
 
 @Composable
-private fun AsyncProfileImage(imageUrl: String) {
+fun AsyncProfileImage(imageUrl: String) {
     val networkClient = koinInject<HttpClient>(named("IdentityClient"))
     SubcomposeAsyncImage(
         model = imageUrl,
