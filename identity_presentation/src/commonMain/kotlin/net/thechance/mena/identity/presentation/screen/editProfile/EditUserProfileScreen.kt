@@ -112,7 +112,7 @@ class EditUserProfileScreen : BaseScreen<
             if (state.isCameraOpen) {
                 cameraImagePicker.launch()
             }
-            listener.changeOpenCamera()
+            listener.afterCameraOpened()
         }
 
         LaunchedEffect(state.errorMessage) {

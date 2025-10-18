@@ -1,9 +1,9 @@
 package net.thechance.mena.identity.presentation.screen.editProfile
 
-import io.github.vinceglb.filekit.dialogs.compose.util.encodeToByteArray
 import androidx.compose.ui.graphics.ImageBitmap
 import dev.icerock.moko.permissions.Permission
 import dev.icerock.moko.permissions.PermissionsController
+import io.github.vinceglb.filekit.dialogs.compose.util.encodeToByteArray
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -179,7 +179,7 @@ class EditUserProfileViewModel(
         updateState { copy(isCameraOpen = true) }
     }
 
-    override fun changeOpenCamera() {
+    override fun afterCameraOpened() {
         updateState { copy(isCameraOpen = false) }
     }
 
