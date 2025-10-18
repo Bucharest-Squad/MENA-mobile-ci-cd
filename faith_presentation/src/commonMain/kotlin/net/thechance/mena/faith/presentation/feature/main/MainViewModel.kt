@@ -81,8 +81,14 @@ class MainViewModel(
         )
     }
 
-    override fun onContinueTilawahClick(surahId: Int, surahName: String) =
-        sendEffect(MainScreenEffect.NavigateToSurah(surahId, surahName))
+    override fun onContinueTilawahClick(surahId: Int, surahName: String, ayahNumber: Int) =
+        sendEffect(
+            MainScreenEffect.NavigateToSurah(
+                surahId = surahId,
+                surahName = surahName,
+                ayahNumber = ayahNumber
+            )
+        )
 
     override fun onQuranClick() = sendEffect(MainScreenEffect.NavigateToQuran)
 

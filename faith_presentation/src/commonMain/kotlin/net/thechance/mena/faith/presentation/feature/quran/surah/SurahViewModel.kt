@@ -11,6 +11,7 @@ import mena.faith_presentation.generated.resources.bookmark_added_successfully
 import mena.faith_presentation.generated.resources.copied_ayah_failed
 import mena.faith_presentation.generated.resources.copied_ayah_successfully
 import net.thechance.mena.faith.domain.entity.Surah
+import net.thechance.mena.faith.domain.model.LastAyahForTilawah
 import net.thechance.mena.faith.domain.repository.BookmarkRepository
 import net.thechance.mena.faith.domain.repository.QuranRepository
 import net.thechance.mena.faith.presentation.base.BaseViewModel
@@ -62,6 +63,8 @@ class SurahViewModel(
             )
         }
     }
+
+    override fun onFirstVisibleAyahChanged(ayahNumber: Int) = updateContinueTilawah(ayahNumber)
 
     override fun onInitialAyahScrolled() {
         viewModelScope.launch {
@@ -180,5 +183,20 @@ class SurahViewModel(
         updateState {
             it.copy(isBasmalaVisible = shouldShowBasmala)
         }
+    }
+
+    private fun updateContinueTilawah(ayahNumber: Int) {
+        tryToExecute(
+            execute = {
+                val lastAyah = LastAyahForTilawah(
+                    surahId = surahArgs.surahId,
+                    surahName = surahArgs.surahName,
+                    number = ayahNumber
+                )
+                quranRepository.saveLastAyahForTilawah(lastAyah)
+                lastAyah
+            },
+            dispatcher = dispatcher
+        )
     }
 }

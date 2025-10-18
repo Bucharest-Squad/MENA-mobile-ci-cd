@@ -68,7 +68,8 @@ fun MainScreen(
                 navController.navigate(
                     Route.SurahDetailsRoute(
                         surahId = effect.surahId,
-                        surahName = effect.surahName
+                        surahName = effect.surahName,
+                        ayahNumber = effect.ayahNumber
                     )
                 )
             }
@@ -143,7 +144,11 @@ private fun Content(
                         tilawahUiState = uiState.tilawahUiState,
                         onContinueTilawahClick = {
                             uiState.tilawahUiState?.let { tilawah ->
-                                listener.onContinueTilawahClick(tilawah.surahId, tilawah.surahName)
+                                listener.onContinueTilawahClick(
+                                    surahId = tilawah.surahId,
+                                    surahName = tilawah.surahName,
+                                    ayahNumber = tilawah.ayahNumber
+                                )
                             }
                         },
                         modifier = Modifier.padding(bottom = Theme.spacing._8)

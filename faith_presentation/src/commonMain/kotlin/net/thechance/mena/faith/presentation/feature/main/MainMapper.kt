@@ -4,7 +4,6 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import mena.faith_presentation.generated.resources.Res
 import mena.faith_presentation.generated.resources.asr
-import mena.faith_presentation.generated.resources.ayah_number
 import mena.faith_presentation.generated.resources.dhuhr
 import mena.faith_presentation.generated.resources.fajr
 import mena.faith_presentation.generated.resources.isha
@@ -83,7 +82,7 @@ suspend fun LastAyahForTilawah.toTilawahUiState(): TilawahUiState {
     val surahName = Surah.SurahOrder.entries
         .find { it.order == this.surahId }
         ?.name ?: getString(Res.string.surah_al_fatiha)
-    val ayahLabel = getString(Res.string.ayah_number, number)
+    val ayahLabel =  number
     return TilawahUiState(
         surahName = surahName,
         ayahNumber = ayahLabel,

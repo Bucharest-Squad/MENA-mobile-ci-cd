@@ -20,7 +20,7 @@ data class PrayerTimesUiState(
 
 data class TilawahUiState(
     val surahName: String,
-    val ayahNumber: String,
+    val ayahNumber: Int,
     val surahId: Int
 )
 

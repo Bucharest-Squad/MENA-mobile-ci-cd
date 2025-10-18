@@ -17,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import mena.faith_presentation.generated.resources.Res
-import mena.faith_presentation.generated.resources.ayah_number
 import mena.faith_presentation.generated.resources.continue_tilawah
 import mena.faith_presentation.generated.resources.ic_arrow_right
 import mena.faith_presentation.generated.resources.ic_quran_play
@@ -89,7 +88,7 @@ fun TilawahSection(
                         color = Theme.colorScheme.shadePrimary
                     )
                     Text(
-                        text = tilawahUiState?.ayahNumber ?: stringResource(Res.string.ayah_number, 1),
+                        text = tilawahUiState?.ayahNumber.toString(),
                         style = Theme.typography.label.small,
                         color = Theme.colorScheme.shadeSecondary
                     )
