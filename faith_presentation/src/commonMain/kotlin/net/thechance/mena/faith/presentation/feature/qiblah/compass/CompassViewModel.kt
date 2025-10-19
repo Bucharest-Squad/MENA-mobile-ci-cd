@@ -13,7 +13,7 @@ class CompassViewModel(
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : BaseViewModel<CompassScreenState, CompassEffect>(CompassScreenState()),
     CompassInteractionListener {
-    private var currentContinuousAzimuth: Float = 0f
+
 
     init {
         getQiblahAngle()
@@ -43,9 +43,12 @@ class CompassViewModel(
     }
 
     private fun onAzimuthValueChange(rawAzimuth: Float) {
-        val continuousAzimuth = calculateContinuousAzimuth(rawAzimuth)
+        val continuousAzimuth = bearingCalculatorUseCase.calculateContinuousAzimuth(rawAzimuth)
         val relativeAngle =
-            calculateRelativeAngleToQiblah(rawAzimuth, uiState.value.qiblahAngleValue)
+            bearingCalculatorUseCase.calculateRelativeAngleToQiblah(
+                rawAzimuth,
+                uiState.value.qiblahAngleValue
+            )
         updateState {
             it.copy(
                 continuousAzimuth = continuousAzimuth,
@@ -54,23 +57,6 @@ class CompassViewModel(
         }
     }
 
-    private fun calculateContinuousAzimuth(rawAzimuth: Float): Float {
-        val oldAngleOnCircle = currentContinuousAzimuth % 360
-        val diff = getShortestAngleDifference(from = oldAngleOnCircle, to = rawAzimuth)
-        currentContinuousAzimuth += diff
-        return currentContinuousAzimuth
-    }
 
-    private fun calculateRelativeAngleToQiblah(rawAzimuth: Float, qiblahAngle: Float): Float {
-        return getShortestAngleDifference(from = rawAzimuth, to = qiblahAngle)
-    }
 
-    private fun getShortestAngleDifference(from: Float, to: Float): Float {
-        val diff = (to - from) % 360
-        return when {
-            diff > 180f -> diff - 360f
-            diff < -180f -> diff + 360f
-            else -> diff
-        }
-    }
 }

@@ -20,19 +20,22 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import mena.faith_presentation.generated.resources.Res
+import mena.faith_presentation.generated.resources.arrow_left
 import mena.faith_presentation.generated.resources.calibrate_device
 import mena.faith_presentation.generated.resources.calibrate_device_animation
 import mena.faith_presentation.generated.resources.continue_btn
+import mena.faith_presentation.generated.resources.ic_arrow_left
 import mena.faith_presentation.generated.resources.motion_configuration
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.button.Button
+import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.faith.presentation.base.ObserveAsEffect
-import net.thechance.mena.faith.presentation.component.BackIcon
 import net.thechance.mena.faith.presentation.navigation.LocalNavController
 import net.thechance.mena.faith.presentation.navigation.Route
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -61,7 +64,10 @@ private fun Content(
             AppBar(
                 title = stringResource(Res.string.calibrate_device),
                 leadingContent = {
-                    BackIcon()
+                    Icon(
+                        painter = painterResource(Res.drawable.ic_arrow_left),
+                        contentDescription = stringResource(Res.string.arrow_left)
+                    )
                 },
                 onLeadingClick = listener::onBackClick,
             )

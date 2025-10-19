@@ -31,7 +31,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import mena.faith_presentation.generated.resources.Res
+import mena.faith_presentation.generated.resources.arrow_left
 import mena.faith_presentation.generated.resources.device_angle_to_qiblah
+import mena.faith_presentation.generated.resources.ic_arrow_left
 import mena.faith_presentation.generated.resources.ic_direction
 import mena.faith_presentation.generated.resources.ic_islamic_pattern
 import mena.faith_presentation.generated.resources.ic_location
@@ -39,11 +41,11 @@ import mena.faith_presentation.generated.resources.ic_qiblah
 import mena.faith_presentation.generated.resources.qibla_direction
 import mena.faith_presentation.generated.resources.qiblah
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
+import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.faith.presentation.base.ObserveAsEffect
-import net.thechance.mena.faith.presentation.component.BackIcon
 import net.thechance.mena.faith.presentation.navigation.LocalNavController
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -80,7 +82,12 @@ private fun Content(
                 contentPadding = PaddingValues(
                     horizontal = Theme.spacing._16, vertical = Theme.spacing._8
                 ),
-                leadingContent = { BackIcon() },
+                leadingContent = {
+                    Icon(
+                        painter = painterResource(Res.drawable.ic_arrow_left),
+                        contentDescription = stringResource(Res.string.arrow_left)
+                    )
+                },
                 onLeadingClick = listener::onBackClick,
                 trailingContent = {
                     QiblahTopBar(uiState)

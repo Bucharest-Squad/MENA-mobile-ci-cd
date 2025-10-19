@@ -22,17 +22,19 @@ import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.collectAsLazyPagingItems
 import app.cash.paging.compose.itemKey
 import mena.faith_presentation.generated.resources.Res
+import mena.faith_presentation.generated.resources.arrow_left
 import mena.faith_presentation.generated.resources.bookmarks
 import mena.faith_presentation.generated.resources.empty_state_bookmark_description
 import mena.faith_presentation.generated.resources.empty_state_bookmark_image
 import mena.faith_presentation.generated.resources.empty_state_bookmark_title
+import mena.faith_presentation.generated.resources.ic_arrow_left
 import mena.faith_presentation.generated.resources.ic_not_saved_book_mark
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
+import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.faith.presentation.base.ObserveAsEffect
 import net.thechance.mena.faith.presentation.base.snackbar.SnackBarState
-import net.thechance.mena.faith.presentation.component.BackIcon
 import net.thechance.mena.faith.presentation.component.FaithSnackBar
 import net.thechance.mena.faith.presentation.component.SwappableCard
 import net.thechance.mena.faith.presentation.extensions.paging.isEmpty
@@ -81,7 +83,12 @@ private fun Content(
                 contentPadding = PaddingValues(
                     horizontal = Theme.spacing._16, vertical = Theme.spacing._8
                 ),
-                leadingContent = { BackIcon() },
+                leadingContent = {
+                    Icon(
+                        painter = painterResource(Res.drawable.ic_arrow_left),
+                        contentDescription = stringResource(Res.string.arrow_left)
+                    )
+                },
                 onLeadingClick = listener::onBackClick,
             )
         },
