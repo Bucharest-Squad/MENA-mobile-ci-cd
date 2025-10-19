@@ -4,7 +4,7 @@ import androidx.compose.ui.unit.DpOffset
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
-import net.thechance.mena.identity.domain.repository.MobileLocationRepository
+import net.thechance.mena.identity.domain.repository.AddressesRepository
 import net.thechance.mena.identity.domain.util.Coordinates
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
 import net.thechance.mena.identity.presentation.base.ErrorState
@@ -17,7 +17,7 @@ import org.maplibre.compose.camera.CameraPosition
 import kotlin.uuid.ExperimentalUuidApi
 
 class PickLocationScreenViewModel(
-    private val mobileLocationRepository: MobileLocationRepository,
+    private val addressesRepository: AddressesRepository,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val locationForegroundHandler: PermissionHandler,
     private val addressModel: AddressUIState?,
@@ -25,10 +25,11 @@ class PickLocationScreenViewModel(
     PickLocationScreenInteractionListener {
 
     init {
-        onUpdateAddress(addressModel)
+        if (addressModel != null)
+            updateAddress(addressModel)
     }
 
-    override fun onUpdateAddress(addressModel: AddressUIState?) {
+    fun updateAddress(addressModel: AddressUIState?) {
         if (addressModel != null) {
             updateState {
                 copy(
@@ -69,7 +70,7 @@ class PickLocationScreenViewModel(
     }
 
     private suspend fun onGetLocationName(): String {
-        return mobileLocationRepository.getLocationName(state.value.currentLocation.toEntity())
+        return addressesRepository.getLocationName(state.value.currentLocation.toEntity())
     }
 
     private fun onGetLocationNameSuccess(address: String) {
@@ -107,7 +108,7 @@ class PickLocationScreenViewModel(
 
     private suspend fun onGpsFetch(): Coordinates? {
         updateState { copy(isGpsButtonLoading = true) }
-        return mobileLocationRepository.getCurrentLocation()
+        return addressesRepository.getCurrentLocation()
     }
 
     private fun onClickGpsSuccess(
@@ -183,8 +184,10 @@ class PickLocationScreenViewModel(
             PickLocationScreenUIEffect.NavigateBackWithLocation(
                 AddressUIState(
                     id = addressModel?.id,
-                    coordinates = CoordinatesUiState(state.value.currentLocation.latitude ,
-                        state.value.currentLocation.longitude) ,
+                    coordinates = CoordinatesUiState(
+                        state.value.currentLocation.latitude,
+                        state.value.currentLocation.longitude
+                    ),
                     addressDetails = state.value.address,
                     isMainAddress = state.value.isMainAddress
                 )
