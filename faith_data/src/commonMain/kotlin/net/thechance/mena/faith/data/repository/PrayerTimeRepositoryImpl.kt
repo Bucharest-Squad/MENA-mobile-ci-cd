@@ -3,8 +3,8 @@ package net.thechance.mena.faith.data.repository
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.number
 import kotlinx.datetime.toLocalDateTime
-import net.thechance.mena.faith.data.remote.dto.prayertime.PrayerTimes
 import net.thechance.mena.faith.data.remote.mapper.prayertime.toDomain
+import net.thechance.mena.faith.data.remote.model.prayertime.PrayerTimes
 import net.thechance.mena.faith.data.remote.service.PrayerTimeApiService
 import net.thechance.mena.faith.data.utils.executeApiSafely
 import net.thechance.mena.faith.domain.entity.Location

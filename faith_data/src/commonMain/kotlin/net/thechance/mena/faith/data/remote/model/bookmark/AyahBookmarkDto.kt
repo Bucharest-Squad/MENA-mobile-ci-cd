@@ -1,4 +1,4 @@
-package net.thechance.mena.faith.data.remote.dto.bookmark
+package net.thechance.mena.faith.data.remote.model.bookmark
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

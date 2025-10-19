@@ -7,9 +7,9 @@ import net.thechance.mena.faith.data.database.AyahDao
 import net.thechance.mena.faith.data.mapper.ayahBookmark.toAyahBookmark
 import net.thechance.mena.faith.data.mapper.toAyah
 import net.thechance.mena.faith.data.mapper.toSurah
-import net.thechance.mena.faith.data.remote.dto.PageResponse
-import net.thechance.mena.faith.data.remote.dto.bookmark.AddBookmarkRequest
-import net.thechance.mena.faith.data.remote.dto.bookmark.AyahBookmarkDto
+import net.thechance.mena.faith.data.remote.model.PageResponse
+import net.thechance.mena.faith.data.remote.model.bookmark.AddBookmarkRequest
+import net.thechance.mena.faith.data.remote.model.bookmark.AyahBookmarkDto
 import net.thechance.mena.faith.data.remote.service.BookmarkApiService
 import net.thechance.mena.faith.data.utils.executeApiSafely
 import net.thechance.mena.faith.data.utils.executeLocalSafely

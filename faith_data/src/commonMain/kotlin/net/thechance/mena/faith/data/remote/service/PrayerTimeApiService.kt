@@ -4,7 +4,7 @@ import de.jensklingenberg.ktorfit.Response
 import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.Path
 import de.jensklingenberg.ktorfit.http.Query
-import net.thechance.mena.faith.data.remote.dto.prayertime.PrayerTimes
+import net.thechance.mena.faith.data.remote.model.prayertime.PrayerTimes
 
 interface PrayerTimeApiService {
 
