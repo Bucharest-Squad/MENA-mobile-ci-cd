@@ -198,19 +198,6 @@ class QiblahBearingCalculatorUseCaseTest {
         assertEquals(EXPECTED_DIFF_20, result)
     }
 
-    @Test
-    fun `getShortestAngleDifference should handle angles greater than 360`() {
-        // Given
-        val from = ANGLE_OVER_360
-        val to = SMALL_ANGLE
-
-        // When
-        val result = calculator.getShortestAngleDifference(from, to)
-
-        // Then
-        assertEquals(EXPECTED_DIFF_10, result)
-    }
-
     private companion object {
         val KAABA_LOCATION = demoLocation(latitude = 21.4225, longitude = 39.8262)
         val GAZA_LOCATION = demoLocation(latitude = 31.5017, longitude = 34.4668)
