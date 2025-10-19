@@ -118,7 +118,7 @@ kover.reports {
                 "*SyncContactsViewModel*",
                 "*ContactsViewModel*",
                 "*ChatViewModel*",
-                "*HomeViewModelTest*"
+                "*HomeViewModel*"
             )
         }
     }
