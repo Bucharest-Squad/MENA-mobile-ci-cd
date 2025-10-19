@@ -4,7 +4,7 @@ import de.jensklingenberg.ktorfit.Response
 import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.Path
 import de.jensklingenberg.ktorfit.http.Query
-import net.thechance.mena.faith.data.remote.model.prayertime.PrayerTimes
+import net.thechance.mena.faith.data.remote.model.prayertime.PrayerTimesDto
 
 interface PrayerTimeApiService {
 
@@ -13,5 +13,5 @@ interface PrayerTimeApiService {
         @Path("date") date: String,
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,
-    ): Response<PrayerTimes>
+    ): Response<PrayerTimesDto>
 }

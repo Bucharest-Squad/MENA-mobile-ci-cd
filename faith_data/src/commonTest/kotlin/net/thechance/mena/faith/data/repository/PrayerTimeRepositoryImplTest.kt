@@ -13,7 +13,7 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.TimeZone
-import net.thechance.mena.faith.data.remote.model.prayertime.PrayerTimes
+import net.thechance.mena.faith.data.remote.model.prayertime.PrayerTimesDto
 import net.thechance.mena.faith.data.remote.service.PrayerTimeApiService
 import net.thechance.mena.faith.domain.entity.Location
 import net.thechance.mena.faith.domain.entity.PrayerTime
@@ -140,9 +140,9 @@ class PrayerTimeRepositoryImplTest {
         }
 
     private fun makeSuccessFakeResponse(
-        body: PrayerTimes? = fakePrayerTimesDto,
+        body: PrayerTimesDto? = fakePrayerTimesDto,
         successStatus: HttpStatusCode = HttpStatusCode.OK
-    ): Response<PrayerTimes> {
+    ): Response<PrayerTimesDto> {
         val mockHttpResponse: HttpResponse = mock(MockMode.autofill) {
             everySuspend { status } returns successStatus
         }
@@ -150,20 +150,20 @@ class PrayerTimeRepositoryImplTest {
         return Response.success(
             body = body,
             rawResponse = mockHttpResponse
-        ) as Response<PrayerTimes>
+        ) as Response<PrayerTimesDto>
     }
 
     private fun makeFailFakeResponse(
         errorStatus: HttpStatusCode = HttpStatusCode.InternalServerError
-    ): Response<PrayerTimes> {
+    ): Response<PrayerTimesDto> {
         val mockHttpResponse: HttpResponse = mock(MockMode.autofill) {
             everySuspend { status } returns errorStatus
         }
 
-        return Response.error<PrayerTimes>(
+        return Response.error<PrayerTimesDto>(
             rawResponse = mockHttpResponse,
             body = ""
-        ) as Response<PrayerTimes>
+        ) as Response<PrayerTimesDto>
     }
 
     private companion object {

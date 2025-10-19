@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 import net.thechance.mena.faith.data.remote.mapper.prayertime.StringHoursAndMinutesToInstantMapper
 
 @Serializable
-data class PrayerTimes(
+data class PrayerTimesDto(
     @SerialName("sunrise")
     val sunrise: String?,
     @SerialName("fajr")
@@ -19,5 +19,5 @@ data class PrayerTimes(
     @SerialName("isha")
     val isha: String?,
     @SerialName("date")
-    val date: PrayerDate?
+    val date: PrayerDateDto?
 ) : StringHoursAndMinutesToInstantMapper

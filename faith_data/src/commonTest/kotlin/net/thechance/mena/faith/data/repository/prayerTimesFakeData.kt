@@ -3,10 +3,10 @@ package net.thechance.mena.faith.data.repository
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
-import net.thechance.mena.faith.data.remote.model.prayertime.GregorianDate
-import net.thechance.mena.faith.data.remote.model.prayertime.HijriDate
-import net.thechance.mena.faith.data.remote.model.prayertime.PrayerDate
-import net.thechance.mena.faith.data.remote.model.prayertime.PrayerTimes
+import net.thechance.mena.faith.data.remote.model.prayertime.GregorianDateDto
+import net.thechance.mena.faith.data.remote.model.prayertime.HijriDateDto
+import net.thechance.mena.faith.data.remote.model.prayertime.PrayerDateDto
+import net.thechance.mena.faith.data.remote.model.prayertime.PrayerTimesDto
 import net.thechance.mena.faith.domain.entity.PrayerName
 import net.thechance.mena.faith.domain.entity.PrayerTime
 import kotlin.time.ExperimentalTime
@@ -122,15 +122,15 @@ fun getFakePrayerTimesDto(
     gregorianMonthName: String? = "Rabīʿ al-thānī",
     gregorianYear: String? = "1447"
 
-): PrayerTimes = PrayerTimes(
+): PrayerTimesDto = PrayerTimesDto(
     sunrise = sunrise,
     fajr = fajr,
     dhuhr = dhuhr,
     asr = asr,
     maghrib = maghrib,
     isha = isha,
-    date = PrayerDate(
-        hijri = HijriDate(
+    date = PrayerDateDto(
+        hijri = HijriDateDto(
             date = hijriDate,
             dateFormat = hijriDateFormat,
             readableDate = hijriReadableDate,
@@ -142,7 +142,7 @@ fun getFakePrayerTimesDto(
             monthArabicName = hijriMonthArabicName,
             year = hijriYear
         ),
-        gregorian = GregorianDate(
+        gregorian = GregorianDateDto(
             date = gregorianDate,
             dateFormat = gregorianDateFormat,
             timestamp = timestamp,

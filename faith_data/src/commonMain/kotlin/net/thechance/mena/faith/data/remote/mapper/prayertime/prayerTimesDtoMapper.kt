@@ -1,13 +1,13 @@
 package net.thechance.mena.faith.data.remote.mapper.prayertime
 
 import kotlinx.datetime.TimeZone
-import net.thechance.mena.faith.data.remote.model.prayertime.PrayerTimes
+import net.thechance.mena.faith.data.remote.model.prayertime.PrayerTimesDto
 import net.thechance.mena.faith.domain.entity.PrayerName
 import net.thechance.mena.faith.domain.entity.PrayerTime
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
-fun PrayerTimes.toDomain(timeZone: TimeZone = TimeZone.currentSystemDefault()): List<PrayerTime> {
+fun PrayerTimesDto.toDomain(timeZone: TimeZone = TimeZone.currentSystemDefault()): List<PrayerTime> {
     val startOfDayTimeStamp: Long = this.date?.gregorian?.timestamp.toSafeLong()
     val hijriReadableDate = this.date?.hijri?.readableDate.orEmpty()
     return listOf(

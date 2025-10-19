@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class HijriDate(
+data class HijriDateDto(
     @SerialName("date")
     val date: String?,
     @SerialName("dateFormat")

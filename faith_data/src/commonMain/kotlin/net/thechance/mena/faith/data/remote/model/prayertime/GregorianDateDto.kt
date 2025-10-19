@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class GregorianDate(
+data class GregorianDateDto(
     @SerialName("date")
     val date: String?,
     @SerialName("dateFormat")

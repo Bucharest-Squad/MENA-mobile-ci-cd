@@ -4,9 +4,9 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class PrayerDate(
+data class PrayerDateDto(
     @SerialName("hijri")
-    val hijri: HijriDate?,
+    val hijri: HijriDateDto?,
     @SerialName("gregorian")
-    val gregorian: GregorianDate?
+    val gregorian: GregorianDateDto?
 )
