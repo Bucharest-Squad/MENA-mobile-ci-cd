@@ -26,7 +26,6 @@ import mena.faith_presentation.generated.resources.error_unauthorized
 import mena.faith_presentation.generated.resources.error_unknown
 import net.thechance.mena.faith.domain.annotation.KoverIgnore
 import net.thechance.mena.faith.domain.exception.FaithException
-import net.thechance.mena.faith.presentation.base.errorstate.ErrorState
 import net.thechance.mena.faith.presentation.base.snackbar.SnackBarState
 import net.thechance.mena.faith.presentation.base.snackbar.SnackbarHandler
 

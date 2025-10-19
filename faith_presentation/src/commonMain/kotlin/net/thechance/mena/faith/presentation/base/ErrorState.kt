@@ -1,4 +1,4 @@
-package net.thechance.mena.faith.presentation.base.errorstate
+package net.thechance.mena.faith.presentation.base
 
 import net.thechance.mena.faith.domain.exception.FaithException
 import net.thechance.mena.faith.presentation.base.snackbar.SnackBarState
