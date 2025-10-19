@@ -14,9 +14,9 @@ import kotlinx.coroutines.test.runTest
 import net.thechance.mena.faith.domain.entity.Ayah
 import net.thechance.mena.faith.domain.repository.BookmarkRepository
 import net.thechance.mena.faith.domain.repository.QuranRepository
-import net.thechance.mena.faith.presentation.base.snackbar.SnackBarState
-import net.thechance.mena.faith.presentation.feature.quran.surah.args.ISurahArgs
-import net.thechance.mena.faith.presentation.util.ClipboardManager
+import net.thechance.mena.faith.presentation.base.snackbar.SnackbarHandler
+import net.thechance.mena.faith.presentation.feature.quran.surah.args.SurahArgs
+import net.thechance.mena.faith.presentation.utils.ClipboardManager
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -32,7 +32,7 @@ class SurahViewModelTest {
     private val bookmarkRepository: BookmarkRepository = mock(mode = MockMode.autofill)
     private val clipboardManager: ClipboardManager = mock(mode = MockMode.autofill)
 
-    private val surahArgs = mock<ISurahArgs>(mode = MockMode.autofill)
+    private val surahArgs = mock<SurahArgs>(mode = MockMode.autofill)
 
     @BeforeTest
     fun setup() {
@@ -43,7 +43,7 @@ class SurahViewModelTest {
             quranRepository = quranRepository,
             clipboardManager = clipboardManager,
             bookmarkRepository = bookmarkRepository,
-            snackBarHandler = FakeSnackbarHandler()
+            snackbarHandler = SnackbarHandler.Empty
         )
     }
 
@@ -221,16 +221,6 @@ class SurahViewModelTest {
             // Then
             assertEquals(SECOND_AYAH_INDEX, testViewModel.uiState.value.selectedAyahIndex)
         }
-
-    @Test
-    fun `showSuccessSnackBar should display success status when called`() = runTest {
-        // Given & When & Then
-        testViewModel.snackBarState.test {
-            testViewModel.onCopyClick(AYAH_TO_COPY)
-            val snackBarState = awaitItem()
-            assertEquals(SnackBarState.Status.Success, snackBarState.status)
-        }
-    }
 
     @Test
     fun `onCopyClick should update state correctly when copy operation succeeds`() = runTest {

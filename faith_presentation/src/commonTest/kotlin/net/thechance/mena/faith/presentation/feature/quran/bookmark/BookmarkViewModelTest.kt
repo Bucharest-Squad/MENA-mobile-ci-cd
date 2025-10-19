@@ -40,8 +40,7 @@ class BookmarkViewModelTest {
         snackbarHandler = mock(MockMode.autofill)
         viewModel = BookmarkViewModel(
             bookmarkRepository = repository,
-            dispatcher = testDispatcher,
-            snackbarHandler = snackbarHandler
+            dispatcher = testDispatcher
         )
     }
 
@@ -53,8 +52,7 @@ class BookmarkViewModelTest {
         // When
         viewModel = BookmarkViewModel(
             bookmarkRepository = repository,
-            dispatcher = testDispatcher,
-            snackbarHandler = snackbarHandler
+            dispatcher = testDispatcher
         )
         advanceUntilIdle()
 
@@ -77,7 +75,7 @@ class BookmarkViewModelTest {
         everySuspend { repository.getAyahBookmarks(any(), any()) } returns emptyList()
 
         // When
-        viewModel = BookmarkViewModel(bookmarkRepository = repository, dispatcher = testDispatcher, snackbarHandler = snackbarHandler)
+        viewModel = BookmarkViewModel(bookmarkRepository = repository, dispatcher = testDispatcher)
         advanceUntilIdle()
 
         // Then
@@ -98,7 +96,7 @@ class BookmarkViewModelTest {
         everySuspend { repository.getAyahBookmarks(any(), any()) } returns fakeBookmarks
         everySuspend { repository.deleteAyahBookmark(BOOKMARK_ID1) } throws exception
 
-        viewModel = BookmarkViewModel(bookmarkRepository = repository, dispatcher = testDispatcher, snackbarHandler = snackbarHandler)
+        viewModel = BookmarkViewModel(bookmarkRepository = repository, dispatcher = testDispatcher)
         advanceUntilIdle()
 
         // When

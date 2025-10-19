@@ -26,6 +26,7 @@ import mena.faith_presentation.generated.resources.error_unauthorized
 import mena.faith_presentation.generated.resources.error_unknown
 import net.thechance.mena.faith.domain.annotation.KoverIgnore
 import net.thechance.mena.faith.domain.exception.FaithException
+import net.thechance.mena.faith.presentation.base.errorstate.ErrorState
 import net.thechance.mena.faith.presentation.base.snackbar.SnackBarState
 import net.thechance.mena.faith.presentation.base.snackbar.SnackbarHandler
 
@@ -33,7 +34,7 @@ import net.thechance.mena.faith.presentation.base.snackbar.SnackbarHandler
 @KoverIgnore
 abstract class BaseViewModel<UI_STATE, UI_EFFECT>(
     initialState: UI_STATE,
-    private val snackbarHandler: SnackbarHandler = SnackbarHandler.Empty,
+    protected val snackbarHandler: SnackbarHandler = SnackbarHandler.Empty,
 ) : ViewModel(), SnackbarHandler by snackbarHandler {
 
     private val _uiState = MutableStateFlow(initialState)
@@ -55,7 +56,7 @@ abstract class BaseViewModel<UI_STATE, UI_EFFECT>(
     protected fun <T> tryToExecute(
         execute: suspend () -> T,
         onSuccess: (suspend (T) -> Unit)? = null,
-        onError: suspend (Throwable) -> Unit = ::handleError,
+        onError: suspend (Throwable) -> Unit = ::mapExceptionToErrorState,
         onStart: suspend () -> Unit = {},
         onFinally: () -> Unit = {},
         dispatcher: CoroutineDispatcher = Dispatchers.IO,
@@ -80,7 +81,7 @@ abstract class BaseViewModel<UI_STATE, UI_EFFECT>(
     }
 
     protected fun <T> tryToCollect(
-        onError: suspend (Throwable) -> Unit = ::handleError,
+        onError: suspend (Throwable) -> Unit = ::mapExceptionToErrorState,
         onEmitNewValue: (T) -> Unit = {},
         coroutineScope: CoroutineScope = viewModelScope,
         dispatcher: CoroutineDispatcher = Dispatchers.IO,
@@ -100,18 +101,16 @@ abstract class BaseViewModel<UI_STATE, UI_EFFECT>(
         }
     }
 
-
-    private fun handleError(error: Throwable) {
-        val faithError = error as? FaithException ?: FaithException.UnknownException
-        val message = faithError.toStringResource()
-        showSnackBar(
-            message = message,
+    protected fun mapExceptionToErrorState(throwable: Throwable): ErrorState {
+        val faithException = throwable as? FaithException ?: FaithException.UnknownException
+        return ErrorState(
+            message = mapExceptionToMessage(faithException),
             status = SnackBarState.Status.Error,
-            scope = viewModelScope
+            exception = faithException
         )
     }
 
-    private fun FaithException.toStringResource() = when (this) {
+    private fun mapExceptionToMessage(exception: FaithException) = when (exception) {
         FaithException.NetworkException -> Res.string.error_network
         FaithException.NoInternetException -> Res.string.error_no_internet
         FaithException.UnauthorizedException -> Res.string.error_unauthorized

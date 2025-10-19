@@ -26,7 +26,12 @@ class BookmarkRepositoryImpl(
 
     override suspend fun addAyahBookmark(surahId: Int, ayahNumber: Int): AyahBookmark {
         val bookmarkDto = executeApiSafely<AyahBookmarkDto> {
-            bookmarkApiService.addBookmark(AddBookmarkRequest(surahId, ayahNumber))
+            bookmarkApiService.addBookmark(
+                AddBookmarkRequest(
+                    surahId = surahId,
+                    ayahNumber = ayahNumber
+                )
+            )
         }
         val surah = executeLocalSafely { ayahDao.getSurah(surahId) }
         val ayah = executeLocalSafely { ayahDao.getAyah(surahId, ayahNumber) }
@@ -41,7 +46,7 @@ class BookmarkRepositoryImpl(
 
     override suspend fun getAyahBookmarks(pageNumber: Int, pageSize: Int): List<AyahBookmark> {
         val response = executeApiSafely<PageResponse<AyahBookmarkDto>> {
-            bookmarkApiService.getBookmarks(pageNumber, pageSize)
+            bookmarkApiService.getBookmarks(pageNumber = pageNumber, pageSize = pageSize)
         }
         return response.items.mapAsync {
             it.toAyahBookmark(
@@ -52,7 +57,7 @@ class BookmarkRepositoryImpl(
                 },
                 fetchAyah = { ayahId, surahId ->
                     executeLocalSafely {
-                        ayahDao.getAyah(ayahId, surahId)
+                        ayahDao.getAyah(ayahId = ayahId, surahId = surahId)
                     }
                 }
             )

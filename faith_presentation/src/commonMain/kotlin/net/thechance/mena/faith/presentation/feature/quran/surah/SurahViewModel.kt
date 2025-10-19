@@ -17,19 +17,19 @@ import net.thechance.mena.faith.domain.repository.QuranRepository
 import net.thechance.mena.faith.presentation.base.BaseViewModel
 import net.thechance.mena.faith.presentation.base.snackbar.SnackBarState
 import net.thechance.mena.faith.presentation.base.snackbar.SnackbarHandler
-import net.thechance.mena.faith.presentation.feature.quran.surah.args.ISurahArgs
-import net.thechance.mena.faith.presentation.util.ClipboardManager
+import net.thechance.mena.faith.presentation.feature.quran.surah.args.SurahArgs
+import net.thechance.mena.faith.presentation.utils.ClipboardManager
 
 class SurahViewModel(
-    private val surahArgs: ISurahArgs,
+    private val surahArgs: SurahArgs,
     private val quranRepository: QuranRepository,
     private val clipboardManager: ClipboardManager,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val bookmarkRepository: BookmarkRepository,
-    snackBarHandler: SnackbarHandler
-) : BaseViewModel<SurahScreenState, SurahScreenEffect>(
-    initialState = SurahScreenState(surahId = surahArgs.surahId, surahName = surahArgs.surahName),
-    snackbarHandler = snackBarHandler
+    snackbarHandler: SnackbarHandler
+) : BaseViewModel<SurahUiState, SurahScreenEffect>(
+    initialState = SurahUiState(surahId = surahArgs.surahId, surahName = surahArgs.surahName),
+    snackbarHandler = snackbarHandler
 ), SurahInteractionListener {
 
     init {
@@ -129,7 +129,7 @@ class SurahViewModel(
     }
 
     private fun onAddBookmarkSuccess() {
-        showSnackBar(
+        snackbarHandler.showSnackBar(
             message = Res.string.bookmark_added_successfully,
             status = SnackBarState.Status.Success,
             scope = viewModelScope
@@ -159,7 +159,7 @@ class SurahViewModel(
     }
 
     private fun showSuccessSnackBar() {
-        showSnackBar(
+        snackbarHandler.showSnackBar(
             message = Res.string.copied_ayah_successfully,
             status = SnackBarState.Status.Success,
             scope = viewModelScope
@@ -167,7 +167,7 @@ class SurahViewModel(
     }
 
     private fun showErrorSnackBar() {
-        showSnackBar(
+        snackbarHandler.showSnackBar(
             message = Res.string.copied_ayah_failed,
             status = SnackBarState.Status.Error,
             scope = viewModelScope

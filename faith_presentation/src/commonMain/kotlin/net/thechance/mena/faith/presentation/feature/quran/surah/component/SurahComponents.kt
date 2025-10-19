@@ -34,7 +34,7 @@ import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.faith.domain.entity.Ayah
 import net.thechance.mena.faith.presentation.designSystem.theme.quran
 import net.thechance.mena.faith.presentation.feature.quran.surah.SurahInteractionListener
-import net.thechance.mena.faith.presentation.feature.quran.surah.SurahScreenState
+import net.thechance.mena.faith.presentation.feature.quran.surah.SurahUiState
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -94,7 +94,7 @@ internal fun BasmalaHeader(
 
 @Composable
 internal fun AnimatedAyahActionButtons(
-    state: SurahScreenState,
+    state: SurahUiState,
     listener: SurahInteractionListener,
     modifier: Modifier = Modifier
 ) {
@@ -115,7 +115,7 @@ internal fun AnimatedAyahActionButtons(
     }
 }
 
-private fun isValidAyahSelection(state: SurahScreenState): Boolean {
+private fun isValidAyahSelection(state: SurahUiState): Boolean {
     return state.selectedAyahIndex != null &&
             state.selectedAyahIndex >= 0 &&
             state.selectedAyahIndex < state.ayatOfSurah.size

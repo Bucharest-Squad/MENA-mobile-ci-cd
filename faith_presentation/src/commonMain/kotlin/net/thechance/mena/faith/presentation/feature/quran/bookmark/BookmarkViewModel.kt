@@ -20,15 +20,12 @@ import net.thechance.mena.faith.domain.repository.BookmarkRepository
 import net.thechance.mena.faith.presentation.base.BaseViewModel
 import net.thechance.mena.faith.presentation.base.createPagingSourceFlow
 import net.thechance.mena.faith.presentation.base.snackbar.SnackBarState
-import net.thechance.mena.faith.presentation.base.snackbar.SnackbarHandler
 
 class BookmarkViewModel(
     private val bookmarkRepository: BookmarkRepository,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
-    snackbarHandler: SnackbarHandler,
-) : BaseViewModel<BookmarksScreenState, BookmarkEffect>(
-    BookmarksScreenState(),
-    snackbarHandler = snackbarHandler
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+) : BaseViewModel<BookMarkUiState, BookmarkEffect>(
+    BookMarkUiState()
 ),
     BookmarkInteractionListener {
 
@@ -81,7 +78,7 @@ class BookmarkViewModel(
         }
     }
 
-    private fun onDeleteBookmarkSuccess() = showSnackBar(
+    private fun onDeleteBookmarkSuccess() = snackbarHandler.showSnackBar(
         message = Res.string.bookmark_removed_successfully,
         status = SnackBarState.Status.Success,
         scope = viewModelScope

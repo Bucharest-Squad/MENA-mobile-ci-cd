@@ -9,6 +9,7 @@ import kotlin.math.round
 import kotlin.math.sin
 
 class QiblahBearingCalculatorUseCase {
+    private var currentContinuousAzimuth: Float = 0f
     fun calculateQiblahAngle(userLocation: Location): Double {
         validateCoordinates(location = userLocation)
         val userLatitudeRadians = userLocation.latitude.toRadians()
@@ -17,6 +18,7 @@ class QiblahBearingCalculatorUseCase {
         val kaabaLongitudeRadians = KAABA_LONGITUDE.toRadians()
 
         val longitudeDifference = kaabaLongitudeRadians - userLongitudeRadians
+
 
         val y = sin(longitudeDifference) * cos(kaabaLatitudeRadians)
         val x =
@@ -29,6 +31,22 @@ class QiblahBearingCalculatorUseCase {
         val qiblaAngle = (bearing.toDegrees() + 360) % 360
 
         return round(qiblaAngle)
+    }
+
+    fun calculateContinuousAzimuth(rawAzimuth: Float): Float {
+        val oldAngleOnCircle = currentContinuousAzimuth % 360
+        val diff = getShortestAngleDifference(from = oldAngleOnCircle, to = rawAzimuth)
+        currentContinuousAzimuth += diff
+        return currentContinuousAzimuth
+    }
+
+    fun getShortestAngleDifference(from: Float, to: Float): Float {
+        val diff = (to - from) % 360
+        return when {
+            diff > 180f -> diff - 360f
+            diff < -180f -> diff + 360f
+            else -> diff
+        }
     }
 
     private fun validateCoordinates(location: Location) {
