@@ -32,15 +32,15 @@ class BookmarkViewModelTest {
     private lateinit var testDispatcher: TestDispatcher
     private var repository: BookmarkRepository = mock(MockMode.autofill)
     private lateinit var viewModel: BookmarkViewModel
-    private lateinit var snackbarHandler: SnackbarHandler
+    private val snackbarHandler: SnackbarHandler = mock(MockMode.autofill)
 
     @BeforeTest
     fun setUp() {
         testDispatcher  = StandardTestDispatcher()
-        snackbarHandler = mock(MockMode.autofill)
         viewModel = BookmarkViewModel(
             bookmarkRepository = repository,
-            dispatcher = testDispatcher
+            dispatcher = testDispatcher,
+            snackbarHandler
         )
     }
 
@@ -52,7 +52,8 @@ class BookmarkViewModelTest {
         // When
         viewModel = BookmarkViewModel(
             bookmarkRepository = repository,
-            dispatcher = testDispatcher
+            dispatcher = testDispatcher,
+            snackbarHandler
         )
         advanceUntilIdle()
 
@@ -78,7 +79,8 @@ class BookmarkViewModelTest {
         // When
         viewModel = BookmarkViewModel(
             bookmarkRepository = repository,
-            dispatcher = testDispatcher
+            dispatcher = testDispatcher,
+            snackbarHandler
         )
         advanceUntilIdle()
         viewModel.onDeleteBookmarkClick(BOOKMARK_ID1)
@@ -101,7 +103,8 @@ class BookmarkViewModelTest {
             // When
             viewModel = BookmarkViewModel(
                 bookmarkRepository = repository,
-                dispatcher = testDispatcher
+                dispatcher = testDispatcher,
+                snackbarHandler
             )
             advanceUntilIdle()
             viewModel.onDeleteBookmarkClick(BOOKMARK_ID1)
@@ -125,7 +128,8 @@ class BookmarkViewModelTest {
             // When
             viewModel = BookmarkViewModel(
                 bookmarkRepository = repository,
-                dispatcher = testDispatcher
+                dispatcher = testDispatcher,
+                snackbarHandler
             )
             advanceUntilIdle()
             viewModel.onDeleteBookmarkClick(BOOKMARK_ID1)
@@ -149,7 +153,11 @@ class BookmarkViewModelTest {
         everySuspend { repository.getAyahBookmarks(any(), any()) } returns emptyList()
 
         // When
-        viewModel = BookmarkViewModel(bookmarkRepository = repository, dispatcher = testDispatcher)
+        viewModel = BookmarkViewModel(
+            bookmarkRepository = repository,
+            dispatcher = testDispatcher,
+            snackBarState = snackbarHandler
+        )
         advanceUntilIdle()
 
         // Then
@@ -170,7 +178,11 @@ class BookmarkViewModelTest {
         everySuspend { repository.getAyahBookmarks(any(), any()) } returns fakeBookmarks
         everySuspend { repository.deleteAyahBookmark(BOOKMARK_ID1) } throws exception
 
-        viewModel = BookmarkViewModel(bookmarkRepository = repository, dispatcher = testDispatcher)
+        viewModel = BookmarkViewModel(
+            bookmarkRepository = repository,
+            dispatcher = testDispatcher,
+            snackBarState = snackbarHandler
+        )
         advanceUntilIdle()
 
         // When
