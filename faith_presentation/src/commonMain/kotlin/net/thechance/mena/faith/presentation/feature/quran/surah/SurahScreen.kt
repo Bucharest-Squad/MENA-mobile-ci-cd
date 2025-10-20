@@ -51,6 +51,7 @@ fun SurahScreen(
     ObserveAsEffect(viewModel.uiEffect) { effect ->
         when (effect) {
             is SurahScreenEffect.NavigateBack -> navController.navigateUp()
+            //TODO("Navigate to chat screen")
             is SurahScreenEffect.ShareAyah -> {}
             is SurahScreenEffect.NavigateToSearchScreen -> {
                 navController.navigate(
