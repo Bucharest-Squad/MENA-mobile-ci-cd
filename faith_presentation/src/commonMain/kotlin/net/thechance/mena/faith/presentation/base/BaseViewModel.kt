@@ -55,7 +55,7 @@ abstract class BaseViewModel<UI_STATE, UI_EFFECT>(
     protected fun <T> tryToExecute(
         execute: suspend () -> T,
         onSuccess: (suspend (T) -> Unit)? = null,
-        onError: suspend (Throwable) -> Unit = ::mapExceptionToErrorState,
+        onError: suspend (ErrorState) -> Unit = {},
         onStart: suspend () -> Unit = {},
         onFinally: () -> Unit = {},
         dispatcher: CoroutineDispatcher = Dispatchers.IO,
@@ -65,7 +65,7 @@ abstract class BaseViewModel<UI_STATE, UI_EFFECT>(
         return inScope.launch(dispatcher) {
             val handler = CoroutineExceptionHandler { _, throwable ->
                 inScope.launch {
-                    onError(throwable)
+                    onError(mapExceptionToErrorState(throwable))
                 }
             }
             inScope.launch(dispatcher + handler) {
@@ -73,14 +73,14 @@ abstract class BaseViewModel<UI_STATE, UI_EFFECT>(
                 delay(delayMillis)
                 runCatching { execute() }
                     .onSuccess { result -> onSuccess?.invoke(result) }
-                    .onFailure { throwable -> onError(throwable) }
+                    .onFailure { throwable -> onError(mapExceptionToErrorState(throwable)) }
                 onFinally()
             }
         }
     }
 
     protected fun <T> tryToCollect(
-        onError: suspend (Throwable) -> Unit = ::mapExceptionToErrorState,
+        onError: suspend (ErrorState) -> Unit = {},
         onEmitNewValue: (T) -> Unit = {},
         coroutineScope: CoroutineScope = viewModelScope,
         dispatcher: CoroutineDispatcher = Dispatchers.IO,
@@ -90,12 +90,16 @@ abstract class BaseViewModel<UI_STATE, UI_EFFECT>(
             try {
                 block()
                     .catch {
-                        onError(it)
+                        onError(
+                            mapExceptionToErrorState(it)
+                        )
                     }.collect {
                         onEmitNewValue(it)
                     }
             } catch (e: Throwable) {
-                onError(e)
+                onError(
+                    mapExceptionToErrorState(e)
+                )
             }
         }
     }

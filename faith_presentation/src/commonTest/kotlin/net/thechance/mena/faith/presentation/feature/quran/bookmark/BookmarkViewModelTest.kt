@@ -40,7 +40,6 @@ class BookmarkViewModelTest {
         viewModel = BookmarkViewModel(
             bookmarkRepository = repository,
             dispatcher = testDispatcher,
-            snackbarHandler
         )
     }
 
@@ -53,8 +52,8 @@ class BookmarkViewModelTest {
         viewModel = BookmarkViewModel(
             bookmarkRepository = repository,
             dispatcher = testDispatcher,
-            snackbarHandler
-        )
+
+            )
         advanceUntilIdle()
 
         // Then
@@ -80,7 +79,6 @@ class BookmarkViewModelTest {
         viewModel = BookmarkViewModel(
             bookmarkRepository = repository,
             dispatcher = testDispatcher,
-            snackbarHandler
         )
         advanceUntilIdle()
         viewModel.onDeleteBookmarkClick(BOOKMARK_ID1)
@@ -104,7 +102,6 @@ class BookmarkViewModelTest {
             viewModel = BookmarkViewModel(
                 bookmarkRepository = repository,
                 dispatcher = testDispatcher,
-                snackbarHandler
             )
             advanceUntilIdle()
             viewModel.onDeleteBookmarkClick(BOOKMARK_ID1)
@@ -129,8 +126,8 @@ class BookmarkViewModelTest {
             viewModel = BookmarkViewModel(
                 bookmarkRepository = repository,
                 dispatcher = testDispatcher,
-                snackbarHandler
-            )
+
+                )
             advanceUntilIdle()
             viewModel.onDeleteBookmarkClick(BOOKMARK_ID1)
             viewModel.onDeleteBookmarkClick(BOOKMARK_ID2)
@@ -156,8 +153,8 @@ class BookmarkViewModelTest {
         viewModel = BookmarkViewModel(
             bookmarkRepository = repository,
             dispatcher = testDispatcher,
-            snackBarState = snackbarHandler
-        )
+
+            )
         advanceUntilIdle()
 
         // Then
@@ -181,8 +178,8 @@ class BookmarkViewModelTest {
         viewModel = BookmarkViewModel(
             bookmarkRepository = repository,
             dispatcher = testDispatcher,
-            snackBarState = snackbarHandler
-        )
+
+            )
         advanceUntilIdle()
 
         // When

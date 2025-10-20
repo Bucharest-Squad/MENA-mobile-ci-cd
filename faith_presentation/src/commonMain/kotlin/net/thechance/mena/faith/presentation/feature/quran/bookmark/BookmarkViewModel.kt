@@ -18,6 +18,7 @@ import mena.faith_presentation.generated.resources.bookmark_removed_successfully
 import net.thechance.mena.faith.domain.entity.AyahBookmark
 import net.thechance.mena.faith.domain.repository.BookmarkRepository
 import net.thechance.mena.faith.presentation.base.BaseViewModel
+import net.thechance.mena.faith.presentation.base.ErrorState
 import net.thechance.mena.faith.presentation.base.createPagingSourceFlow
 import net.thechance.mena.faith.presentation.base.snackbar.SnackBarState
 import net.thechance.mena.faith.presentation.base.snackbar.SnackbarHandler
@@ -25,10 +26,10 @@ import net.thechance.mena.faith.presentation.base.snackbar.SnackbarHandler
 class BookmarkViewModel(
     private val bookmarkRepository: BookmarkRepository,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
-    snackBarState: SnackbarHandler
+    snackBarHandler: SnackbarHandler
 ) : BaseViewModel<BookMarkUiState, BookmarkEffect>(
     BookMarkUiState(),
-    snackbarHandler = snackBarState
+    snackbarHandler = snackBarHandler
 ),
     BookmarkInteractionListener {
 
@@ -93,7 +94,7 @@ class BookmarkViewModel(
         }
     }
 
-    private fun handleErrorState(throwable: Throwable) {
+    private fun handleErrorState(errorState: ErrorState) {
         // TODO: handle error here
     }
 }
