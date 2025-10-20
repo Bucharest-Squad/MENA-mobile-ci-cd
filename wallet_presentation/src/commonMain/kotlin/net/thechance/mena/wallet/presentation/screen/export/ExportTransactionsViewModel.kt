@@ -49,7 +49,7 @@ class ExportTransactionsViewModel(
     @Provided private val statementRepository: StatementRepository,
     @Provided private val pdfHandler: PdfHandler,
     private val stringProvider: StringProvider,
-    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : BaseViewModel<ExportTransactionsState, ExportTransactionsEffect>(
     ExportTransactionsState()
 ), ExportTransactionsListener {
@@ -146,7 +146,7 @@ class ExportTransactionsViewModel(
             callee = ::getStatement,
             onSuccess = ::saveStatementToCache,
             onError = { error -> onViewAndShareError(error) },
-            dispatcher = ioDispatcher
+            dispatcher = dispatcher
         )
     }
 
@@ -161,7 +161,7 @@ class ExportTransactionsViewModel(
             callee = ::getStatement,
             onSuccess = { statement -> downloadStatement(statement) },
             onError = { error -> handleDownloadError(error) },
-            dispatcher = ioDispatcher
+            dispatcher = dispatcher
         )
     }
 
@@ -348,7 +348,7 @@ class ExportTransactionsViewModel(
             },
             onSuccess = { filePath -> onDownloadSuccess(filePath, statement) },
             onError = ::onDownloadFailure,
-            dispatcher = ioDispatcher
+            dispatcher = dispatcher
         )
     }
 
@@ -404,7 +404,6 @@ class ExportTransactionsViewModel(
             is ErrorState.NoInternet -> {
                 updateState { oldState ->
                     oldState.copy(
-                        noInternetConnection = true,
                         isDownloadLoading = false,
                         isViewAndShareLoading = false
                     )

@@ -266,26 +266,6 @@ class ExportTransactionsViewModelTest {
     }
 
     @Test
-    fun `onDownloadClicked with NoInternetException should update noInternetConnection state`() =
-        runTest {
-            everySuspend {
-                repository.getStatementWithMetadata(any())
-            } throws NoInternetException()
-
-            initViewModel()
-
-            viewModel.state.test {
-                viewModel.onDownloadClicked()
-                skipItems(5)
-
-                val state = awaitItem()
-                assertTrue(state.noInternetConnection)
-
-                cancelAndIgnoreRemainingEvents()
-            }
-        }
-
-    @Test
     fun `onDownloadClicked with generic error should show failure snackBar`() = runTest {
         everySuspend {
             repository.getStatementWithMetadata(any())
@@ -374,22 +354,6 @@ class ExportTransactionsViewModelTest {
             cancelAndIgnoreRemainingEvents()
         }
     }
-
-    @Test
-    fun `onViewAndShareClicked with NoInternetException should update noInternetConnection`() =
-        runTest {
-            everySuspend { repository.getStatementWithMetadata(any()) } throws NoInternetException()
-
-            initViewModel()
-            viewModel.state.test {
-                viewModel.onViewAndShareClicked()
-                skipItems(3)
-
-                val state = awaitItem()
-                assertTrue(state.noInternetConnection)
-                cancelAndIgnoreRemainingEvents()
-            }
-        }
 
     @Test
     fun `toStartOfDayLocalDateTime should parse valid date string`() = runTest {
@@ -611,7 +575,7 @@ class ExportTransactionsViewModelTest {
             transactionRepository = transactionRepository,
             statementRepository = repository,
             pdfHandler = pdfHandler,
-            ioDispatcher = testDispatcher,
+            dispatcher = testDispatcher,
             stringProvider = stringProvider
         )
         advanceUntilIdle()

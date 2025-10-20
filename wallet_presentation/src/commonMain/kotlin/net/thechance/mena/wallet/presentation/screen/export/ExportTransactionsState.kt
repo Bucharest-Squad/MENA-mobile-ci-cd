@@ -14,8 +14,6 @@ data class ExportTransactionsState(
     val isViewAndShareLoading: Boolean = false,
     val isViewAndShareButtonEnabled: Boolean = true,
     val isDownloadButtonEnabled: Boolean = true,
-    val hasShownEmptyFileToast: Boolean = false,
-    val noInternetConnection: Boolean = false,
     val selectedTransactionsTypes: Set<FilterType> = emptySet(),
     val isDateBottomSheetVisible: Boolean = false,
     val datePickerMode: DatePickerMode = DatePickerMode.START_DATE,
