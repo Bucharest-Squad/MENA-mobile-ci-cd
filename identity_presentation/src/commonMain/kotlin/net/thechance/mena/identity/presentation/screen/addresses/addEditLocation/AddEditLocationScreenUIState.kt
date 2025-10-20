@@ -31,7 +31,9 @@ data class AddEditAddressUIState(
     val isMainAddress: Boolean = false,
 )
 
+@OptIn(ExperimentalUuidApi::class)
 fun AddEditAddressUIState.toEntity() : Address = Address(
+    id = addressID,
     latitude = coordinates.latitude,
     longitude = coordinates.longitude,
     addressLine = addressDetails,

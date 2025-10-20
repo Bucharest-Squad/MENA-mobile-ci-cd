@@ -15,7 +15,9 @@ fun Address.toUiState(id: Uuid? = null, isMainAddress: Boolean = false) : Addres
     coordinates = CoordinatesUiState(latitude, longitude)
 )
 
+@OptIn(ExperimentalUuidApi::class)
 fun AddressUIState.toEntity() : Address = Address(
+    id = id,
     latitude = coordinates.latitude,
     longitude = coordinates.longitude,
     addressLine = addressDetails,

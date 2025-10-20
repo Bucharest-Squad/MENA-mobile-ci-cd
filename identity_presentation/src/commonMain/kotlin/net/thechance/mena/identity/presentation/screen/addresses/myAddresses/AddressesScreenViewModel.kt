@@ -139,7 +139,7 @@ class AddressesScreenViewModel(
                 val activeAddress = addressesRepository.getActiveAddress()
                 addresses.map { address ->
                     val isActive = activeAddress == address
-                    address.toUiState(isMainAddress = isActive)
+                    address.toUiState(id = address.id, isMainAddress = isActive)
                 }
             },
             onSuccess = ::onGetUserAddressesSuccess,

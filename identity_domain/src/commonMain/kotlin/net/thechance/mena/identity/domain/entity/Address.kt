@@ -1,6 +1,10 @@
 package net.thechance.mena.identity.domain.entity
 
-data class Address(
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
+
+data class Address @OptIn(ExperimentalUuidApi::class) constructor(
+    val id: Uuid? = null,
     val latitude: Double,
     val longitude: Double,
     val addressLine: String,

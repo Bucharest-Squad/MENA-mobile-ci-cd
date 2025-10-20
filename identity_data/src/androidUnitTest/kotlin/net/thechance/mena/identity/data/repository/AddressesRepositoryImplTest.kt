@@ -160,6 +160,7 @@ class AddressesRepositoryImplTest {
     val fakeAddressId = Uuid.random()
     
     val fakeNewAddress = Address(
+        id = null,
         addressLine = "Cairo",
         addressType = AddressType.getAddressTypeFromString("Home"),
         latitude = 30.0444,
