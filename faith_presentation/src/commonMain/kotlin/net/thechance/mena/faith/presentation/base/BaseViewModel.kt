@@ -26,7 +26,6 @@ import mena.faith_presentation.generated.resources.error_unauthorized
 import mena.faith_presentation.generated.resources.error_unknown
 import net.thechance.mena.faith.domain.annotation.KoverIgnore
 import net.thechance.mena.faith.domain.exception.FaithException
-import net.thechance.mena.faith.presentation.base.snackbar.SnackBarState
 import net.thechance.mena.faith.presentation.base.snackbar.SnackbarHandler
 
 
@@ -108,7 +107,6 @@ abstract class BaseViewModel<UI_STATE, UI_EFFECT>(
         val faithException = throwable as? FaithException ?: FaithException.UnknownException
         return ErrorState(
             message = mapExceptionToMessage(faithException),
-            status = SnackBarState.Status.Error,
             exception = faithException
         )
     }

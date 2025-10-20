@@ -105,7 +105,7 @@ internal fun AnimatedAyahActionButtons(
         modifier = modifier
     ) {
         if (isValidAyahSelection(state)) {
-            val selectedAyah = state.selectedAyahIndex?.let { state.ayatOfSurah[it] }
+            val selectedAyah = state.selectedAyahNumber?.let { state.ayatOfSurah[it.dec()] }
             AyahActionButtons(
                 onBookmarkClick = { listener.onBookmarkClick(selectedAyah?.number ?: 0) },
                 onCopyClick = { listener.onCopyClick(ayahContent = state.selectedAyah) },
@@ -116,9 +116,9 @@ internal fun AnimatedAyahActionButtons(
 }
 
 private fun isValidAyahSelection(state: SurahUiState): Boolean {
-    return state.selectedAyahIndex != null &&
-            state.selectedAyahIndex >= 0 &&
-            state.selectedAyahIndex < state.ayatOfSurah.size
+    return state.selectedAyahNumber != null &&
+            state.selectedAyahNumber >= 0 &&
+            state.selectedAyahNumber < state.ayatOfSurah.size
 }
 
 @Composable

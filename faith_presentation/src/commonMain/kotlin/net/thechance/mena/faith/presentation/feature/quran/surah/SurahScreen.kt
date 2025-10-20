@@ -147,7 +147,7 @@ private fun AyatOfSurah(
     )
     HandleInitialScroll(
         initialAyahToScroll = state.initialAyahToScroll,
-        selectedAyahIndex = state.selectedAyahIndex,
+        selectedAyahIndex = state.selectedAyahNumber,
         isBasmalaVisible = state.isBasmalaVisible,
         lazyListState = lazyListState,
         highlightAyah = listener::highlightAyah,
@@ -162,7 +162,7 @@ private fun AyatOfSurah(
         if (state.isBasmalaVisible) {
             item {
                 BasmalaHeader(
-                    selectedAyahIndex = state.selectedAyahIndex,
+                    selectedAyahIndex = state.selectedAyahNumber,
                     onDismissActionButtons = listener::onDismissActionButtons
                 )
             }
@@ -172,7 +172,7 @@ private fun AyatOfSurah(
             chunkAyat = ayahChunks[chunkIndex]
             UnifiedChunkText(
                 chunkAyat = chunkAyat,
-                selectedAyahIndex = state.selectedAyahIndex,
+                selectedAyahIndex = state.selectedAyahNumber,
                 onLongPress = { ayah ->
                     listener.onAyahLongPress(
                         ayahContent = ayah.plainContent,
@@ -377,7 +377,7 @@ private fun SurahScreenPreview() {
                         )
                     ),
                     isBasmalaVisible = true,
-                    selectedAyahIndex = null,
+                    selectedAyahNumber = null,
                     isAyahActionButtonsVisible = false,
                     initialAyahToScroll = null
                 ),

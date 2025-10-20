@@ -82,7 +82,7 @@ class SurahViewModelTest {
         testViewModel.onAyahLongPress(TEST_AYAH_CONTENT, TEST_AYAH_INDEX)
 
         // Then
-        assertEquals(TEST_AYAH_INDEX, testViewModel.uiState.value.selectedAyahIndex)
+        assertEquals(TEST_AYAH_INDEX, testViewModel.uiState.value.selectedAyahNumber)
     }
 
     @Test
@@ -95,7 +95,7 @@ class SurahViewModelTest {
 
         // Then
         assertEquals(SECOND_AYAH_CONTENT, testViewModel.uiState.value.selectedAyah)
-        assertEquals(SECOND_AYAH_INDEX, testViewModel.uiState.value.selectedAyahIndex)
+        assertEquals(SECOND_AYAH_INDEX, testViewModel.uiState.value.selectedAyahNumber)
     }
 
     @Test
@@ -109,7 +109,7 @@ class SurahViewModelTest {
             testDispatcher.scheduler.advanceUntilIdle()
 
             // Then
-            assertEquals(0, testViewModel.uiState.value.selectedAyahIndex)
+            assertEquals(0, testViewModel.uiState.value.selectedAyahNumber)
         }
 
     @Test
@@ -220,7 +220,7 @@ class SurahViewModelTest {
             testViewModel.onAyahLongPress(TEST_AYAH_CONTENT, SECOND_AYAH_INDEX)
 
             // Then
-            assertEquals(SECOND_AYAH_INDEX, testViewModel.uiState.value.selectedAyahIndex)
+            assertEquals(SECOND_AYAH_INDEX, testViewModel.uiState.value.selectedAyahNumber)
         }
 
     @Test

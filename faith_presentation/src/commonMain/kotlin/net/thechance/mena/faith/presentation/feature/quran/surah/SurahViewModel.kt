@@ -47,7 +47,7 @@ class SurahViewModel(
                     it.copy(
                         ayatOfSurah = ayat,
                         initialAyahToScroll = surahArgs.ayahNumber,
-                        selectedAyahIndex = surahArgs.ayahNumber
+                        selectedAyahNumber = surahArgs.ayahNumber
                     )
                 }
             },
@@ -60,7 +60,7 @@ class SurahViewModel(
         updateState {
             it.copy(
                 initialAyahToScroll = ayahNumber,
-                selectedAyahIndex = ayahNumber
+                selectedAyahNumber = ayahNumber
             )
         }
     }
@@ -70,7 +70,7 @@ class SurahViewModel(
     override fun onInitialAyahScrolled() {
         viewModelScope.launch {
             delay(2000L)
-            updateState { it.copy(selectedAyahIndex = null, initialAyahToScroll = null) }
+            updateState { it.copy(selectedAyahNumber = null, initialAyahToScroll = null) }
         }
 
     }
@@ -80,7 +80,7 @@ class SurahViewModel(
             it.copy(
                 isAyahActionButtonsVisible = true,
                 selectedAyah = ayahContent,
-                selectedAyahIndex = ayahIndex,
+                selectedAyahNumber = ayahIndex,
             )
         }
     }
@@ -103,7 +103,7 @@ class SurahViewModel(
             it.copy(
                 isAyahActionButtonsVisible = false,
                 selectedAyah = "",
-                selectedAyahIndex = null
+                selectedAyahNumber = null
             )
         }
     }
@@ -125,7 +125,7 @@ class SurahViewModel(
         updateState {
             it.copy(
                 isAyahActionButtonsVisible = false,
-                selectedAyahIndex = null
+                selectedAyahNumber = null
             )
         }
     }
@@ -143,7 +143,7 @@ class SurahViewModel(
             it.copy(
                 isAyahActionButtonsVisible = false,
                 selectedAyah = ayahContent,
-                selectedAyahIndex = null
+                selectedAyahNumber = null
             )
         }
         sendEffect(SurahScreenEffect.ShareAyah(ayahContent))
@@ -154,7 +154,7 @@ class SurahViewModel(
         updateState {
             it.copy(
                 isAyahActionButtonsVisible = false,
-                selectedAyahIndex = null,
+                selectedAyahNumber = null,
                 selectedAyah = ayahContent
             )
         }
@@ -179,7 +179,7 @@ class SurahViewModel(
     private fun showErrorBookMarkSnackBar(state: ErrorState) {
         snackbarHandler.showSnackBar(
             message = state.message,
-            status = state.status,
+            status = SnackBarState.Status.Error,
             scope = viewModelScope
         )
     }
