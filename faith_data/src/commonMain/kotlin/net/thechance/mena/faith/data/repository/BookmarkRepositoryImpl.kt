@@ -48,7 +48,7 @@ class BookmarkRepositoryImpl(
         val response = executeApiSafely<PageResponse<AyahBookmarkDto>> {
             bookmarkApiService.getBookmarks(pageNumber = pageNumber, pageSize = pageSize)
         }
-        return response.items.mapAsync {
+        return response.items?.mapAsync {
             it.toAyahBookmark(
                 fetchSurah = { surahId ->
                     executeLocalSafely {
@@ -61,7 +61,7 @@ class BookmarkRepositoryImpl(
                     }
                 }
             )
-        }
+        } ?: emptyList()
     }
 
     override suspend fun deleteAyahBookmark(ayahBookmarkId: Int) {
