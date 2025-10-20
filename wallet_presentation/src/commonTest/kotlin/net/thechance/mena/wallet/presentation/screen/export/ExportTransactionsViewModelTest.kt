@@ -104,6 +104,7 @@ class ExportTransactionsViewModelTest {
             assertTrue(state.isCustomFilterCardSelected)
         }
     }
+
     @Test
     fun `onDownloadClicked with empty pdf should show toast`() = runTest {
         everySuspend { repository.getStatementWithMetadata(any()) } returns createMockStatementWithMetadata(
@@ -135,11 +136,11 @@ class ExportTransactionsViewModelTest {
             viewModel.onTypeSelected(type)
 
             val stateWithType = awaitItem()
-            assertTrue(stateWithType.selectedTransactionsTypes.contains(type))
+            assertTrue(stateWithType.filterState.selectedTransactionsTypes.contains(type))
 
             viewModel.onTypeSelected(type)
             val stateWithoutType = awaitItem()
-            assertFalse(stateWithoutType.selectedTransactionsTypes.contains(type))
+            assertFalse(stateWithoutType.filterState.selectedTransactionsTypes.contains(type))
         }
     }
 
@@ -198,7 +199,7 @@ class ExportTransactionsViewModelTest {
             viewModel.onPickDateClicked(selectedDate)
 
             val state = awaitItem()
-            assertEquals(selectedDate, state.startDate)
+            assertEquals(selectedDate, state.filterState.startDate)
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -212,12 +213,12 @@ class ExportTransactionsViewModelTest {
             viewModel.onEndDateClicked()
 
             val state = awaitItem()
-            assertTrue(state.isDateBottomSheetVisible)
+            assertTrue(state.dateState.isDateBottomSheetVisible)
             assertEquals(
                 ExportTransactionsState.DatePickerMode.END_DATE,
-                state.datePickerMode
+                state.dateState.datePickerMode
             )
-            assertNotNull(state.defaultEndDate)
+            assertNotNull(state.dateState.defaultEndDate)
         }
     }
 
@@ -507,9 +508,12 @@ class ExportTransactionsViewModelTest {
     @Test
     fun whenSelectedTransactionsTypesNotEmpty_thenHasActiveFiltersIsTrue() = runTest {
         val state = ExportTransactionsState(
-            selectedTransactionsTypes = setOf(FilterType.SENT),
-            startDate = LocalDate(2025, 9, 1),
-            endDate = LocalDate(2025, 9, 30)
+            filterState =
+                ExportTransactionsState.FilterState(
+                    selectedTransactionsTypes = setOf(FilterType.SENT),
+                    startDate = LocalDate(2025, 9, 1),
+                    endDate = LocalDate(2025, 9, 30)
+                )
         )
         assertTrue(state.hasActiveFilters)
     }
@@ -615,11 +619,11 @@ class ExportTransactionsViewModelTest {
     ): StatementWithMetaData {
         return StatementWithMetaData(
             byteArray = byteArray,
-                startDate = startDate,
-                endDate = endDate,
-                totalInflows = totalInflows,
-                totalOutflows = totalOutflows,
-            )
+            startDate = startDate,
+            endDate = endDate,
+            totalInflows = totalInflows,
+            totalOutflows = totalOutflows,
+        )
     }
 
 }
