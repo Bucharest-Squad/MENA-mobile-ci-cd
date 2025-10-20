@@ -1,4 +1,4 @@
-package net.thechance.mena.wallet.presentation.screen.transaction_details
+package net.thechance.mena.wallet.presentation.screen.transaction_details.utils
 
 import kotlinx.serialization.Serializable
 
