@@ -198,10 +198,7 @@ private fun MainTopBar() {
                         color = Theme.colorScheme.background.surfaceLow,
                         shape = RoundedCornerShape(Theme.radius.full)
                     )
-                    .padding(
-                        horizontal = Theme.spacing._8,
-                        vertical = Theme.spacing._4
-                    ),
+                    .padding(horizontal = Theme.spacing._8, vertical = Theme.spacing._4),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(Theme.spacing._4)
             ) {

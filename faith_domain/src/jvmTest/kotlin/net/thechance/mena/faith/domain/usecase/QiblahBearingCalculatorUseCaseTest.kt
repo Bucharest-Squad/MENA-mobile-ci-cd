@@ -222,16 +222,13 @@ class QiblahBearingCalculatorUseCaseTest {
         const val ZERO_LOCATION = 0.0
         const val RANGE_ANGLE_START = 0.0
         const val RANGE_ANGLE_END = 360.0
-
-        private const val ZERO_ANGLE = 0f
-        private const val SMALL_ANGLE = 10f
-        private const val MEDIUM_ANGLE = 50f
-        private const val LARGE_ANGLE = 350f
-        private const val STRAIGHT_ANGLE = 180f
-        private const val FULL_CIRCLE = 360f
-        private const val NEGATIVE_ANGLE = -10f
-        private const val ANGLE_OVER_360 = 370f
-
+        const val ZERO_ANGLE = 0f
+        const val SMALL_ANGLE = 10f
+        const val MEDIUM_ANGLE = 50f
+        const val LARGE_ANGLE = 350f
+        const val STRAIGHT_ANGLE = 180f
+        const val FULL_CIRCLE = 360f
+        const val NEGATIVE_ANGLE = -10f
         const val EXPECTED_DIFF_40 = 40f
         const val EXPECTED_DIFF_20 = 20f
         const val EXPECTED_NEGATIVE_40 = -40f

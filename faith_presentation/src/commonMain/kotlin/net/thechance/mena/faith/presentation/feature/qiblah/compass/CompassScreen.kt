@@ -171,7 +171,8 @@ private fun CompassView(
 @Composable
 private fun DirectionPlaceHolder(modifier: Modifier = Modifier) {
     Box(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
             .padding(20.dp),
         contentAlignment = Alignment.Center
     ) {

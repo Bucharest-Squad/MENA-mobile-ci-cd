@@ -58,9 +58,7 @@ fun CalibrateDeviceScreen(
 }
 
 @Composable
-private fun Content(
-    listener: CalibrateDeviceInteractionListener
-) {
+private fun Content(listener: CalibrateDeviceInteractionListener) {
     Scaffold(
         topBar = {
             AppBar(
