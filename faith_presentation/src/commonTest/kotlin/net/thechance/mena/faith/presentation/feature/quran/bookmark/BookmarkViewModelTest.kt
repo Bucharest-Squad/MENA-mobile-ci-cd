@@ -40,6 +40,7 @@ class BookmarkViewModelTest {
         viewModel = BookmarkViewModel(
             bookmarkRepository = repository,
             dispatcher = testDispatcher,
+            snackBarHandler = snackbarHandler
         )
     }
 
@@ -52,6 +53,7 @@ class BookmarkViewModelTest {
         viewModel = BookmarkViewModel(
             bookmarkRepository = repository,
             dispatcher = testDispatcher,
+            snackBarHandler = snackbarHandler
 
             )
         advanceUntilIdle()
@@ -79,6 +81,7 @@ class BookmarkViewModelTest {
         viewModel = BookmarkViewModel(
             bookmarkRepository = repository,
             dispatcher = testDispatcher,
+            snackBarHandler = snackbarHandler
         )
         advanceUntilIdle()
         viewModel.onDeleteBookmarkClick(BOOKMARK_ID1)
@@ -102,6 +105,7 @@ class BookmarkViewModelTest {
             viewModel = BookmarkViewModel(
                 bookmarkRepository = repository,
                 dispatcher = testDispatcher,
+                snackBarHandler = snackbarHandler
             )
             advanceUntilIdle()
             viewModel.onDeleteBookmarkClick(BOOKMARK_ID1)
@@ -126,6 +130,7 @@ class BookmarkViewModelTest {
             viewModel = BookmarkViewModel(
                 bookmarkRepository = repository,
                 dispatcher = testDispatcher,
+                snackBarHandler = snackbarHandler
 
                 )
             advanceUntilIdle()
@@ -153,6 +158,7 @@ class BookmarkViewModelTest {
         viewModel = BookmarkViewModel(
             bookmarkRepository = repository,
             dispatcher = testDispatcher,
+            snackBarHandler = snackbarHandler
 
             )
         advanceUntilIdle()
@@ -178,6 +184,7 @@ class BookmarkViewModelTest {
         viewModel = BookmarkViewModel(
             bookmarkRepository = repository,
             dispatcher = testDispatcher,
+            snackBarHandler = snackbarHandler
 
             )
         advanceUntilIdle()
