@@ -49,10 +49,19 @@ internal fun DetailsSection(
         HeaderSection(transactionDetailsUiState)
 
         if (isUserNameShown) {
-            UserInfoSection(transactionDetailsUiState)
+            DetailsInfo(
+                title = stringResource(transactionDetailsUiState.userInfo),
+                content = transactionDetailsUiState.userName,
+            )
         }
 
-        StatusSection(transactionDetailsUiState)
+        DetailsInfo(
+            title = stringResource(Res.string.status),
+            content = stringResource(transactionDetailsUiState.transactionStatus.contentRes),
+            icon = painterResource(transactionDetailsUiState.transactionStatus.iconRes),
+            iconContentDescription = stringResource(transactionDetailsUiState.transactionStatus.iconContentDescriptionRes),
+            iconTint = transactionDetailsUiState.transactionStatus.getStatusColor()
+        )
 
         DetailsInfoSection(transactionDetailsUiState)
     }
@@ -85,25 +94,6 @@ private fun ColumnScope.HeaderSection(transactionDetailsUiState: TransactionDeta
         iconContentDescription = stringResource(Res.string.silver_coin),
         iconSize = Theme.spacing._24,
         gap = Theme.spacing._8,
-    )
-}
-
-@Composable
-private fun ColumnScope.UserInfoSection(transactionDetailsUiState: TransactionDetailsUiState) {
-    DetailsInfo(
-        title = stringResource(transactionDetailsUiState.userInfo),
-        content = transactionDetailsUiState.userName,
-    )
-}
-
-@Composable
-private fun ColumnScope.StatusSection(transactionDetailsUiState: TransactionDetailsUiState) {
-    DetailsInfo(
-        title = stringResource(Res.string.status),
-        content = stringResource(transactionDetailsUiState.transactionStatus.contentRes),
-        icon = painterResource(transactionDetailsUiState.transactionStatus.iconRes),
-        iconContentDescription = stringResource(transactionDetailsUiState.transactionStatus.iconContentDescriptionRes),
-        iconTint = transactionDetailsUiState.transactionStatus.getStatusColor()
     )
 }
 
