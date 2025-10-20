@@ -508,7 +508,8 @@ class ExportTransactionsViewModelTest {
     fun whenSelectedTransactionsTypesNotEmpty_thenHasActiveFiltersIsTrue() = runTest {
         val state = ExportTransactionsState(
             selectedTransactionsTypes = setOf(FilterType.SENT),
-            startDate = LocalDate(2025, 9, 1)
+            startDate = LocalDate(2025, 9, 1),
+            endDate = LocalDate(2025, 9, 30)
         )
         assertTrue(state.hasActiveFilters)
     }
