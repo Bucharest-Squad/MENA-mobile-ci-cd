@@ -12,11 +12,3 @@ fun FilterType.toDomain(): TransactionType {
         FilterType.ONLINE_PURCHASE -> TransactionType.ONLINE_PURCHASE
     }
 }
-
-fun FilterStatus.toDomain(): TransactionStatus? {
-    return when (this) {
-        FilterStatus.ALL -> null
-        FilterStatus.FAILED -> TransactionStatus.FAILED
-        FilterStatus.SUCCESS -> TransactionStatus.SUCCESS
-    }
-}
