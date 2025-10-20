@@ -24,7 +24,7 @@ data class ExportTransactionsState(
     val hasNoTransactionsError: Boolean = false
 ) {
     val hasActiveFilters: Boolean
-        get() = ((startDate != null || endDate != null) && selectedTransactionsTypes.isNotEmpty())
+        get() = ((startDate != null && endDate != null) && selectedTransactionsTypes.isNotEmpty())
 
     enum class DatePickerMode {
         START_DATE,
