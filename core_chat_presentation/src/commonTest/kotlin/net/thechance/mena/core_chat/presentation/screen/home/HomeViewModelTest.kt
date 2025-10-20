@@ -237,19 +237,7 @@ class HomeViewModelTest {
 
     @Test
     fun `onChatClicked should navigate to ChatDetailsRoute with correct parameters`() = runTest {
-        val chatId = Uuid.random()
-        val chatName = "Test Chat"
-        val chat = ChatUiState(
-            id = chatId,
-            name = chatName,
-            imageUrl = null,
-            lastMessage = ChatUiState.MessageUiState(
-                text = "Hello",
-                time = "10:00 AM",
-                isMine = true
-            ),
-            status = ChatUiState.Status.Read
-        )
+        val chat = createTestChat()
 
         everySuspend { balanceRepository.getBalance() } returns 0.0
         everySuspend { chatRepository.getChatsSummary(any(), any()) } returns createEmptyPagedData()
@@ -281,13 +269,16 @@ class HomeViewModelTest {
 
     @Test
     fun `getChatsSummary should be called with correct page size and number`() = runTest {
+        val pageNumber = 0
+        val pageSize = 20
+
         everySuspend { balanceRepository.getBalance() } returns 0.0
-        everySuspend { chatRepository.getChatsSummary(0, 20) } returns createEmptyPagedData()
+        everySuspend { chatRepository.getChatsSummary(pageNumber, pageSize) } returns createEmptyPagedData()
 
         val viewModel = createViewModel()
         advanceUntilIdle()
 
-        verifySuspend(exactly(1)) { chatRepository.getChatsSummary(0, 20) }
+        verifySuspend(exactly(1)) { chatRepository.getChatsSummary(pageNumber, pageSize) }
     }
 
     @Test
@@ -315,7 +306,8 @@ class HomeViewModelTest {
 
     @Test
     fun `chat status should be UnRead when message is not mine and has unread count`() = runTest {
-        val chat = createChatSummary(unReadCount = 3, isMine = false)
+        val unReadCount = 3
+        val chat = createChatSummary(unReadCount = unReadCount, isMine = false)
 
         everySuspend { balanceRepository.getBalance() } returns 0.0
         everySuspend { chatRepository.getChatsSummary(any(), any()) } returns PagedData(
@@ -332,7 +324,7 @@ class HomeViewModelTest {
             val chatStatus = state.chats.first().status
             assertThat(chatStatus is ChatUiState.Status.UnRead).isTrue()
             if (chatStatus is ChatUiState.Status.UnRead) {
-                assertThat(chatStatus.count).isEqualTo(3)
+                assertThat(chatStatus.count).isEqualTo(unReadCount)
             }
         }
     }
@@ -439,5 +431,22 @@ class HomeViewModelTest {
             isLastPage = true
         )
     }
-}
 
+    companion object {
+        private fun createTestChat(): ChatUiState {
+            val chatId = Uuid.random()
+            val chatName = "Test Chat"
+            return ChatUiState(
+                id = chatId,
+                name = chatName,
+                imageUrl = null,
+                lastMessage = ChatUiState.MessageUiState(
+                    text = "Hello",
+                    time = "10:00 AM",
+                    isMine = true
+                ),
+                status = ChatUiState.Status.Read
+            )
+        }
+    }
+}
