@@ -26,9 +26,6 @@ import net.thechance.mena.wallet.presentation.screen.transaction_details.Transac
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-
-private val ICON_SIZE = 16.dp
-
 @Composable
 internal fun DetailsSection(
     transactionDetailsUiState: TransactionDetailsUiState,
@@ -79,7 +76,7 @@ private fun ColumnScope.HeaderSection(transactionDetailsUiState: TransactionDeta
         icon = painterResource(transactionDetailsUiState.transactionType.iconRes),
         iconContentDescription = stringResource(transactionDetailsUiState.transactionType.iconContentDescriptionRes),
         iconTint = Theme.colorScheme.shadeSecondary,
-        iconSize = ICON_SIZE,
+        iconSize = 16.dp,
         gap = Theme.spacing._4,
     )
 

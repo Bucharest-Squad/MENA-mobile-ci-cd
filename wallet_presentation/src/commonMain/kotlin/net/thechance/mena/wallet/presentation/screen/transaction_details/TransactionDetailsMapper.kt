@@ -20,16 +20,16 @@ import net.thechance.mena.wallet.presentation.utils.formatLocalDateTime
 import kotlin.uuid.ExperimentalUuidApi
 
 fun Transaction.toUi() = TransactionDetailsScreenState.TransactionDetailsUiState(
-    id = transactionId(),
-    amount = amount(),
-    date = transactionDate(),
-    userName = userName(),
-    otherParty = otherParty(),
-    transactionType = transactionType(),
-    transactionStatus = transactionStatus(),
-    userInfo = userInfo(),
-    typeContent = typeContent(),
-    otherPartyTitle = otherPartyTitle()
+    id = this.transactionId(),
+    amount = this.amount(),
+    date = this.transactionDate(),
+    userName = this.userName(),
+    otherParty = this.otherParty(),
+    transactionType = this.transactionType(),
+    transactionStatus = this.transactionStatus(),
+    userInfo = this.userInfo(),
+    typeContent = this.typeContent(),
+    otherPartyTitle = this.otherPartyTitle()
 )
 
 fun imageBitmapToByteArray(imageBitmap: ImageBitmap): ByteArray =
