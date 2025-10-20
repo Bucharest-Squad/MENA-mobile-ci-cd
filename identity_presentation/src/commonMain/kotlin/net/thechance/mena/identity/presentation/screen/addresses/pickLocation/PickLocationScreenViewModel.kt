@@ -12,8 +12,8 @@ import net.thechance.mena.identity.domain.util.Coordinates
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
 import net.thechance.mena.identity.presentation.base.ErrorState
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
-import net.thechance.mena.identity.presentation.screen.addresses.AddressUIState
-import net.thechance.mena.identity.presentation.screen.addresses.CoordinatesUiState
+import net.thechance.mena.identity.presentation.screen.addresses.myAddresses.AddressUIState
+import net.thechance.mena.identity.presentation.screen.addresses.myAddresses.CoordinatesUiState
 import net.thechance.mena.identity.presentation.util.permissionHandler.PermissionHandler
 import net.thechance.mena.identity.presentation.util.permissionHandler.PermissionState
 import org.maplibre.compose.camera.CameraPosition

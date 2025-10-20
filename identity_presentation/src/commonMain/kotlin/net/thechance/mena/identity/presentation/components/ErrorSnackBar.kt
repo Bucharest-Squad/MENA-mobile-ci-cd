@@ -20,8 +20,8 @@ import mena.identity_presentation.generated.resources.ic_success
 import mena.identity_presentation.generated.resources.success
 import net.thechance.mena.designsystem.presentation.component.snackbar.SnackBar
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.identity.presentation.screen.addresses.SnackBarType
-import net.thechance.mena.identity.presentation.screen.addresses.SnackBarUiState
+import net.thechance.mena.identity.presentation.screen.addresses.myAddresses.SnackBarType
+import net.thechance.mena.identity.presentation.screen.addresses.myAddresses.SnackBarUiState
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 

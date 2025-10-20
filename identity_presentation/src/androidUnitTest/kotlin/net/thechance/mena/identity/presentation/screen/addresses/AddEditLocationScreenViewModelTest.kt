@@ -14,6 +14,8 @@ import net.thechance.mena.identity.domain.exception.UnAuthorizedException
 import net.thechance.mena.identity.domain.repository.AddressesRepository
 import net.thechance.mena.identity.presentation.screen.addresses.addEditLocation.AddEditLocationScreenUIEffect
 import net.thechance.mena.identity.presentation.screen.addresses.addEditLocation.AddEditLocationScreenViewModel
+import net.thechance.mena.identity.presentation.screen.addresses.myAddresses.AddressUIState
+import net.thechance.mena.identity.presentation.screen.addresses.myAddresses.CoordinatesUiState
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -30,10 +32,10 @@ class AddEditLocationScreenViewModelTest {
     private val addressLine = "Cairo"
     private val addressID = Uuid.random()
 
-    private val addressUIState = AddressUIState (
+    private val addressUIState = AddressUIState(
         id = addressID,
         addressType = addressType,
-        coordinates = CoordinatesUiState(latitude ,longitude),
+        coordinates = CoordinatesUiState(latitude, longitude),
         addressDetails = addressLine
     )
     private lateinit var viewModel: AddEditLocationScreenViewModel
@@ -158,12 +160,12 @@ class AddEditLocationScreenViewModelTest {
         }
 
     @Test
-    fun `onClickSave() should call editAddress and handle success when addressID is not null`() =
+    fun `onClickSave() should call updateAddress and handle success when addressID is not null`() =
         runTest {
 
             viewModel.onClickAddressType(addressType)
 
-            coEvery { addressesRepository.editAddress(any()) } returns Unit
+            coEvery { addressesRepository.updateAddress(any(), any()) } returns Unit
 
             viewModel.effect.test {
 
@@ -179,12 +181,12 @@ class AddEditLocationScreenViewModelTest {
         }
 
     @Test
-    fun `onClickSave() should call editAddress and handle error when addressID is not null`() =
+    fun `onClickSave() should call updateAddress and handle error when addressID is not null`() =
         runTest {
 
             viewModel.onClickAddressType(addressType)
 
-            coEvery { addressesRepository.editAddress(any()) } throws UnAuthorizedException()
+            coEvery { addressesRepository.updateAddress(any(), any()) } throws UnAuthorizedException()
 
             viewModel.onClickSave()
 

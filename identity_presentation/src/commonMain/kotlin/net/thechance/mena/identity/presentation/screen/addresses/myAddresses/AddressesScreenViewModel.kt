@@ -13,13 +13,6 @@ import net.thechance.mena.identity.domain.repository.AddressesRepository
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
 import net.thechance.mena.identity.presentation.base.ErrorState
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
-import net.thechance.mena.identity.presentation.mapper.toEntity
-import net.thechance.mena.identity.presentation.screen.addresses.AddressUIState
-import net.thechance.mena.identity.presentation.screen.addresses.AddressesScreenUIState
-import net.thechance.mena.identity.presentation.screen.addresses.DeleteDialogUIState
-import net.thechance.mena.identity.presentation.screen.addresses.SnackBarType
-import net.thechance.mena.identity.presentation.screen.addresses.SnackBarUiState
-import net.thechance.mena.identity.presentation.screen.addresses.toUiState
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -55,11 +48,9 @@ class AddressesScreenViewModel(
     override fun onClickAddress(addressId: Uuid) {
         tryToExecute(
             function = {
-                if (state.value.addresses.find { it.id == addressId }?.isMainAddress == false) {
-                    addressesRepository.editAddress(
-                        state.value.addresses.find { it.id == addressId }!!.toEntity()
-                            .copy(isActive = true)
-                    )
+                val addressUI = state.value.addresses.find { it.id == addressId }
+                if (addressUI?.isMainAddress == false) {
+                    addressesRepository.setActiveAddress(addressId)
                 }
             },
             onSuccess = {
@@ -98,7 +89,12 @@ class AddressesScreenViewModel(
                 if (address?.isMainAddress == true) {
                     throw IsActiveAddress()
                 }
-                addressesRepository.deleteAddress(state.value.deleteDialogUIState.addressId!!)
+                val addressId = state.value.deleteDialogUIState.addressId
+                if (addressId != null) {
+                    addressesRepository.deleteAddress(addressId)
+                } else {
+                    throw IllegalStateException("Address ID is null")
+                }
             },
             onSuccess = {
                 getUserAddresses()
@@ -138,7 +134,14 @@ class AddressesScreenViewModel(
 
     private fun getUserAddresses() {
         tryToExecute(
-            function = { addressesRepository.getUserAddresses().map { it.toUiState() } },
+            function = { 
+                val addresses = addressesRepository.getUserAddresses()
+                val activeAddress = addressesRepository.getActiveAddress()
+                addresses.map { address ->
+                    val isActive = activeAddress == address
+                    address.toUiState(isMainAddress = isActive)
+                }
+            },
             onSuccess = ::onGetUserAddressesSuccess,
             onError = ::onErrorOccurred,
             dispatcher = dispatcher,

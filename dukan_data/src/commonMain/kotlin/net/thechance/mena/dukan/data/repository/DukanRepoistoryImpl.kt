@@ -109,7 +109,7 @@ class DukanRepositoryImpl(
         page: Int,
         size: Int
     ): PagedResult<DukanPreview> {
-        val location = locationService.getUserAddresses().first{it.isActive}
+        val location = locationService.getActiveAddress() ?: throw IllegalStateException("No active address found")
         val lat = location.latitude
         val lng = location.longitude
         val range = 30000

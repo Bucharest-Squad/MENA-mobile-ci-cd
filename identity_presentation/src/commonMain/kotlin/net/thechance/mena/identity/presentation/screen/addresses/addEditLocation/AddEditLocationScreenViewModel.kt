@@ -15,10 +15,10 @@ import net.thechance.mena.identity.domain.repository.AddressesRepository
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
 import net.thechance.mena.identity.presentation.base.ErrorState
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
-import net.thechance.mena.identity.presentation.screen.addresses.AddressUIState
-import net.thechance.mena.identity.presentation.screen.addresses.CoordinatesUiState
-import net.thechance.mena.identity.presentation.screen.addresses.SnackBarType
-import net.thechance.mena.identity.presentation.screen.addresses.SnackBarUiState
+import net.thechance.mena.identity.presentation.screen.addresses.myAddresses.AddressUIState
+import net.thechance.mena.identity.presentation.screen.addresses.myAddresses.CoordinatesUiState
+import net.thechance.mena.identity.presentation.screen.addresses.myAddresses.SnackBarType
+import net.thechance.mena.identity.presentation.screen.addresses.myAddresses.SnackBarUiState
 import org.maplibre.compose.camera.CameraPosition
 import kotlin.uuid.ExperimentalUuidApi
 
@@ -105,8 +105,10 @@ class AddEditLocationScreenViewModel(
     }
 
     private suspend fun onSave() {
-        if (state.value.addressUIState.addressID != null) {
-            addressesRepository.editAddress(state.value.addressUIState.toEntity())
+        val addressId = state.value.addressUIState.addressID
+        if (addressId != null) {
+            val updatedAddress = state.value.addressUIState.toEntity()
+            addressesRepository.updateAddress(addressId, updatedAddress)
         } else {
             addressesRepository.createAddress(state.value.addressUIState.toEntity())
         }

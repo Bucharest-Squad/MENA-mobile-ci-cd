@@ -7,12 +7,15 @@ import kotlin.uuid.Uuid
 
 interface AddressesRepository {
     suspend fun createAddress(address: Address)
-    suspend fun editAddress(address: Address)
-    suspend fun getUserAddresses(): List<Address>
-
+    @OptIn(ExperimentalUuidApi::class)
+    suspend fun updateAddress(addressId: Uuid, updated: Address)
     @OptIn(ExperimentalUuidApi::class)
     suspend fun deleteAddress(addressId: Uuid)
+    suspend fun getUserAddresses(): List<Address>
+
     suspend fun getActiveAddress(): Address?
+    @OptIn(ExperimentalUuidApi::class)
+    suspend fun setActiveAddress(addressId: Uuid)
     suspend fun getCurrentLocation(): Coordinates?
     suspend fun getLocationName(coordinates: Coordinates): String
 }
