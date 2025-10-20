@@ -11,6 +11,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import net.thechance.mena.identity.domain.entity.AddressType
 import net.thechance.mena.identity.domain.exception.UnAuthorizedException
+import net.thechance.mena.identity.domain.model.AddressInput
 import net.thechance.mena.identity.domain.repository.AddressesRepository
 import net.thechance.mena.identity.presentation.screen.addresses.addEditLocation.AddEditLocationScreenUIEffect
 import net.thechance.mena.identity.presentation.screen.addresses.addEditLocation.AddEditLocationScreenViewModel
@@ -129,7 +130,7 @@ class AddEditLocationScreenViewModelTest {
 
             viewModel.onClickAddressType(addressType)
 
-            coEvery { addressesRepository.createAddress(any()) } returns Unit
+            coEvery { addressesRepository.createAddress(any<AddressInput>()) } returns Unit
 
             viewModel.effect.test {
 
@@ -150,7 +151,7 @@ class AddEditLocationScreenViewModelTest {
 
             viewModel.onClickAddressType(addressType)
 
-            coEvery { addressesRepository.createAddress(any()) } throws UnAuthorizedException()
+            coEvery { addressesRepository.createAddress(any<AddressInput>()) } throws UnAuthorizedException()
 
             viewModel.onClickSave()
 
@@ -165,7 +166,7 @@ class AddEditLocationScreenViewModelTest {
 
             viewModel.onClickAddressType(addressType)
 
-            coEvery { addressesRepository.updateAddress(any(), any()) } returns Unit
+            coEvery { addressesRepository.updateAddress(any(), any<AddressInput>()) } returns Unit
 
             viewModel.effect.test {
 
@@ -186,7 +187,7 @@ class AddEditLocationScreenViewModelTest {
 
             viewModel.onClickAddressType(addressType)
 
-            coEvery { addressesRepository.updateAddress(any(), any()) } throws UnAuthorizedException()
+            coEvery { addressesRepository.updateAddress(any(), any<AddressInput>()) } throws UnAuthorizedException()
 
             viewModel.onClickSave()
 

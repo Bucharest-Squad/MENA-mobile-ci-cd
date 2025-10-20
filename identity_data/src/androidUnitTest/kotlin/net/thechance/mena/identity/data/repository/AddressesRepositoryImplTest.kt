@@ -17,6 +17,7 @@ import net.thechance.mena.identity.domain.entity.Address
 import net.thechance.mena.identity.domain.entity.AddressType
 import net.thechance.mena.identity.domain.exception.AddressNotFoundException
 import net.thechance.mena.identity.domain.exception.UnAuthorizedException
+import net.thechance.mena.identity.domain.model.AddressInput
 import net.thechance.mena.identity.domain.util.Coordinates as DomainCoordinates
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -37,7 +38,7 @@ class AddressesRepositoryImplTest {
 
         addressRepositoryImpl = AddressesRepositoryImpl(client, geocoder)
 
-        addressRepositoryImpl.createAddress(fakeNewAddress)
+        addressRepositoryImpl.createAddress(fakeNewAddressInput)
     }
 
     @Test
@@ -46,7 +47,7 @@ class AddressesRepositoryImplTest {
 
         addressRepositoryImpl = AddressesRepositoryImpl(client, geocoder)
 
-        addressRepositoryImpl.updateAddress(fakeAddressId, fakeNewAddress)
+        addressRepositoryImpl.updateAddress(fakeAddressId, fakeNewAddressInput)
     }
 
     @Test
@@ -74,7 +75,7 @@ class AddressesRepositoryImplTest {
 
         addressRepositoryImpl = AddressesRepositoryImpl(client, geocoder)
 
-        assertFailure { addressRepositoryImpl.createAddress(fakeNewAddress) }
+        assertFailure { addressRepositoryImpl.createAddress(fakeNewAddressInput) }
             .isInstanceOf<UnAuthorizedException>()
     }
 
@@ -84,7 +85,7 @@ class AddressesRepositoryImplTest {
 
         addressRepositoryImpl = AddressesRepositoryImpl(client, geocoder)
 
-        assertFailure { addressRepositoryImpl.updateAddress(fakeAddressId, fakeNewAddress) }
+        assertFailure { addressRepositoryImpl.updateAddress(fakeAddressId, fakeNewAddressInput) }
             .isInstanceOf<UnAuthorizedException>()
     }
 
@@ -159,8 +160,7 @@ class AddressesRepositoryImplTest {
 
     val fakeAddressId = Uuid.random()
     
-    val fakeNewAddress = Address(
-        id = null,
+    val fakeNewAddressInput = AddressInput(
         addressLine = "Cairo",
         addressType = AddressType.getAddressTypeFromString("Home"),
         latitude = 30.0444,

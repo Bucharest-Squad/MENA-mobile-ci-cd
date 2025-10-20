@@ -17,6 +17,7 @@ import net.thechance.mena.identity.data.utils.safeWrapper
 import net.thechance.mena.identity.domain.entity.Address
 import net.thechance.mena.identity.domain.exception.AddressNotFoundException
 import net.thechance.mena.identity.domain.exception.UnableToFindLocationException
+import net.thechance.mena.identity.domain.model.AddressInput
 import net.thechance.mena.identity.domain.repository.AddressesRepository
 import net.thechance.mena.identity.domain.util.Coordinates
 import kotlin.uuid.ExperimentalUuidApi
@@ -29,20 +30,20 @@ class AddressesRepositoryImpl(
 
     private var activeAddress: Address? = null
 
-    override suspend fun createAddress(address: Address) {
+    override suspend fun createAddress(addressInput: AddressInput) {
         return safeWrapper {
             client.postJson(
-                requestDto = address.toDto(),
+                requestDto = addressInput.toDto(),
                 path = ADDRESS_ENDPOINT
             )
         }
     }
 
     @OptIn(ExperimentalUuidApi::class)
-    override suspend fun updateAddress(addressId: Uuid, updated: Address) {
+    override suspend fun updateAddress(addressId: Uuid, addressInput: AddressInput) {
         return safeWrapper {
             client.putJson(
-                requestDto = updated.toDto(id = addressId.toString()),
+                requestDto = addressInput.toDto(id = addressId.toString()),
                 path = "$ADDRESS_ENDPOINT/$addressId"
             )
         }

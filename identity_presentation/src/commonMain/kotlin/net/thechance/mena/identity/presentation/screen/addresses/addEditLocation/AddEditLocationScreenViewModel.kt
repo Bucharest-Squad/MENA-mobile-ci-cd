@@ -11,6 +11,8 @@ import mena.identity_presentation.generated.resources.edit_location_successfully
 import mena.identity_presentation.generated.resources.error
 import net.thechance.mena.identity.domain.entity.AddressType
 import net.thechance.mena.identity.domain.entity.AddressType.AddressTypeMapper.getAddressType
+import net.thechance.mena.identity.domain.model.AddressInput
+import net.thechance.mena.identity.presentation.mapper.toAddressInput
 import net.thechance.mena.identity.domain.repository.AddressesRepository
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
 import net.thechance.mena.identity.presentation.base.ErrorState
@@ -105,12 +107,12 @@ class AddEditLocationScreenViewModel(
     }
 
     private suspend fun onSave() {
+        val addressInput = state.value.addressUIState.toAddressInput()
         val addressId = state.value.addressUIState.addressID
         if (addressId != null) {
-            val updatedAddress = state.value.addressUIState.toEntity()
-            addressesRepository.updateAddress(addressId, updatedAddress)
+            addressesRepository.updateAddress(addressId, addressInput)
         } else {
-            addressesRepository.createAddress(state.value.addressUIState.toEntity())
+            addressesRepository.createAddress(addressInput)
         }
     }
 

@@ -1,14 +1,15 @@
 package net.thechance.mena.identity.domain.repository
 
 import net.thechance.mena.identity.domain.entity.Address
+import net.thechance.mena.identity.domain.model.AddressInput
 import net.thechance.mena.identity.domain.util.Coordinates
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 interface AddressesRepository {
-    suspend fun createAddress(address: Address)
+    suspend fun createAddress(addressInput: AddressInput)
     @OptIn(ExperimentalUuidApi::class)
-    suspend fun updateAddress(addressId: Uuid, updated: Address)
+    suspend fun updateAddress(addressId: Uuid, addressInput: AddressInput)
     @OptIn(ExperimentalUuidApi::class)
     suspend fun deleteAddress(addressId: Uuid)
     suspend fun getUserAddresses(): List<Address>
