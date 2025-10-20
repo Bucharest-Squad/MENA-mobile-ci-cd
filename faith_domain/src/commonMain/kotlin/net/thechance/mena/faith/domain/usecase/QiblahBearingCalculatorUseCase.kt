@@ -19,6 +19,7 @@ class QiblahBearingCalculatorUseCase {
 
         val longitudeDifference = kaabaLongitudeRadians - userLongitudeRadians
 
+
         val y = sin(longitudeDifference) * cos(kaabaLatitudeRadians)
         val x =
             cos(userLatitudeRadians) * sin(kaabaLatitudeRadians) - sin(userLatitudeRadians) * cos(
@@ -49,6 +50,22 @@ class QiblahBearingCalculatorUseCase {
 
     fun calculateRelativeAngleToQiblah(rawAzimuth: Float, qiblahAngle: Float): Float {
         return getShortestAngleDifference(from = rawAzimuth, to = qiblahAngle)
+    }
+
+    fun calculateContinuousAzimuth(rawAzimuth: Float): Float {
+        val oldAngleOnCircle = currentContinuousAzimuth % 360
+        val angleDifference = getShortestAngleDifference(from = oldAngleOnCircle, to = rawAzimuth)
+        currentContinuousAzimuth += angleDifference
+        return currentContinuousAzimuth
+    }
+
+    fun getShortestAngleDifference(from: Float, to: Float): Float {
+        val targetAngle = (to - from) % 360
+        return when {
+            targetAngle > 180f -> targetAngle - 360f
+            targetAngle < -180f -> targetAngle + 360f
+            else -> targetAngle
+        }
     }
 
     private fun validateCoordinates(location: Location) {

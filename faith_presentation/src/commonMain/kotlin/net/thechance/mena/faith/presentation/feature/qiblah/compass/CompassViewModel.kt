@@ -5,15 +5,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import net.thechance.mena.faith.domain.usecase.QiblahBearingCalculatorUseCase
 import net.thechance.mena.faith.presentation.base.BaseViewModel
-import net.thechance.mena.faith.presentation.util.AzimuthProvider
+import net.thechance.mena.faith.presentation.utils.AzimuthProvider
 
 class CompassViewModel(
     private val bearingCalculatorUseCase: QiblahBearingCalculatorUseCase,
     private val azimuthProvider: AzimuthProvider,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
-) : BaseViewModel<CompassScreenState, CompassEffect>(CompassScreenState()),
+) : BaseViewModel<CompassUiState, CompassEffect>(CompassUiState()),
     CompassInteractionListener {
-
 
     init {
         getQiblahAngle()
@@ -45,10 +44,7 @@ class CompassViewModel(
     private fun onAzimuthValueChange(rawAzimuth: Float) {
         val continuousAzimuth = bearingCalculatorUseCase.calculateContinuousAzimuth(rawAzimuth)
         val relativeAngle =
-            bearingCalculatorUseCase.calculateRelativeAngleToQiblah(
-                rawAzimuth,
-                uiState.value.qiblahAngleValue
-            )
+            calculateRelativeAngleToQiblah(rawAzimuth, uiState.value.qiblahAngleValue)
         updateState {
             it.copy(
                 continuousAzimuth = continuousAzimuth,
@@ -57,6 +53,10 @@ class CompassViewModel(
         }
     }
 
-
-
+    private fun calculateRelativeAngleToQiblah(rawAzimuth: Float, qiblahAngle: Float): Float {
+        return bearingCalculatorUseCase.getShortestAngleDifference(
+            from = rawAzimuth,
+            to = qiblahAngle
+        )
+    }
 }

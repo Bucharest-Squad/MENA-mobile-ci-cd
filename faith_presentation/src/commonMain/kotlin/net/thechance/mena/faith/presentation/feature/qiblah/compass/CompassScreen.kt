@@ -46,9 +46,11 @@ import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.faith.presentation.base.ObserveAsEffect
+import net.thechance.mena.faith.presentation.designSystem.theme.QuranTheme
 import net.thechance.mena.faith.presentation.navigation.LocalNavController
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -72,8 +74,8 @@ fun CompassScreen(
 
 @Composable
 private fun Content(
-    uiState: CompassScreenState,
-    listener: CompassViewModel
+    uiState: CompassUiState,
+    listener: CompassInteractionListener
 ) {
     Scaffold(
         topBar = {
@@ -169,40 +171,19 @@ private fun CompassView(
 @Composable
 private fun DirectionPlaceHolder(modifier: Modifier = Modifier) {
     Box(
-        modifier = modifier.fillMaxSize().padding(20.dp),
+        modifier = modifier
+            .fillMaxSize()
+            .padding(20.dp),
         contentAlignment = Alignment.Center
     ) {
-        Text(
-            text = "N",
-            style = Theme.typography.title.small,
-            color = Theme.colorScheme.shadePrimary,
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-        )
-
-        Text(
-            text = "S",
-            style = Theme.typography.title.small,
-            color = Theme.colorScheme.shadePrimary,
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-        )
-
-        Text(
-            text = "E",
-            style = Theme.typography.title.small,
-            color = Theme.colorScheme.shadePrimary,
-            modifier = Modifier
-                .align(Alignment.CenterEnd)
-        )
-
-        Text(
-            text = "W",
-            style = Theme.typography.title.small,
-            color = Theme.colorScheme.shadePrimary,
-            modifier = Modifier
-                .align(Alignment.CenterStart)
-        )
+        CompassDirection.entries.forEach { direction ->
+            Text(
+                text = direction.label,
+                style = Theme.typography.title.small,
+                color = Theme.colorScheme.shadePrimary,
+                modifier = Modifier.align(direction.alignment)
+            )
+        }
         CirclesPlaceHolder()
     }
 }
@@ -224,7 +205,7 @@ private fun TextAngleToQiblah(
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
-        Arrangement.Center
+        verticalArrangement = Arrangement.Center
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -279,7 +260,7 @@ private fun QiblahImage(qiblahDirection: Float, compassBearing: Float) {
 }
 
 @Composable
-private fun QiblahTopBar(uiState: CompassScreenState) {
+private fun QiblahTopBar(uiState: CompassUiState) {
     Row(
         modifier = Modifier.background(
             shape = RoundedCornerShape(Theme.radius.full),
@@ -309,6 +290,41 @@ private fun QiblahTopBar(uiState: CompassScreenState) {
 private fun BrownCircle(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier.size(6.dp)
-            .background(color = Theme.colorScheme.secondary.secondaryText, shape = CircleShape)
+            .background(
+                color = Theme.colorScheme.secondary.secondaryText,
+                shape = CircleShape
+            )
     )
+}
+
+enum class CompassDirection(
+    val label: String,
+    val alignment: Alignment
+) {
+    NORTH("N", Alignment.TopCenter),
+    SOUTH("S", Alignment.BottomCenter),
+    EAST("E", Alignment.CenterEnd),
+    WEST("W", Alignment.CenterStart)
+}
+
+@Composable
+@Preview
+private fun CompassScreenPreview() {
+    QuranTheme {
+        Content(
+            uiState = CompassUiState(
+                continuousAzimuth = 45f,
+                qiblahAngleValue = 120f,
+                angleToQiblah = 75f,
+                currentLocationUi = LocationUi(
+                    cityName = "Cairo",
+                    latitude = 30.0444,
+                    longitude = 31.2357
+                ),
+            ),
+            listener = object : CompassInteractionListener {
+                override fun onBackClick() {}
+            }
+        )
+    }
 }
