@@ -73,7 +73,9 @@ private fun getCurrentPrayer(prayerTimes: List<PrayerTime>, now: Instant): Praye
         .filter { it.name != PrayerName.SUNRISE }
         .sortedBy { it.time }
 
-    if (now >= sortedPrayers.last().time) return sortedPrayers.last().name
+    if (now < sortedPrayers.first().time || now >= sortedPrayers.last().time) {
+        return sortedPrayers.last().name
+    }
 
     return sortedPrayers.lastOrNull { now >= it.time }?.name ?: sortedPrayers.first().name
 }
