@@ -232,11 +232,10 @@ class QiblahBearingCalculatorUseCaseTest {
         private const val NEGATIVE_ANGLE = -10f
         private const val ANGLE_OVER_360 = 370f
 
-        private const val EXPECTED_DIFF_40 = 40f
-        private const val EXPECTED_DIFF_20 = 20f
-        private const val EXPECTED_DIFF_10 = 10f
-        private const val EXPECTED_NEGATIVE_40 = -40f
-        private const val EXPECTED_NEGATIVE_20 = -20f
+        const val EXPECTED_DIFF_40 = 40f
+        const val EXPECTED_DIFF_20 = 20f
+        const val EXPECTED_NEGATIVE_40 = -40f
+        const val EXPECTED_NEGATIVE_20 = -20f
 
         fun demoLocation(latitude: Double = ZERO_LOCATION, longitude: Double = ZERO_LOCATION) =
             Location(latitude = latitude, longitude = longitude)

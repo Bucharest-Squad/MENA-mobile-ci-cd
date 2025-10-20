@@ -7,17 +7,17 @@ import net.thechance.mena.faith.data.remote.mapper.prayertime.StringHoursAndMinu
 @Serializable
 data class PrayerTimesDto(
     @SerialName("sunrise")
-    val sunrise: String?,
+    val sunrise: String? = null,
     @SerialName("fajr")
-    val fajr: String?,
+    val fajr: String? = null,
     @SerialName("dhuhr")
-    val dhuhr: String?,
+    val dhuhr: String? = null,
     @SerialName("asr")
-    val asr: String?,
+    val asr: String? = null,
     @SerialName("maghrib")
-    val maghrib: String?,
+    val maghrib: String? = null,
     @SerialName("isha")
-    val isha: String?,
+    val isha: String? = null,
     @SerialName("date")
-    val date: PrayerDateDto?
+    val date: PrayerDateDto? = null
 ) : StringHoursAndMinutesToInstantMapper

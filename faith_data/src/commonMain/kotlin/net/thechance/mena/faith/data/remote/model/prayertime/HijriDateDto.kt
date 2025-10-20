@@ -6,23 +6,23 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class HijriDateDto(
     @SerialName("date")
-    val date: String?,
+    val date: String? = null,
     @SerialName("dateFormat")
-    val dateFormat: String?,
+    val dateFormat: String? = null,
     @SerialName("readableDate")
-    val readableDate: String?,
+    val readableDate: String? = null,
     @SerialName("day")
-    val day: String?,
+    val day: String? = null,
     @SerialName("dayName")
-    val dayName: String?,
+    val dayName: String? = null,
     @SerialName("dayArabicName")
-    val dayArabicName: String?,
+    val dayArabicName: String? = null,
     @SerialName("month")
-    val month: Int?,
+    val month: Int? = null,
     @SerialName("monthName")
-    val monthName: String?,
+    val monthName: String? = null,
     @SerialName("monthArabicName")
-    val monthArabicName: String?,
+    val monthArabicName: String? = null,
     @SerialName("year")
-    val year: String?
+    val year: String? = null
 )
