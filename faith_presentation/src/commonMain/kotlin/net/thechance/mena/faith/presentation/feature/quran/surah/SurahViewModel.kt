@@ -179,7 +179,7 @@ class SurahViewModel(
     private fun showErrorBookMarkSnackBar(state: ErrorState) {
         snackbarHandler.showSnackBar(
             message = state.message,
-            status = SnackBarState.Status.Error,
+            status = state.status,
             scope = viewModelScope
         )
     }
