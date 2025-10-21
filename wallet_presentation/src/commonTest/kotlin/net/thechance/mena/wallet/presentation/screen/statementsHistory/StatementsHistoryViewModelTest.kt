@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalUuidApi::class)
+
 package net.thechance.mena.wallet.presentation.screen.statementsHistory
 
 import app.cash.turbine.test
@@ -22,7 +24,7 @@ import net.thechance.mena.wallet.domain.exceptions.UnknownException
 import net.thechance.mena.wallet.domain.repository.StatementRepository
 import net.thechance.mena.wallet.presentation.base.ErrorState
 import net.thechance.mena.wallet.presentation.screen.helper.FakeStringProvider
-import net.thechance.mena.wallet.presentation.utils.PdfHandler
+import net.thechance.mena.wallet.presentation.utils.FileManager
 import net.thechance.mena.wallet.presentation.utils.StorageLocation
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
@@ -31,13 +33,15 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class StatementsHistoryViewModelTest {
     private val statementRepository = mock<StatementRepository>(mode = MockMode.autofill)
     private val testDispatcher = StandardTestDispatcher()
     private val stringProvider = FakeStringProvider()
-    private val pdfHandler = mock<PdfHandler>(mode = MockMode.autofill)
+    private val fileManager = mock<FileManager>(mode = MockMode.autofill)
     private lateinit var viewModel: StatementsHistoryViewModel
 
     @BeforeTest
@@ -47,7 +51,7 @@ class StatementsHistoryViewModelTest {
         viewModel = StatementsHistoryViewModel(
             statementRepository,
             stringProvider,
-            pdfHandler,
+            fileManager,
             testDispatcher
         )
     }
@@ -114,7 +118,7 @@ class StatementsHistoryViewModelTest {
         val viewModel = StatementsHistoryViewModel(
             statementRepository,
             stringProvider,
-            pdfHandler,
+            fileManager,
             testDispatcher
         )
 
@@ -138,7 +142,7 @@ class StatementsHistoryViewModelTest {
             val viewModel = StatementsHistoryViewModel(
                 statementRepository,
                 stringProvider,
-                pdfHandler,
+                fileManager,
                 testDispatcher
             )
 
@@ -157,7 +161,7 @@ class StatementsHistoryViewModelTest {
         runTest(testDispatcher) {
             everySuspend { statementRepository.getStatements(0, 20) } throws NoInternetException()
 
-            val viewModel = StatementsHistoryViewModel(statementRepository, stringProvider,pdfHandler,testDispatcher)
+            val viewModel = StatementsHistoryViewModel(statementRepository, stringProvider,fileManager,testDispatcher)
 
             advanceUntilIdle()
             viewModel.state.test {
@@ -176,7 +180,7 @@ class StatementsHistoryViewModelTest {
         val viewModel = StatementsHistoryViewModel(
             statementRepository,
             stringProvider,
-            pdfHandler,
+            fileManager,
             testDispatcher
         )
 
@@ -225,7 +229,7 @@ class StatementsHistoryViewModelTest {
 
     @Test
     fun `onDeleteClicked should delete statement successfully`() = runTest(testDispatcher) {
-        val statementId = 1L
+        val statementId = statements[0].id
         everySuspend { statementRepository.getStatements(any(), any()) } returns emptyList()
         everySuspend { statementRepository.deleteStatementById(statementId) }
 
@@ -257,11 +261,11 @@ class StatementsHistoryViewModelTest {
         val statement = statements[0].toUiState()
 
         everySuspend {
-            pdfHandler.checkIfPdfExists(any())
+            fileManager.checkIfFileExists(any())
         } returns true
 
         everySuspend {
-            pdfHandler.deletePdf(any())
+            fileManager.deleteFile(any())
         } throws Exception("Delete failed")
 
         advanceUntilIdle()
@@ -280,7 +284,7 @@ class StatementsHistoryViewModelTest {
 
     @Test
     fun `edit mode flow - activate, delete, then cancel`() = runTest(testDispatcher) {
-        val statementId = 123L
+        val statementId = Uuid.random()
         everySuspend { statementRepository.getStatements(any(), any()) } returns emptyList()
         everySuspend { statementRepository.deleteStatementById(statementId) }
 
@@ -320,7 +324,7 @@ class StatementsHistoryViewModelTest {
         val statement = statements[0].toUiState()
 
         everySuspend {
-            pdfHandler.checkIfPdfExists(StorageLocation.Downloads(statement.fileName))
+            fileManager.checkIfFileExists(StorageLocation.Downloads(statement.fileName))
         } returns true
 
         advanceUntilIdle()
@@ -358,7 +362,7 @@ class StatementsHistoryViewModelTest {
             val statement = statements[0].toUiState()
 
             everySuspend {
-                pdfHandler.checkIfPdfExists(StorageLocation.Downloads(statement.fileName))
+                fileManager.checkIfFileExists(StorageLocation.Downloads(statement.fileName))
             } returns false
 
             everySuspend {
@@ -388,7 +392,7 @@ class StatementsHistoryViewModelTest {
     companion object {
         val statements = listOf(
             Statement(
-                1,
+                Uuid.random(),
                 LocalDate(2025, 3, 1),
                 LocalDate(2025, 3, 31),
                 1410.0,
@@ -396,7 +400,7 @@ class StatementsHistoryViewModelTest {
                 "/storage/statements/mar_2025.pdf"
             ),
             Statement(
-                2,
+                Uuid.random(),
                 LocalDate(2025, 4, 1),
                 LocalDate(2025, 4, 30),
                 1600.3,
@@ -404,7 +408,7 @@ class StatementsHistoryViewModelTest {
                 "/storage/statements/apr_2025.pdf"
             ),
             Statement(
-                3,
+                Uuid.random(),
                 LocalDate(2025, 5, 1),
                 LocalDate(2025, 5, 31),
                 1555.0,
