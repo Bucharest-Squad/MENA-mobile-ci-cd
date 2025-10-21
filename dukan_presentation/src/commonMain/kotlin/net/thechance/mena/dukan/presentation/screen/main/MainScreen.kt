@@ -66,7 +66,9 @@ fun MainScreen(
                 )
             )
 
-            MainScreenEffect.NavigateToManageDukanScreen -> navController.navigate(ManageDukanScreenRoute)
+            MainScreenEffect.NavigateToManageDukanScreen -> navController.navigate(
+                ManageDukanScreenRoute
+            )
 
             MainScreenEffect.NavigateCategoryToScreen ->
                 navController.navigate(DukanRoute.DukanCategoriesScreenRoute)
@@ -87,26 +89,12 @@ fun MainScreen(
             }
         }
     }
-
-    when{
-        state.value.isConnected.not() -> {
-            NoInternetContent(
-                onRetry = viewModel::onRetryButtonClicked,
-                isLoading = state.value.dukanState.status == MainScreenUiState.DukanStatusUi.Loading,
-                modifier = Modifier.fillMaxSize()
-            )
-        }
-        else-> {
-            MainContent(
-                listener = viewModel,
-                state = state.value,
-                editorPickDukanPager = viewModel.editorPickDukanPager,
-                bestNearestDukanPager = viewModel.bestNearestDukanPager
-            )
-        }
-    }
-
-
+    MainContent(
+        listener = viewModel,
+        state = state.value,
+        editorPickDukanPager = viewModel.editorPickDukanPager,
+        bestNearestDukanPager = viewModel.bestNearestDukanPager
+    )
 }
 
 @Composable
@@ -116,41 +104,52 @@ private fun MainContent(
     editorPickDukanPager: Pager<Int, MainScreenUiState.EditorPickDukanUiState>,
     bestNearestDukanPager: Pager<Int, MainScreenUiState.BestNearestDukanUiState>
 ) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                modifier = Modifier.statusBarsPadding(),
-                onDukanIconClicked = listener::onDukanButtonClicked,
-                dukanButtonStatus = state.dukanState.status
+
+    AnimatedContent(
+        targetState = state.isConnected
+    ) { isConnected ->
+        if (!isConnected) {
+            NoInternetContent(
+                onRetry = listener::onRetryButtonClicked,
+                isLoading = state.dukanState.status == MainScreenUiState.DukanStatusUi.Loading,
+                modifier = Modifier.fillMaxSize()
             )
-        },
-    ) {
-        val mainListState = rememberLazyListState()
-        mainListState.LoadMoreOnScroll(editorPickDukanPager)
+            return@AnimatedContent
+        }
 
-
-        LazyColumn(
-            state = mainListState
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    modifier = Modifier.statusBarsPadding(),
+                    onDukanIconClicked = listener::onDukanButtonClicked,
+                    dukanButtonStatus = state.dukanState.status
+                )
+            },
         ) {
-            item {
-                Text(
-                    text = stringResource(Res.string.what_do_you_need),
-                    style = Theme.typography.title.small,
-                    color = Theme.colorScheme.shadePrimary,
-                    modifier = Modifier.padding(
-                        start = Theme.spacing._16,
-                        bottom = Theme.spacing._8
+            val mainListState = rememberLazyListState()
+            mainListState.LoadMoreOnScroll(editorPickDukanPager)
+            LazyColumn(
+                state = mainListState
+            ) {
+                item {
+                    Text(
+                        text = stringResource(Res.string.what_do_you_need),
+                        style = Theme.typography.title.small,
+                        color = Theme.colorScheme.shadePrimary,
+                        modifier = Modifier.padding(
+                            start = Theme.spacing._16,
+                            bottom = Theme.spacing._8
+                        )
                     )
-                )
 
-                CategorySection(
-                    categories = state.categories,
-                    onCategoryClick = listener::onCategorySelectedClick,
-                    onViewMoreClick = listener::onViewMoreButtonClick,
-                )
-            }
+                    CategorySection(
+                        categories = state.categories,
+                        onCategoryClick = listener::onCategorySelectedClick,
+                        onViewMoreClick = listener::onViewMoreButtonClick,
+                    )
+                }
 
-            item {
+                item {
                     Text(
                         text = stringResource(Res.string.best_dukans_around_you),
                         style = Theme.typography.title.small,
@@ -161,31 +160,33 @@ private fun MainContent(
                         )
                     )
 
-                BestNearestDukanSection(
-                    state = state,
-                    onDukanClick = listener::onNearestDukanClick,
-                    pager = bestNearestDukanPager,
-                    modifier = Modifier
-                )
-            }
-
-            item {
-                Text(
-                    stringResource(Res.string.editor_pick_dukans),
-                    style = Theme.typography.title.small,
-                    color = Theme.colorScheme.shadePrimary,
-                    modifier = Modifier.padding(
-                        top = Theme.spacing._16,
-                        start = Theme.spacing._16,
-                        bottom = Theme.spacing._12
+                    BestNearestDukanSection(
+                        state = state,
+                        onDukanClick = listener::onNearestDukanClick,
+                        pager = bestNearestDukanPager,
+                        modifier = Modifier
                     )
+                }
+
+                item {
+                    Text(
+                        stringResource(Res.string.editor_pick_dukans),
+                        style = Theme.typography.title.small,
+                        color = Theme.colorScheme.shadePrimary,
+                        modifier = Modifier.padding(
+                            top = Theme.spacing._16,
+                            start = Theme.spacing._16,
+                            bottom = Theme.spacing._12
+                        )
+                    )
+                }
+                editorPickDukanItems(
+                    state = state,
+                    onDukanClick = listener::onEditorPickDukanClick
                 )
             }
-            editorPickDukanItems(
-                state = state,
-                onDukanClick = listener::onEditorPickDukanClick
-            )
         }
+
     }
 }
 
