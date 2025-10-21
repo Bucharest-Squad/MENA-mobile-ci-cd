@@ -24,29 +24,23 @@ class SurViewModelTest {
     private var viewModel = SurViewModel(quranRepository, testDispatcher)
 
     @Test
-    fun `initialize view model should set empty state when getAllSur returns no data`() = runTest {
-        // Given
-        everySuspend { quranRepository.getAllSur() } returns emptyList()
+    fun `initialize view model should set empty state when getSur returns no data`() = runTest {
+        everySuspend { quranRepository.getSur() } returns emptyList()
 
-        // When
         viewModel = SurViewModel(quranRepository, testDispatcher)
         testDispatcher.scheduler.advanceUntilIdle()
 
-        // Then
         assertEquals(emptyUiState, viewModel.uiState.value)
     }
 
     @Test
-    fun `initialize view model should set success state when getAllSur returns data`() =
+    fun `initialize view model should set success state when getSur returns data`() =
         runTest {
-            // Given
-            everySuspend { quranRepository.getAllSur() } returns surList
+            everySuspend { quranRepository.getSur() } returns surList
 
-            // When
             viewModel = SurViewModel(quranRepository, testDispatcher)
             testDispatcher.scheduler.advanceUntilIdle()
 
-            // Then
             assertEquals(
                 emptyUiState.copy(sur = surahUiList),
                 viewModel.uiState.value
@@ -54,16 +48,13 @@ class SurViewModelTest {
         }
 
     @Test
-    fun `onSurahClick should navigate to surah details screen with surah id and name`() = runTest {
-        // Given
-        everySuspend { quranRepository.getAllSur() } returns emptyList()
+    fun `onClickSurah should navigate to surah details screen with surah id and name`() = runTest {
+        everySuspend { quranRepository.getSur() } returns emptyList()
         testDispatcher.scheduler.advanceUntilIdle()
 
-        // When
         viewModel.uiEffect.test {
-            viewModel.onSurahClick(AL_FATIHAH_ID, AL_FATIHAH_NAME)
+            viewModel.onClickSurah(AL_FATIHAH_ID, AL_FATIHAH_NAME)
 
-            // Then
             assertEquals(
                 SurEffect.NavigateToSurahDetails(AL_FATIHAH_ID, AL_FATIHAH_NAME),
                 awaitItem()
@@ -72,16 +63,13 @@ class SurViewModelTest {
     }
 
     @Test
-    fun `onBackClick should navigate back`() = runTest {
-        // Given
-        everySuspend { quranRepository.getAllSur() } returns emptyList()
+    fun `onClickBack should navigate back`() = runTest {
+        everySuspend { quranRepository.getSur() } returns emptyList()
         testDispatcher.scheduler.advanceUntilIdle()
 
-        // When
         viewModel.uiEffect.test {
-            viewModel.onBackClick()
+            viewModel.onClickBack()
 
-            // Then
             assertEquals(
                 SurEffect.NavigateBack,
                 awaitItem()
@@ -90,16 +78,13 @@ class SurViewModelTest {
     }
 
     @Test
-    fun `onBookmarkClick should navigate to bookmark screen`() = runTest {
-        // Given
-        everySuspend { quranRepository.getAllSur() } returns emptyList()
+    fun `onClickBookmark should navigate to bookmark screen`() = runTest {
+        everySuspend { quranRepository.getSur() } returns emptyList()
         testDispatcher.scheduler.advanceUntilIdle()
 
-        // When
         viewModel.uiEffect.test {
-            viewModel.onBookmarkClick()
+            viewModel.onClickBookmark()
 
-            // Then
             assertEquals(
                 SurEffect.NavigateToBookmark,
                 awaitItem()

@@ -272,7 +272,9 @@ private fun SurahAndAyaInfo(
             color = Theme.colorScheme.shadePrimary,
             style = Theme.typography.label.medium,
         )
-        DotSeparator()
+
+        DotSeparator(modifier = Modifier.padding(horizontal = Theme.spacing._8))
+
         Text(
             text = stringResource(Res.string.aya, ayaNumber),
             color = Theme.colorScheme.shadePrimary,

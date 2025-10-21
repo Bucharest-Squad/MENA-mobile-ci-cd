@@ -16,18 +16,17 @@ class SurViewModel(
         initializeSur()
     }
 
-    override fun onSurahClick(surahId: Int, surahName: String) =
+    override fun onClickSurah(surahId: Int, surahName: String) =
         sendEffect(SurEffect.NavigateToSurahDetails(surahId, surahName))
 
-    override fun onBackClick() = sendEffect(SurEffect.NavigateBack)
+    override fun onClickBack() = sendEffect(SurEffect.NavigateBack)
 
-    override fun onBookmarkClick() = sendEffect(SurEffect.NavigateToBookmark)
-    override fun onSearchClick() = sendEffect(SurEffect.NavigateToSearch)
-
+    override fun onClickBookmark() = sendEffect(SurEffect.NavigateToBookmark)
+    override fun onClickSearch() = sendEffect(SurEffect.NavigateToSearch)
 
     private fun initializeSur() {
         tryToExecute(
-            execute = { quranRepository.getAllSur() },
+            execute = { quranRepository.getSur() },
             onSuccess = { sur -> handleSuccessState(sur) },
             dispatcher = dispatcher
         )

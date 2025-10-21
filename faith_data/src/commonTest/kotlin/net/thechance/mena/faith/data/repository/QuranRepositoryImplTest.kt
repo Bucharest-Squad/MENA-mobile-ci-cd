@@ -25,24 +25,24 @@ class QuranRepositoryImplTest {
 
 
     @Test
-    fun `getAllSur Should return list of sur when called`() = runTest {
+    fun `getSur Should return list of sur when called`() = runTest {
         // Given
-        everySuspend { mockDao.getAllSur() } returns SURAH_DTOS
+        everySuspend { mockDao.getSur() } returns SURAH_DTOS
 
         // When
-        val result = repository.getAllSur()
+        val result = repository.getSur()
 
         // Then
         assertEquals(SUR_LIST, result)
     }
 
     @Test
-    fun `getAllSur Should return empty list when database is empty`() = runTest {
+    fun `getSur Should return empty list when database is empty`() = runTest {
         // Given
-        everySuspend { mockDao.getAllSur() } returns emptyList()
+        everySuspend { mockDao.getSur() } returns emptyList()
 
         // When
-        val result = repository.getAllSur()
+        val result = repository.getSur()
 
         // Then
         assertTrue(result.isEmpty())
