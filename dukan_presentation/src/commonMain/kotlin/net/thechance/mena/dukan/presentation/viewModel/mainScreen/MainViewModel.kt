@@ -5,6 +5,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
+import net.thechance.mena.dukan.domain.exceptions.NoInternetException
 import net.thechance.mena.dukan.domain.exceptions.NoSuchItemException
 import net.thechance.mena.dukan.domain.repository.DukanDiscoveryRepository
 import net.thechance.mena.dukan.domain.repository.DukanManagementRepository
@@ -20,7 +21,7 @@ class MainViewModel(
     private val dukanManagementRepository: DukanManagementRepository,
     private val dukanDiscoveryRepository: DukanDiscoveryRepository,
     dispatcher: CoroutineDispatcher = Dispatchers.IO
-) : BaseViewModel<MainScreenUiState, MainEffect>(
+) : BaseViewModel<MainScreenUiState, MainScreenEffect>(
     initialState = MainScreenUiState(),
     defaultDispatcher = dispatcher
 ), MainInteractionListener {
@@ -28,8 +29,12 @@ class MainViewModel(
     lateinit var editorPickDukanPager: Pager<Int, MainScreenUiState.EditorPickDukanUiState>
 
     init {
-        initPagers()
+        fetchData()
+    }
+
+    private fun fetchData() {
         getDukanState()
+        initPagers()
         getCategories()
         getEditorPicksDukans()
         getBestNearestDukans()
@@ -152,9 +157,9 @@ class MainViewModel(
 
     private fun onGetDukanStateSuccess(dukanState: MainScreenUiState.DukanState?) {
         if (dukanState == null) {
-            updateState { copy(dukanState = MainScreenUiState.DukanState(status = DukanStatusUi.None)) }
+            updateState { copy(dukanState = MainScreenUiState.DukanState(status = DukanStatusUi.None), isConnected = true) }
         } else {
-            updateState { copy(dukanState = dukanState) }
+            updateState { copy(dukanState = dukanState, isConnected = true) }
         }
     }
 
@@ -168,32 +173,44 @@ class MainViewModel(
                     )
                 )
             }
+            is NoInternetException->{
+                updateState {
+                    copy(
+                        isConnected = false,
+                        dukanState = MainScreenUiState.DukanState(status = DukanStatusUi.None)
+                    )
+                }
+            }
         }
     }
 
     override fun onDukanButtonClicked() {
         when (state.value.dukanState.status) {
-            DukanStatusUi.None -> emitEffect(MainEffect.NavigateToAddDukanScreen)
-            DukanStatusUi.Pending -> emitEffect(MainEffect.NavigateToPendingDukanScreen)
-            DukanStatusUi.Approved -> emitEffect(MainEffect.NavigateToManageDukanScreen)
+            DukanStatusUi.None -> emitEffect(MainScreenEffect.NavigateToAddDukanScreen)
+            DukanStatusUi.Pending -> emitEffect(MainScreenEffect.NavigateToPendingDukanScreen)
+            DukanStatusUi.Approved -> emitEffect(MainScreenEffect.NavigateToManageDukanScreen)
             DukanStatusUi.Loading -> {}
         }
     }
 
     override fun onViewMoreButtonClick() {
-        emitEffect(MainEffect.NavigateCategoryToScreen)
+        emitEffect(MainScreenEffect.NavigateCategoryToScreen)
+    }
+
+    override fun onRetryButtonClicked() {
+        fetchData()
     }
 
     override fun onCategorySelectedClick(categoryId: String, categoryName: String) {
-        emitEffect(MainEffect.NavigateToDukansScreenByCategory(categoryId, categoryName))
+        emitEffect(MainScreenEffect.NavigateToDukansScreenByCategory(categoryId, categoryName))
     }
 
     override fun onNearestDukanClick(dukanId: String) {
-        emitEffect(MainEffect.NavigateSelectedDukan(dukanId))
+        emitEffect(MainScreenEffect.NavigateSelectedDukan(dukanId))
     }
 
     override fun onEditorPickDukanClick(dukanId: String) {
-        emitEffect(MainEffect.NavigateSelectedDukan(dukanId))
+        emitEffect(MainScreenEffect.NavigateSelectedDukan(dukanId))
     }
 
     fun initPagers() {

@@ -18,7 +18,7 @@ import net.thechance.mena.dukan.domain.model.MyDukanStatus
 import net.thechance.mena.dukan.domain.exceptions.NoSuchItemException
 import net.thechance.mena.dukan.domain.repository.DukanDiscoveryRepository
 import net.thechance.mena.dukan.domain.repository.DukanManagementRepository
-import net.thechance.mena.dukan.presentation.viewModel.mainScreen.MainEffect
+import net.thechance.mena.dukan.presentation.viewModel.mainScreen.MainScreenEffect
 import net.thechance.mena.dukan.presentation.viewModel.mainScreen.MainScreenUiState
 import net.thechance.mena.dukan.presentation.viewModel.mainScreen.MainViewModel
 import kotlin.test.BeforeTest
@@ -114,7 +114,7 @@ class MainViewModelTest {
 
             mainViewModel.effect.test {
                 val currentEffect = awaitItem()
-                assertEquals(MainEffect.NavigateToAddDukanScreen, currentEffect)
+                assertEquals(MainScreenEffect.NavigateToAddDukanScreen, currentEffect)
                 cancelAndIgnoreRemainingEvents()
             }
         }
@@ -138,7 +138,7 @@ class MainViewModelTest {
 
             mainViewModel.effect.test {
                 val currentEffect = awaitItem()
-                assertEquals(MainEffect.NavigateToPendingDukanScreen, currentEffect)
+                assertEquals(MainScreenEffect.NavigateToPendingDukanScreen, currentEffect)
                 cancelAndIgnoreRemainingEvents()
             }
         }
@@ -161,7 +161,7 @@ class MainViewModelTest {
 
             mainViewModel.effect.test {
                 val currentEffect = awaitItem()
-                assertEquals(MainEffect.NavigateToManageDukanScreen, currentEffect)
+                assertEquals(MainScreenEffect.NavigateToManageDukanScreen, currentEffect)
                 cancelAndIgnoreRemainingEvents()
             }
         }
@@ -189,7 +189,7 @@ class MainViewModelTest {
 
         mainViewModel.onViewMoreButtonClick()
         val actualEffect = mainViewModel.effect.first()
-        val expectedEffect = MainEffect.NavigateCategoryToScreen
+        val expectedEffect = MainScreenEffect.NavigateCategoryToScreen
 
         assertEquals(expectedEffect, actualEffect)
 
@@ -204,7 +204,7 @@ class MainViewModelTest {
             mainViewModel.onCategorySelectedClick(categoryId, categoryName)
             val actualEffect = mainViewModel.effect.first()
             val expectedEffect =
-                MainEffect.NavigateToDukansScreenByCategory(categoryId, categoryName)
+                MainScreenEffect.NavigateToDukansScreenByCategory(categoryId, categoryName)
             assertEquals(expectedEffect, actualEffect)
         }
 
@@ -216,7 +216,7 @@ class MainViewModelTest {
             mainViewModel.onNearestDukanClick(dukanId)
 
             val actualEffect = mainViewModel.effect.first()
-            val expectedEffect = MainEffect.NavigateSelectedDukan(dukanId)
+            val expectedEffect = MainScreenEffect.NavigateSelectedDukan(dukanId)
             assertEquals(expectedEffect, actualEffect)
         }
 
@@ -228,7 +228,7 @@ class MainViewModelTest {
             mainViewModel.onEditorPickDukanClick(dukanId)
 
             val actualEffect = mainViewModel.effect.first()
-            val expectedEffect = MainEffect.NavigateSelectedDukan(dukanId)
+            val expectedEffect = MainScreenEffect.NavigateSelectedDukan(dukanId)
             assertEquals(expectedEffect, actualEffect)
         }
 

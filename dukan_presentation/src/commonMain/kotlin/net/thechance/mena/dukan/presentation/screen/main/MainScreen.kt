@@ -1,7 +1,9 @@
 package net.thechance.mena.dukan.presentation.screen.main
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -20,6 +22,7 @@ import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import net.thechance.mena.dukan.presentation.component.NoInternetContent
 import net.thechance.mena.dukan.presentation.navigation.DukanRoute
 import net.thechance.mena.dukan.presentation.navigation.DukanRoute.ManageDukanScreenRoute
 import net.thechance.mena.dukan.presentation.navigation.DukanRoute.PendingScreenRoute
@@ -39,7 +42,7 @@ import net.thechance.mena.dukan.presentation.util.stubPreviews.PreviewEditorPick
 import net.thechance.mena.dukan.presentation.util.stubPreviews.PreviewMainScreenInteractionListener
 import net.thechance.mena.dukan.presentation.util.stubPreviews.fakeBestNearestDuknas
 import net.thechance.mena.dukan.presentation.util.stubPreviews.fakeDukans
-import net.thechance.mena.dukan.presentation.viewModel.mainScreen.MainEffect
+import net.thechance.mena.dukan.presentation.viewModel.mainScreen.MainScreenEffect
 import net.thechance.mena.dukan.presentation.viewModel.mainScreen.MainInteractionListener
 import net.thechance.mena.dukan.presentation.viewModel.mainScreen.MainScreenUiState
 import net.thechance.mena.dukan.presentation.viewModel.mainScreen.MainViewModel
@@ -56,19 +59,19 @@ fun MainScreen(
     val navController = LocalNavController.current
     ObserveAsEffect(viewModel.effect) { effect ->
         when (effect) {
-            MainEffect.NavigateToAddDukanScreen -> navController.navigate(DukanRoute.CreateDukanScreenRoute)
-            MainEffect.NavigateToPendingDukanScreen -> navController.navigate(
+            MainScreenEffect.NavigateToAddDukanScreen -> navController.navigate(DukanRoute.CreateDukanScreenRoute)
+            MainScreenEffect.NavigateToPendingDukanScreen -> navController.navigate(
                 PendingScreenRoute(
                     state.value.dukanState.name,
                 )
             )
 
-            MainEffect.NavigateToManageDukanScreen -> navController.navigate(ManageDukanScreenRoute)
+            MainScreenEffect.NavigateToManageDukanScreen -> navController.navigate(ManageDukanScreenRoute)
 
-            MainEffect.NavigateCategoryToScreen ->
+            MainScreenEffect.NavigateCategoryToScreen ->
                 navController.navigate(DukanRoute.DukanCategoriesScreenRoute)
 
-            is MainEffect.NavigateToDukansScreenByCategory -> {
+            is MainScreenEffect.NavigateToDukansScreenByCategory -> {
                 navController.navigate(
                     DukanRoute.DukansScreenRoute(
                         categoryId = effect.categoryId,
@@ -77,7 +80,7 @@ fun MainScreen(
                 )
             }
 
-            is MainEffect.NavigateSelectedDukan -> {
+            is MainScreenEffect.NavigateSelectedDukan -> {
                 navController.navigate(
                     DukanRoute.DukanDetails(effect.dukanId)
                 )
@@ -85,12 +88,25 @@ fun MainScreen(
         }
     }
 
-    MainContent(
-        listener = viewModel,
-        state = state.value,
-        editorPickDukanPager = viewModel.editorPickDukanPager,
-        bestNearestDukanPager = viewModel.bestNearestDukanPager
-    )
+    when{
+        state.value.isConnected.not() -> {
+            NoInternetContent(
+                onRetry = viewModel::onRetryButtonClicked,
+                isLoading = state.value.dukanState.status == MainScreenUiState.DukanStatusUi.Loading,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+        else-> {
+            MainContent(
+                listener = viewModel,
+                state = state.value,
+                editorPickDukanPager = viewModel.editorPickDukanPager,
+                bestNearestDukanPager = viewModel.bestNearestDukanPager
+            )
+        }
+    }
+
+
 }
 
 @Composable
@@ -109,7 +125,6 @@ private fun MainContent(
             )
         },
     ) {
-
         val mainListState = rememberLazyListState()
         mainListState.LoadMoreOnScroll(editorPickDukanPager)
 

@@ -6,6 +6,7 @@ import net.thechance.mena.dukan.presentation.viewModel.createDukan.CreateDukanUi
 data class MainScreenUiState(
     val errorMessage: String? = null,
     val dukanState: DukanState = DukanState(),
+    val isConnected: Boolean = true,
     val categories: List<DukanCategoryUiState> = emptyList(),
     val bestNearestDukans: PagingData<BestNearestDukanUiState> = PagingData(),
     val bestNearestDukanState: BestNearestDukanStatus = BestNearestDukanStatus.LOADING,
