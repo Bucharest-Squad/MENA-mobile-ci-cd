@@ -1,6 +1,8 @@
 package net.thechance.mena.dukan.presentation.screen.main
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,6 +25,8 @@ import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.dukan.presentation.component.NoInternetContent
+import net.thechance.mena.dukan.presentation.component.SnackBar
+import net.thechance.mena.dukan.presentation.component.SnackBarUiState
 import net.thechance.mena.dukan.presentation.navigation.DukanRoute
 import net.thechance.mena.dukan.presentation.navigation.DukanRoute.ManageDukanScreenRoute
 import net.thechance.mena.dukan.presentation.navigation.DukanRoute.PendingScreenRoute
@@ -111,7 +115,6 @@ private fun MainContent(
         if (!isConnected) {
             NoInternetContent(
                 onRetry = listener::onRetryButtonClicked,
-                isLoading = state.dukanState.status == MainScreenUiState.DukanStatusUi.Loading,
                 modifier = Modifier.fillMaxSize()
             )
             return@AnimatedContent
@@ -125,6 +128,7 @@ private fun MainContent(
                     dukanButtonStatus = state.dukanState.status
                 )
             },
+            snakeBar = { ManageDukanSnackbar(state.snackBarState, listener) }
         ) {
             val mainListState = rememberLazyListState()
             mainListState.LoadMoreOnScroll(editorPickDukanPager)
@@ -187,6 +191,33 @@ private fun MainContent(
             }
         }
 
+    }
+}
+
+
+@Composable
+private fun ManageDukanSnackbar(
+    snackBarState: SnackBarUiState?,
+    listener: MainInteractionListener
+) {
+    AnimatedContent(
+        targetState = snackBarState != null,
+        transitionSpec = {
+            slideIntoContainer(
+                towards = AnimatedContentTransitionScope.SlideDirection.Down
+            ) togetherWith slideOutOfContainer(
+                towards = AnimatedContentTransitionScope.SlideDirection.Up
+            )
+        }
+    ) {
+        if (it) {
+            snackBarState?.let {
+                SnackBar(
+                    snackBarUiState = snackBarState,
+                    onDismiss = listener::onDismissSnackBar
+                )
+            }
+        }
     }
 }
 

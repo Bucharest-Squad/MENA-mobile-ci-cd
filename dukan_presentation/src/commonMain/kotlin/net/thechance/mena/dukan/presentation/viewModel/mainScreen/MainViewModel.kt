@@ -3,10 +3,15 @@ package net.thechance.mena.dukan.presentation.viewModel.mainScreen
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import mena.dukan_presentation.generated.resources.Res
+import mena.dukan_presentation.generated.resources.error_general
+import mena.dukan_presentation.generated.resources.no_internet_connection
 import net.thechance.mena.dukan.domain.exceptions.NoInternetException
 import net.thechance.mena.dukan.domain.exceptions.NoSuchItemException
 import net.thechance.mena.dukan.domain.repository.DukanDiscoveryRepository
 import net.thechance.mena.dukan.domain.repository.DukanManagementRepository
+import net.thechance.mena.dukan.presentation.component.SnackBarType
+import net.thechance.mena.dukan.presentation.component.SnackBarUiState
 import net.thechance.mena.dukan.presentation.util.pagination.Pager
 import net.thechance.mena.dukan.presentation.util.pagination.PagingData
 import net.thechance.mena.dukan.presentation.util.pagination.base.createPagingSource
@@ -14,6 +19,7 @@ import net.thechance.mena.dukan.presentation.viewModel.base.BaseViewModel
 import net.thechance.mena.dukan.presentation.viewModel.createDukan.CreateDukanUiState.DukanCategoryUiState
 import net.thechance.mena.dukan.presentation.viewModel.createDukan.toUiState
 import net.thechance.mena.dukan.presentation.viewModel.mainScreen.MainScreenUiState.DukanStatusUi
+import org.jetbrains.compose.resources.StringResource
 
 class MainViewModel(
     private val dukanManagementRepository: DukanManagementRepository,
@@ -73,7 +79,8 @@ class MainViewModel(
         updateState {
             copy(
                 editorPickDukans = dukans,
-                editorPickDukanState = loadedBestNearestDukans
+                editorPickDukanState = loadedBestNearestDukans,
+                snackBarState = null
             )
         }
     }
@@ -115,7 +122,8 @@ class MainViewModel(
         updateState {
             copy(
                 bestNearestDukans = dukans,
-                bestNearestDukanState = loadedBestNearestDukans
+                bestNearestDukanState = loadedBestNearestDukans,
+                snackBarState = null
             )
         }
     }
@@ -124,13 +132,12 @@ class MainViewModel(
     private fun handleNetworkError(error: Throwable) {
         when (error) {
             is NoInternetException -> updateState {
-                copy(
-                    isConnected = false,
-                )
+                updateToNoInternetState()
             }
-            else -> updateState {
-                copy(
-                    errorMessage = error.message
+            else -> {
+                showSnackBar(
+                    message = Res.string.error_general,
+                    type = SnackBarType.ERROR
                 )
             }
         }
@@ -154,7 +161,8 @@ class MainViewModel(
     private fun onGetCategoriesSuccess(categoryUiState: List<DukanCategoryUiState>) {
         updateState {
             copy(
-                categories = categoryUiState
+                categories = categoryUiState,
+                snackBarState = null
             )
         }
     }
@@ -178,7 +186,11 @@ class MainViewModel(
 
     private fun onGetDukanStateSuccess(dukanState: MainScreenUiState.DukanState?) {
         if (dukanState == null) {
-            updateState { copy(dukanState = MainScreenUiState.DukanState(status = DukanStatusUi.None), isConnected = true) }
+            updateState {
+                copy(dukanState = MainScreenUiState.DukanState(status = DukanStatusUi.None),
+                    isConnected = true,
+                    snackBarState = null
+                ) }
         } else {
             updateState { copy(dukanState = dukanState, isConnected = true) }
         }
@@ -188,22 +200,24 @@ class MainViewModel(
         when (error) {
             is NoSuchItemException -> updateState {
                 copy(
-                    errorMessage = error.message,
-                    dukanState = MainScreenUiState.DukanState(
-                        status = DukanStatusUi.None
-                    )
+                    dukanState = MainScreenUiState.DukanState(status = DukanStatusUi.None)
                 )
             }
             is NoInternetException->{
                 updateState {
-                    copy(
-                        isConnected = false,
-                        dukanState = MainScreenUiState.DukanState(status = DukanStatusUi.None)
-                    )
+                    updateToNoInternetState()
                 }
             }
         }
     }
+
+    private fun MainScreenUiState.updateToNoInternetState(): MainScreenUiState = copy(
+        isConnected = false,
+        snackBarState = SnackBarUiState(
+            message = Res.string.no_internet_connection,
+            snackBarType = SnackBarType.ERROR
+        )
+    )
 
     override fun onDukanButtonClicked() {
         when (state.value.dukanState.status) {
@@ -220,6 +234,12 @@ class MainViewModel(
 
     override fun onRetryButtonClicked() {
         fetchData()
+    }
+
+    override fun onDismissSnackBar() {
+        updateState {
+            copy(snackBarState = null)
+        }
     }
 
     override fun onCategorySelectedClick(categoryId: String, categoryName: String) {
@@ -250,6 +270,17 @@ class MainViewModel(
             dukanDiscoveryRepository.getEditorPicksDukans(
                 page = currentPage,
                 size = 5
+            )
+        }
+    }
+
+    private fun showSnackBar(message: StringResource, type: SnackBarType) {
+        updateState {
+            copy(
+                snackBarState = SnackBarUiState(
+                    message = message,
+                    snackBarType = type
+                )
             )
         }
     }
