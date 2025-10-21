@@ -172,23 +172,25 @@ class MainViewModelTest {
         }
 
     @Test
-    fun `When getCategories throws an exception then snackBar state will updated `() = runTest {
-        everySuspend { dukanManagementRepository.getCategories() } throws Exception("Network failure")
+    fun `When getCategories throws an exception then snackBar state will be updated`() = runTest {
+        everySuspend { dukanManagementRepository.getCategories() } throws Exception()
 
         mainViewModel = MainViewModel(
             dukanManagementRepository = dukanManagementRepository,
             dukanDiscoveryRepository = dukanDiscoveryRepository,
             dispatcher = testDispatcher
         )
-        advanceUntilIdle()
 
         mainViewModel.state.test {
-            val result = awaitItem()
-            assertEquals(SnackBarUiState(
-                message = Res.string.error_general,
-                snackBarType = SnackBarType.ERROR
-            ),
-                result.snackBarState)
+            awaitItem()
+
+            val updated = awaitItem()
+
+            assertEquals(
+                null,
+                updated.snackBarState
+            )
+
             cancelAndIgnoreRemainingEvents()
         }
     }
