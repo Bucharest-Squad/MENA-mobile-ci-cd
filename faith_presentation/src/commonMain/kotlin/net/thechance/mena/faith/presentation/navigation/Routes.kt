@@ -2,7 +2,7 @@ package net.thechance.mena.faith.presentation.navigation
 
 import kotlinx.serialization.Serializable
 
-internal sealed interface Route {
+sealed interface Route {
 
     @Serializable
     data object SurRoute : Route
