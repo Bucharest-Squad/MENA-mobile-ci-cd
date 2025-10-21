@@ -48,12 +48,12 @@ class SurViewModelTest {
         }
 
     @Test
-    fun `onClickSurah should navigate to surah details screen with surah id and name`() = runTest {
+    fun `onSurahClick should navigate to surah details screen with surah id and name`() = runTest {
         everySuspend { quranRepository.getSur() } returns emptyList()
         testDispatcher.scheduler.advanceUntilIdle()
 
         viewModel.uiEffect.test {
-            viewModel.onClickSurah(AL_FATIHAH_ID, AL_FATIHAH_NAME)
+            viewModel.onSurahClick(AL_FATIHAH_ID, AL_FATIHAH_NAME)
 
             assertEquals(
                 SurEffect.NavigateToSurahDetails(AL_FATIHAH_ID, AL_FATIHAH_NAME),
@@ -63,12 +63,12 @@ class SurViewModelTest {
     }
 
     @Test
-    fun `onClickBack should navigate back`() = runTest {
+    fun `onBackClick should navigate back`() = runTest {
         everySuspend { quranRepository.getSur() } returns emptyList()
         testDispatcher.scheduler.advanceUntilIdle()
 
         viewModel.uiEffect.test {
-            viewModel.onClickBack()
+            viewModel.onBackClick()
 
             assertEquals(
                 SurEffect.NavigateBack,
@@ -78,12 +78,12 @@ class SurViewModelTest {
     }
 
     @Test
-    fun `onClickBookmark should navigate to bookmark screen`() = runTest {
+    fun `onBookmarkClick should navigate to bookmark screen`() = runTest {
         everySuspend { quranRepository.getSur() } returns emptyList()
         testDispatcher.scheduler.advanceUntilIdle()
 
         viewModel.uiEffect.test {
-            viewModel.onClickBookmark()
+            viewModel.onBookmarkClick()
 
             assertEquals(
                 SurEffect.NavigateToBookmark,

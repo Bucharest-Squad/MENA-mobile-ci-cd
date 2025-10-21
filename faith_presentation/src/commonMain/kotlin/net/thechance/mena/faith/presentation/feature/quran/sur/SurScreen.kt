@@ -69,9 +69,9 @@ private fun Content(
         topBar = {
             SurTopbar(
                 modifier = Modifier.padding(horizontal = Theme.spacing._16),
-                onBackClick = { listener.onClickBack() },
-                onBookmarkClick = { listener.onClickBookmark() },
-                onSearchClick = { listener.onClickSearch() }
+                onBackClick = { listener.onBackClick() },
+                onBookmarkClick = { listener.onBookmarkClick() },
+                onSearchClick = { listener.onSearchClick() }
             )
         }
     ) {
@@ -96,7 +96,7 @@ private fun Content(
                 SurahItem(
                     surah = surah,
                     onClick = {
-                        listener.onClickSurah(
+                        listener.onSurahClick(
                             surah.id,
                             surah.surahName
                         )
@@ -141,10 +141,10 @@ private fun SurScreenPreview() {
                 )
             ),
             listener = object : SurInteractionListener {
-                override fun onClickSurah(surahId: Int, surahName: String) = Unit
-                override fun onClickBack() = Unit
-                override fun onClickBookmark() = Unit
-                override fun onClickSearch() {}
+                override fun onSurahClick(surahId: Int, surahName: String) = Unit
+                override fun onBackClick() = Unit
+                override fun onBookmarkClick() = Unit
+                override fun onSearchClick() {}
             }
         )
     }
