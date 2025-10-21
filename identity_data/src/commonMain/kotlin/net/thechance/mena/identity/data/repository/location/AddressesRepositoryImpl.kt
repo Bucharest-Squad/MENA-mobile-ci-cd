@@ -19,7 +19,7 @@ import net.thechance.mena.identity.domain.exception.AddressNotFoundException
 import net.thechance.mena.identity.domain.exception.UnableToFindLocationException
 import net.thechance.mena.identity.domain.model.AddressInput
 import net.thechance.mena.identity.domain.repository.AddressesRepository
-import net.thechance.mena.identity.domain.util.Coordinates
+import net.thechance.mena.identity.domain.model.Coordinates
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 

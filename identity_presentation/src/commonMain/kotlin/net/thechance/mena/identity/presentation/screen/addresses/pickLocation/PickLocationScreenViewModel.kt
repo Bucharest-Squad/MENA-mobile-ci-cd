@@ -8,7 +8,7 @@ import mena.identity_presentation.generated.resources.Res
 import mena.identity_presentation.generated.resources.error_location_is_turned_off
 import net.thechance.mena.identity.domain.entity.AddressType
 import net.thechance.mena.identity.domain.repository.AddressesRepository
-import net.thechance.mena.identity.domain.util.Coordinates
+import net.thechance.mena.identity.domain.model.Coordinates
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
 import net.thechance.mena.identity.presentation.base.ErrorState
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
