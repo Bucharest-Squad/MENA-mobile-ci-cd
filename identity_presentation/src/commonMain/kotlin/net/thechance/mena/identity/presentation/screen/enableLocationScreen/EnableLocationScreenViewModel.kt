@@ -33,8 +33,8 @@ class EnableLocationScreenViewModel(
     private fun checkIfEnabledPermission() {
         tryToCollect(
             function = { locationForegroundHandler.checkPermissionFlow() },
-            onNewValue = { checkIfEnabledPermissionSuccess(it) },
-            onError = ::onError,
+            onNewValue = ::checkIfEnabledPermissionSuccess,
+            onError = ::onPermissionError,
             dispatcher = dispatcher
         )
     }
@@ -45,7 +45,7 @@ class EnableLocationScreenViewModel(
         }
     }
 
-    private fun onError(errorState: ErrorState) {
+    private fun onPermissionError(errorState: ErrorState) {
         updateState { copy(errorMessage = mapErrorToMessage(errorState)) }
     }
 }
