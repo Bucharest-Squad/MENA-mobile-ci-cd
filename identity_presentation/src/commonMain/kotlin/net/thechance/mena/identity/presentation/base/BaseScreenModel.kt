@@ -17,7 +17,10 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import net.thechance.mena.identity.domain.exception.AuthenticationException
 import net.thechance.mena.identity.domain.exception.LocationException
 import kotlin.time.Clock
@@ -31,6 +34,10 @@ abstract class BaseScreenModel<S, E>(initialState: S) : ScreenModel {
 
     private val _effect = MutableSharedFlow<E>()
     val effect = _effect.asSharedFlow().throttleFirst(500).mapNotNull { it }
+
+    private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        handleUncaughtException(throwable)
+    }
 
     protected fun tryToExecute(
         function: suspend () -> Unit,
@@ -77,8 +84,12 @@ abstract class BaseScreenModel<S, E>(initialState: S) : ScreenModel {
     }
 
     protected fun sendNewEffect(newEffect: E) {
-        screenModelScope.launch(Dispatchers.IO) {
-            _effect.emit(newEffect)
+        screenModelScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
+            try {
+                _effect.emit(newEffect)
+            } catch (e: Exception) {
+                handleUncaughtException(e)
+            }
         }
     }
 
@@ -88,20 +99,30 @@ abstract class BaseScreenModel<S, E>(initialState: S) : ScreenModel {
         dispatcher: CoroutineDispatcher = Dispatchers.IO,
         function: suspend () -> Unit,
     ): Job {
-        return inScope.launch(dispatcher) {
-            try {
-                function()
-            } catch (exception: AuthenticationException) {
-                exception.printStackTrace()
-                handelAuthorizationException(exception, onError)
-            } catch (exception: LocationException) {
-                exception.printStackTrace()
-                handleLocationException(exception, onError)
-            } catch (exception: Exception) {
-                exception.printStackTrace()
-                onError(ErrorState.SomethingWentWrong(exception.message))
+        return inScope.launch(dispatcher + coroutineExceptionHandler) {
+            supervisorScope {
+                try {
+                    function()
+                } catch (exception: CancellationException) {
+                    throw exception
+                } catch (exception: AuthenticationException) {
+                    exception.printStackTrace()
+                    handelAuthorizationException(exception, onError)
+                } catch (exception: LocationException) {
+                    exception.printStackTrace()
+                    handleLocationException(exception, onError)
+                } catch (exception: Exception) {
+                    exception.printStackTrace()
+                    onError(ErrorState.SomethingWentWrong(exception.message))
+                } catch (throwable: Throwable) {
+                    handleUncaughtException(throwable)
+                }
             }
         }
+    }
+
+    private fun handleUncaughtException(throwable: Throwable) {
+        throwable.printStackTrace()
     }
 
     @OptIn(ExperimentalTime::class)
