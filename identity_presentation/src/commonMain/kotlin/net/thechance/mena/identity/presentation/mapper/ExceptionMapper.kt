@@ -34,7 +34,6 @@ internal fun mapErrorToMessage(error: ErrorState): StringResource {
         ErrorState.InvalidOTP -> Res.string.error_invalid_otp
         ErrorState.OTPExpired -> Res.string.error_otp_expired
         ErrorState.AddressNotFound -> Res.string.error_address_not_found
-        is ErrorState.IsActiveAddress -> Res.string.error_cannot_delete_active_address
         is ErrorState.WrongPassword -> Res.string.error_invalid_credentials
         ErrorState.Unknown -> Res.string.error_unknown
         is ErrorState.SomethingWentWrong -> Res.string.error_something_went_wrong

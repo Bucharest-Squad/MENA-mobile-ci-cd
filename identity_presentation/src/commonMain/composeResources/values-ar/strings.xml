@@ -102,6 +102,7 @@
     <string name="error_permission_not_granted">لم يتم منح الإذن</string>
 
     <string name="error_address_not_found">لم يتم العثور على العنوان</string>
+    <string name="is_main_address_error">لا يمكن حذف العنوان الأساسي</string>
     <string name="error_cannot_delete_active_address">لا يمكن حذف العنوان الأساسي</string>
     <string name="error_location_is_turned_off">"الموقع مُغلق"</string>
     <string name="error_username_required">يرجى إدخال حقل اسم المستخدم</string>

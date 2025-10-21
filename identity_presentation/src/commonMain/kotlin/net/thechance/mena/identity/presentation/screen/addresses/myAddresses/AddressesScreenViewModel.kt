@@ -6,13 +6,14 @@ import kotlinx.coroutines.IO
 import mena.identity_presentation.generated.resources.Res
 import mena.identity_presentation.generated.resources.address_activated_successfully
 import mena.identity_presentation.generated.resources.address_deleted_successfully
+import mena.identity_presentation.generated.resources.error_address_not_found
+import mena.identity_presentation.generated.resources.error_something_went_wrong
 import mena.identity_presentation.generated.resources.is_main_address_error
-import mena.identity_presentation.generated.resources.unexpected_error
-import net.thechance.mena.identity.domain.exception.IsActiveAddress
 import net.thechance.mena.identity.domain.repository.AddressesRepository
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
 import net.thechance.mena.identity.presentation.base.ErrorState
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
+import org.jetbrains.compose.resources.StringResource
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -46,31 +47,19 @@ class AddressesScreenViewModel(
         )
 
     override fun onClickAddress(addressId: Uuid) {
-        tryToExecute(
-            function = {
-                val addressUI = state.value.addresses.find { it.id == addressId }
-                if (addressUI?.isMainAddress == false) {
-                    addressesRepository.setActiveAddress(addressId)
-                }
-            },
-            onSuccess = {
-                getUserAddresses()
-                updateState {
-                    copy(
-                        snackBarUiState = SnackBarUiState(
-                            snackBarType = SnackBarType.SUCCESS,
-                            isVisible = true,
-                            message = Res.string.address_activated_successfully
-                        ),
-                        deleteDialogUIState = DeleteDialogUIState(
-                            isVisible = false,
-                        )
-                    )
-                }
-            },
-            onError = ::onErrorOccurred,
-            dispatcher = dispatcher
-        )
+        val address = findAddressById(addressId)
+        
+        if (address?.isMainAddress == false) {
+            tryToExecute(
+                function = { addressesRepository.setActiveAddress(addressId) },
+                onSuccess = {
+                    getUserAddresses()
+                    showSuccessAndCloseSnackBar(Res.string.address_activated_successfully)
+                },
+                onError = ::onErrorOccurred,
+                dispatcher = dispatcher
+            )
+        }
     }
 
     override fun onDeleteAddressClicked(addressId: Uuid) = updateState {
@@ -82,38 +71,15 @@ class AddressesScreenViewModel(
     }
 
     override fun onConfirmDeleteAddress() {
-        tryToExecute(
-            function = {
-                val address =
-                    state.value.addresses.find { it.id == state.value.deleteDialogUIState.addressId }
-                if (address?.isMainAddress == true) {
-                    throw IsActiveAddress()
-                }
-                val addressId = state.value.deleteDialogUIState.addressId
-                if (addressId != null) {
-                    addressesRepository.deleteAddress(addressId)
-                } else {
-                    throw IllegalStateException("Address ID is null")
-                }
-            },
-            onSuccess = {
-                getUserAddresses()
-                updateState {
-                    copy(
-                        snackBarUiState = SnackBarUiState(
-                            snackBarType = SnackBarType.SUCCESS,
-                            isVisible = true,
-                            message = Res.string.address_deleted_successfully
-                        ),
-                        deleteDialogUIState = DeleteDialogUIState(
-                            isVisible = false,
-                        )
-                    )
-                }
-            },
-            onError = ::onErrorOccurred,
-            dispatcher = dispatcher
-        )
+        val addressId = state.value.deleteDialogUIState.addressId
+        val address = findAddressById(addressId)
+        
+        when {
+            addressId == null -> showErrorAndCloseDialog(Res.string.error_address_not_found)
+            address == null -> showErrorAndCloseDialog(Res.string.error_address_not_found)
+            address.isMainAddress -> showErrorAndCloseDialog(Res.string.is_main_address_error)
+            else -> deleteAddress(addressId)
+        }
     }
 
     override fun onDismissDeleteDialog() = updateState {
@@ -164,31 +130,58 @@ class AddressesScreenViewModel(
 
     private fun onErrorOccurred(errorState: ErrorState) {
         onDismissDeleteDialog()
-        when (errorState) {
-            is ErrorState.IsActiveAddress -> updateState {
-                copy(
-                    snackBarUiState = SnackBarUiState(
-                        snackBarType = SnackBarType.ERROR,
-                        isVisible = true,
-                        message = Res.string.is_main_address_error
-                    ),
-                    errorMessage = mapErrorToMessage(errorState)
-                )
-            }
-
-            else -> updateState {
-                copy(
-                    snackBarUiState = SnackBarUiState(
-                        snackBarType = SnackBarType.ERROR,
-                        isVisible = true,
-                        message = Res.string.unexpected_error
-                    ),
-                    errorMessage = mapErrorToMessage(errorState)
-                )
-            }
+        updateState {
+            copy(
+                snackBarUiState = SnackBarUiState(
+                    snackBarType = SnackBarType.ERROR,
+                    isVisible = true,
+                    message = Res.string.error_something_went_wrong
+                ),
+                errorMessage = mapErrorToMessage(errorState)
+            )
         }
+    }
 
-
+    private fun findAddressById(addressId: Uuid?): AddressUIState? {
+        return state.value.addresses.find { it.id == addressId }
+    }
+    
+    private fun showErrorAndCloseDialog(message: StringResource) {
+        updateState {
+            copy(
+                snackBarUiState = SnackBarUiState(
+                    snackBarType = SnackBarType.ERROR,
+                    isVisible = true,
+                    message = message
+                ),
+                deleteDialogUIState = DeleteDialogUIState(isVisible = false)
+            )
+        }
+    }
+    
+    private fun showSuccessAndCloseSnackBar(message: StringResource) {
+        updateState {
+            copy(
+                snackBarUiState = SnackBarUiState(
+                    snackBarType = SnackBarType.SUCCESS,
+                    isVisible = true,
+                    message = message
+                ),
+                deleteDialogUIState = DeleteDialogUIState(isVisible = false)
+            )
+        }
+    }
+    
+    private fun deleteAddress(addressId: Uuid) {
+        tryToExecute(
+            function = { addressesRepository.deleteAddress(addressId) },
+            onSuccess = {
+                getUserAddresses()
+                showSuccessAndCloseSnackBar(Res.string.address_deleted_successfully)
+            },
+            onError = ::onErrorOccurred,
+            dispatcher = dispatcher
+        )
     }
 }
 
