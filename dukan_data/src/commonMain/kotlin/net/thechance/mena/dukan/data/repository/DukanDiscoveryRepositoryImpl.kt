@@ -33,7 +33,7 @@ class DukanDiscoveryRepositoryImpl(
     override suspend fun getBestAroundDukans(
         page: Int,
         size: Int
-    ): PagedResult<DukanPreview> {
+    ): PagedResult<Dukan> {
         val location = locationService.getActiveAddress()
         //TODO handle in backend
         val range = 30000
