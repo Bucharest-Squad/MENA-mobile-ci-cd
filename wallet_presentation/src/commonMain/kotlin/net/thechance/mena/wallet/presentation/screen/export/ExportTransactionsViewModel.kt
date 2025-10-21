@@ -42,6 +42,8 @@ import org.koin.android.annotation.KoinViewModel
 import org.koin.core.annotation.Provided
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 @KoinViewModel
 class ExportTransactionsViewModel(
@@ -361,6 +363,7 @@ class ExportTransactionsViewModel(
         )
     }
 
+    @OptIn(ExperimentalUuidApi::class)
     private fun onDownloadSuccess(filePath: String, statement: StatementWithMetaData) {
         resetDownloadState()
 
@@ -368,7 +371,7 @@ class ExportTransactionsViewModel(
         saveStatementToDatabase(
             filePath = filePath,
             statement = Statement(
-                id = 0L,
+                id = Uuid.random(),
                 startDate = statement.startDate,
                 endDate = statement.endDate,
                 totalInflows = statement.totalInflows,
