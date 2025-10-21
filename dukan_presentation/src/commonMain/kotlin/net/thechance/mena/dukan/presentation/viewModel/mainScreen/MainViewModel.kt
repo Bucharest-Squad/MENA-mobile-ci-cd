@@ -202,7 +202,7 @@ class MainViewModel(
         ) { currentPage ->
             dukanDiscoveryRepository.getBestAroundDukans(
                 page = currentPage,
-                size = 20
+                size = 5
             )
         }
 
@@ -211,7 +211,7 @@ class MainViewModel(
         ) { currentPage ->
             dukanDiscoveryRepository.getEditorPicksDukans(
                 page = currentPage,
-                size = 20
+                size = 5
             )
         }
     }

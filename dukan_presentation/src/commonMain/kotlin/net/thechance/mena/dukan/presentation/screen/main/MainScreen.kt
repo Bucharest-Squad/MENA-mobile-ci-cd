@@ -8,13 +8,10 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import kotlinx.coroutines.flow.distinctUntilChanged
 import mena.dukan_presentation.generated.resources.Res
 import mena.dukan_presentation.generated.resources.best_dukans_around_you
 import mena.dukan_presentation.generated.resources.editor_pick_dukans
@@ -31,8 +28,9 @@ import net.thechance.mena.dukan.presentation.screen.main.components.TopAppBar
 import net.thechance.mena.dukan.presentation.screen.main.components.bestNersetDukanSection.BestNearestDukanSection
 import net.thechance.mena.dukan.presentation.screen.main.components.categorySection.CategorySection
 import net.thechance.mena.dukan.presentation.screen.main.components.categorySection.fakeCategories
-import net.thechance.mena.dukan.presentation.screen.main.components.editorPickDukanSection.EditorPickDukanItemsSection
+import net.thechance.mena.dukan.presentation.screen.main.components.editorPickDukanSection.editorPickDukanItems
 import net.thechance.mena.dukan.presentation.util.ObserveAsEffect
+import net.thechance.mena.dukan.presentation.util.pagination.LoadMoreOnScroll
 import net.thechance.mena.dukan.presentation.util.pagination.Pager
 import net.thechance.mena.dukan.presentation.util.pagination.PagingConfig
 import net.thechance.mena.dukan.presentation.util.pagination.PagingData
@@ -49,15 +47,12 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
-const val categorySectionItemKey = "0"
-const val bestAroundSectionItemKey = "1"
-const val editorPickSectionItemKey = "2"
 
 @Composable
 fun MainScreen(
     viewModel: MainViewModel = koinViewModel()
 ) {
-    val state = viewModel.state.collectAsStateWithLifecycle()
+    val state: State<MainScreenUiState> = viewModel.state.collectAsStateWithLifecycle()
     val navController = LocalNavController.current
     ObserveAsEffect(viewModel.effect) { effect ->
         when (effect) {
@@ -116,18 +111,13 @@ private fun MainContent(
     ) {
 
         val mainListState = rememberLazyListState()
+        mainListState.LoadMoreOnScroll(editorPickDukanPager)
 
-
-        val isBestAroundVisible by remember {
-            snapshotFlow {
-                mainListState.layoutInfo.visibleItemsInfo.any { it.key == bestAroundSectionItemKey }
-            }.distinctUntilChanged()
-        }.collectAsStateWithLifecycle(initialValue = false)
 
         LazyColumn(
             state = mainListState
         ) {
-            item(categorySectionItemKey) {
+            item {
                 Text(
                     text = stringResource(Res.string.what_do_you_need),
                     style = Theme.typography.title.small,
@@ -145,8 +135,7 @@ private fun MainContent(
                 )
             }
 
-            item(bestAroundSectionItemKey) {
-                if (state.bestNearestDukans.items.isNotEmpty()) {
+            item {
                     Text(
                         text = stringResource(Res.string.best_dukans_around_you),
                         style = Theme.typography.title.small,
@@ -156,7 +145,6 @@ private fun MainContent(
                             top = Theme.spacing._16
                         )
                     )
-                }
 
                 BestNearestDukanSection(
                     state = state,
@@ -166,7 +154,7 @@ private fun MainContent(
                 )
             }
 
-            item(editorPickSectionItemKey) {
+            item {
                 Text(
                     stringResource(Res.string.editor_pick_dukans),
                     style = Theme.typography.title.small,
@@ -177,15 +165,11 @@ private fun MainContent(
                         bottom = Theme.spacing._12
                     )
                 )
-
-                EditorPickDukanItemsSection(
-                    state = state,
-                    onDukanClick = listener::onEditorPickDukanClick,
-                    pager = editorPickDukanPager,
-                    isScrollingEnabled = isBestAroundVisible.not()
-                )
             }
-
+            editorPickDukanItems(
+                state = state,
+                onDukanClick = listener::onEditorPickDukanClick
+            )
         }
     }
 }
