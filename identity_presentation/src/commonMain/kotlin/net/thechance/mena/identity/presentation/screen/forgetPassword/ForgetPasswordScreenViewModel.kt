@@ -34,22 +34,24 @@ class ForgetPasswordScreenViewModel(
 
     override fun onClickContinue() {
         tryToExecute(
-            function = {
-                resetPasswordRepository.requestOTP(
-                    phoneNumber = PhoneNumber(
-                        countryCode = state.value.currentCountry.callingCode,
-                        localNumber = state.value.phoneNumber
-                    ),
-                    countryCodeName = state.value.currentCountry.countryCodeName
-                )
-            },
-            onSuccess = ::verifyPhoneNumberSuccess,
-            onError = ::onError,
+            function = ::requestOTP,
+            onSuccess = ::onOTPRequestSuccess,
+            onError = ::onOTPRequestError,
             dispatcher = dispatcher
         )
     }
 
-    private fun verifyPhoneNumberSuccess() {
+    private suspend fun requestOTP() {
+        resetPasswordRepository.requestOTP(
+            phoneNumber = PhoneNumber(
+                countryCode = state.value.currentCountry.callingCode,
+                localNumber = state.value.phoneNumber
+            ),
+            countryCodeName = state.value.currentCountry.countryCodeName
+        )
+    }
+
+    private fun onOTPRequestSuccess() {
         sendNewEffect(
             ForgetPasswordScreenUIEffect.NavigateToOTP(
                 phoneNumber = state.value.phoneNumber,
@@ -57,6 +59,10 @@ class ForgetPasswordScreenViewModel(
                 countryCode = state.value.currentCountry.countryCodeName
             )
         )
+    }
+
+    private fun onOTPRequestError(errorState: ErrorState) {
+        updateState { copy(errorMessage = mapErrorToMessage(errorState)) }
     }
 
     override fun onClickCountry() {
@@ -81,15 +87,6 @@ class ForgetPasswordScreenViewModel(
             val countryCode = currentCountry.callingCode
             val mobileNumberValid = loginUseCase.isMobileNumberValid(countryCode, phoneNumber)
             copy(isContinueEnabled = mobileNumberValid)
-        }
-    }
-
-    private fun onError(errorState: ErrorState) {
-        updateState {
-            copy(
-                isLoading = false,
-                errorMessage = mapErrorToMessage(errorState)
-            )
         }
     }
 }

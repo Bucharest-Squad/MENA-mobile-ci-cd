@@ -10,6 +10,7 @@ import net.thechance.mena.identity.domain.useCase.validation.mobileNumber.Passwo
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
 import net.thechance.mena.identity.presentation.base.error.ErrorState
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
+import net.thechance.mena.identity.presentation.utils.validatePasswordConfirmation
 
 class ResetPasswordScreenViewModel(
     private val passwordValidator: PasswordValidator,
@@ -28,9 +29,7 @@ class ResetPasswordScreenViewModel(
         updateState {
             copy(
                 confirmPassword = password,
-                confirmPasswordErrorMessage = if (password != newPassword)
-                    "Confirm password doesn't match the new password"
-                else null,
+                confirmPasswordErrorMessage = validatePasswordConfirmation(newPassword, password),
             )
         }
         checkResetButtonEnabled()
@@ -64,11 +63,10 @@ class ResetPasswordScreenViewModel(
         }
 
         updateState { copy(isLoading = true, errorMessage = null) }
-
         tryToExecute(
             function = ::onResetPassword,
             onSuccess = ::onResetPasswordSuccess,
-            onError = ::onErrorAccrue,
+            onError = ::onResetPasswordError,
             dispatcher = dispatcher
         )
     }
@@ -84,7 +82,7 @@ class ResetPasswordScreenViewModel(
         updateState { copy(isLoading = false, isDialogVisible = true) }
     }
 
-    private fun onErrorAccrue(errorState: ErrorState) {
+    private fun onResetPasswordError(errorState: ErrorState) {
         updateState {
             copy(
                 isLoading = false,
@@ -106,5 +104,4 @@ class ResetPasswordScreenViewModel(
             )
         }
     }
-
 }
