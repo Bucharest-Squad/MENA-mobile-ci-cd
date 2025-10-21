@@ -3,7 +3,6 @@ package net.thechance.mena.faith.presentation.base
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -27,7 +26,6 @@ import mena.faith_presentation.generated.resources.error_unknown
 import net.thechance.mena.faith.domain.annotation.KoverIgnore
 import net.thechance.mena.faith.domain.exception.FaithException
 import net.thechance.mena.faith.presentation.base.snackbar.SnackbarHandler
-
 
 @KoverIgnore
 abstract class BaseViewModel<UI_STATE, UI_EFFECT>(
@@ -56,28 +54,23 @@ abstract class BaseViewModel<UI_STATE, UI_EFFECT>(
         onSuccess: (suspend (T) -> Unit)? = null,
         onError: suspend (ErrorState) -> Unit = {},
         onStart: suspend () -> Unit = {},
-        onFinally: () -> Unit = {},
+        onFinally: suspend () -> Unit = {},
         dispatcher: CoroutineDispatcher = Dispatchers.IO,
         inScope: CoroutineScope = viewModelScope,
         delayMillis: Long = 0L
-    ): Job {
-        return inScope.launch(dispatcher) {
-            val handler = CoroutineExceptionHandler { _, throwable ->
-                inScope.launch {
-                    onError(mapExceptionToErrorState(throwable))
-                }
-            }
-            inScope.launch(dispatcher + handler) {
-                onStart()
-                delay(delayMillis)
-                runCatching { execute() }
-                    .onSuccess { result -> onSuccess?.invoke(result) }
-                    .onFailure { throwable -> onError(mapExceptionToErrorState(throwable)) }
-                onFinally()
-            }
+    ): Job = inScope.launch(dispatcher) {
+        try {
+            onStart()
+            delay(delayMillis)
+
+            val result = execute()
+            onSuccess?.invoke(result)
+        } catch (throwable: Throwable) {
+            onError(mapExceptionToErrorState(throwable))
+        } finally {
+            onFinally()
         }
     }
-
     protected fun <T> tryToCollect(
         onError: suspend (ErrorState) -> Unit = {},
         onEmitNewValue: (T) -> Unit = {},
