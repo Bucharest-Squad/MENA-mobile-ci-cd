@@ -104,6 +104,8 @@ class AddressesScreenViewModelTest {
         coEvery { addressRepository.getActiveAddress() } returns null
         coEvery { addressRepository.deleteAddress(any()) } returns Unit
 
+        viewModel = AddressesScreenViewModel(addressRepository, testDispatcher)
+        advanceUntilIdle()
         viewModel.onDeleteAddressClicked(address.id!!)
         advanceUntilIdle()
 
@@ -115,10 +117,13 @@ class AddressesScreenViewModelTest {
 
     @Test
     fun `onConfirmDeleteAddress() should delete address and show success snackbar`() = runTest {
-        val address = createFakeAddress()
-        coEvery { addressRepository.getUserAddresses() } returns emptyList()
+        val address = createFakeAddress().copy(isMainAddress = false)
+        coEvery { addressRepository.getUserAddresses() } returns listOf(address.toEntity())
         coEvery { addressRepository.getActiveAddress() } returns null
         coEvery { addressRepository.deleteAddress(any()) } returns Unit
+        
+        viewModel = AddressesScreenViewModel(addressRepository, testDispatcher)
+        advanceUntilIdle()
         viewModel.onDeleteAddressClicked(address.id!!)
         testDispatcher.scheduler.advanceUntilIdle()
 
@@ -183,6 +188,9 @@ class AddressesScreenViewModelTest {
         coEvery { addressRepository.getUserAddresses() } returns listOf(address.toEntity())
         coEvery { addressRepository.getActiveAddress() } returns null
         coEvery { addressRepository.deleteAddress(any()) } returns Unit
+
+        viewModel = AddressesScreenViewModel(addressRepository, testDispatcher)
+        advanceUntilIdle()
 
         viewModel.onDeleteAddressClicked(address.id!!)
         advanceUntilIdle()
