@@ -33,6 +33,10 @@ actual class PermissionManager() {
         }
     }
 
+    fun getActivity(): ComponentActivity? {
+        return activityRef?.get()
+    }
+
     actual suspend fun requestCameraPermission(
         onGranted: () -> Unit,
         onDenied: () -> Unit
@@ -42,10 +46,7 @@ actual class PermissionManager() {
 
         suspendCancellableCoroutine { continuation ->
             when {
-                ContextCompat.checkSelfPermission(
-                    activity,
-                    Manifest.permission.CAMERA
-                ) == PackageManager.PERMISSION_GRANTED -> {
+                activity.hasCameraPermission() -> {
                     onGranted()
                     continuation.resume(Unit)
                 }
@@ -54,14 +55,7 @@ actual class PermissionManager() {
                     activity,
                     Manifest.permission.CAMERA
                 ) -> {
-                    val intent = Intent(
-                        Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                        Uri.fromParts("package", activity.packageName, null)
-                    ).apply {
-                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    }
-                    activity.startActivity(intent)
-
+                    activity.openAppSettingsPage()
                     continuation.resume(Unit)
                 }
 

@@ -2,25 +2,28 @@ package net.thechance.mena.identity.presentation.util
 
 import android.Manifest
 import android.content.Context
-import android.content.pm.PackageManager
 import android.os.Build
+import androidx.activity.ComponentActivity
 import net.thechance.mena.identity.presentation.util.permissionHandler.PermissionController
 import net.thechance.mena.identity.presentation.util.permissionHandler.PermissionState
 
 internal class LocationForegroundPermission(
     private val context: Context,
-
+    private val permissionManager: PermissionManager,
     ) : PermissionController {
+
+        private val activity: ComponentActivity = permissionManager.getActivity() ?: throw Exception()
+
     override fun getPermissionState(): PermissionState {
-        if (fineLocationPermissions.isEmpty()) return PermissionState.GRANTED
-        val allGranted = fineLocationPermissions.all {
-            context.checkSelfPermission(it) == PackageManager.PERMISSION_GRANTED
-        }
-        return if (allGranted) PermissionState.GRANTED else PermissionState.DENIED
+        return checkPermissions(activity, fineLocationPermissions)
     }
 
     override fun openSettingPage() {
         context.openAppSettingsPage()
+    }
+
+    override fun providePermission() {
+
     }
 }
 

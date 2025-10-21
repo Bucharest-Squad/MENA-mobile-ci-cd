@@ -138,7 +138,7 @@ class PickLocationScreenViewModel(
         tryToExecute(
             function = { locationForegroundHandler.checkPermission() },
             onSuccess = ::checkLocationEnableSuccess,
-            ::onError,
+            onError = ::onError,
             dispatcher = dispatcher
         )
     }
@@ -191,7 +191,7 @@ class PickLocationScreenViewModel(
                         state.value.currentLocation.latitude,
                         state.value.currentLocation.longitude
                     ),
-                    addressType = addressModel?.addressType ?: AddressType.Home ,
+                    addressType = addressModel?.addressType ?: AddressType.Home,
                     addressDetails = state.value.address,
                     isMainAddress = state.value.isMainAddress
                 )
