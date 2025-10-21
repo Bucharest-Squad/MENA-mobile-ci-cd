@@ -11,6 +11,4 @@ class SearchArgsImpl(
 
     override val surahId: Int? = searchRouteArgs.surahId
     override val surahName: String? = searchRouteArgs.surahName
-
-
 }
