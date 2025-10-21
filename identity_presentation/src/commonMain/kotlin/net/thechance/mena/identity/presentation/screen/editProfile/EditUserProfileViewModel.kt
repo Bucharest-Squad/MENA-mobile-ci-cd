@@ -8,15 +8,16 @@ import kotlinx.coroutines.IO
 import kotlinx.datetime.LocalDate
 import mena.identity_presentation.generated.resources.Res
 import mena.identity_presentation.generated.resources.error_camera_permission_required
-import mena.identity_presentation.generated.resources.error_firstname_required
-import mena.identity_presentation.generated.resources.error_lastname_required
+import mena.identity_presentation.generated.resources.error_first_name_required
+import mena.identity_presentation.generated.resources.error_last_name_required
 import mena.identity_presentation.generated.resources.error_username_required
 import net.thechance.mena.identity.domain.entity.Gender
 import net.thechance.mena.identity.domain.entity.User
 import net.thechance.mena.identity.domain.repository.UserRepository
 import net.thechance.mena.identity.domain.util.getCurrentDate
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
-import net.thechance.mena.identity.presentation.base.ErrorState
+import net.thechance.mena.identity.presentation.base.error.ErrorState
+import net.thechance.mena.identity.presentation.base.error.AuthenticationErrorState
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
 import net.thechance.mena.identity.presentation.util.PermissionManager
 import kotlin.uuid.ExperimentalUuidApi
@@ -81,11 +82,11 @@ class EditUserProfileViewModel(
             return
         }
         if (state.value.firstName.isEmpty()) {
-            updateState { copy(errorMessage = Res.string.error_firstname_required) }
+            updateState { copy(errorMessage = Res.string.error_first_name_required) }
             return
         }
         if (state.value.lastName.isEmpty()) {
-            updateState { copy(errorMessage = Res.string.error_lastname_required) }
+            updateState { copy(errorMessage = Res.string.error_last_name_required) }
             return
         }
 
@@ -101,7 +102,7 @@ class EditUserProfileViewModel(
     @OptIn(ExperimentalUuidApi::class)
     private suspend fun onSave() {
         if (userId == null) {
-            onErrorOccurred(ErrorState.InvalidMobileNumber)
+            onErrorOccurred(ErrorState.AuthenticationError(AuthenticationErrorState.InvalidMobileNumber))
             return
         }
         userId?.let { userId ->

@@ -11,7 +11,7 @@ import mena.identity_presentation.generated.resources.error_something_went_wrong
 import mena.identity_presentation.generated.resources.is_main_address_error
 import net.thechance.mena.identity.domain.repository.AddressesRepository
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
-import net.thechance.mena.identity.presentation.base.ErrorState
+import net.thechance.mena.identity.presentation.base.error.ErrorState
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
 import org.jetbrains.compose.resources.StringResource
 import kotlin.uuid.ExperimentalUuidApi
@@ -100,7 +100,7 @@ class AddressesScreenViewModel(
 
     private fun getUserAddresses() {
         tryToExecute(
-            function = { 
+            function = {
                 val addresses = addressesRepository.getUserAddresses()
                 val activeAddress = addressesRepository.getActiveAddress()
                 addresses.map { address ->

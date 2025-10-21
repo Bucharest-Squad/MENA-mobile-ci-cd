@@ -23,6 +23,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import net.thechance.mena.identity.domain.exception.AuthenticationException
 import net.thechance.mena.identity.domain.exception.LocationException
+import net.thechance.mena.identity.presentation.base.error.ErrorState
+import net.thechance.mena.identity.presentation.base.error.handleAuthenticationException
+import net.thechance.mena.identity.presentation.base.error.handleLocationException
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
@@ -107,13 +110,17 @@ abstract class BaseScreenModel<S, E>(initialState: S) : ScreenModel {
                     throw exception
                 } catch (exception: AuthenticationException) {
                     exception.printStackTrace()
-                    handelAuthorizationException(exception, onError)
+                    handleAuthenticationException(exception) { errorState ->
+                        onError(ErrorState.AuthenticationError(errorState))
+                    }
                 } catch (exception: LocationException) {
                     exception.printStackTrace()
-                    handleLocationException(exception, onError)
+                    handleLocationException(exception) { errorState ->
+                        onError(ErrorState.LocationError(errorState))
+                    }
                 } catch (exception: Exception) {
                     exception.printStackTrace()
-                    onError(ErrorState.SomethingWentWrong(exception.message))
+                    onError(ErrorState.GenericError(exception))
                 } catch (throwable: Throwable) {
                     handleUncaughtException(throwable)
                 }
