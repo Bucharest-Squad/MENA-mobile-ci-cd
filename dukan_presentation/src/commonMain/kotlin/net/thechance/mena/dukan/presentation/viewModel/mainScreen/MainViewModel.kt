@@ -1,10 +1,8 @@
 package net.thechance.mena.dukan.presentation.viewModel.mainScreen
 
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
-import kotlinx.coroutines.launch
 import net.thechance.mena.dukan.domain.exceptions.NoInternetException
 import net.thechance.mena.dukan.domain.exceptions.NoSuchItemException
 import net.thechance.mena.dukan.domain.repository.DukanDiscoveryRepository
@@ -36,23 +34,29 @@ class MainViewModel(
         getDukanState()
         initPagers()
         getCategories()
-        getEditorPicksDukans()
-        getBestNearestDukans()
+        loadEditorPicksDukans()
+        loadBestNearestDukans()
     }
 
-    private fun getEditorPicksDukans() {
-        tryToCollect(
+    private fun loadEditorPicksDukans() {
+        tryToExecute(
             onStart = ::onEditorPickDukanLoading,
-            block = { editorPickDukanPager.flow },
-            onCollect = ::onLoadedEditorPicksDukan
+            block = {editorPickDukanPager.load()},
+            onSuccess = { collectEditorPickData() },
+            onError = ::handleNetworkError
         )
-        viewModelScope.launch(defaultDispatcher) {
-            editorPickDukanPager.load()
-        }
+    }
+
+    private fun collectEditorPickData() {
+        tryToCollect(
+            block = { editorPickDukanPager.flow },
+            onCollect = ::onLoadedEditorPicksDukan,
+        )
     }
 
 
-    private fun onEditorPickDukanLoading() {
+
+    private fun onEditorPickDukanLoading(){
         updateState {
             copy(
                 editorPickDukanState = MainScreenUiState.EditorPickDukanStatus.LOADING,
@@ -74,16 +78,25 @@ class MainViewModel(
         }
     }
 
-    private fun getBestNearestDukans() {
-        tryToCollect(
+    private fun loadBestNearestDukans() {
+        tryToExecute(
             onStart = ::onBestNearestDukanLoading,
+            block = { bestNearestDukanPager.load() },
+            onSuccess = {collectBestNearestData()},
+            onError = ::handleNetworkError
+        )
+    }
+
+    private fun collectBestNearestData() {
+        tryToCollect(
             block = { bestNearestDukanPager.flow },
             onCollect = ::onLoadedBestNearestDukans
         )
-        viewModelScope.launch(defaultDispatcher) {
-            bestNearestDukanPager.load()
-        }
     }
+
+
+
+
 
     private fun onBestNearestDukanLoading() {
         updateState {
@@ -107,6 +120,21 @@ class MainViewModel(
         }
     }
 
+
+    private fun handleNetworkError(error: Throwable) {
+        when (error) {
+            is NoInternetException -> updateState {
+                copy(
+                    isConnected = false,
+                )
+            }
+            else -> updateState {
+                copy(
+                    errorMessage = error.message
+                )
+            }
+        }
+    }
     private fun getCategories() {
         tryToExecute(
             onStart = {
@@ -114,17 +142,10 @@ class MainViewModel(
             },
             block = ::getCategoriesBlock,
             onSuccess = ::onGetCategoriesSuccess,
-            onError = ::onGetCategoriesError
+            onError = ::handleNetworkError
         )
     }
 
-    private fun onGetCategoriesError(error: Throwable) {
-        updateState {
-            copy(
-                errorMessage = error.message
-            )
-        }
-    }
 
     private suspend fun getCategoriesBlock(): List<DukanCategoryUiState> {
         return dukanManagementRepository.getCategories().toUiState()
