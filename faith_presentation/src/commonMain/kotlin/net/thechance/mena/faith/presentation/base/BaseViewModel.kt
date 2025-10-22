@@ -3,6 +3,7 @@ package net.thechance.mena.faith.presentation.base
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -52,25 +53,28 @@ abstract class BaseViewModel<UI_STATE, UI_EFFECT>(
     protected fun <T> tryToExecute(
         execute: suspend () -> T,
         onSuccess: (suspend (T) -> Unit)? = null,
-        onError: suspend (ErrorState) -> Unit = {},
+        onError: (ErrorState) -> Unit = {},
         onStart: suspend () -> Unit = {},
         onFinally: () -> Unit = {},
         dispatcher: CoroutineDispatcher = Dispatchers.IO,
         inScope: CoroutineScope = viewModelScope,
         delayMillis: Long = 0L
-    ): Job = inScope.launch(dispatcher) {
-        try {
+    ): Job {
+        val handler = CoroutineExceptionHandler { _, throwable ->
+            onError(mapExceptionToErrorState(throwable))
+
+        }
+
+        return inScope.launch(dispatcher + handler) {
             onStart()
             delay(delayMillis)
-
-            val result = execute()
-            onSuccess?.invoke(result)
-        } catch (throwable: Throwable) {
-            onError(mapExceptionToErrorState(throwable))
-        } finally {
+            runCatching { execute() }
+                .onSuccess { result -> onSuccess?.invoke(result) }
+                .onFailure { throwable -> onError(mapExceptionToErrorState(throwable)) }
             onFinally()
         }
     }
+
     protected fun <T> tryToCollect(
         onError: suspend (ErrorState) -> Unit = {},
         onEmitNewValue: (T) -> Unit = {},

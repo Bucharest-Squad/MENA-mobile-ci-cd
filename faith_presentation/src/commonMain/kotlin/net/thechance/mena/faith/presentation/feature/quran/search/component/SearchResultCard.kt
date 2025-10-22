@@ -32,6 +32,7 @@ fun SearchResultCard(
         SurahAndAyaInfo(
             surahName = surahName,
             ayaNumber = ayaNumber,
+            modifier = Modifier.fillMaxWidth()
         )
         Text(
             modifier = Modifier.fillMaxWidth(),
@@ -45,10 +46,11 @@ fun SearchResultCard(
 @Composable
 private fun SurahAndAyaInfo(
     surahName: String,
-    ayaNumber: Int
+    ayaNumber: Int,
+    modifier: Modifier
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(

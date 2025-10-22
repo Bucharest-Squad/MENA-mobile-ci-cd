@@ -32,49 +32,51 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 internal fun SearchEmptyState(
-    showStartState: Boolean,
-    showNoResultsState: Boolean,
+    isStartState: Boolean,
+    isResultsState: Boolean,
     modifier: Modifier = Modifier
 ) {
-    if (showStartState || showNoResultsState) {
-        val isStartState = showStartState
+    if (!(isStartState || isResultsState)) return
 
-        Column(
-            modifier = modifier,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            EmptyStateIcon(isStartState)
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        EmptyStateIcon(isStartState)
 
-            Text(
-                text = stringResource(getTitleResource(isStartState)),
-                style = Theme.typography.title.small,
-                color = Theme.colorScheme.shadePrimary,
-            )
+        Text(
+            text = stringResource(getTitleResource(isStartState)),
+            style = Theme.typography.title.small,
+            color = Theme.colorScheme.shadePrimary,
+        )
 
-            Text(
-                text = stringResource(getSubtitleResource(isStartState)),
-                style = Theme.typography.body.small,
-                textAlign = TextAlign.Center,
-                color = Theme.colorScheme.shadeSecondary,
-            )
-        }
+        Text(
+            text = stringResource(getSubtitleResource(isStartState)),
+            style = Theme.typography.body.small,
+            textAlign = TextAlign.Center,
+            color = Theme.colorScheme.shadeSecondary,
+        )
     }
 }
 
+
 @Composable
-private fun EmptyStateIcon(isStartState: Boolean) {
+private fun EmptyStateIcon(
+    isStartState: Boolean,
+    modifier: Modifier
+) {
     Box(
-        modifier = Modifier.size(128.dp),
+        modifier = modifier.size(128.dp),
         contentAlignment = Alignment.Center
     ) {
         Image(
-            modifier = Modifier.align(Alignment.BottomCenter),
+            modifier = modifier.align(Alignment.BottomCenter),
             painter = painterResource(Res.drawable.shadow),
             contentDescription = stringResource(Res.string.icon_shadow),
         )
         Image(
-            modifier = Modifier.padding(bottom = Theme.spacing._12),
+            modifier = modifier.padding(bottom = Theme.spacing._12),
             painter = painterResource(getIconResource(isStartState)),
             contentDescription = stringResource(getTitleResource(isStartState))
         )
@@ -98,8 +100,8 @@ private fun getSubtitleResource(isStartState: Boolean): StringResource {
 private fun SearchEmptyStateStartPreview() {
     QuranTheme {
         SearchEmptyState(
-            showStartState = true,
-            showNoResultsState = false,
+            isStartState = true,
+            isResultsState = false,
             modifier = Modifier.fillMaxSize()
         )
     }
@@ -110,8 +112,8 @@ private fun SearchEmptyStateStartPreview() {
 private fun SearchEmptyStateNoResultsPreview() {
     QuranTheme {
         SearchEmptyState(
-            showStartState = false,
-            showNoResultsState = true,
+            isStartState = false,
+            isResultsState = true,
             modifier = Modifier.fillMaxSize()
         )
     }
