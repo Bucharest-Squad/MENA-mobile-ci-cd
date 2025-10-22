@@ -66,9 +66,9 @@ abstract class BaseViewModel<STATE, EFFECT>(initialState: STATE) : ViewModel() {
         return when (throwable) {
             is NoInternetException -> ErrorState.NoInternet
             is NoDataFoundException -> ErrorState.NoDataFound
-            is UnknownNetworkException -> ErrorState.Unknown
-            is WalletException -> ErrorState.Unknown
-            else -> ErrorState.Unknown
+            is UnknownNetworkException -> ErrorState.UnknownError
+            is WalletException -> ErrorState.UnknownError
+            else -> ErrorState.UnknownError
         }
     }
 }

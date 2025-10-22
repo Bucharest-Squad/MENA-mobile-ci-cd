@@ -188,7 +188,7 @@ class StatementsHistoryViewModelTest {
         advanceUntilIdle()
         viewModel.state.test {
             val state = awaitItem()
-            assertEquals(ErrorState.Unknown, state.errorState)
+            assertEquals(ErrorState.UnknownError, state.errorState)
             assertFalse(state.isLoading)
             assertTrue(state.statements.isEmpty())
             cancelAndIgnoreRemainingEvents()
