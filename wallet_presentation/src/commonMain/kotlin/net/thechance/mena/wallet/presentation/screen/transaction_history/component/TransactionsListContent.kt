@@ -42,15 +42,15 @@ fun TransactionsListContent(
         loadNextItems = interactionListener::onNextPageRequested
     )
 
-    Column (
+    Column(
         verticalArrangement = Arrangement.spacedBy(8.dp)
-    ){
+    ) {
         if (state.history.isNotEmpty() || state.filterState.activeFilterCount != 0) {
             FilterButton(
                 activeFilterCount = state.filterState.activeFilterCount,
                 hasActiveFilters = state.filterState.hasActiveFilters,
                 onClick = interactionListener::onFilterClicked,
-                modifier = Modifier.padding(top= 12.dp).padding(horizontal = 16.dp)
+                modifier = Modifier.padding(top = 12.dp).padding(horizontal = 16.dp)
             )
         }
 
@@ -101,14 +101,11 @@ fun TransactionsListContent(
                     item {
                         PrimaryButton(
                             modifier = Modifier
-                                .padding(top = Theme.spacing._12)
+                                .padding(top = 12.dp)
                                 .wrapContentSize(),
                             text = stringResource(Res.string.retry),
                             onClick = interactionListener::onRetryLoadTransactionHistoryClicked,
-                            contentPadding = PaddingValues(
-                                vertical = Theme.spacing._8,
-                                horizontal = Theme.spacing._16
-                            )
+                            contentPadding = PaddingValues(vertical = 8.dp, horizontal = 16.dp)
                         )
                     }
                 }

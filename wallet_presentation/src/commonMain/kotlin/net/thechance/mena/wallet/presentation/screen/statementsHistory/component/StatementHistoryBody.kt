@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import androidx.compose.ui.unit.dp
 import net.thechance.mena.wallet.presentation.screen.statementsHistory.StatementsHistoryInteractionListener
 import net.thechance.mena.wallet.presentation.screen.statementsHistory.StatementsHistoryScreenState
 
@@ -16,7 +16,7 @@ fun StatementHistoryBody(
     when {
         state.statements.isEmpty() -> EmptyStatementsHistory(modifier = Modifier.fillMaxSize())
         else -> StatementsListContent(
-            modifier = Modifier.fillMaxSize().padding(top = Theme.spacing._8),
+            modifier = Modifier.fillMaxSize().padding(top = 8.dp),
             listener = listener,
             state = state
         )

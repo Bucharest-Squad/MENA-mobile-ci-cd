@@ -88,8 +88,8 @@ fun StatementsListContent(
     LazyColumn(
         modifier = modifier
             .background(Theme.colorScheme.background.surface)
-            .padding(horizontal = Theme.spacing._16),
-        contentPadding = PaddingValues(bottom = Theme.spacing._16),
+            .padding(horizontal = 16.dp),
+        contentPadding = PaddingValues(bottom = 16.dp),
         state = listState
     ) {
         items(
@@ -111,7 +111,7 @@ fun StatementsListContent(
         if (state.isPaginationLoading) {
             item {
                 TransactionLoadingState(
-                    modifier = Modifier.fillMaxWidth().padding(vertical = Theme.spacing._16)
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp)
                 )
             }
         }
@@ -120,14 +120,11 @@ fun StatementsListContent(
             item {
                 PrimaryButton(
                     modifier = Modifier
-                        .padding(top = Theme.spacing._12)
+                        .padding(top = 12.dp)
                         .wrapContentSize(),
                     text = stringResource(Res.string.retry),
                     onClick = listener::onRetryLoadStatementsHistoryClicked,
-                    contentPadding = PaddingValues(
-                        vertical = Theme.spacing._8,
-                        horizontal = Theme.spacing._16
-                    )
+                    contentPadding = PaddingValues(vertical = 8.dp, horizontal = 16.dp)
                 )
             }
         }
