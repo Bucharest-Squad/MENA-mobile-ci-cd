@@ -27,10 +27,10 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val faithDataModule = module {
+
     includes(platformModule())
+
     single<AyahDao> { get<QuranDatabase>().getAyaDao() }
-    singleOf(::QuranRepositoryImpl) bind QuranRepository::class
-    singleOf(::PrayerTimeRepositoryImpl) bind PrayerTimeRepository::class
 
     single<HttpClient>(named("faithHttpClient")) {
         NetworkClient(
@@ -42,7 +42,7 @@ val faithDataModule = module {
     single<Ktorfit>(named("faithKtorfit")) {
         Ktorfit.Builder()
             .httpClient(get<HttpClient>(named("faithHttpClient")))
-            .baseUrl(get<String>(named("baseUrl")) + "/")
+            .baseUrl("${get<String>(named("baseUrl"))}/")
             .converterFactories(ResponseConverterFactory())
             .build()
     }
@@ -55,9 +55,10 @@ val faithDataModule = module {
         get<Ktorfit>(named("faithKtorfit")).createPrayerTimeApiService()
     }
 
+    singleOf(::QuranRepositoryImpl) bind QuranRepository::class
+    singleOf(::PrayerTimeRepositoryImpl) bind PrayerTimeRepository::class
     singleOf(::BookmarkRepositoryImpl) bind BookmarkRepository::class
 
     single<DataStore<Preferences>> { createDataStore() }
     singleOf(::TilawahDataStoreImpl) bind TilawahDataStore::class
-
 }
