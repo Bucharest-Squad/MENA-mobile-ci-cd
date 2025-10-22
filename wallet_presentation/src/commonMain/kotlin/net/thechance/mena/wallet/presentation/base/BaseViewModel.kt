@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import net.thechance.mena.wallet.domain.exceptions.NoDataFoundException
 import net.thechance.mena.wallet.domain.exceptions.NoInternetException
-import net.thechance.mena.wallet.domain.exceptions.UnknownException
+import net.thechance.mena.wallet.domain.exceptions.UnknownNetworkException
 import net.thechance.mena.wallet.domain.exceptions.WalletException
 import kotlin.coroutines.cancellation.CancellationException
 
@@ -66,7 +66,7 @@ abstract class BaseViewModel<STATE, EFFECT>(initialState: STATE) : ViewModel() {
         return when (throwable) {
             is NoInternetException -> ErrorState.NoInternet
             is NoDataFoundException -> ErrorState.NoDataFound
-            is UnknownException -> ErrorState.Unknown
+            is UnknownNetworkException -> ErrorState.Unknown
             is WalletException -> ErrorState.Unknown
             else -> ErrorState.Unknown
         }
