@@ -28,7 +28,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-internal fun ColumnScope.DetailsInfo(
+internal fun DetailsInfo(
     title: String,
     content: String,
     modifier: Modifier = Modifier,
