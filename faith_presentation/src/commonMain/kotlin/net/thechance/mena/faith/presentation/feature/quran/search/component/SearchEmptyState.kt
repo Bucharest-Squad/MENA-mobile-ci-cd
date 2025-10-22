@@ -43,7 +43,10 @@ internal fun SearchEmptyState(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        EmptyStateIcon(isStartState)
+        EmptyStateIcon(
+            isStartState = isStartState,
+            modifier = modifier
+        )
 
         Text(
             text = stringResource(getTitleResource(isStartState)),
