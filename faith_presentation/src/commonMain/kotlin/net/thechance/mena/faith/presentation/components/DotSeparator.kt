@@ -13,11 +13,12 @@ import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 @Composable
 fun DotSeparator(
     modifier: Modifier = Modifier,
+    size: Int = 3,
     color: Color = Theme.colorScheme.shadeTertiary
 ) {
     Box(
         modifier = modifier
-            .size(3.dp)
+            .size(size.dp)
             .background(
                 color = color,
                 shape = RoundedCornerShape(Theme.radius.full)
