@@ -374,11 +374,22 @@ class ChatViewModelTest {
     }
 
     @Test
-    fun `onCameraClosed should close camera when called`() {
-        chatViewModel.onCameraClosed()
+    fun `onCameraResult should close camera when called`() {
+        chatViewModel.onCameraResult(null)
         testDispatcher.scheduler.advanceUntilIdle()
 
         assertThat(chatViewModel.state.value.isCameraOpen).isFalse()
+    }
+
+    @Test
+    fun `onSendImageClicked should send image message`() {
+        val imageBytes = listOf(byteArrayOf(1, 2, 3))
+        everySuspend { messageRepository.sendMessage(any()) } returns Unit
+
+        chatViewModel.onSendImageClicked(imageBytes)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        verifySuspend { messageRepository.sendMessage(any()) }
     }
 
     private fun List<ChatListItem>.currentUiMessages(): List<MessageUiState> =
