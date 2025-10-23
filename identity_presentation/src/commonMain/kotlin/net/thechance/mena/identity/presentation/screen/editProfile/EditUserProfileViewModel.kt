@@ -1,6 +1,9 @@
 package net.thechance.mena.identity.presentation.screen.editProfile
 
 import androidx.compose.ui.graphics.ImageBitmap
+import dev.icerock.moko.permissions.Permission
+import dev.icerock.moko.permissions.PermissionState
+import dev.icerock.moko.permissions.PermissionsController
 import io.github.vinceglb.filekit.dialogs.compose.util.encodeToByteArray
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -18,13 +21,12 @@ import net.thechance.mena.identity.domain.util.getCurrentDate
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
 import net.thechance.mena.identity.presentation.base.error.ErrorState
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
-import net.thechance.mena.identity.presentation.util.PermissionManager
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 class EditUserProfileViewModel(
     private val userRepository: UserRepository,
-    private val permissionManager: PermissionManager,
+    private val permissionsController: PermissionsController,
     val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : BaseScreenModel<EditUserProfileUIState, EditUserProfileUIEffect>(EditUserProfileUIState()),
     EditUserProfileInteractionListener {
@@ -207,16 +209,23 @@ class EditUserProfileViewModel(
     override fun onTakeImageFromCamera() {
         tryToExecute(
             function = ::requestCameraPermission,
+            onSuccess = ::onCameraPermissionSuccess,
             onError = ::handleCameraPermissionError,
             dispatcher = dispatcher
         )
     }
 
-    private suspend fun requestCameraPermission() {
-        permissionManager.requestCameraPermission(
-            onGranted = { updateState { copy(showCamera = true) } },
-            onDenied = { updateState { copy(errorMessage = Res.string.error_camera_permission_required) } }
-        )
+    private suspend fun requestCameraPermission(): PermissionState {
+        permissionsController.providePermission(Permission.CAMERA)
+        return permissionsController.getPermissionState(Permission.CAMERA)
+
+    }
+    private fun onCameraPermissionSuccess(permissionState: PermissionState){
+        when(permissionState){
+            PermissionState.Granted -> updateState { copy(showCamera = true) }
+            PermissionState.Denied -> updateState { copy(errorMessage = Res.string.error_camera_permission_required) }
+            else -> {}
+        }
     }
 
     private fun handleCameraPermissionError(errorState: ErrorState) {

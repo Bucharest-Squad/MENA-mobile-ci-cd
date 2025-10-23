@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Context
 import android.os.Build
 import androidx.activity.ComponentActivity
+import androidx.core.app.ActivityCompat
 import net.thechance.mena.identity.presentation.util.permissionHandler.PermissionController
 import net.thechance.mena.identity.presentation.util.permissionHandler.PermissionState
 
@@ -18,12 +19,13 @@ internal class LocationForegroundPermission(
         return checkPermissions(activity, fineLocationPermissions)
     }
 
+
+
     override fun openSettingPage() {
         context.openAppSettingsPage()
     }
 
     override fun providePermission() {
-
     }
 }
 

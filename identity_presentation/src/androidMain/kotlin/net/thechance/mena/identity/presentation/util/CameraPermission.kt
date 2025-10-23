@@ -1,5 +1,6 @@
 package net.thechance.mena.identity.presentation.util
 
+import android.Manifest
 import android.content.Context
 import androidx.activity.ComponentActivity
 import net.thechance.mena.identity.presentation.util.permissionHandler.PermissionController
@@ -8,7 +9,7 @@ import net.thechance.mena.identity.presentation.util.permissionHandler.Permissio
 class CameraPermission(
     private val permissionManager: PermissionManager,
     private val context: Context,
-    ) : PermissionController {
+) : PermissionController {
 
     private var activity: ComponentActivity = permissionManager.getActivity() ?: throw Exception()
 
@@ -22,7 +23,23 @@ class CameraPermission(
     }
 
     override fun providePermission() {
+        TODO("Not yet implemented")
+    }
 
+    fun providePermission(
+        onPermissionResult: (Boolean) -> Unit,
+        onPermissionDenied: () -> Unit,
+    ) {
+        permissionManager.requestPermission(
+            Manifest.permission.CAMERA,
+            onResult = {
+                if (it) {
+                    onPermissionResult(it)
+                } else {
+                    onPermissionDenied()
+                }
+            }
+        )
     }
 
 
