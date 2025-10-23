@@ -13,12 +13,10 @@ import org.koin.dsl.module
 
 val faithDataModule = module {
 
-    includes(platformModule())
-
     single<AyahDao> { get<QuranDatabase>().getAyaDao() }
     single<DataStore<Preferences>> { createDataStore() }
     singleOf(::TilawahDataStoreImpl) bind TilawahDataStore::class
-
+    includes(platformModule())
     includes(networkModule)
     includes(repositoryModule)
 
