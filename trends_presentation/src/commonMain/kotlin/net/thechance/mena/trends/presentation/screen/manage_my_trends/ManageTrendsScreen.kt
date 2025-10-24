@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -34,9 +35,11 @@ import mena.trends_presentation.generated.resources.Res
 import mena.trends_presentation.generated.resources.back_arrow
 import mena.trends_presentation.generated.resources.favorite
 import mena.trends_presentation.generated.resources.ic_arrow_left
+import mena.trends_presentation.generated.resources.ic_paly_now
 import mena.trends_presentation.generated.resources.ic_placeholder_profile
 import mena.trends_presentation.generated.resources.manage_trends_title
 import mena.trends_presentation.generated.resources.my_trends
+import mena.trends_presentation.generated.resources.play_now
 import mena.trends_presentation.generated.resources.profile_image_desc
 import mena.trends_presentation.generated.resources.trend_image_desc
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
@@ -197,16 +200,30 @@ private fun TrendItem(
 ) {
     Box(
         modifier = modifier
-            .size(width = 106.dp, height = 164.dp)
+            .aspectRatio(106f / 164f)
             .clip(RoundedCornerShape(12.dp))
             .clickable { onTrendClick(item.id) }
-            .background(color = Theme.colorScheme.background.surfaceHigh)
+            .background(color = Theme.colorScheme.background.surfaceLow)
     ) {
-        AsyncImage(
-            model = item.thumbnailUrl,
-            contentDescription = stringResource(resource = Res.string.trend_image_desc),
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
-        )
+        if (item.thumbnailUrl.isNotEmpty()) {
+            AsyncImage(
+                model = item.thumbnailUrl,
+                contentDescription = stringResource(resource = Res.string.trend_image_desc),
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+        } else {
+            Icon(
+                painter = painterResource(Res.drawable.ic_paly_now),
+                contentDescription = stringResource(Res.string.play_now),
+                tint = Theme.colorScheme.primary.onPrimary,
+                modifier = Modifier
+                    .size(24.dp)
+                    .clip(RoundedCornerShape(24.dp))
+                    .background(color = Theme.colorScheme.shadeTertiary)
+                    .padding(7.dp)
+                    .align(Alignment.Center)
+            )
+        }
     }
 }
