@@ -32,33 +32,30 @@ class BookmarkViewModelTest {
     private lateinit var testDispatcher: TestDispatcher
     private var repository: BookmarkRepository = mock(MockMode.autofill)
     private lateinit var viewModel: BookmarkViewModel
-    private lateinit var snackbarHandler: SnackbarHandler
+    private val snackbarHandler: SnackbarHandler = mock(MockMode.autofill)
 
     @BeforeTest
     fun setUp() {
         testDispatcher  = StandardTestDispatcher()
-        snackbarHandler = mock(MockMode.autofill)
         viewModel = BookmarkViewModel(
             bookmarkRepository = repository,
             dispatcher = testDispatcher,
-            snackbarHandler = snackbarHandler
+            snackBarHandler = snackbarHandler
         )
     }
 
     @Test
     fun `init should load bookmarks successfully`() = runTest {
-        // Given
         everySuspend { repository.getAyahBookmarks(any(), any()) } returns fakeBookmarks
 
-        // When
         viewModel = BookmarkViewModel(
             bookmarkRepository = repository,
             dispatcher = testDispatcher,
-            snackbarHandler = snackbarHandler
-        )
+            snackBarHandler = snackbarHandler
+
+            )
         advanceUntilIdle()
 
-        // Then
         viewModel.uiState.test {
             val state = awaitItem()
             val bookmarks = state.bookmarks.asSnapshot()
@@ -71,16 +68,87 @@ class BookmarkViewModelTest {
         }
     }
 
+
+    @Test
+    fun `onDeleteBookmarkClick should insert bookmark id when start`() = runTest(testDispatcher) {
+        everySuspend { repository.getAyahBookmarks(any(), any()) } returns fakeBookmarks
+
+        viewModel = BookmarkViewModel(
+            bookmarkRepository = repository,
+            dispatcher = testDispatcher,
+            snackBarHandler = snackbarHandler
+        )
+        advanceUntilIdle()
+        viewModel.onDeleteBookmarkClick(BOOKMARK_ID1)
+
+        viewModel.uiState.test {
+            val state = awaitItem()
+            val bookmarks = state.bookmarks.asSnapshot()
+            assertFalse(bookmarks.any { it.bookmarkId == BOOKMARK_ID1 })
+        }
+    }
+
+
+    @Test
+    fun `onDeleteBookmarkClick should hide single deleted bookmark from uiState`() =
+        runTest(testDispatcher) {
+            everySuspend { repository.getAyahBookmarks(any(), any()) } returns fakeBookmarks
+
+            viewModel = BookmarkViewModel(
+                bookmarkRepository = repository,
+                dispatcher = testDispatcher,
+                snackBarHandler = snackbarHandler
+            )
+            advanceUntilIdle()
+            viewModel.onDeleteBookmarkClick(BOOKMARK_ID1)
+            advanceUntilIdle()
+
+            viewModel.uiState.test {
+                val state = awaitItem()
+                val bookmarks = state.bookmarks.asSnapshot()
+                assertFalse(bookmarks.any { it.bookmarkId == BOOKMARK_ID1 })
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `onDeleteBookmarkClick should hide all deleted bookmarks when multiple deletions occur`() =
+        runTest(testDispatcher) {
+            everySuspend { repository.getAyahBookmarks(any(), any()) } returns fakeBookmarks
+
+            viewModel = BookmarkViewModel(
+                bookmarkRepository = repository,
+                dispatcher = testDispatcher,
+                snackBarHandler = snackbarHandler
+
+                )
+            advanceUntilIdle()
+            viewModel.onDeleteBookmarkClick(BOOKMARK_ID1)
+            viewModel.onDeleteBookmarkClick(BOOKMARK_ID2)
+            advanceUntilIdle()
+
+            viewModel.uiState.test {
+                val state = awaitItem()
+                val bookmarks = state.bookmarks.asSnapshot()
+                assertFalse(bookmarks.any { it.bookmarkId == BOOKMARK_ID1 })
+                assertFalse(bookmarks.any { it.bookmarkId == BOOKMARK_ID2 })
+                assertEquals(0, bookmarks.size)
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
     @Test
     fun `init should handle empty bookmarks list`() = runTest {
-        // Given
         everySuspend { repository.getAyahBookmarks(any(), any()) } returns emptyList()
 
-        // When
-        viewModel = BookmarkViewModel(bookmarkRepository = repository, dispatcher = testDispatcher, snackbarHandler = snackbarHandler)
+        viewModel = BookmarkViewModel(
+            bookmarkRepository = repository,
+            dispatcher = testDispatcher,
+            snackBarHandler = snackbarHandler
+
+            )
         advanceUntilIdle()
 
-        // Then
         viewModel.uiState.test {
             val state = awaitItem()
             val bookmarks = state.bookmarks.asSnapshot()
@@ -93,19 +161,21 @@ class BookmarkViewModelTest {
 
     @Test
     fun `onDeleteBookmarkClick should restore bookmark on error`() = runTest {
-        // Given
         val exception = Exception("Delete failed")
         everySuspend { repository.getAyahBookmarks(any(), any()) } returns fakeBookmarks
         everySuspend { repository.deleteAyahBookmark(BOOKMARK_ID1) } throws exception
 
-        viewModel = BookmarkViewModel(bookmarkRepository = repository, dispatcher = testDispatcher, snackbarHandler = snackbarHandler)
+        viewModel = BookmarkViewModel(
+            bookmarkRepository = repository,
+            dispatcher = testDispatcher,
+            snackBarHandler = snackbarHandler
+
+            )
         advanceUntilIdle()
 
-        // When
         viewModel.onDeleteBookmarkClick(bookmarkId = BOOKMARK_ID1)
         advanceUntilIdle()
 
-        // Then
         viewModel.uiState.test {
             val state = awaitItem()
             val bookmarks = state.bookmarks.asSnapshot()
@@ -118,7 +188,6 @@ class BookmarkViewModelTest {
 
     @Test
     fun `onBackClick should emit NavigateBack effect`() = runTest(testDispatcher) {
-        // When & Then
         viewModel.uiEffect.test {
             viewModel.onBackClick()
             val effect = awaitItem()
@@ -126,12 +195,12 @@ class BookmarkViewModelTest {
         }
     }
 
+
     @Test
-    fun `onStartTilawahClick should emit NavigateBack effect`() = runTest(testDispatcher) {
-        // When & Then
+    fun `onStartTilawahClick should emit NavigateSur effect`() = runTest(testDispatcher) {
         viewModel.uiEffect.test {
             viewModel.onStartTilawahClick()
-            assertEquals(BookmarkEffect.NavigateBack, awaitItem())
+            assertEquals(BookmarkEffect.NavigateToSur, awaitItem())
         }
     }
 

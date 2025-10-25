@@ -25,25 +25,27 @@ import net.thechance.mena.faith.presentation.base.snackbar.SnackbarHandler
 class BookmarkViewModel(
     private val bookmarkRepository: BookmarkRepository,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
-    snackbarHandler: SnackbarHandler,
-) : BaseViewModel<BookmarksScreenState, BookmarkEffect>(
-    BookmarksScreenState(),
-    snackbarHandler = snackbarHandler
-),
+    snackBarHandler: SnackbarHandler,
+) : BaseViewModel<BookMarkUiState, BookmarkEffect>(
+        BookMarkUiState(),
+        snackBarHandler,
+    ),
     BookmarkInteractionListener {
-
-    private val cachedBookmarksFlow = createBookmarksPagingSource()
-        .map { pagingData -> pagingData.map { bookmark -> bookmark.toUiState() } }
-        .cachedIn(viewModelScope)
+    private val cachedBookmarksFlow =
+        createBookmarksPagingSource()
+            .map { pagingData ->
+                pagingData.map(AyahBookmark::toUiState)
+            }.cachedIn(viewModelScope)
 
     private val deletedBookmarkIdsFlow = MutableStateFlow(setOf<Int>())
 
-    private val filteredBookmarksFlow = combine(
-        cachedBookmarksFlow,
-        deletedBookmarkIdsFlow
-    ) { pagingData, deletedIds ->
-        pagingData.filter { bookmark -> bookmark.bookmarkId !in deletedIds }
-    }
+    private val filteredBookmarksFlow =
+        combine(
+            cachedBookmarksFlow,
+            deletedBookmarkIdsFlow,
+        ) { pagingData, deletedIds ->
+            pagingData.filter { bookmark -> bookmark.bookmarkId !in deletedIds }
+        }
 
     init {
         initializeBookmarks()
@@ -51,7 +53,7 @@ class BookmarkViewModel(
 
     override fun onBackClick() = sendEffect(BookmarkEffect.NavigateBack)
 
-    override fun onStartTilawahClick() = sendEffect(BookmarkEffect.NavigateBack)
+    override fun onStartTilawahClick() = sendEffect(BookmarkEffect.NavigateToSur)
 
     override fun onDeleteBookmarkClick(bookmarkId: Int) {
         tryToExecute(
@@ -59,41 +61,34 @@ class BookmarkViewModel(
             execute = { bookmarkRepository.deleteAyahBookmark(bookmarkId) },
             onStart = { insertDeletedBookmarkId(bookmarkId) },
             onSuccess = { onDeleteBookmarkSuccess() },
-            onError = { error ->
-                removeDeletedBookmarkId(bookmarkId)
-                handleErrorState(error)
-            }
+            onError = { removeDeletedBookmarkId(bookmarkId) },
         )
     }
 
-    private fun insertDeletedBookmarkId(bookmarkId: Int) =
-        deletedBookmarkIdsFlow.update { currentSet -> currentSet + bookmarkId }
+    private fun insertDeletedBookmarkId(id: Int) =
+        deletedBookmarkIdsFlow.update { currentSet -> currentSet + id }
 
-    private fun removeDeletedBookmarkId(bookmarkId: Int) =
-        deletedBookmarkIdsFlow.update { currentSet -> currentSet - bookmarkId }
+    private fun removeDeletedBookmarkId(id: Int) =
+        deletedBookmarkIdsFlow.update { currentSet -> currentSet - id }
 
     private fun initializeBookmarks() {
         updateState {
             it.copy(
                 bookmarks = filteredBookmarksFlow,
-                isLoading = false
+                isLoading = false,
             )
         }
     }
 
-    private fun onDeleteBookmarkSuccess() = showSnackBar(
-        message = Res.string.bookmark_removed_successfully,
-        status = SnackBarState.Status.Success,
-        scope = viewModelScope
-    )
+    private fun onDeleteBookmarkSuccess() =
+        snackbarHandler.showSnackBar(
+            message = Res.string.bookmark_removed_successfully,
+            status = SnackBarState.Status.Success,
+            scope = viewModelScope,
+        )
 
-    private fun createBookmarksPagingSource(): Flow<PagingData<AyahBookmark>> {
-        return createPagingSourceFlow { pageNumber, pageSize ->
+    private fun createBookmarksPagingSource(): Flow<PagingData<AyahBookmark>> =
+        createPagingSourceFlow { pageNumber, pageSize ->
             bookmarkRepository.getAyahBookmarks(pageNumber = pageNumber, pageSize = pageSize)
         }
-    }
-
-    private fun handleErrorState(throwable: Throwable) {
-        // TODO: handle error here
-    }
 }

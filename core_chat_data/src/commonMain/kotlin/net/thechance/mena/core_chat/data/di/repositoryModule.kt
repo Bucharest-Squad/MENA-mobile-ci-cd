@@ -2,9 +2,11 @@ package net.thechance.mena.core_chat.data.di
 
 import net.thechance.mena.core_chat.data.repository.ChatRepositoryImpl
 import net.thechance.mena.core_chat.data.repository.ContactsRepositoryImpl
+import net.thechance.mena.core_chat.data.repository.MessageRepositoryImpl
 import net.thechance.mena.core_chat.data.repository.UserRepositoryImpl
 import net.thechance.mena.core_chat.domain.repository.ChatRepository
 import net.thechance.mena.core_chat.domain.repository.ContactsRepository
+import net.thechance.mena.core_chat.domain.repository.MessageRepository
 import net.thechance.mena.core_chat.domain.repository.UserRepository
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -23,10 +25,17 @@ internal val repositoryModule = module {
     single<ChatRepository> {
         ChatRepositoryImpl(
             client = get(named(CHAT_CLIENT)),
-            json = get(named(CHAT_JSON)),
+            webSocketManager = get(),
+        )
+    }
+
+    single<MessageRepository> {
+        MessageRepositoryImpl(
+            client = get(named(CHAT_CLIENT)),
             webSocketManager = get(),
             messageDao = get(),
-            imageDownloader = get()
+            messageSenderFactory = get(),
+            json = get(named(CHAT_JSON))
         )
     }
 

@@ -13,7 +13,6 @@ interface PickLocationScreenInteractionListener : BaseInteractionListener {
     fun onClearErrorMessage()
     fun onClickBack()
     fun onSetAnchorLocation(pointerLocation: DpOffset)
-    fun onUpdateAddress(addressModel: AddressModel?)
 }
 
 

@@ -17,7 +17,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import net.thechance.mena.faith.domain.entity.Location
 import net.thechance.mena.faith.domain.usecase.QiblahBearingCalculatorUseCase
-import net.thechance.mena.faith.presentation.util.AzimuthProvider
+import net.thechance.mena.faith.presentation.utils.AzimuthProvider
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -71,7 +71,7 @@ class CompassViewModelTest {
         advanceUntilIdle()
 
         // Then
-        val expectedAngle = useCase.calculateQiblahAngle(Location(longitude = 29.0735549, latitude = 31.1015618))
+        val expectedAngle = useCase.calculateQiblahAngle(Location(longitude = 31.1760627, latitude = 30.0594628))
         assertEquals(expectedAngle.toFloat(), viewModel.uiState.value.qiblahAngleValue)
     }
 

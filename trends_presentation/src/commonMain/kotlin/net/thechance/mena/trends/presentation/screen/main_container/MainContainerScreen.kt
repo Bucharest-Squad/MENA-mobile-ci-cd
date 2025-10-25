@@ -1,5 +1,8 @@
 package net.thechance.mena.trends.presentation.screen.main_container
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,7 +28,7 @@ internal fun MainContainerScreen(
     ObserveAsEffect(viewModel.effect) { effect ->
         when (effect) {
             MainContainerEffect.NavigateToReelHome -> {
-                navController.navigate(Route.ReelHome) {
+                navController.navigate(Route.Home) {
                     popUpTo(Route.MainContainer) { inclusive = true }
                 }
             }
@@ -43,24 +46,18 @@ internal fun MainContainerScreen(
 
 @Composable
 private fun MainContainerScreenContent(state: MainContainerState) {
-    when (state.isCategoriesAlreadySelectedByUser) {
-        null -> {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Theme.colorScheme.background.surface.copy(alpha = 0.7f)),
-                contentAlignment = Alignment.Center
-            ) {
-                DotsProgressIndicator()
-            }
-        }
-
-        else -> {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Theme.colorScheme.background.surface)
-            )
+    AnimatedVisibility(
+        visible = state.isCategoriesAlreadySelectedByUser == null,
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Theme.colorScheme.background.surface.copy(alpha = 0.7f)),
+            contentAlignment = Alignment.Center
+        ) {
+            DotsProgressIndicator()
         }
     }
 }

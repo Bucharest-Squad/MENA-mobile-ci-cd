@@ -78,6 +78,8 @@ kotlin {
             //peekaboo
             implementation(libs.peekaboo.ui)
             implementation(libs.peekaboo.image.picker)
+
+            implementation(libs.bundles.filekit)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
@@ -117,7 +119,8 @@ kover.reports {
             classes(
                 "*SyncContactsViewModel*",
                 "*ContactsViewModel*",
-                "*ChatViewModel*"
+                "*ChatViewModel*",
+                "*HomeViewModel*"
             )
         }
     }

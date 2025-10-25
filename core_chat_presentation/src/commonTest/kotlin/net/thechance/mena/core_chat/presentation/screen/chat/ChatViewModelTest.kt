@@ -1,59 +1,66 @@
 package net.thechance.mena.core_chat.presentation.screen.chat
 
+import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.doesNotContain
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
+import assertk.assertions.isNull
 import assertk.assertions.isTrue
 import dev.icerock.moko.permissions.DeniedException
 import dev.icerock.moko.permissions.Permission
 import dev.icerock.moko.permissions.PermissionsController
-import dev.mokkery.MockMode
 import dev.mokkery.answering.returns
 import dev.mokkery.answering.throws
 import dev.mokkery.every
 import dev.mokkery.everySuspend
 import dev.mokkery.matcher.any
 import dev.mokkery.mock
-import dev.mokkery.verify
 import dev.mokkery.verifySuspend
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import kotlinx.datetime.LocalDateTime
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.error
-import mena.core_chat_presentation.generated.resources.error_cant_get_messages
 import mena.core_chat_presentation.generated.resources.error_failed_to_download_image
+import mena.core_chat_presentation.generated.resources.image_saved_successfully
+import mena.core_chat_presentation.generated.resources.success
 import net.thechance.mena.core_chat.domain.entity.Chat
 import net.thechance.mena.core_chat.domain.entity.Message
 import net.thechance.mena.core_chat.domain.entity.MessageContent
 import net.thechance.mena.core_chat.domain.entity.MessageStatus
 import net.thechance.mena.core_chat.domain.entity.User
+import net.thechance.mena.core_chat.domain.model.PagedData
 import net.thechance.mena.core_chat.domain.repository.ChatRepository
+import net.thechance.mena.core_chat.domain.repository.MessageRepository
 import net.thechance.mena.core_chat.domain.repository.UserRepository
-import net.thechance.mena.core_chat.presentation.components.SnackBarData
-import net.thechance.mena.core_chat.presentation.navigation.ChatEffector
+import net.thechance.mena.core_chat.domain.service.ImageDownloaderService
+import net.thechance.mena.core_chat.presentation.components.snackBarHost.SnackBarData
 import net.thechance.mena.core_chat.presentation.utils.UiText
 import net.thechance.mena.core_chat.presentation.utils.now
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class, ExperimentalCoroutinesApi::class)
 class ChatViewModelTest {
-    private val repository = mock<ChatRepository>()
+    private val chatRepository = mock<ChatRepository>()
+    private val messageRepository = mock<MessageRepository>()
     private val userRepository = mock<UserRepository>()
     private val chatArgs = mock<ChatArgs>()
+    private val imageDownloaderService = mock<ImageDownloaderService>()
     private val permissionsController = mock<PermissionsController>()
-    private val effector = mock<ChatEffector>(MockMode.autofill)
-    private lateinit var chatViewModel: ChatViewModel
+    private lateinit var viewModel: ChatViewModel
 
     private val testDispatcher = StandardTestDispatcher()
 
@@ -64,14 +71,18 @@ class ChatViewModelTest {
         every { chatArgs.chatId } returns chatId.toString()
         every { chatArgs.chatName } returns chatName
 
-        everySuspend { repository.getChatById(chatId) } returns mockChat
-        everySuspend { repository.loadMessages(chatId) } returns emptyList()
-        everySuspend { repository.getLocalMessages(chatId) } returns emptyList()
-        every { repository.getMessages(chatId) } returns flowOf()
-        every { repository.observeReadMessages() } returns flowOf()
+        everySuspend { chatRepository.getChatById(chatId) } returns chat
+        everySuspend {
+            messageRepository.loadMessages(chatId, any(), any())
+        } returns PagedData(emptyList(), 0, true)
+        everySuspend { messageRepository.observePendingMessagesByChatId(chatId) } returns flowOf(
+            emptyList()
+        )
+        every { messageRepository.observeMessagesForChatOrAll(chatId) } returns flowOf()
+        every { messageRepository.observeReadMessages() } returns flowOf()
+        everySuspend { messageRepository.markMessagesOfChatAsRead(any()) } returns Unit
 
-        chatViewModel = ChatViewModel(repository, userRepository, chatArgs, effector, permissionsController, testDispatcher)
-        testDispatcher.scheduler.advanceUntilIdle()
+        viewModel = createViewModel()
     }
 
     @AfterTest
@@ -80,367 +91,326 @@ class ChatViewModelTest {
     }
 
     @Test
-    fun `init should update chat list when its loaded messages successfully`() {
-        everySuspend { repository.getChatById(chatId) } returns mockChat
-        everySuspend { repository.loadMessages(chatId) } returns messages
-        everySuspend { repository.getLocalMessages(chatId) } returns emptyList()
-        every { repository.getMessages(chatId) } returns flowOf()
-        every { repository.observeReadMessages() } returns flowOf()
-
-        chatViewModel = ChatViewModel(repository, userRepository, chatArgs, effector, permissionsController, testDispatcher)
-        testDispatcher.scheduler.advanceUntilIdle()
-
-        assertThat(
-            chatViewModel.state.value.chatListItems.currentUiMessages()
-                .map { it.copy(isLastInSeries = false, isVisibleMessageInfo = false) }
+    fun `init should update chat list when its loaded messages successfully`() = runTest {
+        everySuspend { messageRepository.observePendingMessagesByChatId(chatId) } returns flowOf(
+            messages
         )
-            .isEqualTo(messages.map { it.toUi(chatRequesterId) }.reversed())
-    }
+        every { messageRepository.observeMessagesForChatOrAll(chatId) } returns flowOf()
+        every { messageRepository.observeReadMessages() } returns flowOf()
+        everySuspend {
+            messageRepository.loadMessages(chatId, 0, 40)
+        } returns PagedData(messages, messages.size, false)
 
-    @Test
-    fun `init should send snack bar effect when its LOADING the messages failed`() {
-        everySuspend { repository.getChatById(chatId) } returns mockChat
-        everySuspend { repository.loadMessages(chatId) } throws Exception()
-        everySuspend { repository.getLocalMessages(chatId) } returns emptyList()
-        every { repository.getMessages(chatId) } returns flowOf()
-        every { repository.observeReadMessages() } returns flowOf()
-
-        chatViewModel = ChatViewModel(repository, userRepository, chatArgs, effector, permissionsController, testDispatcher)
-        testDispatcher.scheduler.advanceUntilIdle()
-
-        verifySuspend {
-            effector.showSnackBar(
-                SnackBarData(
-                    title = UiText.StringRes(Res.string.error),
-                    message = UiText.StringRes(Res.string.error_cant_get_messages)
-                )
-            )
-        }
-    }
-
-    @Test
-    fun `init should update uiMessage and chatListItems when receive new message`() {
-        everySuspend { repository.getChatById(chatId) } returns mockChat
-        everySuspend { repository.loadMessages(chatId) } returns emptyList()
-        everySuspend { repository.getLocalMessages(chatId) } returns emptyList()
-        every { repository.getMessages(chatId) } returns flowOf(messages.first())
-        every { repository.observeReadMessages() } returns flowOf()
-
-        chatViewModel = ChatViewModel(repository, userRepository, chatArgs, effector, permissionsController, testDispatcher)
-        testDispatcher.scheduler.advanceUntilIdle()
+        val viewModel = createViewModel()
+        advanceUntilIdle()
 
         assertThat(
-            chatViewModel.state.value.chatListItems.currentUiMessages()
+            viewModel.state.value.chatListItems.currentUiMessages()
                 .map { it.copy(isLastInSeries = false, isVisibleMessageInfo = false) }
-        ).isEqualTo(
-            listOf(messages.first().toUi(chatRequesterId))
-        )
-    }
-    @Test
-    fun `init should update user data when receive user data from repository`() {
-
-        everySuspend {userRepository.getUserInfo() } returns user
-        chatViewModel = ChatViewModel(repository, userRepository, chatArgs, effector, permissionsController, testDispatcher)
-        testDispatcher.scheduler.advanceUntilIdle()
-
-        assertThat(chatViewModel.state.value.userData.firstName).isEqualTo(user.firstName)
-        assertThat(chatViewModel.state.value.userData.lastName).isEqualTo(user.lastName)
-        assertThat(chatViewModel.state.value.userData.imageUrl).isEqualTo(user.imageUrl)
+        ).isEqualTo(messages.map { it.toUi(chatRequesterId) }.reversed())
     }
 
     @Test
-    fun `onBackClicked should send pop back stack effect when its call`() {
-        chatViewModel.onBackClicked()
-        testDispatcher.scheduler.advanceUntilIdle()
-        verifySuspend { effector.popBackStack() }
-    }
+    fun `init should update uiMessage and chatListItems when receive new message`() = runTest {
+        everySuspend { chatRepository.getChatById(chatId) } returns chat
+        every { messageRepository.observePendingMessagesByChatId(chatId) } returns flowOf(messages)
+        every { messageRepository.observeReadMessages() } returns flowOf()
+        everySuspend {
+            messageRepository.loadMessages(chatId, any(), any())
+        } returns PagedData(emptyList(), 80, false)
+        every { messageRepository.observeMessagesForChatOrAll(chatId) } returns flowOf(messages.first())
 
-    @Test
-    fun `onInputMessageChanged should update the inputMessage value with provided value when its call`() {
-        val inputMessage = "Hi Noor"
-        chatViewModel.onInputMessageChanged(inputMessage)
-        testDispatcher.scheduler.advanceUntilIdle()
-        assertThat(chatViewModel.state.value.inputMessage).isEqualTo(inputMessage)
-    }
-
-    @Test
-    fun `onResendMessageDialogDismissed should set isResendMessageDialogVisible to false when its call`() {
-        chatViewModel.onResendMessageDialogDismissed()
-        testDispatcher.scheduler.advanceUntilIdle()
-        assertThat(chatViewModel.state.value.isResendMessageDialogVisible).isFalse()
-    }
-
-    @Test
-    fun `onResendMessageDialogDismissed should set isChatActionsDialogVisible to false when its called`() {
-        chatViewModel.onResendMessageDialogDismissed()
-        testDispatcher.scheduler.advanceUntilIdle()
-        assertThat(chatViewModel.state.value.isResendMessageDialogVisible).isFalse()
-    }
-
-    @Test
-    fun `onSendMessageClicked should update current messages with sent state and reset the user input when its successfully sent `() {
-        val inputMessage = "hi"
-        chatViewModel.updateState {
-            chatViewModel.state.value.copy(
-                chatId = chatId,
-                chatRequesterId = chatRequesterId,
-                inputMessage = inputMessage
-            )
-        }
-        everySuspend { repository.sendMessage(any()) } returns Unit
-
-        chatViewModel.onSendMessageClicked()
-        testDispatcher.scheduler.advanceUntilIdle()
-
-        assertThat(chatViewModel.state.value.inputMessage).isEmpty()
-    }
-
-    @Test
-    fun `onSendMessageClicked should update current messages with failed state and reset the user input when its call`() {
-        val inputMessage = "hi"
-        chatViewModel.updateState {
-            chatViewModel.state.value.copy(
-                chatId = chatId,
-                chatRequesterId = chatRequesterId,
-                inputMessage = inputMessage
-            )
-        }
-
-        everySuspend { repository.sendMessage(any()) } throws Exception("Send failed")
-
-        chatViewModel.onSendMessageClicked()
-        testDispatcher.scheduler.advanceUntilIdle()
-
-        val first = chatViewModel.state.value.chatListItems.currentUiMessages().first()
-        assertThat(first.chatId).isEqualTo(chatId)
-        assertThat(first.isMine).isTrue()
-        assertThat(first.status).isEqualTo(MessageStatus.FAILED)
-        assertThat(chatViewModel.state.value.inputMessage).isEmpty()
-    }
-
-    @Test
-    fun `onFailedMessageClicked should update the failedMessageToResend to the failedMessage when its call`() {
-        val failedMessage = messages.first().toUi(chatRequesterId)
-        chatViewModel.onFailedMessageClicked(failedMessage)
-        assertThat(chatViewModel.state.value.failedMessageToReSend).isEqualTo(failedMessage)
-    }
-
-    @Test
-    fun `onFailedMessageClicked should update the isResendMessageDialogVisible to true when its call`() {
-        val failedMessage = messages.first().toUi(chatRequesterId)
-        chatViewModel.onFailedMessageClicked(failedMessage)
-        assertThat(chatViewModel.state.value.isResendMessageDialogVisible).isEqualTo(true)
-    }
-
-    @Test
-    fun `onDeleteFailedMessageClick should delete the clicked failed message when its call`() {
-        val msgUi = messages.first().toUi(chatRequesterId)
-        // set failed message and chatListItems (instead of uiMessages)
-        chatViewModel.updateState {
-            it.copy(
-                failedMessageToReSend = msgUi,
-                chatListItems = listOf(msgUi.toChatListMessage())
-            )
-        }
-
-        everySuspend { repository.deleteMessage(any()) } returns Unit
-
-        chatViewModel.onDeleteFailedMessageClicked()
-        testDispatcher.scheduler.advanceUntilIdle()
-
-        assertThat(chatViewModel.state.value.chatListItems.currentUiMessages()).doesNotContain(msgUi)
-    }
-
-    @Test
-    fun `onResendMessageClick should remove the failed message when resend message success`() {
-        val failedMessage =
-            messages.first().copy(status = MessageStatus.FAILED).toUi(chatRequesterId)
-
-        chatViewModel.updateState {
-            it.copy(
-                chatId = chatId,
-                chatRequesterId = chatRequesterId,
-                failedMessageToReSend = failedMessage,
-                chatListItems = listOf(failedMessage.toChatListMessage())
-            )
-        }
-
-        everySuspend { repository.sendMessage(any()) } returns Unit
-
-        chatViewModel.onResendMessageClicked()
-        testDispatcher.scheduler.advanceUntilIdle()
-
-        val finalMessages = chatViewModel.state.value.chatListItems.currentUiMessages()
-        assertThat(finalMessages.isEmpty()).isTrue()
-        verifySuspend { repository.sendMessage(any()) }
-    }
-
-    @Test
-    fun `onResendMessageClick should update the resend message state to failed when resend message failed`() {
-        val failedMessage = messages.first().toUi(chatRequesterId)
-        chatViewModel.updateState {
-            it.copy(
-                chatId = chatId,
-                chatRequesterId = chatRequesterId,
-                failedMessageToReSend = failedMessage,
-                chatListItems = listOf(failedMessage.toChatListMessage())
-            )
-        }
-
-        everySuspend { repository.sendMessage(any()) } throws Exception("Send failed")
-
-        chatViewModel.onResendMessageClicked()
+        advanceUntilIdle()
 
         assertThat(
-            chatViewModel.state.value.chatListItems.currentUiMessages().first().status
-        ).isEqualTo(MessageStatus.LOADING)
-        testDispatcher.scheduler.advanceUntilIdle()
-        assertThat(
-            chatViewModel.state.value.chatListItems.currentUiMessages().first().status
-        ).isEqualTo(MessageStatus.FAILED)
+            viewModel.state.value.chatListItems.currentUiMessages()
+                .map { it.copy(isLastInSeries = false, isVisibleMessageInfo = false) }
+        ).isEqualTo(messages.map{ it.toUi(chatRequesterId) }.reversed())
     }
 
     @Test
-    fun `onMessageClicked should toggle showMessageInfo when message with id exists`() {
-        val message = messages.first()
-        val messageUiState = message.toUi(chatRequesterId)
-        val chatListItem = ChatListItem.Message(messageUiState)
-        chatViewModel.updateState { it.copy(chatListItems = listOf(chatListItem)) }
+    fun `init should update user data when receive user data from repository`() = runTest {
+        everySuspend { userRepository.getUserInfo() } returns user
 
-        chatViewModel.onMessageClicked(message.id)
-        testDispatcher.scheduler.advanceUntilIdle()
+        val viewModel = createViewModel()
+        advanceUntilIdle()
 
-        val updatedItem = chatViewModel.state.value.chatListItems.first() as ChatListItem.Message
-        assertThat(updatedItem.data.isVisibleMessageInfo).isTrue()
-
-        chatViewModel.onMessageClicked(message.id)
-        testDispatcher.scheduler.advanceUntilIdle()
-
-        val toggledBack = chatViewModel.state.value.chatListItems.first() as ChatListItem.Message
-        assertThat(toggledBack.data.isVisibleMessageInfo).isFalse()
+        assertThat(viewModel.state.value.userData.firstName).isEqualTo(user.firstName)
+        assertThat(viewModel.state.value.userData.lastName).isEqualTo(user.lastName)
+        assertThat(viewModel.state.value.userData.imageUrl).isEqualTo(user.imageUrl)
     }
 
     @Test
-    fun `onMessageClicked should not change items when message id does not exist`() {
-        val message = messages.first()
-        val messageUiState = message.toUi(chatRequesterId)
-        val chatListItem = ChatListItem.Message(messageUiState)
-        chatViewModel.updateState { it.copy(chatListItems = listOf(chatListItem)) }
+    fun `onBackClicked should emit NavigateBack effect`() = runTest {
+        advanceUntilIdle()
 
-        val nonExistentId = Uuid.parse("99999999-9999-9999-9999-999999999999")
-        chatViewModel.onMessageClicked(nonExistentId)
-        testDispatcher.scheduler.advanceUntilIdle()
+        viewModel.effect.test {
+            viewModel.onBackClicked()
+            advanceUntilIdle()
 
-        val result = chatViewModel.state.value.chatListItems.first() as ChatListItem.Message
-        assertThat(result.data.isVisibleMessageInfo).isEqualTo(messageUiState.isVisibleMessageInfo)
+            assertEquals(ChatScreenEffect.NavigateBack, awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
-    fun `onMessageImageClicked should update state to show image pager with correct message and index`() {
-        val message = messages.first().toUi(chatRequesterId)
-        val index = 2
+    fun `onInputMessageChanged should update the inputMessage value with provided value when its call`() =
+        runTest {
+            advanceUntilIdle()
+            val inputMessage = "Hi Noor"
 
-        chatViewModel.onMessageImageClicked(message, index)
-        testDispatcher.scheduler.advanceUntilIdle()
+            viewModel.onInputMessageChanged(inputMessage)
+            advanceUntilIdle()
 
-        assertThat(chatViewModel.state.value.isImagePagerVisible).isTrue()
-        assertThat(chatViewModel.state.value.selectedMessage).isEqualTo(message)
-        assertThat(chatViewModel.state.value.currentImageIndexForPreview).isEqualTo(index)
+            assertThat(viewModel.state.value.inputMessage).isEqualTo(inputMessage)
+        }
+
+    @Test
+    fun `onResendMessageDialogDismissed should set isResendMessageDialogVisible to false when its call`() =
+        runTest {
+            advanceUntilIdle()
+
+            viewModel.onResendMessageDialogDismissed()
+
+            assertThat(viewModel.state.value.isResendMessageDialogVisible).isFalse()
+        }
+
+    @Test
+    fun `onSendMessageClicked should update current messages with sent state and reset the user input when its successfully sent `() =
+        runTest {
+            everySuspend { messageRepository.sendMessage(any()) } returns Unit
+            advanceUntilIdle()
+            val inputMessage = "hi"
+            viewModel.onInputMessageChanged(inputMessage)
+
+            viewModel.onSendMessageClicked()
+            advanceUntilIdle()
+
+            assertThat(viewModel.state.value.inputMessage).isEmpty()
+        }
+
+    @Test
+    fun `onSendMessageClicked should reset the user input when its call`() = runTest {
+        advanceUntilIdle()
+        val inputMessage = "hi"
+        viewModel.onInputMessageChanged(inputMessage)
+
+        everySuspend { messageRepository.sendMessage(any()) } throws Exception("Send failed")
+
+        viewModel.onSendMessageClicked()
+        advanceUntilIdle()
+
+        assertThat(viewModel.state.value.inputMessage).isEmpty()
     }
 
     @Test
-    fun `onDownloadImageClicked should call repository and show success snackbar on success`() {
-        everySuspend { repository.downloadImage(imageUrl) } returns Unit
+    fun `onFailedMessageClicked should update the failedMessageToResend to the failedMessage when its call`() =
+        runTest {
+            val failedMessage = messages.first().toUi(chatRequesterId)
 
-        chatViewModel.onDownloadImageClicked(imageUrl)
-        testDispatcher.scheduler.advanceUntilIdle()
+            viewModel.onFailedMessageClicked(failedMessage)
 
-        verifySuspend { repository.downloadImage(imageUrl) }
-        verifySuspend { effector.showSnackBar(any()) }
+            assertThat(viewModel.state.value.failedMessageToReSend).isEqualTo(failedMessage)
+        }
+
+    @Test
+    fun `onFailedMessageClicked should update the isResendMessageDialogVisible to true when its call`() =
+        runTest {
+            advanceUntilIdle()
+            val failedMessage = messages.first().toUi(chatRequesterId)
+
+            viewModel.onFailedMessageClicked(failedMessage)
+
+            assertThat(viewModel.state.value.isResendMessageDialogVisible).isEqualTo(true)
+        }
+
+    @Test
+    fun `onDeleteFailedMessageClick should delete the clicked failed message when its call`() =
+        runTest {
+            everySuspend { messageRepository.deleteMessage(any()) } returns Unit
+            advanceUntilIdle()
+            val msgUi = messages.first().copy(status = MessageStatus.FAILED).toUi(chatRequesterId)
+            viewModel.onFailedMessageClicked(msgUi)
+
+            viewModel.onDeleteFailedMessageClicked()
+            advanceUntilIdle()
+
+            assertThat(viewModel.state.value.chatListItems.currentUiMessages()).doesNotContain(msgUi)
+        }
+
+    @Test
+    fun `onResendMessageClick should remove the failed message when resend message success`() =
+        runTest {
+            everySuspend { messageRepository.sendMessage(any()) } returns Unit
+            advanceUntilIdle()
+            val failedMessage =
+                messages.first().copy(status = MessageStatus.FAILED).toUi(chatRequesterId)
+            viewModel.onFailedMessageClicked(failedMessage)
+
+            viewModel.onResendMessageClicked()
+            advanceUntilIdle()
+
+            val finalMessages = viewModel.state.value.chatListItems.currentUiMessages()
+            assertThat(finalMessages.isEmpty()).isTrue()
+            verifySuspend { messageRepository.sendMessage(any()) }
+        }
+
+    @Test
+    fun `onMessageImageClicked should update state to show image pager with correct message and index`() =
+        runTest {
+            val message = messages.first().toUi(chatRequesterId)
+            val index = 2
+            advanceUntilIdle()
+
+            viewModel.onMessageImageClicked(message, index)
+            advanceUntilIdle()
+
+            assertThat(viewModel.state.value.isImagePagerVisible).isTrue()
+            assertThat(viewModel.state.value.selectedMessage).isEqualTo(message)
+            assertThat(viewModel.state.value.currentImageIndexForPreview).isEqualTo(index)
+        }
+
+    @Test
+    fun `onDownloadImageClicked should call imageDownloaderService`() = runTest {
+        everySuspend { imageDownloaderService.downloadImageToGallery(imageUrl) } returns true
+        advanceUntilIdle()
+
+        viewModel.onDownloadImageClicked(imageUrl)
+        advanceUntilIdle()
+
+        verifySuspend { viewModel.onDownloadImageClicked(imageUrl) }
     }
 
     @Test
-    fun `onDownloadImageClicked should show error snackbar on failure`() {
+    fun `onDownloadImageClicked should emit error snackBar effect when downloadImageToGallery fails and return false`() = runTest {
+        everySuspend { imageDownloaderService.downloadImageToGallery(imageUrl) } returns false
+        advanceUntilIdle()
 
-        everySuspend { repository.downloadImage(imageUrl) } throws Exception()
+        viewModel.effect.test {
+            viewModel.onDownloadImageClicked(imageUrl)
+            advanceUntilIdle()
 
-        chatViewModel.onDownloadImageClicked(imageUrl)
-        testDispatcher.scheduler.advanceUntilIdle()
+            assertEquals(
+                ChatScreenEffect.ShowSnackBar(
+                    SnackBarData(
+                        title = UiText.StringRes(Res.string.error),
+                        message = UiText.StringRes(Res.string.error_failed_to_download_image),
+                        isError = true
+                    )
+                ), awaitItem()
+            )
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
 
-        verifySuspend {
-            effector.showSnackBar(
-                SnackBarData(
-                    title = UiText.StringRes(Res.string.error),
-                    message = UiText.StringRes(Res.string.error_failed_to_download_image),
-                    isError = true
+    @Test
+    fun `onDownloadImageClicked should emit success snackBar effect on success`() = runTest {
+        everySuspend { imageDownloaderService.downloadImageToGallery(imageUrl) } returns true
+        advanceUntilIdle()
+
+        viewModel.effect.test {
+            viewModel.onDownloadImageClicked(imageUrl)
+            advanceUntilIdle()
+
+            assertEquals(
+                ChatScreenEffect.ShowSnackBar(
+                    SnackBarData(
+                        title = UiText.StringRes(Res.string.success),
+                        message = UiText.StringRes(Res.string.image_saved_successfully),
+                        isError = false
+                    )
+                ), awaitItem()
+            )
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `onDownloadImageClicked should emit error snackBar effect when downloadImageToGallery throws exception`() =
+        runTest {
+            everySuspend { imageDownloaderService.downloadImageToGallery(imageUrl) } throws Exception()
+            advanceUntilIdle()
+
+            viewModel.effect.test {
+                viewModel.onDownloadImageClicked(imageUrl)
+                advanceUntilIdle()
+
+                assertEquals(
+                    ChatScreenEffect.ShowSnackBar(
+                        SnackBarData(
+                            title = UiText.StringRes(Res.string.error),
+                            message = UiText.StringRes(Res.string.error_failed_to_download_image),
+                            isError = true
+                        )
+                    ), awaitItem()
                 )
-            )
-        }
-    }
-
-    @Test
-    fun `onCloseImageViewClicked should reset image pager state`() {
-
-        chatViewModel.onCloseImageViewClicked()
-        testDispatcher.scheduler.advanceUntilIdle()
-
-        assertThat(chatViewModel.state.value.isImagePagerVisible).isFalse()
-        assertThat(chatViewModel.state.value.selectedMessage).isEqualTo(null)
-        assertThat(chatViewModel.state.value.currentImageIndexForPreview).isEqualTo(0)
-    }
-
-
-    @Test
-    fun `onSendImageClicked should update message to FAILED status after failed repository call`() {
-        chatViewModel.updateState {
-            it.copy(
-                chatId = chatId,
-                chatRequesterId = chatRequesterId
-            )
+                cancelAndIgnoreRemainingEvents()
+            }
         }
 
-        val imageByteArray = byteArrayOf(1, 2, 3)
-        val imageByteArrays = listOf(imageByteArray)
-        everySuspend { repository.sendMessage(any()) } throws Exception("Failed to send")
+    @Test
+    fun `onCloseImageViewClicked should reset image pager state`() = runTest {
+        advanceUntilIdle()
 
-        chatViewModel.onSendImageClicked(imageByteArrays)
-        testDispatcher.scheduler.advanceUntilIdle()
+        viewModel.onCloseImageViewClicked()
+        advanceUntilIdle()
 
-        val firstMessage = chatViewModel.state.value.chatListItems.currentUiMessages().first()
-        assertThat(firstMessage.status).isEqualTo(MessageStatus.FAILED)
+        assertThat(viewModel.state.value.isImagePagerVisible).isFalse()
+        assertThat(viewModel.state.value.selectedMessage).isNull()
+        assertThat(viewModel.state.value.currentImageIndexForPreview).isEqualTo(0)
     }
 
     @Test
-    fun `onCameraClicked should start getting camera permission when user click it`(){
-        chatViewModel.onCameraClicked()
-        testDispatcher.scheduler.advanceUntilIdle()
-        verifySuspend {permissionsController.providePermission(permission = Permission.CAMERA)}
+    fun `onCameraClicked should check for camera permission when called`() = runTest {
+        viewModel.onCameraClicked()
+        advanceUntilIdle()
+
+        verifySuspend { permissionsController.providePermission(permission = Permission.CAMERA) }
     }
 
     @Test
-    fun `onCameraClicked should open camera when permission is granted`(){
-        everySuspend {  permissionsController.providePermission(permission = Permission.CAMERA)} returns Unit
-        chatViewModel.onCameraClicked()
-        testDispatcher.scheduler.advanceUntilIdle()
+    fun `onCameraClicked should open camera when permission is granted`() = runTest {
+        everySuspend { permissionsController.providePermission(permission = Permission.CAMERA) } returns Unit
+        advanceUntilIdle()
 
-        assertThat(chatViewModel.state.value.isCameraOpen).isTrue()
+        viewModel.onCameraClicked()
+        advanceUntilIdle()
+
+        assertThat(viewModel.state.value.isCameraOpen).isTrue()
     }
 
     @Test
-    fun `onCameraClicked should not open camera when camera permission is declined by user`(){
-        everySuspend {  permissionsController.providePermission(permission = Permission.CAMERA)} throws DeniedException(Permission.CAMERA)
-        chatViewModel.onCameraClicked()
-        testDispatcher.scheduler.advanceUntilIdle()
+    fun `onCameraClicked should not open camera when camera permission is denied`() = runTest {
+        everySuspend { permissionsController.providePermission(permission = Permission.CAMERA) } throws DeniedException(
+            Permission.CAMERA
+        )
+        advanceUntilIdle()
 
-        assertThat(chatViewModel.state.value.isCameraOpen).isFalse()
+        viewModel.onCameraClicked()
+        advanceUntilIdle()
+
+        assertThat(viewModel.state.value.isCameraOpen).isFalse()
     }
 
     @Test
-    fun`onCameraClosed should close camera when clicked`(){
-        chatViewModel.onCameraClosed()
-        testDispatcher.scheduler.advanceUntilIdle()
+    fun `onCameraResult should close camera when called`() = runTest {
+        advanceUntilIdle()
 
-        assertThat(chatViewModel.state.value.isCameraOpen).isFalse()
+        viewModel.onCameraResult(null)
+        advanceUntilIdle()
+
+        assertThat(viewModel.state.value.isCameraOpen).isFalse()
+    }
+
+    @Test
+    fun `onSendImageClicked should send image message`() = runTest {
+        val imageBytes = listOf(byteArrayOf(1, 2, 3))
+        everySuspend { messageRepository.sendMessage(any()) } returns Unit
+
+        viewModel.onSendImageClicked(imageBytes)
+        advanceUntilIdle()
+
+        verifySuspend { messageRepository.sendMessage(any()) }
     }
 
     private fun List<ChatListItem>.currentUiMessages(): List<MessageUiState> =
@@ -448,8 +418,18 @@ class ChatViewModelTest {
             .map { it.data }
             .sortedByDescending { it.sendTime }
 
-    private fun MessageUiState.toChatListMessage(): ChatListItem.Message =
-        ChatListItem.Message(this)
+
+    private fun createViewModel(): ChatViewModel {
+        return ChatViewModel(
+            chatRepository,
+            messageRepository,
+            userRepository,
+            imageDownloaderService,
+            chatArgs,
+            permissionsController,
+            testDispatcher
+        )
+    }
 
     private companion object {
 
@@ -463,7 +443,7 @@ class ChatViewModelTest {
         val chatName = "Noor"
         val chatImage = "https://image.com/noor.jpg"
 
-        val mockChat = Chat(
+        val chat = Chat(
             id = chatId,
             name = chatName,
             imageUrl = chatImage,

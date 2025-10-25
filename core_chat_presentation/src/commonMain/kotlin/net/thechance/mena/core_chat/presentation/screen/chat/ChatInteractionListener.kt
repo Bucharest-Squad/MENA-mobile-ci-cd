@@ -2,6 +2,7 @@
 
 package net.thechance.mena.core_chat.presentation.screen.chat
 
+import androidx.compose.ui.graphics.ImageBitmap
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -21,13 +22,15 @@ interface MessageListInteractionListener {
     fun onDeleteFailedMessageClicked()
     fun onResendMessageClicked()
     fun onResendMessageDialogDismissed()
+
+    fun onMessagesScrolled()
 }
 
 interface AttachmentsInteractionListener {
     fun onSendImageClicked(imageByteArrays: List<ByteArray>)
     fun onGalleryClicked()
     fun onCameraClicked()
-    fun onCameraClosed()
+    fun onCameraResult(image: ImageBitmap?)
     fun onCloseAttachmentClicked()
 }
 

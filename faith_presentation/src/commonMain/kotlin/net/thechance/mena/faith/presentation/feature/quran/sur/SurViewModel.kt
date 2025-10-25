@@ -10,7 +10,7 @@ import net.thechance.mena.faith.presentation.base.BaseViewModel
 class SurViewModel(
     private val quranRepository: QuranRepository,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
-) : BaseViewModel<SurScreenState, SurEffect>(SurScreenState()), SurInteractionListener {
+) : BaseViewModel<SurUiState, SurEffect>(SurUiState()), SurInteractionListener {
 
     init {
         initializeSur()
@@ -24,10 +24,9 @@ class SurViewModel(
     override fun onBookmarkClick() = sendEffect(SurEffect.NavigateToBookmark)
     override fun onSearchClick() = sendEffect(SurEffect.NavigateToSearch)
 
-
     private fun initializeSur() {
         tryToExecute(
-            execute = { quranRepository.getAllSur() },
+            execute = { quranRepository.getSur() },
             onSuccess = { sur -> handleSuccessState(sur) },
             dispatcher = dispatcher
         )

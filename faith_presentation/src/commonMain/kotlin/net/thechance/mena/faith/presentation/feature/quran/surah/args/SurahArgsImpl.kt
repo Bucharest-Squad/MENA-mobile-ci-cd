@@ -6,10 +6,12 @@ import net.thechance.mena.faith.presentation.navigation.Route
 
 class SurahArgsImpl(
     savedStateHandle: SavedStateHandle,
-) : ISurahArgs {
-    override val surahId: Int = savedStateHandle.toRoute<Route.SurahDetailsRoute>().surahId
-    override val surahName: String = savedStateHandle.toRoute<Route.SurahDetailsRoute>().surahName
-    override val ayahNumber: Int? = savedStateHandle.toRoute<Route.SurahDetailsRoute>().ayahNumber
+) : SurahArgs {
+    private val surahScreenArgs = savedStateHandle.toRoute<Route.SurahDetailsRoute>()
+
+    override val surahId: Int = surahScreenArgs.surahId
+    override val surahName: String = surahScreenArgs.surahName
+    override val ayahNumber: Int? = surahScreenArgs.ayahNumber
         ?: savedStateHandle["ayahNumber"]
 
 

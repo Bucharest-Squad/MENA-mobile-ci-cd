@@ -2,11 +2,17 @@
 
 package net.thechance.mena.core_chat.presentation.screen.chat
 
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.lifecycle.viewModelScope
 import dev.icerock.moko.permissions.Permission
 import dev.icerock.moko.permissions.PermissionsController
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.error
 import mena.core_chat_presentation.generated.resources.error_cant_get_messages
@@ -17,18 +23,22 @@ import mena.core_chat_presentation.generated.resources.image_saved_successfully
 import mena.core_chat_presentation.generated.resources.permission_denied_title
 import mena.core_chat_presentation.generated.resources.success
 import net.thechance.mena.core_chat.domain.entity.Chat
-import net.thechance.mena.core_chat.domain.entity.ImagesSource
-import net.thechance.mena.core_chat.domain.entity.MarkMessageAsReadEvent
+import net.thechance.mena.core_chat.domain.entity.ImageData
 import net.thechance.mena.core_chat.domain.entity.Message
 import net.thechance.mena.core_chat.domain.entity.MessageContent
 import net.thechance.mena.core_chat.domain.entity.MessageStatus
 import net.thechance.mena.core_chat.domain.entity.User
+import net.thechance.mena.core_chat.domain.event.MarkMessageAsReadEvent
+import net.thechance.mena.core_chat.domain.model.PagedData
 import net.thechance.mena.core_chat.domain.repository.ChatRepository
+import net.thechance.mena.core_chat.domain.repository.MessageRepository
 import net.thechance.mena.core_chat.domain.repository.UserRepository
-import net.thechance.mena.core_chat.presentation.components.SnackBarData
-import net.thechance.mena.core_chat.presentation.navigation.ChatEffector
+import net.thechance.mena.core_chat.presentation.components.snackBarHost.SnackBarData
+import net.thechance.mena.core_chat.domain.service.ImageDownloaderService
 import net.thechance.mena.core_chat.presentation.shared.BaseViewModel
+import net.thechance.mena.core_chat.presentation.utils.Paginator
 import net.thechance.mena.core_chat.presentation.utils.UiText
+import net.thechance.mena.core_chat.presentation.utils.encodeToByteArrayWithCompressionToMaxSize
 import net.thechance.mena.core_chat.presentation.utils.getUuidOrNull
 import org.jetbrains.compose.resources.StringResource
 import kotlin.uuid.ExperimentalUuidApi
@@ -37,15 +47,35 @@ import kotlin.uuid.Uuid
 
 class ChatViewModel(
     private val chatRepository: ChatRepository,
+    private val messageRepository: MessageRepository,
     private val userRepository: UserRepository,
+    private val imageDownloaderService: ImageDownloaderService,
     chatArgs: ChatArgs,
-    effector: ChatEffector,
     private val permissionsController: PermissionsController,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
-) : BaseViewModel<ChatScreenState>(ChatScreenState(), effector, dispatcher),
+) : BaseViewModel<ChatScreenState, ChatScreenEffect>(ChatScreenState(), dispatcher),
     ChatInteractionListener {
 
-    private var uiMessages: List<MessageUiState> = emptyList()
+    private val _uiMessages = MutableStateFlow<List<MessageUiState>>(emptyList())
+    private val uiMessages = _uiMessages.asStateFlow()
+
+    private var messagesHistoryCache: List<Message> = emptyList()
+    private var pendingMessagesCache: List<Message> = emptyList()
+    private var newMessages: List<Message> = emptyList()
+
+    private var hasResentPendingMessages = false
+
+    private val chatHistoryPaginator by lazy {
+        Paginator(
+            initialKey = INITIAL_PAGE,
+            onLoadUpdated = { },
+            onRequest = ::getChatHistory,
+            getNextKey = { currentPage, _ -> currentPage + 1 },
+            onError = { showSnackBar(Res.string.error, Res.string.error_cant_get_messages, true) },
+            onSuccess = { result, newPage -> onGetChatHistorySuccess(result) },
+            endReached = { _, result -> result.isLastPage }
+        )
+    }
 
     init {
         val chatId = getUuidOrNull(chatArgs.chatId)
@@ -68,7 +98,7 @@ class ChatViewModel(
         }
     }
 
-    private fun getUserInfo(){
+    private fun getUserInfo() {
         tryToExecute(
             execute = { userRepository.getUserInfo() },
             onSuccess = ::onGetUserDataSuccess,
@@ -77,12 +107,17 @@ class ChatViewModel(
     }
 
     private fun onGetUserDataSuccess(user: User) {
-        updateState { state -> state.copy(userData = UserData(
-            firstName = user.firstName,
-            lastName = user.lastName,
-            imageUrl = user.imageUrl.orEmpty()
-        )) }
+        updateState { state ->
+            state.copy(
+                userData = UserData(
+                    firstName = user.firstName,
+                    lastName = user.lastName,
+                    imageUrl = user.imageUrl.orEmpty()
+                )
+            )
+        }
     }
+
     private fun onGetUserDataError(t: Throwable) {
         showSnackBar(
             titleStringResource = Res.string.error,
@@ -90,6 +125,7 @@ class ChatViewModel(
             isError = true
         )
     }
+
     private fun onGetChatSuccess(chat: Chat) {
         updateState { state ->
             state.copy(
@@ -99,8 +135,9 @@ class ChatViewModel(
             )
         }
 
+        onMessagesScrolled()
         subscribeToNewMessages(chat.id)
-        loadChatHistory(chat.id)
+        subscribeToPendingMessages(chat.id)
         observeReadMessages()
     }
 
@@ -110,11 +147,11 @@ class ChatViewModel(
             messageStringResource = Res.string.error_cant_get_messages,
             isError = true
         )
-        popBackStack()
+        emitEffect(ChatScreenEffect.NavigateBack)
     }
 
     override fun onBackClicked() {
-        popBackStack()
+        emitEffect(ChatScreenEffect.NavigateBack)
     }
 
     override fun onSendImageClicked(imageByteArrays: List<ByteArray>) {
@@ -125,7 +162,7 @@ class ChatViewModel(
             return
         }
 
-        val content = MessageContent.Images(ImagesSource.Local(imageByteArrays))
+        val content = MessageContent.Images(ImageData.ImageByteArray(imageByteArrays))
 
         sendImageMessage(chatId, senderId, content)
     }
@@ -137,12 +174,9 @@ class ChatViewModel(
             content = content
         )
 
-        updateStateWithNewMessage(message)
-
         tryToExecute(
-            execute = { chatRepository.sendMessage(message.toEntity()) },
-            onSuccess = { onSendMessageSuccess(message) },
-            onError = { onSendMessageError(message) },
+            execute = { messageRepository.sendMessage(message.toEntity()) },
+            onSuccess = { onSendMessageSuccess(message) }
         )
     }
 
@@ -167,22 +201,16 @@ class ChatViewModel(
     }
 
     private fun sendMessage(message: MessageUiState) {
-        updateStateWithNewMessage(message)
         updateState { state -> state.copy(inputMessage = "") }
 
         tryToExecute(
-            execute = { chatRepository.sendMessage(message.toEntity()) },
-            onSuccess = { onSendMessageSuccess(message) },
-            onError = { onSendMessageError(message) },
+            execute = { messageRepository.sendMessage(message.toEntity()) },
+            onSuccess = { onSendMessageSuccess(message) }
         )
     }
 
     private fun onSendMessageSuccess(message: MessageUiState) {
         filterMessagesState { it.id != message.id && it.sendTime != message.sendTime }
-    }
-
-    private fun onSendMessageError(message: MessageUiState) {
-        updateStateWithNewMessage(message.copy(status = MessageStatus.FAILED))
     }
 
     override fun onMessageClicked(messageId: Uuid) {
@@ -204,7 +232,7 @@ class ChatViewModel(
         val failedMessage = state.value.failedMessageToReSend ?: return
 
         tryToExecute(
-            execute = { chatRepository.deleteMessage(failedMessage.toEntity()) },
+            execute = { messageRepository.deleteMessage(failedMessage.toEntity()) },
             onSuccess = { onDeleteFailedMessageSuccess(failedMessage) }
         )
     }
@@ -221,7 +249,7 @@ class ChatViewModel(
 
     override fun onResendMessageClicked() {
         val message =
-            state.value.failedMessageToReSend?.copy(status = MessageStatus.LOADING) ?: return
+            state.value.failedMessageToReSend ?: return
 
         updateState { state ->
             state.copy(
@@ -229,7 +257,6 @@ class ChatViewModel(
                 failedMessageToReSend = null
             )
         }
-        updateStateWithNewMessage(message)
 
         sendMessage(message)
     }
@@ -240,7 +267,7 @@ class ChatViewModel(
 
     private fun subscribeToNewMessages(chatId: Uuid) {
         tryToCollect(
-            collect = { chatRepository.getMessages(chatId) },
+            collect = { messageRepository.observeMessagesForChatOrAll(chatId) },
             onCollect = ::onCollectNewMessage,
             onError = {
                 showSnackBar(
@@ -255,42 +282,53 @@ class ChatViewModel(
     private suspend fun onCollectNewMessage(message: Message?) {
         if (message == null) return
 
-        val senderId = state.value.chatRequesterId
-            ?: return showSnackBar(Res.string.error, Res.string.error_cant_get_messages, true)
+        newMessages = newMessages.toMutableList().apply { add(0, message) }
+        rebuildUiMessages()
+        messageRepository.markMessagesOfChatAsRead(message.chatId)
 
-        updateStateWithNewMessage(message.toUi(senderId))
-        chatRepository.markMessagesAsRead(message.chatId)
     }
 
-    private fun loadChatHistory(chatId: Uuid) {
-        tryToExecute(
-            execute = {
-                val messagesHistory = chatRepository.loadMessages(chatId)
-                val pendingMessages = chatRepository.getLocalMessages(chatId)
-                (messagesHistory + pendingMessages)
-            },
-            onSuccess = ::onLoadChatHistorySuccess,
-            onError = { showSnackBar(Res.string.error, Res.string.error_cant_get_messages, true) }
+    private fun subscribeToPendingMessages(chatId: Uuid) {
+        tryToCollect(
+            collect = { messageRepository.observePendingMessagesByChatId(chatId) },
+            onCollect = ::onCollectPendingMessages
         )
     }
 
-    private suspend fun onLoadChatHistorySuccess(messages: List<Message>) {
+    private fun onCollectPendingMessages(messages: List<Message>?) {
+        pendingMessagesCache = messages ?: emptyList()
+
         val senderId = state.value.chatRequesterId
             ?: return showSnackBar(Res.string.error, Res.string.error_cant_get_messages, true)
 
-        val uiMessages = messages.map { it.toUi(senderId) }
-        updateChatListItems(uiMessages)
+        if (!hasResentPendingMessages) {
+            hasResentPendingMessages = true
+            pendingMessagesCache
+                .filter { it.status == MessageStatus.LOADING }
+                .forEach { sendMessage(it.toUi(senderId)) }
+        }
+        rebuildUiMessages()
+    }
 
-        uiMessages
-            .filter { it.status == MessageStatus.LOADING }
-            .forEach { sendMessage(it) }
+    private suspend fun getChatHistory(page: Int): PagedData<Message> {
+        val chatId = state.value.chatId ?: return PagedData(emptyList(), 0, false)
+        return messageRepository.loadMessages(
+            chatId = chatId,
+            page = page,
+            pageSize = PAGE_SIZE
+        )
+    }
 
-        chatRepository.markMessagesAsRead(state.value.chatId ?: return)
+    private suspend fun onGetChatHistorySuccess(messages: PagedData<Message>) {
+        messagesHistoryCache = messagesHistoryCache.toMutableList().apply { addAll(messages.data) }
+        rebuildUiMessages()
+        messageRepository.markMessagesOfChatAsRead(state.value.chatId ?: return)
+
     }
 
     private fun observeReadMessages() {
         tryToCollect(
-            collect = { chatRepository.observeReadMessages() },
+            collect = { messageRepository.observeReadMessages() },
             onCollect = ::onCollectReadMessagesEvent
         )
     }
@@ -306,29 +344,34 @@ class ChatViewModel(
 
     }
 
-    private fun updateStateWithNewMessage(newMessage: MessageUiState) {
-        val messages = uiMessages.toMutableList()
-            .apply { add(0, newMessage) }
-        updateChatListItems(messages)
-    }
-
     private fun mapMessagesState(transform: (MessageUiState) -> MessageUiState) {
-        val messages = uiMessages.map(transform)
-        updateChatListItems(messages)
+        _uiMessages.update { messages -> messages.map(transform) }
+        updateChatListItems(uiMessages.value)
     }
 
     private fun filterMessagesState(predicate: (MessageUiState) -> Boolean) {
-        val messages = uiMessages.filter(predicate)
-        updateChatListItems(messages)
+        _uiMessages.update { messages -> messages.filter(predicate) }
+        updateChatListItems(uiMessages.value)
+    }
+
+    private fun rebuildUiMessages() {
+        val senderId = state.value.chatRequesterId
+            ?: return showSnackBar(Res.string.error, Res.string.error_cant_get_messages, true)
+
+        val messageList = (messagesHistoryCache + pendingMessagesCache + newMessages)
+            .map { it.toUi(senderId) }
+
+        _uiMessages.value = messageList
+        updateChatListItems(uiMessages.value)
     }
 
     private fun updateChatListItems(messages: List<MessageUiState>) {
-        uiMessages = messages
-            .distinctBy { it.id }
-            .sortedByDescending { it.sendTime }
         updateState { state ->
             state.copy(
-                chatListItems = messages.buildListItems()
+                chatListItems = messages
+                    .distinctBy { it.id }
+                    .sortedByDescending { it.sendTime }
+                    .buildListItems()
             )
         }
     }
@@ -345,20 +388,22 @@ class ChatViewModel(
 
     override fun onDownloadImageClicked(url: String) {
         tryToExecute(
-            execute = { chatRepository.downloadImage(url) },
-            onSuccess = { onDownloadImageSuccess() },
-            onError = {
-                showSnackBar(
-                    Res.string.error,
-                    Res.string.error_failed_to_download_image,
-                    true
-                )
-            }
+            execute = { imageDownloaderService.downloadImageToGallery(url) },
+            onSuccess = ::onDownloadImageSuccess,
+            onError = { onDownloadImageError() }
         )
     }
 
-    private fun onDownloadImageSuccess() {
-        showSnackBar(Res.string.success, Res.string.image_saved_successfully, isError = false)
+    private fun onDownloadImageSuccess(isSuccess: Boolean) {
+        if (isSuccess) {
+            showSnackBar(Res.string.success, Res.string.image_saved_successfully, isError = false)
+        } else {
+            onDownloadImageError()
+        }
+    }
+
+    private fun onDownloadImageError() {
+        showSnackBar(Res.string.error, Res.string.error_failed_to_download_image, true)
     }
 
     override fun onCloseImageViewClicked() {
@@ -376,11 +421,13 @@ class ChatViewModel(
         messageStringResource: StringResource,
         isError: Boolean = false
     ) {
-        showSnackBar(
-            SnackBarData(
-                title = UiText.StringRes(titleStringResource),
-                message = UiText.StringRes(messageStringResource),
-                isError = isError
+        emitEffect(
+            ChatScreenEffect.ShowSnackBar(
+                SnackBarData(
+                    title = UiText.StringRes(titleStringResource),
+                    message = UiText.StringRes(messageStringResource),
+                    isError = isError
+                )
             )
         )
     }
@@ -401,13 +448,33 @@ class ChatViewModel(
         )
     }
 
+    override fun onCameraResult(image: ImageBitmap?) {
+        updateState { it.copy(isCameraOpen = false) }
+
+        if (image == null) return
+
+        tryToExecute(
+            execute = { image.encodeToByteArrayWithCompressionToMaxSize() },
+            onSuccess = { byteArray -> onSendImageClicked(listOf(byteArray)) }
+        )
+    }
+
     private fun onCameraPermissionGranted() {
         updateState { it.copy(isCameraOpen = true, isAttachmentsOverlayVisible = false) }
     }
-    override fun onCameraClosed() {
-        updateState { it.copy(isCameraOpen = false) }
-    }
+
     override fun onCloseAttachmentClicked() {
         updateState { it.copy(isAttachmentsOverlayVisible = false) }
+    }
+
+    override fun onMessagesScrolled() {
+        viewModelScope.launch {
+            chatHistoryPaginator.loadNextItems()
+        }
+    }
+
+    companion object {
+        const val PAGE_SIZE = 40
+        const val INITIAL_PAGE = 0
     }
 }

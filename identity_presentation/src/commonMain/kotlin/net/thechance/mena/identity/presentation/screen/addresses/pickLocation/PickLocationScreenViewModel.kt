@@ -4,43 +4,49 @@ import androidx.compose.ui.unit.DpOffset
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
-import net.thechance.mena.identity.domain.repository.MobileLocationRepository
-import net.thechance.mena.identity.domain.util.Coordinates
+import mena.identity_presentation.generated.resources.Res
+import mena.identity_presentation.generated.resources.error_location_is_turned_off
+import net.thechance.mena.identity.domain.entity.AddressType
+import net.thechance.mena.identity.domain.model.Coordinates
+import net.thechance.mena.identity.domain.repository.AddressesRepository
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
-import net.thechance.mena.identity.presentation.base.ErrorState
+import net.thechance.mena.identity.presentation.base.error.ErrorState
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
+import net.thechance.mena.identity.presentation.screen.addresses.myAddresses.AddressUIState
+import net.thechance.mena.identity.presentation.screen.addresses.myAddresses.CoordinatesUiState
 import net.thechance.mena.identity.presentation.util.permissionHandler.PermissionHandler
 import net.thechance.mena.identity.presentation.util.permissionHandler.PermissionState
 import org.maplibre.compose.camera.CameraPosition
+import kotlin.uuid.ExperimentalUuidApi
 
 class PickLocationScreenViewModel(
-    private val mobileLocationRepository: MobileLocationRepository,
+    private val addressesRepository: AddressesRepository,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val locationForegroundHandler: PermissionHandler,
-    private val addressModel: AddressModel?,
+    private val addressModel: AddressUIState?,
 ) : BaseScreenModel<PickLocationScreenUIState, PickLocationScreenUIEffect>(PickLocationScreenUIState()),
     PickLocationScreenInteractionListener {
 
     init {
-        onUpdateAddress(addressModel)
+        if (addressModel != null)
+            updateAddress(addressModel)
     }
 
-    override fun onUpdateAddress(addressModel: AddressModel?) {
+    fun updateAddress(addressModel: AddressUIState?) {
         if (addressModel != null) {
             updateState {
                 copy(
                     currentLocation = Coordinates(
-                        latitude = addressModel.latitude,
-                        longitude = addressModel.longitude
+                        latitude = addressModel.coordinates.latitude,
+                        longitude = addressModel.coordinates.longitude
                     ).toUiState(),
-                    address = addressModel.addressLine,
+                    address = addressModel.addressDetails,
                     isMapLocked = true,
                     animateToCurrentLocation = true,
+                    isMainAddress = addressModel.isMainAddress
                 )
             }
-            changeIsConfirmEnabled()
         }
-
     }
 
     override fun onClickMap(
@@ -59,19 +65,30 @@ class PickLocationScreenViewModel(
 
     private fun getLocationName() {
         tryToExecute(
-            function = ::onGetLocationName,
-            onSuccess = ::onGetLocationNameSuccess,
-            onError = ::onError,
+            function = ::fetchLocationName,
+            onSuccess = ::onLocationNameSuccess,
+            onError = ::onLocationNameError,
             dispatcher = Dispatchers.Main
         )
     }
 
-    private suspend fun onGetLocationName(): String {
-        return mobileLocationRepository.getLocationName(state.value.currentLocation.toEntity())
+    private suspend fun fetchLocationName(): String {
+        return addressesRepository.getLocationName(state.value.currentLocation.toEntity())
     }
 
-    private fun onGetLocationNameSuccess(address: String) {
+    private fun onLocationNameSuccess(address: String) {
         updateState { copy(address = address) }
+        changeIsConfirmEnabled()
+    }
+
+    private fun onLocationNameError(errorState: ErrorState) {
+        updateState {
+            copy(
+                errorMessage = mapErrorToMessage(errorState),
+                isGpsButtonLoading = false,
+                address = ""
+            )
+        }
         changeIsConfirmEnabled()
     }
 
@@ -96,21 +113,19 @@ class PickLocationScreenViewModel(
 
     override fun onClickGps() {
         tryToExecute(
-            function = ::onGpsFetch,
-            onSuccess = ::onClickGpsSuccess,
-            onError = ::onClickGpsError,
+            function = ::fetchCurrentLocation,
+            onSuccess = ::onCurrentLocationSuccess,
+            onError = ::onCurrentLocationError,
             dispatcher = Dispatchers.Main
         )
     }
 
-    private suspend fun onGpsFetch(): Coordinates? {
+    private suspend fun fetchCurrentLocation(): Coordinates? {
         updateState { copy(isGpsButtonLoading = true) }
-        return mobileLocationRepository.getCurrentLocation()
+        return addressesRepository.getCurrentLocation()
     }
 
-    private fun onClickGpsSuccess(
-        coordinates: Coordinates?
-    ) {
+    private fun onCurrentLocationSuccess(coordinates: Coordinates?) {
         if (coordinates != null) {
             updateState {
                 copy(
@@ -124,25 +139,25 @@ class PickLocationScreenViewModel(
         }
     }
 
-    private fun onClickGpsError(errorState: ErrorState) {
+    private fun onCurrentLocationError(errorState: ErrorState) {
         checkLocationEnable()
     }
 
     private fun checkLocationEnable() {
         tryToExecute(
             function = { locationForegroundHandler.checkPermission() },
-            onSuccess = ::checkLocationEnableSuccess,
-            ::onError,
+            onSuccess = ::onPermissionCheckSuccess,
+            onError = ::onPermissionCheckError,
             dispatcher = dispatcher
         )
     }
 
-    private fun checkLocationEnableSuccess(permissionState: PermissionState) {
+    private fun onPermissionCheckSuccess(permissionState: PermissionState) {
         when (permissionState) {
             PermissionState.GRANTED -> {
                 updateState {
                     copy(
-                        errorMessage = "Location is turned off",
+                        errorMessage = Res.string.error_location_is_turned_off,
                         isGpsButtonLoading = false
                     )
                 }
@@ -158,7 +173,7 @@ class PickLocationScreenViewModel(
         }
     }
 
-    private fun onError(errorState: ErrorState) {
+    private fun onPermissionCheckError(errorState: ErrorState) {
         updateState {
             copy(
                 errorMessage = mapErrorToMessage(errorState),
@@ -175,13 +190,19 @@ class PickLocationScreenViewModel(
     }
 
 
+    @OptIn(ExperimentalUuidApi::class)
     override fun onClickConfirm() {
         sendNewEffect(
             PickLocationScreenUIEffect.NavigateBackWithLocation(
-                AddressModel(
-                    latitude = state.value.currentLocation.latitude,
-                    longitude = state.value.currentLocation.longitude,
-                    addressLine = state.value.address
+                AddressUIState(
+                    id = addressModel?.id,
+                    coordinates = CoordinatesUiState(
+                        state.value.currentLocation.latitude,
+                        state.value.currentLocation.longitude
+                    ),
+                    addressType = addressModel?.addressType ?: AddressType.Home ,
+                    addressDetails = state.value.address,
+                    isMainAddress = state.value.isMainAddress
                 )
             )
         )

@@ -19,8 +19,8 @@ import kotlinx.serialization.serializer
 
 suspend inline fun <reified T, reified R> HttpClient.postJson(
     requestDto: T,
-    path: String
-): R {
+    path: String,
+ ): R {
     val response = this.post {
         url(path)
         contentType(ContentType.Application.Json)

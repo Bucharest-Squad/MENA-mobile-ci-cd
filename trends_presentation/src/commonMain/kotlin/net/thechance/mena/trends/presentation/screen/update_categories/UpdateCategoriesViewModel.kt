@@ -35,13 +35,13 @@ internal class UpdateCategoriesViewModel(
         )
     }
 
-    override fun onCategoryClick(categoryId: String) = updateState {
+    override fun onClickCategory(categoryId: String) = updateState {
         copy(categories = categories.toggleCategory(categoryId))
     }
 
-    override fun onBackClick() = sendEffect(UpdateCategoriesScreenEffect.NavigateBack)
+    override fun onClickBack() = sendEffect(UpdateCategoriesScreenEffect.NavigateBack)
 
-    override fun onSaveClick() {
+    override fun onClickSave() {
         tryToExecute(
             block = { saveSelectedCategories() },
             onSuccess = { sendEffect(UpdateCategoriesScreenEffect.NavigateToTrends) },
@@ -59,7 +59,7 @@ internal class UpdateCategoriesViewModel(
         val currentSelectedIds = state.value.categories
             .filter { it.isSelected }.mapNotNull { it.value.id }
 
-        repository.patchUserCategories(originalSelectedIds, currentSelectedIds)
+        repository.updateUserCategories(originalSelectedIds, currentSelectedIds)
     }
 
     private fun handleLoadCategoriesSuccess(categories: List<Category>) {
@@ -69,5 +69,10 @@ internal class UpdateCategoriesViewModel(
                 categories = categories.toUserCategoryUiState()
             )
         }
+    }
+
+    override fun onClickRetry() {
+        updateState{ copy(errorState = null) }
+        getCategories()
     }
 }

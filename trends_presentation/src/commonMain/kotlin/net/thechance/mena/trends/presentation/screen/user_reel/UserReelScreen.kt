@@ -1,6 +1,9 @@
 package net.thechance.mena.trends.presentation.screen.user_reel
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -114,7 +117,7 @@ private fun UserReelScreenContent(
                                 .align(Alignment.End)
                                 .padding(top = 24.dp, bottom = Theme.spacing._12, end = Theme.spacing._8)
                                 .clickable(
-                                    onClick = { listener.onConfirmDeleteClick() },
+                                    onClick = { listener.onClickConfirmDelete() },
                                     role = Role.Button,
                                     indication = null,
                                     interactionSource = remember { MutableInteractionSource() }
@@ -131,13 +134,13 @@ private fun UserReelScreenContent(
                     isVisible = state.isReelDeleted == true && state.error == null,
                     onDismiss = {
                         listener.onDismissSuccessDialog()
-                        listener.onBackClick()
+                        listener.onClickBack()
                     },
                     dismissOnBackPress = true,
                     dismissOnClickOutside = true,
                     onCancelClick = {
                         listener.onDismissSuccessDialog()
-                        listener.onBackClick()
+                        listener.onClickBack()
                     },
                     dialogCornerShape = RoundedCornerShape(Theme.radius.md),
                     cancelBackgroundShape = RoundedCornerShape(50),
@@ -170,11 +173,11 @@ private fun UserReelScreenContent(
             pageCount = { reels.itemCount },
         )
 
-        TopAppBar(onBackClick = listener::onBackClick, modifier = Modifier.zIndex(5f))
+        TopAppBar(onBackClick = listener::onClickBack, modifier = Modifier.zIndex(5f))
 
         VerticalPager(
             state = pagerState,
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().background(Color.Black),
             key = { page -> reels[page]?.id ?: page },
         ) { page ->
 
@@ -183,11 +186,11 @@ private fun UserReelScreenContent(
                     reel = reel,
                     shouldRender = (pagerState.currentPage == page),
                     isDescriptionExpanded = state.isDescriptionExpanded,
-                    onDeleteClick = listener::onDeleteClick,
-                    onDescriptionClick = listener::onDescriptionClick,
-                    onPublisherInfoClick = listener::onPublisherInfoClick,
+                    onDeleteClick = listener::onClickDelete,
+                    onDescriptionClick = listener::onClickDescription,
+                    onPublisherInfoClick = listener::onClickPublisherInfo,
                     incrementViewsCount = { listener.increaseReelView(reel.id) },
-                    onLikeClick = { listener.onLikeClick(reel.id) }
+                    onLikeClick = { listener.onClickLike(reel.id) }
                 )
             }
         }
@@ -235,7 +238,7 @@ private fun ReelContent(
         onVideoPlaying = incrementViewsCount
     ) {
         Box(Modifier.fillMaxSize()) {
-            UsersReAct(
+            UsersReact(
                 viewCount = reel.viewsCount.toString(),
                 likeCount = reel.likesCount.toString(),
                 isCurrentUserOwner = reel.isCurrentUserOwner,
@@ -310,7 +313,11 @@ private fun PublisherInfo(
             }
         }
 
-        if (description.isNotBlank()) {
+        AnimatedVisibility(
+            visible = description.isNotBlank(),
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
             Text(
                 text = description,
                 modifier = Modifier
@@ -325,7 +332,7 @@ private fun PublisherInfo(
 }
 
 @Composable
-private fun UsersReAct(
+private fun UsersReact(
     likeCount: String,
     viewCount: String,
     isCurrentUserOwner: Boolean,
@@ -351,7 +358,11 @@ private fun UsersReAct(
             label = viewCount
         )
 
-        if (isCurrentUserOwner) {
+        AnimatedVisibility(
+            visible = isCurrentUserOwner,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
             ReActIcon(
                 icon = painterResource(resource = Res.drawable.ic_delete),
                 label = stringResource(Res.string.delete),

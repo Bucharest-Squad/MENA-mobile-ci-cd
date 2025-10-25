@@ -21,6 +21,7 @@ import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.identity.presentation.base.BaseScreen
 import net.thechance.mena.identity.presentation.components.AuthAppBar
 import net.thechance.mena.identity.presentation.components.ErrorSnackBar
+import net.thechance.mena.identity.presentation.screen.addresses.myAddresses.AddressUIState
 import net.thechance.mena.identity.presentation.screen.enableLocationScreen.EnableLocationScreen
 import net.thechance.mena.identity.presentation.screen.addresses.pickLocation.components.EditMapButton
 import net.thechance.mena.identity.presentation.screen.addresses.pickLocation.components.GpsFabButton
@@ -29,8 +30,8 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.core.parameter.parametersOf
 
 data class PickLocationScreen(
-    private val addressModel: AddressModel?,
-    private val onUpdateLocation: (AddressModel) -> Unit,
+    private val addressModel: AddressUIState?,
+    private val onUpdateLocation: (AddressUIState) -> Unit,
 ) : BaseScreen<PickLocationScreenViewModel,
         PickLocationScreenUIState,
         PickLocationScreenUIEffect,
@@ -65,8 +66,6 @@ data class PickLocationScreen(
                 currentLocation = state.currentLocation,
                 animateToCurrentLocation = state.animateToCurrentLocation,
                 onSetAnchorLocation = listener::onSetAnchorLocation,
-                onUpdateAddress = listener::onUpdateAddress,
-                addressModel = addressModel
             ) {
                 Column(
                     Modifier.padding(Theme.spacing._16).fillMaxSize(),
@@ -98,7 +97,7 @@ data class PickLocationScreen(
             }
         }
         ErrorSnackBar(
-            errorMessage = state.errorMessage,
+            errorMessage = state.errorMessage?.let { stringResource(it) },
             onDismiss = listener::onClearErrorMessage,
             modifier = Modifier.statusBarsPadding()
         )

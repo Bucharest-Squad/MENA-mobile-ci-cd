@@ -37,7 +37,7 @@ import net.thechance.mena.designsystem.presentation.component.snackbar.SnackBar
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.identity.presentation.base.BaseScreen
-import net.thechance.mena.identity.presentation.screen.addresses.AddressesScreen
+import net.thechance.mena.identity.presentation.screen.addresses.myAddresses.AddressesScreen
 import net.thechance.mena.identity.presentation.screen.editProfile.EditUserProfileScreen
 import net.thechance.mena.identity.presentation.screen.profile.components.AccountSettingsSection
 import net.thechance.mena.identity.presentation.screen.profile.components.AppSettingsSection
@@ -169,14 +169,14 @@ class ProfileScreen : BaseScreen<
                 }
 
                 AnimatedVisibility(
-                    visible = state.errorMessage?.isNotEmpty() ?: false,
+                    visible = state.errorMessage != null,
                     enter = slideInHorizontally(initialOffsetX = { it }),
                     exit = slideOutHorizontally(targetOffsetX = { it }),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     SnackBar(
                         title = stringResource(Res.string.error),
-                        message = state.errorMessage.orEmpty(),
+                        message =  stringResource(state.errorMessage!!),
                         leadingIcon = painterResource(Res.drawable.ic_close_circle),
                         modifier = Modifier.fillMaxWidth().padding(bottom = Theme.spacing._16)
                             .padding(horizontal = Theme.spacing._16)

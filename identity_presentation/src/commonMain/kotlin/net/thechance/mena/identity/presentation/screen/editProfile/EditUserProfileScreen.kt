@@ -16,20 +16,15 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.Navigator
-import dev.icerock.moko.permissions.compose.BindEffect
-import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
 import io.github.vinceglb.filekit.dialogs.FileKitType
 import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
 import io.github.vinceglb.filekit.dialogs.compose.util.toImageBitmap
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import mena.identity_presentation.generated.resources.Res
@@ -49,6 +44,7 @@ import mena.identity_presentation.generated.resources.username
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.button.OutlinedButton
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
+import net.thechance.mena.designsystem.presentation.component.dialog.Dialog
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.component.snackbar.SnackBar
@@ -65,7 +61,6 @@ import net.thechance.mena.identity.presentation.screen.imageCropper.ImageCropper
 import net.thechance.mena.identity.presentation.util.rememberCameraPicker
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.koinInject
 import sv.lib.squircleshape.SquircleShape
 
 class EditUserProfileScreen : BaseScreen<
@@ -75,17 +70,7 @@ class EditUserProfileScreen : BaseScreen<
         EditUserProfileInteractionListener>() {
     @Composable
     override fun Content() {
-        val factory = rememberPermissionsControllerFactory()
-        val controller = remember(factory) { factory.createPermissionsController() }
-
-        BindEffect(controller)
-
-        val viewModel = EditUserProfileViewModel(
-            userRepository = koinInject(),
-            permissionsController = controller,
-            dispatcher = Dispatchers.IO
-        )
-        InitScreen(viewModel = viewModel)
+        InitScreen(getScreenModel())
     }
 
     @Composable
@@ -108,11 +93,11 @@ class EditUserProfileScreen : BaseScreen<
             listener.onRequireCropImage(imageBitmap)
         }
 
-        LaunchedEffect(state.isCameraOpen) {
-            if (state.isCameraOpen) {
+        LaunchedEffect(state.showCamera) {
+            if (state.showCamera) {
                 cameraImagePicker.launch()
             }
-            listener.afterCameraOpened()
+            listener.onOpenCamera()
         }
 
         LaunchedEffect(state.errorMessage) {
@@ -123,14 +108,14 @@ class EditUserProfileScreen : BaseScreen<
         Scaffold(
             snakeBar = {
                 AnimatedVisibility(
-                    visible = state.errorMessage?.isNotEmpty() ?: false,
+                    visible = state.errorMessage != null,
                     enter = slideInHorizontally(initialOffsetX = { it }),
                     exit = slideOutHorizontally(targetOffsetX = { it }),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     SnackBar(
                         title = stringResource(Res.string.error),
-                        message = state.errorMessage.orEmpty(),
+                        message = state.errorMessage?.let { stringResource(it) } ?: "",
                         leadingIcon = painterResource(Res.drawable.ic_close_circle),
                         modifier = Modifier.fillMaxWidth().padding(bottom = Theme.spacing._16)
                             .padding(horizontal = Theme.spacing._16)
@@ -145,6 +130,16 @@ class EditUserProfileScreen : BaseScreen<
                         onUploadImage = { galleryPicker.launch() },
                         onTakeImageFromCamera = { listener.onTakeImageFromCamera() },
                         onRemoveImage = { listener.onRemoveProfileImage() },
+                    )
+                }
+
+                dialog(state.showLogoutDialog) {
+                    Dialog(
+                        isVisible = it,
+                        title = "HI",
+                        message = "Not Yet Implemented",
+                        onDismiss = listener::onDismissLogoutDialog,
+                        actionButtons = {}
                     )
                 }
             }
@@ -163,24 +158,17 @@ class EditUserProfileScreen : BaseScreen<
                     title = stringResource(Res.string.edit_profile_information),
                     leadingContent = {
                         Icon(
-                            modifier = Modifier
-                                .clip(SquircleShape(Theme.radius.md))
-                                .background(Theme.colorScheme.background.surfaceLow)
-                                .clickable(onClick = { listener.onClickCancelButton() }),
                             painter = painterResource(Res.drawable.ic_arrow_left),
                             contentDescription = stringResource(Res.string.back),
                         )
                     },
+                    onLeadingClick = { listener.onClickCancelButton() },
                     trailingContent = {
                         Icon(
                             modifier = Modifier
                                 .clip(SquircleShape(Theme.radius.md))
                                 .background(Theme.colorScheme.background.surfaceLow)
-                                .clickable(
-                                    onClick = {
-                                        //todo open logout dialog
-                                    },
-                                )
+                                .clickable(onClick = { listener.onClickShowLogoutOptions() })
                                 .padding(10.dp)
                                 .size(20.dp),
                             painter = painterResource(Res.drawable.more_horizontal),
