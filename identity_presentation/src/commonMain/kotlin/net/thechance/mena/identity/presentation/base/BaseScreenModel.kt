@@ -2,7 +2,6 @@ package net.thechance.mena.identity.presentation.base
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -16,20 +15,12 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.supervisorScope
-import net.thechance.mena.identity.domain.exception.AuthenticationException
-import net.thechance.mena.identity.domain.exception.LocationException
-import net.thechance.mena.identity.presentation.base.error.ErrorState
-import net.thechance.mena.identity.presentation.base.error.handleAuthenticationException
-import net.thechance.mena.identity.presentation.base.error.handleLocationException
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
-
 
 abstract class BaseScreenModel<S, E>(initialState: S) : ScreenModel {
 
@@ -43,34 +34,6 @@ abstract class BaseScreenModel<S, E>(initialState: S) : ScreenModel {
         handleUncaughtException(throwable)
     }
 
-    @Deprecated("Use tryToExecute that have a Throwable in onError")
-    protected fun tryToExecute(
-        function: suspend () -> Unit,
-        onSuccess: () -> Unit,
-        onError: (ErrorState) -> Unit,
-        dispatcher: CoroutineDispatcher = Dispatchers.IO,
-        inScope: CoroutineScope = screenModelScope,
-    ): Job {
-        return runWithErrorCheck(onError, inScope, dispatcher) {
-            function()
-            onSuccess()
-        }
-    }
-
-    @Deprecated("Use tryToExecute that have a Throwable in onError")
-    protected fun <T> tryToExecute(
-        function: suspend () -> T,
-        onSuccess: (T) -> Unit = {},
-        onError: (ErrorState) -> Unit,
-        inScope: CoroutineScope = screenModelScope,
-        dispatcher: CoroutineDispatcher = Dispatchers.IO,
-    ): Job {
-        return runWithErrorCheck(onError, inScope, dispatcher) {
-            val result = function()
-            onSuccess(result)
-        }
-    }
-
     protected fun <T> tryToExecute(
         function: suspend () -> T,
         onSuccess: suspend (T) -> Unit = {},
@@ -78,7 +41,10 @@ abstract class BaseScreenModel<S, E>(initialState: S) : ScreenModel {
         inScope: CoroutineScope = screenModelScope,
         dispatcher: CoroutineDispatcher = Dispatchers.IO,
     ): Job {
-        val exceptionHandler = CoroutineExceptionHandler { _, throwable -> onError(throwable) }
+        val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
+            onError(throwable)
+            throwable.printStackTrace()
+        }
         return inScope.launch(exceptionHandler + dispatcher) {
             val result = function()
             onSuccess(result)
@@ -110,39 +76,6 @@ abstract class BaseScreenModel<S, E>(initialState: S) : ScreenModel {
                 _effect.emit(newEffect)
             } catch (e: Exception) {
                 handleUncaughtException(e)
-            }
-        }
-    }
-
-    @Deprecated("error handling will be in each screen view model")
-    private fun runWithErrorCheck(
-        onError: (ErrorState) -> Unit,
-        inScope: CoroutineScope = screenModelScope,
-        dispatcher: CoroutineDispatcher = Dispatchers.IO,
-        function: suspend () -> Unit,
-    ): Job {
-        return inScope.launch(dispatcher + coroutineExceptionHandler) {
-            supervisorScope {
-                try {
-                    function()
-                } catch (exception: CancellationException) {
-                    throw exception
-                } catch (exception: AuthenticationException) {
-                    exception.printStackTrace()
-                    handleAuthenticationException(exception) { errorState ->
-                        onError(ErrorState.AuthenticationError(errorState))
-                    }
-                } catch (exception: LocationException) {
-                    exception.printStackTrace()
-                    handleLocationException(exception) { errorState ->
-                        onError(ErrorState.LocationError(errorState))
-                    }
-                } catch (exception: Exception) {
-                    exception.printStackTrace()
-                    onError(ErrorState.GenericError(exception))
-                } catch (throwable: Throwable) {
-                    handleUncaughtException(throwable)
-                }
             }
         }
     }
