@@ -85,21 +85,6 @@ abstract class BaseScreenModel<S, E>(initialState: S) : ScreenModel {
         }
     }
 
-    @Deprecated("error handling will be in each screen view model")
-    protected fun <T> tryToCollect(
-        function: suspend () -> Flow<T?>,
-        onNewValue: (T) -> Unit,
-        onError: (ErrorState) -> Unit,
-        inScope: CoroutineScope = screenModelScope,
-        dispatcher: CoroutineDispatcher,
-    ): Job {
-        return runWithErrorCheck(onError, inScope, dispatcher) {
-            function().distinctUntilChanged().collectLatest {
-                it?.let { onNewValue(it) }
-            }
-        }
-    }
-
     protected fun <T> tryToCollect(
         function: suspend () -> Flow<T?>,
         onNewValue: (T) -> Unit,
