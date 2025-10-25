@@ -5,23 +5,19 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
+import app.cash.paging.compose.collectAsLazyPagingItems
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.dukan.presentation.screen.dukanDetails.components.wideImageDukanDetails.DukanHeader
-import net.thechance.mena.dukan.presentation.screen.dukanDetails.components.wideImageDukanDetails.wideImageProductsGrid
 import net.thechance.mena.dukan.presentation.screen.dukanDetails.components.wideImageDukanDetails.WideImageDukanAppBar
 import net.thechance.mena.dukan.presentation.screen.dukanDetails.components.wideImageDukanDetails.WideImageDukanShelves
+import net.thechance.mena.dukan.presentation.screen.dukanDetails.components.wideImageDukanDetails.wideImageProductsGrid
 import net.thechance.mena.dukan.presentation.util.OnSystemBackPressed
-import net.thechance.mena.dukan.presentation.util.pagination.LoadMoreOnScroll
-import net.thechance.mena.dukan.presentation.util.pagination.Pager
 import net.thechance.mena.dukan.presentation.util.stubPreviews.PreviewDukanDetailsInteractionListener
 import net.thechance.mena.dukan.presentation.util.stubPreviews.fakeDukanDetails
-import net.thechance.mena.dukan.presentation.util.stubPreviews.fakePagerProductsDukanDetails
-import net.thechance.mena.dukan.presentation.util.stubPreviews.fakePagerShelvesDukanDetails
 import net.thechance.mena.dukan.presentation.viewModel.dukanDetails.DukanDetailsInteractionListener
 import net.thechance.mena.dukan.presentation.viewModel.dukanDetails.DukanDetailsUiState
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -30,13 +26,8 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun WideImageDukanDetails(
     state: DukanDetailsUiState,
     listener: DukanDetailsInteractionListener,
-    pagerShelf: Pager<Int, DukanDetailsUiState.ShelfUiState>,
-    pagerProduct: Pager<Int, DukanDetailsUiState.ProductUiState>
 ) {
     OnSystemBackPressed(listener::onBackClicked)
-
-    val gridState = rememberLazyGridState()
-    gridState.LoadMoreOnScroll(pagerProduct)
     Scaffold(
         topBar = {
             WideImageDukanAppBar(
@@ -45,8 +36,8 @@ fun WideImageDukanDetails(
             )
         }
     ) {
+        val productShelf = state.productsShelf.collectAsLazyPagingItems()
         LazyVerticalGrid(
-            state = gridState,
             columns = GridCells.Adaptive(minSize = 160.dp),
             contentPadding = PaddingValues(
                 start = Theme.spacing._16,
@@ -61,9 +52,12 @@ fun WideImageDukanDetails(
                 DukanHeader(state = state.dukanInfo)
             }
             item(span = { GridItemSpan(maxLineSpan) }) {
-                WideImageDukanShelves(state = state, listener = listener, shelvesPager = pagerShelf)
+                WideImageDukanShelves(
+                    state = state,
+                    listener = listener,
+                )
             }
-            wideImageProductsGrid(state = state)
+            wideImageProductsGrid(productShelf)
         }
     }
 }
@@ -75,8 +69,6 @@ private fun WideImageDukanDetailsPreview() {
         WideImageDukanDetails(
             state = fakeDukanDetails,
             listener = PreviewDukanDetailsInteractionListener,
-            pagerShelf = fakePagerShelvesDukanDetails,
-            pagerProduct = fakePagerProductsDukanDetails,
         )
     }
 }
