@@ -2,7 +2,9 @@ package net.thechance.mena.identity.presentation.base
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -12,13 +14,12 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import net.thechance.mena.identity.domain.exception.AuthenticationException
@@ -42,6 +43,7 @@ abstract class BaseScreenModel<S, E>(initialState: S) : ScreenModel {
         handleUncaughtException(throwable)
     }
 
+    @Deprecated("Use tryToExecute that have a Throwable in onError")
     protected fun tryToExecute(
         function: suspend () -> Unit,
         onSuccess: () -> Unit,
@@ -55,6 +57,7 @@ abstract class BaseScreenModel<S, E>(initialState: S) : ScreenModel {
         }
     }
 
+    @Deprecated("Use tryToExecute that have a Throwable in onError")
     protected fun <T> tryToExecute(
         function: suspend () -> T,
         onSuccess: (T) -> Unit = {},
@@ -68,17 +71,47 @@ abstract class BaseScreenModel<S, E>(initialState: S) : ScreenModel {
         }
     }
 
+    protected fun <T> tryToExecute(
+        function: suspend () -> T,
+        onSuccess: suspend (T) -> Unit = {},
+        onError: (Throwable) -> Unit = {},
+        inScope: CoroutineScope = screenModelScope,
+        dispatcher: CoroutineDispatcher = Dispatchers.IO,
+    ): Job {
+        val exceptionHandler = CoroutineExceptionHandler { _, throwable -> onError(throwable) }
+        return inScope.launch(exceptionHandler + dispatcher) {
+            val result = function()
+            onSuccess(result)
+        }
+    }
+
+    @Deprecated("error handling will be in each screen view model")
     protected fun <T> tryToCollect(
         function: suspend () -> Flow<T?>,
         onNewValue: (T) -> Unit,
         onError: (ErrorState) -> Unit,
-        dispatcher: CoroutineDispatcher,
         inScope: CoroutineScope = screenModelScope,
+        dispatcher: CoroutineDispatcher,
     ): Job {
         return runWithErrorCheck(onError, inScope, dispatcher) {
             function().distinctUntilChanged().collectLatest {
                 it?.let { onNewValue(it) }
             }
+        }
+    }
+
+    protected fun <T> tryToCollect(
+        function: suspend () -> Flow<T?>,
+        onNewValue: (T) -> Unit,
+        onError: (Throwable) -> Unit = {},
+        inScope: CoroutineScope = screenModelScope,
+        dispatcher: CoroutineDispatcher,
+    ): Job {
+        val exceptionHandler = CoroutineExceptionHandler { _, throwable -> onError(throwable) }
+        return inScope.launch(exceptionHandler + dispatcher) {
+            function()
+                .catch { onError(it) }
+                .collectLatest { it?.let { onNewValue(it) } }
         }
     }
 
@@ -96,6 +129,7 @@ abstract class BaseScreenModel<S, E>(initialState: S) : ScreenModel {
         }
     }
 
+    @Deprecated("error handling will be in each screen view model")
     private fun runWithErrorCheck(
         onError: (ErrorState) -> Unit,
         inScope: CoroutineScope = screenModelScope,

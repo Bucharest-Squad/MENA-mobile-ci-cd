@@ -4,12 +4,15 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import net.thechance.mena.identity.domain.entity.PhoneNumber
+import net.thechance.mena.identity.domain.exception.AuthenticationException
 import net.thechance.mena.identity.domain.repository.ResetPasswordRepository
 import net.thechance.mena.identity.domain.useCase.LoginUseCase
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
 import net.thechance.mena.identity.presentation.base.error.ErrorState
-import net.thechance.mena.identity.presentation.screen.countryPicker.menaCountries.MenaCountry
+import net.thechance.mena.identity.presentation.base.error.handleAuthenticationException
+import net.thechance.mena.identity.presentation.mapper.mapAuthenticationErrorToMessage
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
+import net.thechance.mena.identity.presentation.screen.countryPicker.menaCountries.MenaCountry
 
 class ForgetPasswordScreenViewModel(
     private val loginUseCase: LoginUseCase,
@@ -35,7 +38,7 @@ class ForgetPasswordScreenViewModel(
     override fun onClickContinue() {
         tryToExecute(
             function = ::requestOTP,
-            onSuccess = ::onOTPRequestSuccess,
+            onSuccess = { onOTPRequestSuccess() },
             onError = ::onOTPRequestError,
             dispatcher = dispatcher
         )
@@ -61,8 +64,13 @@ class ForgetPasswordScreenViewModel(
         )
     }
 
-    private fun onOTPRequestError(errorState: ErrorState) {
-        updateState { copy(errorMessage = mapErrorToMessage(errorState)) }
+    private fun onOTPRequestError(throwable: Throwable) {
+        when(throwable){
+            is AuthenticationException -> handleAuthenticationException(throwable){
+                updateState { copy(errorMessage = mapAuthenticationErrorToMessage(it)) }
+            }
+            else -> updateState { copy(errorMessage = mapErrorToMessage(ErrorState.GenericError(throwable))) }
+        }
     }
 
     override fun onClickCountry() {

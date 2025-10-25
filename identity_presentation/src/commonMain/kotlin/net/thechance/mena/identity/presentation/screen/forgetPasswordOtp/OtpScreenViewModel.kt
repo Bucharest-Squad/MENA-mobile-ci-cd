@@ -7,9 +7,12 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.thechance.mena.identity.domain.entity.PhoneNumber
+import net.thechance.mena.identity.domain.exception.AuthenticationException
 import net.thechance.mena.identity.domain.repository.ResetPasswordRepository
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
 import net.thechance.mena.identity.presentation.base.error.ErrorState
+import net.thechance.mena.identity.presentation.base.error.handleAuthenticationException
+import net.thechance.mena.identity.presentation.mapper.mapAuthenticationErrorToMessage
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
 
 class OtpScreenViewModel(
@@ -32,7 +35,7 @@ class OtpScreenViewModel(
     override fun onClickVerify() {
         tryToExecute(
             function = ::verifyOTPCode,
-            onSuccess = ::onOTPVerificationSuccess,
+            onSuccess = { onOTPVerificationSuccess() },
             onError = ::onOTPVerificationError,
             dispatcher = dispatcher
         )
@@ -49,8 +52,8 @@ class OtpScreenViewModel(
         updateState { copy(otpValue = "") }
     }
 
-    private fun onOTPVerificationError(errorState: ErrorState) {
-        updateState { copy(errorMessage = mapErrorToMessage(errorState)) }
+    private fun onOTPVerificationError(throwable: Throwable) {
+        onError(throwable)
     }
 
     override fun onChangeOtp(otp: String) {
@@ -67,7 +70,7 @@ class OtpScreenViewModel(
     override fun onClickResend() {
         tryToExecute(
             function = ::requestNewOTP,
-            onSuccess = ::onResendOTPSuccess,
+            onSuccess = { onResendOTPSuccess() },
             onError = ::onResendOTPError,
             dispatcher = dispatcher
         )
@@ -87,8 +90,8 @@ class OtpScreenViewModel(
         startTimer()
     }
 
-    private fun onResendOTPError(errorState: ErrorState) {
-        updateState { copy(errorMessage = mapErrorToMessage(errorState)) }
+    private fun onResendOTPError(throwable: Throwable) {
+        onError(throwable)
     }
 
     private fun startTimer() {
@@ -99,6 +102,16 @@ class OtpScreenViewModel(
                 delay(1000)
             }
             updateState { copy(isResendEnabled = true) }
+        }
+    }
+
+    private fun onError(throwable: Throwable) {
+        when (throwable) {
+            is AuthenticationException -> handleAuthenticationException(throwable) {
+                updateState { copy(errorMessage = mapAuthenticationErrorToMessage(it)) }
+            }
+
+            else -> updateState { copy(errorMessage = mapErrorToMessage(ErrorState.GenericError(throwable)))}
         }
     }
 

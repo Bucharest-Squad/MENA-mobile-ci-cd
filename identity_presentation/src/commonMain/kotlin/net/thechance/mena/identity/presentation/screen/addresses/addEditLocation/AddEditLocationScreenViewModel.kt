@@ -13,9 +13,7 @@ import net.thechance.mena.identity.domain.entity.AddressType
 import net.thechance.mena.identity.domain.entity.AddressType.AddressTypeMapper.getAddressType
 import net.thechance.mena.identity.domain.repository.AddressesRepository
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
-import net.thechance.mena.identity.presentation.base.error.ErrorState
 import net.thechance.mena.identity.presentation.mapper.createNavigateToMapEffect
-import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
 import net.thechance.mena.identity.presentation.mapper.toAddressInput
 import net.thechance.mena.identity.presentation.screen.addresses.myAddresses.AddressUIState
 import net.thechance.mena.identity.presentation.screen.addresses.myAddresses.CoordinatesUiState
@@ -62,7 +60,7 @@ class AddEditLocationScreenViewModel(
         updateState { copy(isLoading = true, errorMessage = null) }
         tryToExecute(
             function = ::saveAddress,
-            onSuccess = ::onSaveAddressSuccess,
+            onSuccess = { onSaveAddressSuccess() },
             onError = ::onSaveAddressError,
             dispatcher = dispatcher
         )
@@ -131,13 +129,7 @@ class AddEditLocationScreenViewModel(
         updateAddressState(newAddress, false)
     }
 
-    private fun onSaveAddressError(errorState: ErrorState) {
-        updateState {
-            copy(
-                isLoading = false,
-                errorMessage = mapErrorToMessage(errorState)
-            )
-        }
+    private fun onSaveAddressError(throwable: Throwable) {
         val snackBarState = SnackBarUiState(
             isVisible = true,
             snackBarType = SnackBarType.ERROR,

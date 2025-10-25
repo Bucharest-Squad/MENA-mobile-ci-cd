@@ -3,11 +3,14 @@ package net.thechance.mena.identity.presentation.screen.login
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import net.thechance.mena.identity.domain.exception.AuthenticationException
 import net.thechance.mena.identity.domain.useCase.LoginUseCase
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
 import net.thechance.mena.identity.presentation.base.error.ErrorState
+import net.thechance.mena.identity.presentation.base.error.handleAuthenticationException
 import net.thechance.mena.identity.presentation.screen.countryPicker.menaCountries.MenaCountry
 import net.thechance.mena.identity.presentation.mapper.createNavigateToHomeEffect
+import net.thechance.mena.identity.presentation.mapper.mapAuthenticationErrorToMessage
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
 
 class LoginScreenViewModel(
@@ -20,7 +23,7 @@ class LoginScreenViewModel(
         updateState { copy(isLoading = true, errorMessage = null) }
         tryToExecute(
             function = ::onLogin,
-            onSuccess = ::onLoginSuccess,
+            onSuccess = { onLoginSuccess() },
             onError = ::onLoginError,
             dispatcher = dispatcher
         )
@@ -39,13 +42,9 @@ class LoginScreenViewModel(
         sendNewEffect(createNavigateToHomeEffect())
     }
 
-    private fun onLoginError(errorState: ErrorState) {
-        updateState {
-            copy(
-                isLoading = false,
-                errorMessage = mapErrorToMessage(errorState)
-            )
-        }
+    private fun onLoginError(throwable: Throwable) {
+        updateState { copy(isLoading = false,) }
+        onError(throwable)
     }
 
 
@@ -97,5 +96,15 @@ class LoginScreenViewModel(
 
     override fun onDismissBottomSheet() {
         updateState { copy(showCountryBottomSheet = false) }
+    }
+
+    private fun onError(throwable: Throwable) {
+        when (throwable) {
+            is AuthenticationException -> handleAuthenticationException(throwable) {
+                updateState { copy(errorMessage = mapAuthenticationErrorToMessage(it)) }
+            }
+
+            else -> updateState { copy(errorMessage = mapErrorToMessage(ErrorState.GenericError(throwable)))}
+        }
     }
 }

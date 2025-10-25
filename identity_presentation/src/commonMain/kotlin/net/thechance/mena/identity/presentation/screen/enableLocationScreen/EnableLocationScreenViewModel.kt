@@ -3,9 +3,12 @@ package net.thechance.mena.identity.presentation.screen.enableLocationScreen
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import net.thechance.mena.identity.domain.exception.LocationException
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
 import net.thechance.mena.identity.presentation.base.error.ErrorState
+import net.thechance.mena.identity.presentation.base.error.handleLocationException
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
+import net.thechance.mena.identity.presentation.mapper.mapLocationErrorToMessage
 import net.thechance.mena.identity.presentation.util.permissionHandler.PermissionHandler
 import net.thechance.mena.identity.presentation.util.permissionHandler.PermissionState
 
@@ -45,7 +48,12 @@ class EnableLocationScreenViewModel(
         }
     }
 
-    private fun onPermissionError(errorState: ErrorState) {
-        updateState { copy(errorMessage = mapErrorToMessage(errorState)) }
+    private fun onPermissionError(throwable: Throwable) {
+        when(throwable){
+            is LocationException -> handleLocationException(throwable){
+                updateState { copy(errorMessage = mapLocationErrorToMessage(it)) }
+            }
+            else -> updateState { copy(errorMessage = mapErrorToMessage(ErrorState.GenericError(throwable))) }
+        }
     }
 }

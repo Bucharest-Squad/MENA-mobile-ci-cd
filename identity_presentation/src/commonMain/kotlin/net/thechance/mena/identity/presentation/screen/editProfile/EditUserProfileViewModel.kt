@@ -1,8 +1,9 @@
 package net.thechance.mena.identity.presentation.screen.editProfile
 
 import androidx.compose.ui.graphics.ImageBitmap
+import dev.icerock.moko.permissions.DeniedAlwaysException
+import dev.icerock.moko.permissions.DeniedException
 import dev.icerock.moko.permissions.Permission
-import dev.icerock.moko.permissions.PermissionState
 import dev.icerock.moko.permissions.PermissionsController
 import io.github.vinceglb.filekit.dialogs.compose.util.encodeToByteArray
 import kotlinx.coroutines.CoroutineDispatcher
@@ -16,10 +17,13 @@ import mena.identity_presentation.generated.resources.error_last_name_required
 import mena.identity_presentation.generated.resources.error_username_required
 import net.thechance.mena.identity.domain.entity.Gender
 import net.thechance.mena.identity.domain.entity.User
+import net.thechance.mena.identity.domain.exception.AuthenticationException
 import net.thechance.mena.identity.domain.repository.UserRepository
 import net.thechance.mena.identity.domain.util.getCurrentDate
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
 import net.thechance.mena.identity.presentation.base.error.ErrorState
+import net.thechance.mena.identity.presentation.base.error.handleAuthenticationException
+import net.thechance.mena.identity.presentation.mapper.mapAuthenticationErrorToMessage
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -61,10 +65,6 @@ class EditUserProfileViewModel(
         }
     }
 
-    private fun onErrorOccurred(errorState: ErrorState) {
-        updateState { copy(errorMessage = mapErrorToMessage(errorState)) }
-    }
-
     override fun onChangeFirstName(firstName: String) {
         updateState { copy(firstName = firstName) }
     }
@@ -87,10 +87,11 @@ class EditUserProfileViewModel(
         updateState { copy(isLoading = true, errorMessage = null) }
         tryToExecute(
             function = ::saveUserProfile,
-            onSuccess = ::handleSaveSuccess,
+            onSuccess = { handleSaveSuccess() },
             onError = ::handleSaveError,
             dispatcher = dispatcher
         )
+
     }
 
     private fun validateFormInputs(): Boolean {
@@ -144,13 +145,9 @@ class EditUserProfileViewModel(
         sendNewEffect(EditUserProfileUIEffect.NavigateBackToProfile)
     }
 
-    private fun handleSaveError(errorState: ErrorState) {
-        updateState {
-            copy(
-                isLoading = false,
-                errorMessage = mapErrorToMessage(errorState)
-            )
-        }
+    private fun handleSaveError(throwable: Throwable) {
+        updateState { copy(isLoading = false,) }
+        onErrorOccurred(throwable)
     }
 
     override fun onClickCancelButton() {
@@ -209,27 +206,45 @@ class EditUserProfileViewModel(
     override fun onTakeImageFromCamera() {
         tryToExecute(
             function = ::requestCameraPermission,
-            onSuccess = ::onCameraPermissionSuccess,
+            onSuccess = { onCameraPermissionSuccess() },
             onError = ::handleCameraPermissionError,
             dispatcher = dispatcher
         )
     }
 
-    private suspend fun requestCameraPermission(): PermissionState {
+    private suspend fun requestCameraPermission() {
         permissionsController.providePermission(Permission.CAMERA)
-        return permissionsController.getPermissionState(Permission.CAMERA)
+    }
+
+    private fun onCameraPermissionSuccess() {
+        updateState { copy(showCamera = true) }
 
     }
-    private fun onCameraPermissionSuccess(permissionState: PermissionState){
-        when(permissionState){
-            PermissionState.Granted -> updateState { copy(showCamera = true) }
-            PermissionState.Denied -> updateState { copy(errorMessage = Res.string.error_camera_permission_required) }
-            else -> {}
+
+    private fun handleCameraPermissionError(throwable: Throwable) {
+        throwable.printStackTrace()
+        when (throwable) {
+            is DeniedAlwaysException -> {
+                permissionsController.openAppSettings()
+            }
+
+            is DeniedException -> {
+                updateState { copy(errorMessage = Res.string.error_camera_permission_required) }
+            }
+
+            else -> onErrorOccurred(throwable)
         }
     }
 
-    private fun handleCameraPermissionError(errorState: ErrorState) {
-        updateState { copy(errorMessage = mapErrorToMessage(errorState)) }
+    private fun onErrorOccurred(throwable: Throwable) {
+        when(throwable){
+            is AuthenticationException -> {
+                handleAuthenticationException(throwable) { errorState ->
+                    updateState { copy(errorMessage = mapAuthenticationErrorToMessage(errorState)) }
+                }
+            }
+            else ->  updateState { copy(errorMessage = mapErrorToMessage(ErrorState.GenericError(throwable))) }
+        }
     }
 
     override fun onOpenCamera() {

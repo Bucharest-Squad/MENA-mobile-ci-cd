@@ -2,30 +2,38 @@ package net.thechance.mena.identity.presentation.util
 
 import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Build
-import androidx.activity.ComponentActivity
-import androidx.core.app.ActivityCompat
 import net.thechance.mena.identity.presentation.util.permissionHandler.PermissionController
 import net.thechance.mena.identity.presentation.util.permissionHandler.PermissionState
 
 internal class LocationForegroundPermission(
     private val context: Context,
     private val permissionManager: PermissionManager,
-    ) : PermissionController {
-
-        private val activity: ComponentActivity = permissionManager.getActivity() ?: throw Exception()
+) : PermissionController {
 
     override fun getPermissionState(): PermissionState {
-        return checkPermissions(activity, fineLocationPermissions)
+        if (fineLocationPermissions.isEmpty()) return PermissionState.GRANTED
+        val allGranted = fineLocationPermissions.all {
+            context.checkSelfPermission(it) == PackageManager.PERMISSION_GRANTED
+        }
+        return if (allGranted) PermissionState.GRANTED else PermissionState.DENIED
     }
-
-
 
     override fun openSettingPage() {
         context.openAppSettingsPage()
     }
 
     override fun providePermission() {
+        permissionManager.requestPermission(fineLocationPermissions) { permissionsResult ->
+            if(permissionsResult.values.all { it == PermissionState.GRANTED }) {
+                return@requestPermission
+            } else if(permissionsResult.values.any { it == PermissionState.DENIED }) {
+                throw LocationPermissionDeniedException()
+            } else {
+                throw LocationPermissionDeniedPermanentlyException()
+            }
+        }
     }
 }
 
@@ -38,3 +46,6 @@ internal val fineLocationPermissions: List<String> =
     } else {
         listOf(Manifest.permission.ACCESS_FINE_LOCATION)
     }
+
+class LocationPermissionDeniedException : Exception()
+class LocationPermissionDeniedPermanentlyException : Exception()
