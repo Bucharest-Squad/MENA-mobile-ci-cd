@@ -84,17 +84,12 @@ private fun DukanCategoriesContent(
         snakeBar = { DukanCategoriesSnackBar(state, interactionListener::onDismissSnackBar) }
     ) {
         AnimatedContent(state.isLoading) { isLoading ->
-            when (isLoading) {
-                false -> CategoriesList(
+            when {
+                isLoading -> LoadingDots(modifier = Modifier.fillMaxSize())
+                else -> CategoriesList(
                     categories = state.categories,
                     onCategoryClick = interactionListener::onCategoryClicked
                 )
-
-                true -> {
-                    LoadingDots(
-                        modifier = Modifier.fillMaxSize(),
-                    )
-                }
             }
         }
     }
