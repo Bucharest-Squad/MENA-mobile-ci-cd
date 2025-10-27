@@ -13,7 +13,7 @@ import net.thechance.mena.identity.presentation.base.error.ErrorState
 import net.thechance.mena.identity.presentation.base.error.handleAuthenticationException
 import net.thechance.mena.identity.presentation.mapper.mapAuthenticationErrorToMessage
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
-import net.thechance.mena.identity.presentation.utils.validatePasswordConfirmation
+import net.thechance.mena.identity.presentation.util.validatePasswordConfirmation
 
 class ResetPasswordScreenViewModel(
     private val passwordValidator: PasswordValidator,

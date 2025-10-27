@@ -15,17 +15,12 @@ import net.thechance.mena.identity.presentation.screen.login.LoginScreenViewMode
 import net.thechance.mena.identity.presentation.screen.profile.ProfileScreenViewModel
 import net.thechance.mena.identity.presentation.screen.register.RegisterScreenModel
 import net.thechance.mena.identity.presentation.screen.resetPassword.ResetPasswordScreenViewModel
+import net.thechance.mena.identity.presentation.util.factoryOfOrNull
 import net.thechance.mena.identity.presentation.util.permissionHandler.PermissionHandler
-import org.koin.core.definition.Definition
-import org.koin.core.module.Module
-import org.koin.core.module.dsl.DefinitionOptions
 import org.koin.core.module.dsl.factoryOf
-import org.koin.core.module.dsl.onOptions
-import org.koin.core.qualifier.Qualifier
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
-import kotlin.reflect.KFunction
 
 const val APP_VERSION = "appVersion"
 const val LOCATION_FOREGROUND = "LOCATION_FOREGROUND"
@@ -34,18 +29,7 @@ val identityScreensModule = module {
 
     includes(platformModule())
     single { get<String>(named(APP_VERSION)) }
-
     factory { PermissionHandler(get(named(LOCATION_FOREGROUND))) }
-
-    factory {
-        PickLocationScreenViewModel(
-            locationForegroundHandler = get(),
-            dispatcher = get(),
-            addressesRepository = get(),
-            addressModel = getOrNull()
-        )
-    }
-
     factory { (imageBitmap: ImageBitmap) -> ImageCropperViewModel(imageBitmap) }
 
     factoryOf(::LoginScreenViewModel)
@@ -62,19 +46,4 @@ val identityScreensModule = module {
     }
     factoryOfOrNull(::AddEditLocationScreenViewModel)
     factoryOfOrNull(::PickLocationScreenViewModel)
-}
-
-inline fun <reified T : Any, reified P1 : Any, reified P2 : Any, reified P3 : Any>
-        Module.factoryOfOrNull(
-    crossinline constructor: (P1, P2, P3?) -> T,
-    noinline options: DefinitionOptions<T>? = null,
-    ) {
-    factory { constructor(get(), get(), getOrNull()) }.onOptions(options)
-}
-inline fun <reified T : Any, reified P1 : Any, reified P2 : Any, reified P3 : Any , reified P4 : Any>
-        Module.factoryOfOrNull(
-    crossinline constructor: (P1, P2, P3 , P4?) -> T,
-    noinline options: DefinitionOptions<T>? = null,
-    ) {
-    factory { constructor(get(), get() , get(), getOrNull()) }.onOptions(options)
 }

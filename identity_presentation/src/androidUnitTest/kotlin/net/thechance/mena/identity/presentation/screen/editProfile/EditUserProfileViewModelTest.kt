@@ -10,6 +10,7 @@ import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotEmpty
 import assertk.assertions.isNull
 import assertk.assertions.isTrue
+import dev.icerock.moko.permissions.PermissionsController
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.just
@@ -25,7 +26,6 @@ import mena.identity_presentation.generated.resources.error_something_went_wrong
 import net.thechance.mena.identity.domain.repository.UserRepository
 import net.thechance.mena.identity.helper.BaseCoroutineTest
 import net.thechance.mena.identity.helper.createUser
-import net.thechance.mena.identity.presentation.util.PermissionManager
 import kotlin.test.Test
 import kotlin.uuid.ExperimentalUuidApi
 
@@ -33,8 +33,9 @@ import kotlin.uuid.ExperimentalUuidApi
 class EditUserProfileViewModelTest() : BaseCoroutineTest() {
 
     val userRepository = mockk<UserRepository>()
-    val permissionManager = mockk<PermissionManager>()
     val testDispatcher = StandardTestDispatcher()
+    val permissionsController = mockk<PermissionsController>()
+
 
     lateinit var viewModel: EditUserProfileViewModel
 
@@ -42,8 +43,8 @@ class EditUserProfileViewModelTest() : BaseCoroutineTest() {
         super.setUp()
         viewModel = EditUserProfileViewModel(
             userRepository = userRepository,
-            permissionManager = permissionManager,
-            dispatcher = testDispatcher
+            dispatcher = testDispatcher,
+            permissionsController = permissionsController
         )
     }
 
@@ -305,14 +306,14 @@ class EditUserProfileViewModelTest() : BaseCoroutineTest() {
     @Test
     fun `permission Manager should be granted, when onTakeImageCamera is called`() = runTest {
         coEvery {
-            permissionManager.requestCameraPermission(any(), any())
+            permissionsController.providePermission(any())
         } just runs
 
         viewModel.onTakeImageFromCamera()
         testDispatcher.scheduler.advanceUntilIdle()
 
         coVerify(exactly = 1) {
-            permissionManager.requestCameraPermission(any(), any())
+            permissionsController.providePermission(any())
         }
     }
 
@@ -320,7 +321,7 @@ class EditUserProfileViewModelTest() : BaseCoroutineTest() {
     fun `errorMessage should be updated, when onTakeImageCamera is failed with Exception`() =
         runTest {
             coEvery {
-                permissionManager.requestCameraPermission(any(), any())
+                permissionsController.providePermission(any())
             } throws Exception()
 
             viewModel.onTakeImageFromCamera()
@@ -331,7 +332,7 @@ class EditUserProfileViewModelTest() : BaseCoroutineTest() {
             }
 
             coVerify(exactly = 1) {
-                permissionManager.requestCameraPermission(any(), any())
+                permissionsController.providePermission(any())
             }
         }
 
