@@ -11,9 +11,17 @@ import mena.identity_presentation.generated.resources.edit_location_successfully
 import mena.identity_presentation.generated.resources.error
 import net.thechance.mena.identity.domain.entity.AddressType
 import net.thechance.mena.identity.domain.entity.AddressType.AddressTypeMapper.getAddressType
+import net.thechance.mena.identity.domain.exception.AuthenticationException
+import net.thechance.mena.identity.domain.exception.LocationException
 import net.thechance.mena.identity.domain.repository.AddressesRepository
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
+import net.thechance.mena.identity.presentation.base.error.ErrorState
+import net.thechance.mena.identity.presentation.base.error.handleAuthenticationException
+import net.thechance.mena.identity.presentation.base.error.handleLocationException
 import net.thechance.mena.identity.presentation.mapper.createNavigateToMapEffect
+import net.thechance.mena.identity.presentation.mapper.mapAuthenticationErrorToMessage
+import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
+import net.thechance.mena.identity.presentation.mapper.mapLocationErrorToMessage
 import net.thechance.mena.identity.presentation.mapper.toAddressInput
 import net.thechance.mena.identity.presentation.screen.addresses.myAddresses.AddressUIState
 import net.thechance.mena.identity.presentation.screen.addresses.myAddresses.CoordinatesUiState
@@ -130,10 +138,11 @@ class AddEditLocationScreenViewModel(
     }
 
     private fun onSaveAddressError(throwable: Throwable) {
+        onError(throwable)
         val snackBarState = SnackBarUiState(
             isVisible = true,
             snackBarType = SnackBarType.ERROR,
-            message = Res.string.error
+            message = state.value.errorMessage ?: Res.string.error
         )
         sendNewEffect(AddEditLocationScreenUIEffect.NavigateBack(snackBarState))
     }
@@ -204,5 +213,17 @@ class AddEditLocationScreenViewModel(
     private fun changeIsSaveEnabled() {
         val isEnabled = state.value.isSaveEnabled()
         updateState { copy(isSaveEnabled = isEnabled) }
+    }
+
+    private fun onError(throwable: Throwable){
+        when (throwable) {
+            is LocationException -> handleLocationException(throwable , onError = {
+                 updateState{copy(errorMessage = mapLocationErrorToMessage(it))}
+            })
+            is AuthenticationException -> handleAuthenticationException(throwable , onError = {
+                updateState{copy(errorMessage = mapAuthenticationErrorToMessage(it))}
+            })
+            else -> updateState{copy(errorMessage = mapErrorToMessage(ErrorState.GenericError(throwable)))}
+        }
     }
 }

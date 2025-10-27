@@ -17,7 +17,6 @@ internal class LocationForegroundPermission : PermissionController {
             kCLAuthorizationStatusAuthorizedAlways,
             kCLAuthorizationStatusAuthorizedWhenInUse,
             kCLAuthorizationStatusRestricted -> PermissionState.GRANTED
-
             kCLAuthorizationStatusNotDetermined -> PermissionState.NOT_DETERMINED
             kCLAuthorizationStatusDenied -> PermissionState.DENIED
             else -> PermissionState.NOT_DETERMINED
