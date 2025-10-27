@@ -141,17 +141,7 @@ class AddressesScreenViewModel(
 
     private fun onAddressOperationError(throwable: Throwable) {
         dismissDeleteDialog()
-        when (throwable) {
-            is LocationException -> handleLocationException(
-                throwable,
-                onError = { showErrorSnackBar(mapLocationErrorToMessage(it)) })
-
-            is AuthenticationException -> handleAuthenticationException(
-                throwable,
-                onError = { showErrorSnackBar(mapAuthenticationErrorToMessage(it)) })
-
-            else -> showErrorSnackBar(mapErrorToMessage(ErrorState.GenericError(throwable)))
-        }
+        showErrorSnackBar(mapErrorMessage(throwable))
     }
 
     private fun onAddressNotFoundError() {
@@ -203,5 +193,13 @@ class AddressesScreenViewModel(
             onError = ::onAddressOperationError,
             dispatcher = dispatcher
         )
+    }
+
+    private fun mapErrorMessage(throwable: Throwable): StringResource {
+        return when (throwable) {
+            is LocationException -> mapLocationErrorToMessage(handleLocationException(throwable))
+            is AuthenticationException -> mapAuthenticationErrorToMessage(handleAuthenticationException(throwable))
+            else -> mapErrorToMessage(ErrorState.GenericError(throwable))
+        }
     }
 }

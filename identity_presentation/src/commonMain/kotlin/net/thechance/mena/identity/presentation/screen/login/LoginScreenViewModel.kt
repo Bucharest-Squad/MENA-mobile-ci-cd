@@ -12,6 +12,7 @@ import net.thechance.mena.identity.presentation.screen.countryPicker.menaCountri
 import net.thechance.mena.identity.presentation.mapper.createNavigateToHomeEffect
 import net.thechance.mena.identity.presentation.mapper.mapAuthenticationErrorToMessage
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
+import org.jetbrains.compose.resources.StringResource
 
 class LoginScreenViewModel(
     private val loginUseCase: LoginUseCase,
@@ -43,8 +44,7 @@ class LoginScreenViewModel(
     }
 
     private fun onLoginError(throwable: Throwable) {
-        updateState { copy(isLoading = false,) }
-        onError(throwable)
+        updateState { copy(isLoading = false, errorMessage = mapErrorMessage(throwable)) }
     }
 
 
@@ -98,13 +98,10 @@ class LoginScreenViewModel(
         updateState { copy(showCountryBottomSheet = false) }
     }
 
-    private fun onError(throwable: Throwable) {
-        when (throwable) {
-            is AuthenticationException -> handleAuthenticationException(throwable) {
-                updateState { copy(errorMessage = mapAuthenticationErrorToMessage(it)) }
-            }
-
-            else -> updateState { copy(errorMessage = mapErrorToMessage(ErrorState.GenericError(throwable)))}
+    private fun mapErrorMessage(throwable: Throwable): StringResource{
+        return when(throwable){
+            is AuthenticationException -> mapAuthenticationErrorToMessage(handleAuthenticationException(throwable))
+            else -> mapErrorToMessage(ErrorState.GenericError(throwable))
         }
     }
 }

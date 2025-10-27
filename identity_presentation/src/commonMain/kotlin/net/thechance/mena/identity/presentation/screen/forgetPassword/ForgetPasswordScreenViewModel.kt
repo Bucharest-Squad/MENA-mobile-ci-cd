@@ -13,6 +13,7 @@ import net.thechance.mena.identity.presentation.base.error.handleAuthenticationE
 import net.thechance.mena.identity.presentation.mapper.mapAuthenticationErrorToMessage
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
 import net.thechance.mena.identity.presentation.screen.countryPicker.menaCountries.MenaCountry
+import org.jetbrains.compose.resources.StringResource
 
 class ForgetPasswordScreenViewModel(
     private val loginUseCase: LoginUseCase,
@@ -65,12 +66,7 @@ class ForgetPasswordScreenViewModel(
     }
 
     private fun onOTPRequestError(throwable: Throwable) {
-        when(throwable){
-            is AuthenticationException -> handleAuthenticationException(throwable){
-                updateState { copy(errorMessage = mapAuthenticationErrorToMessage(it)) }
-            }
-            else -> updateState { copy(errorMessage = mapErrorToMessage(ErrorState.GenericError(throwable))) }
-        }
+        updateState { copy(errorMessage = mapErrorMessage(throwable)) }
     }
 
     override fun onClickCountry() {
@@ -95,6 +91,13 @@ class ForgetPasswordScreenViewModel(
             val countryCode = currentCountry.callingCode
             val mobileNumberValid = loginUseCase.isMobileNumberValid(countryCode, phoneNumber)
             copy(isContinueEnabled = mobileNumberValid)
+        }
+    }
+
+    private fun mapErrorMessage(throwable: Throwable): StringResource{
+        return when(throwable){
+            is AuthenticationException -> mapAuthenticationErrorToMessage(handleAuthenticationException(throwable))
+            else -> mapErrorToMessage(ErrorState.GenericError(throwable))
         }
     }
 }

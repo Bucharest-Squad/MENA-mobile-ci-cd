@@ -14,6 +14,7 @@ import net.thechance.mena.identity.presentation.base.error.ErrorState
 import net.thechance.mena.identity.presentation.base.error.handleAuthenticationException
 import net.thechance.mena.identity.presentation.mapper.mapAuthenticationErrorToMessage
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
+import org.jetbrains.compose.resources.StringResource
 
 class OtpScreenViewModel(
     private val resetPasswordRepository: ResetPasswordRepository,
@@ -53,7 +54,7 @@ class OtpScreenViewModel(
     }
 
     private fun onOTPVerificationError(throwable: Throwable) {
-        onError(throwable)
+        updateState { copy(errorMessage = mapErrorMessage(throwable)) }
     }
 
     override fun onChangeOtp(otp: String) {
@@ -91,7 +92,7 @@ class OtpScreenViewModel(
     }
 
     private fun onResendOTPError(throwable: Throwable) {
-        onError(throwable)
+        updateState { copy(errorMessage = mapErrorMessage(throwable)) }
     }
 
     private fun startTimer() {
@@ -105,13 +106,10 @@ class OtpScreenViewModel(
         }
     }
 
-    private fun onError(throwable: Throwable) {
-        when (throwable) {
-            is AuthenticationException -> handleAuthenticationException(throwable) {
-                updateState { copy(errorMessage = mapAuthenticationErrorToMessage(it)) }
-            }
-
-            else -> updateState { copy(errorMessage = mapErrorToMessage(ErrorState.GenericError(throwable)))}
+    private fun mapErrorMessage(throwable: Throwable): StringResource {
+        return when(throwable){
+            is AuthenticationException -> mapAuthenticationErrorToMessage(handleAuthenticationException(throwable))
+            else -> mapErrorToMessage(ErrorState.GenericError(throwable))
         }
     }
 

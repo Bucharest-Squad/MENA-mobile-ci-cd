@@ -14,6 +14,7 @@ import net.thechance.mena.identity.presentation.base.error.handleAuthenticationE
 import net.thechance.mena.identity.presentation.mapper.mapAuthenticationErrorToMessage
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
 import net.thechance.mena.identity.presentation.util.validatePasswordConfirmation
+import org.jetbrains.compose.resources.StringResource
 
 class ResetPasswordScreenViewModel(
     private val passwordValidator: PasswordValidator,
@@ -86,8 +87,7 @@ class ResetPasswordScreenViewModel(
     }
 
     private fun onResetPasswordError(throwable: Throwable) {
-        updateState { copy(isLoading = false,) }
-        onError(throwable)
+        updateState { copy(isLoading = false,errorMessage = mapErrorMessage(throwable)) }
     }
 
     private fun checkResetButtonEnabled() {
@@ -104,13 +104,10 @@ class ResetPasswordScreenViewModel(
         }
     }
 
-    private fun onError(throwable: Throwable) {
-        when (throwable) {
-            is AuthenticationException -> handleAuthenticationException(throwable) {
-                updateState { copy(errorMessage = mapAuthenticationErrorToMessage(it)) }
-            }
-
-            else -> updateState { copy(errorMessage = mapErrorToMessage(ErrorState.GenericError(throwable)))}
+    private fun mapErrorMessage(throwable: Throwable): StringResource{
+        return when(throwable){
+            is AuthenticationException -> mapAuthenticationErrorToMessage(handleAuthenticationException(throwable))
+            else -> mapErrorToMessage(ErrorState.GenericError(throwable))
         }
     }
 }

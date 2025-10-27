@@ -25,6 +25,7 @@ import net.thechance.mena.identity.presentation.base.error.ErrorState
 import net.thechance.mena.identity.presentation.base.error.handleAuthenticationException
 import net.thechance.mena.identity.presentation.mapper.mapAuthenticationErrorToMessage
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
+import org.jetbrains.compose.resources.StringResource
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -45,7 +46,7 @@ class EditUserProfileViewModel(
         tryToCollect(
             function = { userRepository.getUser() },
             onNewValue = ::updateUserInfo,
-            onError = ::onErrorOccurred,
+            onError = ::onGetUserInfoError,
             dispatcher = dispatcher
         )
     }
@@ -63,6 +64,10 @@ class EditUserProfileViewModel(
                 gender = user.gender,
             )
         }
+    }
+
+    private fun onGetUserInfoError(throwable: Throwable) {
+        updateState { copy(errorMessage = mapErrorMessage(throwable)) }
     }
 
     override fun onChangeFirstName(firstName: String) {
@@ -146,8 +151,7 @@ class EditUserProfileViewModel(
     }
 
     private fun handleSaveError(throwable: Throwable) {
-        updateState { copy(isLoading = false,) }
-        onErrorOccurred(throwable)
+        updateState { copy(isLoading = false, errorMessage = mapErrorMessage(throwable)) }
     }
 
     override fun onClickCancelButton() {
@@ -232,22 +236,18 @@ class EditUserProfileViewModel(
                 updateState { copy(errorMessage = Res.string.error_camera_permission_required) }
             }
 
-            else -> onErrorOccurred(throwable)
-        }
-    }
-
-    private fun onErrorOccurred(throwable: Throwable) {
-        when(throwable){
-            is AuthenticationException -> {
-                handleAuthenticationException(throwable) { errorState ->
-                    updateState { copy(errorMessage = mapAuthenticationErrorToMessage(errorState)) }
-                }
-            }
-            else ->  updateState { copy(errorMessage = mapErrorToMessage(ErrorState.GenericError(throwable))) }
+            else -> updateState { copy(errorMessage = mapErrorMessage(throwable)) }
         }
     }
 
     override fun onOpenCamera() {
         updateState { copy(showCamera = false) }
+    }
+
+    private fun mapErrorMessage(throwable: Throwable): StringResource{
+        return when (throwable) {
+            is AuthenticationException -> mapAuthenticationErrorToMessage(handleAuthenticationException(throwable))
+            else -> mapErrorToMessage(ErrorState.GenericError(throwable))
+        }
     }
 }

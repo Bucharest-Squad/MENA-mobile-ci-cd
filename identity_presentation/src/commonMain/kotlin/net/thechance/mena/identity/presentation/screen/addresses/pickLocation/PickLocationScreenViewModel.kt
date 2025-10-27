@@ -19,6 +19,7 @@ import net.thechance.mena.identity.presentation.screen.addresses.myAddresses.Add
 import net.thechance.mena.identity.presentation.screen.addresses.myAddresses.CoordinatesUiState
 import net.thechance.mena.identity.presentation.util.permissionHandler.PermissionHandler
 import net.thechance.mena.identity.presentation.util.permissionHandler.PermissionState
+import org.jetbrains.compose.resources.StringResource
 import org.maplibre.compose.camera.CameraPosition
 import kotlin.uuid.ExperimentalUuidApi
 
@@ -85,8 +86,7 @@ class PickLocationScreenViewModel(
     }
 
     private fun onLocationNameError(throwable: Throwable) {
-        updateState { copy(isGpsButtonLoading = false, address = "") }
-        onError(throwable)
+        updateState { copy(isGpsButtonLoading = false, address = "", errorMessage = mapErrorMessage(throwable)) }
         changeIsConfirmEnabled()
     }
 
@@ -176,8 +176,7 @@ class PickLocationScreenViewModel(
     }
 
     private fun onPermissionCheckError(throwable: Throwable) {
-        updateState { copy(isGpsButtonLoading = false, address = "") }
-        onError(throwable)
+        updateState { copy(isGpsButtonLoading = false, address = "" , errorMessage = mapErrorMessage(throwable)) }
         changeIsConfirmEnabled()
     }
 
@@ -225,13 +224,10 @@ class PickLocationScreenViewModel(
         }
     }
 
-    private fun onError(throwable: Throwable) {
-        when (throwable) {
-            is LocationException -> handleLocationException(
-                throwable
-            ) { updateState { copy(errorMessage = mapLocationErrorToMessage(it)) } }
-
-            else ->  updateState { copy(errorMessage = mapErrorToMessage(ErrorState.GenericError(throwable))) }
+    private fun mapErrorMessage(throwable: Throwable): StringResource {
+        return when (throwable) {
+            is LocationException -> mapLocationErrorToMessage(handleLocationException(throwable))
+            else ->  mapErrorToMessage(ErrorState.GenericError(throwable))
         }
     }
 }

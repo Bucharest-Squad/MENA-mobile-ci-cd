@@ -11,6 +11,7 @@ import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
 import net.thechance.mena.identity.presentation.mapper.mapLocationErrorToMessage
 import net.thechance.mena.identity.presentation.util.permissionHandler.PermissionHandler
 import net.thechance.mena.identity.presentation.util.permissionHandler.PermissionState
+import org.jetbrains.compose.resources.StringResource
 
 class EnableLocationScreenViewModel(
     private val locationForegroundHandler: PermissionHandler,
@@ -49,11 +50,13 @@ class EnableLocationScreenViewModel(
     }
 
     private fun onPermissionError(throwable: Throwable) {
-        when(throwable){
-            is LocationException -> handleLocationException(throwable){
-                updateState { copy(errorMessage = mapLocationErrorToMessage(it)) }
-            }
-            else -> updateState { copy(errorMessage = mapErrorToMessage(ErrorState.GenericError(throwable))) }
+        updateState { copy(errorMessage = mapErrorMessage(throwable)) }
+    }
+
+    private fun mapErrorMessage(throwable: Throwable): StringResource{
+        return when (throwable) {
+            is LocationException -> mapLocationErrorToMessage(handleLocationException(throwable))
+            else -> mapErrorToMessage(ErrorState.GenericError(throwable))
         }
     }
 }
