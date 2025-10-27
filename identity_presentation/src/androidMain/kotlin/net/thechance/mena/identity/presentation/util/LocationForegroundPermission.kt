@@ -9,7 +9,6 @@ import net.thechance.mena.identity.presentation.util.permissionHandler.Permissio
 
 internal class LocationForegroundPermission(
     private val context: Context,
-    private val permissionManager: PermissionManager,
 ) : PermissionController {
 
     override fun getPermissionState(): PermissionState {
@@ -23,18 +22,6 @@ internal class LocationForegroundPermission(
     override fun openSettingPage() {
         context.openAppSettingsPage()
     }
-
-    override fun providePermission() {
-        permissionManager.requestPermission(fineLocationPermissions) { permissionsResult ->
-            if(permissionsResult.values.all { it == PermissionState.GRANTED }) {
-                return@requestPermission
-            } else if(permissionsResult.values.any { it == PermissionState.DENIED }) {
-                throw LocationPermissionDeniedException()
-            } else {
-                throw LocationPermissionDeniedPermanentlyException()
-            }
-        }
-    }
 }
 
 internal val fineLocationPermissions: List<String> =
@@ -46,6 +33,3 @@ internal val fineLocationPermissions: List<String> =
     } else {
         listOf(Manifest.permission.ACCESS_FINE_LOCATION)
     }
-
-class LocationPermissionDeniedException : Exception()
-class LocationPermissionDeniedPermanentlyException : Exception()

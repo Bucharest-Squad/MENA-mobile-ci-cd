@@ -35,32 +35,3 @@ internal fun Context.openAppSettingsPage() {
         onError = { throw CannotOpenSettingsException() }
     )
 }
-
-internal fun Context.hasCameraPermission(): Boolean {
-    return ContextCompat.checkSelfPermission(
-        this,
-        Manifest.permission.CAMERA
-    ) == PackageManager.PERMISSION_GRANTED
-}
-
-internal fun checkPermissions(
-    activity: Activity,
-    permissions: List<String>
-): PermissionState {
-    if (permissions.isEmpty()) return PermissionState.GRANTED
-
-    val notGranted = permissions.filter {
-        ContextCompat.checkSelfPermission(activity, it) != PackageManager.PERMISSION_GRANTED
-    }
-
-    if (notGranted.isEmpty()) return PermissionState.GRANTED
-
-    val shouldShowRationale = notGranted.any {
-        activity.shouldShowRequestPermissionRationale(it)
-    }
-
-    return when {
-        shouldShowRationale -> PermissionState.DENIED
-        else -> PermissionState.NOT_DETERMINED
-    }
-}
