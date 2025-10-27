@@ -1,13 +1,15 @@
 package net.thechance.mena.identity.presentation.di
 
-import net.thechance.mena.identity.presentation.screen.editProfile.EditUserProfileViewModel
 import androidx.compose.ui.graphics.ImageBitmap
-import net.thechance.mena.identity.presentation.screen.addresses.pickLocation.PickLocationScreenViewModel
-import net.thechance.mena.identity.presentation.screen.enableLocationScreen.EnableLocationScreenViewModel
 import net.thechance.mena.identity.presentation.screen.addresses.addEditLocation.AddEditLocationScreenViewModel
 import net.thechance.mena.identity.presentation.screen.addresses.myAddresses.AddressesScreenViewModel
+import net.thechance.mena.identity.presentation.screen.addresses.pickLocation.PickLocationScreenViewModel
+import net.thechance.mena.identity.presentation.screen.editProfile.EditUserProfileViewModel
+import net.thechance.mena.identity.presentation.screen.enableLocationScreen.EnableLocationScreenViewModel
 import net.thechance.mena.identity.presentation.screen.forgetPassword.ForgetPasswordScreenViewModel
 import net.thechance.mena.identity.presentation.screen.forgetPasswordOtp.OtpScreenViewModel
+import net.thechance.mena.identity.presentation.screen.imageCropper.ImageCropperComponentViewModel
+import net.thechance.mena.identity.presentation.screen.imageCropper.ImageCropperUiState
 import net.thechance.mena.identity.presentation.screen.imageCropper.ImageCropperViewModel
 import net.thechance.mena.identity.presentation.screen.login.LoginScreenViewModel
 import net.thechance.mena.identity.presentation.screen.profile.ProfileScreenViewModel
@@ -20,6 +22,7 @@ import org.koin.core.module.dsl.DefinitionOptions
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.onOptions
 import org.koin.core.qualifier.Qualifier
+import org.koin.core.module.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import kotlin.reflect.KFunction
@@ -52,9 +55,11 @@ val identityScreensModule = module {
     factoryOf(::ProfileScreenViewModel)
     factoryOf(::EditUserProfileViewModel)
     factoryOf(::ResetPasswordScreenViewModel)
-    factory { (imageBitmap: ImageBitmap) -> ImageCropperViewModel(imageBitmap) }
     factoryOf(::AddressesScreenViewModel)
     factoryOf(::EnableLocationScreenViewModel)
+    viewModel { (minScale: Float, maxScale: Float, initialState: ImageCropperUiState) ->
+        ImageCropperComponentViewModel(minScale, maxScale, initialState)
+    }
     factoryOfOrNull(::AddEditLocationScreenViewModel)
     factoryOfOrNull(::PickLocationScreenViewModel)
 }
