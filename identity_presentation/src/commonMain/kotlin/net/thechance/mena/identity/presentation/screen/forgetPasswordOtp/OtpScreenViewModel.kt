@@ -35,7 +35,7 @@ class OtpScreenViewModel(
 
     override fun onClickVerify() {
         tryToExecute(
-            function = ::verifyOTPCode,
+            function = { verifyOTPCode() },
             onSuccess = { onOTPVerificationSuccess() },
             onError = ::onOTPVerificationError,
             dispatcher = dispatcher
@@ -70,7 +70,7 @@ class OtpScreenViewModel(
 
     override fun onClickResend() {
         tryToExecute(
-            function = ::requestNewOTP,
+            function = { requestNewOTP() },
             onSuccess = { onResendOTPSuccess() },
             onError = ::onResendOTPError,
             dispatcher = dispatcher

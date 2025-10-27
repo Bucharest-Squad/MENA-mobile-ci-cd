@@ -68,7 +68,7 @@ class ResetPasswordScreenViewModel(
 
         updateState { copy(isLoading = true, errorMessage = null) }
         tryToExecute(
-            function = ::onResetPassword,
+            function = { onResetPassword() },
             onSuccess = { onResetPasswordSuccess() },
             onError = ::onResetPasswordError,
             dispatcher = dispatcher

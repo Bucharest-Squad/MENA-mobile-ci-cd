@@ -28,7 +28,6 @@ const val LOCATION_FOREGROUND = "LOCATION_FOREGROUND"
 val identityScreensModule = module {
 
     includes(platformModule())
-    single { get<String>(named(APP_VERSION)) }
     factory { PermissionHandler(get(named(LOCATION_FOREGROUND))) }
     factory { (imageBitmap: ImageBitmap) -> ImageCropperViewModel(imageBitmap) }
 
@@ -36,7 +35,7 @@ val identityScreensModule = module {
     factoryOf(::RegisterScreenModel)
     factoryOf(::ForgetPasswordScreenViewModel)
     factoryOf(::OtpScreenViewModel)
-    factoryOf(::ProfileScreenViewModel)
+    factory { ProfileScreenViewModel(get(), get(named(APP_VERSION))) }
     factoryOf(::EditUserProfileViewModel)
     factoryOf(::ResetPasswordScreenViewModel)
     factoryOf(::AddressesScreenViewModel)

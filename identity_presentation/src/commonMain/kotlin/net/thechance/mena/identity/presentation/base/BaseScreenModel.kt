@@ -42,8 +42,8 @@ abstract class BaseScreenModel<S, E>(initialState: S) : ScreenModel {
         dispatcher: CoroutineDispatcher = Dispatchers.IO,
     ): Job {
         val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-            onError(throwable)
             throwable.printStackTrace()
+            onError(throwable)
         }
         return inScope.launch(exceptionHandler + dispatcher) {
             val result = function()
