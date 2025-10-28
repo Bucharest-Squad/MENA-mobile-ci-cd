@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
 import app.cash.paging.PagingData
 import app.cash.paging.compose.collectAsLazyPagingItems
 import kotlinx.coroutines.flow.flowOf
@@ -89,7 +90,7 @@ private fun Content(
                 .padding(horizontal = Theme.spacing._16),
         ) {
             AnimatedVisibility(
-                visible = bookmarks.isEmpty() && uiState.isLoading.not(),
+                visible = bookmarks.isEmpty() && bookmarks.loadState.refresh !is LoadState.Loading,
                 enter = fadeIn(tween()),
                 exit = fadeOut(tween()),
             ) {
@@ -97,7 +98,7 @@ private fun Content(
             }
 
             AnimatedVisibility(
-                visible = uiState.isLoading,
+                visible = bookmarks.loadState.refresh is LoadState.Loading,
                 enter = fadeIn(tween()),
                 exit = fadeOut(tween()),
             ) {
