@@ -212,7 +212,7 @@ class EditUserProfileViewModel(
             function = ::requestCameraPermission,
             onSuccess = { onCameraPermissionSuccess() },
             onError = ::handleCameraPermissionError,
-            dispatcher = Dispatchers.Main
+            dispatcher = dispatcher
         )
     }
 
