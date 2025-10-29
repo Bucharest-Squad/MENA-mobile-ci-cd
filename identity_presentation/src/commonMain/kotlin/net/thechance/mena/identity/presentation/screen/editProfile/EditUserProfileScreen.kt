@@ -90,7 +90,7 @@ class EditUserProfileScreen : BaseScreen<
         }
 
         val cameraImagePicker = rememberCameraPicker { imageBitmap ->
-            listener.onRequireCropImage(imageBitmap)
+                listener.onRequireCropImage(imageBitmap)
         }
 
         LaunchedEffect(state.showCamera) {
@@ -252,8 +252,8 @@ class EditUserProfileScreen : BaseScreen<
             EditUserProfileUIEffect.NavigateBackToProfile -> navigator.pop()
             is EditUserProfileUIEffect.NavigateToCropScreen -> {
                 val cropperScreen = ImageCropperScreen(
-                    image = effect.imageBitmap,
-                    onResult = effect.onResult
+                    imageKey = effect.imageKey,
+                    onResult = effect.onResult,
                 )
                 navigator.push(cropperScreen)
             }
