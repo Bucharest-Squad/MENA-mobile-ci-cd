@@ -1,10 +1,6 @@
 package net.thechance.mena.identity.presentation.screen.editProfile
 
 import androidx.compose.ui.graphics.ImageBitmap
-import dev.icerock.moko.permissions.DeniedAlwaysException
-import dev.icerock.moko.permissions.DeniedException
-import dev.icerock.moko.permissions.Permission
-import dev.icerock.moko.permissions.PermissionsController
 import io.github.vinceglb.filekit.dialogs.compose.util.encodeToByteArray
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -18,6 +14,7 @@ import mena.identity_presentation.generated.resources.error_username_required
 import net.thechance.mena.identity.domain.entity.Gender
 import net.thechance.mena.identity.domain.entity.User
 import net.thechance.mena.identity.domain.exception.AuthenticationException
+import net.thechance.mena.identity.domain.repository.CachedImageRepository
 import net.thechance.mena.identity.domain.repository.UserRepository
 import net.thechance.mena.identity.domain.util.getCurrentDate
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
@@ -26,12 +23,16 @@ import net.thechance.mena.identity.presentation.base.error.handleAuthenticationE
 import net.thechance.mena.identity.presentation.mapper.mapAuthenticationErrorToMessage
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
 import org.jetbrains.compose.resources.StringResource
+import net.thechance.mena.identity.presentation.util.PermissionManager
+import net.thechance.mena.identity.presentation.utils.ImageDecoder
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 class EditUserProfileViewModel(
     private val userRepository: UserRepository,
     private val permissionsController: PermissionsController,
+    private val cachedImageRepository: CachedImageRepository,
+    private val imageDecoder: ImageDecoder,
     val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : BaseScreenModel<EditUserProfileUIState, EditUserProfileUIEffect>(EditUserProfileUIState()),
     EditUserProfileInteractionListener {
@@ -96,7 +97,6 @@ class EditUserProfileViewModel(
             onError = ::handleSaveError,
             dispatcher = dispatcher
         )
-
     }
 
     private fun validateFormInputs(): Boolean {
@@ -141,7 +141,7 @@ class EditUserProfileViewModel(
         userRepository.updateUser(
             user = user,
             shouldUpdateImage = value.shouldUpdateImage,
-            imageByteArray = value.profileImageBitmap?.encodeToByteArray()
+            imageByteArray = value.profileImageBitmap?.let{imageDecoder.encodeImage(it)}
         )
     }
 
@@ -192,19 +192,34 @@ class EditUserProfileViewModel(
     }
 
     override fun onRequireCropImage(imageBitmap: ImageBitmap) {
+        cacheRequiredCropImage(imageBitmap)
+    }
+    private fun cacheRequiredCropImage(imageBitmap: ImageBitmap){
+        tryToExecute(
+            function = {
+                cachedImageRepository.cacheImage(PROFILE_IMAGE, imageDecoder.encodeImage(imageBitmap))
+            },
+            onError = ::onErrorOccurred,
+            onSuccess = ::handleCacheImageSuccess,
+            dispatcher = dispatcher
+        )
+    }
+    private fun handleCacheImageSuccess(){
         sendNewEffect(
             EditUserProfileUIEffect.NavigateToCropScreen(
-                imageBitmap = imageBitmap,
-                onResult = { croppedImageBitmap ->
+                imageKey = PROFILE_IMAGE,
+                onResult = { croppedImageKey ->
+                    val imageByteArray = cachedImageRepository.getCachedImage(croppedImageKey)
                     updateState {
                         copy(
-                            profileImageBitmap = croppedImageBitmap,
+                            profileImageBitmap =imageByteArray?.let { imageDecoder.decodeImage(it)} ,
                             shouldUpdateImage = true
                         )
                     }
                 }
             )
         )
+
     }
 
     override fun onTakeImageFromCamera() {
@@ -249,5 +264,9 @@ class EditUserProfileViewModel(
             is AuthenticationException -> mapAuthenticationErrorToMessage(handleAuthenticationException(throwable))
             else -> mapErrorToMessage(ErrorState.GenericError(throwable))
         }
+    }
+
+    companion object {
+        const val PROFILE_IMAGE = "profile_image"
     }
 }

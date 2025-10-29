@@ -11,10 +11,13 @@ import assertk.assertions.isNotEmpty
 import assertk.assertions.isNull
 import assertk.assertions.isTrue
 import dev.icerock.moko.permissions.PermissionsController
+import io.github.vinceglb.filekit.dialogs.compose.util.encodeToByteArray
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.mockkStatic
 import io.mockk.runs
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
@@ -23,19 +26,24 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.LocalDate
 import mena.identity_presentation.generated.resources.Res
 import mena.identity_presentation.generated.resources.error_something_went_wrong
+import net.thechance.mena.identity.domain.repository.CachedImageRepository
 import net.thechance.mena.identity.domain.repository.UserRepository
 import net.thechance.mena.identity.helper.BaseCoroutineTest
 import net.thechance.mena.identity.helper.createUser
+import net.thechance.mena.identity.presentation.util.PermissionManager
+import net.thechance.mena.identity.presentation.utils.ImageDecoder
+import org.jetbrains.compose.resources.decodeToImageBitmap
 import kotlin.test.Test
 import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class EditUserProfileViewModelTest() : BaseCoroutineTest() {
 
-    val userRepository = mockk<UserRepository>()
-    val testDispatcher = StandardTestDispatcher()
-    val permissionsController = mockk<PermissionsController>()
-
+    private val userRepository = mockk<UserRepository>()
+    private val permissionsController = mockk<PermissionsController>()
+    private val cachedImageRepository = mockk<CachedImageRepository>()
+    private val imageDecoder = mockk<ImageDecoder>()
+    private val testDispatcher = StandardTestDispatcher()
 
     lateinit var viewModel: EditUserProfileViewModel
 
@@ -43,8 +51,10 @@ class EditUserProfileViewModelTest() : BaseCoroutineTest() {
         super.setUp()
         viewModel = EditUserProfileViewModel(
             userRepository = userRepository,
-            dispatcher = testDispatcher,
-            permissionsController = permissionsController
+            permissionsController = permissionsController,
+            cachedImageRepository = cachedImageRepository,
+            imageDecoder = imageDecoder,
+            dispatcher = testDispatcher
         )
     }
 
@@ -297,8 +307,15 @@ class EditUserProfileViewModelTest() : BaseCoroutineTest() {
 
     @Test
     fun `should navigate to CropScreen, when onRequireCropImage is called`() = runTest {
+
+        coEvery { userRepository.getUser() } returns flowOf(fakeUser)
+        coEvery { cachedImageRepository.cacheImage(any(), any()) } returns Unit
+        coEvery { imageDecoder.encodeImage(mockkImageBitmap) } returns byteArrayOf()
+        coEvery { imageDecoder.decodeImage(any()) } returns mockkImageBitmap
+
         viewModel.effect.test {
             viewModel.onRequireCropImage(mockkImageBitmap)
+            testDispatcher.scheduler.advanceUntilIdle()
             assertThat(awaitItem()).isInstanceOf(EditUserProfileUIEffect.NavigateToCropScreen::class)
         }
     }
