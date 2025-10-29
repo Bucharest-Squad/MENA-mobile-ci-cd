@@ -31,19 +31,12 @@ val identityScreensModule = module {
 
     includes(platformModule())
     factory { PermissionHandler(get(named(LOCATION_FOREGROUND))) }
-    factory { (imageBitmap: ImageBitmap) -> ImageCropperViewModel(imageBitmap) }
-    factory { (imageKey: String) ->
-        ImageCropperViewModel(
-            imageKey = imageKey,
-            cachedImageRepository = get(),
-            imageDecoder = get()
-        )
-    }
+    factory { ProfileScreenViewModel(get(), get(named(APP_VERSION))) }
+    factoryOf(::ImageCropperViewModel)
     factoryOf(::LoginScreenViewModel)
     factoryOf(::RegisterScreenModel)
     factoryOf(::ForgetPasswordScreenViewModel)
     factoryOf(::OtpScreenViewModel)
-    factory { ProfileScreenViewModel(get(), get(named(APP_VERSION))) }
     factoryOf(::EditUserProfileViewModel)
     factoryOf(::ResetPasswordScreenViewModel)
     factoryOf(::AddressesScreenViewModel)

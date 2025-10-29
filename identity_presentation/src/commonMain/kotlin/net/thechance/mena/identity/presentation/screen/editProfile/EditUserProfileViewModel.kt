@@ -1,7 +1,10 @@
 package net.thechance.mena.identity.presentation.screen.editProfile
 
 import androidx.compose.ui.graphics.ImageBitmap
-import io.github.vinceglb.filekit.dialogs.compose.util.encodeToByteArray
+import dev.icerock.moko.permissions.DeniedAlwaysException
+import dev.icerock.moko.permissions.DeniedException
+import dev.icerock.moko.permissions.Permission
+import dev.icerock.moko.permissions.PermissionsController
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -22,9 +25,8 @@ import net.thechance.mena.identity.presentation.base.error.ErrorState
 import net.thechance.mena.identity.presentation.base.error.handleAuthenticationException
 import net.thechance.mena.identity.presentation.mapper.mapAuthenticationErrorToMessage
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
-import org.jetbrains.compose.resources.StringResource
-import net.thechance.mena.identity.presentation.util.PermissionManager
 import net.thechance.mena.identity.presentation.utils.ImageDecoder
+import org.jetbrains.compose.resources.StringResource
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -92,7 +94,7 @@ class EditUserProfileViewModel(
 
         updateState { copy(isLoading = true, errorMessage = null) }
         tryToExecute(
-            function = ::saveUserProfile,
+            function = { saveUserProfile() },
             onSuccess = { handleSaveSuccess() },
             onError = ::handleSaveError,
             dispatcher = dispatcher
@@ -199,11 +201,12 @@ class EditUserProfileViewModel(
             function = {
                 cachedImageRepository.cacheImage(PROFILE_IMAGE, imageDecoder.encodeImage(imageBitmap))
             },
-            onError = ::onErrorOccurred,
-            onSuccess = ::handleCacheImageSuccess,
+            onSuccess = { handleCacheImageSuccess() },
+            onError = ::onCacheCropImageError,
             dispatcher = dispatcher
         )
     }
+
     private fun handleCacheImageSuccess(){
         sendNewEffect(
             EditUserProfileUIEffect.NavigateToCropScreen(
@@ -220,6 +223,10 @@ class EditUserProfileViewModel(
             )
         )
 
+    }
+
+    private fun onCacheCropImageError(throwable: Throwable) {
+        updateState { copy(errorMessage = mapErrorMessage(throwable)) }
     }
 
     override fun onTakeImageFromCamera() {
