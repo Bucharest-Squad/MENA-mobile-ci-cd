@@ -4,6 +4,7 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import net.thechance.mena.admin_panel.di.AppModule
 import net.thechance.mena.admin_panel.di.networkModule
+import net.thechance.mena.admin_panel.di.storageModule
 import net.thechance.mena.admin_panel.resources.Res
 import net.thechance.mena.admin_panel.resources.app_name
 import net.thechance.mena.admin_panel.resources.mena_logo
@@ -16,8 +17,10 @@ fun main() = application {
     startKoin {
         modules(
             AppModule().module,
-            networkModule
-        )
+            networkModule,
+            storageModule,
+
+            )
     }
     Window(
         onCloseRequest = ::exitApplication,

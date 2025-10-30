@@ -52,6 +52,10 @@ kotlin {
 
             // Coil
             implementation(libs.coil.compose)
+
+            //settings
+            implementation(libs.multiplatform.settings)
+
         }
 
         commonTest.dependencies {
