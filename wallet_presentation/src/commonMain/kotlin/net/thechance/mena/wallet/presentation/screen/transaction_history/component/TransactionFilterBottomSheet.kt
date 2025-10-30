@@ -70,8 +70,8 @@ fun ScaffoldScope.TransactionFilterBottomSheet(
             FilterContent(
                 selectedTypes = uiState.selectedTypes,
                 selectedStatus = uiState.selectedStatus,
-                startDate = uiState.startDate?.toUIFormat() ?: "",
-                endDate = uiState.endDate?.toUIFormat() ?: "",
+                startDate = uiState.startDate?.toString() ?: "",
+                endDate = uiState.endDate?.toString() ?: "",
                 onTypeSelected = onTypeToggled,
                 onStatusSelected = onStatusSelected,
                 onStartDateClicked = onStartDateClicked,
@@ -79,10 +79,6 @@ fun ScaffoldScope.TransactionFilterBottomSheet(
             )
         }
     )
-}
-
-private fun LocalDate.toUIFormat(): String {
-    return "${this.year}-${this.monthNumber.toString().padStart(2, '0')}-${this.dayOfMonth.toString().padStart(2, '0')}"
 }
 
 @Composable
