@@ -32,7 +32,7 @@ fun ProfileResponseDto.toEntity(): UserEntity {
         firstName = this.firstName,
         lastName = this.lastName,
         username = this.username.lowercase(),
-        profileImageUrl = this.imageUrl,
+        profileImageUrl = this.imageUrl.orEmpty(),
         birthDate = this.birthDate,
         gender = this.gender,
     )
@@ -60,7 +60,7 @@ fun User.toEntity(): UserEntity {
         id = this.id.toString(),
         firstName = this.firstName,
         lastName = this.lastName,
-        profileImageUrl = this.profileImageUrl,
+        profileImageUrl = this.profileImageUrl.orEmpty(),
         username = this.username.lowercase(),
         birthDate = this.birthDate.formatAsString(),
         gender = when (this.gender) {

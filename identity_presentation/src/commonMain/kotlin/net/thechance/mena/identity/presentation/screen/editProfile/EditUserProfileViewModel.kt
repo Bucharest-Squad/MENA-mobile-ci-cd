@@ -62,7 +62,7 @@ class EditUserProfileViewModel(
                 username = user.username.lowercase(),
                 firstName = user.firstName,
                 lastName = user.lastName,
-                profileImageUrl = user.profileImageUrl,
+                profileImageUrl = user.profileImageUrl.orEmpty(),
                 birthDate = user.birthDate,
                 gender = user.gender,
             )
@@ -143,7 +143,7 @@ class EditUserProfileViewModel(
         userRepository.updateUser(
             user = user,
             shouldUpdateImage = value.shouldUpdateImage,
-            imageByteArray = value.profileImageBitmap?.let{imageDecoder.encodeImage(it)}
+            imageByteArray = value.profileImageBitmap?.let { imageDecoder.encodeImage(it) }
         )
     }
 
@@ -196,10 +196,14 @@ class EditUserProfileViewModel(
     override fun onRequireCropImage(imageBitmap: ImageBitmap) {
         cacheRequiredCropImage(imageBitmap)
     }
-    private fun cacheRequiredCropImage(imageBitmap: ImageBitmap){
+
+    private fun cacheRequiredCropImage(imageBitmap: ImageBitmap) {
         tryToExecute(
             function = {
-                cachedImageRepository.cacheImage(PROFILE_IMAGE, imageDecoder.encodeImage(imageBitmap))
+                cachedImageRepository.cacheImage(
+                    PROFILE_IMAGE,
+                    imageDecoder.encodeImage(imageBitmap)
+                )
             },
             onSuccess = { handleCacheImageSuccess() },
             onError = ::onCacheCropImageError,
@@ -207,7 +211,7 @@ class EditUserProfileViewModel(
         )
     }
 
-    private fun handleCacheImageSuccess(){
+    private fun handleCacheImageSuccess() {
         sendNewEffect(
             EditUserProfileUIEffect.NavigateToCropScreen(
                 imageKey = PROFILE_IMAGE,
@@ -215,7 +219,7 @@ class EditUserProfileViewModel(
                     val imageByteArray = cachedImageRepository.getCachedImage(croppedImageKey)
                     updateState {
                         copy(
-                            profileImageBitmap =imageByteArray?.let { imageDecoder.decodeImage(it)} ,
+                            profileImageBitmap = imageByteArray?.let { imageDecoder.decodeImage(it) },
                             shouldUpdateImage = true
                         )
                     }
@@ -266,9 +270,12 @@ class EditUserProfileViewModel(
         updateState { copy(showCamera = false) }
     }
 
-    private fun mapErrorMessage(throwable: Throwable): StringResource{
+    private fun mapErrorMessage(throwable: Throwable): StringResource {
         return when (throwable) {
-            is AuthenticationException -> mapAuthenticationErrorToMessage(handleAuthenticationException(throwable))
+            is AuthenticationException -> {
+                mapAuthenticationErrorToMessage(handleAuthenticationException(throwable))
+            }
+
             else -> mapErrorToMessage(ErrorState.GenericError(throwable))
         }
     }
