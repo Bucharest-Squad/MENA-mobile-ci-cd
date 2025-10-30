@@ -91,7 +91,8 @@ private fun StatementDetailsContent(
         },
         isLoading = state.isLoading,
         bottomContent = {
-            if (!state.isLoading) {
+                       if (state.statement.isNotEmpty()) {
+
                 PrimaryButton(
                     modifier = Modifier
                         .fillMaxWidth()
