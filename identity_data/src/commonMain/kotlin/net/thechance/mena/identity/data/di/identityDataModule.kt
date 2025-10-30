@@ -46,7 +46,7 @@ val identityDataModule = module {
     }
 
     single<ResetPasswordRepository> {
-        ResetPasswordRepositoryImpl(client = get(named("IdentityClient")))
+        ResetPasswordRepositoryImpl(client = get(named(IDENTITY_CLIENT)))
     }
 
     single<RegisterRepository> {
