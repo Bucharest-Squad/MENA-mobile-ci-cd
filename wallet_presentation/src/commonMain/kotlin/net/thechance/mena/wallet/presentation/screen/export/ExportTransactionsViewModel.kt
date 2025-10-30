@@ -324,11 +324,14 @@ class ExportTransactionsViewModel(
 
     private fun getTransactionFilterParams(): TransactionFilterParams {
         val formatter = LocalDate.Format {
-            year(); char('-'); monthNumber(); char('-')
-            day(padding = Padding.ZERO)
+            year()
+            char('-')
+            monthNumber(padding = Padding.ZERO)
+            char('-')
+            dayOfMonth(padding = Padding.ZERO)
         }
-        val startDateTime = currentState.filterState.startDate?.toString().toStartOfDayLocalDateTime(formatter)
-        val endDateTime = currentState.filterState.endDate?.toString().toStartOfDayLocalDateTime(formatter)
+        val startDateTime = currentState.filterState.startDate?.toString()?.toStartOfDayLocalDateTime(formatter)
+        val endDateTime = currentState.filterState.endDate?.toString()?.toStartOfDayLocalDateTime(formatter)
 
         return TransactionFilterParams(
             types = currentState.filterState.selectedTransactionsTypes.map { it.toDomain() },

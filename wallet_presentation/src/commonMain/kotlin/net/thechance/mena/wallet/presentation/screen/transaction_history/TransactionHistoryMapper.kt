@@ -1,5 +1,6 @@
 package net.thechance.mena.wallet.presentation.screen.transaction_history
 
+import kotlinx.datetime.LocalDate
 import net.thechance.mena.wallet.domain.entity.Transaction
 import net.thechance.mena.wallet.domain.entity.TransactionStatus
 import net.thechance.mena.wallet.domain.entity.TransactionType
@@ -14,11 +15,31 @@ fun Transaction.toUi(): TransactionHistoryScreenState.TransactionHistoryUiState 
     TransactionHistoryScreenState.TransactionHistoryUiState(
         id = id,
         timeAndDate = formatLocalDateTime(date = createdAt, outputFormat = "dd MMM yyyy, h:mm a"),
-        amount = amount.toString(),
+        amount = amount.formatWithCommas(),
         type = getTransactionType(),
         status = getTransactionStatus(),
         contactName = getUserName()
     )
+
+fun Double.formatWithCommas(): String {
+    val roundedAmount = (this * 100).toLong() / 100.0
+    val intPart = roundedAmount.toLong()
+    val decimalPart = ((roundedAmount - intPart) * 100).toInt()
+
+    return if (this >= 1000) {
+        val intString = intPart.toString()
+        val withCommas = buildString {
+            intString.reversed().forEachIndexed { index, char ->
+                if (index > 0 && index % 3 == 0) append(',')
+                append(char)
+            }
+        }.reversed()
+
+        "$withCommas.${decimalPart.toString().padStart(2, '0')}"
+    } else {
+        "$intPart.${decimalPart.toString().padStart(2, '0')}"
+    }
+}
 
 fun TransactionFilterState.toParams(): TransactionFilterParams {
     return TransactionFilterParams(

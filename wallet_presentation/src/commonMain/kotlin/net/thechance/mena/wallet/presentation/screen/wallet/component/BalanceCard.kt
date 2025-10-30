@@ -161,7 +161,7 @@ private fun BalanceInfoSection(
             isLoading = isLoading,
             errorState = errorState,
             onRetry = onRetry,
-            modifier = Modifier.padding(top = 45.dp)
+            modifier = Modifier.padding(top = 45.dp).padding(horizontal = 24.dp)
         )
 
         Text(
@@ -169,6 +169,7 @@ private fun BalanceInfoSection(
             style = Theme.typography.label.extraSmall,
             color = Theme.colorScheme.shadeSecondary,
             modifier = Modifier.padding(top = 4.dp, bottom = 19.dp)
+                .padding()
         )
     }
 }

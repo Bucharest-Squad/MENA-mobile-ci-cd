@@ -74,8 +74,7 @@ fun ScaffoldScope.DatePickerBottomSheet(
     isVisible: Boolean,
     title: String = stringResource(Res.string.pick_start_date),
     minYear: Int = 2000,
-    maxYear: Int = Clock.System.now()
-        .toLocalDateTime(TimeZone.currentSystemDefault()).year,
+    maxYear: Int = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).year,
     defaultSelectedDate: LocalDate? = null,
     onPickClick: (day: Int, month: Int, year: Int) -> Unit,
     onDismiss: () -> Unit,
@@ -299,7 +298,7 @@ private fun ChoiceIndicator(
 ) {
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(Theme.radius.md))
+            .clip(RoundedCornerShape(Theme.radius.sm))
             .height(28.dp)
             .background(Theme.colorScheme.background.surfaceHigh)
     )

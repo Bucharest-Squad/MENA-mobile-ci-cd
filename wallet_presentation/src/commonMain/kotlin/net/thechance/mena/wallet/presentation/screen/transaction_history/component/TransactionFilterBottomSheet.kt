@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import kotlinx.datetime.LocalDate
 import mena.wallet_presentation.generated.resources.Res
 import mena.wallet_presentation.generated.resources.apply_filters
 import mena.wallet_presentation.generated.resources.filter_transactions
@@ -69,8 +70,8 @@ fun ScaffoldScope.TransactionFilterBottomSheet(
             FilterContent(
                 selectedTypes = uiState.selectedTypes,
                 selectedStatus = uiState.selectedStatus,
-                startDate = uiState.startDate?.toString() ?: "",
-                endDate = uiState.endDate?.toString() ?: "",
+                startDate = uiState.startDate?.toUIFormat() ?: "",
+                endDate = uiState.endDate?.toUIFormat() ?: "",
                 onTypeSelected = onTypeToggled,
                 onStatusSelected = onStatusSelected,
                 onStartDateClicked = onStartDateClicked,
@@ -78,6 +79,10 @@ fun ScaffoldScope.TransactionFilterBottomSheet(
             )
         }
     )
+}
+
+private fun LocalDate.toUIFormat(): String {
+    return "${this.year}-${this.monthNumber.toString().padStart(2, '0')}-${this.dayOfMonth.toString().padStart(2, '0')}"
 }
 
 @Composable

@@ -1,9 +1,11 @@
 package net.thechance.mena.wallet.presentation.screen.wallet
 
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import mena.wallet_presentation.generated.resources.Res
 import mena.wallet_presentation.generated.resources.balance_fetch_error_description
 import mena.wallet_presentation.generated.resources.error
@@ -60,17 +62,19 @@ class WalletViewModel(
         }
     }
 
-    private suspend fun onGetBalanceError(error: ErrorState) {
+    private fun onGetBalanceError(error: ErrorState) {
         updateState { it.copy(balanceState = it.balanceState.copy(errorState = error)) }
-        val errorMessage = when (error) {
-            ErrorState.NoInternet -> Res.string.no_internet_title
-            else -> Res.string.balance_fetch_error_description
+        viewModelScope.launch {
+            val errorMessage = when (error) {
+                ErrorState.NoInternet -> Res.string.no_internet_title
+                else -> Res.string.balance_fetch_error_description
+            }
+            showSnackBar(
+                title = stringProvider.getString(Res.string.error),
+                message = stringProvider.getString(errorMessage),
+                isSuccess = false
+            )
         }
-        showSnackBar(
-            title = stringProvider.getString(Res.string.error),
-            message = stringProvider.getString(errorMessage),
-            isSuccess = false
-        )
     }
 
     private suspend fun showSnackBar(
@@ -139,15 +143,17 @@ class WalletViewModel(
         sendEffect(WalletEffect.NavigateToConfirmPaymentScreen(amount, transactionId))
     }
 
-    private suspend fun onAddPendingTransactionError(error: ErrorState) {
-        val errorMessage = when (error) {
-            ErrorState.NoInternet -> Res.string.no_internet_title
-            else -> Res.string.payment_failed_description
+    private fun onAddPendingTransactionError(error: ErrorState) {
+        viewModelScope.launch {
+            val errorMessage = when (error) {
+                ErrorState.NoInternet -> Res.string.no_internet_title
+                else -> Res.string.payment_failed_description
+            }
+            showSnackBar(
+                title = stringProvider.getString(Res.string.error),
+                message = stringProvider.getString(errorMessage),
+                isSuccess = false
+            )
         }
-        showSnackBar(
-            title = stringProvider.getString(Res.string.error),
-            message = stringProvider.getString(errorMessage),
-            isSuccess = false
-        )
     }
 }
