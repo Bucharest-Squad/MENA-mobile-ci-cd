@@ -19,8 +19,7 @@ fun main() = application {
             AppModule().module,
             networkModule,
             storageModule,
-
-            )
+        )
     }
     Window(
         onCloseRequest = ::exitApplication,

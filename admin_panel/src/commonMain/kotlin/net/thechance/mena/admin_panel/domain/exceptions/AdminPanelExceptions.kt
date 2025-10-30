@@ -8,6 +8,3 @@ class UnknownNetworkException(message: String = "Unknown error") : AdminPanelExc
 
 class InvalidPasswordException(message: String = "password doesn't match validations") :
     AdminPanelException(message)
-
-class InvalidUserNameException(message: String = "Invalid User Name") :
-    AdminPanelException(message)
