@@ -169,7 +169,6 @@ private fun BalanceInfoSection(
             style = Theme.typography.label.extraSmall,
             color = Theme.colorScheme.shadeSecondary,
             modifier = Modifier.padding(top = 4.dp, bottom = 19.dp)
-                .padding()
         )
     }
 }
