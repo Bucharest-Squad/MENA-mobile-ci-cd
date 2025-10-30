@@ -44,6 +44,8 @@ class AdminAuthenticationRepositoryImpl(
         return settings.accessToken
     }
 
+    override suspend fun getAccessToken(): String {
+        return settings.accessToken    }
 
     private  fun saveAuthTokens(authenticationInfo: AdminAuthenticationResponse) {
         settings.accessToken = authenticationInfo.accessToken

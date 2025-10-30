@@ -13,7 +13,13 @@ expect val platformNetworkModule: Module
 
 val networkModule = module {
     single(named(BASE_URL_KEY)) { AppEnvironment.baseUrl }
-    single { NetworkClient( get(named(BASE_URL_KEY))) }
+    single {
+        NetworkClient(
+            get(named(BASE_URL_KEY)),
+            get(),
+            get()
+        )
+    }
 
     single<HttpClient>(named(ADMIN_PANEL_KEY)) {
         get<NetworkClient>().provideHttpClient()
