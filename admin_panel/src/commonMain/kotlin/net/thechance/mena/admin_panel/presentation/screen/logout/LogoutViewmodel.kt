@@ -13,6 +13,6 @@ class LogoutViewModel() : BaseViewModel<LogoutScreenState, LogoutEffect>(
 
     override fun onConfirmLogout() {
         updateState { it.copy(isLogoutDialogHidden = true) }
+        sendEffect(LogoutEffect.NavigateToLogInScreen)
     }
-
 }
