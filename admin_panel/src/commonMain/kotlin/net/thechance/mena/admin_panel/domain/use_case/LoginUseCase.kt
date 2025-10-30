@@ -19,7 +19,6 @@ class LoginUseCase(
         )
     }
 
-
     fun isPasswordValid(password: String) = password.length >= PASSWORD_MIN_LENGTH
 
     private companion object {

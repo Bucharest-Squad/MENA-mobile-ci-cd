@@ -21,12 +21,7 @@ class AdminAuthenticationRepositoryImpl(
     override suspend fun login(userName: String, password: String) {
         val loginResponse: AdminAuthenticationResponse =
             executeApiSafely<AdminAuthenticationResponse> {
-                apiService.login(
-                    LoginRequestDto(
-                        userName = userName,
-                        password = password
-                    )
-                )
+                apiService.login(LoginRequestDto(userName = userName, password = password))
             }
         saveAuthTokens(authenticationInfo = loginResponse)
     }
@@ -35,9 +30,7 @@ class AdminAuthenticationRepositoryImpl(
         val refreshResponse: AdminAuthenticationResponse =
             executeApiSafely<AdminAuthenticationResponse> {
                 apiService.refreshAccessToken(
-                    RefreshTokenRequestDto(
-                        settings.refreshToken
-                    )
+                    RefreshTokenRequestDto(settings.refreshToken)
                 )
             }
         saveAuthTokens(authenticationInfo = refreshResponse)
@@ -45,9 +38,10 @@ class AdminAuthenticationRepositoryImpl(
     }
 
     override suspend fun getAccessToken(): String {
-        return settings.accessToken    }
+        return settings.accessToken
+    }
 
-    private  fun saveAuthTokens(authenticationInfo: AdminAuthenticationResponse) {
+    private fun saveAuthTokens(authenticationInfo: AdminAuthenticationResponse) {
         settings.accessToken = authenticationInfo.accessToken
         settings.refreshToken = authenticationInfo.refreshToken
     }

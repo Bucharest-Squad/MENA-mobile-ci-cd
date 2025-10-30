@@ -9,13 +9,10 @@ import net.thechance.mena.admin_panel.data.remote.dto.authentication.LoginReques
 import net.thechance.mena.admin_panel.data.remote.dto.authentication.RefreshTokenRequestDto
 
 interface ApiService {
-    @GET("endpoint")
-    suspend fun getSomething(): Response<Any>
 
     @POST(LOGIN_ENDPOINT)
     suspend fun login(@Body loginRequest: LoginRequestDto):
             Response<AdminAuthenticationResponse>
-
 
     @POST(REFRESH_ENDPOINT)
     suspend fun refreshAccessToken(@Body refreshTokenRequest: RefreshTokenRequestDto):
