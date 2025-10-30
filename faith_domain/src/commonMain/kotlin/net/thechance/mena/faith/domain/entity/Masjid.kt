@@ -9,7 +9,7 @@ data class Masjid(
     val name: String,
     val coordinates: Coordinates,
     val address: String,
-    val imageUrl: String?,
+    val imageUrl: String,
 ) {
     data class Coordinates(
         val latitude: Double,
