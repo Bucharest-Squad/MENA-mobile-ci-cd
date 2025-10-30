@@ -70,7 +70,7 @@ class RegisterRepositoryImpl(
 
     companion object {
         const val REQUEST_OTP = "identity/authentication/request-register-otp"
-        const val VERIFY_OTP = "identity/authentication/verify-register-otp"
+        const val VERIFY_OTP = "identity/authentication/verify-otp"
         const val CREATE_PASSWORD = "identity/authentication/create-password"
     }
 }
