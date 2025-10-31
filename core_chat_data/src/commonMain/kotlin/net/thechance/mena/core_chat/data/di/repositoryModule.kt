@@ -1,9 +1,11 @@
 package net.thechance.mena.core_chat.data.di
 
+import net.thechance.mena.core_chat.data.repository.AudioRecordRepositoryImpl
 import net.thechance.mena.core_chat.data.repository.ChatRepositoryImpl
 import net.thechance.mena.core_chat.data.repository.ContactsRepositoryImpl
 import net.thechance.mena.core_chat.data.repository.MessageRepositoryImpl
 import net.thechance.mena.core_chat.data.repository.UserRepositoryImpl
+import net.thechance.mena.core_chat.domain.repository.AudioRecordRepository
 import net.thechance.mena.core_chat.domain.repository.ChatRepository
 import net.thechance.mena.core_chat.domain.repository.ContactsRepository
 import net.thechance.mena.core_chat.domain.repository.MessageRepository
@@ -43,5 +45,9 @@ internal val repositoryModule = module {
         UserRepositoryImpl(
             client = get(named(CHAT_CLIENT)),
         )
+    }
+
+    single<AudioRecordRepository> {
+        AudioRecordRepositoryImpl()
     }
 }

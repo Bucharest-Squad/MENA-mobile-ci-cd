@@ -9,5 +9,6 @@ class MessageSenderFactory(
     fun create(content: MessageContent) = when (content) {
         is MessageContent.Text -> textMessageSender
         is MessageContent.Image -> imageMessageSender
+        is MessageContent.Audio -> TODO()
     }
 }
