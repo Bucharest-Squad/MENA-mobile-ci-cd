@@ -97,6 +97,7 @@ fun ChatScreenContent(
                     onTextChange = interactions::onInputMessageChanged,
                     onSendButtonClick = interactions::onSendMessageClicked,
                     onAttachButtonClick = interactions::onAttachmentClicked,
+                    onVoiceRecordClick = interactions::onVoiceClicked,
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(Theme.colorScheme.background.surface)

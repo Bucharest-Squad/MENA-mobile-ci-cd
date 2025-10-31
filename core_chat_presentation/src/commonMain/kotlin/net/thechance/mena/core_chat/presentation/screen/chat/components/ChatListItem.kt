@@ -73,5 +73,23 @@ fun ChatListItem(
                 )
             }
         }
+
+        is ChatListItem.VoiceMessage ->{
+            val markedMessage = item.data
+            Row(
+                modifier = modifier.fillMaxWidth(),
+                horizontalArrangement = if (markedMessage.isMine) Arrangement.End else Arrangement.Start
+            ) {
+                VoiceMessagesLayout(
+                    message = markedMessage,
+                    chatAvatarUrl = chatAvatarUrl,
+                    showMessageInfo = (markedMessage.isVisibleMessageInfo || markedMessage.isLastInSeries || markedMessage.status == MessageStatus.FAILED),
+                    isMarkedLastInSeries = markedMessage.isLastInSeries,
+                    isMessageLoading = false,
+                    onPlayClick = { onMessageClick(markedMessage.id) },
+                    onFailClick = { onFailedMessageClick(markedMessage) },
+                )
+            }
+        }
     }
 }

@@ -34,6 +34,7 @@ import net.thechance.mena.core_chat.domain.entity.MessageStatus
 import net.thechance.mena.core_chat.domain.entity.User
 import net.thechance.mena.core_chat.domain.event.MarkMessageAsReadEvent
 import net.thechance.mena.core_chat.domain.model.PagedData
+import net.thechance.mena.core_chat.domain.repository.AudioRecordRepository
 import net.thechance.mena.core_chat.domain.repository.ChatRepository
 import net.thechance.mena.core_chat.domain.repository.MessageRepository
 import net.thechance.mena.core_chat.domain.repository.UserRepository
@@ -42,6 +43,7 @@ import net.thechance.mena.core_chat.presentation.components.snackBarHost.SnackBa
 import net.thechance.mena.core_chat.presentation.shared.BaseViewModel
 import net.thechance.mena.core_chat.presentation.utils.Paginator
 import net.thechance.mena.core_chat.presentation.utils.UiText
+import net.thechance.mena.core_chat.presentation.utils.createAudioPlayer
 import net.thechance.mena.core_chat.presentation.utils.encodeToByteArrayWithCompressionToMaxSize
 import net.thechance.mena.core_chat.presentation.utils.getUuidOrNull
 import org.jetbrains.compose.resources.StringResource
@@ -52,6 +54,7 @@ import kotlin.uuid.Uuid
 class ChatViewModel(
     private val chatRepository: ChatRepository,
     private val messageRepository: MessageRepository,
+    private val audioRecordRepository: AudioRecordRepository,
     private val userRepository: UserRepository,
     private val imageDownloaderService: ImageDownloaderService,
     chatArgs: ChatArgs,
@@ -63,7 +66,8 @@ class ChatViewModel(
     private val _messages = MutableStateFlow<List<Message>>(emptyList())
     private val messages = _messages.asStateFlow()
     private val messagesMutex = Mutex()
-
+    private val audioPlayer = createAudioPlayer { errorMessage ->
+    }
     private var hasResentPendingMessages = false
 
     private val chatHistoryPaginator by lazy {
@@ -382,6 +386,26 @@ class ChatViewModel(
                 isImagePagerVisible = true,
                 selectedImageMessages = messages,
                 currentImageIndexForPreview = initialImageIndex
+            )
+        }
+    }
+
+    override fun onVoiceClicked() {
+        if (audioRecordRepository.isRecording()) {
+            val filePath = audioRecordRepository.stopRecording()
+            updateState { it.copy(isRecordingVoice = false) }
+
+            audioPlayer.play(filePath)
+        } else {
+            tryToExecute(
+                execute = { permissionsController.providePermission(Permission.RECORD_AUDIO) },
+                onSuccess = {
+                    audioRecordRepository.startRecording()
+                    updateState { it.copy(isRecordingVoice = true) }
+                },
+                onError = {
+                    showSnackBar(Res.string.error, Res.string.permission_denied_title, true)
+                }
             )
         }
     }

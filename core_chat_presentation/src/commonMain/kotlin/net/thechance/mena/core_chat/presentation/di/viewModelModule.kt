@@ -36,6 +36,7 @@ internal val viewModelModule = module {
         ChatViewModel(
             chatRepository = get(),
             userRepository =  get(),
+            audioRecordRepository = get(),
             chatArgs =  get(),
             permissionsController = get(),
             messageRepository = get(),

@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalTime::class, ExperimentalUuidApi::class)
+@file:OptIn(ExperimentalUuidApi::class)
 
 package net.thechance.mena.core_chat.presentation.screen.chat.components
 
@@ -7,9 +7,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -23,66 +25,70 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import kotlinx.datetime.LocalDateTime
 import mena.core_chat_presentation.generated.resources.Res
+import mena.core_chat_presentation.generated.resources.ic_play
 import mena.core_chat_presentation.generated.resources.ic_profile_placeholder
-import net.thechance.mena.core_chat.domain.entity.ImageData
 import net.thechance.mena.core_chat.domain.entity.MessageContent
 import net.thechance.mena.core_chat.domain.entity.MessageStatus
 import net.thechance.mena.core_chat.presentation.screen.chat.MessageUiState
 import net.thechance.mena.core_chat.presentation.utils.now
+import net.thechance.mena.designsystem.presentation.component.button.Button
+import net.thechance.mena.designsystem.presentation.component.icon.Icon
+import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import kotlin.time.ExperimentalTime
+import kotlin.random.Random
 import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 
 @Composable
-fun ImageMessagesLayout(
-    messages: List<MessageUiState>,
+fun VoiceMessagesLayout(
+    message: MessageUiState,
     showMessageInfo: Boolean,
     isMarkedLastInSeries: Boolean,
     modifier: Modifier = Modifier,
+    isMessageLoading: Boolean = false,
+    progress: Float = 0f,
+    totalSeconds: Long = 0,
     chatAvatarUrl: String? = null,
+    onPlayClick: (MessageUiState) -> Unit = {},
     onFailClick: (MessageUiState) -> Unit = {},
-    onMessageImageClick: (List<MessageUiState>, Int) -> Unit,
 ) {
     val messageBackground =
-        if (messages.last().isMine) Theme.colorScheme.background.surfaceLow
+        if (message.isMine) Theme.colorScheme.background.surfaceLow
         else Theme.colorScheme.brand.brandVariant
 
-    val messagePaddingStart = if (messages.last().isMine)
+
+    val messagePaddingStart = if (message.isMine)
         Theme.spacing._24
     else
         Theme.spacing._8
 
-    val messagePaddingEnd = if (messages.last().isMine) 0.dp else Theme.spacing._8
-    val maxRadius = Theme.radius.lg
+    val messagePaddingEnd = if (message.isMine) 0.dp else Theme.spacing._8
 
-    val messageShape = if (messages.last().isMine && isMarkedLastInSeries)
+    val maxRadius = Theme.radius.md
+
+    val messageShape = if (message.isMine && isMarkedLastInSeries)
         RoundedCornerShape(
             topStart = maxRadius,
             topEnd = maxRadius,
             bottomStart = maxRadius,
             bottomEnd = Theme.radius.xxs
         )
-    else if (!messages.last().isMine && isMarkedLastInSeries)
+    else if (!message.isMine && isMarkedLastInSeries)
         RoundedCornerShape(
             topStart = maxRadius,
             topEnd = maxRadius,
             bottomStart = Theme.radius.xxs,
             bottomEnd = maxRadius
         )
-    else
-        RoundedCornerShape(size = maxRadius)
+    else RoundedCornerShape(size = maxRadius)
 
-    val messageInfoAlignment = if (messages.last().isMine)
-        Alignment.Start
-    else
-        Alignment.End
-    val messageAlignment = if (messages.last().isMine) Alignment.End else Alignment.Start
+    val messageInfoAlignment = if (message.isMine) Alignment.Start else Alignment.End
+    val messageAlignment = if (message.isMine) Alignment.End else Alignment.Start
 
     val verticalPadding = Theme.spacing._4
+
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(Theme.spacing._2),
@@ -92,7 +98,7 @@ fun ImageMessagesLayout(
             verticalAlignment = Alignment.Bottom,
             horizontalArrangement = Arrangement.spacedBy(Theme.spacing._8)
         ) {
-            if (!messages.last().isMine) {
+            if (!message.isMine) {
                 Box(
                     modifier = Modifier
                         .clip(CircleShape)
@@ -115,48 +121,47 @@ fun ImageMessagesLayout(
                 modifier = Modifier
                     .padding(start = messagePaddingStart, end = messagePaddingEnd)
                     .clip(messageShape)
-                    .background(
-                        color = messageBackground,
-                        shape = messageShape
-                    )
+
+                    .background(color = messageBackground, shape = messageShape)
                     .padding(
                         horizontal = verticalPadding,
                         vertical = Theme.spacing._4
                     )
             ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(Theme.spacing._8)
+                ) {
+                    PLayButton(
+                        onClick = { onPlayClick(message) },
+                        isLoading = isMessageLoading
+                    )
 
-                val imageDataList = messages.map { imageData ->
-                    when (imageData.content) {
-                        is MessageContent.Image -> {
-                            val images = imageData.content.data
-                                when (images) {
-                                    is ImageData.ImageUrl -> images.url
-                                    is ImageData.ImageByteArray -> images.byteArray
-                                }
+                    VoiceMessageWaveform(
+                        waveData = generateRandomWaveformData(),
+                        progress = progress,
+                        modifier = Modifier.weight(1f).height(44.dp).padding(vertical = Theme.spacing._4)
+                    )
 
-                        }
-                        is MessageContent.Text -> return@Column
-                        is MessageContent.Audio -> return@Column
-                    }
+                    Text(
+                        text = formatTime(totalSeconds),
+                        style = Theme.typography.label.extraSmall,
+                        color = Theme.colorScheme.shadePrimary
+                    )
                 }
-
-                ImageMessageContent(
-                    images = imageDataList,
-                    modifier = Modifier.size(156.dp, 162.dp).clip(messageShape),
-                    onImageClick = { index -> onMessageImageClick(messages, index) }
-                )
             }
-
         }
+
         AnimatedVisibility(
             visible = showMessageInfo,
             modifier = Modifier.align(messageInfoAlignment)
         ) {
             MessageInfo(
-                messageTime = messages.last().sendTime,
-                messageStatus = messages.last().status,
-                messageIsMine = messages.last().isMine,
-                onFailClick = { onFailClick(messages.last()) },
+                messageTime = message.sendTime,
+                messageStatus = message.status,
+                messageIsMine = message.isMine,
+                onFailClick = { onFailClick(message) },
                 modifier = Modifier
                     .align(messageInfoAlignment)
                     .padding(start = messagePaddingStart, end = messagePaddingEnd)
@@ -165,27 +170,60 @@ fun ImageMessagesLayout(
     }
 }
 
+fun generateRandomWaveformData(size: Int = 50): List<Float> {
+    return List(size) { Random.nextFloat() * 0.8f + 0.2f }
+}
+
 @Composable
-@Preview()
-private fun PreviewBaseMessageLayout() {
-    MenaTheme {
-        Box(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            ImageMessagesLayout(
-                messages = listOf(MessageUiState(
-                    Uuid.random(),
-                    Uuid.random(),
-                    sendTime = LocalDateTime.now(),
-                    status = MessageStatus.READ,
-                    isMine = false,
-                    content = MessageContent.Text("Good Morning!")
-                )),
-                showMessageInfo = true,
-                isMarkedLastInSeries = true,
-                onMessageImageClick = { message,index -> }
+fun PLayButton(
+    onClick: () -> Unit,
+    isLoading: Boolean = false,
+    modifier: Modifier = Modifier,
+) {
+    Button(
+        onClick = onClick,
+        containerColor = Theme.colorScheme.primary.primary,
+        contentColor = Theme.colorScheme.primary.onPrimary,
+        shape = RoundedCornerShape(Theme.radius.full),
+        contentPadding = PaddingValues(7.dp),
+        modifier = modifier
+    ) {
+        if (isLoading) {
+            /*            CircularProgressIndicator(
+                            modifier = Modifier.size(18.dp),
+                            color = Theme.colorScheme.primary.onPrimary,
+                            strokeWidth = 2.dp
+                        )*/
+        } else {
+            Icon(
+                painter = painterResource(Res.drawable.ic_play),
+                tint = it,
+                contentDescription = null,
+                modifier = Modifier.size(18.dp)
             )
         }
     }
 }
 
+@Preview
+@Composable
+fun VoiceMessagesLayoutPreview() {
+    MenaTheme {
+        VoiceMessagesLayout(
+            message = MessageUiState(
+                sendTime = LocalDateTime.now(),
+                status = MessageStatus.SENT,
+                isMine = true,
+                content = MessageContent.Audio(""),
+                isVisibleMessageInfo = true,
+                isLastInSeries = true
+            ),
+            showMessageInfo = true,
+            isMarkedLastInSeries = true,
+            progress = 0.5f,
+            totalSeconds = 5,
+            onPlayClick = {},
+            onFailClick = {}
+        )
+    }
+}
