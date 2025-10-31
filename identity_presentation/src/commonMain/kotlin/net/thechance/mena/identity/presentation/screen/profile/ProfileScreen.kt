@@ -44,7 +44,7 @@ import net.thechance.mena.identity.presentation.screen.profile.components.Invite
 import net.thechance.mena.identity.presentation.screen.profile.components.OtherSettingsSection
 import net.thechance.mena.identity.presentation.screen.profile.components.ProfileInfoContainer
 import net.thechance.mena.identity.presentation.screen.profile.components.ShareIcon
-import net.thechance.mena.identity.presentation.screen.register.phoneEntry.RegisterPhoneEntryScreen
+import net.thechance.mena.identity.presentation.screen.notImplemented.NotImplementedScreen
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -211,15 +211,15 @@ class ProfileScreen : BaseScreen<
             }
 
             ProfileScreenUIEffect.NavigateContactUsScreen -> {
-                navigator.push(RegisterPhoneEntryScreen())
+                navigator.push(NotImplementedScreen())
             }
 
             ProfileScreenUIEffect.NavigateToChangePasswordScreen -> {
-                navigator.push(RegisterPhoneEntryScreen())
+                navigator.push(NotImplementedScreen())
             }
 
             ProfileScreenUIEffect.NavigateToPrivacyAndPolicyScreen -> {
-                navigator.push(RegisterPhoneEntryScreen())
+                navigator.push(NotImplementedScreen())
             }
         }
     }
