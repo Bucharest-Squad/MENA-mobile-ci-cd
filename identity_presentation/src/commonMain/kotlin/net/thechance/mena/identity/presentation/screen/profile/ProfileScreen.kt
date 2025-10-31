@@ -47,7 +47,6 @@ import net.thechance.mena.identity.presentation.screen.profile.components.Profil
 import net.thechance.mena.identity.presentation.screen.profile.components.ShareIcon
 import net.thechance.mena.identity.presentation.screen.notImplemented.NotImplementedScreen
 import net.thechance.mena.identity.presentation.screen.profile.components.ShareQrCode
-import net.thechance.mena.identity.presentation.screen.register.RegisterScreen
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
