@@ -22,20 +22,20 @@ import mena.identity_presentation.generated.resources.login_prompt
 import mena.identity_presentation.generated.resources.password
 import mena.identity_presentation.generated.resources.register_now
 import mena.identity_presentation.generated.resources.register_prompt
-import mena.identity_presentation.generated.resources.you_are_new
 import mena.identity_presentation.generated.resources.welcome_back
+import mena.identity_presentation.generated.resources.you_are_new
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
 import net.thechance.mena.designsystem.presentation.component.button.TextButton
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.identity.presentation.base.BaseScreen
-import net.thechance.mena.identity.presentation.screen.countryPicker.CountryPicker
 import net.thechance.mena.identity.presentation.components.AuthPrompt
 import net.thechance.mena.identity.presentation.components.AuthScreenContainer
 import net.thechance.mena.identity.presentation.components.ErrorSnackBar
 import net.thechance.mena.identity.presentation.components.LabeledInputPassword
 import net.thechance.mena.identity.presentation.components.LabeledInputPhoneNumber
 import net.thechance.mena.identity.presentation.components.PageDescription
+import net.thechance.mena.identity.presentation.screen.countryPicker.CountryPicker
 import net.thechance.mena.identity.presentation.screen.forgetPassword.ForgetPasswordScreen
 import net.thechance.mena.identity.presentation.screen.register.phoneEntry.RegisterPhoneEntryScreen
 import org.jetbrains.compose.resources.painterResource
@@ -119,7 +119,7 @@ class LoginScreen : BaseScreen<
                     )
                     AuthPrompt(
                         modifier = Modifier.imePadding(),
-                        message = stringResource(Res.string.register_prompt),
+                        message = stringResource(Res.string.you_are_new),
                         actionLabel = stringResource(Res.string.register_now),
                         onActionClick = listener::onRegisterClicked
                     )
