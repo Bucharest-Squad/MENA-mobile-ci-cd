@@ -13,7 +13,6 @@ import cafe.adriel.voyager.navigator.Navigator
 import mena.identity_presentation.generated.resources.Res
 import mena.identity_presentation.generated.resources.did_not_receive_code
 import mena.identity_presentation.generated.resources.otp_code
-import mena.identity_presentation.generated.resources.register
 import mena.identity_presentation.generated.resources.register_otp_prompt
 import mena.identity_presentation.generated.resources.resend
 import mena.identity_presentation.generated.resources.resend_timer
@@ -25,7 +24,6 @@ import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.identity.presentation.base.BaseScreen
-import net.thechance.mena.identity.presentation.components.AuthAppBar
 import net.thechance.mena.identity.presentation.components.AuthPrompt
 import net.thechance.mena.identity.presentation.components.AuthScreenContainer
 import net.thechance.mena.identity.presentation.components.ErrorSnackBar
@@ -96,15 +94,12 @@ data class RegisterOtpScreen(
                         .padding(bottom = Theme.spacing._12, top = Theme.spacing._24)
                 )
 
-                val minutes = state.timer.toInt() / 60
-                val seconds = (state.timer.toInt() % 60).toString().padStart(2, '0')
-
                 AuthPrompt(
                     message = stringResource(Res.string.did_not_receive_code),
                     actionLabel = if (state.isResendEnabled) stringResource(Res.string.resend) else stringResource(
                         Res.string.resend_timer,
-                        minutes,
-                        seconds
+                        getTimerMinutes(state.timer),
+                        getTimerSeconds(state.timer)
                     ),
                     onActionClick = listener::onClickResend,
                     isEnabled = state.isResendEnabled,
@@ -130,6 +125,15 @@ data class RegisterOtpScreen(
             }
         }
     }
+}
+
+private fun getTimerMinutes(timer: String): Int {
+    return timer.toIntOrNull()?.div(60) ?: 0
+}
+
+private fun getTimerSeconds(timer: String): String {
+    val totalSeconds = timer.toIntOrNull() ?: 0
+    return (totalSeconds % 60).toString().padStart(2, '0')
 }
 
 @Preview
