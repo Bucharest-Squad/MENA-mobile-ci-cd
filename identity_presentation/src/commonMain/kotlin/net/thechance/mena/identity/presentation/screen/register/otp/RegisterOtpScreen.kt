@@ -59,14 +59,7 @@ data class RegisterOtpScreen(
         state: RegisterOtpUIState,
         listener: RegisterOtpInteractionListener
     ) {
-        Scaffold(
-            topBar = {
-                AuthAppBar(
-                    title = stringResource(Res.string.register),
-                    onClickBack = listener::onClickBack
-                )
-            }
-        ) {
+        Scaffold {
             AuthScreenContainer {
                 PageDescription(
                     title = stringResource(Res.string.validation_code),

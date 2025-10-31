@@ -69,12 +69,6 @@ class RegisterPhoneEntryScreen : BaseScreen<
                         onClickConfirm = listener::onSelectCountryItem,
                     )
                 }
-            },
-            topBar = {
-                AuthAppBar(
-                    title = stringResource(Res.string.register),
-                    onClickBack = listener::onClickBack
-                )
             }
         ) {
             AuthScreenContainer {

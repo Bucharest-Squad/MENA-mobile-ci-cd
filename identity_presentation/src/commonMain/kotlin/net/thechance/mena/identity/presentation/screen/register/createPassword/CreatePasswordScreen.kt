@@ -48,14 +48,7 @@ class CreatePasswordScreen : BaseScreen<
         state: CreatePasswordUIState,
         listener: CreatePasswordInteractionListener
     ) {
-        Scaffold(
-            topBar = {
-                AuthAppBar(
-                    title = stringResource(Res.string.register),
-                    onClickBack = listener::onClickBack
-                )
-            }
-        ) {
+        Scaffold {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
