@@ -30,7 +30,7 @@ import org.maplibre.compose.map.MaplibreMap
 import org.maplibre.compose.style.BaseStyle
 
 @Composable
-fun NearbyMosquesScreen(
+internal fun NearbyMosquesScreen(
     viewModel: NearbyMosquesViewModel = koinViewModel()
 ) {
 

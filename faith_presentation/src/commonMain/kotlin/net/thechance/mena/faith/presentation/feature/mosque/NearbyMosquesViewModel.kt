@@ -6,7 +6,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.thechance.mena.faith.presentation.base.BaseViewModel
 
-class NearbyMosquesViewModel() :
+internal class NearbyMosquesViewModel() :
     BaseViewModel<NearbyMosquesMapUiState, NearbyMosquesEffect>(
         NearbyMosquesMapUiState()
     ), NearbyMosquesInteractionListener {
