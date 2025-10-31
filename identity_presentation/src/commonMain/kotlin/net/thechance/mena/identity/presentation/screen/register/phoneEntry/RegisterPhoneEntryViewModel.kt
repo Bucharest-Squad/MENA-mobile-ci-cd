@@ -5,7 +5,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.delay
 import net.thechance.mena.identity.domain.exception.AuthenticationException
-import net.thechance.mena.identity.domain.exception.PhoneNumberAlreadyExistsException
 import net.thechance.mena.identity.domain.repository.RegisterRepository
 import net.thechance.mena.identity.domain.useCase.LoginUseCase
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
@@ -107,10 +106,6 @@ class RegisterPhoneEntryViewModel(
 
     private fun mapErrorMessage(throwable: Throwable): StringResource {
         return when (throwable) {
-            is PhoneNumberAlreadyExistsException -> mapAuthenticationErrorToMessage(
-                handleAuthenticationException(throwable)
-            )
-
             is AuthenticationException -> mapAuthenticationErrorToMessage(
                 handleAuthenticationException(throwable)
             )
