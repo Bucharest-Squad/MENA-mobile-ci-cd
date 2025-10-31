@@ -3,7 +3,7 @@ package net.thechance.mena.faith.presentation.feature.mosque
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
-internal data class NearbyMosquesMapUiState(
+data class NearbyMosquesMapUiState(
     val mosques: List<MosqueUiState> = emptyList(),
     val mosquesSearchResults: List<MosqueUiState> = emptyList(),
     val centerOfMap: Coordinate? = null,
@@ -15,7 +15,7 @@ internal data class NearbyMosquesMapUiState(
 )
 
 @OptIn(ExperimentalUuidApi::class)
-internal data class MosqueUiState(
+data class MosqueUiState(
     val id: Uuid,
     val name: String,
     val imageUrl: String,
@@ -23,7 +23,7 @@ internal data class MosqueUiState(
     val coordinate: Coordinate
 )
 
-internal data class Coordinate(
+data class Coordinate(
     val latitude: Double,
     val longitude: Double,
 )
