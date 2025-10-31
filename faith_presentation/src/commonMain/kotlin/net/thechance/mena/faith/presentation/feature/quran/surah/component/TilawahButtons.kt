@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -122,39 +121,6 @@ fun TilawahButtons(
                 modifier = Modifier.clickable(onClick = onRepeatClick)
             )
         }
-    }
-}
-
-@Composable
-fun ReciterBox(reciterName: String) {
-    Box(
-        modifier = Modifier
-            .wrapContentSize()
-            .clip(
-                RoundedCornerShape(
-                    topStart = Theme.radius.sm,
-                    topEnd = Theme.radius.sm
-                )
-            )
-            .background(Theme.colorScheme.background.surfaceLow)
-    ) {
-        Text(
-            text = reciterName,
-            style = Theme.typography.label.medium,
-            color = Theme.colorScheme.shadePrimary,
-            modifier = Modifier.padding(
-                vertical = Theme.spacing._4,
-                horizontal = Theme.spacing._16
-            )
-        )
-    }
-}
-
-@Preview
-@Composable
-private fun ReciterPreview() {
-    QuranTheme {
-        ReciterBox(reciterName = "Maytham Al-Tammar")
     }
 }
 
