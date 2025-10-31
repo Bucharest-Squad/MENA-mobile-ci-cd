@@ -1,11 +1,14 @@
 package net.thechance.mena.identity.presentation.screen.register.phoneEntry
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -72,41 +75,45 @@ class RegisterPhoneEntryScreen : BaseScreen<
                 }
             }
         ) {
-            AuthScreenContainer {
-                PageDescription(
-                    title = stringResource(Res.string.register_prompt_title),
-                    subtitle = stringResource(Res.string.register_prompt_description),
-                )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .systemBarsPadding()
+            ) {
+                AuthScreenContainer {
+                    PageDescription(
+                        title = stringResource(Res.string.register_prompt_title),
+                        subtitle = stringResource(Res.string.register_prompt_description),
+                    )
 
-                LabeledInputPhoneNumber(
-                    phoneNumber = state.phoneNumber,
-                    onPhoneChange = listener::onChangePhone,
-                    countryCode = state.currentCountry.callingCode,
-                    countryFlag = painterResource(state.currentCountry.flagImage),
-                    onClickCountry = listener::onClickCountry
-                )
+                    LabeledInputPhoneNumber(
+                        phoneNumber = state.phoneNumber,
+                        onPhoneChange = listener::onChangePhone,
+                        countryCode = state.currentCountry.callingCode,
+                        countryFlag = painterResource(state.currentCountry.flagImage),
+                        onClickCountry = listener::onClickCountry
+                    )
 
-                Spacer(modifier = Modifier.weight(1f))
+                    Spacer(modifier = Modifier.weight(1f))
 
-                PrimaryButton(
-                    text = stringResource(Res.string.`continue`),
-                    onClick = listener::onClickContinue,
-                    isEnabled = state.isContinueEnabled,
-                    isLoading = state.isLoading,
-                    contentPadding = PaddingValues(vertical = 13.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = Theme.spacing._12, top = Theme.spacing._24)
-                        .imePadding()
-                )
+                    PrimaryButton(
+                        text = stringResource(Res.string.`continue`),
+                        onClick = listener::onClickContinue,
+                        isEnabled = state.isContinueEnabled,
+                        isLoading = state.isLoading,
+                        contentPadding = PaddingValues(vertical = 13.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = Theme.spacing._12)
+                    )
 
-                AuthPrompt(
-                    modifier = Modifier
-                        .imePadding(),
-                    message = stringResource(Res.string.you_already_have_account),
-                    actionLabel = stringResource(Res.string.login),
-                    onActionClick = listener::onClickLogin
-                )
+                    AuthPrompt(
+                        modifier = Modifier.imePadding(),
+                        message = stringResource(Res.string.you_already_have_account),
+                        actionLabel = stringResource(Res.string.login),
+                        onActionClick = listener::onClickLogin
+                    )
+                }
             }
         }
         ErrorSnackBar(
