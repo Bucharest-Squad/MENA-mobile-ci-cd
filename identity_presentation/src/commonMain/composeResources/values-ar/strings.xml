@@ -23,6 +23,7 @@
     <string name="uae">الإمارات العربية المتحدة</string>
     <string name="yemen">اليمن</string>
     <string name="register_prompt">يرجى إدخال رقم هاتفك لإرسال رمز التحقق</string>
+    <string name="register_prompt_description">يرجى إدخال رقم هاتفك لإرسال رمز التحقق (OTP) إليك</string>
     <string name="you_are_new">أنت جديد؟</string>
     <string name="register_prompt_title">إنشاء حساب</string>
     <string name="register_otp_prompt">يرجى إدخال رمز التحقق (OTP) الذي تم إرساله إلى رقم هاتفك وينتهي بـ **%1$s</string>

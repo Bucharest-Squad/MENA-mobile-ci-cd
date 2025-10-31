@@ -11,6 +11,7 @@
     <string name="you_are_new">You are new?</string>
     <string name="register_prompt">You are new?</string>
     <string name="register_prompt_title">Create account</string>
+    <string name="register_prompt_description">please enter your phone number to send you OTP code</string>
     <string name="register_otp_prompt">please enter the OTP code that send to your phone number end with **%1$s</string>
     <string name="create_password">Set your password</string>
     <string name="create_password_title">Complete your profile</string>

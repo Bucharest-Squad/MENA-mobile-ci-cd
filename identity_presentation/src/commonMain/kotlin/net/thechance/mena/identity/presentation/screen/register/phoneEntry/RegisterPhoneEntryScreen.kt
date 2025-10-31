@@ -19,6 +19,7 @@ import mena.identity_presentation.generated.resources.register_prompt
 import mena.identity_presentation.generated.resources.register_prompt_title
 import mena.identity_presentation.generated.resources.you_already_have_account
 import mena.identity_presentation.generated.resources.login
+import mena.identity_presentation.generated.resources.register_prompt_description
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
@@ -74,7 +75,7 @@ class RegisterPhoneEntryScreen : BaseScreen<
             AuthScreenContainer {
                 PageDescription(
                     title = stringResource(Res.string.register_prompt_title),
-                    subtitle = stringResource(Res.string.register_prompt),
+                    subtitle = stringResource(Res.string.register_prompt_description),
                 )
 
                 LabeledInputPhoneNumber(
