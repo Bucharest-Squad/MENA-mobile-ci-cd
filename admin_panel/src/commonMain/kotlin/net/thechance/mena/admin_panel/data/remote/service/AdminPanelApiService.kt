@@ -2,13 +2,12 @@ package net.thechance.mena.admin_panel.data.remote.service
 
 import de.jensklingenberg.ktorfit.Response
 import de.jensklingenberg.ktorfit.http.Body
-import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.POST
 import net.thechance.mena.admin_panel.data.remote.dto.authentication.AdminAuthenticationResponse
 import net.thechance.mena.admin_panel.data.remote.dto.authentication.LoginRequestDto
 import net.thechance.mena.admin_panel.data.remote.dto.authentication.RefreshTokenRequestDto
 
-interface ApiService {
+interface AdminPanelApiService {
 
     @POST(LOGIN_ENDPOINT)
     suspend fun login(@Body loginRequest: LoginRequestDto):

@@ -68,8 +68,9 @@ class NetworkClient(
                     }
                     refreshTokens {
                         BearerTokens(
-                            accessToken = settings.accessToken,
-                            refreshToken = adminAuthentication.refreshAccessToken()
+                            refreshToken = adminAuthentication.refreshAccessToken(),
+                            accessToken = settings.accessToken
+
                         )
                     }
                 }

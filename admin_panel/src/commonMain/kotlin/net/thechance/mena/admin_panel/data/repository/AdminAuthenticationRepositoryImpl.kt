@@ -4,7 +4,7 @@ import com.russhwolf.settings.Settings
 import net.thechance.mena.admin_panel.data.remote.dto.authentication.AdminAuthenticationResponse
 import net.thechance.mena.admin_panel.data.remote.dto.authentication.LoginRequestDto
 import net.thechance.mena.admin_panel.data.remote.dto.authentication.RefreshTokenRequestDto
-import net.thechance.mena.admin_panel.data.remote.service.ApiService
+import net.thechance.mena.admin_panel.data.remote.service.AdminPanelApiService
 import net.thechance.mena.admin_panel.data.utils.accessToken
 import net.thechance.mena.admin_panel.data.utils.executeApiSafely
 import net.thechance.mena.admin_panel.data.utils.refreshToken
@@ -13,15 +13,16 @@ import org.koin.core.annotation.Single
 
 @Single
 class AdminAuthenticationRepositoryImpl(
-    val apiService: ApiService,
+    private val adminPanelApiService: AdminPanelApiService,
     private val settings: Settings
-) :
-    AdminAuthenticationRepository {
+) : AdminAuthenticationRepository {
 
     override suspend fun login(userName: String, password: String) {
         val loginResponse: AdminAuthenticationResponse =
             executeApiSafely<AdminAuthenticationResponse> {
-                apiService.login(LoginRequestDto(userName = userName, password = password))
+                adminPanelApiService.login(
+                    LoginRequestDto(userName = userName, password = password)
+                )
             }
         saveAuthTokens(authenticationInfo = loginResponse)
     }
@@ -29,7 +30,7 @@ class AdminAuthenticationRepositoryImpl(
     override suspend fun refreshAccessToken(): String {
         val refreshResponse: AdminAuthenticationResponse =
             executeApiSafely<AdminAuthenticationResponse> {
-                apiService.refreshAccessToken(
+                adminPanelApiService.refreshAccessToken(
                     RefreshTokenRequestDto(settings.refreshToken)
                 )
             }
@@ -45,5 +46,4 @@ class AdminAuthenticationRepositoryImpl(
         settings.accessToken = authenticationInfo.accessToken
         settings.refreshToken = authenticationInfo.refreshToken
     }
-
 }
