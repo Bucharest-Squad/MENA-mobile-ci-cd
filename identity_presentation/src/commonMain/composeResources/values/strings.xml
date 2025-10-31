@@ -189,6 +189,7 @@
     <string name="error_first_name_required">First name is required</string>
     <string name="error_last_name_required">Last name is required</string>
     <string name="error_password_mismatch">Passwords do not match</string>
+    <string name="error_password_validation">Password must be at least 8 characters long and contain at least one uppercase letter and one digit.</string>
     <string name="error_camera_permission_required">Camera permission is required</string>
     <string name="error_invalid_otp">Incorrect OTP.</string>
     <string name="error_too_many_requests">Too many requests. Please try again later.</string>

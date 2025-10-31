@@ -10,6 +10,6 @@ data class CreatePasswordUIState(
     val isLoading: Boolean = false,
     val isCreateEnabled: Boolean = false,
     val errorMessage: StringResource? = null,
-    val newPasswordErrorMessage: String? = null,
+    val newPasswordErrorMessage: StringResource? = null,
     val confirmPasswordErrorMessage: String? = null
 )

@@ -6,6 +6,7 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.delay
 import mena.identity_presentation.generated.resources.Res
 import mena.identity_presentation.generated.resources.error_password_mismatch
+import mena.identity_presentation.generated.resources.error_password_validation
 import net.thechance.mena.identity.domain.exception.AuthenticationException
 import net.thechance.mena.identity.domain.repository.RegisterRepository
 import net.thechance.mena.identity.domain.useCase.validation.mobileNumber.PasswordValidator
@@ -98,7 +99,7 @@ class CreatePasswordViewModel(
 
             copy(
                 newPasswordErrorMessage = if (!isPasswordSecure)
-                    "Password must be at least 8 characters long and contain at least one uppercase letter and one digit."
+                    Res.string.error_password_validation
                 else null,
                 isCreateEnabled = isPasswordsMatch && isPasswordSecure
             )

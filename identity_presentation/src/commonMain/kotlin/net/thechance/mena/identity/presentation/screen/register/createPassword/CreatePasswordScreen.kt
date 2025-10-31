@@ -66,7 +66,7 @@ class CreatePasswordScreen : BaseScreen<
                         onChangePassword = listener::onChangeNewPassword,
                         onTogglePasswordVisibility = listener::onToggleNewPasswordVisibility,
                         label = stringResource(Res.string.new_password_title),
-                        errorMessage = state.newPasswordErrorMessage,
+                        errorMessage = state.newPasswordErrorMessage?.let { stringResource(it) },
                         modifier = Modifier.padding(bottom = Theme.spacing._16)
                     )
 
