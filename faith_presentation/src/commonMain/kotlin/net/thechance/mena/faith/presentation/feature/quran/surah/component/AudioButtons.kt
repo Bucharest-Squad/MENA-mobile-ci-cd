@@ -38,7 +38,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun TilawahButtons(
+fun AudioButtons(
     surahName: String,
     ayahNumber: Int,
     isPlaying: Boolean,
@@ -128,7 +128,7 @@ fun TilawahButtons(
 @Composable
 private fun TilawahButtonsPreview() {
     QuranTheme {
-        TilawahButtons(
+        AudioButtons(
             surahName = "Al-Fatiha",
             ayahNumber = 1,
             isPlaying = true,
