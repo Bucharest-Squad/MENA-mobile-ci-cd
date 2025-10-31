@@ -12,7 +12,7 @@ import net.thechance.mena.faith.presentation.designSystem.theme.QuranTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun TilawahPlayer(
+internal fun QuranPlayer(
     reciterName: String,
     surahName: String,
     ayahNumber: Int,
@@ -49,7 +49,7 @@ fun TilawahPlayer(
 @Composable
 fun ReciterBoxPreview() {
     QuranTheme {
-        TilawahPlayer(
+        QuranPlayer(
             reciterName = "Reciter Name",
             surahName = "Surah Name",
             ayahNumber = 1,
