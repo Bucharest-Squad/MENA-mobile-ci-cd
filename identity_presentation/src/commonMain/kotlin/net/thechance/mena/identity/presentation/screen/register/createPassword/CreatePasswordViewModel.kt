@@ -64,7 +64,7 @@ class CreatePasswordViewModel(
 
         updateState { copy(isLoading = true, errorMessage = null) }
         tryToExecute(
-            function = { onCreatePassword() },
+            function = ::onCreatePassword,
             onSuccess = { onCreatePasswordSuccess() },
             onError = ::onCreatePasswordError,
             dispatcher = dispatcher
