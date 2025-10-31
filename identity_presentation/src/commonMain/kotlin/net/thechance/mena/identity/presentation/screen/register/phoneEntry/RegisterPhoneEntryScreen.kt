@@ -101,8 +101,7 @@ class RegisterPhoneEntryScreen : BaseScreen<
 
                 AuthPrompt(
                     modifier = Modifier
-                        .imePadding()
-                        .padding(top = Theme.spacing._8),
+                        .imePadding(),
                     message = stringResource(Res.string.you_already_have_account),
                     actionLabel = stringResource(Res.string.login),
                     onActionClick = listener::onClickLogin
