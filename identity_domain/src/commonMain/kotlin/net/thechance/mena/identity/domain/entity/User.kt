@@ -8,7 +8,7 @@ data class User @OptIn(ExperimentalUuidApi::class) constructor(
     val id: Uuid,
     val firstName: String,
     val lastName: String,
-    val profileImageUrl: String?,
+    val profileImageUrl: String,
     val username: String,
     val birthDate: LocalDate,
     val gender: Gender

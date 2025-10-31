@@ -62,7 +62,7 @@ class EditUserProfileViewModel(
                 username = user.username.lowercase(),
                 firstName = user.firstName,
                 lastName = user.lastName,
-                profileImageUrl = user.profileImageUrl.orEmpty(),
+                profileImageUrl = user.profileImageUrl,
                 birthDate = user.birthDate,
                 gender = user.gender,
             )
@@ -140,10 +140,17 @@ class EditUserProfileViewModel(
             birthDate = value.birthDate ?: getCurrentDate(),
             gender = value.gender,
         )
+
+        if (value.profileImageUrl.isEmpty()) {
+            userRepository.deleteUserProfileImage()
+        } else {
+            userRepository.uploadUserProfileImage(
+                imageByteArray = value.profileImageBitmap?.let { imageDecoder.encodeImage(it) }
+            )
+        }
         userRepository.updateUser(
             user = user,
             shouldUpdateImage = value.shouldUpdateImage,
-            imageByteArray = value.profileImageBitmap?.let { imageDecoder.encodeImage(it) }
         )
     }
 
