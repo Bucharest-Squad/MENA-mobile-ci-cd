@@ -136,6 +136,7 @@ fun ImageMessagesLayout(
 
                         }
                         is MessageContent.Text -> return@Column
+                        is MessageContent.Audio -> TODO()
                     }
                 }
 
