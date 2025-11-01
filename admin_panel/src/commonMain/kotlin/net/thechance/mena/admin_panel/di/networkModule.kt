@@ -17,8 +17,7 @@ val networkModule = module {
     single {
         NetworkClient(
             baseUrl = get(named(BASE_URL_KEY)),
-            settings = get(),
-            refreshToken = { get<AuthenticationService>().refreshToken() }
+            authenticationService = get()
         )
     }
 

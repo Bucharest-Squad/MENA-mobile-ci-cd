@@ -20,6 +20,7 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import net.thechance.mena.admin_panel.data.utils.accessToken
 import net.thechance.mena.admin_panel.data.utils.refreshToken
+import net.thechance.mena.admin_panel.domain.service.AuthenticationService
 import org.koin.core.annotation.Named
 import org.koin.core.annotation.Provided
 
@@ -28,9 +29,7 @@ class NetworkClient(
     @Named("baseUrl")
     private val baseUrl: String,
     @Provided
-    private val settings: Settings,
-    @Provided
-    private val refreshToken: suspend () -> String
+    private val authenticationService: AuthenticationService
 ) {
 
     fun provideHttpClient(): HttpClient = buildClient()
@@ -61,16 +60,14 @@ class NetworkClient(
                 bearer {
                     loadTokens {
                         BearerTokens(
-                            refreshToken = settings.refreshToken,
-                            accessToken = settings.accessToken
+                            refreshToken = authenticationService.refreshToken(),
+                            accessToken = authenticationService.getAccessToken()
                         )
                     }
                     refreshTokens {
-                        val newAccessToken = refreshToken()
-                        settings.accessToken = newAccessToken
                         BearerTokens(
-                            accessToken = newAccessToken,
-                            refreshToken = settings.refreshToken
+                            accessToken = authenticationService.refreshToken(),
+                            refreshToken = authenticationService.getAccessToken()
                         )
                     }
                 }
