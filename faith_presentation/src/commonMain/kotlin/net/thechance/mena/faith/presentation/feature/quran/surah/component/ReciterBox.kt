@@ -1,39 +1,49 @@
 package net.thechance.mena.faith.presentation.feature.quran.surah.component
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import mena.faith_presentation.generated.resources.Res
+import mena.faith_presentation.generated.resources.cancel_icon
+import mena.faith_presentation.generated.resources.icon_cancel
+import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.faith.presentation.designSystem.theme.QuranTheme
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun ReciterBox(reciterName: String) {
-    Box(
-        modifier = Modifier
-            .wrapContentSize()
-            .clip(
-                RoundedCornerShape(
-                    topStart = Theme.radius.sm,
-                    topEnd = Theme.radius.sm
-                )
-            )
+fun ReciterBox(
+    reciterName: String,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = Theme.spacing._16)
+            .clip(RoundedCornerShape(topStart = Theme.radius.sm, topEnd = Theme.radius.sm))
             .background(Theme.colorScheme.background.surfaceLow)
+            .padding(horizontal = Theme.spacing._16, vertical = Theme.spacing._4),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = reciterName,
             style = Theme.typography.label.medium,
             color = Theme.colorScheme.shadePrimary,
-            modifier = Modifier.padding(
-                vertical = Theme.spacing._4,
-                horizontal = Theme.spacing._16
-            )
+            modifier = Modifier.weight(1f)
+        )
+
+        Icon(
+            painter = painterResource(Res.drawable.icon_cancel),
+            contentDescription = stringResource(Res.string.cancel_icon)
         )
     }
 }

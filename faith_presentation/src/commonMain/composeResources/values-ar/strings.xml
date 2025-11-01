@@ -98,5 +98,5 @@
     <string name="device_angle_to_qiblah">زاوية الجهاز إلى القبله</string>
     <string name="qibla_direction">اتجاه القبله</string>
     <string name="surah_ayah_format">%1$s: %2$d آية</string>
-
+    <string name="cancel_icon">أيقونة الإلغاء</string>
 </resources>

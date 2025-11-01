@@ -51,7 +51,7 @@ internal fun QuranPlayer(
 fun ReciterBoxPreview() {
     QuranTheme {
         QuranPlayer(
-            reciterName = "Reciter Name",
+            reciterName = "Maytham Al-Tammar",
             surahName = "Surah Name",
             ayahNumber = 1,
             isPlaying = true,
