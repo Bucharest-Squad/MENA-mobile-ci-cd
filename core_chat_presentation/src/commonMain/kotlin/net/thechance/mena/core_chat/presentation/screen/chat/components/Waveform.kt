@@ -1,15 +1,19 @@
 package net.thechance.mena.core_chat.presentation.screen.chat.components
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.unit.dp
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 
@@ -58,7 +62,6 @@ fun WaveformAnimation(
         }
     )
 }
-
 @Composable
 fun VoiceMessageWaveform(
     waveData: List<Float>,
@@ -68,6 +71,12 @@ fun VoiceMessageWaveform(
     val activeColor = Theme.colorScheme.primary.primary
     val inactiveColor = Theme.colorScheme.shadeTertiary
 
+    val animatedProgress by animateFloatAsState(
+        targetValue = progress,
+        animationSpec = tween(durationMillis = 300),
+        label = "WaveformProgress"
+    )
+
     Canvas(
         modifier = modifier
             .clipToBounds(),
@@ -75,17 +84,24 @@ fun VoiceMessageWaveform(
             if (waveData.isEmpty()) return@Canvas
 
             val totalBarAndSpacingPx = size.width / waveData.size
-
             val barWidthPx = totalBarAndSpacingPx * 0.6f
             val spacingPx = totalBarAndSpacingPx * 0.4f
 
-            val coercedProgress = progress.coerceIn(0f, 1f)
+            val coercedProgress = animatedProgress.coerceIn(0f, 1f)
 
-            val activeBarCount = (waveData.size * coercedProgress).toInt()
+            val activeBarThreshold = waveData.size * coercedProgress
 
             waveData.forEachIndexed { index, amplitude ->
+                val barColor = when {
+                    index < activeBarThreshold.toInt() -> activeColor
 
-                val barColor = if (index < activeBarCount) activeColor else inactiveColor
+                    index == activeBarThreshold.toInt() -> {
+                        val partialProgress = activeBarThreshold - index
+                        lerp(inactiveColor, activeColor, partialProgress)
+                    }
+
+                    else -> inactiveColor
+                }
 
                 val x = index * totalBarAndSpacingPx + (spacingPx / 2f)
 

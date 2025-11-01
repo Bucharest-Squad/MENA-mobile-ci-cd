@@ -2,10 +2,14 @@
 
 package net.thechance.mena.core_chat.presentation.screen.chat
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.background
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,11 +34,11 @@ import net.thechance.mena.core_chat.presentation.screen.chat.components.ChatInpu
 import net.thechance.mena.core_chat.presentation.screen.chat.components.ChatList
 import net.thechance.mena.core_chat.presentation.screen.chat.components.ChatScreenOverlays
 import net.thechance.mena.core_chat.presentation.screen.chat.components.FullImagePagerView
+import net.thechance.mena.core_chat.presentation.screen.chat.components.RecordingBar
 import net.thechance.mena.core_chat.presentation.utils.EffectHandler
 import net.thechance.mena.core_chat.presentation.utils.PaginationTrigger
 import net.thechance.mena.core_chat.presentation.utils.rememberCameraManager
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
-import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -92,16 +96,36 @@ fun ChatScreenContent(
                 )
             },
             bottomBar = {
-                ChatInputBar(
-                    userInput = state.inputMessage,
-                    onTextChange = interactions::onInputMessageChanged,
-                    onSendButtonClick = interactions::onSendMessageClicked,
-                    onAttachButtonClick = interactions::onAttachmentClicked,
-                    onVoiceRecordClick = interactions::onVoiceClicked,
+                AnimatedContent(
+                    targetState = state.isRecordingVoice,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Theme.colorScheme.background.surface)
-                )
+                        .fillMaxWidth(),
+                    transitionSpec = {
+                        if (targetState) {
+                            slideInVertically(animationSpec = tween(300)) { fullHeight -> fullHeight } + fadeIn() togetherWith
+                                    slideOutVertically(animationSpec = tween(300)) { fullHeight -> -fullHeight } + fadeOut()
+                        } else {
+                            slideInVertically(animationSpec = tween(300)) { fullHeight -> -fullHeight } + fadeIn() togetherWith
+                                    slideOutVertically(animationSpec = tween(300)) { fullHeight -> fullHeight } + fadeOut()
+                        }
+                    },
+                    label = "ChatBarAnimation"
+                ) { isRecording ->
+                    if (isRecording) {
+                        RecordingBar(
+                            onSendClick =interactions::onSendVoiceRecordClicked,
+                            onCancelClick = interactions::onCancelVoiceRecordClicked
+                        )
+                    } else {
+                        ChatInputBar(
+                            userInput = state.inputMessage,
+                            onTextChange = interactions::onInputMessageChanged,
+                            onSendButtonClick = interactions::onSendMessageClicked,
+                            onAttachButtonClick = interactions::onAttachmentClicked,
+                            onVoiceRecordClick = interactions::onVoiceClicked
+                        )
+                    }
+                }
             },
             overlays = {
                 ChatScreenOverlays(
@@ -118,6 +142,7 @@ fun ChatScreenContent(
                 chatListState = chatListState,
                 onMessageClick = interactions::onMessageClicked,
                 onMessageImageClick = interactions::onMessageImageClicked,
+                onMessageVoiceClick = interactions::onMessageVoiceClicked,
                 onFailedMessageClick = interactions::onFailedMessageClicked,
             )
         }

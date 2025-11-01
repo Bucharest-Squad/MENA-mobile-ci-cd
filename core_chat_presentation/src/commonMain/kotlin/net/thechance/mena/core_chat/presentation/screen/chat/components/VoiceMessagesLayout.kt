@@ -50,6 +50,7 @@ fun VoiceMessagesLayout(
     isMessageLoading: Boolean = false,
     progress: Float = 0f,
     totalSeconds: Long = 0,
+    waveformData: List<Float> = emptyList(),
     chatAvatarUrl: String? = null,
     onPlayClick: (MessageUiState) -> Unit = {},
     onFailClick: (MessageUiState) -> Unit = {},
@@ -87,10 +88,9 @@ fun VoiceMessagesLayout(
     val messageInfoAlignment = if (message.isMine) Alignment.Start else Alignment.End
     val messageAlignment = if (message.isMine) Alignment.End else Alignment.Start
 
-    val verticalPadding = Theme.spacing._4
 
     Column(
-        modifier = modifier,
+        modifier = modifier.padding(start = messagePaddingStart, end = messagePaddingEnd),
         verticalArrangement = Arrangement.spacedBy(Theme.spacing._2),
         horizontalAlignment = messageAlignment
     ) {
@@ -119,12 +119,10 @@ fun VoiceMessagesLayout(
             }
             Box(
                 modifier = Modifier
-                    .padding(start = messagePaddingStart, end = messagePaddingEnd)
                     .clip(messageShape)
-
                     .background(color = messageBackground, shape = messageShape)
                     .padding(
-                        horizontal = verticalPadding,
+                        horizontal =  Theme.spacing._8,
                         vertical = Theme.spacing._4
                     )
             ) {
@@ -139,7 +137,7 @@ fun VoiceMessagesLayout(
                     )
 
                     VoiceMessageWaveform(
-                        waveData = generateRandomWaveformData(),
+                        waveData = waveformData.ifEmpty { generateRandomWaveformData() },
                         progress = progress,
                         modifier = Modifier.weight(1f).height(44.dp).padding(vertical = Theme.spacing._4)
                     )
@@ -164,7 +162,7 @@ fun VoiceMessagesLayout(
                 onFailClick = { onFailClick(message) },
                 modifier = Modifier
                     .align(messageInfoAlignment)
-                    .padding(start = messagePaddingStart, end = messagePaddingEnd)
+
             )
         }
     }
@@ -222,6 +220,7 @@ fun VoiceMessagesLayoutPreview() {
             isMarkedLastInSeries = true,
             progress = 0.5f,
             totalSeconds = 5,
+            waveformData = generateRandomWaveformData(),
             onPlayClick = {},
             onFailClick = {}
         )

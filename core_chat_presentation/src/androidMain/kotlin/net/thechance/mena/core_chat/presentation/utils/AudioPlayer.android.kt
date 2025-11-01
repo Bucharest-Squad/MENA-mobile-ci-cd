@@ -51,4 +51,32 @@ class AndroidAudioPlayer(private val onError: (String) -> Unit) : AudioPlayer {
     }
 
     override fun release() { stop() }
+    
+    override fun getDuration(filePath: String): Long {
+        var tempPlayer: MediaPlayer? = null
+        return try {
+            if (!File(filePath).exists()) {
+                return 0L
+            }
+            
+            tempPlayer = MediaPlayer()
+            tempPlayer.setDataSource(filePath)
+            tempPlayer.prepare()
+            (tempPlayer.duration).toLong()
+        } catch (e: Exception) {
+            onError("Failed to get audio duration: ${e.message}")
+            0L
+        } finally {
+            tempPlayer?.release()
+        }
+    }
+    
+    override fun getCurrentPosition(): Long {
+        return try {
+            (mediaPlayer?.currentPosition)?.toLong() ?: 0L
+        } catch (e: Exception) {
+            onError("Failed to get current position: ${e.message}")
+            0L
+        }
+    }
 }

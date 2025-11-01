@@ -4,6 +4,8 @@ interface AudioPlayer {
     fun play(filePath: String)
     fun stop()
     fun release()
+    fun getDuration(filePath: String): Long
+    fun getCurrentPosition(): Long
 }
 
 expect fun createAudioPlayer(onError: (String) -> Unit): AudioPlayer

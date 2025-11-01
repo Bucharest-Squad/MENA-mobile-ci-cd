@@ -9,6 +9,7 @@ import dev.icerock.moko.permissions.PermissionsController
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -113,7 +114,7 @@ class ChatViewModel(
                         state.copy(
                             chatListItems = uiList
                                 .sortedByDescending { it.sendTime }
-                                .buildListItems()
+                                .buildListItems(audioPlayer)
                         )
                     }
                 }
@@ -378,8 +379,6 @@ class ChatViewModel(
 
     }
 
-
-
     override fun onMessageImageClicked(messages: List<MessageUiState>, initialImageIndex: Int) {
         updateState {
             it.copy(
@@ -387,6 +386,83 @@ class ChatViewModel(
                 selectedImageMessages = messages,
                 currentImageIndexForPreview = initialImageIndex
             )
+        }
+    }
+
+    override fun onMessageVoiceClicked(messageId: Uuid) {
+        val voiceMessageItem = state.value.chatListItems.find { 
+            it is ChatListItem.VoiceMessage && it.data.id == messageId 
+        } as? ChatListItem.VoiceMessage ?: return
+        
+        val message = voiceMessageItem.data
+        
+        if (voiceMessageItem.isPlaying) {
+            audioPlayer.stop()
+            updateVoiceMessageState(messageId, isPlaying = false)
+            return
+        }
+        
+        stopAnyPlayingVoiceMessage()
+
+        updateVoiceMessageState(messageId, isPlaying = true, isLoading = true)
+        
+        val audioPath = (message.content as? MessageContent.Audio)?.path ?: return
+        audioPlayer.play(audioPath)
+        
+        updateVoiceMessageState(messageId, isLoading = false)
+        
+        startProgressTracking(messageId, voiceMessageItem.duration)
+    }
+    
+    private fun startProgressTracking(messageId: Uuid, duration: Long) {
+        viewModelScope.launch {
+            while (true) {
+                delay(100)
+
+                val voiceMessageItem = state.value.chatListItems.find {
+                    it is ChatListItem.VoiceMessage && it.data.id == messageId 
+                } as? ChatListItem.VoiceMessage
+
+                if (voiceMessageItem == null || !voiceMessageItem.isPlaying) break
+
+                val currentPositionSeconds = audioPlayer.getCurrentPosition()
+                val progress = if (duration > 0) {
+                    currentPositionSeconds.toFloat() / duration.toFloat()
+                } else 0f
+                
+                updateVoiceMessageState(messageId, progress = progress)
+            }
+        }
+    }
+
+    private fun stopAnyPlayingVoiceMessage() {
+        state.value.chatListItems.forEach { item ->
+            if (item is ChatListItem.VoiceMessage && item.isPlaying) {
+                updateVoiceMessageState(item.data.id, isPlaying = false)
+            }
+        }
+        audioPlayer.stop()
+    }
+
+    private fun updateVoiceMessageState(
+        messageId: Uuid,
+        isPlaying: Boolean? = null,
+        isLoading: Boolean? = null,
+        progress: Float? = null
+    ) {
+        updateState { currentState ->
+            val updatedItems = currentState.chatListItems.map { item ->
+                if (item is ChatListItem.VoiceMessage && item.data.id == messageId) {
+                    item.copy(
+                        isPlaying = isPlaying ?: item.isPlaying,
+                        isLoading = isLoading ?: item.isLoading,
+                        progress = progress ?: item.progress
+                    )
+                } else {
+                    item
+                }
+            }
+            currentState.copy(chatListItems = updatedItems)
         }
     }
 
@@ -408,6 +484,40 @@ class ChatViewModel(
                 }
             )
         }
+    }
+
+    override fun onCancelVoiceRecordClicked() {
+        audioRecordRepository.stopRecording()
+        updateState { it.copy(isRecordingVoice = false) }
+    }
+
+    override fun onSendVoiceRecordClicked() {
+        val filePath = audioRecordRepository.stopRecording()
+        updateState { it.copy(isRecordingVoice = false) }
+        
+        val chatId = state.value.chatId
+        val senderId = state.value.chatRequesterId
+        
+        if (chatId == null || senderId == null || filePath.isEmpty()) {
+            showSnackBar(
+                titleStringResource = Res.string.error,
+                messageStringResource = Res.string.error_failed_to_download_image,
+                isError = true
+            )
+            return
+        }
+        
+        val content = MessageContent.Audio(filePath)
+        
+        val message = MessageUiState(
+            chatId = chatId,
+            senderId = senderId,
+            content = content
+        )
+
+
+        //todo send record
+
     }
 
     override fun onDownloadImageClicked(url: String) {
