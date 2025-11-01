@@ -1,6 +1,7 @@
 package net.thechance.mena.faith.presentation.feature.quran.surah.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -23,6 +24,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun ReciterBox(
     reciterName: String,
+    onCancelClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -45,6 +47,7 @@ fun ReciterBox(
             painter = painterResource(Res.drawable.icon_cancel),
             contentDescription = stringResource(Res.string.cancel_icon),
             modifier = modifier.size(24.dp)
+                .clickable(onClick = onCancelClick)
         )
     }
 }
@@ -53,6 +56,9 @@ fun ReciterBox(
 @Composable
 private fun ReciterPreview() {
     QuranTheme {
-        ReciterBox(reciterName = "Maytham Al-Tammar")
+        ReciterBox(
+            reciterName = "Maytham Al-Tammar",
+            onCancelClick = {}
+        )
     }
 }
