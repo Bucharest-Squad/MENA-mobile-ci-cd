@@ -19,6 +19,7 @@ internal fun QuranPlayer(
     onPlayPauseClick: () -> Unit,
     onNextClick: () -> Unit,
     onRepeatClick: () -> Unit,
+    onCancelClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -26,7 +27,10 @@ internal fun QuranPlayer(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        ReciterBox(reciterName = reciterName)
+        ReciterBox(
+            reciterName = reciterName,
+            onCancelClick = onCancelClick
+        )
         AudioButtons(
             surahName = surahName,
             ayahNumber = ayahNumber,
@@ -54,7 +58,8 @@ fun ReciterBoxPreview() {
             onPreviousClick = {},
             onPlayPauseClick = {},
             onNextClick = {},
-            onRepeatClick = {}
+            onRepeatClick = {},
+            onCancelClick = {}
         )
     }
 }
