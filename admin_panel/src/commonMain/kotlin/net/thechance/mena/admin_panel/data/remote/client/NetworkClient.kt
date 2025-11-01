@@ -22,8 +22,6 @@ import org.koin.core.annotation.Named
 import org.koin.core.annotation.Provided
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
-import org.koin.java.KoinJavaComponent.inject
-import kotlin.lazy
 
 class NetworkClient(
     @Provided
