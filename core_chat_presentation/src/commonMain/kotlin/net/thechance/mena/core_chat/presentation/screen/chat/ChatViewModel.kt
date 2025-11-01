@@ -44,7 +44,7 @@ import net.thechance.mena.core_chat.presentation.components.snackBarHost.SnackBa
 import net.thechance.mena.core_chat.presentation.shared.BaseViewModel
 import net.thechance.mena.core_chat.presentation.utils.Paginator
 import net.thechance.mena.core_chat.presentation.utils.UiText
-import net.thechance.mena.core_chat.presentation.utils.createAudioPlayer
+import net.thechance.mena.core_chat.presentation.utils.AudioPlayer
 import net.thechance.mena.core_chat.presentation.utils.encodeToByteArrayWithCompressionToMaxSize
 import net.thechance.mena.core_chat.presentation.utils.getUuidOrNull
 import org.jetbrains.compose.resources.StringResource
@@ -60,6 +60,7 @@ class ChatViewModel(
     private val imageDownloaderService: ImageDownloaderService,
     chatArgs: ChatArgs,
     private val permissionsController: PermissionsController,
+    private val audioPlayer: AudioPlayer,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : BaseViewModel<ChatScreenState, ChatScreenEffect>(ChatScreenState(), dispatcher),
     ChatInteractionListener {
@@ -67,8 +68,6 @@ class ChatViewModel(
     private val _messages = MutableStateFlow<List<Message>>(emptyList())
     private val messages = _messages.asStateFlow()
     private val messagesMutex = Mutex()
-    private val audioPlayer = createAudioPlayer { errorMessage ->
-    }
     private var hasResentPendingMessages = false
 
     private val chatHistoryPaginator by lazy {
