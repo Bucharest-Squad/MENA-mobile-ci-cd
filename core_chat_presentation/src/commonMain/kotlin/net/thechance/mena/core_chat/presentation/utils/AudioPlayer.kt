@@ -9,3 +9,5 @@ interface AudioPlayer {
 }
 
 expect fun createAudioPlayer(onError: (String) -> Unit): AudioPlayer
+
+expect fun convertAudioFileToByteArray(filePath: String): ByteArray

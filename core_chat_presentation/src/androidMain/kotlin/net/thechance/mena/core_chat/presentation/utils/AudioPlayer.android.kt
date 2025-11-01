@@ -7,6 +7,10 @@ actual fun createAudioPlayer(onError: (String) -> Unit): AudioPlayer {
     return AndroidAudioPlayer(onError)
 }
 
+actual fun convertAudioFileToByteArray(filePath: String): ByteArray {
+    return runCatching { File(filePath).readBytes() }.getOrDefault(byteArrayOf())
+}
+
 class AndroidAudioPlayer(private val onError: (String) -> Unit) : AudioPlayer {
     private var mediaPlayer: MediaPlayer? = null
 
