@@ -56,8 +56,7 @@ fun AdminPanelSideBar(
             Icon(
                 painter = painterResource(Res.drawable.logout_bar_icon),
                 contentDescription = stringResource(Res.string.logout),
-                modifier = Modifier
-                    .size(24.dp)
+                modifier = Modifier.size(24.dp)
             )
         }
     }
