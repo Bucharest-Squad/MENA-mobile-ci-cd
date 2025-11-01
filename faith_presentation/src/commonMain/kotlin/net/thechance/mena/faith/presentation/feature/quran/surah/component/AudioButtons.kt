@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -82,7 +83,8 @@ fun AudioButtons(
                 painter = painterResource(Res.drawable.icon_reciter),
                 contentDescription = stringResource(Res.string.reciters),
                 tint = Theme.colorScheme.primary.primary,
-                modifier = Modifier.clickable(onClick = onReciterClick)
+                modifier = Modifier.size(24.dp)
+                    .clickable(onClick = onReciterClick)
             )
 
             Row(
@@ -93,7 +95,8 @@ fun AudioButtons(
                     painter = painterResource(Res.drawable.icon_previous),
                     contentDescription = stringResource(Res.string.previous_ayah),
                     tint = Theme.colorScheme.primary.primary,
-                    modifier = Modifier.clickable(onClick = onPreviousClick)
+                    modifier = Modifier.size(24.dp)
+                        .clickable(onClick = onPreviousClick)
                 )
 
                 Icon(
@@ -104,14 +107,16 @@ fun AudioButtons(
                         if (isPlaying) Res.string.pause else Res.string.play
                     ),
                     tint = Theme.colorScheme.primary.primary,
-                    modifier = Modifier.clickable(onClick = onPlayPauseClick)
+                    modifier = Modifier.size(24.dp)
+                        .clickable(onClick = onPlayPauseClick)
                 )
 
                 Icon(
                     painter = painterResource(Res.drawable.icon_next),
                     contentDescription = stringResource(Res.string.next_ayah),
                     tint = Theme.colorScheme.primary.primary,
-                    modifier = Modifier.clickable(onClick = onNextClick)
+                    modifier = Modifier.size(24.dp)
+                        .clickable(onClick = onNextClick)
                 )
             }
 
@@ -119,7 +124,8 @@ fun AudioButtons(
                 painter = painterResource(Res.drawable.icon_repeat),
                 contentDescription = stringResource(Res.string.repeat),
                 tint = Theme.colorScheme.primary.primary,
-                modifier = Modifier.clickable(onClick = onRepeatClick)
+                modifier = Modifier.size(24.dp)
+                    .clickable(onClick = onRepeatClick)
             )
         }
     }
