@@ -2,14 +2,12 @@ package net.thechance.mena.faith.presentation.feature.quran.surah.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import mena.faith_presentation.generated.resources.Res
 import mena.faith_presentation.generated.resources.cancel_icon
@@ -29,10 +27,10 @@ fun ReciterBox(
 ) {
     Row(
         modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = Theme.spacing._16)
-            .clip(RoundedCornerShape(topStart = Theme.radius.sm, topEnd = Theme.radius.sm))
-            .background(Theme.colorScheme.background.surfaceLow)
+            .background(
+                color = Theme.colorScheme.background.surfaceLow,
+                shape = RoundedCornerShape(topStart = Theme.radius.sm, topEnd = Theme.radius.sm)
+            )
             .padding(horizontal = Theme.spacing._16, vertical = Theme.spacing._4),
         verticalAlignment = Alignment.CenterVertically
     ) {

@@ -26,7 +26,7 @@ internal fun QuranPlayer(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        ReciterBox(reciterName)
+        ReciterBox(reciterName = reciterName)
         AudioButtons(
             surahName = surahName,
             ayahNumber = ayahNumber,

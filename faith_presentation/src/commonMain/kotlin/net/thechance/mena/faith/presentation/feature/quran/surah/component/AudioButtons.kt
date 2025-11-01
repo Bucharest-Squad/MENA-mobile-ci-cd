@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -53,13 +52,11 @@ fun AudioButtons(
 ) {
     Column(
         modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = Theme.spacing._16)
-            .aspectRatio(4.3f)
             .shadow(elevation = 12.dp)
             .clip(RoundedCornerShape(bottomEnd = Theme.radius.md, bottomStart = Theme.radius.md))
             .background(Theme.colorScheme.background.surfaceLow),
-        verticalArrangement = Arrangement.spacedBy(Theme.spacing._12)
+        verticalArrangement = Arrangement.spacedBy(Theme.spacing._12),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
         Text(
@@ -73,9 +70,9 @@ fun AudioButtons(
         )
 
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = Theme.spacing._16),
+            modifier = Modifier.fillMaxWidth()
+                .padding(horizontal = Theme.spacing._16)
+                .padding(bottom = Theme.spacing._12),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
