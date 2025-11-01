@@ -144,10 +144,17 @@ private fun Placeholder(title: String) {
 @Composable
 private fun tabTitle(tab: AdminPanelScreenState.CurrentTab): String {
     return when (tab) {
-        AdminPanelScreenState.CurrentTab.USERS -> stringResource(Res.string.users_management)
-        AdminPanelScreenState.CurrentTab.DUKAN_MANAGEMENT -> stringResource(Res.string.dukan_management)
-        AdminPanelScreenState.CurrentTab.DUKAN_REQUEST -> stringResource(Res.string.dukan_requests)
-        AdminPanelScreenState.CurrentTab.DEPOSIT -> stringResource(Res.string.deposit)
+        AdminPanelScreenState.CurrentTab.USERS ->
+            stringResource(Res.string.users_management)
+
+        AdminPanelScreenState.CurrentTab.DUKAN_MANAGEMENT ->
+            stringResource(Res.string.dukan_management)
+
+        AdminPanelScreenState.CurrentTab.DUKAN_REQUEST ->
+            stringResource(Res.string.dukan_requests)
+
+        AdminPanelScreenState.CurrentTab.DEPOSIT ->
+            stringResource(Res.string.deposit)
     }
 }
 
