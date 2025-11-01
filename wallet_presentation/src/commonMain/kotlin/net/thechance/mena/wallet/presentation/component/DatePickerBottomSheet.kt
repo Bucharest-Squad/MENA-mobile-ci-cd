@@ -60,6 +60,7 @@ import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.wallet.presentation.utils.AppMonth
 import net.thechance.mena.wallet.presentation.utils.getNumberOfDaysInMonth
+import net.thechance.mena.wallet.presentation.utils.today
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -74,8 +75,8 @@ fun ScaffoldScope.DatePickerBottomSheet(
     isVisible: Boolean,
     title: String = stringResource(Res.string.pick_start_date),
     minYear: Int = 2000,
-    maxYear: Int = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).year,
-    defaultSelectedDate: LocalDate? = null,
+    maxYear: Int = LocalDate.today().year,
+    defaultSelectedDate: LocalDate = LocalDate.today().date,
     onPickClick: (day: Int, month: Int, year: Int) -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier
@@ -104,28 +105,33 @@ fun ScaffoldScope.DatePickerBottomSheet(
 private fun DatePickerBottomSheetContent(
     title: String = stringResource(Res.string.pick_start_date),
     minYear: Int = 2000,
-    maxYear: Int = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).year,
+    maxYear: Int = LocalDate.today().year,
     onPickClick: (day: Int, month: Int, year: Int) -> Unit,
-    selectedDate: LocalDate?,
+    selectedDate: LocalDate,
     onDismiss: () -> Unit,
 ) {
-    if (selectedDate == null)
-        return
-
-    val monthPagerState = rememberPagerState(
-        initialPage = (selectedDate.month.number) - 1,
-        pageCount = { 12 }
-    )
+    val today =
+        remember { LocalDate.today().date }
 
     val yearPagerState = rememberPagerState(
         initialPage = (selectedDate.year) - minYear,
         pageCount = { maxYear - minYear + 1 }
     )
 
+    val monthPagerState = rememberPagerState(
+        initialPage = (selectedDate.month.number) - 1,
+        pageCount = { if (minYear + yearPagerState.currentPage == today.year) today.month.number else 12 }
+    )
+
     val currentMonth = monthPagerState.currentPage + 1
     val currentYear = minYear + yearPagerState.currentPage
     val daysInMonth = remember(currentMonth, currentYear) {
-        getNumberOfDaysInMonth(currentYear, currentMonth)
+        val totalDays = getNumberOfDaysInMonth(currentYear, currentMonth)
+        if (currentYear == today.year && currentMonth == today.month.number) {
+            today.day
+        } else {
+            totalDays
+        }
     }
 
     val dayPagerState = rememberPagerState(
