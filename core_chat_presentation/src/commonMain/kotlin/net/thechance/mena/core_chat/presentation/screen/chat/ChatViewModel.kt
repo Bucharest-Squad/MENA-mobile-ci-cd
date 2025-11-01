@@ -27,6 +27,7 @@ import mena.core_chat_presentation.generated.resources.error_get_user_info
 import mena.core_chat_presentation.generated.resources.image_saved_successfully
 import mena.core_chat_presentation.generated.resources.permission_denied_title
 import mena.core_chat_presentation.generated.resources.success
+import net.thechance.mena.core_chat.domain.entity.AudioData
 import net.thechance.mena.core_chat.domain.entity.Chat
 import net.thechance.mena.core_chat.domain.entity.ImageData
 import net.thechance.mena.core_chat.domain.entity.Message
@@ -45,6 +46,7 @@ import net.thechance.mena.core_chat.presentation.shared.BaseViewModel
 import net.thechance.mena.core_chat.presentation.utils.Paginator
 import net.thechance.mena.core_chat.presentation.utils.UiText
 import net.thechance.mena.core_chat.presentation.utils.AudioPlayer
+import net.thechance.mena.core_chat.presentation.utils.convertAudioFileToByteArray
 import net.thechance.mena.core_chat.presentation.utils.encodeToByteArrayWithCompressionToMaxSize
 import net.thechance.mena.core_chat.presentation.utils.getUuidOrNull
 import org.jetbrains.compose.resources.StringResource
@@ -233,7 +235,7 @@ class ChatViewModel(
     }
 
     private suspend fun onSendMessageSuccess(message: MessageUiState) {
-        safeUpdateMessages { messages -> messages.filter{ it.id != message.id && it.sendAt != message.sendTime } }
+        safeUpdateMessages { messages -> messages.filter { it.id != message.id && it.sendAt != message.sendTime } }
     }
 
     override fun onMessageClicked(messageId: Uuid) {
@@ -261,7 +263,7 @@ class ChatViewModel(
     }
 
     private suspend fun onDeleteFailedMessageSuccess(failedMessage: MessageUiState) {
-        safeUpdateMessages { messages -> messages.filter{ it.id != failedMessage.id } }
+        safeUpdateMessages { messages -> messages.filter { it.id != failedMessage.id } }
         updateState { state ->
             state.copy(
                 failedMessageToReSend = null,
@@ -389,37 +391,38 @@ class ChatViewModel(
     }
 
     override fun onMessageVoiceClicked(messageId: Uuid) {
-        val voiceMessageItem = state.value.chatListItems.find { 
-            it is ChatListItem.VoiceMessage && it.data.id == messageId 
+        val voiceMessageItem = state.value.chatListItems.find {
+            it is ChatListItem.VoiceMessage && it.data.id == messageId
         } as? ChatListItem.VoiceMessage ?: return
-        
+
         val message = voiceMessageItem.data
-        
+
         if (voiceMessageItem.isPlaying) {
             audioPlayer.stop()
             updateVoiceMessageState(messageId, isPlaying = false)
             return
         }
-        
+
         stopAnyPlayingVoiceMessage()
 
         updateVoiceMessageState(messageId, isPlaying = true, isLoading = true)
-        
-        val audioPath = (message.content as? MessageContent.Audio)?.path ?: return
-        audioPlayer.play(audioPath)
-        
+
+        val audioPath = (message.content as? AudioData.AudioUrl) ?: return
+
+        audioPlayer.play(audioPath.url)
+
         updateVoiceMessageState(messageId, isLoading = false)
-        
+
         startProgressTracking(messageId, voiceMessageItem.duration)
     }
-    
+
     private fun startProgressTracking(messageId: Uuid, duration: Long) {
         viewModelScope.launch {
             while (true) {
                 delay(100)
 
                 val voiceMessageItem = state.value.chatListItems.find {
-                    it is ChatListItem.VoiceMessage && it.data.id == messageId 
+                    it is ChatListItem.VoiceMessage && it.data.id == messageId
                 } as? ChatListItem.VoiceMessage
 
                 if (voiceMessageItem == null || !voiceMessageItem.isPlaying) break
@@ -428,7 +431,7 @@ class ChatViewModel(
                 val progress = if (duration > 0) {
                     currentPositionSeconds.toFloat() / duration.toFloat()
                 } else 0f
-                
+
                 updateVoiceMessageState(messageId, progress = progress)
             }
         }
@@ -493,10 +496,10 @@ class ChatViewModel(
     override fun onSendVoiceRecordClicked() {
         val filePath = audioRecordRepository.stopRecording()
         updateState { it.copy(isRecordingVoice = false) }
-        
+
         val chatId = state.value.chatId
         val senderId = state.value.chatRequesterId
-        
+
         if (chatId == null || senderId == null || filePath.isEmpty()) {
             showSnackBar(
                 titleStringResource = Res.string.error,
@@ -505,18 +508,27 @@ class ChatViewModel(
             )
             return
         }
-        
-        val content = MessageContent.Audio(filePath)
-        
+
+        val audioByteArray = convertAudioFileToByteArray(filePath)
+        if (audioByteArray.isEmpty()) {
+            showSnackBar(
+                titleStringResource = Res.string.error,
+                messageStringResource = Res.string.error_failed_to_download_image,
+                isError = true
+            )
+            return
+        }
+
+
+        val content = MessageContent.Audio(AudioData.AudioByteArray(byteArray = audioByteArray))
+
         val message = MessageUiState(
             chatId = chatId,
             senderId = senderId,
             content = content
         )
 
-
-        //todo send record
-
+        sendMessage(message)
     }
 
     override fun onDownloadImageClicked(url: String) {
@@ -611,6 +623,7 @@ class ChatViewModel(
             _messages.update(block)
         }
     }
+
     companion object {
         const val PAGE_SIZE = 40
         const val INITIAL_PAGE = 0

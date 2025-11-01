@@ -27,6 +27,7 @@ import kotlinx.datetime.LocalDateTime
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.ic_play
 import mena.core_chat_presentation.generated.resources.ic_profile_placeholder
+import net.thechance.mena.core_chat.domain.entity.AudioData
 import net.thechance.mena.core_chat.domain.entity.MessageContent
 import net.thechance.mena.core_chat.domain.entity.MessageStatus
 import net.thechance.mena.core_chat.presentation.screen.chat.MessageUiState
@@ -212,7 +213,7 @@ fun VoiceMessagesLayoutPreview() {
                 sendTime = LocalDateTime.now(),
                 status = MessageStatus.SENT,
                 isMine = true,
-                content = MessageContent.Audio(""),
+                content = MessageContent.Audio(AudioData.AudioUrl("")),
                 isVisibleMessageInfo = true,
                 isLastInSeries = true
             ),

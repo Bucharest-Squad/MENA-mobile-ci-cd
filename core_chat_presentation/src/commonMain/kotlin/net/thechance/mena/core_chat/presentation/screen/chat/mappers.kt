@@ -7,6 +7,7 @@ import kotlinx.datetime.LocalDateTime
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.today
 import mena.core_chat_presentation.generated.resources.yesterday
+import net.thechance.mena.core_chat.domain.entity.AudioData
 import net.thechance.mena.core_chat.domain.entity.Message
 import net.thechance.mena.core_chat.domain.entity.MessageContent
 import net.thechance.mena.core_chat.domain.entity.MessageStatus
@@ -98,8 +99,8 @@ fun List<MessageUiState>.toGroupedMessagesChatList(audioPlayer: AudioPlayer? = n
             }
             is MessageContent.Audio -> {
                 groupAndClear()
-                val duration = audioPlayer?.getDuration(msg.content.path) ?: 0L
-                val waveformData = generateWaveformData(msg.content.path, audioPlayer)
+                val duration = audioPlayer?.getDuration((msg.content.data as  AudioData.AudioUrl).url) ?: 0L
+                val waveformData = generateWaveformData((msg.content.data as  AudioData.AudioUrl).url, audioPlayer)
                 grouped.add(ChatListItem.VoiceMessage(
                     data = msg,
                     isPlaying = false,
