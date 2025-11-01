@@ -12,6 +12,7 @@ plugins {
     alias(libs.plugins.kover)
     alias(libs.plugins.buildkonfig)
     alias(libs.plugins.ktorfit)
+    alias(libs.plugins.mockkery)
 }
 
 val localProperties = Properties()
@@ -55,6 +56,10 @@ kotlin {
 
             //Navigation
             implementation(libs.androidx.navigation.compose)
+
+            //settings
+            implementation(libs.multiplatform.settings)
+
         }
 
         commonTest.dependencies {
