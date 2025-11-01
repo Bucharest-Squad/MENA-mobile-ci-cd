@@ -49,8 +49,8 @@ fun AdminPanelSideBar(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 32.dp)
-                .clickable { interactionListener.onLogOutClicked() },
+                .clickable { interactionListener.onLogOutClicked() }
+                .padding(bottom = 32.dp),
             contentAlignment = Alignment.Center
         ) {
             Icon(
