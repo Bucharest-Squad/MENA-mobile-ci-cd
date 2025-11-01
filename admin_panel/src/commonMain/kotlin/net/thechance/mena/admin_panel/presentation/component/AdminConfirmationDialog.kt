@@ -57,11 +57,23 @@ fun ScaffoldScope.AdminConfirmationDialog(
                 PrimaryButton(
                     text = stringResource(Res.string.cancel),
                     onClick = onDismiss,
+                    contentPadding = PaddingValues(
+                        start = 16.dp,
+                        end = 16.dp,
+                        top = 8.dp,
+                        bottom = 8.dp
+                    )
                 )
                 OutlinedButton(
                     text = confirmationButtonText,
                     onClick = onConfirm,
                     trailingIcon = confirmationIcon,
+                    contentPadding = PaddingValues(
+                        start = 16.dp,
+                        end = 16.dp,
+                        top = 8.dp,
+                        bottom = 8.dp
+                    )
                 )
             }
         },
