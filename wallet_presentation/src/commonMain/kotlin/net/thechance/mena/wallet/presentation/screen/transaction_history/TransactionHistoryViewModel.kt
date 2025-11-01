@@ -223,13 +223,7 @@ class TransactionHistoryViewModel(
     }
 
     private fun resetPaginator() {
-        updateState {
-            it.copy(
-                filterState = it.filterState.copy(isLoading = true),
-                history = emptyList(),
-                isLoading = true
-            )
-        }
+        updateState { it.copy(history = emptyList()) }
 
         paginator.reset()
         loadNextTransactions()
