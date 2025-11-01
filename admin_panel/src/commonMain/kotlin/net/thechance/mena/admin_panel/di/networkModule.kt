@@ -16,8 +16,7 @@ val networkModule = module {
     single(named(BASE_URL_KEY)) { AppEnvironment.baseUrl }
     single {
         NetworkClient(
-            baseUrl = get(named(BASE_URL_KEY)),
-            authenticationService = get()
+            baseUrl = get(named(BASE_URL_KEY))
         )
     }
 
