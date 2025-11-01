@@ -29,6 +29,7 @@ import mena.faith_presentation.generated.resources.play
 import mena.faith_presentation.generated.resources.previous_ayah
 import mena.faith_presentation.generated.resources.reciters
 import mena.faith_presentation.generated.resources.repeat
+import mena.faith_presentation.generated.resources.surah_ayah_format
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
@@ -60,7 +61,7 @@ fun AudioButtons(
     ) {
 
         Text(
-            text = "$surahName: $ayahNumber aya",
+            text = stringResource(Res.string.surah_ayah_format, surahName, ayahNumber),
             style = Theme.typography.label.small,
             color = Theme.colorScheme.shadeSecondary,
             textAlign = TextAlign.Center,
@@ -72,7 +73,7 @@ fun AudioButtons(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = Theme.spacing._24)
+                .padding(horizontal = Theme.spacing._16)
                 .padding(top = 40.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically

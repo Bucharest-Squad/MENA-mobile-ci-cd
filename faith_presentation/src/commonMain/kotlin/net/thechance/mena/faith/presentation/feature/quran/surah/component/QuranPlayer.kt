@@ -21,10 +21,11 @@ internal fun QuranPlayer(
     onPreviousClick: () -> Unit,
     onPlayPauseClick: () -> Unit,
     onNextClick: () -> Unit,
-    onRepeatClick: () -> Unit
+    onRepeatClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(Theme.spacing._16),
         verticalArrangement = Arrangement.Center,
