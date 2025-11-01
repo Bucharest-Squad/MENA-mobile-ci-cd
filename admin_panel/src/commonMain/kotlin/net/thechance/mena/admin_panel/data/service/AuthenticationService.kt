@@ -1,4 +1,4 @@
-package net.thechance.mena.admin_panel.domain.service
+package net.thechance.mena.admin_panel.data.service
 
 import net.thechance.mena.admin_panel.domain.repository.AdminAuthenticationRepository
 import org.koin.core.annotation.Single

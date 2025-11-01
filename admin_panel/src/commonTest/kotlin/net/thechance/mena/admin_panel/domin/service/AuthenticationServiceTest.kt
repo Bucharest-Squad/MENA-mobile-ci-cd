@@ -8,7 +8,7 @@ import dev.mokkery.mock
 import dev.mokkery.verifySuspend
 import kotlinx.coroutines.test.runTest
 import net.thechance.mena.admin_panel.domain.repository.AdminAuthenticationRepository
-import net.thechance.mena.admin_panel.domain.service.AuthenticationService
+import net.thechance.mena.admin_panel.data.service.AuthenticationService
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals

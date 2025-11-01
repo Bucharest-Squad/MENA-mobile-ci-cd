@@ -5,7 +5,6 @@ import de.jensklingenberg.ktorfit.converter.ResponseConverterFactory
 import io.ktor.client.HttpClient
 import net.thechance.mena.admin_panel.AppEnvironment
 import net.thechance.mena.admin_panel.data.remote.client.NetworkClient
-import net.thechance.mena.admin_panel.domain.service.AuthenticationService
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
 import org.koin.dsl.module

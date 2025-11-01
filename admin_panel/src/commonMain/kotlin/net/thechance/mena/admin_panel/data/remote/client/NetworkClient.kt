@@ -17,7 +17,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
-import net.thechance.mena.admin_panel.domain.service.AuthenticationService
+import net.thechance.mena.admin_panel.data.service.AuthenticationService
 import org.koin.core.annotation.Named
 import org.koin.core.annotation.Provided
 import org.koin.core.component.KoinComponent
