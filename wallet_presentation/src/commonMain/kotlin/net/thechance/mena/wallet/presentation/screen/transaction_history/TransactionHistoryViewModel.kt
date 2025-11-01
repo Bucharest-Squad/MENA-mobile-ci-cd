@@ -223,7 +223,14 @@ class TransactionHistoryViewModel(
     }
 
     private fun resetPaginator() {
-        updateState { it.copy(history = emptyList()) }
+        updateState {
+            it.copy(
+                filterState = it.filterState.copy(isLoading = true),
+                history = emptyList(),
+                isLoading = true
+            )
+        }
+
         paginator.reset()
         loadNextTransactions()
     }
@@ -248,9 +255,7 @@ class TransactionHistoryViewModel(
             )
         }
 
-        if (isLoading) {
-            updateState { it.copy(errorState = null) }
-        }
+        if (isLoading) { updateState { it.copy(errorState = null) } }
     }
 
     private suspend fun getPagedTransactions(page: Int): List<Transaction> =

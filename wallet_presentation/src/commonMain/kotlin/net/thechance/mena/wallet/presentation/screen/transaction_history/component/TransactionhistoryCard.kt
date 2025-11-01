@@ -29,7 +29,6 @@ fun TransactionHistoryCard(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .height(80.dp)
             .clip(RoundedCornerShape(12.dp))
             .clickable { onTransactionCardClicked() }
             .padding(vertical = 16.dp),

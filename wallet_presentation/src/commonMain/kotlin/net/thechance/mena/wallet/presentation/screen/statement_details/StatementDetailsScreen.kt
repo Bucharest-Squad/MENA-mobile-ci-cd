@@ -91,20 +91,21 @@ private fun StatementDetailsContent(
         },
         isLoading = state.isLoading,
         bottomContent = {
-                       if (state.statement.isNotEmpty()) {
-
-                PrimaryButton(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .padding(bottom = 24.dp)
-                        .height(48.dp),
-                    text = stringResource(Res.string.share_button_title),
-                    onClick = listener::onShareClicked,
-                    trailingIcon = painterResource(Res.drawable.ic_share_),
-                    iconSize = 20.dp,
-                    isLoading = false,
-                )
+            if (state.statement.isNotEmpty()) {
+                if (!state.statement.isNotEmpty()) {
+                    PrimaryButton(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                            .padding(bottom = 24.dp)
+                            .height(48.dp),
+                        text = stringResource(Res.string.share_button_title),
+                        onClick = listener::onShareClicked,
+                        trailingIcon = painterResource(Res.drawable.ic_share_),
+                        iconSize = 20.dp,
+                        isLoading = false,
+                    )
+                }
             }
         },
     ) {

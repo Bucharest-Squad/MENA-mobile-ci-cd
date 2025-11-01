@@ -28,23 +28,3 @@ fun formatAmount(number: Double): String {
         integerPart
     }
 }
-
-fun Double.formatAmountWithCommas(): String {
-    val roundedAmount = (this * 100).toLong() / 100.0
-    val intPart = roundedAmount.toLong()
-    val decimalPart = ((roundedAmount - intPart) * 100).toInt()
-
-    return if (this >= 1000) {
-        val intString = intPart.toString()
-        val withCommas = buildString {
-            intString.reversed().forEachIndexed { index, char ->
-                if (index > 0 && index % 3 == 0) append(',')
-                append(char)
-            }
-        }.reversed()
-
-        "$withCommas.${decimalPart.toString().padStart(2, '0')}"
-    } else {
-        "$intPart.${decimalPart.toString().padStart(2, '0')}"
-    }
-}

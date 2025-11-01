@@ -15,7 +15,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import kotlinx.datetime.LocalDate
 import mena.wallet_presentation.generated.resources.Res
 import mena.wallet_presentation.generated.resources.apply_filters
 import mena.wallet_presentation.generated.resources.filter_transactions
@@ -52,8 +51,7 @@ fun ScaffoldScope.TransactionFilterBottomSheet(
         isVisible = isVisible,
         onDismissRequest = onDismiss,
         skipPartiallyExpanded = true,
-        modifier = modifier
-            .navigationBarsPadding(),
+        modifier = modifier.navigationBarsPadding(),
         stickyFooterContent = {
             StickyFooterContent(
                 hasActiveFilters = uiState.hasActiveFilters,
