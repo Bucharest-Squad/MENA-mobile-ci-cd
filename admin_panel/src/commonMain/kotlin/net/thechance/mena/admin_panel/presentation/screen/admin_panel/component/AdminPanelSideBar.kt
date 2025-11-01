@@ -3,8 +3,10 @@ package net.thechance.mena.admin_panel.presentation.screen.admin_panel.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -35,8 +37,7 @@ fun AdminPanelSideBar(
         modifier = modifier
             .width(114.dp)
             .fillMaxHeight()
-            .background(Theme.colorScheme.background.surfaceLow)
-            .padding(bottom = 32.dp),
+            .background(Theme.colorScheme.background.surfaceLow),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         SideBarLogo(modifier = Modifier.padding(top = 32.dp, bottom = 48.dp))
@@ -45,14 +46,20 @@ fun AdminPanelSideBar(
             selectedTab = selectedTab,
             interactionListener = interactionListener
         )
-        Icon(
-            painter = painterResource(Res.drawable.logout_bar_icon),
-            contentDescription = stringResource(Res.string.logout),
+        Box(
             modifier = Modifier
-                .size(24.dp)
-                .padding(24.dp)
-                .clickable { interactionListener.onLogOutClicked() }
-        )
+                .fillMaxWidth()
+                .padding(bottom = 32.dp)
+                .clickable { interactionListener.onLogOutClicked() },
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                painter = painterResource(Res.drawable.logout_bar_icon),
+                contentDescription = stringResource(Res.string.logout),
+                modifier = Modifier
+                    .size(24.dp)
+            )
+        }
     }
 }
 
