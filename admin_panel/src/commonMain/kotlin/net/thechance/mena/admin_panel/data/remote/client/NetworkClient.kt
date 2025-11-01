@@ -20,15 +20,17 @@ import kotlinx.serialization.json.Json
 import net.thechance.mena.admin_panel.domain.service.AuthenticationService
 import org.koin.core.annotation.Named
 import org.koin.core.annotation.Provided
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 import org.koin.java.KoinJavaComponent.inject
+import kotlin.lazy
 
 class NetworkClient(
     @Provided
     @Named("baseUrl")
     private val baseUrl: String,
-) {
-    private val authenticationService: AuthenticationService
-            by inject(AuthenticationService::class.java)
+) : KoinComponent {
+    private val authenticationService: AuthenticationService by lazy { get() }
 
     fun provideHttpClient(): HttpClient = buildClient()
 
