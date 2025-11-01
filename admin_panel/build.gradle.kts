@@ -52,6 +52,9 @@ kotlin {
 
             // Coil
             implementation(libs.coil.compose)
+
+            //Navigation
+            implementation(libs.androidx.navigation.compose)
         }
 
         commonTest.dependencies {

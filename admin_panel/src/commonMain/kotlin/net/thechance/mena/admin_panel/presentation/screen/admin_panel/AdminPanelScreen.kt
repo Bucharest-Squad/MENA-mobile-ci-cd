@@ -32,14 +32,18 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun AdminPanelScreen(
-    viewmodel: AdminPanelViewmodel = koinViewModel()
+    viewmodel: AdminPanelViewmodel = koinViewModel(),
+    onLogoutConfirmed: () -> Unit
 ) {
     val state by viewmodel.state.collectAsStateWithLifecycle()
 
     ObserveAsEffect(
         effect = viewmodel.uiEffect,
         onEffect = { effect ->
-            onAdminPanelEffect(effect)
+            onAdminPanelEffect(
+                onLogoutConfirmed,
+                effect,
+            )
         }
     )
 
@@ -134,9 +138,12 @@ private fun Placeholder(title: String) {
 }
 
 private fun onAdminPanelEffect(
-    effect: AdminPanelScreenEffect
+    onLogoutConfirmed: () -> Unit,
+    effect: AdminPanelScreenEffect,
 ) {
     when (effect) {
-        is AdminPanelScreenEffect.NavigateToLogInScreen -> {}
+        is AdminPanelScreenEffect.NavigateToLogInScreen -> {
+            onLogoutConfirmed()
+        }
     }
 }
