@@ -18,10 +18,14 @@ import androidx.compose.ui.unit.dp
 import net.thechance.mena.admin_panel.presentation.screen.admin_panel.AdminPanelInteractionListener
 import net.thechance.mena.admin_panel.presentation.screen.admin_panel.AdminPanelScreenState
 import net.thechance.mena.admin_panel.resources.Res
+import net.thechance.mena.admin_panel.resources.deposit
+import net.thechance.mena.admin_panel.resources.dukan_management
+import net.thechance.mena.admin_panel.resources.dukan_requests
 import net.thechance.mena.admin_panel.resources.file_selected
 import net.thechance.mena.admin_panel.resources.file_unselected
 import net.thechance.mena.admin_panel.resources.shop_selected
 import net.thechance.mena.admin_panel.resources.shop_unselected
+import net.thechance.mena.admin_panel.resources.users_management
 import net.thechance.mena.admin_panel.resources.users_selected
 import net.thechance.mena.admin_panel.resources.users_unselected
 import net.thechance.mena.admin_panel.resources.wallet_selected
@@ -30,6 +34,7 @@ import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun AdminSideBarTabs(
@@ -43,28 +48,28 @@ fun AdminSideBarTabs(
         modifier = modifier
     ) {
         AdminSidebarItem(
-            title = "Dukan Management",
+            title = stringResource(Res.string.dukan_management),
             selectedIcon = painterResource(Res.drawable.shop_selected),
             notSelectedIcon = painterResource(Res.drawable.shop_unselected),
             isSelected = selectedTab == AdminPanelScreenState.CurrentTab.DUKAN_MANAGEMENT,
             onClick = interactionListener::onDukanManagementClicked
         )
         AdminSidebarItem(
-            title = "Dukan Requests",
+            title = stringResource(Res.string.dukan_requests),
             selectedIcon = painterResource(Res.drawable.file_selected),
             notSelectedIcon = painterResource(Res.drawable.file_unselected),
             isSelected = selectedTab == AdminPanelScreenState.CurrentTab.DUKAN_REQUEST,
             onClick = interactionListener::onDukanRequestClicked
         )
         AdminSidebarItem(
-            title = "Deposit",
+            title = stringResource(Res.string.deposit),
             selectedIcon = painterResource(Res.drawable.wallet_selected),
             notSelectedIcon = painterResource(Res.drawable.wallet_unselected),
             isSelected = selectedTab == AdminPanelScreenState.CurrentTab.DEPOSIT,
             onClick = interactionListener::onDepositClicked
         )
         AdminSidebarItem(
-            title = "Users Management",
+            title = stringResource(Res.string.users_management),
             selectedIcon = painterResource(Res.drawable.users_selected),
             notSelectedIcon = painterResource(Res.drawable.users_unselected),
             isSelected = selectedTab == AdminPanelScreenState.CurrentTab.USERS,

@@ -20,9 +20,13 @@ import net.thechance.mena.admin_panel.presentation.screen.admin_panel.component.
 import net.thechance.mena.admin_panel.presentation.utils.ObserveAsEffect
 import net.thechance.mena.admin_panel.resources.Res
 import net.thechance.mena.admin_panel.resources.confirm_logout_icon
+import net.thechance.mena.admin_panel.resources.deposit
+import net.thechance.mena.admin_panel.resources.dukan_management
+import net.thechance.mena.admin_panel.resources.dukan_requests
 import net.thechance.mena.admin_panel.resources.logout
 import net.thechance.mena.admin_panel.resources.logout_dialog_icon
 import net.thechance.mena.admin_panel.resources.logout_disc
+import net.thechance.mena.admin_panel.resources.users_management
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
@@ -79,7 +83,7 @@ private fun AdminPanelContent(
                         .padding(16.dp)
                 ) {
                     Text(
-                        text = state.currentTab.title,
+                        text = tabTitle(state.currentTab),
                         style = Theme.typography.title.medium,
                         color = Theme.colorScheme.shadePrimary
                     )
@@ -101,22 +105,22 @@ private fun AdminPanelContent(
 private fun CurrentTabContent(
     currentTab: AdminPanelScreenState.CurrentTab
 ) {
-    Crossfade(targetState = currentTab, label = "Tab crossfade") { tab ->
+    Crossfade(targetState = currentTab) { tab ->
         when (tab) {
             AdminPanelScreenState.CurrentTab.USERS -> {
-                Placeholder(tab.title)
+                Placeholder(tabTitle(tab))
             }
 
             AdminPanelScreenState.CurrentTab.DEPOSIT -> {
-                Placeholder(tab.title)
+                Placeholder(tabTitle(tab))
             }
 
             AdminPanelScreenState.CurrentTab.DUKAN_REQUEST -> {
-                Placeholder(tab.title)
+                Placeholder(tabTitle(tab))
             }
 
             AdminPanelScreenState.CurrentTab.DUKAN_MANAGEMENT -> {
-                Placeholder(tab.title)
+                Placeholder(tabTitle(tab))
             }
         }
     }
@@ -134,6 +138,16 @@ private fun Placeholder(title: String) {
             text = title,
             style = Theme.typography.title.large
         )
+    }
+}
+
+@Composable
+private fun tabTitle(tab: AdminPanelScreenState.CurrentTab): String {
+    return when (tab) {
+        AdminPanelScreenState.CurrentTab.USERS -> stringResource(Res.string.users_management)
+        AdminPanelScreenState.CurrentTab.DUKAN_MANAGEMENT -> stringResource(Res.string.dukan_management)
+        AdminPanelScreenState.CurrentTab.DUKAN_REQUEST -> stringResource(Res.string.dukan_requests)
+        AdminPanelScreenState.CurrentTab.DEPOSIT -> stringResource(Res.string.deposit)
     }
 }
 

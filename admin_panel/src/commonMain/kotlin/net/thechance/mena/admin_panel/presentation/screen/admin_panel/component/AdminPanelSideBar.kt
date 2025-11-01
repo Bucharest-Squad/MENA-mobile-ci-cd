@@ -15,12 +15,15 @@ import androidx.compose.ui.unit.dp
 import net.thechance.mena.admin_panel.presentation.screen.admin_panel.AdminPanelInteractionListener
 import net.thechance.mena.admin_panel.presentation.screen.admin_panel.AdminPanelScreenState
 import net.thechance.mena.admin_panel.resources.Res
+import net.thechance.mena.admin_panel.resources.app_name
+import net.thechance.mena.admin_panel.resources.logout
 import net.thechance.mena.admin_panel.resources.logout_bar_icon
 import net.thechance.mena.admin_panel.resources.mena_logo
 import net.thechance.mena.admin_panel.resources.mena_title
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun AdminPanelSideBar(
@@ -44,9 +47,10 @@ fun AdminPanelSideBar(
         )
         Icon(
             painter = painterResource(Res.drawable.logout_bar_icon),
-            contentDescription = "Logout Icon",
+            contentDescription = stringResource(Res.string.logout),
             modifier = Modifier
                 .size(24.dp)
+                .padding(24.dp)
                 .clickable { interactionListener.onLogOutClicked() }
         )
     }
@@ -61,12 +65,12 @@ private fun SideBarLogo(modifier: Modifier = Modifier) {
     ) {
         Icon(
             painter = painterResource(Res.drawable.mena_logo),
-            contentDescription = "Admin Panel Logo",
+            contentDescription = stringResource(Res.string.app_name),
             modifier = Modifier.size(40.dp)
         )
         Icon(
             painter = painterResource(Res.drawable.mena_title),
-            contentDescription = "App title",
+            contentDescription = stringResource(Res.string.app_name),
             modifier = Modifier.size(width = 40.dp, height = 18.dp)
         )
     }
