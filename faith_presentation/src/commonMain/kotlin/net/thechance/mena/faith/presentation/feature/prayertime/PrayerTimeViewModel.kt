@@ -72,9 +72,8 @@ class PrayerTimeViewModel(
     private fun updateNextPrayerInfo() {
         val prayerTimes = uiState.value.prayerTimes
 
-        if (prayerTimes.isEmpty()) {
-            return
-        }
+        if (prayerTimes.isEmpty()) return
+
 
         val currentTime = Clock.System.now()
         val nextPrayer = findNextPrayer(prayerTimes, currentTime)
