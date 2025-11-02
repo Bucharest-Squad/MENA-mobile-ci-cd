@@ -22,6 +22,7 @@ import net.thechance.mena.admin_panel.domain.entity.user.Status
 import net.thechance.mena.admin_panel.domain.exceptions.NoInternetException
 import net.thechance.mena.admin_panel.domain.exceptions.UnknownNetworkException
 import net.thechance.mena.admin_panel.domain.model.SortDirection
+import net.thechance.mena.admin_panel.domain.model.SortType
 import net.thechance.mena.admin_panel.domain.model.UserQueryParams
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -65,18 +66,20 @@ class UserRepositoryImplTest {
             userApiService.getUsers(any(), any(), any(), any())
         } returns successfulResponse(fakePagedResponse)
 
-
         val result = userRepository.getUsers(
             UserQueryParams(
                 searchInput = "Test",
-                "userName",
-                SortDirection.ASC
+                sortType = SortType.USERNAME,
+                sortDirection = SortDirection.ASC,
+                page = 0,
+                size = 10
             )
-        ).first()
+        )
 
         assertEquals(1, result.size)
         assertEquals("Test", result.first().firstName)
     }
+
 
     @Test
     fun `getUsers should throw NoInternetException on IOException`() = runTest {
