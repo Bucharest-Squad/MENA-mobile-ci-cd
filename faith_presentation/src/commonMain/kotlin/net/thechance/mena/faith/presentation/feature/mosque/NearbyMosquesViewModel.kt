@@ -55,18 +55,16 @@ internal class NearbyMosquesViewModel(
         updateState { it.copy(query = query) }
         searchJob?.cancel()
         if (query.isBlank()) {
-            updateState { 
+            updateState {
                 it.copy(
                     mosquesSearchResults = emptyList(),
                     isSearchResultsBottomSheetVisible = false
-                ) 
+                )
             }
         } else {
             searchJob = tryToExecute(
                 execute = {
-                    mosqueRepository.getMosquesByName(query).toUiStateList(
-                        distances = List(mosqueRepository.getMosquesByName(query).size) { 0.0 }
-                    )
+                    mosqueRepository.getMosquesByName(query).map { it.toUiState(0.0) }
                 },
                 onSuccess = ::handleSearchSuccess,
                 onError = { handleSearchError() },
@@ -81,7 +79,7 @@ internal class NearbyMosquesViewModel(
         updateState {
             it.copy(
                 mosquesSearchResults = mosques,
-                isSearchResultsBottomSheetVisible = true
+                isSearchResultsBottomSheetVisible = mosques.isNotEmpty()
             )
         }
         // TODO: remove all markers from the map and add new markers

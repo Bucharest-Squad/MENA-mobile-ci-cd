@@ -5,7 +5,7 @@ import net.thechance.mena.faith.domain.repository.MosqueRepository
 
 class MosqueRepositoryImpl() : MosqueRepository {
     override suspend fun addMosque(mosque: Mosque) {
-        TODO("Not yet implemented")
+        // TODO("Not yet implemented")
     }
 
     override suspend fun getNearbyMosques(
@@ -13,10 +13,10 @@ class MosqueRepositoryImpl() : MosqueRepository {
         longitude: Double,
         radius: Double
     ): List<Mosque> {
-        TODO("Not yet implemented")
+        return emptyList()
     }
 
     override suspend fun getMosquesByName(query: String): List<Mosque> {
-        TODO("Not yet implemented")
+        return emptyList()
     }
 }
