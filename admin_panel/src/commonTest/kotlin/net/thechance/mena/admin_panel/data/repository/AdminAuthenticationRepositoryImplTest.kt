@@ -9,19 +9,19 @@ import dev.mokkery.everySuspend
 import dev.mokkery.matcher.any
 import dev.mokkery.mock
 import dev.mokkery.verify
+import dev.mokkery.verifySuspend
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpStatusCode
 import io.ktor.utils.io.InternalAPI
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.test.runTest
-import net.thechance.mena.admin_panel.data.remote.dto.authentication.AdminAuthenticationResponse
 import net.thechance.mena.admin_panel.data.remote.api_service.AdminAuthenticationApiService
+import net.thechance.mena.admin_panel.data.remote.dto.authentication.AdminAuthenticationResponse
 import net.thechance.mena.admin_panel.data.repository.authentication.AdminAuthenticationRepositoryImpl
 import net.thechance.mena.admin_panel.data.utils.accessToken
 import net.thechance.mena.admin_panel.data.utils.refreshToken
 import net.thechance.mena.admin_panel.domain.exceptions.NoInternetException
 import net.thechance.mena.admin_panel.domain.exceptions.UnauthorizedException
-import net.thechance.mena.admin_panel.domain.exceptions.UnknownNetworkException
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
@@ -94,6 +94,36 @@ class AdminAuthenticationRepositoryImplTest {
         }
     }
 
+    @Test
+    fun `logout should call api logout endpoint`() = runTest {
+        everySuspend { adminAuthenticationApiService.logout() } returns successfulLogoutResponse()
+
+        adminAuthenticationRepositoryImpl.logout()
+
+        verifySuspend { adminAuthenticationApiService.logout() }
+    }
+
+    @Test
+    fun `logout should clear access and refresh tokens on success`() = runTest {
+        everySuspend { adminAuthenticationApiService.logout() } returns successfulLogoutResponse()
+
+        adminAuthenticationRepositoryImpl.logout()
+
+        verify { settings.accessToken = "" }
+        verify { settings.refreshToken = "" }
+    }
+
+    @Test
+    fun `logout should throw NoInternetException on IOException`() = runTest {
+        everySuspend {
+            adminAuthenticationApiService.logout()
+        } throws _root_ide_package_.kotlinx.io.IOException("No internet")
+
+        assertFailsWith<NoInternetException> {
+            adminAuthenticationRepositoryImpl.logout()
+        }
+    }
+
     private companion object {
         val fakeResponse = AdminAuthenticationResponse(
             accessToken = "fake_access_token",
@@ -122,6 +152,17 @@ class AdminAuthenticationRepositoryImplTest {
                 body = """{"message":"Invalid credentials"}""",
                 rawResponse = mockHttpResponse
             ) as Response<AdminAuthenticationResponse>
+        }
+
+        @OptIn(InternalAPI::class)
+        fun successfulLogoutResponse(): Response<Unit> {
+            val mockHttpResponse: HttpResponse = mock(MockMode.autofill) {
+                everySuspend { status } returns HttpStatusCode.OK
+            }
+            return Response.success(
+                body = Unit,
+                rawResponse = mockHttpResponse
+            ) as Response<Unit>
         }
     }
 }

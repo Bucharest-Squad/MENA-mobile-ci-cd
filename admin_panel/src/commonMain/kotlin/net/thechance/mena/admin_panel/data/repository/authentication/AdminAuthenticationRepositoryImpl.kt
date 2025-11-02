@@ -26,8 +26,20 @@ class AdminAuthenticationRepositoryImpl(
         saveAuthTokens(authenticationInfo = loginResponse)
     }
 
+    override suspend fun logout() {
+        executeApiSafely<Unit> {
+            adminAuthenticationApiService.logout()
+        }
+        clearAuthTokens()
+    }
+
     private fun saveAuthTokens(authenticationInfo: AdminAuthenticationResponse) {
         settings.accessToken = authenticationInfo.accessToken
         settings.refreshToken = authenticationInfo.refreshToken
+    }
+
+    private fun clearAuthTokens() {
+        settings.accessToken = ""
+        settings.refreshToken = ""
     }
 }
