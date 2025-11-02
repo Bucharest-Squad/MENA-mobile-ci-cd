@@ -7,6 +7,7 @@ import kotlinx.datetime.LocalDateTime
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.today
 import mena.core_chat_presentation.generated.resources.yesterday
+import net.thechance.mena.core_chat.domain.entity.AudioData
 import net.thechance.mena.core_chat.domain.entity.Message
 import net.thechance.mena.core_chat.domain.entity.MessageContent
 import net.thechance.mena.core_chat.presentation.utils.AudioPlayer
@@ -16,7 +17,6 @@ import net.thechance.mena.core_chat.presentation.utils.minusDays
 import net.thechance.mena.core_chat.presentation.utils.now
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
-
 
 fun Message.toUi(): MessageUiState {
     return MessageUiState(
@@ -84,18 +84,20 @@ fun List<MessageUiState>.toGroupedMessagesChatList(audioPlayer: AudioPlayer? = n
     }
 
     for (msg in this) {
-        if (msg.content is MessageContent.Image) {
-            val last = tempImages.lastOrNull()
-            if (last != null && last.isMine == msg.isMine && last.status == msg.status && shouldGroupMessages(
-                    msg
-                )
-            ) {
-                tempImages.add(msg)
-            } else {
-                groupAndClear()
-                tempImages.add(msg)
+        when {
+            msg.content is MessageContent.Image -> {
+                val last = tempImages.lastOrNull()
+                if (last != null && last.isMine == msg.isMine && last.status == msg.status && shouldGroupMessages(
+                        msg
+                    )
+                ) {
+                    tempImages.add(msg)
+                } else {
+                    groupAndClear()
+                    tempImages.add(msg)
+                }
             }
-            is MessageContent.Audio -> {
+            msg.content is MessageContent.Audio -> {
                 groupAndClear()
                 val waveformData = generateWaveformData((msg.content.data as  AudioData.AudioUrl).url, audioPlayer)
                 grouped.add(ChatListItem.VoiceMessage(

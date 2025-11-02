@@ -65,9 +65,9 @@ class ChatViewModel(
     private val audioRecordRepository: AudioRecordRepository,
     private val userRepository: UserRepository,
     private val imageDownloaderService: ImageDownloaderService,
-    chatArgs: ChatArgs,
     private val permissionsController: PermissionsController,
     private val audioPlayer: AudioPlayer,
+    chatArgs: ChatArgs,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : BaseViewModel<ChatScreenState, ChatScreenEffect>(ChatScreenState(), dispatcher),
     ChatInteractionListener {
@@ -75,6 +75,7 @@ class ChatViewModel(
     private val _messages = MutableStateFlow<List<Message>>(emptyList())
     private val messages = _messages.asStateFlow()
     private val messagesMutex = Mutex()
+
     private var hasResentPendingMessages = false
 
     private val chatHistoryPaginator by lazy {
@@ -128,8 +129,14 @@ class ChatViewModel(
                     updateState { state ->
                         state.copy(
                             chatListItems = uiList
-                                .buildListItems { msg -> msg.status != MessageStatus.FAILED && msg.status != MessageStatus.LOADING && msg.sendTime < earliestUnReadMessageTime }
-                                .buildListItems(audioPlayer)
+                                .buildListItems(
+                                    audioPlayer = audioPlayer,
+                                    shouldGroupImageMessages = { msg ->
+                                        msg.status != MessageStatus.FAILED &&
+                                                msg.status != MessageStatus.LOADING &&
+                                                msg.sendTime < earliestUnReadMessageTime
+                                    }
+                                )
                         )
                     }
                 }
@@ -416,6 +423,8 @@ class ChatViewModel(
         }
     }
 
+
+
     override fun onChatActionsMenuClicked() {
         updateState { it.copy(isChatActionsDialogVisible = true) }
     }
@@ -467,15 +476,6 @@ class ChatViewModel(
         )
     }
 
-    private fun stopAnyPlayingVoiceMessage() {
-        state.value.chatListItems.forEach { item ->
-            if (item is ChatListItem.VoiceMessage && (item.isPlaying || item.progress > 0f)) {
-                updateVoiceMessageState(item.data.id, isPlaying = false, isLoading = false, progress = 0f)
-            }
-        }
-        audioPlayer.pause()
-    }
-
     override fun onMessageVoiceClicked(messageId: Uuid) {
         val voiceMessageItem = state.value.chatListItems.find {
             it is ChatListItem.VoiceMessage && it.data.id == messageId
@@ -485,7 +485,7 @@ class ChatViewModel(
 
         if (voiceMessageItem.isPlaying) {
             audioPlayer.pause()
-            updateVoiceMessageState(messageId, isPlaying = false, isLoading = false)
+            updateVoiceMessageState(messageId, isPlaying = false)
             return
         }
 
@@ -499,8 +499,7 @@ class ChatViewModel(
         updateVoiceMessageState(
             messageId,
             isPlaying = true,
-            isLoading = true,
-            progress = 0f
+            isLoading = needsLoading
         )
 
         tryToExecute(
@@ -520,8 +519,7 @@ class ChatViewModel(
                 updateVoiceMessageState(
                     messageId,
                     isPlaying = false,
-                    isLoading = false,
-                    progress = 0f
+                    isLoading = false
                 )
             }
         )
@@ -542,7 +540,7 @@ class ChatViewModel(
 
                 if (duration in 1..currentPositionSeconds) {
                     audioPlayer.stop()
-                    updateVoiceMessageState(messageId, isPlaying = false, isLoading = false, progress = 0f)
+                    updateVoiceMessageState(messageId, isPlaying = false, progress = 1f)
                     break
                 }
 
@@ -553,6 +551,15 @@ class ChatViewModel(
                 updateVoiceMessageState(messageId, progress = progress)
             }
         }
+    }
+
+    private fun stopAnyPlayingVoiceMessage() {
+        state.value.chatListItems.forEach { item ->
+            if (item is ChatListItem.VoiceMessage && item.isPlaying) {
+                updateVoiceMessageState(item.data.id, isPlaying = false)
+            }
+        }
+        audioPlayer.pause()
     }
 
     private fun updateVoiceMessageState(
@@ -608,8 +615,6 @@ class ChatViewModel(
         val filePath = audioRecordRepository.stopRecording()
         updateState { it.copy(isRecordingVoice = false) }
 
-        resetVoiceMessageProgress()
-
         val chatId = state.value.chatId
         val senderId = state.value.chatRequesterId
 
@@ -642,23 +647,6 @@ class ChatViewModel(
         )
 
         sendMessage(message)
-    }
-
-    private fun resetVoiceMessageProgress() {
-        updateState { currentState ->
-            val updatedItems = currentState.chatListItems.map { item ->
-                if (item is ChatListItem.VoiceMessage) {
-                    item.copy(
-                        isPlaying = false,
-                        isLoading = false,
-                        progress = 0f
-                    )
-                } else {
-                    item
-                }
-            }
-            currentState.copy(chatListItems = updatedItems)
-        }
     }
 
     override fun onDownloadImageClicked(url: String) {
