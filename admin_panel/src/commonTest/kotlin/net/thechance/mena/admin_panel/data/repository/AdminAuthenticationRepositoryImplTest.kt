@@ -15,11 +15,12 @@ import io.ktor.utils.io.InternalAPI
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.test.runTest
 import net.thechance.mena.admin_panel.data.remote.dto.authentication.AdminAuthenticationResponse
-import net.thechance.mena.admin_panel.data.remote.service.AdminAuthenticationApiService
+import net.thechance.mena.admin_panel.data.remote.api_service.AdminAuthenticationApiService
 import net.thechance.mena.admin_panel.data.repository.authentication.AdminAuthenticationRepositoryImpl
 import net.thechance.mena.admin_panel.data.utils.accessToken
 import net.thechance.mena.admin_panel.data.utils.refreshToken
 import net.thechance.mena.admin_panel.domain.exceptions.NoInternetException
+import net.thechance.mena.admin_panel.domain.exceptions.UnauthorizedException
 import net.thechance.mena.admin_panel.domain.exceptions.UnknownNetworkException
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -68,12 +69,12 @@ class AdminAuthenticationRepositoryImplTest {
     }
 
     @Test
-    fun `login should throw UnknownNetworkException on 401 Unauthorized`() = runTest {
+    fun `login should throw UnauthorizedException on 401 Unauthorized`() = runTest {
         everySuspend {
             adminAuthenticationApiService.login(any())
         } returns unauthorizedResponse()
 
-        val exception = assertFailsWith<UnknownNetworkException> {
+        val exception = assertFailsWith<UnauthorizedException> {
             adminAuthenticationRepositoryImpl
                 .login(TEST_USERNAME, TEST_PASSWORD)
         }

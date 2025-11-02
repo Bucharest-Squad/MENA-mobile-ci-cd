@@ -16,7 +16,7 @@ import io.ktor.utils.io.InternalAPI
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.test.runTest
 import net.thechance.mena.admin_panel.data.remote.dto.authentication.AdminAuthenticationResponse
-import net.thechance.mena.admin_panel.data.remote.service.AdminAuthenticationApiService
+import net.thechance.mena.admin_panel.data.remote.api_service.AdminAuthenticationApiService
 import net.thechance.mena.admin_panel.data.service.AuthenticationService
 import net.thechance.mena.admin_panel.data.utils.accessToken
 import net.thechance.mena.admin_panel.data.utils.refreshToken
@@ -65,7 +65,7 @@ class AuthenticationServiceTest {
         }
 
     @Test
-    fun `refreshAccessToken should throw UnknownNetworkException on 401`() = runTest {
+    fun `refreshAccessToken should throw UnauthorizedException on 401`() = runTest {
         everySuspend {
             adminAuthenticationApiService.refreshAccessToken(any())
         } returns unauthorizedResponse()

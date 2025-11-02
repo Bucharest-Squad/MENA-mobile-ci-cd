@@ -3,7 +3,7 @@ package net.thechance.mena.admin_panel.data.service
 import com.russhwolf.settings.Settings
 import net.thechance.mena.admin_panel.data.remote.dto.authentication.AdminAuthenticationResponse
 import net.thechance.mena.admin_panel.data.remote.dto.authentication.RefreshTokenRequestDto
-import net.thechance.mena.admin_panel.data.remote.service.AdminAuthenticationApiService
+import net.thechance.mena.admin_panel.data.remote.api_service.AdminAuthenticationApiService
 import net.thechance.mena.admin_panel.data.utils.accessToken
 import net.thechance.mena.admin_panel.data.utils.executeApiSafely
 import net.thechance.mena.admin_panel.data.utils.refreshToken
