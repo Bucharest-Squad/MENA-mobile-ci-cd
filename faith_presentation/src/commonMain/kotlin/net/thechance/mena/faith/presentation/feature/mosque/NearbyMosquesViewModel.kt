@@ -62,16 +62,20 @@ internal class NearbyMosquesViewModel(
                 )
             }
         } else {
-            searchJob = tryToExecute(
-                execute = {
-                    mosqueRepository.getMosquesByName(query).map { it.toUiState(0.0) }
-                },
-                onSuccess = ::handleSearchSuccess,
-                onError = { handleSearchError() },
-                dispatcher = dispatcher,
-                delayMillis = SEARCH_DEBOUNCE_DELAY,
-            )
+            performSearch(query)
         }
+    }
+
+    private fun performSearch(query: String) {
+        searchJob = tryToExecute(
+            execute = {
+                mosqueRepository.getMosquesByName(query).map { it.toUiState(0.0) }
+            },
+            onSuccess = ::handleSearchSuccess,
+            onError = { handleSearchError() },
+            dispatcher = dispatcher,
+            delayMillis = SEARCH_DEBOUNCE_DELAY,
+        )
     }
 
     @OptIn(ExperimentalUuidApi::class)
