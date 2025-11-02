@@ -7,10 +7,8 @@ import kotlinx.datetime.LocalDateTime
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.today
 import mena.core_chat_presentation.generated.resources.yesterday
-import net.thechance.mena.core_chat.domain.entity.AudioData
 import net.thechance.mena.core_chat.domain.entity.Message
 import net.thechance.mena.core_chat.domain.entity.MessageContent
-import net.thechance.mena.core_chat.domain.entity.MessageStatus
 import net.thechance.mena.core_chat.presentation.utils.AudioPlayer
 import net.thechance.mena.core_chat.presentation.utils.UiText
 import net.thechance.mena.core_chat.presentation.utils.format
@@ -53,7 +51,7 @@ fun List<MessageUiState>.markLastInSeries(): List<MessageUiState> {
     }
 }
 
-fun List<MessageUiState>.toChatList(audioPlayer: AudioPlayer? = null): List<ChatListItem> {
+fun List<MessageUiState>.toChatList(audioPlayer: AudioPlayer? = null ,shouldGroupMessages: (MessageUiState) -> Boolean): List<ChatListItem> {
     if (isEmpty()) return emptyList()
 
     val today = LocalDateTime.now().date
@@ -63,7 +61,7 @@ fun List<MessageUiState>.toChatList(audioPlayer: AudioPlayer? = null): List<Chat
         .groupBy { it.sendTime.date }
         .flatMap { (date, messages) ->
             val markedMessages = messages.markLastInGroup()
-            val groupedMessages = markedMessages.toGroupedMessagesChatList(audioPlayer)
+            val groupedMessages = markedMessages.toGroupedMessagesChatList(audioPlayer , shouldGroupMessages)
 
             buildList {
                 add(ChatListItem.DateSeparator(date.toLabel(today, yesterday)))
@@ -74,8 +72,7 @@ fun List<MessageUiState>.toChatList(audioPlayer: AudioPlayer? = null): List<Chat
 }
 
 
-
-fun List<MessageUiState>.toGroupedMessagesChatList(audioPlayer: AudioPlayer? = null): List<ChatListItem> {
+fun List<MessageUiState>.toGroupedMessagesChatList(audioPlayer: AudioPlayer? = null,shouldGroupMessages: (MessageUiState) -> Boolean): List<ChatListItem> {
     val grouped = mutableListOf<ChatListItem>()
     var tempImages = mutableListOf<MessageUiState>()
 
@@ -87,15 +84,16 @@ fun List<MessageUiState>.toGroupedMessagesChatList(audioPlayer: AudioPlayer? = n
     }
 
     for (msg in this) {
-        when (msg.content) {
-            is MessageContent.Image -> {
-                val last = tempImages.lastOrNull()
-                if (last != null && last.isMine == msg.isMine && last.status == msg.status && msg.status != MessageStatus.FAILED && msg.status != MessageStatus.LOADING) {
-                    tempImages.add(msg)
-                } else {
-                    groupAndClear()
-                    tempImages.add(msg)
-                }
+        if (msg.content is MessageContent.Image) {
+            val last = tempImages.lastOrNull()
+            if (last != null && last.isMine == msg.isMine && last.status == msg.status && shouldGroupMessages(
+                    msg
+                )
+            ) {
+                tempImages.add(msg)
+            } else {
+                groupAndClear()
+                tempImages.add(msg)
             }
             is MessageContent.Audio -> {
                 groupAndClear()
@@ -151,6 +149,7 @@ fun List<ChatListItem>.toggleMessageInfo(messageId: Uuid): List<ChatListItem> = 
 }
 
 
-fun List<MessageUiState>.buildListItems(audioPlayer: AudioPlayer? = null): List<ChatListItem> {
-    return sortedByDescending { it.sendTime }.markLastInSeries().toChatList(audioPlayer)
+fun List<MessageUiState>.buildListItems(audioPlayer: AudioPlayer? = null,shouldGroupImageMessages: (MessageUiState) -> Boolean): List<ChatListItem> {
+    return sortedByDescending { it.sendTime }.markLastInSeries()
+        .toChatList(audioPlayer,shouldGroupImageMessages)
 }
