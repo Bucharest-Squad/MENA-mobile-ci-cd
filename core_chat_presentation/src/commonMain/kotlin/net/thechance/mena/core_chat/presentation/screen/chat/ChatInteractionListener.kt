@@ -16,9 +16,9 @@ interface ChatInteractionListener : MessageListInteractionListener, FullImageVie
     fun onMessageImageClicked(messages: List<MessageUiState>, initialImageIndex: Int)
     fun onMessageVoiceClicked(messageId: Uuid)
 
-    fun onVoiceClicked()
-    fun onCancelVoiceRecordClicked()
-    fun onSendVoiceRecordClicked()
+    fun onRecordClicked()
+    fun onCancelRecordClicked()
+    fun onSendRecordClicked()
 }
 
 interface MessageListInteractionListener {

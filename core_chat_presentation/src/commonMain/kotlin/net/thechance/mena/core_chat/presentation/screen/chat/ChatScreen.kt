@@ -113,8 +113,8 @@ fun ChatScreenContent(
                 ) { isRecording ->
                     if (isRecording) {
                         RecordingBar(
-                            onSendClick =interactions::onSendVoiceRecordClicked,
-                            onCancelClick = interactions::onCancelVoiceRecordClicked
+                            onSendClick =interactions::onSendRecordClicked,
+                            onCancelClick = interactions::onCancelRecordClicked
                         )
                     } else {
                         ChatInputBar(
@@ -122,7 +122,7 @@ fun ChatScreenContent(
                             onTextChange = interactions::onInputMessageChanged,
                             onSendButtonClick = interactions::onSendMessageClicked,
                             onAttachButtonClick = interactions::onAttachmentClicked,
-                            onVoiceRecordClick = interactions::onVoiceClicked
+                            onVoiceRecordClick = interactions::onRecordClicked
                         )
                     }
                 }
