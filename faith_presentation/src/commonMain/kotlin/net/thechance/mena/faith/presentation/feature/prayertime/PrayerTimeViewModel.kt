@@ -122,16 +122,21 @@ class PrayerTimeViewModel(
     }
 
     private fun calculateTomorrowPrayerTime(todayPrayerTime: Instant): Instant {
-        val oneDayInMillis = 24 * 60 * 60 * 1000
+        val oneDayInMillis = ONE_DAY_IN_MILLIS
         return Instant.fromEpochMilliseconds(todayPrayerTime.toEpochMilliseconds() + oneDayInMillis)
     }
 
     private fun startCountdownTimer() {
         viewModelScope.launch(dispatcher) {
             while (true) {
-                delay(1000)
+                delay(COUNTDOWN_UPDATE_INTERVAL)
                 updateNextPrayerInfo()
             }
         }
+    }
+
+    private companion object {
+        private const val ONE_DAY_IN_MILLIS = 24 * 60 * 60 * 1000L
+        private const val COUNTDOWN_UPDATE_INTERVAL = 1000L
     }
 }
