@@ -58,13 +58,13 @@ class NetworkClient(
                 bearer {
                     loadTokens {
                         BearerTokens(
-                            refreshToken = authenticationService.refreshToken(),
+                            refreshToken = authenticationService.refreshAccessToken(),
                             accessToken = authenticationService.getAccessToken()
                         )
                     }
                     refreshTokens {
                         BearerTokens(
-                            accessToken = authenticationService.refreshToken(),
+                            accessToken = authenticationService.refreshAccessToken(),
                             refreshToken = authenticationService.getAccessToken()
                         )
                     }

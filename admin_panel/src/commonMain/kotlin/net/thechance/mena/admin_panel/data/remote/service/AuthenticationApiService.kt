@@ -7,7 +7,7 @@ import net.thechance.mena.admin_panel.data.remote.dto.authentication.AdminAuthen
 import net.thechance.mena.admin_panel.data.remote.dto.authentication.LoginRequestDto
 import net.thechance.mena.admin_panel.data.remote.dto.authentication.RefreshTokenRequestDto
 
-interface AdminPanelApiService {
+interface AuthenticationApiService {
     @POST(LOGIN_ENDPOINT)
     suspend fun login(@Body loginRequest: LoginRequestDto):
             Response<AdminAuthenticationResponse>
