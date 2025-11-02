@@ -7,9 +7,12 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import net.thechance.mena.faith.domain.repository.MosqueRepository
 import net.thechance.mena.faith.presentation.base.BaseViewModel
+import kotlin.uuid.ExperimentalUuidApi
 
 internal class NearbyMosquesViewModel(
+    private val mosqueRepository: MosqueRepository,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) :
     BaseViewModel<NearbyMosquesMapUiState, NearbyMosquesEffect>(
@@ -51,19 +54,36 @@ internal class NearbyMosquesViewModel(
     override fun onQueryChange(query: String) {
         updateState { it.copy(query = query) }
         searchJob?.cancel()
-        searchJob = tryToExecute(
-            execute = {
-                // TODO: send search request to the repository with the current query
-            },
-            onSuccess = { handleSearchSuccess() },
-            onError = { handleSearchError() },
-            dispatcher = dispatcher,
-            delayMillis = SEARCH_DEBOUNCE_DELAY,
-        )
+        if (query.isBlank()) {
+            updateState { 
+                it.copy(
+                    mosquesSearchResults = emptyList(),
+                    isSearchResultsBottomSheetVisible = false
+                ) 
+            }
+        } else {
+            searchJob = tryToExecute(
+                execute = {
+                    mosqueRepository.getMosquesByName(query).toUiStateList(
+                        distances = List(mosqueRepository.getMosquesByName(query).size) { 0.0 }
+                    )
+                },
+                onSuccess = ::handleSearchSuccess,
+                onError = { handleSearchError() },
+                dispatcher = dispatcher,
+                delayMillis = SEARCH_DEBOUNCE_DELAY,
+            )
+        }
     }
 
-    private fun handleSearchSuccess() {
-        updateState { it.copy(error = null) }
+    @OptIn(ExperimentalUuidApi::class)
+    private fun handleSearchSuccess(mosques: List<MosqueUiState>) {
+        updateState {
+            it.copy(
+                mosquesSearchResults = mosques,
+                isSearchResultsBottomSheetVisible = true
+            )
+        }
         // TODO: remove all markers from the map and add new markers
     }
 
@@ -83,6 +103,12 @@ internal class NearbyMosquesViewModel(
     private fun updateCenterOfMap(coordinate: Coordinate) {
         updateState {
             it.copy(centerOfMap = coordinate)
+        }
+    }
+
+    fun onDismissSearchResultsBottomSheet() {
+        updateState {
+            it.copy(isSearchResultsBottomSheetVisible = false)
         }
     }
 
