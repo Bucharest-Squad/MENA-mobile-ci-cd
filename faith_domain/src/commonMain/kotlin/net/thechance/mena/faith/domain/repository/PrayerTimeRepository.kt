@@ -18,5 +18,6 @@ interface PrayerTimeRepository {
         date: String,
         location: Location,
         timeZone: TimeZone = TimeZone.currentSystemDefault(),
+        isHijri: Boolean
     ): List<PrayerTime>
 }
