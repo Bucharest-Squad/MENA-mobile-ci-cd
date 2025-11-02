@@ -1,6 +1,8 @@
 package net.thechance.mena.admin_panel.presentation.screen.admin_panel
 
+import net.thechance.mena.admin_panel.domain.exceptions.NoInternetException
 import net.thechance.mena.admin_panel.presentation.base.BaseViewModel
+import net.thechance.mena.admin_panel.presentation.base.ErrorState
 import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
@@ -22,5 +24,12 @@ class AdminPanelViewmodel() : BaseViewModel<AdminPanelScreenState, AdminPanelScr
     override fun onConfirmLogout() {
         updateState { it.copy(isLogOutDialogShown = false) }
         sendEffect(AdminPanelScreenEffect.NavigateToLogInScreen)
+    }
+
+    override fun mapError(throwable: Throwable): ErrorState {
+        return when (throwable) {
+            is NoInternetException -> ErrorState.NoInternet
+            else -> ErrorState.UnknownError
+        }
     }
 }
