@@ -13,7 +13,6 @@ import assertk.assertions.isTrue
 import dev.icerock.moko.permissions.DeniedException
 import dev.icerock.moko.permissions.Permission
 import dev.icerock.moko.permissions.PermissionsController
-import dev.mokkery.answering.calls
 import dev.mokkery.answering.returns
 import dev.mokkery.answering.throws
 import dev.mokkery.every
@@ -390,7 +389,7 @@ class ChatViewModelTest {
         everySuspend { permissionsController.providePermission(Permission.RECORD_AUDIO) } returns Unit
         every { audioRecordRepository.startRecording() } returns Unit
 
-        viewModel.onVoiceClicked()
+        viewModel.onRecordClicked()
         advanceUntilIdle()
 
         verifySuspend { permissionsController.providePermission(Permission.RECORD_AUDIO) }
@@ -405,7 +404,7 @@ class ChatViewModelTest {
         every { audioRecordRepository.stopRecording() } returns testFilePath
         every { audioPlayer.play(any()) } returns Unit
 
-        viewModel.onVoiceClicked()
+        viewModel.onRecordClicked()
         advanceUntilIdle()
 
         verify { audioRecordRepository.stopRecording() }
@@ -417,7 +416,7 @@ class ChatViewModelTest {
     fun `onCancelVoiceRecordClicked should stop recording and update state`() = runTest {
         every { audioRecordRepository.stopRecording() } returns ""
 
-        viewModel.onCancelVoiceRecordClicked()
+        viewModel.onCancelRecordClicked()
         advanceUntilIdle()
 
         verify { audioRecordRepository.stopRecording() }
@@ -429,7 +428,7 @@ class ChatViewModelTest {
         val testFilePath = "/test/path/audio.mp4"
         every { audioRecordRepository.stopRecording() } returns testFilePath
 
-        viewModel.onSendVoiceRecordClicked()
+        viewModel.onSendRecordClicked()
         advanceUntilIdle()
 
         verify { audioRecordRepository.stopRecording() }
@@ -445,7 +444,7 @@ class ChatViewModelTest {
         advanceUntilIdle()
 
         viewModel.effect.test {
-            viewModel.onSendVoiceRecordClicked()
+            viewModel.onSendRecordClicked()
             advanceUntilIdle()
 
             assertEquals(
@@ -470,7 +469,7 @@ class ChatViewModelTest {
         advanceUntilIdle()
 
         viewModel.effect.test {
-            viewModel.onSendVoiceRecordClicked()
+            viewModel.onSendRecordClicked()
             advanceUntilIdle()
 
             assertEquals(
@@ -575,17 +574,6 @@ class ChatViewModelTest {
                     false
                 )
             )
-            
-        fun voiceMessage(id: Uuid): Message {
-            return Message(
-                id = id,
-                senderId = chatRequesterId,
-                chatId = chatId,
-                sendAt = LocalDateTime.now(),
-                status = MessageStatus.SENT,
-                content = MessageContent.Audio("/test/path/audio.mp4"),
-                isMine = true
-            )
-        }
+
     }
 }

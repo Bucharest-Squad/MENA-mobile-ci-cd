@@ -407,7 +407,10 @@ class ChatViewModel(
 
         updateVoiceMessageState(messageId, isPlaying = true, isLoading = true)
 
-        val audioPath = (message.content as? AudioData.AudioUrl) ?: return
+        val audioContent = (message.content as? MessageContent.Audio) ?: return
+        val audioPath = (audioContent.data as? AudioData.AudioUrl) ?: return
+
+        print("[audioPath] ${audioPath.url}")
 
         audioPlayer.play(audioPath.url)
 
@@ -468,7 +471,7 @@ class ChatViewModel(
         }
     }
 
-    override fun onVoiceClicked() {
+    override fun onRecordClicked() {
         if (audioRecordRepository.isRecording()) {
             val filePath = audioRecordRepository.stopRecording()
             updateState { it.copy(isRecordingVoice = false) }
@@ -488,12 +491,12 @@ class ChatViewModel(
         }
     }
 
-    override fun onCancelVoiceRecordClicked() {
+    override fun onCancelRecordClicked() {
         audioRecordRepository.stopRecording()
         updateState { it.copy(isRecordingVoice = false) }
     }
 
-    override fun onSendVoiceRecordClicked() {
+    override fun onSendRecordClicked() {
         val filePath = audioRecordRepository.stopRecording()
         updateState { it.copy(isRecordingVoice = false) }
 

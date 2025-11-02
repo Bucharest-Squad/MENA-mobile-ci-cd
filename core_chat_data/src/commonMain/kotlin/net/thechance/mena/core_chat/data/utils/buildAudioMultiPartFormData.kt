@@ -39,6 +39,17 @@ private fun ByteArray.getAudioExtension(): String = when {
             get(0) == 0xFF.toByte() &&
             (get(1) == 0xFB.toByte() || get(1) == 0xF3.toByte()) -> "mp3"
 
+    size >= 12 &&
+            this[0] == 0x52.toByte() &&
+            this[1] == 0x49.toByte() &&
+            this[2] == 0x46.toByte() &&
+            this[3] == 0x46.toByte() &&
+            this[8] == 0x57.toByte() &&
+            this[9] == 0x41.toByte() &&
+            this[10] == 0x56.toByte() &&
+            this[11] == 0x45.toByte()
+        -> "wav"
+
     else -> "m4a"
 }
 
@@ -46,6 +57,7 @@ private fun audioExtensionToMimeType(extension: String): String = when (extensio
     "m4a" -> "audio/m4a"
     "mp3" -> "audio/mpeg"
     "aac" -> "audio/aac"
+    "wav" -> "audio/wav"
     else -> "application/octet-stream"
 }
 
