@@ -66,7 +66,7 @@ class PrayerTimeViewModel(
             )
         }
         updateNextPrayerInfo()
-        startCountdownTimer() // ابدأ الـ timer بعد ما البيانات تيجي
+        startCountdownTimer()
     }
 
     private fun updateNextPrayerInfo() {
