@@ -15,7 +15,7 @@ import io.ktor.utils.io.InternalAPI
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.test.runTest
 import net.thechance.mena.admin_panel.data.remote.dto.authentication.AdminAuthenticationResponse
-import net.thechance.mena.admin_panel.data.remote.service.AuthenticationApiService
+import net.thechance.mena.admin_panel.data.remote.service.AdminAuthenticationApiService
 import net.thechance.mena.admin_panel.data.repository.authentication.AdminAuthenticationRepositoryImpl
 import net.thechance.mena.admin_panel.data.utils.accessToken
 import net.thechance.mena.admin_panel.data.utils.refreshToken
@@ -26,19 +26,19 @@ import kotlin.test.Test
 import kotlin.test.assertFailsWith
 
 class AdminAuthenticationRepositoryImplTest {
-    private lateinit var authenticationApiService: AuthenticationApiService
+    private lateinit var adminAuthenticationApiService: AdminAuthenticationApiService
     private lateinit var settings: Settings
 
     private lateinit var adminAuthenticationRepositoryImpl: AdminAuthenticationRepositoryImpl
 
     @BeforeTest
     fun setup() {
-        authenticationApiService =
-            mock<AuthenticationApiService>(mode = MockMode.autofill)
+        adminAuthenticationApiService =
+            mock<AdminAuthenticationApiService>(mode = MockMode.autofill)
         settings = mock<Settings>(mode = MockMode.autofill)
         adminAuthenticationRepositoryImpl =
             AdminAuthenticationRepositoryImpl(
-                authenticationApiService = authenticationApiService,
+                adminAuthenticationApiService = adminAuthenticationApiService,
                 settings = settings
             )
     }
@@ -47,7 +47,7 @@ class AdminAuthenticationRepositoryImplTest {
     fun `login should save access token on success`() = runTest {
 
         everySuspend {
-            authenticationApiService.login(any())
+            adminAuthenticationApiService.login(any())
         } returns successfulLoginResponse()
 
         adminAuthenticationRepositoryImpl.login(TEST_USERNAME, TEST_PASSWORD)
@@ -59,7 +59,7 @@ class AdminAuthenticationRepositoryImplTest {
     fun `login should save refresh token on success`() = runTest {
 
         everySuspend {
-            authenticationApiService.login(any())
+            adminAuthenticationApiService.login(any())
         } returns successfulLoginResponse()
 
         adminAuthenticationRepositoryImpl.login(TEST_USERNAME, TEST_PASSWORD)
@@ -70,7 +70,7 @@ class AdminAuthenticationRepositoryImplTest {
     @Test
     fun `login should throw UnknownNetworkException on 401 Unauthorized`() = runTest {
         everySuspend {
-            authenticationApiService.login(any())
+            adminAuthenticationApiService.login(any())
         } returns unauthorizedResponse()
 
         val exception = assertFailsWith<UnknownNetworkException> {
@@ -84,7 +84,7 @@ class AdminAuthenticationRepositoryImplTest {
     @Test
     fun `login should throw NoInternetException on IOException`() = runTest {
         everySuspend {
-            authenticationApiService.login(any())
+            adminAuthenticationApiService.login(any())
         } throws _root_ide_package_.kotlinx.io.IOException("No internet")
 
         assertFailsWith<NoInternetException> {

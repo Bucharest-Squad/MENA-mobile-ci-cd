@@ -16,7 +16,7 @@ import io.ktor.utils.io.InternalAPI
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.test.runTest
 import net.thechance.mena.admin_panel.data.remote.dto.authentication.AdminAuthenticationResponse
-import net.thechance.mena.admin_panel.data.remote.service.AuthenticationApiService
+import net.thechance.mena.admin_panel.data.remote.service.AdminAuthenticationApiService
 import net.thechance.mena.admin_panel.data.service.AuthenticationService
 import net.thechance.mena.admin_panel.data.utils.accessToken
 import net.thechance.mena.admin_panel.data.utils.refreshToken
@@ -29,21 +29,21 @@ import kotlin.test.assertFailsWith
 
 class AuthenticationServiceTest {
 
-    private lateinit var authenticationApiService: AuthenticationApiService
+    private lateinit var adminAuthenticationApiService: AdminAuthenticationApiService
     private lateinit var settings: Settings
     private lateinit var authenticationService: AuthenticationService
 
     @BeforeTest
     fun setup() {
-        authenticationApiService = mock(mode = MockMode.autofill)
+        adminAuthenticationApiService = mock(mode = MockMode.autofill)
         settings = mock(mode = MockMode.autofill)
-        authenticationService = AuthenticationService(authenticationApiService, settings)
+        authenticationService = AuthenticationService(adminAuthenticationApiService, settings)
     }
 
     @Test
     fun `refreshAccessToken should save tokens and return access token`() = runTest {
         everySuspend {
-            authenticationApiService.refreshAccessToken(any())
+            adminAuthenticationApiService.refreshAccessToken(any())
         } returns successfulResponse()
 
          authenticationService.refreshAccessToken()
@@ -56,7 +56,7 @@ class AuthenticationServiceTest {
     fun `access token should be stored in settings after successful refreshAccessToken`() =
         runTest {
             everySuspend {
-                authenticationApiService.refreshAccessToken(any())
+                adminAuthenticationApiService.refreshAccessToken(any())
             } returns successfulResponse()
 
             authenticationService.refreshAccessToken()
@@ -67,7 +67,7 @@ class AuthenticationServiceTest {
     @Test
     fun `refreshAccessToken should throw UnknownNetworkException on 401`() = runTest {
         everySuspend {
-            authenticationApiService.refreshAccessToken(any())
+            adminAuthenticationApiService.refreshAccessToken(any())
         } returns unauthorizedResponse()
 
         val exception = assertFailsWith<UnauthorizedException> {
@@ -80,7 +80,7 @@ class AuthenticationServiceTest {
     @Test
     fun `refreshAccessToken should throw NoInternetException on IOException`() = runTest {
         everySuspend {
-            authenticationApiService.refreshAccessToken(any())
+            adminAuthenticationApiService.refreshAccessToken(any())
         } throws _root_ide_package_.kotlinx.io.IOException(
             "No internet"
         )

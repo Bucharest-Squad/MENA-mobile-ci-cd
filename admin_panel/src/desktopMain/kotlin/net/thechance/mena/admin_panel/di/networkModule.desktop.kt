@@ -1,17 +1,17 @@
 package net.thechance.mena.admin_panel.di
 
 import de.jensklingenberg.ktorfit.Ktorfit
-import net.thechance.mena.admin_panel.data.remote.service.AuthenticationApiService
+import net.thechance.mena.admin_panel.data.remote.service.AdminAuthenticationApiService
 import net.thechance.mena.admin_panel.data.remote.service.UserApiService
-import net.thechance.mena.admin_panel.data.remote.service.createAuthenticationApiService
+import net.thechance.mena.admin_panel.data.remote.service.createAdminAuthenticationApiService
 import net.thechance.mena.admin_panel.data.remote.service.createUserApiService
 import org.koin.core.module.Module
 import org.koin.dsl.module
 import org.koin.core.qualifier.named
 
 actual val platformNetworkModule: Module = module {
-    single<AuthenticationApiService> {
-        get<Ktorfit>(named(ADMIN_PANEL_KEY)).createAuthenticationApiService()
+    single<AdminAuthenticationApiService> {
+        get<Ktorfit>(named(ADMIN_PANEL_KEY)).createAdminAuthenticationApiService()
     }
     single<UserApiService> {
         get<Ktorfit>(named(ADMIN_PANEL_KEY)).createUserApiService()
