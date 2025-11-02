@@ -1,6 +1,6 @@
 package net.thechance.mena.core_chat.data.utils
 
-expect class FileManager {
+expect class FileManager() {
     fun getDirectory(): String
 
     fun createDirectory(path: String): Boolean
