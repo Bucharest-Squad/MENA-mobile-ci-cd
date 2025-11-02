@@ -6,15 +6,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import net.thechance.mena.admin_panel.navigation.AdminPanelRoute
-import net.thechance.mena.admin_panel.navigation.LocalAdminNavController
+import net.thechance.mena.admin_panel.navigation.nav_host.LocalAdminPanelNavController
+import net.thechance.mena.admin_panel.navigation.routes.AdminPanel
+import net.thechance.mena.admin_panel.navigation.routes.Login
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
 
 @Composable
 fun LoginScreen(
-    onLoginSuccess: () -> Unit
 ) {
-    val navController = LocalAdminNavController.current
+    val navController = LocalAdminPanelNavController.current
     Column(
         Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -22,8 +22,8 @@ fun LoginScreen(
     ) {
         PrimaryButton(
             onClick = {
-                navController.navigate(AdminPanelRoute.AdminRoot.route) {
-                    popUpTo(AdminPanelRoute.Login.route) { inclusive = true }
+                navController.navigate(AdminPanel) {
+                    popUpTo(Login) { inclusive = true }
                 }
             },
             text = "Login"

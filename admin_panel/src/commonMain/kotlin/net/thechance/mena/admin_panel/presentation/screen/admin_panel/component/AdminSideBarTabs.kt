@@ -15,21 +15,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import net.thechance.mena.admin_panel.presentation.screen.admin_panel.AdminPanelInteractionListener
 import net.thechance.mena.admin_panel.presentation.screen.admin_panel.AdminPanelScreenState
 import net.thechance.mena.admin_panel.resources.Res
 import net.thechance.mena.admin_panel.resources.deposit
 import net.thechance.mena.admin_panel.resources.dukan_management
 import net.thechance.mena.admin_panel.resources.dukan_requests
-import net.thechance.mena.admin_panel.resources.file_selected
-import net.thechance.mena.admin_panel.resources.file_unselected
-import net.thechance.mena.admin_panel.resources.shop_selected
-import net.thechance.mena.admin_panel.resources.shop_unselected
 import net.thechance.mena.admin_panel.resources.users_management
-import net.thechance.mena.admin_panel.resources.users_selected
-import net.thechance.mena.admin_panel.resources.users_unselected
-import net.thechance.mena.admin_panel.resources.wallet_selected
-import net.thechance.mena.admin_panel.resources.wallet_unselected
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
@@ -39,7 +30,7 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun AdminSideBarTabs(
     selectedTab: AdminPanelScreenState.CurrentTab,
-    interactionListener: AdminPanelInteractionListener,
+    onTabSelected: (tab: AdminPanelScreenState.CurrentTab) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -49,31 +40,31 @@ fun AdminSideBarTabs(
     ) {
         AdminSidebarItem(
             title = stringResource(Res.string.dukan_management),
-            selectedIcon = painterResource(Res.drawable.shop_selected),
-            notSelectedIcon = painterResource(Res.drawable.shop_unselected),
+            selectedIcon = painterResource(selectedTab.selectedIconRes),
+            notSelectedIcon = painterResource(selectedTab.unSelectedIconRes),
             isSelected = selectedTab == AdminPanelScreenState.CurrentTab.DUKAN_MANAGEMENT,
-            onClick = interactionListener::onDukanManagementClicked
+            onClick = { onTabSelected(AdminPanelScreenState.CurrentTab.DUKAN_MANAGEMENT) }
         )
         AdminSidebarItem(
             title = stringResource(Res.string.dukan_requests),
-            selectedIcon = painterResource(Res.drawable.file_selected),
-            notSelectedIcon = painterResource(Res.drawable.file_unselected),
+            selectedIcon = painterResource(selectedTab.selectedIconRes),
+            notSelectedIcon = painterResource(selectedTab.unSelectedIconRes),
             isSelected = selectedTab == AdminPanelScreenState.CurrentTab.DUKAN_REQUEST,
-            onClick = interactionListener::onDukanRequestClicked
+            onClick = { onTabSelected(AdminPanelScreenState.CurrentTab.DUKAN_REQUEST) }
         )
         AdminSidebarItem(
             title = stringResource(Res.string.deposit),
-            selectedIcon = painterResource(Res.drawable.wallet_selected),
-            notSelectedIcon = painterResource(Res.drawable.wallet_unselected),
+            selectedIcon = painterResource(selectedTab.selectedIconRes),
+            notSelectedIcon = painterResource(selectedTab.unSelectedIconRes),
             isSelected = selectedTab == AdminPanelScreenState.CurrentTab.DEPOSIT,
-            onClick = interactionListener::onDepositClicked
+            onClick = { onTabSelected(AdminPanelScreenState.CurrentTab.DEPOSIT) }
         )
         AdminSidebarItem(
             title = stringResource(Res.string.users_management),
-            selectedIcon = painterResource(Res.drawable.users_selected),
-            notSelectedIcon = painterResource(Res.drawable.users_unselected),
-            isSelected = selectedTab == AdminPanelScreenState.CurrentTab.USERS,
-            onClick = interactionListener::onUsersManagementClicked
+            selectedIcon = painterResource(selectedTab.selectedIconRes),
+            notSelectedIcon = painterResource(selectedTab.unSelectedIconRes),
+            isSelected = selectedTab == AdminPanelScreenState.CurrentTab.USERS_MANAGEMENT,
+            onClick = { onTabSelected(AdminPanelScreenState.CurrentTab.USERS_MANAGEMENT) }
         )
     }
 }
@@ -87,7 +78,11 @@ private fun AdminSidebarItem(
     onClick: () -> Unit
 ) {
     val animatedTitleColor by animateColorAsState(
-        targetValue = if (isSelected) Theme.colorScheme.shadeSecondary else Theme.colorScheme.brand.brand
+        targetValue =
+            if (isSelected)
+                Theme.colorScheme.shadeSecondary
+            else
+                Theme.colorScheme.brand.brand
     )
     Column(
         modifier = Modifier

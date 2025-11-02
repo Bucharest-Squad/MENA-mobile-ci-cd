@@ -44,7 +44,9 @@ fun AdminPanelSideBar(
         AdminSideBarTabs(
             modifier = Modifier.weight(1f),
             selectedTab = selectedTab,
-            interactionListener = interactionListener
+            onTabSelected = { tab ->
+                interactionListener.onTabSelected(tab)
+            }
         )
         Box(
             modifier = Modifier

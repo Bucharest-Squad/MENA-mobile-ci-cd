@@ -7,20 +7,8 @@ import org.koin.android.annotation.KoinViewModel
 class AdminPanelViewmodel() : BaseViewModel<AdminPanelScreenState, AdminPanelScreenEffect>(
     AdminPanelScreenState()
 ), AdminPanelInteractionListener {
-    override fun onUsersManagementClicked() {
-        updateState { it.copy(currentTab = AdminPanelScreenState.CurrentTab.USERS) }
-    }
-
-    override fun onDukanManagementClicked() {
-        updateState { it.copy(currentTab = AdminPanelScreenState.CurrentTab.DUKAN_MANAGEMENT) }
-    }
-
-    override fun onDukanRequestClicked() {
-        updateState { it.copy(currentTab = AdminPanelScreenState.CurrentTab.DUKAN_REQUEST) }
-    }
-
-    override fun onDepositClicked() {
-        updateState { it.copy(currentTab = AdminPanelScreenState.CurrentTab.DEPOSIT) }
+    override fun onTabSelected(tab: AdminPanelScreenState.CurrentTab) {
+        updateState { it.copy(currentTab = tab) }
     }
 
     override fun onLogOutClicked() {
