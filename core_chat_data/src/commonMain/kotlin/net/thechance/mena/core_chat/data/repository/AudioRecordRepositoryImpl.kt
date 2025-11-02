@@ -31,8 +31,8 @@ class AudioRecordRepositoryImpl(
             RecordConfig(
                 outputLocation = OutputLocation.Cache,
                 outputFormat = OutputFormat.WAV,
-                audioEncoder = AudioEncoder.AAC,
-                sampleRate = 44100
+                audioEncoder = AudioEncoder.PCM_16BIT,
+                sampleRate = 48000
             )
         )
     }

@@ -13,9 +13,15 @@ actual fun convertAudioFileToByteArray(filePath: String): ByteArray {
 
 class AndroidAudioPlayer(private val onError: (String) -> Unit) : AudioPlayer {
     private var mediaPlayer: MediaPlayer? = null
+    private var currentFilePath: String? = null
 
     override fun play(filePath: String) {
         try {
+            if (mediaPlayer != null && currentFilePath == filePath && !mediaPlayer!!.isPlaying) {
+                mediaPlayer?.start()
+                return
+            }
+            
             stop()
             
             if (!File(filePath).exists()) {
@@ -31,12 +37,21 @@ class AndroidAudioPlayer(private val onError: (String) -> Unit) : AudioPlayer {
                     onError("MediaPlayer error: what=$what, extra=$extra")
                     false
                 }
-                setOnCompletionListener {
-                    stop()
-                }
+                setOnCompletionListener { stop() }
             }
+            currentFilePath = filePath
         } catch (e: Exception) {
             onError("Failed to play audio: ${e.message}")
+        }
+    }
+    
+    override fun pause() {
+        try {
+            if (mediaPlayer?.isPlaying == true) {
+                mediaPlayer?.pause()
+            }
+        } catch (e: Exception) {
+            onError("Error pausing media player: ${e.message}")
         }
     }
 
@@ -51,6 +66,7 @@ class AndroidAudioPlayer(private val onError: (String) -> Unit) : AudioPlayer {
             onError("Error stopping media player: ${e.message}")
         } finally {
             mediaPlayer = null
+            currentFilePath = null
         }
     }
 

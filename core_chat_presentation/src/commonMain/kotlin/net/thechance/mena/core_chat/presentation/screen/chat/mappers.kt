@@ -99,14 +99,13 @@ fun List<MessageUiState>.toGroupedMessagesChatList(audioPlayer: AudioPlayer? = n
             }
             is MessageContent.Audio -> {
                 groupAndClear()
-                val duration = audioPlayer?.getDuration((msg.content.data as  AudioData.AudioUrl).url) ?: 0L
                 val waveformData = generateWaveformData((msg.content.data as  AudioData.AudioUrl).url, audioPlayer)
                 grouped.add(ChatListItem.VoiceMessage(
                     data = msg,
                     isPlaying = false,
                     isLoading = false,
                     progress = 0f,
-                    duration = duration,
+                    duration = 0L,
                     waveformData = waveformData
                 ))
             }

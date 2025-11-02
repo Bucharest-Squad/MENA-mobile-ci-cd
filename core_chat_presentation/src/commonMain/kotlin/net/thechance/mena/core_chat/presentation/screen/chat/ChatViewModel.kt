@@ -390,6 +390,15 @@ class ChatViewModel(
         }
     }
 
+    private fun stopAnyPlayingVoiceMessage() {
+        state.value.chatListItems.forEach { item ->
+            if (item is ChatListItem.VoiceMessage && (item.isPlaying || item.progress > 0f)) {
+                updateVoiceMessageState(item.data.id, isPlaying = false, isLoading = false, progress = 0f)
+            }
+        }
+        audioPlayer.pause()
+    }
+
     override fun onMessageVoiceClicked(messageId: Uuid) {
         val voiceMessageItem = state.value.chatListItems.find {
             it is ChatListItem.VoiceMessage && it.data.id == messageId
@@ -398,25 +407,47 @@ class ChatViewModel(
         val message = voiceMessageItem.data
 
         if (voiceMessageItem.isPlaying) {
-            audioPlayer.stop()
-            updateVoiceMessageState(messageId, isPlaying = false)
+            audioPlayer.pause()
+            updateVoiceMessageState(messageId, isPlaying = false, isLoading = false)
             return
         }
 
         stopAnyPlayingVoiceMessage()
 
-        updateVoiceMessageState(messageId, isPlaying = true, isLoading = true)
-
         val audioContent = (message.content as? MessageContent.Audio) ?: return
         val audioPath = (audioContent.data as? AudioData.AudioUrl) ?: return
 
-        print("[audioPath] ${audioPath.url}")
+        val needsLoading = voiceMessageItem.duration <= 0
 
-        audioPlayer.play(audioPath.url)
+        updateVoiceMessageState(
+            messageId,
+            isPlaying = true,
+            isLoading = true,
+            progress = 0f
+        )
 
-        updateVoiceMessageState(messageId, isLoading = false)
-
-        startProgressTracking(messageId, voiceMessageItem.duration)
+        tryToExecute(
+            execute = { audioRecordRepository.getAudioFilePath(audioPath.url) },
+            onSuccess = { filePath ->
+                if (needsLoading) {
+                    val duration = audioPlayer.getDuration(filePath)
+                    audioPlayer.play(filePath)
+                    updateVoiceMessageState(messageId, duration = duration)
+                    startProgressTracking(messageId, duration)
+                } else {
+                    audioPlayer.play(filePath)
+                    startProgressTracking(messageId, voiceMessageItem.duration)
+                }
+            },
+            onError = {
+                updateVoiceMessageState(
+                    messageId,
+                    isPlaying = false,
+                    isLoading = false,
+                    progress = 0f
+                )
+            }
+        )
     }
 
     private fun startProgressTracking(messageId: Uuid, duration: Long) {
@@ -431,6 +462,13 @@ class ChatViewModel(
                 if (voiceMessageItem == null || !voiceMessageItem.isPlaying) break
 
                 val currentPositionSeconds = audioPlayer.getCurrentPosition()
+                
+                if (duration in 1..currentPositionSeconds) {
+                    audioPlayer.stop()
+                    updateVoiceMessageState(messageId, isPlaying = false, isLoading = false, progress = 0f)
+                    break
+                }
+                
                 val progress = if (duration > 0) {
                     currentPositionSeconds.toFloat() / duration.toFloat()
                 } else 0f
@@ -440,20 +478,12 @@ class ChatViewModel(
         }
     }
 
-    private fun stopAnyPlayingVoiceMessage() {
-        state.value.chatListItems.forEach { item ->
-            if (item is ChatListItem.VoiceMessage && item.isPlaying) {
-                updateVoiceMessageState(item.data.id, isPlaying = false)
-            }
-        }
-        audioPlayer.stop()
-    }
-
     private fun updateVoiceMessageState(
         messageId: Uuid,
         isPlaying: Boolean? = null,
         isLoading: Boolean? = null,
-        progress: Float? = null
+        progress: Float? = null,
+        duration: Long? = null
     ) {
         updateState { currentState ->
             val updatedItems = currentState.chatListItems.map { item ->
@@ -461,7 +491,8 @@ class ChatViewModel(
                     item.copy(
                         isPlaying = isPlaying ?: item.isPlaying,
                         isLoading = isLoading ?: item.isLoading,
-                        progress = progress ?: item.progress
+                        progress = progress ?: item.progress,
+                        duration = duration ?: item.duration
                     )
                 } else {
                     item
@@ -499,6 +530,8 @@ class ChatViewModel(
     override fun onSendRecordClicked() {
         val filePath = audioRecordRepository.stopRecording()
         updateState { it.copy(isRecordingVoice = false) }
+        
+        resetVoiceMessageProgress()
 
         val chatId = state.value.chatId
         val senderId = state.value.chatRequesterId
@@ -532,6 +565,23 @@ class ChatViewModel(
         )
 
         sendMessage(message)
+    }
+    
+    private fun resetVoiceMessageProgress() {
+        updateState { currentState ->
+            val updatedItems = currentState.chatListItems.map { item ->
+                if (item is ChatListItem.VoiceMessage) {
+                    item.copy(
+                        isPlaying = false,
+                        isLoading = false,
+                        progress = 0f
+                    )
+                } else {
+                    item
+                }
+            }
+            currentState.copy(chatListItems = updatedItems)
+        }
     }
 
     override fun onDownloadImageClicked(url: String) {

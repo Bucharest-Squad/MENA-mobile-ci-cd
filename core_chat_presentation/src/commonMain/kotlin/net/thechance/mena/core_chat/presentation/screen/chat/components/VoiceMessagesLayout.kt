@@ -30,6 +30,7 @@ import mena.core_chat_presentation.generated.resources.ic_profile_placeholder
 import net.thechance.mena.core_chat.domain.entity.AudioData
 import net.thechance.mena.core_chat.domain.entity.MessageContent
 import net.thechance.mena.core_chat.domain.entity.MessageStatus
+import net.thechance.mena.core_chat.presentation.components.CustomInfiniteCircularLoader
 import net.thechance.mena.core_chat.presentation.screen.chat.MessageUiState
 import net.thechance.mena.core_chat.presentation.utils.now
 import net.thechance.mena.designsystem.presentation.component.button.Button
@@ -188,11 +189,11 @@ fun PLayButton(
         modifier = modifier
     ) {
         if (isLoading) {
-            /*            CircularProgressIndicator(
-                            modifier = Modifier.size(18.dp),
-                            color = Theme.colorScheme.primary.onPrimary,
-                            strokeWidth = 2.dp
-                        )*/
+            CustomInfiniteCircularLoader(
+                modifier = Modifier.size(18.dp),
+                color = Theme.colorScheme.primary.onPrimary,
+                strokeWidth = 2.dp
+            )
         } else {
             Icon(
                 painter = painterResource(Res.drawable.ic_play),
