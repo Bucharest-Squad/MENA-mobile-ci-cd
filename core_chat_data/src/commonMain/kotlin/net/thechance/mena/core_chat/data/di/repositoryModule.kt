@@ -48,6 +48,9 @@ internal val repositoryModule = module {
     }
 
     single<AudioRecordRepository> {
-        AudioRecordRepositoryImpl()
+        AudioRecordRepositoryImpl(
+            client = get(named(CHAT_CLIENT)),
+            fileManager = get(),
+        )
     }
 }

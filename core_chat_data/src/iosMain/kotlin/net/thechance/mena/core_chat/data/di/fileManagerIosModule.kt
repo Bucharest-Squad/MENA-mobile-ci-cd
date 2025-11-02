@@ -1,0 +1,10 @@
+package net.thechance.mena.core_chat.data.di
+
+import net.thechance.mena.core_chat.data.utils.FileManager
+import org.koin.dsl.module
+
+val fileManagerIosModule = module {
+    single {
+        FileManager()
+    }
+}
