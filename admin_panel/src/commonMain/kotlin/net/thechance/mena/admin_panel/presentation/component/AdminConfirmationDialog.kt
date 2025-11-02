@@ -48,70 +48,99 @@ fun ScaffoldScope.AdminConfirmationDialog(
         hasDismissButton = false,
         contentColor = Theme.colorScheme.background.surfaceLow,
         actionButtons = {
-            Row(
-                modifier = Modifier
-                    .padding(top = 12.dp)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                PrimaryButton(
-                    text = stringResource(Res.string.cancel),
-                    onClick = onDismiss,
-                    contentPadding = PaddingValues(
-                        start = 16.dp,
-                        end = 16.dp,
-                        top = 8.dp,
-                        bottom = 8.dp
-                    )
-                )
-                OutlinedButton(
-                    text = confirmationButtonText,
-                    onClick = onConfirm,
-                    trailingIcon = confirmationIcon,
-                    contentPadding = PaddingValues(
-                        start = 16.dp,
-                        end = 16.dp,
-                        top = 8.dp,
-                        bottom = 8.dp
-                    )
-                )
-            }
+            AdminConfirmationDialogActionButtons(
+                onDismiss = onDismiss,
+                onConfirm = onConfirm,
+                confirmationIcon = confirmationIcon,
+                confirmationButtonText = confirmationButtonText
+            )
         },
         modifier = modifier.width(400.dp)
     ) {
-        Column(
+        AdminConfirmationDialogContent(
+            dialogIcon = dialogIcon,
+            title = title,
+            description = description
+        )
+    }
+}
+
+
+@Composable
+private fun AdminConfirmationDialogActionButtons(
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit,
+    confirmationIcon: Painter,
+    confirmationButtonText: String
+) {
+    Row(
+        modifier = Modifier
+            .padding(top = 12.dp)
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        PrimaryButton(
+            text = stringResource(Res.string.cancel),
+            onClick = onDismiss,
+            contentPadding = PaddingValues(
+                start = 16.dp,
+                end = 16.dp,
+                top = 8.dp,
+                bottom = 8.dp
+            )
+        )
+        OutlinedButton(
+            text = confirmationButtonText,
+            onClick = onConfirm,
+            trailingIcon = confirmationIcon,
+            contentPadding = PaddingValues(
+                start = 16.dp,
+                end = 16.dp,
+                top = 8.dp,
+                bottom = 8.dp
+            )
+        )
+    }
+}
+
+@Composable
+private fun AdminConfirmationDialogContent(
+    dialogIcon: Painter,
+    title: String,
+    description: String,
+) {
+    Column(
+        modifier = Modifier
+            .padding(bottom = 12.dp),
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Box(
             modifier = Modifier
-                .padding(bottom = 12.dp),
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+                .background(
+                    color = Theme.colorScheme.background.bgError,
+                    shape = CircleShape
+                ).padding(20.dp),
+            contentAlignment = Alignment.Center
         ) {
-            Box(
-                modifier = Modifier
-                    .background(
-                        color = Theme.colorScheme.background.bgError,
-                        shape = CircleShape
-                    ).padding(20.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    painter = dialogIcon,
-                    contentDescription = title,
-                    modifier = Modifier.size(48.dp),
-                    tint = Theme.colorScheme.error
-                )
-            }
-            Column {
-                Text(
-                    text = title,
-                    style = Theme.typography.title.medium,
-                    color = Theme.colorScheme.shadePrimary
-                )
-                Text(
-                    text = description,
-                    style = Theme.typography.body.small,
-                    color = Theme.colorScheme.shadeSecondary
-                )
-            }
+            Icon(
+                painter = dialogIcon,
+                contentDescription = title,
+                modifier = Modifier.size(48.dp),
+                tint = Theme.colorScheme.error
+            )
+        }
+        Column {
+            Text(
+                text = title,
+                style = Theme.typography.title.medium,
+                color = Theme.colorScheme.shadePrimary
+            )
+            Text(
+                text = description,
+                style = Theme.typography.body.small,
+                color = Theme.colorScheme.shadeSecondary
+            )
         }
     }
 }
