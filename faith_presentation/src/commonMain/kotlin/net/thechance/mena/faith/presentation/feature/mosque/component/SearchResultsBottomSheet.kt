@@ -70,32 +70,30 @@ private fun SearchResultsContent(
             .padding(horizontal = Theme.spacing._16)
             .padding(top = Theme.spacing._16)
     ) {
-        if (mosques.isEmpty()) {
-            NoMosquesFoundCard(
-                modifier = Modifier.padding(bottom = Theme.spacing._12)
-            )
-        } else {
-            Text(
-                modifier = Modifier.padding(bottom = Theme.spacing._12),
-                text = stringResource(Res.string.search_results),
-                style = Theme.typography.title.medium,
-                color = Theme.colorScheme.shadePrimary
-            )
-            LazyColumn(
-                contentPadding = PaddingValues(bottom = Theme.spacing._12),
-            ) {
-                items(mosques.size) { index ->
-                    val mosque = mosques[index]
-                    SearchResultItem(
-                        name = mosque.name,
-                        distance = mosque.distance.toString(),
-                        onNavigationClick = { onMosqueClick(mosque) }
-                    )
-                }
+
+        Text(
+            modifier = Modifier.padding(bottom = Theme.spacing._12),
+            text = stringResource(Res.string.search_results),
+            style = Theme.typography.title.medium,
+            color = Theme.colorScheme.shadePrimary
+        )
+
+        LazyColumn(
+            contentPadding = PaddingValues(bottom = Theme.spacing._12),
+        ) {
+            items(mosques.size) { index ->
+                val mosque = mosques[index]
+                SearchResultItem(
+                    name = mosque.name,
+                    distance = mosque.distance.toString(),
+                    onNavigationClick = { onMosqueClick(mosque) }
+                )
             }
         }
+
     }
 }
+
 
 @Composable
 private fun SearchResultItem(
@@ -154,16 +152,6 @@ private fun SearchResultItem(
             modifier = Modifier.size(20.dp),
             painter = painterResource(Res.drawable.ic_arrow_right),
             contentDescription = stringResource(Res.string.mosque_details),
-        )
-    }
-}
-
-@Preview
-@Composable
-private fun NoSearchResultsPreview() {
-    MenaTheme {
-        SearchResultsContent(
-            mosques = emptyList()
         )
     }
 }
