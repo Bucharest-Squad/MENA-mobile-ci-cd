@@ -34,11 +34,18 @@ class PrayerTimeViewModelTest {
     @OptIn(ExperimentalTime::class)
     @Test
     fun `initialize view model should load today's prayer times size successfully`() = runTest {
-        everySuspend {
-            prayerTimeRepository.getPrayerTimes(any(), any<Location>())
-        } returns samplePrayerTimes
-        testDispatcher.scheduler.advanceTimeBy(100)
 
+        everySuspend {
+            prayerTimeRepository.getPrayerTimes(any(), any<Location>(), any())
+        } returns samplePrayerTimes
+
+
+        val viewModel = PrayerTimeViewModel(
+            prayerTimeRepository = prayerTimeRepository,
+            dispatcher = testDispatcher
+        )
+
+        testDispatcher.scheduler.advanceUntilIdle()
         val state = viewModel.uiState.value
 
         assertEquals(
