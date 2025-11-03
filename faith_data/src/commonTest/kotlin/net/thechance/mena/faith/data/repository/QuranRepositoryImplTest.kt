@@ -1,14 +1,18 @@
 package net.thechance.mena.faith.data.repository
 
+import de.jensklingenberg.ktorfit.Response
 import dev.mokkery.MockMode
 import dev.mokkery.answering.returns
 import dev.mokkery.everySuspend
 import dev.mokkery.mock
 import dev.mokkery.verifySuspend
+import io.ktor.client.statement.HttpResponse
+import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.test.runTest
 import net.thechance.mena.faith.data.database.AyahDao
 import net.thechance.mena.faith.data.database.SurahDto
 import net.thechance.mena.faith.data.datastore.TilawahDataStore
+import net.thechance.mena.faith.data.remote.model.tilawah.AyahSoundUrlRequest
 import net.thechance.mena.faith.data.remote.service.TilawahApiService
 import net.thechance.mena.faith.domain.entity.Surah
 import net.thechance.mena.faith.domain.model.LastAyahForTilawah
@@ -123,6 +127,38 @@ class QuranRepositoryImplTest {
         }
     }
 
+    @Test
+    fun `getAyahSoundUrl should call tilawahApiService getAyahSoundUrl`() = runTest {
+        val expectedUrl = "https://example.com/ayah_sound/001001.mp3"
+        everySuspend {
+            tilawahApiService.getAyahSoundUrl(
+                body = AyahSoundUrlRequest(
+                    ayahNumber = 1,
+                    surahNumber = 1,
+                    reciterId = 1
+                )
+            )
+        } returns makeSuccessFakeResponse(
+            body = expectedUrl,
+            successStatus = HttpStatusCode.OK
+        )
+
+        val result = repository.getAyahSoundUrl(1, 1, 1)
+        assertEquals(expectedUrl, result)
+    }
+
+    private fun makeSuccessFakeResponse(
+        body: String? = null,
+        successStatus: HttpStatusCode = HttpStatusCode.OK
+    ): Response<String> {
+        val mockHttpResponse: HttpResponse = mock(MockMode.autofill) {
+            everySuspend { status } returns successStatus
+        }
+        return Response.success(
+            body = body,
+            rawResponse = mockHttpResponse
+        ) as Response<String>
+    }
 
     private companion object {
 
