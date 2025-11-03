@@ -29,6 +29,10 @@ class AuthenticationService(
         return settings.accessToken
     }
 
+     fun isUserLoggedIn(): Boolean {
+        return settings.accessToken.trim().isNotEmpty()
+    }
+
     private fun saveAuthTokens(authenticationInfo: AdminAuthenticationResponse) {
         settings.accessToken = authenticationInfo.accessToken
         settings.refreshToken = authenticationInfo.refreshToken

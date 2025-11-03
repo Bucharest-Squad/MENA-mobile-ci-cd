@@ -16,6 +16,7 @@ import io.ktor.client.plugins.logging.SIMPLE
 import io.ktor.client.request.accept
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
+import io.ktor.http.encodedPath
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import net.thechance.mena.admin_panel.data.utils.accessToken
@@ -62,6 +63,10 @@ fun provideHttpClient(
                         accessToken = settings.accessToken,
                         refreshToken=settings.refreshToken
                     )
+                }
+                sendWithoutRequest { request ->
+                    val path = request.url.encodedPath.removePrefix("/")
+                    path != "identity/admin/authentication/login"
                 }
             }
         }
