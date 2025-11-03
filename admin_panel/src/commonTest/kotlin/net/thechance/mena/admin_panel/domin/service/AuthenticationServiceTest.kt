@@ -13,10 +13,13 @@ import dev.mokkery.verify
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpStatusCode
 import io.ktor.utils.io.InternalAPI
+import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.test.runTest
 import net.thechance.mena.admin_panel.data.remote.dto.authentication.AdminAuthenticationResponse
 import net.thechance.mena.admin_panel.data.remote.api_service.AuthenticationApiService
+import net.thechance.mena.admin_panel.data.repository.AdminAuthenticationRepositoryImplTest
+import net.thechance.mena.admin_panel.data.repository.authentication.AdminAuthenticationRepositoryImpl
 import net.thechance.mena.admin_panel.data.service.AuthenticationService
 import net.thechance.mena.admin_panel.data.utils.accessToken
 import net.thechance.mena.admin_panel.data.utils.refreshToken
@@ -32,12 +35,14 @@ class AuthenticationServiceTest {
     private lateinit var authenticationApiService: AuthenticationApiService
     private lateinit var settings: Settings
     private lateinit var authenticationService: AuthenticationService
+    private lateinit var authenticationRepository: AdminAuthenticationRepositoryImpl
 
     @BeforeTest
     fun setup() {
         authenticationApiService = mock(mode = MockMode.autofill)
         settings = mock(mode = MockMode.autofill)
         authenticationService = AuthenticationService(authenticationApiService, settings)
+        authenticationRepository = AdminAuthenticationRepositoryImpl(authenticationApiService, settings)
     }
 
     @Test
@@ -110,12 +115,57 @@ class AuthenticationServiceTest {
         assertEquals("", result)
     }
 
+    @Test
+    fun `isUserLoggedIn should return true when access token is not empty`() {
+        every { settings.getString(key = ACCESS_TOKEN_KEY, "") } returns "valid_token"
+
+        val result = authenticationService.isUserLoggedIn()
+
+        assertTrue(result)
+    }
+
+    @Test
+    fun `isUserLoggedIn should return false when access token is empty`() {
+        every { settings.getString(key = ACCESS_TOKEN_KEY, "") } returns ""
+
+        val result = authenticationService.isUserLoggedIn()
+
+        assertFalse(result)
+    }
+
+    @Test
+    fun `isUserLoggedIn should return false when access token is blank`() {
+        every { settings.getString(key = ACCESS_TOKEN_KEY, "") } returns "  "
+
+        val result = authenticationService.isUserLoggedIn()
+
+        assertFalse(result)
+    }
+
+    @Test
+    fun `isUserLoggedIn should return false after logout`() = runTest {
+        every { settings.getString(key = ACCESS_TOKEN_KEY, "") } returns "valid_token"
+        every { settings.getString(key = REFRESH_TOKEN_KEY, "") } returns "valid_refresh"
+
+       everySuspend { authenticationApiService.logout() } returns successfulLogoutResponse()
+
+        assertTrue(authenticationService.isUserLoggedIn())
+
+        authenticationRepository.logout()
+
+        every { settings.getString(key = ACCESS_TOKEN_KEY, "") } returns ""
+        every { settings.getString(key = REFRESH_TOKEN_KEY, "")} returns ""
+
+        assertFalse(authenticationService.isUserLoggedIn())
+    }
+
     private companion object {
         val fakeResponse = AdminAuthenticationResponse(
             accessToken = "fake_access_token",
             refreshToken = "fake_refresh_token"
         )
         const val ACCESS_TOKEN_KEY = "access_token"
+        const val REFRESH_TOKEN_KEY = "refresh_token"
 
         @OptIn(InternalAPI::class)
         fun successfulResponse(): Response<AdminAuthenticationResponse> {
@@ -137,6 +187,15 @@ class AuthenticationServiceTest {
                 body = """{"message":"Invalid credentials"}""",
                 rawResponse = mockHttpResponse
             ) as Response<AdminAuthenticationResponse>
+        }
+        private fun successfulLogoutResponse(): Response<Unit> {
+            val mockHttpResponse: HttpResponse = mock(MockMode.autofill) {
+                everySuspend { status } returns HttpStatusCode.OK
+            }
+            return Response.success(
+                body = Unit,
+                rawResponse = mockHttpResponse
+            ) as Response<Unit>
         }
     }
 }
