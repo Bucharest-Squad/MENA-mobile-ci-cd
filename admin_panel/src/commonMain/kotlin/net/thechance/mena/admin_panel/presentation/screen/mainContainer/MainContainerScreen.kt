@@ -1,5 +1,10 @@
 package net.thechance.mena.admin_panel.presentation.screen.mainContainer
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -11,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import net.thechance.mena.admin_panel.navigation.AdminPanel
 import net.thechance.mena.admin_panel.navigation.AdminPanelNavHost
 import net.thechance.mena.admin_panel.navigation.Deposit
 import net.thechance.mena.admin_panel.navigation.DukanManagement
@@ -77,7 +81,11 @@ private fun MainContainerContent(
             }
         },
         content = {
-            if (!showBars) {
+            AnimatedVisibility(
+                visible = showBars,
+                enter = fadeIn() + expandVertically(),
+                exit = fadeOut() + shrinkVertically()
+            ) {
                 Box {
                     Row(
                         modifier = Modifier.padding(start = 114.dp)
@@ -111,16 +119,18 @@ private fun onMainContainerEffect(
     navController: NavController,
     effect: MainContainerEffect
 ) {
+
     when (effect) {
         is MainContainerEffect.NavigateToAdminPanelScreen -> {
-            navController.navigate(AdminPanel) {
+
+            navController.navigate(UsersManagement) {
                 popUpTo(UsersManagement) { inclusive = true }
             }
         }
 
         is MainContainerEffect.NavigateToLogInScreen -> {
             navController.navigate(Login) {
-                popUpTo(AdminPanel) { inclusive = true }
+                popUpTo(UsersManagement) { inclusive = true }
             }
         }
 

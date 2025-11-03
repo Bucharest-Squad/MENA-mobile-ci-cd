@@ -41,8 +41,5 @@ fun AdminPanelNavHost(
         composable<DukanManagement> {
             DukanManagementsScreen()
         }
-        composable<AdminPanel> {
-            UserManagementScreen()
-        }
     }
 }

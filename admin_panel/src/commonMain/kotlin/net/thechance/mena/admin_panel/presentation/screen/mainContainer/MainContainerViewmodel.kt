@@ -6,8 +6,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.thechance.mena.admin_panel.domain.exceptions.NoInternetException
 import net.thechance.mena.admin_panel.domain.repository.authentication.AdminAuthenticationRepository
-import net.thechance.mena.admin_panel.navigation.AdminPanel
 import net.thechance.mena.admin_panel.navigation.Login
+import net.thechance.mena.admin_panel.navigation.UsersManagement
 import net.thechance.mena.admin_panel.presentation.base.BaseViewModel
 import net.thechance.mena.admin_panel.presentation.base.ErrorState
 import org.koin.android.annotation.KoinViewModel
@@ -75,8 +75,12 @@ class MainContainerViewmodel(
         }
 
     private fun onSuccessLoggedOut() {
-        updateState { it.copy(isLogOutDialogShown = false) }
-        sendEffect(MainContainerEffect.NavigateToLogInScreen)
+        updateState {
+            it.copy(
+                isLogOutDialogShown = false,
+                startDestination = Login
+            )
+        }
     }
 
     private fun confirmLogout() {
@@ -98,11 +102,10 @@ class MainContainerViewmodel(
             updateState {
                 it.copy(
                     isLoading = false,
-                    authenticationStatus = MainContainerScreenState.AuthenticationStatus.NotAuthenticated,
-                    startDestination = AdminPanel
+                    authenticationStatus = MainContainerScreenState.AuthenticationStatus.Authenticated,
+                    startDestination = UsersManagement
                 )
             }
-            sendEffect(MainContainerEffect.NavigateToAdminPanelScreen)
         } else {
             updateState {
                 it.copy(
@@ -111,7 +114,6 @@ class MainContainerViewmodel(
                     startDestination = Login
                 )
             }
-            sendEffect(MainContainerEffect.NavigateToLogInScreen)
         }
     }
 }

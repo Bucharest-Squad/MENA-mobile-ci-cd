@@ -9,9 +9,6 @@ sealed class AdminPanelRoute
 data object MainContainer : AdminPanelRoute()
 @Serializable
 data object Login : AdminPanelRoute()
-
-@Serializable
-data object AdminPanel : AdminPanelRoute()
 @Serializable
 data object UsersManagement : AdminPanelRoute()
 
