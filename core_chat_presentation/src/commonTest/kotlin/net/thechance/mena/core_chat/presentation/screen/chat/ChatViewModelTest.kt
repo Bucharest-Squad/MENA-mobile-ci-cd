@@ -8,7 +8,6 @@ import assertk.assertions.doesNotContain
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
-import assertk.assertions.isNull
 import assertk.assertions.isTrue
 import dev.icerock.moko.permissions.DeniedException
 import dev.icerock.moko.permissions.Permission
@@ -90,6 +89,7 @@ class ChatViewModelTest {
         )
         every { messageRepository.observeMessagesForChatOrAll(chatId) } returns flowOf()
         every { messageRepository.observeReadMessages() } returns flowOf()
+        every { messageRepository.observeDeleteChat() } returns flowOf()
         everySuspend { messageRepository.markMessagesOfChatAsRead(any()) } returns Unit
 
         viewModel = createViewModel()
@@ -328,7 +328,7 @@ class ChatViewModelTest {
         advanceUntilIdle()
 
         assertThat(viewModel.state.value.isImagePagerVisible).isFalse()
-        assertThat(viewModel.state.value.selectedMessage).isNull()
+        assertThat(viewModel.state.value.selectedImageMessages).isEmpty()
         assertThat(viewModel.state.value.currentImageIndexForPreview).isEqualTo(0)
     }
 
@@ -491,7 +491,7 @@ class ChatViewModelTest {
         advanceUntilIdle()
 
         verifySuspend { permissionsController.providePermission(Permission.RECORD_AUDIO) }
-        verifySuspend { audioRecordRepository.startRecording() }
+        verify { audioRecordRepository.startRecording() }
         assertThat(viewModel.state.value.isRecordingVoice).isTrue()
     }
 
@@ -585,14 +585,10 @@ class ChatViewModelTest {
 
     @Test
     fun `onMessageVoiceClicked should handle voice message click without errors`() = runTest(timeout = 5000.milliseconds) {
-        // Test with a non-existent message ID to avoid triggering the infinite loop
-        // in startProgressTracking which requires actual playback
-        val nonExistentVoiceMessageId = Uuid.random()
+       val nonExistentVoiceMessageId = Uuid.random()
 
-        // This should not trigger the progress tracking loop since the message won't be found
         viewModel.onMessageVoiceClicked(nonExistentVoiceMessageId)
 
-        // Just ensure we get here without hanging
         assertThat(true).isTrue()
     }
 
@@ -600,12 +596,10 @@ class ChatViewModelTest {
     fun `onMessageVoiceClicked should not play when message is not found`() = runTest {
         val nonExistentMessageId = Uuid.random()
 
-        // Click on a non-existent message
         viewModel.onMessageVoiceClicked(nonExistentMessageId)
         advanceUntilIdle()
 
-        // No crash should occur
-        assertThat(true).isTrue() // Just checking that we reach this point
+        assertThat(true).isTrue()
     }
 
     private fun List<ChatListItem>.currentUiMessages(): List<MessageUiState> =
