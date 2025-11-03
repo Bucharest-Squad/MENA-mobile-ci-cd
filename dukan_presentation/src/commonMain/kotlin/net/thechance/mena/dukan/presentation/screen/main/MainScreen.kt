@@ -5,6 +5,7 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -60,19 +61,23 @@ fun MainScreen(
     val navController = LocalNavController.current
     ObserveAsEffect(viewModel.effect) { effect ->
         when (effect) {
-            MainScreenEffect.NavigateToAddDukanScreen -> navController.navigate(DukanRoute.CreateDukanScreenRoute)
-            MainScreenEffect.NavigateToPendingDukanScreen -> navController.navigate(
-                PendingScreenRoute(
-                    state.value.dukanState.name,
+            MainScreenEffect.NavigateToAddDukanScreen -> {
+                navController.navigate(DukanRoute.CreateDukanScreenRoute)
+            }
+
+            MainScreenEffect.NavigateToPendingDukanScreen -> {
+                navController.navigate(
+                    PendingScreenRoute(state.value.dukanState.name)
                 )
-            )
+            }
 
-            MainScreenEffect.NavigateToManageDukanScreen -> navController.navigate(
-                ManageDukanScreenRoute
-            )
+            MainScreenEffect.NavigateToManageDukanScreen -> {
+                navController.navigate(ManageDukanScreenRoute)
+            }
 
-            MainScreenEffect.NavigateCategoryToScreen ->
+            MainScreenEffect.NavigateToDukansCategoriesScreen -> {
                 navController.navigate(DukanRoute.DukanCategoriesScreenRoute)
+            }
 
             is MainScreenEffect.NavigateToDukansScreenByCategory -> {
                 navController.navigate(
@@ -83,10 +88,8 @@ fun MainScreen(
                 )
             }
 
-            is MainScreenEffect.NavigateSelectedDukan -> {
-                navController.navigate(
-                    DukanRoute.DukanDetails(effect.dukanId)
-                )
+            is MainScreenEffect.NavigateToSelectedDukan -> {
+                navController.navigate(DukanRoute.DukanDetails(effect.dukanId))
             }
         }
     }
@@ -103,45 +106,52 @@ private fun MainContent(
 ) {
     val dukans = state.editorPickDukans.collectAsLazyPagingItems()
     val bestNearestDukan = state.bestNearestDukans.collectAsLazyPagingItems()
-
-    AnimatedContent(
-        targetState = state.isConnected,
-        transitionSpec = { fadeTransitionSpec() }
-    ) { isConnected ->
-        if (!isConnected) {
-            NoInternetContent(
-                onRetry = listener::onRetryClicked,
-                modifier = Modifier.fillMaxSize()
-            )
-            return@AnimatedContent
-        }
-
-        Scaffold(
-            topBar = {
+    Scaffold(
+        topBar = {
+            AnimatedContent(
+                targetState = state.isConnected,
+                transitionSpec = { fadeTransitionSpec() }
+            ) {isConnected ->
+                if(!isConnected) return@AnimatedContent
                 TopAppBar(
                     modifier = Modifier.statusBarsPadding(),
                     onDukanIconClicked = listener::onDukanButtonClicked,
                     dukanButtonStatus = state.dukanState.status
                 )
-            },
-            snakeBar = { ManageDukanSnackbar(state.snackBarState, listener) }
-        ) {
+            }
+        },
+        snakeBar = { ManageDukanSnackbar(state.snackBarState, listener) }
+    ) {
+        AnimatedContent(
+            targetState = state.isConnected,
+            transitionSpec = { fadeTransitionSpec() }
+        ) { isConnected ->
+            if(isConnected) return@AnimatedContent
+            NoInternetContent(
+                onRetry = listener::onRetryClicked,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
 
-            LazyColumn {
+        AnimatedContent(
+            targetState = state.isConnected,
+            transitionSpec = { fadeTransitionSpec() }
+        ) { isConnected ->
+            if(!isConnected) return@AnimatedContent
+            LazyColumn (
+                contentPadding = PaddingValues(horizontal = Theme.spacing._16)
+            ){
                 item {
                     Text(
                         text = stringResource(Res.string.what_do_you_need),
                         style = Theme.typography.title.small,
                         color = Theme.colorScheme.shadePrimary,
-                        modifier = Modifier.padding(
-                            start = Theme.spacing._16,
-                            bottom = Theme.spacing._8
-                        )
+                        modifier = Modifier.padding(bottom = Theme.spacing._8)
                     )
 
                     CategorySection(
                         categories = state.categories,
-                        onCategoryClick = listener::onCategorySelectedClicked,
+                        onCategoryClick = listener::onSelectedCategoryClicked,
                         onViewMoreClick = listener::onViewMoreClicked,
                     )
                 }
@@ -152,13 +162,11 @@ private fun MainContent(
                             text = stringResource(Res.string.best_dukans_around_you),
                             style = Theme.typography.title.small,
                             color = Theme.colorScheme.shadePrimary,
-                            modifier = Modifier.padding(
-                                start = Theme.spacing._16,
-                                top = Theme.spacing._16
-                            )
+                            modifier = Modifier.padding(top = Theme.spacing._16)
                         )
 
                         BestNearestDukanSection(
+                            modifier = Modifier.padding(top = Theme.spacing._8),
                             dukans = bestNearestDukan,
                             onDukanClick = listener::onNearestDukanClicked,
                         )
@@ -172,7 +180,6 @@ private fun MainContent(
                         color = Theme.colorScheme.shadePrimary,
                         modifier = Modifier.padding(
                             top = Theme.spacing._16,
-                            start = Theme.spacing._16,
                             bottom = Theme.spacing._12
                         )
                     )
@@ -206,7 +213,7 @@ private fun ManageDukanSnackbar(
             snackBarState?.let {
                 SnackBar(
                     snackBarUiState = snackBarState,
-                    onDismiss = listener::onDismissSnackBar
+                    onDismiss = listener::onSnackBarDismissed
                 )
             }
         }
@@ -228,7 +235,8 @@ private fun MainScreenPreview() {
                 state = MainScreenUiState(
                     categories = fakeCategories(),
                     bestNearestDukans = flowOf(PagingData.from(fakeBestNearestDuknas())),
-                    editorPickDukans = flowOf(PagingData.from(fakeDukans()))
+                    editorPickDukans = flowOf(PagingData.from(fakeDukans())),
+                    isConnected = true
                 ),
             )
         }
