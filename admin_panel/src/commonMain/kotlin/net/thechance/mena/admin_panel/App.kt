@@ -1,14 +1,20 @@
 package net.thechance.mena.admin_panel
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.runtime.Composable
-import net.thechance.mena.admin_panel.navigation.nav_host.AdminPanelNavHost
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.navigation.compose.rememberNavController
+import net.thechance.mena.admin_panel.navigation.AdminPanelNavHost
+import net.thechance.mena.admin_panel.navigation.LocalNavController
+import net.thechance.mena.admin_panel.navigation.MainContainer
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 
 @Composable
-@Preview
-fun App(){
+fun App() {
+    val navController = rememberNavController()
+
     MenaTheme {
-        AdminPanelNavHost()
+        CompositionLocalProvider(LocalNavController provides navController) {
+            AdminPanelNavHost(navController, startDestination = MainContainer)
+        }
     }
 }
