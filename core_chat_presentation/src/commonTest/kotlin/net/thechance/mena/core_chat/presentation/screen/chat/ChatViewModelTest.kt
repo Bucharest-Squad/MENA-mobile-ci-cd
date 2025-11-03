@@ -19,6 +19,7 @@ import dev.mokkery.everySuspend
 import dev.mokkery.matcher.any
 import dev.mokkery.mock
 import dev.mokkery.verify
+import dev.mokkery.verify.VerifyMode.Companion.exactly
 import dev.mokkery.verifySuspend
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -36,6 +37,7 @@ import mena.core_chat_presentation.generated.resources.error
 import mena.core_chat_presentation.generated.resources.error_failed_to_download_image
 import mena.core_chat_presentation.generated.resources.image_saved_successfully
 import mena.core_chat_presentation.generated.resources.success
+import net.thechance.mena.core_chat.domain.entity.AudioData
 import net.thechance.mena.core_chat.domain.entity.Chat
 import net.thechance.mena.core_chat.domain.entity.Message
 import net.thechance.mena.core_chat.domain.entity.MessageContent
@@ -584,22 +586,69 @@ class ChatViewModelTest {
     }
 
     @Test
-    fun `onMessageVoiceClicked should handle voice message click without errors`() = runTest(timeout = 5000.milliseconds) {
-       val nonExistentVoiceMessageId = Uuid.random()
+    fun `onMessageVoiceClicked should do nothing if message is not found`() =
+        runTest {
+            val nonExistentMessageId = Uuid.random()
+            viewModel.onMessageVoiceClicked(nonExistentMessageId)
+            advanceUntilIdle()
+            verify(exactly(0)) { audioPlayer.play(any()) }
+        }
 
-        viewModel.onMessageVoiceClicked(nonExistentVoiceMessageId)
+    @Test
+    fun `onMessageVoiceClicked should play voice message if not playing`() = runTest {
+        val voiceMessage = voiceMessage(voiceMessageId)
+        everySuspend { messageRepository.loadMessages(any(), any(), any()) } returns PagedData(
+            listOf(voiceMessage), 1, true
+        )
 
-        assertThat(true).isTrue()
+        everySuspend { audioRecordRepository.getAudioFilePath(any()) } returns "filePath"
+        every { audioPlayer.getDuration(any()) } returns 1000L
+        every { audioPlayer.getCurrentPosition() } returns 1000L
+        every { audioPlayer.play(any()) } returns Unit
+        every { audioPlayer.pause() } returns Unit
+        every { audioPlayer.stop() } returns Unit
+
+        val viewModel = createViewModel()
+        viewModel.onMessagesScrolled()
+        advanceUntilIdle()
+
+        viewModel.onMessageVoiceClicked(voiceMessageId)
+        advanceUntilIdle()
+
+        verify { audioPlayer.play("filePath") }
+        val updatedItem =
+            viewModel.state.value.chatListItems.first() as ChatListItem.VoiceMessage
+        assertThat(updatedItem.isPlaying).isFalse()
     }
 
     @Test
-    fun `onMessageVoiceClicked should not play when message is not found`() = runTest {
-        val nonExistentMessageId = Uuid.random()
+    fun `onMessageVoiceClicked should stop other playing messages and play the new one`() = runTest {
+        val voiceMessage1 = voiceMessage(voiceMessageId)
+        val voiceMessage2 = voiceMessage(Uuid.random())
+        everySuspend { messageRepository.loadMessages(any(), any(), any()) } returns PagedData(
+            listOf(voiceMessage1, voiceMessage2), 1, true
+        )
+        everySuspend { audioRecordRepository.getAudioFilePath(any()) } returns "filePath"
+        every { audioPlayer.getDuration(any()) } returns 1000L
+        every { audioPlayer.getCurrentPosition() } returns 1000L
+        every { audioPlayer.play(any()) } returns Unit
+        every { audioPlayer.pause() } returns Unit
+        every { audioPlayer.stop() } returns Unit
 
-        viewModel.onMessageVoiceClicked(nonExistentMessageId)
+        val viewModel = createViewModel()
+        viewModel.onMessagesScrolled()
         advanceUntilIdle()
 
-        assertThat(true).isTrue()
+        viewModel.onMessageVoiceClicked(voiceMessage1.id)
+        advanceUntilIdle()
+        viewModel.onMessageVoiceClicked(voiceMessage2.id)
+        advanceUntilIdle()
+
+        val items = viewModel.state.value.chatListItems
+        val vm1 = items.find { it is ChatListItem.VoiceMessage && it.data.id == voiceMessage1.id } as ChatListItem.VoiceMessage?
+        val vm2 = items.find { it is ChatListItem.VoiceMessage && it.data.id == voiceMessage2.id } as ChatListItem.VoiceMessage?
+        assertThat(vm1?.isPlaying ?: true).isFalse()
+        assertThat(vm2?.isPlaying ?: true).isFalse()
     }
 
     private fun List<ChatListItem>.currentUiMessages(): List<MessageUiState> =
@@ -614,9 +663,9 @@ class ChatViewModelTest {
             audioRecordRepository = audioRecordRepository,
             userRepository = userRepository,
             imageDownloaderService = imageDownloaderService,
-            chatArgs = chatArgs,
             permissionsController = permissionsController,
             audioPlayer = audioPlayer,
+            chatArgs = chatArgs,
             dispatcher = testDispatcher
         )
     }
@@ -642,8 +691,12 @@ class ChatViewModelTest {
 
         val message1Id = Uuid.parse("22222222-2222-2222-2222-222222222222")
         val message2Id = Uuid.parse("33333333-3333-3333-3333-333333333333")
+        val voiceMessageId = Uuid.parse("44444444-4444-4444-4444-444444444444")
+
 
         const val imageUrl = "https://test.com/image.jpg"
+        const val audioUrl = "https://test.com/audio.mp3"
+
 
         val messages =
             listOf(
@@ -666,6 +719,16 @@ class ChatViewModelTest {
                     false
                 )
             )
+
+        fun voiceMessage(id: Uuid) = Message(
+            id,
+            chatRequesterId,
+            chatId,
+            LocalDateTime.now(),
+            MessageStatus.SENT,
+            MessageContent.Audio(AudioData.AudioUrl(audioUrl)),
+            true
+        )
 
     }
 }
