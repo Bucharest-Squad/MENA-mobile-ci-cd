@@ -135,7 +135,7 @@ class PrayerTimeViewModel(
     }
 
     private companion object {
-        private const val ONE_DAY_IN_MILLIS = 24 * 60 * 60 * 1000L
-        private const val COUNTDOWN_UPDATE_INTERVAL = 1000L
+        const val ONE_DAY_IN_MILLIS = 24 * 60 * 60 * 1000L
+        const val COUNTDOWN_UPDATE_INTERVAL = 1000L
     }
 }
