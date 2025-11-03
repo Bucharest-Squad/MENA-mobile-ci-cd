@@ -24,7 +24,6 @@ import org.jetbrains.compose.resources.StringResource
 
 data class MainContainerScreenState(
     val authenticationStatus: AuthenticationStatus = AuthenticationStatus.NotAuthenticated,
-    val startDestination: AdminPanelRoute = Login,
     val isLoading: Boolean = true,
     val isLogOutDialogShown: Boolean = false,
     val currentTab: CurrentTab = CurrentTab.USERS_MANAGEMENT,
