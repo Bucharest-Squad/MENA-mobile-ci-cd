@@ -22,6 +22,7 @@ internal data class MosqueUiState(
     val id: Uuid,
     val name: String,
     val imageUrl: String,
+    val address: String,
     val distance: Double,
     val coordinate: Coordinate
 )
@@ -37,6 +38,7 @@ internal fun Mosque.toUiState(distance: Double): MosqueUiState {
         id = id,
         name = name,
         imageUrl = imageUrl,
+        address = address,
         distance = distance,
         coordinate = Coordinate(
             latitude = coordinates.latitude,
