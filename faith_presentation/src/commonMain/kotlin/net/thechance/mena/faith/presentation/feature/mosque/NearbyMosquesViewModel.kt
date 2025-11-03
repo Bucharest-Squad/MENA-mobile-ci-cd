@@ -43,7 +43,7 @@ internal class NearbyMosquesViewModel(
     }
 
     override fun onSearchByCoordinatesClick(coordinate: Coordinate) {
-        handleNearbyMosquesSuccess(emptyList())
+//        TODO("Not yet implemented")
     }
 
     override fun mapPositionChanged(coordinate: Coordinate) {
