@@ -78,7 +78,7 @@ fun ChatListItem(
                     chatAvatarUrl = chatAvatarUrl,
                     showMessageInfo = (markedMessage.isVisibleMessageInfo || markedMessage.isLastInSeries || markedMessage.status == MessageStatus.FAILED),
                     isMarkedLastInSeries = markedMessage.isLastInSeries,
-                    isMessageLoading = item.isLoading,
+                    isMessageLoading = item.isLoading || item.isPlaying,
                     progress = item.progress,
                     totalSeconds = item.duration.div(1000) ,
                     waveformData = item.waveformData,
