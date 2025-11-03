@@ -43,7 +43,21 @@ internal class NearbyMosquesViewModel(
     }
 
     override fun onSearchByCoordinatesClick(coordinate: Coordinate) {
-//        TODO("Not yet implemented")
+        val center = uiState.value.centerOfMap ?: return
+        updateState { it.copy(isLoading = true) }
+        tryToExecute(
+            dispatcher = dispatcher,
+            execute = {
+                mosqueRepository.getNearbyMosques(
+                    latitude = center.latitude,
+                    longitude = center.longitude,
+                    radius = SEARCH_RADIUS_KM,
+                ).map { mosque ->
+                    mosque.toUiState(distance = 0.0)
+                }
+            },
+            onSuccess = ::handleNearbyMosquesSuccess,
+        )
     }
 
     override fun mapPositionChanged(coordinate: Coordinate) {
@@ -87,7 +101,12 @@ internal class NearbyMosquesViewModel(
                 updateState { it.copy(isNoMosquesCardVisible = false) }
             }
         } else {
-            // TODO: handle non-empty list case
+            updateState {
+                it.copy(
+                    isLoading = false,
+                    mosques = mosques,
+                )
+            }
         }
     }
 
@@ -123,5 +142,6 @@ internal class NearbyMosquesViewModel(
 
     private companion object {
         const val SEARCH_DEBOUNCE_DELAY = 1000L
+        const val SEARCH_RADIUS_KM = 10.0
     }
 }
