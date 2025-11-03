@@ -44,8 +44,20 @@ class MainContainerViewmodel(
             val isUserLoggedIn =true
 
             if (isUserLoggedIn) {
+                updateState {
+                    it.copy(
+                        isLoading = false,
+                        authenticationStatus = MainContainerScreenState.AuthenticationStatus.NotAuthenticated
+                    )
+                }
                 sendEffect(MainContainerEffect.NavigateToAdminPanelScreen)
             } else {
+                updateState {
+                    it.copy(
+                        isLoading = false,
+                        authenticationStatus = MainContainerScreenState.AuthenticationStatus.NotAuthenticated
+                    )
+                }
                 sendEffect(MainContainerEffect.NavigateToLogInScreen)
             }
 
