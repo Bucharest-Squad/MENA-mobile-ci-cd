@@ -11,6 +11,7 @@ class AdminPanelViewmodel() : BaseViewModel<AdminPanelScreenState, AdminPanelScr
 ), AdminPanelInteractionListener {
     override fun onTabSelected(tab: AdminPanelScreenState.CurrentTab) {
         updateState { it.copy(currentTab = tab) }
+        sendEffect(determineEffect(tab))
     }
 
     override fun onLogOutClicked() {
@@ -32,4 +33,19 @@ class AdminPanelViewmodel() : BaseViewModel<AdminPanelScreenState, AdminPanelScr
             else -> ErrorState.UnknownError
         }
     }
+
+    private fun determineEffect(currentTab: AdminPanelScreenState.CurrentTab): AdminPanelScreenEffect =
+        when (currentTab) {
+            AdminPanelScreenState.CurrentTab.USERS_MANAGEMENT ->
+                AdminPanelScreenEffect.NavigateToUsersManagementScreen
+
+            AdminPanelScreenState.CurrentTab.DUKAN_MANAGEMENT ->
+                AdminPanelScreenEffect.NavigateToDukanManagementScreen
+
+            AdminPanelScreenState.CurrentTab.DUKAN_REQUEST ->
+                AdminPanelScreenEffect.NavigateToDukanRequestsScreen
+
+            AdminPanelScreenState.CurrentTab.DEPOSIT ->
+                AdminPanelScreenEffect.NavigateToDepositScreen
+        }
 }

@@ -1,10 +1,10 @@
 package net.thechance.mena.admin_panel.presentation.screen.admin_panel
 
-import net.thechance.mena.admin_panel.navigation.routes.AdminPanelTabsRoutes
-import net.thechance.mena.admin_panel.navigation.routes.Deposit
-import net.thechance.mena.admin_panel.navigation.routes.DukanManagement
-import net.thechance.mena.admin_panel.navigation.routes.DukanRequests
-import net.thechance.mena.admin_panel.navigation.routes.UsersManagement
+import net.thechance.mena.admin_panel.navigation.AdminPanelRoute
+import net.thechance.mena.admin_panel.navigation.Deposit
+import net.thechance.mena.admin_panel.navigation.DukanManagement
+import net.thechance.mena.admin_panel.navigation.DukanRequests
+import net.thechance.mena.admin_panel.navigation.UsersManagement
 import net.thechance.mena.admin_panel.resources.Res
 import net.thechance.mena.admin_panel.resources.deposit
 import net.thechance.mena.admin_panel.resources.dukan_management
@@ -26,7 +26,7 @@ data class AdminPanelScreenState(
     val currentTab: CurrentTab = CurrentTab.USERS_MANAGEMENT,
 ) {
     enum class CurrentTab(
-        val route: AdminPanelTabsRoutes,
+        val route: AdminPanelRoute,
         val title: StringResource,
         val selectedIconRes: DrawableResource,
         val unSelectedIconRes: DrawableResource

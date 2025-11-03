@@ -12,12 +12,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import net.thechance.mena.admin_panel.navigation.nav_host.AdminPanelTabsNavHost
-import net.thechance.mena.admin_panel.navigation.nav_host.LocalAdminPanelNavController
-import net.thechance.mena.admin_panel.navigation.routes.AdminPanel
-import net.thechance.mena.admin_panel.navigation.routes.Login
+import net.thechance.mena.admin_panel.navigation.LocalNavController
+import net.thechance.mena.admin_panel.navigation.AdminPanel
+import net.thechance.mena.admin_panel.navigation.Deposit
+import net.thechance.mena.admin_panel.navigation.DukanManagement
+import net.thechance.mena.admin_panel.navigation.DukanRequests
+import net.thechance.mena.admin_panel.navigation.Login
+import net.thechance.mena.admin_panel.navigation.UsersManagement
 import net.thechance.mena.admin_panel.presentation.component.AdminConfirmationDialog
 import net.thechance.mena.admin_panel.presentation.screen.admin_panel.component.AdminPanelSideBar
 import net.thechance.mena.admin_panel.presentation.utils.ObserveAsEffect
@@ -38,7 +40,7 @@ fun AdminPanelScreen(
     viewmodel: AdminPanelViewmodel = koinViewModel(),
 ) {
     val state by viewmodel.state.collectAsStateWithLifecycle()
-    val adminPanelNavController = LocalAdminPanelNavController.current
+    val adminPanelNavController = LocalNavController.current
     ObserveAsEffect(
         effect = viewmodel.uiEffect,
         onEffect = { effect ->
@@ -61,14 +63,13 @@ fun AdminPanelScreen(
         }
     }
 
-    AdminPanelContent(state, viewmodel, adminPanelTabsNavController)
+    AdminPanelContent(state, viewmodel)
 }
 
 @Composable
 private fun AdminPanelContent(
     state: AdminPanelScreenState,
-    interactionListener: AdminPanelInteractionListener,
-    adminPanelTabsNavController: NavHostController
+    interactionListener: AdminPanelInteractionListener
 ) {
     Scaffold(
         overlays = {
@@ -105,7 +106,6 @@ private fun AdminPanelContent(
                         selectedTab = state.currentTab,
                         interactionListener = interactionListener
                     )
-                    AdminPanelTabsNavHost(adminPanelTabsNavController)
                 }
             }
         }
@@ -121,6 +121,22 @@ private fun onAdminPanelEffect(
             navController.navigate(Login) {
                 popUpTo(AdminPanel) { inclusive = true }
             }
+        }
+
+        is AdminPanelScreenEffect.NavigateToUsersManagementScreen -> {
+            navController.navigate(UsersManagement)
+        }
+
+        is AdminPanelScreenEffect.NavigateToDukanManagementScreen -> {
+            navController.navigate(DukanManagement)
+        }
+
+        is AdminPanelScreenEffect.NavigateToDukanRequestsScreen -> {
+            navController.navigate(DukanRequests)
+        }
+
+        is AdminPanelScreenEffect.NavigateToDepositScreen -> {
+            navController.navigate(Deposit)
         }
     }
 }
