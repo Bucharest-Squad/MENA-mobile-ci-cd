@@ -9,6 +9,7 @@ import kotlinx.coroutines.test.runTest
 import net.thechance.mena.faith.data.database.AyahDao
 import net.thechance.mena.faith.data.database.SurahDto
 import net.thechance.mena.faith.data.datastore.TilawahDataStore
+import net.thechance.mena.faith.data.remote.service.TilawahApiService
 import net.thechance.mena.faith.domain.entity.Surah
 import net.thechance.mena.faith.domain.model.LastAyahForTilawah
 import kotlin.test.Test
@@ -20,8 +21,13 @@ class QuranRepositoryImplTest {
     private val mockDao: AyahDao = mock(MockMode.autofill)
     private val tilawahDataStore: TilawahDataStore = mock(MockMode.autofill)
 
+    private val tilawahApiService = mock<TilawahApiService>(MockMode.autofill)
     private val repository =
-        QuranRepositoryImpl(ayahDao = mockDao, tilawahDataStore = tilawahDataStore)
+        QuranRepositoryImpl(
+            ayahDao = mockDao,
+            tilawahDataStore = tilawahDataStore,
+            tilawahApiService = tilawahApiService
+        )
 
 
     @Test
@@ -79,13 +85,14 @@ class QuranRepositoryImplTest {
     }
 
     @Test
-    fun `searchForAyahInSurah Should return empty list when no ayah match the query in the specified surah`() = runTest {
-        everySuspend { mockDao.searchForAyahInSurah(1, "nonexistent") } returns emptyList()
+    fun `searchForAyahInSurah Should return empty list when no ayah match the query in the specified surah`() =
+        runTest {
+            everySuspend { mockDao.searchForAyahInSurah(1, "nonexistent") } returns emptyList()
 
-        val result = repository.searchForAyahInSurah(1, "nonexistent")
+            val result = repository.searchForAyahInSurah(1, "nonexistent")
 
-        assertTrue(result.isEmpty())
-    }
+            assertTrue(result.isEmpty())
+        }
 
     @Test
     fun `getLastAyahForTilawah should return stored ayah when datastore has value`() = runTest {
