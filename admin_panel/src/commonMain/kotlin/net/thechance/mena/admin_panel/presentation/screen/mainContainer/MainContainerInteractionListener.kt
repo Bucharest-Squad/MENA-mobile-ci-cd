@@ -1,6 +1,10 @@
 package net.thechance.mena.admin_panel.presentation.screen.mainContainer
 
+
 interface MainContainerInteractionListener {
-    fun onLogInRequested()
-    fun onAdminPanelRequested()
+
+    fun onTabSelected(tab: MainContainerScreenState.CurrentTab)
+    fun onLogOutClicked()
+    fun onDismissLogoutDialog()
+    fun onConfirmLogout()
 }

@@ -15,8 +15,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import net.thechance.mena.admin_panel.presentation.screen.admin_panel.AdminPanelInteractionListener
-import net.thechance.mena.admin_panel.presentation.screen.admin_panel.AdminPanelScreenState
+import net.thechance.mena.admin_panel.presentation.screen.mainContainer.MainContainerInteractionListener
+import net.thechance.mena.admin_panel.presentation.screen.mainContainer.MainContainerScreenState
 import net.thechance.mena.admin_panel.resources.Res
 import net.thechance.mena.admin_panel.resources.app_name
 import net.thechance.mena.admin_panel.resources.logout
@@ -31,8 +31,8 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun AdminPanelSideBar(
-    selectedTab: AdminPanelScreenState.CurrentTab,
-    interactionListener: AdminPanelInteractionListener,
+    selectedTab: MainContainerScreenState.CurrentTab,
+    interactionListener: MainContainerInteractionListener,
     modifier: Modifier = Modifier
 ) {
     Column(

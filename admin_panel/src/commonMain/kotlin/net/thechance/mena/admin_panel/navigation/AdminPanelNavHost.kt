@@ -5,12 +5,11 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import net.thechance.mena.admin_panel.presentation.screen.admin_panel.AdminPanelScreen
+import androidx.navigation.compose.rememberNavController
 import net.thechance.mena.admin_panel.presentation.screen.deposit.DepositScreen
 import net.thechance.mena.admin_panel.presentation.screen.dukan_managements.DukanManagementsScreen
 import net.thechance.mena.admin_panel.presentation.screen.dukan_requests.DukanRequestsScreen
 import net.thechance.mena.admin_panel.presentation.screen.login.LoginScreen
-import net.thechance.mena.admin_panel.presentation.screen.mainContainer.MainContainerScreen
 import net.thechance.mena.admin_panel.presentation.screen.user_managements.UserManagementScreen
 
 val LocalNavController = staticCompositionLocalOf<NavHostController> {
@@ -19,16 +18,14 @@ val LocalNavController = staticCompositionLocalOf<NavHostController> {
 
 @Composable
 fun AdminPanelNavHost(
-    navController: NavHostController,
-    startDestination: AdminPanelRoute = MainContainer,
+    navController: NavHostController = rememberNavController(),
+    startDestination: AdminPanelRoute,
 ) {
+
     NavHost(
         navController = navController,
         startDestination = startDestination
     ) {
-        composable<MainContainer> {
-            MainContainerScreen(navController)
-        }
         composable<Login> {
             LoginScreen()
         }
@@ -45,7 +42,7 @@ fun AdminPanelNavHost(
             DukanManagementsScreen()
         }
         composable<AdminPanel> {
-            AdminPanelScreen()
+            UserManagementScreen()
         }
     }
 }

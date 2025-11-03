@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import net.thechance.mena.admin_panel.presentation.screen.admin_panel.AdminPanelScreenState
+import net.thechance.mena.admin_panel.presentation.screen.mainContainer.MainContainerScreenState
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
@@ -24,8 +24,9 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun AdminSideBarTabs(
-    selectedTab: AdminPanelScreenState.CurrentTab,
-    onTabSelected: (tab: AdminPanelScreenState.CurrentTab) -> Unit,
+
+    selectedTab: MainContainerScreenState.CurrentTab,
+    onTabSelected: (tab: MainContainerScreenState.CurrentTab) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -34,35 +35,35 @@ fun AdminSideBarTabs(
         modifier = modifier
     ) {
         AdminSidebarItem(
-            title = stringResource(AdminPanelScreenState.CurrentTab.DUKAN_MANAGEMENT.title),
-            selectedIcon = painterResource(AdminPanelScreenState.CurrentTab.DUKAN_MANAGEMENT.selectedIconRes),
-            notSelectedIcon = painterResource(AdminPanelScreenState.CurrentTab.DUKAN_MANAGEMENT.unSelectedIconRes),
-            isSelected = selectedTab == AdminPanelScreenState.CurrentTab.DUKAN_MANAGEMENT,
-            onClick = { onTabSelected(AdminPanelScreenState.CurrentTab.DUKAN_MANAGEMENT) }
+            title = stringResource(MainContainerScreenState.CurrentTab.DUKAN_MANAGEMENT.title),
+            selectedIcon = painterResource(MainContainerScreenState.CurrentTab.DUKAN_MANAGEMENT.selectedIconRes),
+            notSelectedIcon = painterResource(MainContainerScreenState.CurrentTab.DUKAN_MANAGEMENT.unSelectedIconRes),
+            isSelected = selectedTab == MainContainerScreenState.CurrentTab.DUKAN_MANAGEMENT,
+            onClick = { onTabSelected(MainContainerScreenState.CurrentTab.DUKAN_MANAGEMENT) }
         )
 
         AdminSidebarItem(
-            title = stringResource(AdminPanelScreenState.CurrentTab.DUKAN_REQUEST.title),
-            selectedIcon = painterResource(AdminPanelScreenState.CurrentTab.DUKAN_REQUEST.selectedIconRes),
-            notSelectedIcon = painterResource(AdminPanelScreenState.CurrentTab.DUKAN_REQUEST.unSelectedIconRes),
-            isSelected = selectedTab == AdminPanelScreenState.CurrentTab.DUKAN_REQUEST,
-            onClick = { onTabSelected(AdminPanelScreenState.CurrentTab.DUKAN_REQUEST) }
+            title = stringResource(MainContainerScreenState.CurrentTab.DUKAN_REQUEST.title),
+            selectedIcon = painterResource(MainContainerScreenState.CurrentTab.DUKAN_REQUEST.selectedIconRes),
+            notSelectedIcon = painterResource(MainContainerScreenState.CurrentTab.DUKAN_REQUEST.unSelectedIconRes),
+            isSelected = selectedTab == MainContainerScreenState.CurrentTab.DUKAN_REQUEST,
+            onClick = { onTabSelected(MainContainerScreenState.CurrentTab.DUKAN_REQUEST) }
         )
 
         AdminSidebarItem(
-            title = stringResource(AdminPanelScreenState.CurrentTab.DEPOSIT.title),
-            selectedIcon = painterResource(AdminPanelScreenState.CurrentTab.DEPOSIT.selectedIconRes),
-            notSelectedIcon = painterResource(AdminPanelScreenState.CurrentTab.DEPOSIT.unSelectedIconRes),
-            isSelected = selectedTab == AdminPanelScreenState.CurrentTab.DEPOSIT,
-            onClick = { onTabSelected(AdminPanelScreenState.CurrentTab.DEPOSIT) }
+            title = stringResource(MainContainerScreenState.CurrentTab.DEPOSIT.title),
+            selectedIcon = painterResource(MainContainerScreenState.CurrentTab.DEPOSIT.selectedIconRes),
+            notSelectedIcon = painterResource(MainContainerScreenState.CurrentTab.DEPOSIT.unSelectedIconRes),
+            isSelected = selectedTab == MainContainerScreenState.CurrentTab.DEPOSIT,
+            onClick = { onTabSelected(MainContainerScreenState.CurrentTab.DEPOSIT) }
         )
 
         AdminSidebarItem(
-            title = stringResource(AdminPanelScreenState.CurrentTab.USERS_MANAGEMENT.title),
-            selectedIcon = painterResource(AdminPanelScreenState.CurrentTab.USERS_MANAGEMENT.selectedIconRes),
-            notSelectedIcon = painterResource(AdminPanelScreenState.CurrentTab.USERS_MANAGEMENT.unSelectedIconRes),
-            isSelected = selectedTab == AdminPanelScreenState.CurrentTab.USERS_MANAGEMENT,
-            onClick = { onTabSelected(AdminPanelScreenState.CurrentTab.USERS_MANAGEMENT) }
+            title = stringResource(MainContainerScreenState.CurrentTab.USERS_MANAGEMENT.title),
+            selectedIcon = painterResource(MainContainerScreenState.CurrentTab.USERS_MANAGEMENT.selectedIconRes),
+            notSelectedIcon = painterResource(MainContainerScreenState.CurrentTab.USERS_MANAGEMENT.unSelectedIconRes),
+            isSelected = selectedTab == MainContainerScreenState.CurrentTab.USERS_MANAGEMENT,
+            onClick = { onTabSelected(MainContainerScreenState.CurrentTab.USERS_MANAGEMENT) }
         )
     }
 }
