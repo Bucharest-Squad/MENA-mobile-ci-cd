@@ -150,7 +150,7 @@
     <string name="surah_al_fatiha">Al-Fatiha</string>
 
     <!-- Audio and Recitation -->
-    <string name="reciters">reciters</string>
+    <string name="reciters">Reciters</string>
     <string name="previous_ayah">previous ayah</string>
     <string name="pause">pause</string>
     <string name="play">play</string>
@@ -174,4 +174,5 @@
     <string name="search_hint">Search...</string>
     <string name="no_mosques_found_by_keyword">No mosques found, try with another keyword.</string>
     <string name="no_nearby_mosques_found">No mosques found nearby this location, try another location.</string>
+    <string name="downloaded">Downloaded</string>
 </resources>
