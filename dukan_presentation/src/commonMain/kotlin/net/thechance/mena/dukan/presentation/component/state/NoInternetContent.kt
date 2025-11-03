@@ -34,6 +34,7 @@ fun NoInternetContent(
 ) {
     Column(
         modifier = modifier
+            .fillMaxSize()
             .padding(horizontal = Theme.spacing._16)
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,

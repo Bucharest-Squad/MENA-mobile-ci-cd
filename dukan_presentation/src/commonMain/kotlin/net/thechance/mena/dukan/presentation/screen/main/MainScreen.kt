@@ -13,9 +13,13 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
 import androidx.paging.PagingData
 import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.collectAsLazyPagingItems
@@ -111,13 +115,35 @@ private fun MainContent(
 ) {
     val dukans = state.editorPickDukans.collectAsLazyPagingItems()
     val bestNearestDukan = state.bestNearestDukans.collectAsLazyPagingItems()
+
+    val editorLoaded by remember(dukans) {
+        derivedStateOf { dukans.loadState.refresh is LoadState.NotLoading }
+    }
+    val nearestLoaded by remember(bestNearestDukan) {
+        derivedStateOf { bestNearestDukan.loadState.refresh is LoadState.NotLoading }
+    }
+
+    val isEmptyContent by remember(
+        state.isContentLoading,
+        state.categories,
+        dukans,
+        bestNearestDukan
+    ) {
+        derivedStateOf {
+            !state.isContentLoading &&
+                    editorLoaded && nearestLoaded &&
+                    state.categories.isEmpty() &&
+                    dukans.itemCount == 0 &&
+                    bestNearestDukan.itemCount == 0
+        }
+    }
     Scaffold(
         topBar = {
             AnimatedContent(
                 targetState = state.isConnected,
                 transitionSpec = { fadeTransitionSpec() }
-            ) {isConnected ->
-                if(!isConnected) return@AnimatedContent
+            ) { isConnected ->
+                if (!isConnected  || isEmptyContent) return@AnimatedContent
                 TopAppBar(
                     modifier = Modifier.statusBarsPadding(),
                     onDukanIconClicked = listener::onDukanButtonClicked,
@@ -131,53 +157,31 @@ private fun MainContent(
             targetState = state.isConnected,
             transitionSpec = { fadeTransitionSpec() }
         ) { isConnected ->
-            if(isConnected) return@AnimatedContent
+            if (isConnected) return@AnimatedContent
             NoInternetContent(
                 onRetry = listener::onRetryClicked,
                 modifier = Modifier.fillMaxSize()
             )
         }
-            },
-            snakeBar = { ManageDukanSnackbar(state.snackBarState, listener) }
-        ) {
-            val isMainSectionsEmpty = state.categories.isEmpty() &&
-                    bestNearestDukan.itemCount == 0 &&
-                    dukans.itemCount == 0
-
-            val isMainSectionsLoading = state.isCategoriesLoading ||
-                    state.isBestNearestDukanLoading ||
-                    state.isEditorPickDukanLoading
 
         AnimatedContent(
-            targetState = state.isConnected,
+            targetState = isEmptyContent,
             transitionSpec = { fadeTransitionSpec() }
-        ) { isConnected ->
-            if(!isConnected) return@AnimatedContent
-            LazyColumn (
-                contentPadding = PaddingValues(horizontal = Theme.spacing._16)
-            ){
-                item {
-                    Text(
-                        text = stringResource(Res.string.what_do_you_need),
-                        style = Theme.typography.title.small,
-                        color = Theme.colorScheme.shadePrimary,
-                        modifier = Modifier.padding(bottom = Theme.spacing._8)
-                    )
-            if ( isMainSectionsEmpty && isMainSectionsLoading.not()) {
+        ) { isEmptyContent ->
+            if (isEmptyContent) {
                 EmptyStateContent(
                     image = Res.drawable.dukan_pending,
                     title = Res.string.dukan_main_content_empty_error_title,
                     body = Res.string.dukan_main_content_empty_error_body
                 )
-                return@Scaffold
+            } else {
+                MainScreenSections(
+                    state = state,
+                    bestNearestDukan = bestNearestDukan,
+                    dukans = dukans,
+                    listener = listener
+                )
             }
-
-            MainScreenSections(
-                state = state,
-                bestNearestDukan = bestNearestDukan,
-                dukans = dukans,
-                listener = listener
-            )
         }
     }
 }
@@ -189,59 +193,43 @@ fun MainScreenSections(
     dukans: LazyPagingItems<MainScreenUiState.EditorPickDukanUiState>,
     listener: MainInteractionListener
 ) {
-    LazyColumn {
+    LazyColumn(
+        contentPadding = PaddingValues(horizontal = Theme.spacing._16)
+    ) {
         if (state.categories.isNotEmpty()) {
             item {
                 Text(
                     text = stringResource(Res.string.what_do_you_need),
                     style = Theme.typography.title.small,
                     color = Theme.colorScheme.shadePrimary,
-                    modifier = Modifier.padding(
-                        start = Theme.spacing._16,
-                        bottom = Theme.spacing._8
-                    )
+                    modifier = Modifier.padding(bottom = Theme.spacing._8)
                 )
 
-                    CategorySection(
-                        categories = state.categories,
-                        onCategoryClick = listener::onSelectedCategoryClicked,
-                        onViewMoreClick = listener::onViewMoreClicked,
-                    )
-                }
-
-                if (bestNearestDukan.itemCount > 0) {
-                    item {
-                        Text(
-                            text = stringResource(Res.string.best_dukans_around_you),
-                            style = Theme.typography.title.small,
-                            color = Theme.colorScheme.shadePrimary,
-                            modifier = Modifier.padding(top = Theme.spacing._16)
-                        )
-
-                        BestNearestDukanSection(
-                            modifier = Modifier.padding(top = Theme.spacing._8),
-                            dukans = bestNearestDukan,
-                            onDukanClick = listener::onNearestDukanClicked,
-                        )
-                    }
-                }
-
-                item {
-                    Text(
-                        stringResource(Res.string.editor_pick_dukans),
-                        style = Theme.typography.title.small,
-                        color = Theme.colorScheme.shadePrimary,
-                        modifier = Modifier.padding(
-                            top = Theme.spacing._16,
-                            bottom = Theme.spacing._12
-                        )
-                    )
-                }
-                editorPickDukanItems(
-                    dukans = dukans,
-                    onDukanClick = listener::onEditorPickDukanClicked
+                CategorySection(
+                    categories = state.categories,
+                    onCategoryClick = listener::onSelectedCategoryClicked,
+                    onViewMoreClick = listener::onViewMoreClicked,
                 )
             }
+        }
+
+        if (bestNearestDukan.itemCount > 0) {
+            item {
+                Text(
+                    text = stringResource(Res.string.best_dukans_around_you),
+                    style = Theme.typography.title.small,
+                    color = Theme.colorScheme.shadePrimary,
+                    modifier = Modifier.padding(top = Theme.spacing._16)
+                )
+
+                BestNearestDukanSection(
+                    modifier = Modifier.padding(top = Theme.spacing._8),
+                    dukans = bestNearestDukan,
+                    onDukanClick = listener::onNearestDukanClicked,
+                )
+            }
+        }
+
         if (dukans.itemCount > 0) {
             item {
                 Text(
@@ -250,7 +238,6 @@ fun MainScreenSections(
                     color = Theme.colorScheme.shadePrimary,
                     modifier = Modifier.padding(
                         top = Theme.spacing._16,
-                        start = Theme.spacing._16,
                         bottom = Theme.spacing._12
                     )
                 )
