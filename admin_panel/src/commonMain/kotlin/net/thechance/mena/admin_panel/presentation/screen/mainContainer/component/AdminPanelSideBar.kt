@@ -1,4 +1,4 @@
-package net.thechance.mena.admin_panel.presentation.screen.admin_panel.component
+package net.thechance.mena.admin_panel.presentation.screen.mainContainer.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

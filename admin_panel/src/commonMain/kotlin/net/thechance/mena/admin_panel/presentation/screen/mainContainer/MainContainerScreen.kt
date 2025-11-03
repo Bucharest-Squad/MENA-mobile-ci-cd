@@ -25,7 +25,7 @@ import net.thechance.mena.admin_panel.navigation.LocalNavController
 import net.thechance.mena.admin_panel.navigation.Login
 import net.thechance.mena.admin_panel.navigation.UsersManagement
 import net.thechance.mena.admin_panel.presentation.component.AdminConfirmationDialog
-import net.thechance.mena.admin_panel.presentation.screen.admin_panel.component.AdminPanelSideBar
+import net.thechance.mena.admin_panel.presentation.screen.mainContainer.component.AdminPanelSideBar
 import net.thechance.mena.admin_panel.presentation.utils.ObserveAsEffect
 import net.thechance.mena.admin_panel.resources.Res
 import net.thechance.mena.admin_panel.resources.confirm_logout_icon
@@ -67,7 +67,11 @@ private fun MainContainerContent(
     interactionListener: MainContainerInteractionListener
 ) {
     val navController = LocalNavController.current
-    val showBars = remember { navController.currentBackStackEntry?.destination?.hasRoute(Login.toString(), null) != true }
+    val showBars = remember {
+        navController.currentBackStackEntry?.destination?.hasRoute(
+            Login.toString(), null
+        ) != true
+    }
 
     Scaffold(
         overlays = {

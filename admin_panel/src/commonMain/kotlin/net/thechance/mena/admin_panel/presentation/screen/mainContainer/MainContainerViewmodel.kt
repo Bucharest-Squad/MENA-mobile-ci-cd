@@ -21,7 +21,6 @@ class MainContainerViewmodel(
         MainContainerScreenState()
     ), MainContainerInteractionListener {
     init {
-        println("MainContainerViewmodel created")
         viewModelScope.launch {
             checkAuthenticationStatus()
         }

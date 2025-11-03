@@ -79,7 +79,6 @@ private fun onLoginEffect(
     when (effect) {
         LoginEffect.NavigateToAdminPanel -> {
             navController.navigate(UsersManagement) {
-
                 popUpTo(Login) { inclusive = true }
             }
         }
