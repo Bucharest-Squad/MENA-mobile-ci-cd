@@ -42,7 +42,6 @@ fun Scaffold(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(backgroundColor)
             .then(
                 if (hasBlur) Modifier.blur(4.dp) else Modifier
             )
