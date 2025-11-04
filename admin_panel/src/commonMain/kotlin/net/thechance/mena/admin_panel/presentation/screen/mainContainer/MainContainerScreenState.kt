@@ -18,7 +18,7 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 
 data class MainContainerScreenState(
-    val authenticationStatus: AuthenticationStatus = AuthenticationStatus.NotAuthenticated,
+    val authenticationStatus: Boolean = false,
     val isLogOutDialogShown: Boolean = false,
     val currentTab: CurrentTab = CurrentTab.USERS_MANAGEMENT,
     val snackBar: SnackBarState = SnackBarState()
@@ -48,10 +48,5 @@ data class MainContainerScreenState(
             selectedIconRes = Res.drawable.wallet_selected,
             unSelectedIconRes = Res.drawable.wallet_unselected
         )
-    }
-
-    enum class AuthenticationStatus {
-        Authenticated,
-        NotAuthenticated,
     }
 }

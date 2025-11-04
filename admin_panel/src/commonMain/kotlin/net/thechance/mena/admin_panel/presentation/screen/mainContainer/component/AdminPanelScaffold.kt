@@ -69,8 +69,7 @@ fun AdminPanelScaffold(
             }
             AdminPanelNavHost(
                 navController = navController,
-                isUserLoggedIn =
-                    state.authenticationStatus == MainContainerScreenState.AuthenticationStatus.Authenticated
+                isUserLoggedIn = state.authenticationStatus
             )
         }
     )
