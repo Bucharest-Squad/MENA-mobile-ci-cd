@@ -13,12 +13,10 @@ import dev.mokkery.verify
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpStatusCode
 import io.ktor.utils.io.InternalAPI
-import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.test.runTest
-import net.thechance.mena.admin_panel.data.remote.dto.authentication.AdminAuthenticationResponse
 import net.thechance.mena.admin_panel.data.remote.api_service.AuthenticationApiService
-import net.thechance.mena.admin_panel.data.repository.AdminAuthenticationRepositoryImplTest
+import net.thechance.mena.admin_panel.data.remote.dto.authentication.AdminAuthenticationResponse
 import net.thechance.mena.admin_panel.data.repository.authentication.AdminAuthenticationRepositoryImpl
 import net.thechance.mena.admin_panel.data.service.AuthenticationService
 import net.thechance.mena.admin_panel.data.utils.accessToken
@@ -113,50 +111,6 @@ class AuthenticationServiceTest {
         val result = authenticationService.getAccessToken()
 
         assertEquals("", result)
-    }
-
-    @Test
-    fun `isUserLoggedIn should return true when access token is not empty`() {
-        every { settings.getString(key = ACCESS_TOKEN_KEY, "") } returns "valid_token"
-
-        val result = authenticationService.isUserLoggedIn()
-
-        assertTrue(result)
-    }
-
-    @Test
-    fun `isUserLoggedIn should return false when access token is empty`() {
-        every { settings.getString(key = ACCESS_TOKEN_KEY, "") } returns ""
-
-        val result = authenticationService.isUserLoggedIn()
-
-        assertFalse(result)
-    }
-
-    @Test
-    fun `isUserLoggedIn should return false when access token is blank`() {
-        every { settings.getString(key = ACCESS_TOKEN_KEY, "") } returns "  "
-
-        val result = authenticationService.isUserLoggedIn()
-
-        assertFalse(result)
-    }
-
-    @Test
-    fun `isUserLoggedIn should return false after logout`() = runTest {
-        every { settings.getString(key = ACCESS_TOKEN_KEY, "") } returns "valid_token"
-        every { settings.getString(key = REFRESH_TOKEN_KEY, "") } returns "valid_refresh"
-
-       everySuspend { authenticationApiService.logout() } returns successfulLogoutResponse()
-
-        assertTrue(authenticationService.isUserLoggedIn())
-
-        authenticationRepository.logout()
-
-        every { settings.getString(key = ACCESS_TOKEN_KEY, "") } returns ""
-        every { settings.getString(key = REFRESH_TOKEN_KEY, "")} returns ""
-
-        assertFalse(authenticationService.isUserLoggedIn())
     }
 
     private companion object {
