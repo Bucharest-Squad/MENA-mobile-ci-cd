@@ -30,8 +30,8 @@ fun MainContainerScreen(
             effect = viewModel.uiEffect,
             onEffect = { effect ->
                 onMainContainerEffect(
-                    navController,
-                    effect
+                    navController = navController,
+                    effect = effect
                 )
             }
         )
