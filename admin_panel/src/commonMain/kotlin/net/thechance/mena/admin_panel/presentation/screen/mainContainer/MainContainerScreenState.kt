@@ -1,8 +1,9 @@
 package net.thechance.mena.admin_panel.presentation.screen.mainContainer
 
+import net.thechance.mena.admin_panel.presentation.model.SnackBarState
 import net.thechance.mena.admin_panel.resources.Res
 import net.thechance.mena.admin_panel.resources.deposit
-import net.thechance.mena.admin_panel.resources.dukan_management
+import net.thechance.mena.admin_panel.resources.dukans_management
 import net.thechance.mena.admin_panel.resources.dukan_requests
 import net.thechance.mena.admin_panel.resources.file_selected
 import net.thechance.mena.admin_panel.resources.file_unselected
@@ -17,10 +18,10 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 
 data class MainContainerScreenState(
-    val authenticationStatus: AuthenticationStatus = AuthenticationStatus.NotAuthenticated,
-    val isLoading: Boolean = true,
+    val authenticationStatus: Boolean = false,
     val isLogOutDialogShown: Boolean = false,
     val currentTab: CurrentTab = CurrentTab.USERS_MANAGEMENT,
+    val snackBar: SnackBarState = SnackBarState()
 ) {
     enum class CurrentTab(
         val title: StringResource,
@@ -33,7 +34,7 @@ data class MainContainerScreenState(
             unSelectedIconRes = Res.drawable.users_unselected
         ),
         DUKAN_MANAGEMENT(
-            title = Res.string.dukan_management,
+            title = Res.string.dukans_management,
             selectedIconRes = Res.drawable.shop_selected,
             unSelectedIconRes = Res.drawable.shop_unselected
         ),
@@ -47,10 +48,5 @@ data class MainContainerScreenState(
             selectedIconRes = Res.drawable.wallet_selected,
             unSelectedIconRes = Res.drawable.wallet_unselected
         )
-    }
-
-    enum class AuthenticationStatus {
-        Authenticated,
-        NotAuthenticated,
     }
 }

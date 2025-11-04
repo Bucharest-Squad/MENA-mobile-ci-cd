@@ -5,6 +5,6 @@ interface MainContainerInteractionListener {
 
     fun onTabSelected(tab: MainContainerScreenState.CurrentTab)
     fun onLogOutClicked()
-    fun onDismissLogoutDialog()
+    fun onDismissLogout()
     fun onConfirmLogout()
 }

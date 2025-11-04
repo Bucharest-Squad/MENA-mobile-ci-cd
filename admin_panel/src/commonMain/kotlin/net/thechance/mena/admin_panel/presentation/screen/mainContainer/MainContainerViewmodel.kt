@@ -1,13 +1,16 @@
 package net.thechance.mena.admin_panel.presentation.screen.mainContainer
 
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
 import net.thechance.mena.admin_panel.domain.exceptions.NoInternetException
 import net.thechance.mena.admin_panel.domain.repository.authentication.AdminAuthenticationRepository
 import net.thechance.mena.admin_panel.presentation.base.BaseViewModel
 import net.thechance.mena.admin_panel.presentation.base.ErrorState
+import net.thechance.mena.admin_panel.presentation.model.SnackBarState
+import net.thechance.mena.admin_panel.presentation.utils.StringProvider
+import net.thechance.mena.admin_panel.presentation.utils.getErrorSnackBarMsg
+import net.thechance.mena.admin_panel.presentation.utils.getErrorSnackBarTitle
 import org.koin.android.annotation.KoinViewModel
 import org.koin.core.annotation.Provided
 
@@ -15,15 +18,15 @@ import org.koin.core.annotation.Provided
 class MainContainerViewmodel(
     @Provided
     private val authenticationRepository: AdminAuthenticationRepository,
+    @Provided
+    private val stringProvider: StringProvider,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) :
     BaseViewModel<MainContainerScreenState, MainContainerEffect>(
         MainContainerScreenState()
     ), MainContainerInteractionListener {
     init {
-        viewModelScope.launch {
-            checkAuthenticationStatus()
-        }
+        checkAuthenticationStatus()
     }
 
     override fun onTabSelected(tab: MainContainerScreenState.CurrentTab) {
@@ -35,15 +38,15 @@ class MainContainerViewmodel(
         updateState { it.copy(isLogOutDialogShown = true) }
     }
 
-    override fun onDismissLogoutDialog() {
+    override fun onDismissLogout() {
         updateState { it.copy(isLogOutDialogShown = false) }
     }
 
     override fun onConfirmLogout() {
         tryToExecute(
-            callee = ::confirmLogout,
+            callee = { authenticationRepository.logout() },
             onSuccess = { onSuccessLoggedOut() },
-            onError = { onFailureLoggedOut() },
+            onError = ::onFailureLoggedOut,
             dispatcher = dispatcher
         )
 
@@ -53,6 +56,78 @@ class MainContainerViewmodel(
         return when (throwable) {
             is NoInternetException -> ErrorState.NoInternet
             else -> ErrorState.UnknownError
+        }
+    }
+
+    private fun onSuccessLoggedOut() {
+        updateState { it.copy(isLogOutDialogShown = false) }
+        sendEffect(MainContainerEffect.NavigateToLogInScreen)
+    }
+
+    private suspend fun onFailureLoggedOut(errorState: ErrorState) {
+        showSnackBar(
+            title = stringProvider.getString(errorState.getErrorSnackBarTitle()),
+            message = stringProvider.getString(errorState.getErrorSnackBarMsg()),
+            isSuccess = false
+        )
+    }
+
+    private fun checkAuthenticationStatus() {
+        tryToExecute(
+            callee = { authenticationRepository.isUserLoggedIn() },
+            onSuccess = ::onSuccessCheckedAuthentication,
+            onError = ::onFailureCheckedAuthentication,
+            dispatcher = dispatcher
+        )
+    }
+
+    private fun onSuccessCheckedAuthentication(isUserLoggedIn: Boolean) {
+        if (isUserLoggedIn) {
+            updateState {
+                it.copy(authenticationStatus = true)
+            }
+            sendEffect(MainContainerEffect.NavigateToAdminPanelScreen)
+        } else {
+            updateState {
+                it.copy(authenticationStatus = false)
+            }
+            sendEffect(MainContainerEffect.NavigateToLogInScreen)
+        }
+    }
+
+    private suspend fun onFailureCheckedAuthentication(errorState: ErrorState) {
+        showSnackBar(
+            title = stringProvider.getString(errorState.getErrorSnackBarTitle()),
+            message = stringProvider.getString(errorState.getErrorSnackBarMsg()),
+            isSuccess = false
+        )
+    }
+
+    private suspend fun showSnackBar(
+        title: String,
+        message: String,
+        isSuccess: Boolean,
+        durationMillis: Long = 3000L
+    ) {
+        updateState { oldState ->
+            oldState.copy(
+                snackBar = SnackBarState(
+                    isVisible = true,
+                    title = title,
+                    message = message,
+                    isSuccess = isSuccess
+                )
+            )
+        }
+
+        delay(durationMillis)
+
+        hideSnackBar()
+    }
+
+    private fun hideSnackBar() {
+        updateState { oldState ->
+            oldState.copy(snackBar = oldState.snackBar.copy(isVisible = false))
         }
     }
 
@@ -70,47 +145,4 @@ class MainContainerViewmodel(
             MainContainerScreenState.CurrentTab.DEPOSIT ->
                 MainContainerEffect.NavigateToDepositScreen
         }
-
-    private fun onSuccessLoggedOut() {
-        updateState {
-            it.copy(
-                isLogOutDialogShown = false,
-            )
-        }
-        sendEffect(MainContainerEffect.NavigateToLogInScreen)
-    }
-
-    private fun confirmLogout() {
-        viewModelScope.launch {
-            authenticationRepository.logout()
-        }
-    }
-
-    private fun onFailureLoggedOut() {
-        TODO()
-    }
-
-    private suspend fun checkAuthenticationStatus() {
-        updateState { it.copy(isLoading = true) }
-
-        val isUserLoggedIn = authenticationRepository.isUserLoggedIn()
-
-        if (isUserLoggedIn) {
-            updateState {
-                it.copy(
-                    isLoading = false,
-                    authenticationStatus = MainContainerScreenState.AuthenticationStatus.Authenticated,
-                )
-            }
-            sendEffect(MainContainerEffect.NavigateToAdminPanelScreen)
-        } else {
-            updateState {
-                it.copy(
-                    isLoading = false,
-                    authenticationStatus = MainContainerScreenState.AuthenticationStatus.NotAuthenticated,
-                )
-            }
-            sendEffect(MainContainerEffect.NavigateToLogInScreen)
-        }
-    }
 }

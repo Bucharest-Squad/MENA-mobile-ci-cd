@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -55,7 +54,7 @@ fun ScaffoldScope.AdminConfirmationDialog(
                 confirmationButtonText = confirmationButtonText
             )
         },
-        modifier = modifier.width(400.dp)
+        modifier = modifier.fillMaxWidth(0.35f)
     ) {
         AdminConfirmationDialogContent(
             dialogIcon = dialogIcon,
@@ -82,23 +81,13 @@ private fun AdminConfirmationDialogActionButtons(
         PrimaryButton(
             text = stringResource(Res.string.cancel),
             onClick = onDismiss,
-            contentPadding = PaddingValues(
-                start = 16.dp,
-                end = 16.dp,
-                top = 8.dp,
-                bottom = 8.dp
-            )
+            contentPadding = PaddingValues(vertical = 8.dp, horizontal = 16.dp)
         )
         OutlinedButton(
             text = confirmationButtonText,
             onClick = onConfirm,
             trailingIcon = confirmationIcon,
-            contentPadding = PaddingValues(
-                start = 16.dp,
-                end = 16.dp,
-                top = 8.dp,
-                bottom = 8.dp
-            )
+            contentPadding = PaddingValues(vertical = 8.dp, horizontal = 16.dp)
         )
     }
 }
