@@ -81,23 +81,13 @@ private fun AdminConfirmationDialogActionButtons(
         PrimaryButton(
             text = stringResource(Res.string.cancel),
             onClick = onDismiss,
-            contentPadding = PaddingValues(
-                start = 16.dp,
-                end = 16.dp,
-                top = 8.dp,
-                bottom = 8.dp
-            )
+            contentPadding = PaddingValues(vertical = 8.dp, horizontal = 16.dp)
         )
         OutlinedButton(
             text = confirmationButtonText,
             onClick = onConfirm,
             trailingIcon = confirmationIcon,
-            contentPadding = PaddingValues(
-                start = 16.dp,
-                end = 16.dp,
-                top = 8.dp,
-                bottom = 8.dp
-            )
+            contentPadding = PaddingValues(vertical = 8.dp, horizontal = 16.dp)
         )
     }
 }

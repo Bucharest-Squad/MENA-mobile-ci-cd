@@ -63,12 +63,10 @@ private fun AdminSidebarItem(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
+    val titleColor =
+        if (isSelected) Theme.colorScheme.shadeSecondary else Theme.colorScheme.brand.brand
     val animatedTitleColor by animateColorAsState(
-        targetValue =
-            if (isSelected)
-                Theme.colorScheme.shadeSecondary
-            else
-                Theme.colorScheme.brand.brand
+        targetValue = titleColor
     )
     Column(
         modifier = Modifier
