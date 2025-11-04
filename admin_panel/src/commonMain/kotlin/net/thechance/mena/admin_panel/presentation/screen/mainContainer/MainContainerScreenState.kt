@@ -1,5 +1,6 @@
 package net.thechance.mena.admin_panel.presentation.screen.mainContainer
 
+import net.thechance.mena.admin_panel.presentation.model.SnackBarState
 import net.thechance.mena.admin_panel.resources.Res
 import net.thechance.mena.admin_panel.resources.deposit
 import net.thechance.mena.admin_panel.resources.dukans_management
@@ -18,9 +19,9 @@ import org.jetbrains.compose.resources.StringResource
 
 data class MainContainerScreenState(
     val authenticationStatus: AuthenticationStatus = AuthenticationStatus.NotAuthenticated,
-    val isLoading: Boolean = true,
     val isLogOutDialogShown: Boolean = false,
     val currentTab: CurrentTab = CurrentTab.USERS_MANAGEMENT,
+    val snackBar: SnackBarState = SnackBarState()
 ) {
     enum class CurrentTab(
         val title: StringResource,
