@@ -6,8 +6,6 @@ import de.jensklingenberg.ktorfit.http.POST
 import net.thechance.mena.admin_panel.data.remote.dto.authentication.AdminAuthenticationResponse
 import net.thechance.mena.admin_panel.data.remote.dto.authentication.LoginRequestDto
 import net.thechance.mena.admin_panel.data.remote.dto.authentication.RefreshTokenRequestDto
-import net.thechance.mena.admin_panel.data.utils.LOGIN_ENDPOINT
-import net.thechance.mena.admin_panel.data.utils.REFRESH_ENDPOINT
 
 interface AuthenticationApiService {
     @POST(LOGIN_ENDPOINT)
@@ -23,6 +21,8 @@ interface AuthenticationApiService {
 
     private companion object {
         const val AUTH_BASE = "identity/admin/authentication/"
+        const val LOGIN_ENDPOINT = "${AUTH_BASE}login"
+        const val REFRESH_ENDPOINT = "${AUTH_BASE}refresh"
         const val LOGOUT_ENDPOINT = "${AUTH_BASE}logout"
     }
 }

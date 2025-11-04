@@ -19,8 +19,6 @@ import io.ktor.http.contentType
 import io.ktor.http.encodedPath
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
-import net.thechance.mena.admin_panel.data.utils.LOGIN_ENDPOINT
-import net.thechance.mena.admin_panel.data.utils.REFRESH_ENDPOINT
 import net.thechance.mena.admin_panel.data.utils.accessToken
 import net.thechance.mena.admin_panel.data.utils.refreshToken
 
@@ -83,3 +81,5 @@ fun provideHttpClient(
 }
 
 private const val TIME_OUT_INTERVAL_MILLI = 15_000L
+private const val REFRESH_ENDPOINT = "identity/admin/authentication/refresh"
+private const val LOGIN_ENDPOINT = "identity/admin/authentication/login"
