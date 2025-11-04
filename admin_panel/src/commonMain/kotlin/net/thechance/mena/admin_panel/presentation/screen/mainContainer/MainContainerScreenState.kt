@@ -2,7 +2,7 @@ package net.thechance.mena.admin_panel.presentation.screen.mainContainer
 
 import net.thechance.mena.admin_panel.resources.Res
 import net.thechance.mena.admin_panel.resources.deposit
-import net.thechance.mena.admin_panel.resources.dukan_management
+import net.thechance.mena.admin_panel.resources.dukans_management
 import net.thechance.mena.admin_panel.resources.dukan_requests
 import net.thechance.mena.admin_panel.resources.file_selected
 import net.thechance.mena.admin_panel.resources.file_unselected
@@ -33,7 +33,7 @@ data class MainContainerScreenState(
             unSelectedIconRes = Res.drawable.users_unselected
         ),
         DUKAN_MANAGEMENT(
-            title = Res.string.dukan_management,
+            title = Res.string.dukans_management,
             selectedIconRes = Res.drawable.shop_selected,
             unSelectedIconRes = Res.drawable.shop_unselected
         ),
