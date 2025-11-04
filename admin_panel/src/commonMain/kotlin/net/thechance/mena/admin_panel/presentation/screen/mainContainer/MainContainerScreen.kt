@@ -1,10 +1,12 @@
 package net.thechance.mena.admin_panel.presentation.screen.mainContainer
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import net.thechance.mena.admin_panel.navigation.Deposit
 import net.thechance.mena.admin_panel.navigation.DukanManagement
 import net.thechance.mena.admin_panel.navigation.DukanRequests
@@ -17,24 +19,27 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun MainContainerScreen(
-    navController: NavController,
     viewModel: MainContainerViewmodel = koinViewModel()
 ) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val navController = rememberNavController()
+    CompositionLocalProvider(LocalNavController provides navController) {
 
-    ObserveAsEffect(
-        effect = viewModel.uiEffect,
-        onEffect = { effect ->
-            onMainContainerEffect(
-                navController,
-                effect
-            )
-        }
-    )
-    MainContainerContent(
-        state = state,
-        interactionListener = viewModel
-    )
+        val state by viewModel.state.collectAsStateWithLifecycle()
+
+        ObserveAsEffect(
+            effect = viewModel.uiEffect,
+            onEffect = { effect ->
+                onMainContainerEffect(
+                    navController,
+                    effect
+                )
+            }
+        )
+        MainContainerContent(
+            state = state,
+            interactionListener = viewModel
+        )
+    }
 }
 
 @Composable
