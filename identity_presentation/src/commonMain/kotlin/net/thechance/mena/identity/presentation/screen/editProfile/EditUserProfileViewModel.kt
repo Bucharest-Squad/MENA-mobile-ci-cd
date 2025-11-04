@@ -17,7 +17,7 @@ import mena.identity_presentation.generated.resources.error_username_required
 import net.thechance.mena.identity.domain.entity.Gender
 import net.thechance.mena.identity.domain.entity.User
 import net.thechance.mena.identity.domain.exception.AuthenticationException
-import net.thechance.mena.identity.domain.repository.CachedImageRepository
+import net.thechance.mena.identity.domain.repository.ImagesRepository
 import net.thechance.mena.identity.domain.repository.UserRepository
 import net.thechance.mena.identity.domain.util.getCurrentDate
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
@@ -33,7 +33,7 @@ import kotlin.uuid.Uuid
 class EditUserProfileViewModel(
     private val userRepository: UserRepository,
     private val permissionsController: PermissionsController,
-    private val cachedImageRepository: CachedImageRepository,
+    private val imagesRepository: ImagesRepository,
     private val imageDecoder: ImageDecoder,
     val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : BaseScreenModel<EditUserProfileUIState, EditUserProfileUIEffect>(EditUserProfileUIState()),
@@ -199,7 +199,7 @@ class EditUserProfileViewModel(
     private fun cacheRequiredCropImage(imageBitmap: ImageBitmap){
         tryToExecute(
             function = {
-                cachedImageRepository.cacheImage(PROFILE_IMAGE, imageDecoder.encodeImage(imageBitmap))
+                imagesRepository.cacheImage(PROFILE_IMAGE, imageDecoder.encodeImage(imageBitmap))
             },
             onSuccess = { handleCacheImageSuccess() },
             onError = ::onCacheCropImageError,
@@ -212,7 +212,7 @@ class EditUserProfileViewModel(
             EditUserProfileUIEffect.NavigateToCropScreen(
                 imageKey = PROFILE_IMAGE,
                 onResult = { croppedImageKey ->
-                    val imageByteArray = cachedImageRepository.getCachedImage(croppedImageKey)
+                    val imageByteArray = imagesRepository.getCachedImage(croppedImageKey)
                     updateState {
                         copy(
                             profileImageBitmap =imageByteArray?.let { imageDecoder.decodeImage(it)} ,

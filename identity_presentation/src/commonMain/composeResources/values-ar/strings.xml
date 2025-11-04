@@ -70,6 +70,7 @@
     <string name="share_icon_content_description">أيقونة المشاركة</string>
     <string name="link_icon_content_description">أيقونة الرابط</string>
     <string name="download_icon_content_description">أيقونة التنزيل</string>
+    <string name="cant_save_qr_code">Can't save QR code"</string>
 
     <string name="enable_location_title">تفعيل الموقع</string>
     <string name="enable_location_message">يرجى تفعيل الموقع في الإعدادات لضمان الحصول على أسعار دقيقة في موقعك الحالي.</string>
@@ -106,6 +107,7 @@
     <string name="save">حفظ</string>
     <string name="upload_another_image">رفع صورة أخرى</string>
     <string name="image_preview">عرض الصوره</string>
+    <string name="image_crop_failed">حدث خطأ اثناء قص الصوره</string>
 
     <!-- Error Messages -->
 

@@ -6,7 +6,7 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import net.thechance.mena.identity.domain.repository.CachedImageRepository
+import net.thechance.mena.identity.domain.repository.ImagesRepository
 import net.thechance.mena.identity.helper.BaseCoroutineTest
 import net.thechance.mena.identity.presentation.utils.ImageDecoder
 import kotlin.test.BeforeTest
@@ -15,7 +15,7 @@ import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class ImageCropperViewModelTest : BaseCoroutineTest() {
-    private val imageCacheManager = mockk<CachedImageRepository>()
+    private val imageCacheManager = mockk<ImagesRepository>()
     private val imageDecoder = mockk<ImageDecoder>()
     private val imageKey = "profile_image"
     private lateinit var imageCropperViewModel: ImageCropperViewModel
@@ -29,7 +29,7 @@ internal class ImageCropperViewModelTest : BaseCoroutineTest() {
         every { imageDecoder.decodeImage(any()) } returns imageBitmap
         imageCropperViewModel = ImageCropperViewModel(
             imageKey = imageKey,
-            cachedImageRepository = imageCacheManager,
+            imagesRepository = imageCacheManager,
             imageDecoder = imageDecoder,
         )
     }

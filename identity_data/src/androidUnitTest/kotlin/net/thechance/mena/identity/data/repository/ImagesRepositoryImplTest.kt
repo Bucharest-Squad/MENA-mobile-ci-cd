@@ -3,21 +3,23 @@ package net.thechance.mena.identity.data.repository
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import net.thechance.mena.identity.data.dataSource.local.database.ImageCacheManager
+import net.thechance.mena.identity.data.dataSource.local.memory.ImageCacheManager
+import net.thechance.mena.identity.data.dataSource.local.storage.ImagesGalleryManager
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertNull
 
 
-class CachedImageRepositoryImplTest {
+class ImagesRepositoryImplTest {
 
     private lateinit var imageCacheManager: ImageCacheManager
-    private lateinit var cachedImageRepository: CachedImageRepositoryImpl
+    private lateinit var imageGalleryManager: ImagesGalleryManager
+    private lateinit var cachedImageRepository: ImagesRepositoryImpl
 
     @BeforeTest
     fun setup() {
         imageCacheManager = mockk()
-        cachedImageRepository = CachedImageRepositoryImpl(imageCacheManager)
+        cachedImageRepository = ImagesRepositoryImpl(imageCacheManager, imageGalleryManager)
     }
 
     @Test
