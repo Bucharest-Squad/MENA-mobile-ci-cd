@@ -49,8 +49,8 @@ fun AdminPanelScaffold(
                     title = stringResource(Res.string.logout),
                     description = stringResource(Res.string.logout_disc),
                     confirmationButtonText = stringResource(Res.string.logout),
-                    onDismiss = interactionListener::onDismissLogout,
-                    onConfirm = interactionListener::onConfirmLogout,
+                    onDismiss = interactionListener::onLogoutDismissed,
+                    onConfirm = interactionListener::onLogoutConfirmed,
                     isVisible = state.isLogOutDialogShown
                 )
             }

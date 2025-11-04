@@ -38,11 +38,11 @@ class MainContainerViewmodel(
         updateState { it.copy(isLogOutDialogShown = true) }
     }
 
-    override fun onDismissLogout() {
+    override fun onLogoutDismissed() {
         updateState { it.copy(isLogOutDialogShown = false) }
     }
 
-    override fun onConfirmLogout() {
+    override fun onLogoutConfirmed() {
         tryToExecute(
             callee = { authenticationRepository.logout() },
             onSuccess = { onSuccessLoggedOut() },

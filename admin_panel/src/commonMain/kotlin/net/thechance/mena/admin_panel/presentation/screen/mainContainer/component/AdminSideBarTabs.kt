@@ -25,7 +25,6 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun AdminSideBarTabs(
-
     selectedTab: MainContainerScreenState.CurrentTab,
     onTabSelected: (tab: MainContainerScreenState.CurrentTab) -> Unit,
     modifier: Modifier = Modifier
