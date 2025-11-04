@@ -14,8 +14,12 @@ import platform.Foundation.NSUserDomainMask
 import platform.Foundation.create
 import platform.Foundation.writeToFile
 
+actual fun createFileManager(): FileManager {
+    return IosFileManager()
+}
+
 @OptIn(ExperimentalForeignApi::class)
-actual class FileManager {
+class IosFileManager : FileManager {
 
     private val fileManager = NSFileManager.defaultManager
 
@@ -32,11 +36,11 @@ actual class FileManager {
         path
     }
 
-    actual fun getDirectory(): String {
+    override fun getDirectory(): String {
         return audioCacheDir
     }
 
-    actual fun createDirectory(path: String): Boolean {
+    override fun createDirectory(path: String): Boolean {
         return try {
             if (!isFileExists(path)) {
                 fileManager.createDirectoryAtPath(
@@ -53,7 +57,7 @@ actual class FileManager {
         }
     }
 
-    actual suspend fun writeFile(path: String, bytes: ByteArray): Boolean {
+    override suspend fun writeFile(path: String, bytes: ByteArray): Boolean {
         return try {
             val data = bytes.toNSData()
             data.writeToFile(path, atomically = true)
@@ -62,11 +66,11 @@ actual class FileManager {
         }
     }
 
-    actual fun isFileExists(path: String): Boolean {
+    override fun isFileExists(path: String): Boolean {
         return fileManager.fileExistsAtPath(path)
     }
 
-    actual fun getFileSize(path: String): Long {
+    override fun getFileSize(path: String): Long {
         return try {
             val attributes = fileManager.attributesOfItemAtPath(path, error = null)
             (attributes?.get(NSFileSize) as? NSNumber)?.longValue ?: 0L

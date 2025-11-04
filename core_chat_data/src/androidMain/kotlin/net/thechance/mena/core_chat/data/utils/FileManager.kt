@@ -6,7 +6,11 @@ import kotlinx.coroutines.withContext
 import org.koin.mp.KoinPlatform.getKoin
 import java.io.File
 
-actual class FileManager {
+actual fun createFileManager(): FileManager {
+    return AndroidFileManager()
+}
+
+class AndroidFileManager : FileManager {
     val context: Context = getKoin().get()
 
     private val audioCacheDir by lazy {
@@ -15,11 +19,11 @@ actual class FileManager {
         }
     }
 
-    actual fun getDirectory(): String {
+    override fun getDirectory(): String {
         return audioCacheDir.absolutePath
     }
 
-    actual fun createDirectory(path: String): Boolean {
+    override fun createDirectory(path: String): Boolean {
         val dir = File(path)
         return if (!dir.exists()) {
             dir.mkdirs()
@@ -28,7 +32,7 @@ actual class FileManager {
         }
     }
 
-    actual suspend fun writeFile(path: String, bytes: ByteArray): Boolean {
+    override suspend fun writeFile(path: String, bytes: ByteArray): Boolean {
         return withContext(Dispatchers.IO) {
             try {
                 File(path).writeBytes(bytes)
@@ -39,11 +43,11 @@ actual class FileManager {
         }
     }
 
-    actual fun isFileExists(path: String): Boolean {
+    override fun isFileExists(path: String): Boolean {
         return File(path).exists()
     }
 
-    actual fun getFileSize(path: String): Long {
+    override fun getFileSize(path: String): Long {
         return try {
             File(path).length()
         } catch (e: Exception) {
