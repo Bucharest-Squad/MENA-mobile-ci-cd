@@ -1,10 +1,8 @@
 package net.thechance.mena.admin_panel.presentation.screen.mainContainer
 
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import net.thechance.mena.admin_panel.domain.exceptions.NoInternetException
 import net.thechance.mena.admin_panel.domain.repository.authentication.AdminAuthenticationRepository
 import net.thechance.mena.admin_panel.presentation.base.BaseViewModel
@@ -28,9 +26,7 @@ class MainContainerViewmodel(
         MainContainerScreenState()
     ), MainContainerInteractionListener {
     init {
-        viewModelScope.launch {
-            checkAuthenticationStatus()
-        }
+        checkAuthenticationStatus()
     }
 
     override fun onTabSelected(tab: MainContainerScreenState.CurrentTab) {
@@ -48,7 +44,7 @@ class MainContainerViewmodel(
 
     override fun onConfirmLogout() {
         tryToExecute(
-            callee = ::confirmLogout,
+            callee = { authenticationRepository.logout() },
             onSuccess = { onSuccessLoggedOut() },
             onError = ::onFailureLoggedOut,
             dispatcher = dispatcher
@@ -68,10 +64,6 @@ class MainContainerViewmodel(
         sendEffect(MainContainerEffect.NavigateToLogInScreen)
     }
 
-    private suspend fun confirmLogout() {
-        authenticationRepository.logout()
-    }
-
     private suspend fun onFailureLoggedOut(errorState: ErrorState) {
         showSnackBar(
             title = stringProvider.getString(errorState.getErrorSnackBarTitle()),
@@ -80,28 +72,57 @@ class MainContainerViewmodel(
         )
     }
 
-    private fun showSnackBar(
+    private fun checkAuthenticationStatus() {
+        tryToExecute(
+            callee = { authenticationRepository.isUserLoggedIn() },
+            onSuccess = ::onSuccessCheckedAuthentication,
+            onError = ::onFailureCheckedAuthentication,
+            dispatcher = dispatcher
+        )
+    }
+
+    private fun onSuccessCheckedAuthentication(isUserLoggedIn: Boolean) {
+        if (isUserLoggedIn) {
+            updateState {
+                it.copy(authenticationStatus = true)
+            }
+            sendEffect(MainContainerEffect.NavigateToAdminPanelScreen)
+        } else {
+            updateState {
+                it.copy(authenticationStatus = false)
+            }
+            sendEffect(MainContainerEffect.NavigateToLogInScreen)
+        }
+    }
+
+    private suspend fun onFailureCheckedAuthentication(errorState: ErrorState) {
+        showSnackBar(
+            title = stringProvider.getString(errorState.getErrorSnackBarTitle()),
+            message = stringProvider.getString(errorState.getErrorSnackBarMsg()),
+            isSuccess = false
+        )
+    }
+
+    private suspend fun showSnackBar(
         title: String,
         message: String,
         isSuccess: Boolean,
         durationMillis: Long = 3000L
     ) {
-        viewModelScope.launch {
-            updateState { oldState ->
-                oldState.copy(
-                    snackBar = SnackBarState(
-                        isVisible = true,
-                        title = title,
-                        message = message,
-                        isSuccess = isSuccess
-                    )
+        updateState { oldState ->
+            oldState.copy(
+                snackBar = SnackBarState(
+                    isVisible = true,
+                    title = title,
+                    message = message,
+                    isSuccess = isSuccess
                 )
-            }
-
-            delay(durationMillis)
-
-            hideSnackBar()
+            )
         }
+
+        delay(durationMillis)
+
+        hideSnackBar()
     }
 
     private fun hideSnackBar() {
@@ -110,23 +131,18 @@ class MainContainerViewmodel(
         }
     }
 
-    private suspend fun checkAuthenticationStatus() {
-        val isUserLoggedIn = authenticationRepository.isUserLoggedIn()
+    private fun determineEffect(currentTab: MainContainerScreenState.CurrentTab): MainContainerEffect =
+        when (currentTab) {
+            MainContainerScreenState.CurrentTab.USERS_MANAGEMENT ->
+                MainContainerEffect.NavigateToUsersManagementScreen
 
-        if (isUserLoggedIn) {
-            updateState {
-                it.copy(
-                    authenticationStatus = MainContainerScreenState.AuthenticationStatus.Authenticated,
-                )
-            }
-            sendEffect(MainContainerEffect.NavigateToAdminPanelScreen)
-        } else {
-            updateState {
-                it.copy(
-                    authenticationStatus = MainContainerScreenState.AuthenticationStatus.NotAuthenticated,
-                )
-            }
-            sendEffect(MainContainerEffect.NavigateToLogInScreen)
+            MainContainerScreenState.CurrentTab.DUKAN_MANAGEMENT ->
+                MainContainerEffect.NavigateToDukanManagementScreen
+
+            MainContainerScreenState.CurrentTab.DUKAN_REQUEST ->
+                MainContainerEffect.NavigateToDukanRequestsScreen
+
+            MainContainerScreenState.CurrentTab.DEPOSIT ->
+                MainContainerEffect.NavigateToDepositScreen
         }
-    }
 }
