@@ -2,7 +2,6 @@ package net.thechance.mena.faith.data.audio
 
 import android.content.Context
 import androidx.media3.common.MediaItem
-import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import net.thechance.mena.faith.domain.mediaPlayer.QuranPlayer
 import org.koin.mp.KoinPlatform.getKoin
@@ -15,11 +14,6 @@ actual class QuranPlayerImpl : QuranPlayer {
 
     actual override fun playAyah(ayahUrl: String) {
         if (ayahUrl.isEmpty()) return
-
-        val quranLister: Player.Listener = object : Player.Listener {}
-
-        quranPlayer.addListener(quranLister)
-
         if (ayahUrl != currentUrl) {
             currentUrl = ayahUrl
             quranPlayer.stop()
@@ -28,7 +22,6 @@ actual class QuranPlayerImpl : QuranPlayer {
             quranPlayer.setMediaItem(mediaItem)
             quranPlayer.prepare()
         }
-
         quranPlayer.play()
     }
 
