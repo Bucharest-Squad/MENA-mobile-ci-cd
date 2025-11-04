@@ -67,7 +67,11 @@ fun AdminPanelScaffold(
                     snackBarState = snackBarState
                 )
             }
-            AdminPanelNavHost(navController)
+            AdminPanelNavHost(
+                navController = navController,
+                isUserLoggedIn =
+                    state.authenticationStatus == MainContainerScreenState.AuthenticationStatus.Authenticated
+            )
         }
     )
 }

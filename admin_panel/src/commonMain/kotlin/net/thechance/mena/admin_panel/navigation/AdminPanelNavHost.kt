@@ -19,11 +19,12 @@ val LocalNavController = staticCompositionLocalOf<NavHostController> {
 @Composable
 fun AdminPanelNavHost(
     navController: NavHostController = rememberNavController(),
+    isUserLoggedIn: Boolean
 ) {
 
     NavHost(
         navController = navController,
-        startDestination = Login
+        startDestination = if (isUserLoggedIn) UsersManagement else Login
     ) {
         composable<Login> {
             LoginScreen()
