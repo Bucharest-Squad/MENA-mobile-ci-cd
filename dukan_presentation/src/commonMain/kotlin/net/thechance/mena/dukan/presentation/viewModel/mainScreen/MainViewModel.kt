@@ -46,6 +46,9 @@ class MainViewModel(
         if (fetchJob?.isActive == true) return
         fetchJob = viewModelScope.launch(defaultDispatcher) {
             getDukanState()
+            getCategories()
+            loadEditorPicksDukans()
+            loadBestNearestDukans()
         }.also { job ->
             job.invokeOnCompletion { fetchJob = null }
         }
@@ -86,11 +89,6 @@ class MainViewModel(
             }
         } else {
             updateState { copy(dukanState = dukanState, isConnected = true) }
-            if (dukanState.status == DukanStatusUi.Approved) {
-                getCategories()
-                loadEditorPicksDukans()
-                loadBestNearestDukans()
-            }
         }
     }
 
@@ -188,6 +186,7 @@ class MainViewModel(
 
     private fun handleGetEditorPicksDukanError(error: Throwable) {
         updateState { copy(isContentLoading = false) }
+        fetchJob?.cancel()
         when (error) {
             is NoInternetException -> {
                 updateToNoInternetState()
@@ -231,6 +230,7 @@ class MainViewModel(
 
     private fun handleGetBestNearestDukansError(error: Throwable) {
         updateState { copy(isContentLoading = false) }
+        fetchJob?.cancel()
         when (error) {
             is NoInternetException -> {
                 updateToNoInternetState()
