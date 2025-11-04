@@ -6,9 +6,8 @@ import kotlinx.serialization.Serializable
 sealed class AdminPanelRoute
 
 @Serializable
-data object MainContainer : AdminPanelRoute()
-@Serializable
 data object Login : AdminPanelRoute()
+
 @Serializable
 data object UsersManagement : AdminPanelRoute()
 
