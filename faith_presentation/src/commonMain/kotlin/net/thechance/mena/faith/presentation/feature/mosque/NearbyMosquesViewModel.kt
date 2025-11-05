@@ -113,8 +113,8 @@ internal class NearbyMosquesViewModel(
     private fun handleSearchSuccess(mosques: List<Mosque>) {
         updateState {
             it.copy(
-                mosquesSearchResults = mosques.map { mosques ->
-                    mosques.toUiState(0.0)
+                mosquesSearchResults = mosques.map { mosque ->
+                    mosque.toUiState(0.0)
                 },
                 isSearchResultsBottomSheetVisible = mosques.isNotEmpty()
             )
