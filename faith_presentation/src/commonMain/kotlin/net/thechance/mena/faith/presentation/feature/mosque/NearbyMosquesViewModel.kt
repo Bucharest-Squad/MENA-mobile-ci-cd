@@ -20,7 +20,6 @@ internal class NearbyMosquesViewModel(
         initialState = NearbyMosquesMapUiState(),
     ), NearbyMosquesInteractionListener {
 
-    private var searchButtonInactivityJob: Job? = null
     private var searchJob: Job? = null
 
     override fun onBackClick() {
@@ -59,9 +58,17 @@ internal class NearbyMosquesViewModel(
         )
     }
 
+    override fun onSearchResultClick(mosque: MosqueUiState) {
+        updateState {
+            it.copy(
+                isSearchResultsBottomSheetVisible = false,
+                centerOfMap = mosque.coordinate
+            )
+        }
+    }
+
     override fun mapPositionChanged(coordinate: Coordinate) {
-        updateCenterOfMap(coordinate = coordinate)
-        handleSearchButtonVisibilityOnInteraction()
+        updateState { it.copy(centerOfMap = coordinate) }
     }
 
     override fun onQueryChange(query: String) {
@@ -77,6 +84,14 @@ internal class NearbyMosquesViewModel(
         } else {
             performSearch(query)
         }
+    }
+
+    override fun changeSearchButtonVisibility(isVisible: Boolean) {
+        updateState { it.copy(isSearchButtonVisible = isVisible) }
+    }
+
+    override fun onDismissSearchBottomSheet() {
+        updateState { it.copy(isSearchResultsBottomSheetVisible = false) }
     }
 
     private fun performSearch(query: String) {
@@ -124,21 +139,6 @@ internal class NearbyMosquesViewModel(
 
     private fun handleSearchError() {
         // TODO: show snack bar with error message (Res.string.no_mosques_found) to the user
-    }
-
-    private fun handleSearchButtonVisibilityOnInteraction() {
-        updateState { it.copy(isSearchButtonVisible = false) }
-        searchButtonInactivityJob?.cancel()
-        searchButtonInactivityJob = viewModelScope.launch {
-            delay(500)
-            updateState { it.copy(isSearchButtonVisible = true) }
-        }
-    }
-
-    private fun updateCenterOfMap(coordinate: Coordinate) {
-        updateState {
-            it.copy(centerOfMap = coordinate)
-        }
     }
 
     private companion object {
