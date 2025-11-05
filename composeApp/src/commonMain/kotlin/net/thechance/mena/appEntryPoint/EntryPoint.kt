@@ -43,7 +43,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 
 @Composable
-fun EntryPoint() {
+fun EntryPoint(deepLink: DeepLink) {
     val identityApi = koinInject<IdentityFeatureApi>()
     val authorizationService = koinInject<AuthorizationService>()
 
