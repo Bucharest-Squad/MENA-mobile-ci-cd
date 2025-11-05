@@ -83,7 +83,7 @@ private fun Content(uiState: PrayerTimeUiState, listener: PrayerTimeInteractionL
             items(items = uiState.prayerTimes) { prayer ->
                 PrayerItem(
                     prayerNameResource = getPrayerDisplayNameResource(prayer.name),
-                    prayerTime = prayer.time.formatInstantToTimeString(true),
+                    prayerTime = prayer.time.formatInstantToTimeString(withISPM = true),
                     isNextPrayer = prayer.name == uiState.nextPrayerName
                 )
             }

@@ -8,4 +8,4 @@ import kotlin.time.ExperimentalTime
 fun getSunriseTime(prayerTimes: List<PrayerTime>): String =
     prayerTimes
         .firstOrNull { it.name == PrayerName.SUNRISE }
-        ?.let { it.time.formatInstantToTimeString(false) } ?: ""
+        ?.let { it.time.formatInstantToTimeString(withISPM = false) } ?: ""
