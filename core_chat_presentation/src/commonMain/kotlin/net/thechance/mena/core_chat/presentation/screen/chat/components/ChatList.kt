@@ -2,89 +2,84 @@
 
 package net.thechance.mena.core_chat.presentation.screen.chat.components
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
-import net.thechance.mena.core_chat.domain.entity.MessageStatus
+import androidx.compose.ui.unit.dp
 import net.thechance.mena.core_chat.presentation.screen.chat.ChatListItem
 import net.thechance.mena.core_chat.presentation.screen.chat.MessageUiState
-import net.thechance.mena.core_chat.presentation.utils.asString
-import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @Composable
-fun ChatListItem(
-    item: ChatListItem,
+fun ChatList(
+    items: List<ChatListItem>,
     chatAvatarUrl: String,
+    chatListState: LazyListState,
     onMessageClick: (Uuid) -> Unit,
     onMessageImageClick: (List<MessageUiState>, Int) -> Unit,
-    onMessageVoiceClicked : (Uuid) -> Unit,
     onFailedMessageClick: (MessageUiState) -> Unit,
-    modifier: Modifier = Modifier
+    paginationError: Boolean,
+    onMessageVoiceClick: (Uuid) -> Unit,
 ) {
-    when (item) {
-        is ChatListItem.DateSeparator -> {
-            Text(
-                text = item.label.asString(),
-                style = Theme.typography.label.small,
-                color = Theme.colorScheme.shadeTertiary,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = Theme.spacing._8),
-            )
+    if (items.isNotEmpty()) {
+        LaunchedEffect(items[0]) {
+            chatListState.animateScrollToItem(0)
         }
+    }
 
-        is ChatListItem.TextMessage -> {
-            val markedMessage = item.data
-            TextMessageLayout(
-                modifier = modifier,
-                message = markedMessage,
-                chatAvatarUrl = chatAvatarUrl,
-                showMessageInfo = (markedMessage.isVisibleMessageInfo || markedMessage.isLastInSeries || markedMessage.status == MessageStatus.FAILED),
-                isMarkedLastInSeries = markedMessage.isLastInSeries,
-                onMessageClick = { onMessageClick(markedMessage.id) },
-                onFailClick = { onFailedMessageClick(markedMessage) },
-            )
-        }
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = Theme.spacing._12),
+        state = chatListState,
+        reverseLayout = true,
+        contentPadding = PaddingValues(top = Theme.spacing._16)
+    ) {
+        itemsIndexed(
+            items = items,
+            key = { index,_ -> index }
+        ) { _ , item ->
+            val isLastItem = items.indexOf(item) == 0
+            val paddingBottom = if (isLastItem)
+                0.dp
+            else if (item is ChatListItem.TextMessage && item.data.isLastInSeries)
+                Theme.spacing._16
+            else if (item is ChatListItem.ImageMessages && item.data.last().isLastInSeries)
+                Theme.spacing._16
+            else
+                Theme.spacing._2
 
-        is ChatListItem.ImageMessages -> {
-            val markedMessage = item.data
-            ImageMessagesLayout(
-                modifier = modifier,
-                messages = markedMessage,
+            ChatListItem(
+                item = item,
                 chatAvatarUrl = chatAvatarUrl,
-                showMessageInfo = (markedMessage.last().isVisibleMessageInfo || markedMessage.last().isLastInSeries || markedMessage.last().status == MessageStatus.FAILED),
-                isMarkedLastInSeries = markedMessage.last().isLastInSeries,
+                onMessageClick = onMessageClick,
                 onMessageImageClick = onMessageImageClick,
-                onFailClick = onFailedMessageClick,
+                onMessageVoiceClicked = onMessageVoiceClick,
+                onFailedMessageClick = onFailedMessageClick,
+                modifier = Modifier.padding(bottom = paddingBottom)
             )
         }
 
-        is ChatListItem.VoiceMessage ->{
-            val markedMessage = item.data
-            Row(
-                modifier = modifier.fillMaxWidth(),
-                horizontalArrangement = if (markedMessage.isMine) Arrangement.End else Arrangement.Start
-            ) {
-                VoiceMessagesLayout(
-                    message = markedMessage,
-                    chatAvatarUrl = chatAvatarUrl,
-                    showMessageInfo = (markedMessage.isVisibleMessageInfo || markedMessage.isLastInSeries || markedMessage.status == MessageStatus.FAILED),
-                    isMarkedLastInSeries = markedMessage.isLastInSeries,
-                    isMessageLoading = item.isLoading || item.isPlaying,
-                    progress = item.progress,
-                    totalSeconds = item.duration.div(1000) ,
-                    waveformData = item.waveformData,
-                    onPlayClick = { onMessageVoiceClicked(markedMessage.id) },
-                    onFailClick = { onFailedMessageClick(markedMessage) },
-                )
+        if (paginationError) {
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    NoInternetConnection()
+                }
             }
         }
     }
