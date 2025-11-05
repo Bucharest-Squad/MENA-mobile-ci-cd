@@ -21,6 +21,7 @@ actual class ImagesGalleryManager {
             length = imageBytes.size.toULong()
         )
         val uiImage = UIImage(data)
+
         PHPhotoLibrary.sharedPhotoLibrary().performChanges(
             changeBlock = { changeBlock(uiImage) },
             completionHandler = ::completionHandler

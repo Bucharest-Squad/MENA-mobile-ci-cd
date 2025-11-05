@@ -14,6 +14,7 @@ import net.thechance.mena.identity.presentation.screen.login.LoginScreenViewMode
 import net.thechance.mena.identity.presentation.screen.notImplemented.NotImplementedScreenViewModel
 import net.thechance.mena.identity.presentation.screen.profile.ProfileScreenViewModel
 import net.thechance.mena.identity.presentation.screen.profile.components.dialog.ShareQrCodeInteractionListener
+import net.thechance.mena.identity.presentation.screen.profile.components.dialog.ShareQrCodeViewModel
 import net.thechance.mena.identity.presentation.screen.register.phoneEntry.RegisterPhoneEntryViewModel
 import net.thechance.mena.identity.presentation.screen.register.createPassword.CreatePasswordViewModel
 import net.thechance.mena.identity.presentation.screen.register.otp.RegisterOtpViewModel
@@ -31,11 +32,13 @@ import org.koin.dsl.module
 
 const val APP_VERSION = "appVersion"
 const val LOCATION_FOREGROUND = "LOCATION_FOREGROUND"
+const val GALLERY_IMAGES = "GALLERY_IMAGES"
 
 val identityScreensModule = module {
 
     includes(platformModule())
-    factory { PermissionHandler(get(named(LOCATION_FOREGROUND))) }
+    factory(named(LOCATION_FOREGROUND)) { PermissionHandler(get(named(LOCATION_FOREGROUND))) }
+    factory(named(GALLERY_IMAGES)) { PermissionHandler(get(named(GALLERY_IMAGES))) }
     factory { ProfileScreenViewModel(get(), get(named(APP_VERSION))) }
     factoryOf(::ImageCropperViewModel)
     factoryOf(::LoginScreenViewModel)
@@ -49,12 +52,29 @@ val identityScreensModule = module {
     factoryOf(::UploadProfileImageViewModel)
     factoryOf(::SetNewPasswordScreenViewModel)
     factoryOf(::AddressesScreenViewModel)
-    factoryOf(::EnableLocationScreenViewModel)
     factoryOf(::ImageDecoderImpl) bind ImageDecoder::class
     viewModel { (minScale: Float, maxScale: Float, initialState: ImageCropperUiState) ->
         ImageCropperComponentViewModel(minScale, maxScale, initialState)
     }
     factoryOfOrNull(::AddEditLocationScreenViewModel)
-    factoryOfOrNull(::PickLocationScreenViewModel)
-    factoryOfOrNull(::ShareQrCodeViewModel) bind ShareQrCodeInteractionListener::class
+
+    factory {
+        PickLocationScreenViewModel(
+            addressesRepository = get(),
+            locationForegroundHandler = get(named(LOCATION_FOREGROUND))
+        )
+    }
+
+    factory {
+        EnableLocationScreenViewModel(
+            locationForegroundHandler = get(named(LOCATION_FOREGROUND))
+        )
+    }
+
+    factory {
+        ShareQrCodeViewModel(
+            get(),
+            get(named(GALLERY_IMAGES))
+        )
+    } bind ShareQrCodeInteractionListener::class
 }

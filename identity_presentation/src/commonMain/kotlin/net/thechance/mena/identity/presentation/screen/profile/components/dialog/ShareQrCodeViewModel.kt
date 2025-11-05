@@ -6,18 +6,30 @@ import mena.identity_presentation.generated.resources.Res
 import mena.identity_presentation.generated.resources.cant_save_qr_code
 import net.thechance.mena.identity.domain.repository.ImagesRepository
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
+import net.thechance.mena.identity.presentation.util.permissionHandler.PermissionHandler
+import net.thechance.mena.identity.presentation.util.permissionHandler.PermissionState
 
 class ShareQrCodeViewModel(
-    private val imagesRepository: ImagesRepository
+    private val imagesRepository: ImagesRepository,
+    private val galleryPermissionHandler: PermissionHandler
 ) : BaseScreenModel<ShareQrCodeUIState, ShareQrCodeUIEffect>(
     initialState = ShareQrCodeUIState()
 ), ShareQrCodeInteractionListener {
+
     override fun onClickDownload(bitmap: ImageBitmap) {
-        tryToExecute(
-            function = { saveImageToGallery(bitmap) },
-            onSuccess = ::onSuccess,
-            onError = ::onError
-        )
+        val permissionState = galleryPermissionHandler.checkPermission()
+
+        when (permissionState) {
+            PermissionState.GRANTED -> {
+                tryToExecute(
+                    function = { saveImageToGallery(bitmap) },
+                    onSuccess = ::onSuccess,
+                    onError = ::onError
+                )
+            }
+            PermissionState.DENIED_PERMANENTLY -> galleryPermissionHandler.openSettingPage()
+            else -> galleryPermissionHandler.requestPermission()
+        }
     }
 
     private suspend fun saveImageToGallery(bitmap: ImageBitmap) {
