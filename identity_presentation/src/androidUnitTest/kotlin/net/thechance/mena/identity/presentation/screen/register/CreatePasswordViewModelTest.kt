@@ -11,7 +11,6 @@ import org.junit.Test
 
 class CreatePasswordViewModelTest {
     private val passwordValidator = mockk<PasswordValidator>()
-    private val registerRepository = mockk<RegisterRepository>()
     private val testDispatcher = StandardTestDispatcher()
     private lateinit var createPasswordViewModel: CreatePasswordViewModel
 
@@ -19,7 +18,10 @@ class CreatePasswordViewModelTest {
     fun setup(){
         createPasswordViewModel = CreatePasswordViewModel(
             passwordValidator = passwordValidator,
-            registerRepository = registerRepository,
+            phoneNumber = net.thechance.mena.identity.domain.entity.PhoneNumber("+964", "7901234567"),
+            firstName = "Mohammed",
+            lastName = "Ahmed",
+            username = "mohammed123",
             dispatcher = testDispatcher
         )
     }

@@ -22,6 +22,11 @@ class DatePickerScreenViewModelTest : BaseCoroutineTest() {
     fun setup() {
         datePickerScreenViewModel = DatePickerScreenViewModel(
             ageValidator = ageValidator,
+            phoneNumber = net.thechance.mena.identity.domain.entity.PhoneNumber("+964", "7901234567"),
+            firstName = "Mohammed",
+            lastName = "Ahmed",
+            username = "mohammed123",
+            password = "Password123",
             dispatcher = testDispatcher
         )
     }
@@ -29,9 +34,15 @@ class DatePickerScreenViewModelTest : BaseCoroutineTest() {
     @Test
     fun `onClickNext should navigate to select gender`() = runTest {
         datePickerScreenViewModel.effect.test {
+            // Set a valid date first
+            every { ageValidator.isValid(LocalDate(2000, 1, 1)) } returns true
+            datePickerScreenViewModel.onChangeDate(1, 1, 2000)
+            testDispatcher.scheduler.advanceUntilIdle()
+            
             datePickerScreenViewModel.onClickNext()
 
-            assert(awaitItem() == DatePickerScreenUIEffect.NavigateToSelectGender)
+            val effect = awaitItem()
+            assert(effect is DatePickerScreenUIEffect.NavigateToSelectGender)
         }
     }
 
