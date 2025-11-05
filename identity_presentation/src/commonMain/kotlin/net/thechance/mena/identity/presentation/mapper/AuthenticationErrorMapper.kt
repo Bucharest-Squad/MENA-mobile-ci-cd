@@ -12,6 +12,7 @@ import mena.identity_presentation.generated.resources.error_phone_number_already
 import mena.identity_presentation.generated.resources.error_something_went_wrong
 import mena.identity_presentation.generated.resources.error_too_many_requests
 import mena.identity_presentation.generated.resources.error_user_blocked
+import mena.identity_presentation.generated.resources.error_username_already_exists
 import org.jetbrains.compose.resources.StringResource
 
 internal fun mapAuthenticationErrorToMessage(error: AuthenticationErrorState): StringResource {
@@ -24,6 +25,7 @@ internal fun mapAuthenticationErrorToMessage(error: AuthenticationErrorState): S
         AuthenticationErrorState.TooManyRequests -> Res.string.error_too_many_requests
         AuthenticationErrorState.OTPExpired -> Res.string.error_otp_expired
         AuthenticationErrorState.PhoneNumberAlreadyExists -> Res.string.error_phone_number_already_exists
+        AuthenticationErrorState.UsernameAlreadyExists -> Res.string.error_username_already_exists
         AuthenticationErrorState.NoNetwork -> Res.string.error_no_network
         is AuthenticationErrorState.SomethingWentWrong -> Res.string.error_something_went_wrong
     }
