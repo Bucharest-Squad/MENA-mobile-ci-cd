@@ -12,4 +12,6 @@ internal interface NearbyMosquesInteractionListener {
     fun onQueryChange(query: String)
     fun changeSearchButtonVisibility(isVisible: Boolean)
     fun onDismissSearchBottomSheet()
+    fun selectMosque(mosque: MosqueUiState)
+    fun unselectMosque()
 }

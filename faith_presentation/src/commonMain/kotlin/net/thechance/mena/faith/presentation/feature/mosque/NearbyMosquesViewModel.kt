@@ -10,10 +10,12 @@ import kotlinx.coroutines.launch
 import net.thechance.mena.faith.domain.entity.Mosque
 import net.thechance.mena.faith.domain.repository.MosqueRepository
 import net.thechance.mena.faith.presentation.base.BaseViewModel
+import net.thechance.mena.faith.presentation.utils.MapNavigator
 import kotlin.uuid.ExperimentalUuidApi
 
 internal class NearbyMosquesViewModel(
     private val mosqueRepository: MosqueRepository,
+    private val mapNavigator: MapNavigator,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) :
     BaseViewModel<NearbyMosquesMapUiState, NearbyMosquesEffect>(
@@ -39,7 +41,7 @@ internal class NearbyMosquesViewModel(
     }
 
     override fun onViewMosqueOnMapClick(coordinate: Coordinate) {
-//        TODO("Not yet implemented")
+        mapNavigator.openMapAtCoordinate(coordinate = coordinate)
     }
 
     override fun onSearchByCoordinatesClick(coordinate: Coordinate) {
@@ -92,6 +94,24 @@ internal class NearbyMosquesViewModel(
 
     override fun onDismissSearchBottomSheet() {
         updateState { it.copy(isSearchResultsBottomSheetVisible = false) }
+    }
+
+    override fun selectMosque(mosque: MosqueUiState) {
+        updateState {
+            it.copy(
+                selectedMosque = mosque,
+                isMosqueBottomSheetVisible = true
+            )
+        }
+    }
+
+    override fun unselectMosque() {
+        updateState {
+            it.copy(
+                selectedMosque = null,
+                isMosqueBottomSheetVisible = false
+            )
+        }
     }
 
     private fun performSearch(query: String) {

@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.dellisd.spatialk.geojson.Position
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import mena.faith_presentation.generated.resources.Res
 import mena.faith_presentation.generated.resources.add
 import mena.faith_presentation.generated.resources.arrow_left
@@ -41,6 +42,8 @@ import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.component.textField.TextField
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import net.thechance.mena.faith.presentation.feature.mosque.NearbyMosquesEffect.NavigateToGoogleMaps
+import net.thechance.mena.faith.presentation.feature.mosque.component.MosqueDetailsBottomSheet
 import net.thechance.mena.faith.presentation.feature.mosque.component.NoMosquesFoundCard
 import net.thechance.mena.faith.presentation.feature.mosque.component.SearchResultsBottomSheet
 import net.thechance.mena.faith.presentation.utils.MapStyle
@@ -59,6 +62,17 @@ internal fun NearbyMosquesScreen(
 ) {
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.uiEffect.collectLatest { effect ->
+            when (effect) {
+                is NavigateToGoogleMaps -> { NavigateToGoogleMaps(effect.coordinate) }
+                NearbyMosquesEffect.NavigateBack -> {}
+                NearbyMosquesEffect.NavigateToAddMosque -> {}
+                NearbyMosquesEffect.NavigateToUserLocation -> {}
+            }
+        }
+    }
 
     Content(
         uiState = state,
@@ -129,6 +143,18 @@ private fun Content(
                     onMosqueClick = listener::onSearchResultClick,
                     onDismiss = listener::onDismissSearchBottomSheet
                 )
+            }
+            bottomSheet(isVisible = uiState.isMosqueBottomSheetVisible) { isVisible ->
+                uiState.selectedMosque?.let { mosque ->
+                    MosqueDetailsBottomSheet(
+                        isVisible = isVisible,
+                        mosque = mosque,
+                        onViewOnMapClick = {
+                            listener.onViewMosqueOnMapClick(mosque.coordinate)
+                        },
+                        onDismiss = listener::unselectMosque
+                    )
+                }
             }
         }
     ) {
@@ -220,6 +246,8 @@ private fun NearbyMosquesScreenPreview() {
             override fun onQueryChange(query: String) {}
             override fun changeSearchButtonVisibility(isVisible: Boolean) {}
             override fun onDismissSearchBottomSheet() {}
+            override fun selectMosque(mosque: MosqueUiState) {}
+            override fun unselectMosque() {}
         }
     )
 }
