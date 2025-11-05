@@ -12,6 +12,7 @@ class AccountCreatedViewModel(
     AccountCreatedInteractionListener {
 
     override fun onClickGoToHome() {
-        sendNewEffect(AccountCreatedUIEffect.NavigateToHome)
+        // Navigation to home is handled automatically by EntryPoint
+        // when token state changes after registration
     }
 }

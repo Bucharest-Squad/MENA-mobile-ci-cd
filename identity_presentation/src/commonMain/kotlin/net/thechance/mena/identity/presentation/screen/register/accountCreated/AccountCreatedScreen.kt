@@ -132,9 +132,7 @@ class AccountCreatedScreen :
         effect: AccountCreatedUIEffect,
         navigator: Navigator
     ) {
-        when (effect) {
-            AccountCreatedUIEffect.NavigateToHome -> {}
-        }
+        // No effects needed - navigation handled automatically by EntryPoint
     }
 }
 
