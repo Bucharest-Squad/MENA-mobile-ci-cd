@@ -14,7 +14,7 @@ interface PrayerTimeRepository {
         timeZone: TimeZone = TimeZone.currentSystemDefault(),
     ): List<PrayerTime>
 
-    suspend fun getPrayerTimeInHijriDate(
+    suspend fun getPrayerTimeWithHijriDate(
         date: String,
         location: Location,
         timeZone: TimeZone = TimeZone.currentSystemDefault(),

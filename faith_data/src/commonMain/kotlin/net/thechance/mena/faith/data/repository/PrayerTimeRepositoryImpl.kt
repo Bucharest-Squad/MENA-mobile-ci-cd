@@ -31,7 +31,7 @@ class PrayerTimeRepositoryImpl(
         )
     }.toDomain()
 
-    override suspend fun getPrayerTimeInHijriDate(
+    override suspend fun getPrayerTimeWithHijriDate(
         date: String,
         location: Location,
         timeZone: TimeZone,
