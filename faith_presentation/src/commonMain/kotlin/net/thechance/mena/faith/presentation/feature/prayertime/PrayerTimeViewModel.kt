@@ -129,7 +129,11 @@ class PrayerTimeViewModel(
         viewModelScope.launch(dispatcher) {
             while (true) {
                 delay(COUNTDOWN_UPDATE_INTERVAL)
-                updateNextPrayerInfo()
+                val remaningTime =
+                    calculateRemainingTime(uiState.value.nextPrayerTime, Clock.System.now())
+                if (remaningTime == 0L) updateNextPrayerInfo() else updateState {
+                    it.copy(nextPrayerCountdown = formatCountdown(remaningTime))
+                }
             }
         }
     }
