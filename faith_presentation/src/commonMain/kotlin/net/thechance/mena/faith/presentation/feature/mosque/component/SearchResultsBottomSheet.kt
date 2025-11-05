@@ -161,7 +161,6 @@ private fun SearchResultsBottomSheetPreview() {
                     id = Uuid.parse("1e6f8a10-7dec-11d0-a765-00a0c91e6bf1"),
                     name = "Al Eman Mosque",
                     imageUrl = "",
-                    address = "Alexandria , Egypt",
                     distance = 12.4,
                     coordinate = Coordinate(
                         latitude = 0.0,

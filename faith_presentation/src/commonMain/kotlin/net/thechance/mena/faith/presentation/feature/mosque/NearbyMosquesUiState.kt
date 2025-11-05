@@ -5,8 +5,8 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 internal data class NearbyMosquesMapUiState(
-    val mosques: List<MosqueUiState> = emptyList(),
-    val mosquesSearchResults: List<MosqueUiState> = emptyList(),
+    val mosques: List<Mosque> = emptyList(),
+    val mosquesSearchResults: List<Mosque> = emptyList(),
     val centerOfMap: Coordinate? = null,
     val isLoading: Boolean = true,
     val isMosqueBottomSheetVisible: Boolean = false,
@@ -22,7 +22,6 @@ internal data class MosqueUiState(
     val id: Uuid,
     val name: String,
     val imageUrl: String,
-    val address: String,
     val distance: Double,
     val coordinate: Coordinate
 )
@@ -38,7 +37,6 @@ internal fun Mosque.toUiState(distance: Double): MosqueUiState {
         id = id,
         name = name,
         imageUrl = imageUrl,
-        address = address,
         distance = distance,
         coordinate = Coordinate(
             latitude = coordinates.latitude,

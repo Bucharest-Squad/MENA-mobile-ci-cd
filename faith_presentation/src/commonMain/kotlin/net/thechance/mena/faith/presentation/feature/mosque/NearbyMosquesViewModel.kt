@@ -7,6 +7,7 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import net.thechance.mena.faith.domain.entity.Mosque
 import net.thechance.mena.faith.domain.repository.MosqueRepository
 import net.thechance.mena.faith.presentation.base.BaseViewModel
 import kotlin.uuid.ExperimentalUuidApi
@@ -52,9 +53,7 @@ internal class NearbyMosquesViewModel(
                     latitude = center.latitude,
                     longitude = center.longitude,
                     radius = SEARCH_RADIUS_KM,
-                ).map { mosque ->
-                    mosque.toUiState(distance = 0.0)
-                }
+                )
             },
             onSuccess = ::handleNearbyMosquesSuccess,
         )
@@ -82,9 +81,7 @@ internal class NearbyMosquesViewModel(
 
     private fun performSearch(query: String) {
         searchJob = tryToExecute(
-            execute = {
-                mosqueRepository.getMosquesByName(query).map { it.toUiState(0.0) }
-            },
+            execute = { mosqueRepository.getMosquesByName(query) },
             onSuccess = ::handleSearchSuccess,
             onError = { handleSearchError() },
             dispatcher = dispatcher,
@@ -93,7 +90,7 @@ internal class NearbyMosquesViewModel(
     }
 
     @OptIn(ExperimentalUuidApi::class)
-    private fun handleNearbyMosquesSuccess(mosques: List<MosqueUiState>) {
+    private fun handleNearbyMosquesSuccess(mosques: List<Mosque>) {
         if (mosques.isEmpty()) {
             viewModelScope.launch {
                 updateState { it.copy(isNoMosquesCardVisible = true) }
@@ -111,7 +108,7 @@ internal class NearbyMosquesViewModel(
     }
 
     @OptIn(ExperimentalUuidApi::class)
-    private fun handleSearchSuccess(mosques: List<MosqueUiState>) {
+    private fun handleSearchSuccess(mosques: List<Mosque>) {
         updateState {
             it.copy(
                 mosquesSearchResults = mosques,
@@ -142,6 +139,6 @@ internal class NearbyMosquesViewModel(
 
     private companion object {
         const val SEARCH_DEBOUNCE_DELAY = 1000L
-        const val SEARCH_RADIUS_KM = 10.0
+        const val SEARCH_RADIUS_KM = 1.0
     }
 }
