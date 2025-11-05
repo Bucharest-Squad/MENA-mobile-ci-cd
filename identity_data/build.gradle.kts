@@ -1,5 +1,3 @@
-import org.gradle.internal.jvm.Jvm
-
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.kotlinx.serialization)
@@ -64,6 +62,7 @@ kover.reports {
 
     filters.excludes {
         packages("*.di", "*.dto", "*.utils", "*.database")
+        classes("*ImagesGalleryManager*")
     }
 }
 

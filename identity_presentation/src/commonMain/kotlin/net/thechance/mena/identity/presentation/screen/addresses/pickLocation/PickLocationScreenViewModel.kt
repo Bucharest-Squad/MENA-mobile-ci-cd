@@ -25,8 +25,8 @@ import kotlin.uuid.ExperimentalUuidApi
 
 class PickLocationScreenViewModel(
     private val addressesRepository: AddressesRepository,
-    private val locationForegroundHandler: PermissionHandler,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
+    private val locationForegroundHandler: PermissionHandler,
     private val addressModel: AddressUIState? = null,
 ) : BaseScreenModel<PickLocationScreenUIState, PickLocationScreenUIEffect>(PickLocationScreenUIState()),
     PickLocationScreenInteractionListener {
