@@ -78,11 +78,8 @@ class PrayerTimeViewModel(
         val currentTime = Clock.System.now()
         val nextPrayer = findNextPrayer(prayerTimes, currentTime)
 
-        if (nextPrayer != null) {
-            updateStateWithNextPrayer(nextPrayer, currentTime)
-        } else {
-            handleTomorrowFirstPrayer(prayerTimes, currentTime)
-        }
+        if (nextPrayer != null) updateStateWithNextPrayer(nextPrayer, currentTime)
+        else handleTomorrowFirstPrayer(prayerTimes, currentTime)
     }
 
     private fun findNextPrayer(prayerTimes: List<PrayerTime>, currentTime: Instant): PrayerTime? {
