@@ -91,11 +91,7 @@ internal class NearbyMosquesViewModel(
 
     @OptIn(ExperimentalUuidApi::class)
     private fun handleNearbyMosquesSuccess(mosques: List<Mosque>) {
-        val mosquesToUiState = mosques.map { mosque ->
-            mosque.toUiState(distance = 0.0)
-        }
-
-        if (mosquesToUiState.isEmpty()) {
+        if (mosques.isEmpty()) {
             viewModelScope.launch {
                 updateState { it.copy(isNoMosquesCardVisible = true) }
                 delay(3000)
@@ -105,7 +101,9 @@ internal class NearbyMosquesViewModel(
             updateState {
                 it.copy(
                     isLoading = false,
-                    mosques = mosquesToUiState,
+                    mosques =  mosques.map { mosque ->
+                        mosque.toUiState(distance = 0.0)
+                    },
                 )
             }
         }
@@ -113,11 +111,10 @@ internal class NearbyMosquesViewModel(
 
     @OptIn(ExperimentalUuidApi::class)
     private fun handleSearchSuccess(mosques: List<Mosque>) {
-        val mosquesToUiState = mosques.map { it.toUiState(0.0) }
-        updateState {
+        updateState { it ->
             it.copy(
-                mosquesSearchResults = mosquesToUiState,
-                isSearchResultsBottomSheetVisible = mosquesToUiState.isNotEmpty()
+                mosquesSearchResults = mosques.map { it.toUiState(0.0) },
+                isSearchResultsBottomSheetVisible = mosques.isNotEmpty()
             )
         }
         // TODO: remove all markers from the map and add new markers
