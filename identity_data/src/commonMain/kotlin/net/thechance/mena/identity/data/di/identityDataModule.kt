@@ -50,7 +50,7 @@ val identityDataModule = module {
     }
 
     single<RegisterRepository> {
-        RegisterRepositoryImpl(client = get(named(IDENTITY_CLIENT)))
+        RegisterRepositoryImpl(client = get(named(IDENTITY_CLIENT)), settings = get())
     }
 
     singleOf(::MobileGeocoderWrapper) bind GeocoderWrapper::class
