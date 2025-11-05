@@ -1,5 +1,6 @@
 package net.thechance.mena.core_chat.data.di
 
+import net.thechance.mena.core_chat.data.utils.audio.AudioRecorderImpl
 import net.thechance.mena.core_chat.data.repository.AudioRecordRepositoryImpl
 import net.thechance.mena.core_chat.data.repository.ChatRepositoryImpl
 import net.thechance.mena.core_chat.data.repository.ContactsRepositoryImpl
@@ -51,6 +52,8 @@ internal val repositoryModule = module {
         AudioRecordRepositoryImpl(
             client = get(named(CHAT_CLIENT)),
             fileManager = get(),
+            audioRecorder = get(),
         )
     }
+    single { AudioRecorderImpl() }
 }
