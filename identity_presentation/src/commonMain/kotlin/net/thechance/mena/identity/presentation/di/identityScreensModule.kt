@@ -11,8 +11,10 @@ import net.thechance.mena.identity.presentation.screen.imageCropper.ImageCropper
 import net.thechance.mena.identity.presentation.screen.login.LoginScreenViewModel
 import net.thechance.mena.identity.presentation.screen.notImplemented.NotImplementedScreenViewModel
 import net.thechance.mena.identity.presentation.screen.profile.ProfileScreenViewModel
+import net.thechance.mena.identity.presentation.screen.register.accountCreated.AccountCreatedViewModel
 import net.thechance.mena.identity.presentation.screen.register.createPassword.CreatePasswordViewModel
 import net.thechance.mena.identity.presentation.screen.register.datePicker.DatePickerScreenViewModel
+import net.thechance.mena.identity.presentation.screen.register.enterName.EnterNameViewModel
 import net.thechance.mena.identity.presentation.screen.register.otp.RegisterOtpViewModel
 import net.thechance.mena.identity.presentation.screen.register.phoneEntry.RegisterPhoneEntryViewModel
 import net.thechance.mena.identity.presentation.screen.register.selectGender.SelectGenderScreenViewModel
@@ -43,7 +45,9 @@ val identityScreensModule = module {
     factoryOf(::NotImplementedScreenViewModel)
     factoryOf(::RegisterPhoneEntryViewModel)
     factoryOf(::RegisterOtpViewModel)
+    factoryOf(::EnterNameViewModel)
     factoryOf(::CreatePasswordViewModel)
+    factoryOf(::AccountCreatedViewModel)
     factoryOf(::ForgetPasswordPhoneEntryScreenViewModel)
     factoryOf(::ForgetPasswordOtpScreenViewModel)
     factoryOf(::EditUserProfileViewModel)
