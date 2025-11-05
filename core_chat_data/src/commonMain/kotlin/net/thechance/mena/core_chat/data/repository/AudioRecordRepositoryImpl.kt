@@ -1,16 +1,12 @@
 package net.thechance.mena.core_chat.data.repository
 
-import dev.theolm.record.Record
-import dev.theolm.record.config.AudioEncoder
-import dev.theolm.record.config.OutputFormat
-import dev.theolm.record.config.OutputLocation
-import dev.theolm.record.config.RecordConfig
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.util.reflect.typeInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
+import net.thechance.mena.core_chat.data.utils.audio.AudioRecorder
 import net.thechance.mena.core_chat.data.utils.FileManager
 import net.thechance.mena.core_chat.data.utils.tryNetworkCall
 import net.thechance.mena.core_chat.domain.exception.AudioFileNotFound
@@ -24,29 +20,19 @@ import kotlin.uuid.ExperimentalUuidApi
 class AudioRecordRepositoryImpl(
     private val client: HttpClient,
     private val fileManager: FileManager,
+    private val audioRecorder: AudioRecorder,
 ) : AudioRecordRepository {
 
-    init {
-        Record.setConfig(
-            RecordConfig(
-                outputLocation = OutputLocation.Cache,
-                outputFormat = OutputFormat.WAV,
-                audioEncoder = AudioEncoder.PCM_16BIT,
-                sampleRate = 48000
-            )
-        )
-    }
-
     override fun startRecording() {
-        Record.startRecording()
+        audioRecorder.startRecording()
     }
 
     override fun stopRecording(): String {
-        return Record.stopRecording()
+        return audioRecorder.stopRecording()
     }
 
     override fun isRecording(): Boolean {
-        return Record.isRecording()
+        return audioRecorder.isRecording()
     }
 
     override suspend fun getAudioFilePath(url: String): String {
