@@ -8,7 +8,6 @@ import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.request.url
-import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
@@ -37,20 +36,23 @@ suspend fun HttpClient.postFileWithData(
     fileKey: String,
     imageByteArray: ByteArray?
 ) {
-    val response: HttpResponse = submitFormWithBinaryData(
+    if (imageByteArray == null) return
+
+    val response = submitFormWithBinaryData(
         url = path,
         formData = formData {
-            imageByteArray?.let {
-                append(
-                    key = fileKey,
-                    value = imageByteArray,
-                    Headers.build {
-                        append(HttpHeaders.ContentType, ContentType.Image.JPEG.toString())
-                        append(HttpHeaders.ContentDisposition, "filename=image.jpeg")
-                    }
-                )
-            }
+            append(
+                key = fileKey,
+                value = imageByteArray,
+                headers = Headers.build {
+                    append(HttpHeaders.ContentType, ContentType.Image.JPEG.toString())
+                    append(HttpHeaders.ContentDisposition, "filename=image.jpeg")
+                }
+            )
         }
     )
-    return response.body()
+
+    if (response.status != HttpStatusCode.OK) {
+        throw ClientRequestException(response, response.body())
+    }
 }
