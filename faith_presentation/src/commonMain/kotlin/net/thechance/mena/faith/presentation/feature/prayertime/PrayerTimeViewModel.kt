@@ -102,7 +102,7 @@ class PrayerTimeViewModel(
     private fun handleTomorrowFirstPrayer(prayerTimes: List<PrayerTime>, currentTime: Instant) {
         val firstPrayer = prayerTimes.firstOrNull() ?: return
 
-        val tomorrowFirstPrayerTime = calculateTomorrowPrayerTime(firstPrayer.time)
+        val tomorrowFirstPrayerTime = calculateNextFajrTime(firstPrayer.time)
         val remainingMillis = calculateRemainingTime(tomorrowFirstPrayerTime, currentTime)
 
         updateState { state ->
@@ -117,7 +117,7 @@ class PrayerTimeViewModel(
         return prayerTime.toEpochMilliseconds() - currentTime.toEpochMilliseconds()
     }
 
-    private fun calculateTomorrowPrayerTime(todayPrayerTime: Instant): Instant {
+    private fun calculateNextFajrTime(todayPrayerTime: Instant): Instant {
         val oneDayInMillis = ONE_DAY_IN_MILLIS
         return Instant.fromEpochMilliseconds(todayPrayerTime.toEpochMilliseconds() + oneDayInMillis)
     }
