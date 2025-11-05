@@ -13,6 +13,8 @@ import net.thechance.mena.identity.presentation.screen.imageCropper.ImageCropper
 import net.thechance.mena.identity.presentation.screen.login.LoginScreenViewModel
 import net.thechance.mena.identity.presentation.screen.notImplemented.NotImplementedScreenViewModel
 import net.thechance.mena.identity.presentation.screen.profile.ProfileScreenViewModel
+import net.thechance.mena.identity.presentation.screen.profile.components.dialog.ShareQrCodeInteractionListener
+import net.thechance.mena.identity.presentation.screen.profile.components.dialog.ShareQrCodeViewModel
 import net.thechance.mena.identity.presentation.screen.register.phoneEntry.RegisterPhoneEntryViewModel
 import net.thechance.mena.identity.presentation.screen.register.createPassword.CreatePasswordViewModel
 import net.thechance.mena.identity.presentation.screen.register.otp.RegisterOtpViewModel
@@ -55,4 +57,5 @@ val identityScreensModule = module {
     }
     factoryOfOrNull(::AddEditLocationScreenViewModel)
     factoryOfOrNull(::PickLocationScreenViewModel)
+    factoryOfOrNull(::ShareQrCodeViewModel) binds ShareQrCodeInteractionListener::class
 }

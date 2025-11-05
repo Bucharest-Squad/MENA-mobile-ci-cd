@@ -25,6 +25,7 @@ kotlin {
     sourceSets {
         androidMain.dependencies {
             implementation(libs.androidx.room.sqlite.wrapper)
+            implementation(libs.koin.android)
         }
         commonMain.dependencies {
             implementation(projects.identityDomain)
