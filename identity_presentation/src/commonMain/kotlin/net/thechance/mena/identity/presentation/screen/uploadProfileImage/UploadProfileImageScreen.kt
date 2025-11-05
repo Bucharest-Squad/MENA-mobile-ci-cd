@@ -30,6 +30,7 @@ import net.thechance.mena.identity.presentation.base.BaseScreen
 import net.thechance.mena.identity.presentation.components.AuthScreenContainer
 import net.thechance.mena.identity.presentation.components.PageDescription
 import net.thechance.mena.identity.presentation.screen.imageCropper.ImageCropperScreen
+import net.thechance.mena.identity.presentation.screen.register.accountCreated.AccountCreatedScreen
 import net.thechance.mena.identity.presentation.screen.uploadProfileImage.components.UploadImageContainer
 import org.jetbrains.compose.resources.stringResource
 
@@ -76,6 +77,7 @@ class UploadProfileImageScreen :
                     text = stringResource(Res.string.button_upload),
                     onClick = listener::onClickUpload,
                     isEnabled = state.isUploadEnabled,
+                    isLoading = state.isLoading,
                     contentPadding = PaddingValues(vertical = 13.dp),
                     modifier = Modifier.fillMaxWidth().padding(bottom = Theme.spacing._12)
                 )
@@ -95,8 +97,10 @@ class UploadProfileImageScreen :
         navigator: Navigator
     ) {
         when (effect) {
-            UploadProfileImageUIEffect.NavigateToNextScreen -> TODO()
-            UploadProfileImageUIEffect.NavigateToNextScreenAfterSkip -> TODO()
+            UploadProfileImageUIEffect.NavigateToAccountCreated -> {
+                navigator.push(AccountCreatedScreen())
+            }
+
             is UploadProfileImageUIEffect.NavigateToCropScreen -> {
                 val cropperScreen = ImageCropperScreen(
                     imageKey = effect.imageKey,

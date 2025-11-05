@@ -4,20 +4,20 @@ import androidx.compose.ui.graphics.ImageBitmap
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
-import kotlinx.coroutines.delay
 import net.thechance.mena.identity.domain.exception.AuthenticationException
 import net.thechance.mena.identity.domain.repository.CachedImageRepository
+import net.thechance.mena.identity.domain.repository.UserRepository
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
 import net.thechance.mena.identity.presentation.base.error.ErrorState
 import net.thechance.mena.identity.presentation.base.error.handleAuthenticationException
 import net.thechance.mena.identity.presentation.mapper.mapAuthenticationErrorToMessage
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
-import net.thechance.mena.identity.presentation.screen.editProfile.EditUserProfileViewModel.Companion.PROFILE_IMAGE
 import net.thechance.mena.identity.presentation.utils.ImageDecoder
 import org.jetbrains.compose.resources.StringResource
 
 class UploadProfileImageViewModel(
-    val cachedImageRepository: CachedImageRepository,
+    private val cachedImageRepository: CachedImageRepository,
+    private val userRepository: UserRepository,
     private val imageDecoder: ImageDecoder,
     val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : BaseScreenModel<UploadProfileImageUIState, UploadProfileImageUIEffect>
@@ -25,22 +25,23 @@ class UploadProfileImageViewModel(
     UploadProfileImageInteractionListener {
 
     override fun onClickUpload() {
+        val imageBitmap = state.value.imageBitmap ?: return
 
         updateState { copy(isLoading = true, errorMessage = null) }
 
         tryToExecute(
             function = {
-
-                delay(2000)
-                true
+                val imageByteArray = imageDecoder.encodeImage(imageBitmap)
+                userRepository.uploadUserProfileImage(imageByteArray)
             },
-            onSuccess = ::onUploadSuccess,
+            onSuccess = { onUploadSuccess() },
+            onError = ::onUploadError,
             dispatcher = dispatcher
         )
     }
 
     override fun onClickSkip() {
-        sendNewEffect(UploadProfileImageUIEffect.NavigateToNextScreenAfterSkip)
+        sendNewEffect(UploadProfileImageUIEffect.NavigateToAccountCreated)
     }
 
     override fun onSelectImage(imageBitmap: ImageBitmap) {
@@ -56,18 +57,24 @@ class UploadProfileImageViewModel(
         updateState { copy(errorMessage = null) }
     }
 
-    private fun onUploadSuccess(result: Boolean) {
+    private fun onUploadSuccess() {
         updateState { copy(isLoading = false) }
-        sendNewEffect(UploadProfileImageUIEffect.NavigateToNextScreen)
+        sendNewEffect(UploadProfileImageUIEffect.NavigateToAccountCreated)
+    }
+
+    private fun onUploadError(throwable: Throwable) {
+        updateState { 
+            copy(
+                isLoading = false,
+                errorMessage = mapErrorMessage(throwable)
+            ) 
+        }
     }
 
     override fun onImageCropped(croppedImageBitmap: ImageBitmap) {
         updateState { copy(imageBitmap = croppedImageBitmap, isUploadEnabled = true) }
     }
 
-    private fun onUploadError(errorState: ErrorState) {
-        updateState { copy(isLoading = false) }
-    }
 
     override fun onClickEdit(imageBitmap: ImageBitmap) {
         cacheRequiredCropImage(imageBitmap)
@@ -113,7 +120,6 @@ class UploadProfileImageViewModel(
             is AuthenticationException -> mapAuthenticationErrorToMessage(
                 handleAuthenticationException(throwable)
             )
-
             else -> mapErrorToMessage(ErrorState.GenericError(throwable))
         }
     }
