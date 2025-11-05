@@ -14,6 +14,7 @@ import net.thechance.mena.identity.presentation.base.error.handleAuthenticationE
 import net.thechance.mena.identity.presentation.mapper.mapAuthenticationErrorToMessage
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
 import org.jetbrains.compose.resources.StringResource
+import net.thechance.mena.identity.domain.entity.PhoneNumber as PhoneNumberEntity
 
 class RegisterOtpViewModel(
     private val registerRepository: RegisterRepository,
@@ -38,21 +39,25 @@ class RegisterOtpViewModel(
     }
 
     private suspend fun verifyOTPCode() {
-        // TODO: Uncomment when ready to integrate with backend
-        // registerRepository.verifyOTPCode(
-        //     otpCode = state.value.otpValue,
-        // )
-
-        // Bypass for UI testing - just validate OTP length
-        delay(1000) // Simulate network delay
-        if (state.value.otpValue.length != OTP_LENGTH) {
-            throw Exception("Invalid OTP")
-        }
+        registerRepository.verifyOTPCode(state.value.otpValue)
     }
 
     private fun onOTPVerificationSuccess() {
-        sendNewEffect(RegisterOtpUIEffect.NavigateToCreatePassword)
+        sendNewEffect(createNavigateToEnterNameEffect())
         updateState { copy(otpValue = "") }
+    }
+
+    private fun createNavigateToEnterNameEffect(): RegisterOtpUIEffect.NavigateToEnterName {
+        return RegisterOtpUIEffect.NavigateToEnterName(
+            phoneNumber = createPhoneNumber()
+        )
+    }
+
+    private fun createPhoneNumber(): PhoneNumberEntity {
+        return PhoneNumberEntity(
+            countryCode = callingCode,
+            localNumber = phoneNumber
+        )
     }
 
     private fun onOTPVerificationError(throwable: Throwable) {
@@ -80,17 +85,10 @@ class RegisterOtpViewModel(
     }
 
     private suspend fun requestNewOTP() {
-        // TODO: Uncomment when ready to integrate with backend
-        // registerRepository.requestOTP(
-        //     phoneNumber = PhoneNumber(
-        //         countryCode = callingCode,
-        //         localNumber = phoneNumber
-        //     ),
-        //     countryCodeName = countryCode
-        // )
-
-        // Bypass for UI testing
-        delay(500) // Simulate network delay
+        registerRepository.requestOTP(
+            phoneNumber = createPhoneNumber(),
+            countryCodeName = countryCode
+        )
     }
 
     private fun onResendOTPSuccess() {

@@ -3,7 +3,7 @@ package net.thechance.mena.identity.presentation.screen.register.phoneEntry
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
-import kotlinx.coroutines.delay
+import net.thechance.mena.identity.domain.entity.PhoneNumber
 import net.thechance.mena.identity.domain.exception.AuthenticationException
 import net.thechance.mena.identity.domain.repository.RegisterRepository
 import net.thechance.mena.identity.domain.useCase.LoginUseCase
@@ -47,27 +47,27 @@ class RegisterPhoneEntryViewModel(
     }
 
     private suspend fun requestOTP() {
-        // TODO: Uncomment when ready to integrate with backend
-        // registerRepository.requestOTP(
-        //     phoneNumber = PhoneNumber(
-        //         countryCode = state.value.currentCountry.callingCode,
-        //         localNumber = state.value.phoneNumber
-        //     ),
-        //     countryCodeName = state.value.currentCountry.countryCodeName
-        // )
+        val phoneNumber = createPhoneNumber()
+        registerRepository.requestOTP(phoneNumber, state.value.currentCountry.countryCodeName)
+    }
 
-        // Bypass for UI testing - just validate locally
-        delay(1000) // Simulate network delay
+    private fun createPhoneNumber(): PhoneNumber {
+        return PhoneNumber(
+            countryCode = state.value.currentCountry.callingCode,
+            localNumber = state.value.phoneNumber
+        )
     }
 
     private fun onOTPRequestSuccess() {
         updateState { copy(isLoading = false) }
-        sendNewEffect(
-            RegisterPhoneEntryUIEffect.NavigateToOTP(
-                phoneNumber = state.value.phoneNumber,
-                callingCode = state.value.currentCountry.callingCode,
-                countryCode = state.value.currentCountry.countryCodeName
-            )
+        sendNewEffect(createNavigateToOTPEffect())
+    }
+
+    private fun createNavigateToOTPEffect(): RegisterPhoneEntryUIEffect.NavigateToOTP {
+        return RegisterPhoneEntryUIEffect.NavigateToOTP(
+            phoneNumber = state.value.phoneNumber,
+            callingCode = state.value.currentCountry.callingCode,
+            countryCode = state.value.currentCountry.countryCodeName
         )
     }
 
