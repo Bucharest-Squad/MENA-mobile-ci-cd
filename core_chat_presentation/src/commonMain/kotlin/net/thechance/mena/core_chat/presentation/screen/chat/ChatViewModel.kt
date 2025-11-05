@@ -29,6 +29,9 @@ import mena.core_chat_presentation.generated.resources.error_failed_to_download_
 import mena.core_chat_presentation.generated.resources.error_get_user_info
 import mena.core_chat_presentation.generated.resources.image_saved_successfully
 import mena.core_chat_presentation.generated.resources.permission_denied_title
+import mena.core_chat_presentation.generated.resources.error_recording_failed
+import mena.core_chat_presentation.generated.resources.error_invalid_recording
+import mena.core_chat_presentation.generated.resources.error_failed_to_process_audio
 import mena.core_chat_presentation.generated.resources.success
 import net.thechance.mena.core_chat.domain.entity.AudioData
 import net.thechance.mena.core_chat.domain.entity.Chat
@@ -57,7 +60,6 @@ import net.thechance.mena.core_chat.presentation.utils.now
 import org.jetbrains.compose.resources.StringResource
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
-
 
 class ChatViewModel(
     private val chatRepository: ChatRepository,
@@ -588,22 +590,43 @@ class ChatViewModel(
 
     override fun onRecordClicked() {
         if (audioRecordRepository.isRecording()) {
-            val filePath = audioRecordRepository.stopRecording()
-            updateState { it.copy(isRecordingVoice = false) }
-
-            audioPlayer.play(filePath)
+            stopAndPlayRecording()
         } else {
-            tryToExecute(
-                execute = { permissionsController.providePermission(Permission.RECORD_AUDIO) },
-                onSuccess = {
-                    audioRecordRepository.startRecording()
-                    updateState { it.copy(isRecordingVoice = true) }
-                },
-                onError = {
-                    showSnackBar(Res.string.error, Res.string.permission_denied_title, true)
-                }
-            )
+            requestRecordPermissionAndStart()
         }
+    }
+
+    private fun stopAndPlayRecording() {
+        val filePath = audioRecordRepository.stopRecording()
+        updateState { it.copy(isRecordingVoice = false) }
+        audioPlayer.play(filePath)
+    }
+
+    private fun requestRecordPermissionAndStart() {
+        tryToExecute(
+            execute = { permissionsController.providePermission(Permission.RECORD_AUDIO) },
+            onSuccess = { startRecording() },
+            onError = { onRecordPermissionDenied() }
+        )
+    }
+
+    private fun startRecording() {
+        tryToExecute(
+            execute = { audioRecordRepository.startRecording() },
+            onSuccess = {
+                updateState { it.copy(isRecordingVoice = true) }
+            },
+            onError = { onRecordingStartFailed() }
+        )
+    }
+
+    private fun onRecordPermissionDenied() {
+        showSnackBar(Res.string.error, Res.string.permission_denied_title, true)
+    }
+
+    private fun onRecordingStartFailed() {
+        showSnackBar(Res.string.error, Res.string.error_recording_failed, true)
+        updateState { it.copy(isRecordingVoice = false) }
     }
 
     override fun onCancelRecordClicked() {
@@ -615,38 +638,52 @@ class ChatViewModel(
         val filePath = audioRecordRepository.stopRecording()
         updateState { it.copy(isRecordingVoice = false) }
 
+        if (!validateRecordingData(filePath)) {
+            return
+        }
+
+        processAndSendAudioMessage(filePath)
+    }
+
+    private fun validateRecordingData(filePath: String): Boolean {
         val chatId = state.value.chatId
         val senderId = state.value.chatRequesterId
 
-        if (chatId == null || senderId == null || filePath.isEmpty()) {
-            showSnackBar(
-                titleStringResource = Res.string.error,
-                messageStringResource = Res.string.error_failed_to_download_image,
-                isError = true
-            )
-            return
+        if (chatId == null || senderId == null) {
+            showSnackBar(Res.string.error, Res.string.error_invalid_recording, true)
+            return false
         }
 
+        if (filePath.isEmpty()) {
+            showSnackBar(Res.string.error, Res.string.error_invalid_recording, true)
+            return false
+        }
+
+        return true
+    }
+
+    private fun processAndSendAudioMessage(filePath: String) {
         val audioByteArray = convertAudioFileToByteArray(filePath)
+
         if (audioByteArray.isEmpty()) {
-            showSnackBar(
-                titleStringResource = Res.string.error,
-                messageStringResource = Res.string.error_failed_to_download_image,
-                isError = true
-            )
+            showSnackBar(Res.string.error, Res.string.error_failed_to_process_audio, true)
             return
         }
 
+        val message = createAudioMessage(audioByteArray)
+        sendMessage(message)
+    }
 
+    private fun createAudioMessage(audioByteArray: ByteArray): MessageUiState {
+        val chatId = state.value.chatId!!
+        val senderId = state.value.chatRequesterId!!
         val content = MessageContent.Audio(AudioData.AudioByteArray(byteArray = audioByteArray))
 
-        val message = MessageUiState(
+        return MessageUiState(
             chatId = chatId,
             senderId = senderId,
             content = content
         )
-
-        sendMessage(message)
     }
 
     override fun onDownloadImageClicked(url: String) {

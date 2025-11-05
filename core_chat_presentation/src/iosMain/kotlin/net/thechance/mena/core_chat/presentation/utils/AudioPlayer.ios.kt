@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalAtomicApi::class)
+@file:OptIn(ExperimentalAtomicApi::class, ExperimentalForeignApi::class)
 
 package net.thechance.mena.core_chat.presentation.utils
 
@@ -13,8 +13,8 @@ import platform.Foundation.dataWithContentsOfFile
 import platform.darwin.NSObject
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
-actual fun createAudioPlayer(onError: (String) -> Unit): AudioPlayer {
-    return IOSAudioPlayer(onError)
+actual fun createAudioPlayer(): AudioPlayer {
+    return IOSAudioPlayer()
 }
 
 actual fun convertAudioFileToByteArray(filePath: String): ByteArray {
@@ -23,45 +23,35 @@ actual fun convertAudioFileToByteArray(filePath: String): ByteArray {
     }.getOrDefault(byteArrayOf())
 }
 
-@OptIn(ExperimentalForeignApi::class)
-class IOSAudioPlayer(private val onError: (String) -> Unit) : AudioPlayer {
+class IOSAudioPlayer : AudioPlayer {
     private var audioPlayer: AVAudioPlayer? = null
     private var currentFilePath: String? = null
 
     override fun play(filePath: String) {
-        try {
-            if (audioPlayer != null && currentFilePath == filePath && !audioPlayer!!.isPlaying()) {
-                audioPlayer?.play()
-                return
-            }
-
-            stop()
-
-            val fileManager = NSFileManager.defaultManager
-            if (!fileManager.fileExistsAtPath(filePath)) {
-                onError("File does not exist: $filePath")
-                return
-            }
-
-            val url = NSURL.fileURLWithPath(filePath)
-            val player = AVAudioPlayer(url, null)
-
-            if (player != null) {
-                audioPlayer = player
-                player.play()
-
-                player.delegate = object : NSObject(), AVAudioPlayerDelegateProtocol {
-                    override fun audioPlayerDidFinishPlaying(player: AVAudioPlayer, successfully: Boolean) {
-                        player.pause()
-                    }
-                }
-            } else {
-                onError("Failed to create AVAudioPlayer")
-            }
-            currentFilePath = filePath
-        } catch (e: Exception) {
-            onError("Failed to play audio: ${e.message}")
+        if (audioPlayer != null && currentFilePath == filePath && audioPlayer?.isPlaying() == false) {
+            audioPlayer?.play()
+            return
         }
+
+        stop()
+
+        val fileManager = NSFileManager.defaultManager
+        if (!fileManager.fileExistsAtPath(filePath)) {
+            throw IllegalArgumentException("File does not exist: $filePath")
+        }
+
+        val url = NSURL.fileURLWithPath(filePath)
+        val player = AVAudioPlayer(url, null)
+
+        audioPlayer = player
+        player.play()
+
+        player.delegate = object : NSObject(), AVAudioPlayerDelegateProtocol {
+            override fun audioPlayerDidFinishPlaying(player: AVAudioPlayer, successfully: Boolean) {
+                player.pause()
+            }
+        }
+        currentFilePath = filePath
     }
     
     override fun pause() {
@@ -83,27 +73,17 @@ class IOSAudioPlayer(private val onError: (String) -> Unit) : AudioPlayer {
     }
 
     override fun getDuration(filePath: String): Long {
-        return try {
-            val fileManager = NSFileManager.defaultManager
-            if (!fileManager.fileExistsAtPath(filePath)) {
-                return 0L
-            }
-
-            val url = NSURL.fileURLWithPath(filePath)
-            val player = AVAudioPlayer(url, null)
-            (player?.duration?.toLong() ?: 0L)// Convert to seconds
-        } catch (e: Exception) {
-            onError("Failed to get audio duration: ${e.message}")
-            0L
+        val fileManager = NSFileManager.defaultManager
+        if (!fileManager.fileExistsAtPath(filePath)) {
+            throw IllegalArgumentException("File does not exist: $filePath")
         }
+
+        val url = NSURL.fileURLWithPath(filePath)
+        val player = AVAudioPlayer(url, null)
+        return player.duration.toLong()
     }
 
     override fun getCurrentPosition(): Long {
-        return try {
-            (audioPlayer?.currentTime?.toLong() ?: 0L)
-        } catch (e: Exception) {
-            onError("Failed to get current position: ${e.message}")
-            0L
-        }
+        return audioPlayer?.currentTime?.toLong() ?: 0L
     }
 }

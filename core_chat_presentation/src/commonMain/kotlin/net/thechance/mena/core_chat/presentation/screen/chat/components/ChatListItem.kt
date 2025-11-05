@@ -24,7 +24,7 @@ fun ChatListItem(
     chatAvatarUrl: String,
     onMessageClick: (Uuid) -> Unit,
     onMessageImageClick: (List<MessageUiState>, Int) -> Unit,
-    onMessageVoiceClicked : (Uuid) -> Unit,
+    onMessageVoiceClick : (Uuid) -> Unit,
     onFailedMessageClick: (MessageUiState) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -73,7 +73,7 @@ fun ChatListItem(
                 modifier = modifier.fillMaxWidth(),
                 horizontalArrangement = if (markedMessage.isMine) Arrangement.End else Arrangement.Start
             ) {
-                VoiceMessagesLayout(
+                VoiceMessageLayout(
                     message = markedMessage,
                     chatAvatarUrl = chatAvatarUrl,
                     showMessageInfo = (markedMessage.isVisibleMessageInfo || markedMessage.isLastInSeries || markedMessage.status == MessageStatus.FAILED),
@@ -82,7 +82,7 @@ fun ChatListItem(
                     progress = item.progress,
                     totalSeconds = item.duration.div(1000) ,
                     waveformData = item.waveformData,
-                    onPlayClick = { onMessageVoiceClicked(markedMessage.id) },
+                    onPlayClick = { onMessageVoiceClick(markedMessage.id) },
                     onFailClick = { onFailedMessageClick(markedMessage) },
                 )
             }

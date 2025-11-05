@@ -31,7 +31,7 @@ import kotlinx.coroutines.delay
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.ic_delete
 import mena.core_chat_presentation.generated.resources.ic_mic
-import mena.core_chat_presentation.generated.resources.ic_telegram
+import mena.core_chat_presentation.generated.resources.ic_send
 import net.thechance.mena.designsystem.presentation.component.button.FabButton
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.text.Text
@@ -87,7 +87,7 @@ fun RecordingBar(
             DeleteButton(onCancelClick)
 
             FabButton(
-                painter = painterResource(Res.drawable.ic_telegram),
+                painter = painterResource(Res.drawable.ic_send),
                 modifier = Modifier.size(52.dp, 48.dp),
                 onClick = onSendClick,
                 iconSize = 20.dp

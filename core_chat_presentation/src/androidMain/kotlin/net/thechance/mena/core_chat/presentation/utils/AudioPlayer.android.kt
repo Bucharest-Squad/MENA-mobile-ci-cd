@@ -3,55 +3,45 @@ package net.thechance.mena.core_chat.presentation.utils
 import android.media.MediaPlayer
 import java.io.File
 
-actual fun createAudioPlayer(onError: (String) -> Unit): AudioPlayer {
-    return AndroidAudioPlayer(onError)
+actual fun createAudioPlayer(): AudioPlayer {
+    return AndroidAudioPlayer()
 }
 
 actual fun convertAudioFileToByteArray(filePath: String): ByteArray {
     return runCatching { File(filePath).readBytes() }.getOrDefault(byteArrayOf())
 }
 
-class AndroidAudioPlayer(private val onError: (String) -> Unit) : AudioPlayer {
+class AndroidAudioPlayer : AudioPlayer {
     private var mediaPlayer: MediaPlayer? = null
     private var currentFilePath: String? = null
 
     override fun play(filePath: String) {
-        try {
-            if (mediaPlayer != null && currentFilePath == filePath && !mediaPlayer!!.isPlaying) {
-                mediaPlayer?.start()
-                return
-            }
-            
-            stop()
-            
-            if (!File(filePath).exists()) {
-                onError("File does not exist: $filePath")
-                return
-            }
-            
-            mediaPlayer = MediaPlayer().apply {
-                setDataSource(filePath)
-                prepareAsync()
-                setOnPreparedListener { start() }
-                setOnErrorListener { _, what, extra ->
-                    onError("MediaPlayer error: what=$what, extra=$extra")
-                    false
-                }
-                setOnCompletionListener { stop() }
-            }
-            currentFilePath = filePath
-        } catch (e: Exception) {
-            onError("Failed to play audio: ${e.message}")
+        if (mediaPlayer != null && currentFilePath == filePath && mediaPlayer?.isPlaying == false) {
+            mediaPlayer?.start()
+            return
         }
+
+        stop()
+
+        if (!File(filePath).exists()) {
+            throw IllegalArgumentException("File does not exist: $filePath")
+        }
+
+        mediaPlayer = MediaPlayer().apply {
+            setDataSource(filePath)
+            prepareAsync()
+            setOnPreparedListener { start() }
+            setOnErrorListener { _, what, extra ->
+                throw IllegalStateException("MediaPlayer error: what=$what, extra=$extra")
+            }
+            setOnCompletionListener { stop() }
+        }
+        currentFilePath = filePath
     }
     
     override fun pause() {
-        try {
-            if (mediaPlayer?.isPlaying == true) {
-                mediaPlayer?.pause()
-            }
-        } catch (e: Exception) {
-            onError("Error pausing media player: ${e.message}")
+        if (mediaPlayer?.isPlaying == true) {
+            mediaPlayer?.pause()
         }
     }
 
@@ -62,41 +52,33 @@ class AndroidAudioPlayer(private val onError: (String) -> Unit) : AudioPlayer {
                 reset()
                 release()
             }
-        } catch (e: Exception) {
-            onError("Error stopping media player: ${e.message}")
         } finally {
             mediaPlayer = null
             currentFilePath = null
         }
     }
 
-    override fun release() { stop() }
-    
+    override fun release() {
+        stop()
+    }
+
     override fun getDuration(filePath: String): Long {
+        if (!File(filePath).exists()) {
+            throw IllegalArgumentException("File does not exist: $filePath")
+        }
+
         var tempPlayer: MediaPlayer? = null
         return try {
-            if (!File(filePath).exists()) {
-                return 0L
-            }
-            
             tempPlayer = MediaPlayer()
             tempPlayer.setDataSource(filePath)
             tempPlayer.prepare()
-            (tempPlayer.duration).toLong()
-        } catch (e: Exception) {
-            onError("Failed to get audio duration: ${e.message}")
-            0L
+            tempPlayer.duration.toLong()
         } finally {
             tempPlayer?.release()
         }
     }
     
     override fun getCurrentPosition(): Long {
-        return try {
-            (mediaPlayer?.currentPosition)?.toLong() ?: 0L
-        } catch (e: Exception) {
-            onError("Failed to get current position: ${e.message}")
-            0L
-        }
+        return mediaPlayer?.currentPosition?.toLong() ?: 0L
     }
 }

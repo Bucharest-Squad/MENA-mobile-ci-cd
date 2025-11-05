@@ -7,7 +7,6 @@ import kotlinx.datetime.LocalDateTime
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.today
 import mena.core_chat_presentation.generated.resources.yesterday
-import net.thechance.mena.core_chat.domain.entity.AudioData
 import net.thechance.mena.core_chat.domain.entity.Message
 import net.thechance.mena.core_chat.domain.entity.MessageContent
 import net.thechance.mena.core_chat.presentation.utils.AudioPlayer
@@ -61,7 +60,7 @@ fun List<MessageUiState>.toChatList(audioPlayer: AudioPlayer? = null ,shouldGrou
         .groupBy { it.sendTime.date }
         .flatMap { (date, messages) ->
             val markedMessages = messages.markLastInGroup()
-            val groupedMessages = markedMessages.toGroupedMessagesChatList(audioPlayer , shouldGroupMessages)
+            val groupedMessages = markedMessages.toGroupedMessagesChatList(shouldGroupMessages)
 
             buildList {
                 add(ChatListItem.DateSeparator(date.toLabel(today, yesterday)))
@@ -72,7 +71,7 @@ fun List<MessageUiState>.toChatList(audioPlayer: AudioPlayer? = null ,shouldGrou
 }
 
 
-fun List<MessageUiState>.toGroupedMessagesChatList(audioPlayer: AudioPlayer? = null,shouldGroupMessages: (MessageUiState) -> Boolean): List<ChatListItem> {
+fun List<MessageUiState>.toGroupedMessagesChatList(shouldGroupMessages: (MessageUiState) -> Boolean): List<ChatListItem> {
     val grouped = mutableListOf<ChatListItem>()
     var tempImages = mutableListOf<MessageUiState>()
 
@@ -99,14 +98,13 @@ fun List<MessageUiState>.toGroupedMessagesChatList(audioPlayer: AudioPlayer? = n
             }
             msg.content is MessageContent.Audio -> {
                 groupAndClear()
-                val waveformData = generateWaveformData((msg.content.data as  AudioData.AudioUrl).url, audioPlayer)
                 grouped.add(ChatListItem.VoiceMessage(
                     data = msg,
                     isPlaying = false,
                     isLoading = false,
                     progress = 0f,
                     duration = 0L,
-                    waveformData = waveformData
+                    waveformData = generateWaveformData()
                 ))
             }
             else -> {
@@ -140,7 +138,7 @@ private fun LocalDate.toLabel(
     else -> UiText.DynamicString(format())
 }
 
-fun generateWaveformData(audioPath: String, audioPlayer: AudioPlayer?): List<Float> {
+fun generateWaveformData(): List<Float> {
     return List(50) { kotlin.random.Random.nextFloat() * 0.8f + 0.2f }
 }
 

@@ -37,16 +37,9 @@ class AudioRecordRepositoryImpl(
 
     override suspend fun getAudioFilePath(url: String): String {
         return withContext(Dispatchers.IO) {
-            try {
-                val localPath = downloadAudioFile(url)
-
-                validateAudioFile(localPath)
-
-                localPath
-
-            } catch (e: Exception) {
-                throw e
-            }
+            val localPath = downloadAudioFile(url)
+            validateAudioFile(localPath)
+            localPath
         }
     }
 

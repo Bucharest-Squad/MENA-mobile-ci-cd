@@ -35,7 +35,11 @@ import mena.core_chat_presentation.generated.resources.chat_deleted_successfully
 import mena.core_chat_presentation.generated.resources.could_not_delete_chat
 import mena.core_chat_presentation.generated.resources.error
 import mena.core_chat_presentation.generated.resources.error_failed_to_download_image
+import mena.core_chat_presentation.generated.resources.error_failed_to_process_audio
+import mena.core_chat_presentation.generated.resources.error_invalid_recording
+import mena.core_chat_presentation.generated.resources.error_recording_failed
 import mena.core_chat_presentation.generated.resources.image_saved_successfully
+import mena.core_chat_presentation.generated.resources.permission_denied_title
 import mena.core_chat_presentation.generated.resources.success
 import net.thechance.mena.core_chat.domain.entity.AudioData
 import net.thechance.mena.core_chat.domain.entity.Chat
@@ -57,7 +61,6 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.time.Duration.Companion.milliseconds
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -513,6 +516,72 @@ class ChatViewModelTest {
     }
 
     @Test
+    fun `onVoiceClicked should show error snackbar when recording permission is denied`() = runTest {
+        every { audioRecordRepository.isRecording() } returns false
+        everySuspend { permissionsController.providePermission(Permission.RECORD_AUDIO) } throws DeniedException(
+            Permission.RECORD_AUDIO
+        )
+        advanceUntilIdle()
+
+        viewModel.effect.test {
+            viewModel.onRecordClicked()
+            advanceUntilIdle()
+
+            assertEquals(
+                ChatScreenEffect.ShowSnackBar(
+                    SnackBarData(
+                        title = UiText.StringRes(Res.string.error),
+                        message = UiText.StringRes(Res.string.permission_denied_title),
+                        isError = true
+                    )
+                ), awaitItem()
+            )
+            cancelAndIgnoreRemainingEvents()
+        }
+
+        assertThat(viewModel.state.value.isRecordingVoice).isFalse()
+    }
+
+    @Test
+    fun `onVoiceClicked should show error snackbar when recording start fails`() = runTest {
+        every { audioRecordRepository.isRecording() } returns false
+        everySuspend { permissionsController.providePermission(Permission.RECORD_AUDIO) } returns Unit
+        every { audioRecordRepository.startRecording() } throws Exception("Recording failed")
+        advanceUntilIdle()
+
+        viewModel.effect.test {
+            viewModel.onRecordClicked()
+            advanceUntilIdle()
+
+            assertEquals(
+                ChatScreenEffect.ShowSnackBar(
+                    SnackBarData(
+                        title = UiText.StringRes(Res.string.error),
+                        message = UiText.StringRes(Res.string.error_recording_failed),
+                        isError = true
+                    )
+                ), awaitItem()
+            )
+            cancelAndIgnoreRemainingEvents()
+        }
+
+        assertThat(viewModel.state.value.isRecordingVoice).isFalse()
+    }
+
+    @Test
+    fun `onVoiceClicked should not update recording state when permission request fails`() = runTest {
+        every { audioRecordRepository.isRecording() } returns false
+        everySuspend { permissionsController.providePermission(Permission.RECORD_AUDIO) } throws Exception("Permission error")
+        advanceUntilIdle()
+
+        viewModel.onRecordClicked()
+        advanceUntilIdle()
+
+        verify(exactly(0)) { audioRecordRepository.startRecording() }
+        assertThat(viewModel.state.value.isRecordingVoice).isFalse()
+    }
+
+    @Test
     fun `onCancelVoiceRecordClicked should stop recording and update state`() = runTest {
         every { audioRecordRepository.stopRecording() } returns ""
 
@@ -551,7 +620,7 @@ class ChatViewModelTest {
                 ChatScreenEffect.ShowSnackBar(
                     SnackBarData(
                         title = UiText.StringRes(Res.string.error),
-                        message = UiText.StringRes(Res.string.error_failed_to_download_image),
+                        message = UiText.StringRes(Res.string.error_invalid_recording),
                         isError = true
                     )
                 ), awaitItem()
@@ -576,7 +645,33 @@ class ChatViewModelTest {
                 ChatScreenEffect.ShowSnackBar(
                     SnackBarData(
                         title = UiText.StringRes(Res.string.error),
-                        message = UiText.StringRes(Res.string.error_failed_to_download_image),
+                        message = UiText.StringRes(Res.string.error_invalid_recording),
+                        isError = true
+                    )
+                ), awaitItem()
+            )
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `onSendVoiceRecordClicked should show error when audio processing fails`() = runTest {
+        val testFilePath = "/test/path/audio.mp4"
+        every { audioRecordRepository.stopRecording() } returns testFilePath
+        every { chatArgs.chatId } returns chatId.toString()
+
+        val viewModel = createViewModel()
+        advanceUntilIdle()
+
+        viewModel.effect.test {
+            viewModel.onSendRecordClicked()
+            advanceUntilIdle()
+
+            assertEquals(
+                ChatScreenEffect.ShowSnackBar(
+                    SnackBarData(
+                        title = UiText.StringRes(Res.string.error),
+                        message = UiText.StringRes(Res.string.error_failed_to_process_audio),
                         isError = true
                     )
                 ), awaitItem()

@@ -65,7 +65,7 @@ fun ChatList(
                 chatAvatarUrl = chatAvatarUrl,
                 onMessageClick = onMessageClick,
                 onMessageImageClick = onMessageImageClick,
-                onMessageVoiceClicked = onMessageVoiceClick,
+                onMessageVoiceClick = onMessageVoiceClick,
                 onFailedMessageClick = onFailedMessageClick,
                 modifier = Modifier.padding(bottom = paddingBottom)
             )

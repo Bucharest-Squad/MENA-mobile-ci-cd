@@ -9,6 +9,6 @@ interface AudioPlayer {
     fun getCurrentPosition(): Long
 }
 
-expect fun createAudioPlayer(onError: (String) -> Unit): AudioPlayer
+expect fun createAudioPlayer(): AudioPlayer
 
 expect fun convertAudioFileToByteArray(filePath: String): ByteArray

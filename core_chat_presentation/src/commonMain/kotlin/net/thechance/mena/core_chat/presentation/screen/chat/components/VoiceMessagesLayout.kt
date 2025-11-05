@@ -7,7 +7,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -44,7 +43,7 @@ import kotlin.random.Random
 import kotlin.uuid.ExperimentalUuidApi
 
 @Composable
-fun VoiceMessagesLayout(
+fun VoiceMessageLayout(
     message: MessageUiState,
     showMessageInfo: Boolean,
     isMarkedLastInSeries: Boolean,
@@ -185,8 +184,7 @@ fun PLayButton(
         containerColor = Theme.colorScheme.primary.primary,
         contentColor = Theme.colorScheme.primary.onPrimary,
         shape = RoundedCornerShape(Theme.radius.full),
-        contentPadding = PaddingValues(7.dp),
-        modifier = modifier
+        modifier = modifier.size(32.dp)
     ) {
         if (isLoading) {
             CustomInfiniteCircularLoader(
@@ -209,7 +207,7 @@ fun PLayButton(
 @Composable
 fun VoiceMessagesLayoutPreview() {
     MenaTheme {
-        VoiceMessagesLayout(
+        VoiceMessageLayout(
             message = MessageUiState(
                 sendTime = LocalDateTime.now(),
                 status = MessageStatus.SENT,
