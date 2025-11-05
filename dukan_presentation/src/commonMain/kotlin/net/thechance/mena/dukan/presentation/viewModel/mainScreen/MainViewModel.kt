@@ -68,6 +68,7 @@ class MainViewModel(
             copy(
                 dukanState = MainScreenUiState.DukanState(status = DukanStatusUi.Loading),
                 isContentLoading = true,
+                isConnected = true,
                 snackBarState = null
             )
         }
@@ -78,17 +79,16 @@ class MainViewModel(
     }
 
     private fun onGetDukanStateSuccess(dukanState: MainScreenUiState.DukanState?) {
+        updateState { copy(isConnected = true, snackBarState = null) }
         if (dukanState == null) {
             updateState {
                 copy(
                     dukanState = MainScreenUiState.DukanState(status = DukanStatusUi.None),
-                    isConnected = true,
-                    isContentLoading = false,
-                    snackBarState = null
-                )
+
+                    )
             }
         } else {
-            updateState { copy(dukanState = dukanState, isConnected = true) }
+            updateState { copy(dukanState = dukanState) }
         }
     }
 
@@ -131,7 +131,8 @@ class MainViewModel(
         updateState {
             copy(
                 categories = categoryUiState,
-                snackBarState = null
+                snackBarState = null,
+                isContentLoading = false
             )
         }
     }
@@ -155,15 +156,10 @@ class MainViewModel(
 
     private fun loadEditorPicksDukans() {
         tryToCollect(
-            onStart = ::onGetEditorPicksDukanStart,
             block = ::createLoadEditorPagingSource,
             onCollect = ::onLoadedEditorPicksDukan,
             onError = ::handleGetEditorPicksDukanError
         )
-    }
-
-    private fun onGetEditorPicksDukanStart() {
-        updateState { copy(isContentLoading = true) }
     }
 
     private fun createLoadEditorPagingSource(): Flow<PagingData<MainScreenUiState.EditorPickDukanUiState>> {
@@ -247,9 +243,7 @@ class MainViewModel(
 
     private fun updateToNoInternetState() {
         showSnackBar(message = Res.string.no_internet_connection, type = SnackBarType.ERROR)
-        updateState {
-            copy(isConnected = false)
-        }
+        updateState { copy(isConnected = false) }
     }
 
     override fun onDukanButtonClicked() {
