@@ -63,7 +63,7 @@ fun List<PrayerTime>.toUi(now: Instant): PrayerTimesUiState {
 private fun PrayerTime.toUi(): PrayerUiModel = PrayerUiModel(
     name = this.name,
     displayName = getPrayerDisplayNameResource(this.name),
-    time = formatInstantToTimeString(this.time),
+    time = this.time.formatInstantToTimeString(false),
     isAM = isAM(this.time)
 )
 
