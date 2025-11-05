@@ -22,9 +22,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.Navigator
-import coil3.compose.rememberAsyncImagePainter
+import io.github.alexzhirkevich.qrose.rememberQrCodePainter
 import kotlinx.coroutines.delay
 import mena.identity_presentation.generated.resources.Res
+import mena.identity_presentation.generated.resources.download_app_title
 import mena.identity_presentation.generated.resources.error
 import mena.identity_presentation.generated.resources.ic_close_circle
 import mena.identity_presentation.generated.resources.profile_title
@@ -39,15 +40,15 @@ import net.thechance.mena.identity.presentation.base.BaseScreen
 import net.thechance.mena.identity.presentation.components.ProfileImage
 import net.thechance.mena.identity.presentation.screen.addresses.myAddresses.AddressesScreen
 import net.thechance.mena.identity.presentation.screen.editProfile.EditUserProfileScreen
+import net.thechance.mena.identity.presentation.screen.notImplemented.NotImplementedScreen
 import net.thechance.mena.identity.presentation.screen.profile.components.AccountSettingsSection
 import net.thechance.mena.identity.presentation.screen.profile.components.AppSettingsSection
 import net.thechance.mena.identity.presentation.screen.profile.components.InviteFriendsCard
 import net.thechance.mena.identity.presentation.screen.profile.components.OtherSettingsSection
 import net.thechance.mena.identity.presentation.screen.profile.components.ProfileInfoContainer
 import net.thechance.mena.identity.presentation.screen.profile.components.ShareIcon
-import net.thechance.mena.identity.presentation.screen.notImplemented.NotImplementedScreen
-import net.thechance.mena.identity.presentation.screen.profile.components.ShareQrCode
-import net.thechance.mena.identity.presentation.screen.profile.components.bottomSheet.ShareSheet
+import net.thechance.mena.identity.presentation.screen.profile.components.share.ShareQrCode
+import net.thechance.mena.identity.presentation.screen.profile.components.share.ShareSheet
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -68,46 +69,47 @@ class ProfileScreen : BaseScreen<
     ) {
 
         AnimatedVisibility(state.showShareBottomSheet) {
-                    ShareSheet(
-                        title = "MENA app-download app",
-                url = "https://MENA_app.com",
+            ShareSheet(
+                title = stringResource(Res.string.download_app_title),
+                url = state.inviteLinkUrl,
                 onDismiss = listener::onDismissBottomSheet
             )
         }
 
         Scaffold(overlays = {
-                    dialog(state.showLanguageDialog) {
-                        Dialog(
-                            isVisible = it,
-                            title = "HI",
-                            message = "Not Yet Implemented",
-                            onDismiss = listener::onDismissLanguageDialog,
-                            actionButtons = {}
-                        )
-                    }
-                    dialog(state.showThemeDialog) {
-                        Dialog(
-                            isVisible = it,
-                            title = "HI",
-                            message = "Not Yet Implemented",
-                            onDismiss = listener::onDismissThemeDialog,
-                            actionButtons = {}
-                        )
-                    }
-                    dialog(state.showShareProfileDialog) {
-                        ShareQrCode(
-                            showDialog = it,
-                            qrCodePainter = rememberAsyncImagePainter(
-                                "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/QR_Code_Example.svg/2048px-QR_Code_Example.svg.png"
-                            ),
-                            onDismiss = listener::onDismissShareProfileDialog,
-                            fullName = state.fullName,
-                            onShareProfile = {},
-                            onClipboardContent = { },
-                            onDownload = {},
-                        )
-                    }
-                }) {
+            dialog(state.showLanguageDialog) {
+                Dialog(
+                    isVisible = it,
+                    title = "HI",
+                    message = "Not Yet Implemented",
+                    onDismiss = listener::onDismissLanguageDialog,
+                    actionButtons = {}
+                )
+            }
+            dialog(state.showThemeDialog) {
+                Dialog(
+                    isVisible = it,
+                    title = "HI",
+                    message = "Not Yet Implemented",
+                    onDismiss = listener::onDismissThemeDialog,
+                    actionButtons = {}
+                )
+            }
+            dialog(state.showShareProfileDialog) {
+                ShareQrCode(
+                    showDialog = it,
+                    isCopied = state.showCopiedMessage,
+                    fullName = state.fullName,
+                    urlString = state.shareLinkUrl,
+                    qrCodePainter = rememberQrCodePainter(data = state.shareLinkUrl),
+                    onDismissShareDialog = listener::onDismissShareDialog,
+                    onDismissSnackBar = listener::onDismissCopyLinkSnackBar,
+                    onCopyToClipboard = listener::onCopyToClipboard,
+                    onShareProfile = {},
+                    onDownload = {}
+                )
+            }
+        }) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
