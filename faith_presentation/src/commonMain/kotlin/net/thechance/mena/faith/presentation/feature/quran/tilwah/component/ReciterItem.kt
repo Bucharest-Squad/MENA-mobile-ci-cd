@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import mena.faith_presentation.generated.resources.Res
+import mena.faith_presentation.generated.resources.download
 import mena.faith_presentation.generated.resources.downloaded
 import mena.faith_presentation.generated.resources.ic_tick_double_check
 import mena.faith_presentation.generated.resources.success
@@ -22,6 +23,7 @@ import net.thechance.mena.designsystem.presentation.component.button.radioButton
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import net.thechance.mena.faith.presentation.designSystem.theme.QuranTheme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -33,6 +35,7 @@ fun ReciterItem(
     isDownloaded: Boolean,
     isSelected: Boolean,
     onSelect: () -> Unit,
+    onDownloadClick: () -> Unit,
     modifier: Modifier =Modifier
 ) {
     Row(
@@ -64,6 +67,13 @@ fun ReciterItem(
                 isDownloaded = isDownloaded
             )
         }
+        //Fake icon
+        Icon(
+            painterResource(Res.drawable.download),
+            contentDescription = stringResource(Res.string.success),
+            modifier = Modifier.size(Theme.spacing._16)
+                .clickable(onClick = onDownloadClick)
+        )
         RadioButton(
             isSelected = isSelected,
             onClick = onSelect
@@ -106,11 +116,14 @@ private fun RecitersDetails(
 @Preview
 @Composable
 private fun Preview() {
-    ReciterItem(
-        reciter = "Muhammad Siddiq Al-Minshawi",
-        recitingType = "Teacher - Tajweed",
-        isDownloaded = true,
-        isSelected = true,
-        onSelect = {}
-    )
+    QuranTheme {
+        ReciterItem(
+            reciter = "Muhammad Siddiq Al-Minshawi",
+            recitingType = "Teacher - Tajweed",
+            isDownloaded = true,
+            isSelected = true,
+            onSelect = {},
+            onDownloadClick = {}
+        )
+    }
 }

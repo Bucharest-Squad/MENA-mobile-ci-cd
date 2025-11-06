@@ -3,6 +3,7 @@ package net.thechance.mena.faith.presentation.feature.quran.surah
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -98,7 +99,8 @@ class SurahViewModel(
 
     override fun onListenClick() = playAyah(uiState.value.selectedAyahNumber ?: 1)
 
-    override fun onReciterClick() = sendEffect(SurahScreenEffect.NavigateToDownloadedRecitersScreen)
+    override fun onReciterClick(surahId: Int) =
+        sendEffect(SurahScreenEffect.NavigateToDownloadedRecitersScreen(surahArgs.surahId))
 
     override fun onNextAyahClick() = moveToAyah(offset = 1)
 
@@ -205,9 +207,10 @@ class SurahViewModel(
                 )
             },
             onSuccess = ::onLoadAyahSoundSuccess,
-            dispatcher = dispatcher
+            dispatcher = Main
         )
     }
+
 
     private fun onLoadAyahSoundSuccess(ayahSoundUrl: String) {
         updateState {
