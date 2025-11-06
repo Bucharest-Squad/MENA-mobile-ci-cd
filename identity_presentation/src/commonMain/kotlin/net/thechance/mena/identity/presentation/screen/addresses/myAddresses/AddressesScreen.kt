@@ -1,5 +1,9 @@
 package net.thechance.mena.identity.presentation.screen.addresses.myAddresses
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -21,6 +25,7 @@ import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.identity.presentation.base.BaseScreen
 import net.thechance.mena.identity.presentation.components.AddressSnackBar
 import net.thechance.mena.identity.presentation.components.NoSavedLocationsLayout
+import net.thechance.mena.identity.presentation.components.util.LoadingProgressBar
 import net.thechance.mena.identity.presentation.screen.addresses.addEditLocation.AddEditLocationScreen
 import net.thechance.mena.identity.presentation.screen.addresses.components.AddressCard
 import net.thechance.mena.identity.presentation.screen.addresses.components.MyAddressesAppBar
@@ -102,13 +107,23 @@ class AddressesScreen :
             }
         }
 
-        if (state.addresses.isEmpty() && !state.isLoading) {
+        AnimatedVisibility(
+            visible = state.addresses.isEmpty() && !state.isLoading,
+            enter = fadeIn(animationSpec = tween(durationMillis = 500)),
+            exit = fadeOut(animationSpec = tween(durationMillis = 500))
+        ) {
             NoSavedLocationsLayout(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 28.dp),
+                modifier = Modifier.fillMaxSize().padding(horizontal = 28.dp),
                 onAddLocationClicked = listener::onAddButtonClicked
             )
+        }
+
+        AnimatedVisibility(
+            visible = state.isLoading,
+            enter = fadeIn(animationSpec = tween(durationMillis = 500)),
+            exit = fadeOut(animationSpec = tween(durationMillis = 500))
+        ) {
+            LoadingProgressBar()
         }
     }
 
