@@ -30,6 +30,7 @@ class RegisterOtpViewModel(
     }
 
     override fun onClickVerify() {
+        updateState { copy(isLoading = true, errorMessage = null) }
         tryToExecute(
             function = ::verifyOTPCode,
             onSuccess = { onOTPVerificationSuccess() },
@@ -43,8 +44,8 @@ class RegisterOtpViewModel(
     }
 
     private fun onOTPVerificationSuccess() {
+        updateState { copy(isLoading = false, otpValue = "") }
         sendNewEffect(createNavigateToEnterNameEffect())
-        updateState { copy(otpValue = "") }
     }
 
     private fun createNavigateToEnterNameEffect(): RegisterOtpUIEffect.NavigateToEnterName {
@@ -61,7 +62,12 @@ class RegisterOtpViewModel(
     }
 
     private fun onOTPVerificationError(throwable: Throwable) {
-        updateState { copy(errorMessage = mapErrorMessage(throwable)) }
+        updateState { 
+            copy(
+                isLoading = false,
+                errorMessage = mapErrorMessage(throwable)
+            ) 
+        }
     }
 
     override fun onChangeOtp(otp: String) {
