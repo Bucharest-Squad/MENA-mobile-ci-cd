@@ -36,7 +36,6 @@ internal fun PaymentSuccessContent(
         Box(
             modifier = Modifier
                 .align(Alignment.Center)
-                .heightIn(min = 500.dp)
         ) {
             PaymentResultCard(
                 modifier = Modifier.align(Alignment.Center),
