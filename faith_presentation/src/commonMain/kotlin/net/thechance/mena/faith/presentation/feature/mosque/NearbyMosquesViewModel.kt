@@ -139,6 +139,10 @@ internal class NearbyMosquesViewModel(
         }
     }
 
+    override fun onViewOnMapClick(coordinate: Coordinate) {
+        sendEffect(NearbyMosquesEffect.NavigateToMap(coordinate))
+    }
+
     private fun performSearch(query: String) {
         searchJob = tryToExecute(
             execute = { mosqueRepository.getMosquesByName(query) },

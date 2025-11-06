@@ -42,7 +42,6 @@ import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.component.textField.TextField
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.faith.presentation.base.ObserveAsEffect
-import net.thechance.mena.faith.presentation.feature.mosque.NearbyMosquesEffect.NavigateToMap
 import net.thechance.mena.faith.presentation.feature.mosque.component.MosqueDetailsBottomSheet
 import net.thechance.mena.faith.presentation.feature.mosque.component.NoMosquesFoundCard
 import net.thechance.mena.faith.presentation.feature.mosque.component.SearchResultsBottomSheet
@@ -63,7 +62,7 @@ import org.maplibre.compose.style.BaseStyle
 @Composable
 internal fun NearbyMosquesScreen(
     mapNavigator: MapNavigator = koinInject(),
-    viewModel: NearbyMosquesViewModel = koinViewModel()
+    viewModel: NearbyMosquesViewModel = koinViewModel(),
 ) {
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -81,13 +80,13 @@ internal fun NearbyMosquesScreen(
             }
 
             NearbyMosquesEffect.NavigateToAddressesScreen -> navController.navigate(Route.UserAddresses)
-            is NavigateToMap -> { NavigateToMap(effect.coordinate) }
+
+            is NearbyMosquesEffect.NavigateToMap -> mapNavigator.openMapAtCoordinate(coordinate = effect.coordinate)
         }
     }
 
     Content(
         uiState = state,
-        mapNavigator = mapNavigator,
         listener = viewModel
     )
 }
@@ -95,7 +94,6 @@ internal fun NearbyMosquesScreen(
 @Composable
 private fun Content(
     uiState: NearbyMosquesMapUiState,
-    mapNavigator : MapNavigator,
     listener: NearbyMosquesInteractionListener
 ) {
     val initialCameraPosition = CameraPosition(
@@ -162,8 +160,8 @@ private fun Content(
                     MosqueDetailsBottomSheet(
                         isVisible = isVisible,
                         mosque = mosque,
-                        onViewOnMapClick = {
-                            mapNavigator.openMapAtCoordinate(coordinate = mosque.coordinate)
+                        onNavigationClick = {
+                            listener.onViewOnMapClick(mosque.coordinate)
                         },
                         onDismiss = listener::unselectMosque
                     )
@@ -252,6 +250,7 @@ private fun NearbyMosquesScreenPreview() {
             override fun onAddMosqueClick() {}
             override fun onCurrentUserLocationClick() {}
             override fun onViewMosqueDetailsClick(mosque: MosqueUiState) {}
+            override fun onViewOnMapClick(coordinate: Coordinate) {}
             override fun onSearchByCoordinatesClick(coordinate: Coordinate) {}
             override fun onSearchResultClick(mosque: MosqueUiState) {}
             override fun mapPositionChanged(coordinate: Coordinate) {}

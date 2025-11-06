@@ -40,7 +40,7 @@ import kotlin.uuid.Uuid
 internal fun ScaffoldScope.MosqueDetailsBottomSheet(
     isVisible: Boolean,
     mosque: MosqueUiState,
-    onViewOnMapClick: () -> Unit = {},
+    onNavigationClick: () -> Unit = {},
     onDismiss: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
@@ -52,7 +52,7 @@ internal fun ScaffoldScope.MosqueDetailsBottomSheet(
         sheetContent = {
             MosqueDetailsContent(
                 mosque = mosque,
-                onViewOnMapClick = onViewOnMapClick,
+                onNavigationClick = onNavigationClick,
             )
         }
     )
@@ -61,7 +61,7 @@ internal fun ScaffoldScope.MosqueDetailsBottomSheet(
 @Composable
 private fun MosqueDetailsContent(
     mosque: MosqueUiState,
-    onViewOnMapClick: () -> Unit = {}
+    onNavigationClick: () -> Unit = {}
 ) {
     Column(
         modifier = Modifier
@@ -96,7 +96,7 @@ private fun MosqueDetailsContent(
         Row(
             modifier = Modifier
                 .clip(RoundedCornerShape(4.dp))
-                .clickable(onClick = onViewOnMapClick),
+                .clickable(onClick = onNavigationClick),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(Theme.spacing._4)
         ) {
