@@ -32,7 +32,7 @@ class MosqueRepositoryImplTest {
 
     @BeforeTest
     fun setup() {
-        repository = MosqueRepositoryImpl(api = apiService)
+        repository = MosqueRepositoryImpl(mosqueApiService = apiService)
     }
 
 
