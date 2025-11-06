@@ -16,8 +16,11 @@ data class DukanDetailsUiState(
     val snackBarState: SnackBarUiState? = null,
 ) {
     data class DukanInfo(
+        val dukanId: String = "",
         val name: String = "",
         val imageUrl: String = "",
+        val isFavorite: Boolean = false,
+
         val style: Style = Style.NO_IMAGE,
         val color: Long = 0L,
         val coordinates: Coordinates = Coordinates(),
