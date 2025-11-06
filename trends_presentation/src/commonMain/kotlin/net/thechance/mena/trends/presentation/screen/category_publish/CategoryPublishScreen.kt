@@ -54,7 +54,8 @@ internal fun CategoryPublishScreen(
         when (effect) {
             is CategoryPublishEffect.NavigateBack -> navController.popBackStack()
             is CategoryPublishEffect.NavigateToHome -> navController.navigate(Route.Home) {
-                popUpTo(Route.MainContainer)
+                popUpTo(Route.Home)
+                launchSingleTop = true
             }
         }
     }
