@@ -176,6 +176,7 @@ class ChatViewModel(
         updateState { state ->
             state.copy(
                 chatId = chat.id,
+                chatName = chat.name,
                 chatAvatarUrl = chat.imageUrl.orEmpty(),
                 chatRequesterId = chat.requesterId,
             )
@@ -189,12 +190,15 @@ class ChatViewModel(
     }
 
     private fun onGetChatError() {
-        showSnackBar(
-            titleStringResource = Res.string.error,
-            messageStringResource = Res.string.error_cant_get_messages,
-            isError = true
-        )
-        emitEffect(ChatScreenEffect.NavigateBack)
+        viewModelScope.launch {
+            delay(100)
+            showSnackBar(
+                titleStringResource = Res.string.error,
+                messageStringResource = Res.string.error_cant_get_messages,
+                isError = true
+            )
+            emitEffect(ChatScreenEffect.NavigateBack)
+        }
     }
 
     override fun onBackClicked() {
