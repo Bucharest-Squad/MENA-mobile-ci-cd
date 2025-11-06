@@ -9,8 +9,16 @@ object DeepLinkHandler {
     var currentDeepLink: DeepLink? by mutableStateOf(null)
         private set
 
-    fun saveDeepLink(deepLink: DeepLink) {
+    fun onDeepLinkChange(deepLink: DeepLink) {
         currentDeepLink = deepLink
     }
 
+    fun clearDeepLink() {
+        currentDeepLink = null
+    }
+
+    fun isURLValid(): Boolean {
+        println("nabil-debug is URL valid ${currentDeepLink?.userId != null}")
+        return currentDeepLink?.userId != null
+    }
 }

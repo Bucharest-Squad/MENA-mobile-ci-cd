@@ -9,9 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import mena.composeapp.generated.resources.Res
@@ -52,19 +49,16 @@ fun EntryPoint() {
 
     val token by authorizationService.observeAccessToken().collectAsStateWithLifecycle()
 
-    val deepLink = DeepLinkHandler.currentDeepLink
-    var shouldNavigateToChat by remember { mutableStateOf(deepLink?.userId != null) }
-
     if (token.isBlank()) {
         identityApi.LoginFlow()
         return
     }
 
-    if (shouldNavigateToChat) {
+    if (DeepLinkHandler.isURLValid()) {
         ChatEntry(
-            deepLink = deepLink,
+            deepLink = DeepLinkHandler.currentDeepLink,
             onNavigateBack = {
-                shouldNavigateToChat = false
+                DeepLinkHandler.clearDeepLink()
             }
         )
         return
@@ -76,6 +70,7 @@ fun EntryPoint() {
 @Composable
 fun ChatEntry(deepLink: DeepLink?, onNavigateBack: () -> Unit) {
     val chatApi = koinInject<CoreChatApi>()
+    println("nb-debug reached here $deepLink")
     chatApi.ChatEntry(
         userId = deepLink?.userId.orEmpty(),
         onNavigateBack = onNavigateBack

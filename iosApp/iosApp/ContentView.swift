@@ -7,7 +7,8 @@ struct ComposeView: UIViewControllerRepresentable {
         MainViewControllerKt.MainViewController()
     }
 
-    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
+    }
 }
 
 struct ContentView: View {
@@ -16,7 +17,7 @@ struct ContentView: View {
             .ignoresSafeArea()
             .onOpenURL { url in
                 let deepLink = parseDeepLink(from: url)
-                DeepLinkHandler.shared.saveDeepLink(deepLink: deepLink)
+                DeepLinkHandler.shared.onDeepLinkChange(deepLink: deepLink)
             }
     }
 }
@@ -25,7 +26,6 @@ private func parseDeepLink(from url: URL) -> DeepLink {
     let components = URLComponents(url: url, resolvingAgainstBaseURL: true)
 
     let userId = components?.queryItems?.first(where: { $0.name == "userId" })?.value
-    let userName = components?.queryItems?.first(where: { $0.name == "userName" })?.value
 
     return DeepLink(userId: userId)
 }

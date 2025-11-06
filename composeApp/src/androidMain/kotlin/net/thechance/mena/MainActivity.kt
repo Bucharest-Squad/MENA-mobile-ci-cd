@@ -9,11 +9,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import io.github.vinceglb.filekit.FileKit
 import io.github.vinceglb.filekit.dialogs.init
-import net.thechance.mena.identity.presentation.util.AppLocalizer
 import net.thechance.mena.appEntryPoint.DeepLink
+import net.thechance.mena.identity.presentation.util.AppLocalizer
 import net.thechance.mena.identity.presentation.util.PermissionManager
 import org.koin.android.ext.android.inject
-import kotlin.getValue
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,11 +22,13 @@ class MainActivity : ComponentActivity() {
 
         FileKit.init(this)
 
-        val deepLink = parseDeepLinkFromIntent()
         val localizer: AppLocalizer by inject()
         localizer.applyLocaleToContext()
 
-        DeepLinkHandler.saveDeepLink(deepLink)
+        DeepLinkHandler.onDeepLinkChange(
+            deepLink = parseDeepLinkFromIntent()
+        )
+
         setContent {
             App()
         }
