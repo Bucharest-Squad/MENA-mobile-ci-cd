@@ -13,14 +13,12 @@ actual fun createFileManager(): FileManager {
 class AndroidFileManager : FileManager {
     val context: Context = getKoin().get()
 
-    private val audioCacheDir by lazy {
-        File(context.cacheDir, "audio_messages").apply {
-            if (!exists()) mkdirs()
-        }
-    }
-
-    override fun getDirectory(): String {
-        return audioCacheDir.absolutePath
+    override fun getCacheDirectory(subdirectory: String?): String {
+        return subdirectory?.let { subDir ->
+            File(context.cacheDir, subDir)
+                .also { if (!it.exists()) it.mkdirs() }
+                .absolutePath
+        } ?: context.cacheDir.absolutePath
     }
 
     override fun createDirectory(path: String): Boolean {
@@ -37,7 +35,7 @@ class AndroidFileManager : FileManager {
             try {
                 File(path).writeBytes(bytes)
                 true
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 false
             }
         }
@@ -47,11 +45,6 @@ class AndroidFileManager : FileManager {
         return File(path).exists()
     }
 
-    override fun getFileSize(path: String): Long {
-        return try {
-            File(path).length()
-        } catch (e: Exception) {
-            0L
-        }
-    }
+    override fun getFileSize(path: String): Long = File(path).length()
+
 }

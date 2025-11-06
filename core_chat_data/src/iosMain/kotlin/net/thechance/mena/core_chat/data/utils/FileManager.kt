@@ -1,3 +1,5 @@
+@file:OptIn(BetaInteropApi::class, ExperimentalForeignApi::class)
+
 package net.thechance.mena.core_chat.data.utils
 
 import kotlinx.cinterop.BetaInteropApi
@@ -18,26 +20,25 @@ actual fun createFileManager(): FileManager {
     return IosFileManager()
 }
 
-@OptIn(ExperimentalForeignApi::class)
 class IosFileManager : FileManager {
 
     private val fileManager = NSFileManager.defaultManager
 
-    private val audioCacheDir: String by lazy {
+    override fun getCacheDirectory(subdirectory: String?): String {
         val cacheDir = fileManager.URLsForDirectory(
             NSCachesDirectory,
             NSUserDomainMask
         ).firstOrNull() as? NSURL
 
-        val audioDir = cacheDir?.URLByAppendingPathComponent("audio_messages")
-        val path = audioDir?.path ?: ""
+        val baseDir = cacheDir?.path ?: ""
 
-        createDirectory(path)
-        path
-    }
-
-    override fun getDirectory(): String {
-        return audioCacheDir
+        return if (subdirectory != null) {
+            val fullPath = cacheDir?.URLByAppendingPathComponent(subdirectory)?.path ?: ""
+            createDirectory(fullPath)
+            fullPath
+        } else {
+            baseDir
+        }
     }
 
     override fun createDirectory(path: String): Boolean {
@@ -52,7 +53,7 @@ class IosFileManager : FileManager {
             } else {
                 true
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             false
         }
     }
@@ -61,7 +62,7 @@ class IosFileManager : FileManager {
         return try {
             val data = bytes.toNSData()
             data.writeToFile(path, atomically = true)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             false
         }
     }
@@ -71,15 +72,10 @@ class IosFileManager : FileManager {
     }
 
     override fun getFileSize(path: String): Long {
-        return try {
-            val attributes = fileManager.attributesOfItemAtPath(path, error = null)
-            (attributes?.get(NSFileSize) as? NSNumber)?.longValue ?: 0L
-        } catch (e: Exception) {
-            0L
-        }
+        val attributes = fileManager.attributesOfItemAtPath(path, error = null)
+        return (attributes?.get(NSFileSize) as? NSNumber)?.longValue ?: 0L
     }
 
-    @OptIn(BetaInteropApi::class)
     private fun ByteArray.toNSData(): NSData {
         if (isEmpty()) {
             return NSData()

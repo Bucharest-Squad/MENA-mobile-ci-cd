@@ -132,7 +132,6 @@ class ChatViewModel(
                         state.copy(
                             chatListItems = uiList
                                 .buildListItems(
-                                    audioPlayer = audioPlayer,
                                     shouldGroupImageMessages = { msg ->
                                         msg.status != MessageStatus.FAILED &&
                                                 msg.status != MessageStatus.LOADING &&

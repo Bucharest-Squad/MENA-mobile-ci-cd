@@ -44,7 +44,7 @@ class AudioRecordRepositoryImpl(
     }
 
     private suspend fun downloadAudioFile(audioUrl: String): String {
-        val cacheDir = fileManager.getDirectory()
+        val cacheDir = fileManager.getCacheDirectory("audio_messages")
         val fileName = "audio_${audioUrl.hashCode().toString().replace("-", "")}.m4a"
         val cachedFilePath = "$cacheDir/$fileName"
 

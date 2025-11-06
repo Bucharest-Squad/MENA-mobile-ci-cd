@@ -50,7 +50,7 @@ fun List<MessageUiState>.markLastInSeries(): List<MessageUiState> {
     }
 }
 
-fun List<MessageUiState>.toChatList(audioPlayer: AudioPlayer? = null ,shouldGroupMessages: (MessageUiState) -> Boolean): List<ChatListItem> {
+fun List<MessageUiState>.toChatList(shouldGroupMessages: (MessageUiState) -> Boolean): List<ChatListItem> {
     if (isEmpty()) return emptyList()
 
     val today = LocalDateTime.now().date
@@ -83,8 +83,8 @@ fun List<MessageUiState>.toGroupedMessagesChatList(shouldGroupMessages: (Message
     }
 
     for (msg in this) {
-        when {
-            msg.content is MessageContent.Image -> {
+        when (msg.content) {
+            is MessageContent.Image -> {
                 val last = tempImages.lastOrNull()
                 if (last != null && last.isMine == msg.isMine && last.status == msg.status && shouldGroupMessages(
                         msg
@@ -96,7 +96,7 @@ fun List<MessageUiState>.toGroupedMessagesChatList(shouldGroupMessages: (Message
                     tempImages.add(msg)
                 }
             }
-            msg.content is MessageContent.Audio -> {
+            is MessageContent.Audio -> {
                 groupAndClear()
                 grouped.add(ChatListItem.VoiceMessage(
                     data = msg,
@@ -107,7 +107,7 @@ fun List<MessageUiState>.toGroupedMessagesChatList(shouldGroupMessages: (Message
                     waveformData = generateWaveformData()
                 ))
             }
-            else -> {
+            is MessageContent.Text -> {
                 groupAndClear()
                 grouped.add(ChatListItem.TextMessage(msg))
             }
@@ -149,7 +149,7 @@ fun List<ChatListItem>.toggleMessageInfo(messageId: Uuid): List<ChatListItem> = 
 }
 
 
-fun List<MessageUiState>.buildListItems(audioPlayer: AudioPlayer? = null,shouldGroupImageMessages: (MessageUiState) -> Boolean): List<ChatListItem> {
+fun List<MessageUiState>.buildListItems(shouldGroupImageMessages: (MessageUiState) -> Boolean): List<ChatListItem> {
     return sortedByDescending { it.sendTime }.markLastInSeries()
-        .toChatList(audioPlayer,shouldGroupImageMessages)
+        .toChatList(shouldGroupImageMessages)
 }

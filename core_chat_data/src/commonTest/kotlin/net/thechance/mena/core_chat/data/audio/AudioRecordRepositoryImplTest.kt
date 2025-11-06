@@ -46,7 +46,7 @@ class AudioRecordRepositoryImplTest {
         fileManager = mock<FileManager>()
         audioRecorder = mock<AudioRecorder>()
 
-        every { fileManager.getDirectory() } returns "/cache/audio"
+        every { fileManager.getCacheDirectory("audio_messages") } returns "/cache/audio_messages"
 
         repository = AudioRecordRepositoryImpl(
             client = httpClient,
@@ -184,7 +184,7 @@ class AudioRecordRepositoryImplTest {
         // Given
         val audioUrl = "http://example.com/audio.m4a"
         val expectedPath =
-            "/cache/audio/audio_${audioUrl.hashCode().toString().replace("-", "")}.m4a"
+            "/cache/audio_messages/audio_${audioUrl.hashCode().toString().replace("-", "")}.m4a"
 
         every { fileManager.isFileExists(expectedPath) } returns true
         every { fileManager.getFileSize(expectedPath) } returns 1024L
@@ -202,7 +202,7 @@ class AudioRecordRepositoryImplTest {
         // Given
         val audioUrl = "http://example.com/audio.m4a"
         val expectedPath =
-            "/cache/audio/audio_${audioUrl.hashCode().toString().replace("-", "")}.m4a"
+            "/cache/audio_messages/audio_${audioUrl.hashCode().toString().replace("-", "")}.m4a"
         val audioBytes = ByteArray(1024) { it.toByte() }
 
         httpClient = createHttpClient(
@@ -315,7 +315,7 @@ class AudioRecordRepositoryImplTest {
         // Given
         val audioUrl = "http://example.com/audio.m4a"
         val expectedPath =
-            "/cache/audio/audio_${audioUrl.hashCode().toString().replace("-", "")}.m4a"
+            "/cache/audio_messages/audio_${audioUrl.hashCode().toString().replace("-", "")}.m4a"
 
         every { fileManager.isFileExists(expectedPath) } returns true
         every { fileManager.getFileSize(expectedPath) } returns 0L
@@ -356,7 +356,7 @@ class AudioRecordRepositoryImplTest {
         // Given
         val audioUrl = "http://example.com/audio-file_2025-11-04.m4a?token=abc123"
         val expectedPath =
-            "/cache/audio/audio_${audioUrl.hashCode().toString().replace("-", "")}.m4a"
+            "/cache/audio_messages/audio_${audioUrl.hashCode().toString().replace("-", "")}.m4a"
         val audioBytes = ByteArray(512) { it.toByte() }
 
         httpClient = createHttpClient(
@@ -390,7 +390,7 @@ class AudioRecordRepositoryImplTest {
         // Given
         val audioUrl = "http://example.com/audio.m4a"
         val expectedPath =
-            "/cache/audio/audio_${audioUrl.hashCode().toString().replace("-", "")}.m4a"
+            "/cache/audio_messages/audio_${audioUrl.hashCode().toString().replace("-", "")}.m4a"
 
         every { fileManager.isFileExists(expectedPath) } returns true
         every { fileManager.getFileSize(expectedPath) } returns 2048L

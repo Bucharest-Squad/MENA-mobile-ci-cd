@@ -305,5 +305,5 @@ private const val CHAT_ENDPOINT = "/chat"
 private const val USER_ENDPOINT = "/chat/user"
 private const val CHATS_SUMMARIES_ENDPOINT = "/chat/chatsSummary"
 private const val IMAGES_ENDPOINT = "/chat/image"
-private const val AUDIO_ENDPOINT = "/chat/audio"  // ✅ ADD
+private const val AUDIO_ENDPOINT = "/chat/audio"
 private const val DELETE_CHAT_ENDPOINT = "/chat/delete"
