@@ -1,4 +1,4 @@
-package net.thechance.mena.identity.presentation.components.util
+package net.thechance.mena.identity.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
