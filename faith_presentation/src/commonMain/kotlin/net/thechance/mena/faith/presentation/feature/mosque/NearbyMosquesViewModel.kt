@@ -10,13 +10,11 @@ import kotlinx.coroutines.launch
 import net.thechance.mena.faith.domain.entity.Mosque
 import net.thechance.mena.faith.domain.repository.MosqueRepository
 import net.thechance.mena.faith.presentation.base.BaseViewModel
-import net.thechance.mena.faith.presentation.utils.MapNavigator
 import net.thechance.mena.identity.domain.entity.Address
 import net.thechance.mena.identity.domain.service.LocationService
 
 internal class NearbyMosquesViewModel(
     private val mosqueRepository: MosqueRepository,
-    private val mapNavigator: MapNavigator,
     private val locationService: LocationService,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) :
@@ -69,10 +67,6 @@ internal class NearbyMosquesViewModel(
 
     override fun onViewMosqueDetailsClick(mosque: MosqueUiState) {
 //        TODO("Not yet implemented")
-    }
-
-    override fun onViewMosqueOnMapClick(coordinate: Coordinate) {
-        mapNavigator.openMapAtCoordinate(coordinate = coordinate)
     }
 
     override fun onSearchByCoordinatesClick(coordinate: Coordinate) {

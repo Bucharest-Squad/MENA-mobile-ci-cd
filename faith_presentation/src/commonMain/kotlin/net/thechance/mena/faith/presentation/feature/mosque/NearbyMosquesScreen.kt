@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.dellisd.spatialk.geojson.Position
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collectLatest
 import mena.faith_presentation.generated.resources.Res
 import mena.faith_presentation.generated.resources.add
 import mena.faith_presentation.generated.resources.arrow_left
@@ -42,13 +41,14 @@ import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.component.textField.TextField
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.faith.presentation.feature.mosque.NearbyMosquesEffect.NavigateToGoogleMaps
-import net.thechance.mena.faith.presentation.feature.mosque.component.MosqueDetailsBottomSheet
 import net.thechance.mena.faith.presentation.base.ObserveAsEffect
+import net.thechance.mena.faith.presentation.feature.mosque.NearbyMosquesEffect.NavigateToMap
+import net.thechance.mena.faith.presentation.feature.mosque.component.MosqueDetailsBottomSheet
 import net.thechance.mena.faith.presentation.feature.mosque.component.NoMosquesFoundCard
 import net.thechance.mena.faith.presentation.feature.mosque.component.SearchResultsBottomSheet
 import net.thechance.mena.faith.presentation.navigation.LocalNavController
 import net.thechance.mena.faith.presentation.navigation.Route
+import net.thechance.mena.faith.presentation.utils.MapNavigator
 import net.thechance.mena.faith.presentation.utils.MapStyle
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -61,6 +61,7 @@ import org.maplibre.compose.style.BaseStyle
 
 @Composable
 internal fun NearbyMosquesScreen(
+    mapNavigator: MapNavigator,
     viewModel: NearbyMosquesViewModel = koinViewModel()
 ) {
 
@@ -79,22 +80,13 @@ internal fun NearbyMosquesScreen(
             }
 
             NearbyMosquesEffect.NavigateToAddressesScreen -> navController.navigate(Route.UserAddresses)
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        viewModel.uiEffect.collectLatest { effect ->
-            when (effect) {
-                is NavigateToGoogleMaps -> { NavigateToGoogleMaps(effect.coordinate) }
-                NearbyMosquesEffect.NavigateBack -> {}
-                NearbyMosquesEffect.NavigateToAddMosque -> {}
-                NearbyMosquesEffect.NavigateToUserLocation -> {}
-            }
+            is NavigateToMap -> { NavigateToMap(effect.coordinate) }
         }
     }
 
     Content(
         uiState = state,
+        mapNavigator = mapNavigator,
         listener = viewModel
     )
 }
@@ -102,6 +94,7 @@ internal fun NearbyMosquesScreen(
 @Composable
 private fun Content(
     uiState: NearbyMosquesMapUiState,
+    mapNavigator : MapNavigator,
     listener: NearbyMosquesInteractionListener
 ) {
     val initialCameraPosition = CameraPosition(
@@ -169,7 +162,7 @@ private fun Content(
                         isVisible = isVisible,
                         mosque = mosque,
                         onViewOnMapClick = {
-                            listener.onViewMosqueOnMapClick(mosque.coordinate)
+                            mapNavigator.openMapAtCoordinate(coordinate = mosque.coordinate)
                         },
                         onDismiss = listener::unselectMosque
                     )
@@ -258,7 +251,6 @@ private fun NearbyMosquesScreenPreview() {
             override fun onAddMosqueClick() {}
             override fun onCurrentUserLocationClick() {}
             override fun onViewMosqueDetailsClick(mosque: MosqueUiState) {}
-            override fun onViewMosqueOnMapClick(coordinate: Coordinate) {}
             override fun onSearchByCoordinatesClick(coordinate: Coordinate) {}
             override fun onSearchResultClick(mosque: MosqueUiState) {}
             override fun mapPositionChanged(coordinate: Coordinate) {}
@@ -267,6 +259,9 @@ private fun NearbyMosquesScreenPreview() {
             override fun onDismissSearchBottomSheet() {}
             override fun selectMosque(mosque: MosqueUiState) {}
             override fun unselectMosque() {}
+        },
+        mapNavigator = object : MapNavigator {
+            override fun openMapAtCoordinate(coordinate: Coordinate) {}
         }
     )
 }
