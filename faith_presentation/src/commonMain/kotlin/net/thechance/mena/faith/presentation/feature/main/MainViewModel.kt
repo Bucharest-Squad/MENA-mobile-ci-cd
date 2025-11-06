@@ -34,7 +34,7 @@ class MainViewModel(
                 reciterId = 1
             )
             val path = downloadSurahManager.downloadSurahFile(url, 1, 1)
-            quranRepository.cacheSurahSound(1, 1, path)
+            quranRepository.saveSurahAudioToCache(1, 1, path)
         }
     }
 

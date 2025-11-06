@@ -5,11 +5,11 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
 
-@Database(entities = [AyahDto::class, SurahSoundDto::class], version = 1)
+@Database(entities = [AyahDto::class, SurahAudioDto::class], version = 1)
 @ConstructedBy(QuranDatabaseConstructor::class)
 abstract class QuranDatabase : RoomDatabase() {
     abstract fun getAyaDao(): AyahDao
-    abstract fun getSurahDao(): SurahSoundDao
+    abstract fun getSurahDao(): SurahAudioDao
 }
 
 @Suppress("KotlinNoActualForExpect")
