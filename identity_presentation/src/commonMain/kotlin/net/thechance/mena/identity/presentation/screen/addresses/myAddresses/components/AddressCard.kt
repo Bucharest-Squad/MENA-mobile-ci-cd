@@ -1,4 +1,4 @@
-package net.thechance.mena.identity.presentation.screen.addresses.components
+package net.thechance.mena.identity.presentation.screen.addresses.myAddresses.components
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image

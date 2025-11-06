@@ -1,4 +1,4 @@
-package net.thechance.mena.identity.presentation.screen.addresses.components
+package net.thechance.mena.identity.presentation.screen.addresses.myAddresses.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

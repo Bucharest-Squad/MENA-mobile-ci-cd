@@ -1,4 +1,4 @@
-package net.thechance.mena.identity.presentation.screen.enableLocationScreen
+package net.thechance.mena.identity.presentation.screen.addresses
 
 import app.cash.turbine.test
 import io.mockk.Runs
@@ -12,6 +12,8 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import net.thechance.mena.identity.presentation.screen.addresses.enableLocationScreen.EnableLocationScreenUIEffect
+import net.thechance.mena.identity.presentation.screen.addresses.enableLocationScreen.EnableLocationScreenViewModel
 import net.thechance.mena.identity.presentation.util.permissionHandler.PermissionHandler
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
