@@ -61,8 +61,7 @@ kover.reports {
     }
 
     filters.excludes {
-        packages("*.di", "*.dto", "*.utils", "*.database")
-        classes("*ImagesGalleryManager*")
+        packages("*.di", "*.dto", "*.utils", "*.database", "*.setting", "*.storage", "*.memory")
     }
 }
 
