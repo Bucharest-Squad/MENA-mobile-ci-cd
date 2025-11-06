@@ -17,8 +17,7 @@ internal class NearbyMosquesViewModel(
     private val mosqueRepository: MosqueRepository,
     private val locationService: LocationService,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
-) :
-    BaseViewModel<NearbyMosquesMapUiState, NearbyMosquesEffect>(
+) : BaseViewModel<NearbyMosquesMapUiState, NearbyMosquesEffect>(
         initialState = NearbyMosquesMapUiState(),
     ), NearbyMosquesInteractionListener {
 

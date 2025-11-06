@@ -259,9 +259,6 @@ private fun NearbyMosquesScreenPreview() {
             override fun onDismissSearchBottomSheet() {}
             override fun selectMosque(mosque: MosqueUiState) {}
             override fun unselectMosque() {}
-        },
-        mapNavigator = object : MapNavigator {
-            override fun openMapAtCoordinate(coordinate: Coordinate) {}
         }
     )
 }
