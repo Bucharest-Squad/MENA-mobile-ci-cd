@@ -52,6 +52,7 @@ class DatePickerScreenViewModelTest : BaseCoroutineTest() {
         val month = 1
         val year = 2000
 
+        every { ageValidator.isValid(LocalDate(year, month, day)) } returns true
         datePickerScreenViewModel.onChangeDate(day, month, year)
         testDispatcher.scheduler.advanceUntilIdle()
 
