@@ -1,4 +1,4 @@
-package net.thechance.mena.identity.presentation.screen.enableLocationScreen
+package net.thechance.mena.identity.presentation.screen.addresses.enableLocationScreen
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers

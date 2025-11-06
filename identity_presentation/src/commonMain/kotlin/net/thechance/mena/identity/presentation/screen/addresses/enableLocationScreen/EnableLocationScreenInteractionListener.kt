@@ -1,4 +1,4 @@
-package net.thechance.mena.identity.presentation.screen.enableLocationScreen
+package net.thechance.mena.identity.presentation.screen.addresses.enableLocationScreen
 
 import net.thechance.mena.identity.presentation.base.BaseInteractionListener
 
