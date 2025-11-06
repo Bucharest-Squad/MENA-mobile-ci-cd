@@ -195,7 +195,6 @@ class SurahViewModel(
 
         updateState { it.copy(isAyahSoundPlaying = !isPlaying) }
     }
-
     private fun loadAndPlayAyahSound(surahNumber: Int, ayahNumber: Int, reciterId: Int) {
         tryToExecute(
             execute = {
@@ -206,7 +205,7 @@ class SurahViewModel(
                 )
             },
             onSuccess = ::onLoadAyahSoundSuccess,
-            dispatcher = Dispatchers.Main
+            dispatcher = dispatcher
         )
     }
 
