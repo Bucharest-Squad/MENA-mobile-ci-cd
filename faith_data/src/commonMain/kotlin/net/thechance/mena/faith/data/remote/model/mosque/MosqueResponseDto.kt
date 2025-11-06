@@ -2,11 +2,13 @@ package net.thechance.mena.faith.data.remote.model.mosque
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 @Serializable
-data class MosqueResponseDto(
+data class MosqueResponseDto @OptIn(ExperimentalUuidApi::class) constructor(
     @SerialName("id")
-    val id: Int,
+    val id: Uuid,
     @SerialName("name")
     val name: String,
     @SerialName("address")
