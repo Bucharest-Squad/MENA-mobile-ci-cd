@@ -1,7 +1,9 @@
 package net.thechance.mena.identity.presentation.screen.uploadProfileImage
 
+import net.thechance.mena.identity.domain.model.AuthenticationTokens
+
 sealed interface UploadProfileImageUIEffect {
-    data object NavigateToAccountCreated : UploadProfileImageUIEffect
+    data class NavigateToAccountCreated(val authTokens: AuthenticationTokens) : UploadProfileImageUIEffect
     data class NavigateToCropScreen(
         val imageKey: String,
         val onResult: (String) -> Unit

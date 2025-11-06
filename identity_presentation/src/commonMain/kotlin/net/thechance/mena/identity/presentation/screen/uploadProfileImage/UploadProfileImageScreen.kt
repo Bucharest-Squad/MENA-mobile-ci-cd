@@ -26,6 +26,7 @@ import net.thechance.mena.designsystem.presentation.component.button.PrimaryButt
 import net.thechance.mena.designsystem.presentation.component.button.TextButton
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import net.thechance.mena.identity.domain.model.AuthenticationTokens
 import net.thechance.mena.identity.presentation.base.BaseScreen
 import net.thechance.mena.identity.presentation.components.AuthScreenContainer
 import net.thechance.mena.identity.presentation.components.PageDescription
@@ -33,8 +34,11 @@ import net.thechance.mena.identity.presentation.screen.imageCropper.ImageCropper
 import net.thechance.mena.identity.presentation.screen.register.accountCreated.AccountCreatedScreen
 import net.thechance.mena.identity.presentation.screen.uploadProfileImage.components.UploadImageContainer
 import org.jetbrains.compose.resources.stringResource
+import org.koin.core.parameter.parametersOf
 
-class UploadProfileImageScreen :
+class UploadProfileImageScreen(
+    private val authTokens: AuthenticationTokens? = null
+) :
     BaseScreen<UploadProfileImageViewModel, UploadProfileImageUIState, UploadProfileImageUIEffect, UploadProfileImageInteractionListener>() {
     @Composable
     override fun OnRender(
@@ -97,22 +101,29 @@ class UploadProfileImageScreen :
         navigator: Navigator
     ) {
         when (effect) {
-            UploadProfileImageUIEffect.NavigateToAccountCreated -> {
-                navigator.push(AccountCreatedScreen())
+            is UploadProfileImageUIEffect.NavigateToAccountCreated -> {
+                navigator.push(AccountCreatedScreen(authTokens = effect.authTokens))
             }
 
             is UploadProfileImageUIEffect.NavigateToCropScreen -> {
-                val cropperScreen = ImageCropperScreen(
-                    imageKey = effect.imageKey,
-                    onResult = effect.onResult,
+                navigator.push(
+                    ImageCropperScreen(
+                        imageKey = effect.imageKey,
+                        onResult = effect.onResult,
+                    )
                 )
-                navigator.push(cropperScreen)
             }
         }
     }
 
     @Composable
     override fun Content() {
-        InitScreen(getScreenModel())
+        InitScreen(
+            getScreenModel(
+                parameters = {
+                    authTokens?.let { parametersOf(it) } ?: parametersOf()
+                }
+            )
+        )
     }
 }

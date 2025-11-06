@@ -5,6 +5,8 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import net.thechance.mena.identity.domain.exception.AuthenticationException
+import net.thechance.mena.identity.domain.model.AuthenticationTokens
+import net.thechance.mena.identity.domain.repository.AuthenticationRepository
 import net.thechance.mena.identity.domain.repository.CachedImageRepository
 import net.thechance.mena.identity.domain.repository.UserRepository
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
@@ -19,6 +21,8 @@ class UploadProfileImageViewModel(
     private val cachedImageRepository: CachedImageRepository,
     private val userRepository: UserRepository,
     private val imageDecoder: ImageDecoder,
+    private val authenticationRepository: AuthenticationRepository,
+    private val authTokens: AuthenticationTokens? = null,
     val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : BaseScreenModel<UploadProfileImageUIState, UploadProfileImageUIEffect>
     (UploadProfileImageUIState()),
@@ -26,13 +30,16 @@ class UploadProfileImageViewModel(
 
     override fun onClickUpload() {
         val imageBitmap = state.value.imageBitmap ?: return
+        val currentAuthTokens = authTokens ?: return
 
         updateState { copy(isLoading = true, errorMessage = null) }
 
         tryToExecute(
-            function = {
-                val imageByteArray = imageDecoder.encodeImage(imageBitmap)
-                userRepository.uploadUserProfileImage(imageByteArray)
+            function = { 
+                withTemporaryTokens(currentAuthTokens) {
+                    val imageByteArray = imageDecoder.encodeImage(imageBitmap)
+                    userRepository.uploadUserProfileImage(imageByteArray)
+                }
             },
             onSuccess = { onUploadSuccess() },
             onError = ::onUploadError,
@@ -41,7 +48,8 @@ class UploadProfileImageViewModel(
     }
 
     override fun onClickSkip() {
-        sendNewEffect(UploadProfileImageUIEffect.NavigateToAccountCreated)
+        val currentAuthTokens = authTokens ?: return
+        sendNewEffect(UploadProfileImageUIEffect.NavigateToAccountCreated(currentAuthTokens))
     }
 
     override fun onSelectImage(imageBitmap: ImageBitmap) {
@@ -58,8 +66,9 @@ class UploadProfileImageViewModel(
     }
 
     private fun onUploadSuccess() {
+        val currentAuthTokens = authTokens ?: return
         updateState { copy(isLoading = false) }
-        sendNewEffect(UploadProfileImageUIEffect.NavigateToAccountCreated)
+        sendNewEffect(UploadProfileImageUIEffect.NavigateToAccountCreated(currentAuthTokens))
     }
 
     private fun onUploadError(throwable: Throwable) {
@@ -121,6 +130,18 @@ class UploadProfileImageViewModel(
                 handleAuthenticationException(throwable)
             )
             else -> mapErrorToMessage(ErrorState.GenericError(throwable))
+        }
+    }
+
+    private suspend fun <T> withTemporaryTokens(
+        authTokens: AuthenticationTokens,
+        block: suspend () -> T
+    ): T {
+        authenticationRepository.saveAuthTokensWithoutEmit(authTokens)
+        return try {
+            block()
+        } finally {
+            authenticationRepository.clearAuthTokens()
         }
     }
 
