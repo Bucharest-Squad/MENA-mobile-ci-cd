@@ -11,6 +11,7 @@ import net.thechance.mena.identity.data.dto.auth.CheckUserExistenceRequestDto
 import net.thechance.mena.identity.data.dto.resetPassword.OtpRequestDto
 import net.thechance.mena.identity.data.dto.resetPassword.OtpResponse
 import net.thechance.mena.identity.data.dto.resetPassword.VerifyOtpRequestDto
+import net.thechance.mena.identity.data.mapper.toDomain
 import net.thechance.mena.identity.data.mapper.toDto
 import net.thechance.mena.identity.data.utils.getJsonWithBody
 import net.thechance.mena.identity.data.utils.postJson
@@ -74,10 +75,10 @@ class RegisterRepositoryImpl(
         }
     }
 
-    override suspend fun register(request: RegisterRequest) {
-        registerSafeWrapper {
-            val response = performRegisterRequest(request)
-            saveAuthTokens(response)
+    override suspend fun register(request: RegisterRequest): net.thechance.mena.identity.domain.model.AuthenticationTokens {
+        return registerSafeWrapper {
+            val response: AuthenticationResponse = performRegisterRequest(request)
+            response.toDomain()
         }
     }
 
@@ -85,11 +86,6 @@ class RegisterRepositoryImpl(
         return client.postJson(
             request.toDto(sessionId), REGISTER
         )
-    }
-
-    private fun saveAuthTokens(response: AuthenticationResponse) {
-        settings.accessToken = response.accessToken
-        settings.refreshToken = response.refreshToken
     }
 
     private fun handleUsernameCheckException(e: ClientRequestException): Nothing {
