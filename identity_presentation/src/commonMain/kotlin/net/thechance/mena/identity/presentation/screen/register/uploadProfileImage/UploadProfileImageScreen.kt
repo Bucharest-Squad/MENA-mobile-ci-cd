@@ -1,4 +1,4 @@
-package net.thechance.mena.identity.presentation.screen.uploadProfileImage
+package net.thechance.mena.identity.presentation.screen.register.uploadProfileImage
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
@@ -32,7 +32,7 @@ import net.thechance.mena.identity.presentation.components.AuthScreenContainer
 import net.thechance.mena.identity.presentation.components.PageDescription
 import net.thechance.mena.identity.presentation.screen.imageCropper.ImageCropperScreen
 import net.thechance.mena.identity.presentation.screen.register.accountCreated.AccountCreatedScreen
-import net.thechance.mena.identity.presentation.screen.uploadProfileImage.components.UploadImageContainer
+import net.thechance.mena.identity.presentation.screen.register.uploadProfileImage.components.UploadImageContainer
 import org.jetbrains.compose.resources.stringResource
 import org.koin.core.parameter.parametersOf
 

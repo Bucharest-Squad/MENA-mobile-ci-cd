@@ -1,4 +1,4 @@
-package net.thechance.mena.identity.presentation.screen.uploadProfileImage
+package net.thechance.mena.identity.presentation.screen.register.uploadProfileImage
 
 import net.thechance.mena.identity.domain.model.AuthenticationTokens
 

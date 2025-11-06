@@ -22,7 +22,7 @@ import net.thechance.mena.identity.presentation.screen.register.selectGender.Sel
 import net.thechance.mena.identity.presentation.screen.resetPassword.otp.ForgetPasswordOtpScreenViewModel
 import net.thechance.mena.identity.presentation.screen.resetPassword.phoneEntry.ForgetPasswordPhoneEntryScreenViewModel
 import net.thechance.mena.identity.presentation.screen.resetPassword.setNewPassword.SetNewPasswordScreenViewModel
-import net.thechance.mena.identity.presentation.screen.uploadProfileImage.UploadProfileImageViewModel
+import net.thechance.mena.identity.presentation.screen.register.uploadProfileImage.UploadProfileImageViewModel
 import net.thechance.mena.identity.presentation.util.factoryOfOrNull
 import net.thechance.mena.identity.presentation.util.permissionHandler.PermissionHandler
 import net.thechance.mena.identity.presentation.utils.ImageDecoder
