@@ -32,8 +32,11 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
-class AddressesScreen :
-    BaseScreen<AddressesScreenViewModel, AddressesScreenUIState, AddressesScreenUIEffect, AddressesScreenInteractionListener>() {
+class AddressesScreen : BaseScreen<
+        AddressesScreenViewModel,
+        AddressesScreenUIState,
+        AddressesScreenUIEffect,
+        AddressesScreenInteractionListener>() {
     @Composable
     override fun Content() {
         InitScreen(getScreenModel())

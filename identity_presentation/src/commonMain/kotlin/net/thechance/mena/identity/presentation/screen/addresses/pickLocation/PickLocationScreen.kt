@@ -32,7 +32,8 @@ import org.koin.core.parameter.parametersOf
 data class PickLocationScreen(
     private val addressModel: AddressUIState?,
     private val onUpdateLocation: (AddressUIState) -> Unit,
-) : BaseScreen<PickLocationScreenViewModel,
+) : BaseScreen<
+        PickLocationScreenViewModel,
         PickLocationScreenUIState,
         PickLocationScreenUIEffect,
         PickLocationScreenInteractionListener>() {

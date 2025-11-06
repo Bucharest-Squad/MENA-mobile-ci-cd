@@ -34,7 +34,6 @@ import kotlin.uuid.ExperimentalUuidApi
 class AddEditLocationScreen(
     val onSuccess: (SnackBarUiState?) -> Unit,
     private val addressModel: AddressUIState?,
-
     ) : BaseScreen<
         AddEditLocationScreenViewModel,
         AddEditLocationScreenUIState,
