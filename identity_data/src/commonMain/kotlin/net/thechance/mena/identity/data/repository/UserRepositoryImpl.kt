@@ -19,8 +19,10 @@ import net.thechance.mena.identity.data.utils.deleteJson
 import net.thechance.mena.identity.data.utils.formatAsString
 import net.thechance.mena.identity.data.utils.getJson
 import net.thechance.mena.identity.data.utils.postFileWithData
+import net.thechance.mena.identity.data.utils.postFileWithDataAndTokens
 import net.thechance.mena.identity.data.utils.postJson
 import net.thechance.mena.identity.data.utils.safeWrapper
+import net.thechance.mena.identity.domain.model.AuthenticationTokens
 import net.thechance.mena.identity.domain.entity.Gender
 import net.thechance.mena.identity.domain.entity.User
 import net.thechance.mena.identity.domain.repository.UserRepository
@@ -69,6 +71,20 @@ class UserRepositoryImpl(
                 path = PROFILE_IMAGE,
                 fileKey = "file",
                 imageByteArray = imageByteArray
+            )
+        }
+    }
+
+    override suspend fun uploadUserProfileImageWithTokens(
+        imageByteArray: ByteArray?,
+        authTokens: AuthenticationTokens
+    ) {
+        return safeWrapper {
+            client.postFileWithDataAndTokens(
+                path = PROFILE_IMAGE,
+                fileKey = "file",
+                imageByteArray = imageByteArray,
+                accessToken = authTokens.accessToken
             )
         }
     }
