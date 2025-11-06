@@ -53,6 +53,7 @@ import net.thechance.mena.faith.presentation.utils.MapStyle
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.maplibre.compose.camera.CameraPosition
 import org.maplibre.compose.camera.rememberCameraState
@@ -61,7 +62,7 @@ import org.maplibre.compose.style.BaseStyle
 
 @Composable
 internal fun NearbyMosquesScreen(
-    mapNavigator: MapNavigator,
+    mapNavigator: MapNavigator = koinInject(),
     viewModel: NearbyMosquesViewModel = koinViewModel()
 ) {
 
