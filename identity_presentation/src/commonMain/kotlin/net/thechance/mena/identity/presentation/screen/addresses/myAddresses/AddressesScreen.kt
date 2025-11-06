@@ -5,6 +5,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -27,11 +28,12 @@ import net.thechance.mena.identity.presentation.components.AddressSnackBar
 import net.thechance.mena.identity.presentation.components.NoSavedLocationsLayout
 import net.thechance.mena.identity.presentation.components.util.LoadingProgressBar
 import net.thechance.mena.identity.presentation.screen.addresses.addEditLocation.AddEditLocationScreen
-import net.thechance.mena.identity.presentation.screen.addresses.components.AddressCard
-import net.thechance.mena.identity.presentation.screen.addresses.components.MyAddressesAppBar
+import net.thechance.mena.identity.presentation.screen.addresses.myAddresses.components.AddressCard
+import net.thechance.mena.identity.presentation.screen.addresses.myAddresses.components.MyAddressesAppBar
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 class AddressesScreen :
     BaseScreen<AddressesScreenViewModel, AddressesScreenUIState, AddressesScreenUIEffect, AddressesScreenInteractionListener>() {
@@ -71,6 +73,13 @@ class AddressesScreen :
                     )
                 }
             },
+            topBar = {
+                MyAddressesAppBar(
+                    title = stringResource(Res.string.my_location_app_bar_title),
+                    onBackClicked = listener::onBackButtonClicked,
+                    onAddClicked = listener::onAddButtonClicked
+                )
+            },
             snakeBar = {
                 AddressSnackBar(
                     snackBarState = state.snackBarUiState,
@@ -78,52 +87,40 @@ class AddressesScreen :
                 )
             }
         ) {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = Theme.spacing._16),
-                verticalArrangement = Arrangement.spacedBy(Theme.spacing._12)
-            ) {
-                item {
-                    MyAddressesAppBar(
-                        title = stringResource(Res.string.my_location_app_bar_title),
-                        onBackClicked = listener::onBackButtonClicked,
-                        onAddClicked = listener::onAddButtonClicked
+            Box(Modifier.fillMaxSize()) {
+                AnimatedVisibility(
+                    visible = state.addresses.isNotEmpty() && !state.isLoading,
+                    enter = fadeIn(animationSpec = tween(durationMillis = 500)),
+                    exit = fadeOut(animationSpec = tween(durationMillis = 500))
+                ) {
+                    AddressesSection(
+                        addresses = state.addresses,
+                        onEditAddressClicked = listener::onEditAddressClicked,
+                        onDeleteAddressClicked = listener::onDeleteAddressClicked,
+                        onClickAddress = listener::onClickAddress,
+                        animateToCurrentLocation = state.animateToCurrentLocation
                     )
                 }
-                items(state.addresses) {
-                    AddressCard(
-                        addressType = it.addressType,
-                        onEditClick = { listener.onEditAddressClicked(it) },
-                        isMainAddress = it.isMainAddress,
-                        addressDetails = it.addressDetails,
-                        onDeleteClick = { it.id?.let { id -> listener.onDeleteAddressClicked(id) } },
-                        onClickAddress = { it.id?.let { id -> listener.onClickAddress(id) } },
-                        animateToCurrentLocation = state.animateToCurrentLocation,
-                        longitude = it.coordinates.longitude,
-                        latitude = it.coordinates.latitude,
+
+                AnimatedVisibility(
+                    visible = state.addresses.isEmpty() && !state.isLoading,
+                    enter = fadeIn(animationSpec = tween(durationMillis = 500)),
+                    exit = fadeOut(animationSpec = tween(durationMillis = 500))
+                ) {
+                    NoSavedLocationsLayout(
+                        modifier = Modifier.fillMaxSize().padding(horizontal = 28.dp),
+                        onAddLocationClicked = listener::onAddButtonClicked
                     )
+                }
+
+                AnimatedVisibility(
+                    visible = state.isLoading,
+                    enter = fadeIn(animationSpec = tween(durationMillis = 500)),
+                    exit = fadeOut(animationSpec = tween(durationMillis = 500))
+                ) {
+                    LoadingProgressBar()
                 }
             }
-        }
-
-        AnimatedVisibility(
-            visible = state.addresses.isEmpty() && !state.isLoading,
-            enter = fadeIn(animationSpec = tween(durationMillis = 500)),
-            exit = fadeOut(animationSpec = tween(durationMillis = 500))
-        ) {
-            NoSavedLocationsLayout(
-                modifier = Modifier.fillMaxSize().padding(horizontal = 28.dp),
-                onAddLocationClicked = listener::onAddButtonClicked
-            )
-        }
-
-        AnimatedVisibility(
-            visible = state.isLoading,
-            enter = fadeIn(animationSpec = tween(durationMillis = 500)),
-            exit = fadeOut(animationSpec = tween(durationMillis = 500))
-        ) {
-            LoadingProgressBar()
         }
     }
 
@@ -141,6 +138,37 @@ class AddressesScreen :
                     )
                 )
             }
+        }
+    }
+}
+
+@OptIn(ExperimentalUuidApi::class)
+@Composable
+private fun AddressesSection(
+    addresses: List<AddressUIState>,
+    onEditAddressClicked: (AddressUIState) -> Unit,
+    onDeleteAddressClicked: (Uuid) -> Unit,
+    onClickAddress: (Uuid) -> Unit,
+    animateToCurrentLocation: Boolean
+) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = Theme.spacing._16),
+        verticalArrangement = Arrangement.spacedBy(Theme.spacing._12)
+    ) {
+        items(addresses) {
+            AddressCard(
+                addressType = it.addressType,
+                onEditClick = { onEditAddressClicked(it) },
+                isMainAddress = it.isMainAddress,
+                addressDetails = it.addressDetails,
+                onDeleteClick = { it.id?.let { id -> onDeleteAddressClicked(id) } },
+                onClickAddress = { it.id?.let { id -> onClickAddress(id) } },
+                animateToCurrentLocation = animateToCurrentLocation,
+                longitude = it.coordinates.longitude,
+                latitude = it.coordinates.latitude,
+            )
         }
     }
 }

@@ -1,4 +1,4 @@
-package net.thechance.mena.identity.presentation.screen.addresses.components
+package net.thechance.mena.identity.presentation.screen.addresses.myAddresses.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,7 +29,7 @@ fun MyAddressesAppBar(
     onAddClicked: () -> Unit,
 ) {
     AppBar(
-        contentPadding = PaddingValues(horizontal = 0.dp, vertical = 14.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 14.dp),
         title = title,
         leadingContent = {
             Icon(
