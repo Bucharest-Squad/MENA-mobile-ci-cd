@@ -17,8 +17,7 @@ internal class NearbyMosquesViewModel(
     private val mosqueRepository: MosqueRepository,
     private val locationService: LocationService,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
-) :
-    BaseViewModel<NearbyMosquesMapUiState, NearbyMosquesEffect>(
+) : BaseViewModel<NearbyMosquesMapUiState, NearbyMosquesEffect>(
         initialState = NearbyMosquesMapUiState(),
     ), NearbyMosquesInteractionListener {
 
@@ -66,10 +65,6 @@ internal class NearbyMosquesViewModel(
     }
 
     override fun onViewMosqueDetailsClick(mosque: MosqueUiState) {
-//        TODO("Not yet implemented")
-    }
-
-    override fun onViewMosqueOnMapClick(coordinate: Coordinate) {
 //        TODO("Not yet implemented")
     }
 
@@ -123,6 +118,28 @@ internal class NearbyMosquesViewModel(
 
     override fun onDismissSearchBottomSheet() {
         updateState { it.copy(isSearchResultsBottomSheetVisible = false) }
+    }
+
+    override fun selectMosque(mosque: MosqueUiState) {
+        updateState {
+            it.copy(
+                selectedMosque = mosque,
+                isMosqueBottomSheetVisible = true
+            )
+        }
+    }
+
+    override fun unselectMosque() {
+        updateState {
+            it.copy(
+                selectedMosque = null,
+                isMosqueBottomSheetVisible = false
+            )
+        }
+    }
+
+    override fun onViewOnMapClick(coordinate: Coordinate) {
+        sendEffect(NearbyMosquesEffect.NavigateToMap(coordinate))
     }
 
     private fun performSearch(query: String) {
