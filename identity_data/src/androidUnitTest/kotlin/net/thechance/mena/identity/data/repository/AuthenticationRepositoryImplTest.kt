@@ -175,8 +175,69 @@ class AuthenticationRepositoryImplTest {
         val result = authenticationRepository.observeTokenChange()
 
         assertEquals(fakeLoginResponse.accessToken, result.value)
+    }
 
+    @Test
+    fun `saveAuthTokensWithoutEmit should save tokens without emitting to StateFlow`() = runTest {
+        val authTokens = net.thechance.mena.identity.domain.model.AuthenticationTokens(
+            accessToken = "test_access_token",
+            refreshToken = "test_refresh_token"
+        )
 
+        authenticationRepository.saveAuthTokensWithoutEmit(authTokens)
+
+        verify { settings.putString(ACCESS_TOKEN, "test_access_token") }
+    }
+
+    @Test
+    fun `saveAuthTokensWithoutEmit should save refresh token`() = runTest {
+        val authTokens = net.thechance.mena.identity.domain.model.AuthenticationTokens(
+            accessToken = "test_access_token",
+            refreshToken = "test_refresh_token"
+        )
+
+        authenticationRepository.saveAuthTokensWithoutEmit(authTokens)
+
+        verify { settings.putString(REFRESH_TOKEN, "test_refresh_token") }
+    }
+
+    @Test
+    fun `saveAuthTokensAndEmit should save tokens and emit to StateFlow`() = runTest {
+        val authTokens = net.thechance.mena.identity.domain.model.AuthenticationTokens(
+            accessToken = "test_access_token",
+            refreshToken = "test_refresh_token"
+        )
+
+        authenticationRepository.saveAuthTokensAndEmit(authTokens)
+
+        verify { settings.putString(ACCESS_TOKEN, "test_access_token") }
+    }
+
+    @Test
+    fun `saveAuthTokensAndEmit should emit token to StateFlow`() = runTest {
+        val authTokens = net.thechance.mena.identity.domain.model.AuthenticationTokens(
+            accessToken = "test_access_token",
+            refreshToken = "test_refresh_token"
+        )
+
+        authenticationRepository.saveAuthTokensAndEmit(authTokens)
+
+        val result = authenticationRepository.observeTokenChange()
+        assertEquals("test_access_token", result.value)
+    }
+
+    @Test
+    fun `clearAuthTokens should clear access token`() = runTest {
+        authenticationRepository.clearAuthTokens()
+
+        verify { settings.putString(ACCESS_TOKEN, "") }
+    }
+
+    @Test
+    fun `clearAuthTokens should clear refresh token`() = runTest {
+        authenticationRepository.clearAuthTokens()
+
+        verify { settings.putString(REFRESH_TOKEN, "") }
     }
 
 }
