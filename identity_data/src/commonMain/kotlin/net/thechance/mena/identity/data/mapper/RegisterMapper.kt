@@ -1,8 +1,10 @@
 package net.thechance.mena.identity.data.mapper
 
 import net.thechance.mena.identity.data.dataSource.local.database.model.UserEntity
+import net.thechance.mena.identity.data.dto.auth.AuthenticationResponse
 import net.thechance.mena.identity.data.dto.auth.RegisterRequestDto
 import net.thechance.mena.identity.domain.entity.Gender
+import net.thechance.mena.identity.domain.model.AuthenticationTokens
 import net.thechance.mena.identity.domain.model.RegisterRequest
 
 fun RegisterRequest.toDto(sessionId: String): RegisterRequestDto {
@@ -15,6 +17,13 @@ fun RegisterRequest.toDto(sessionId: String): RegisterRequestDto {
         gender = gender.toInt(),
         password = password,
         sessionId = sessionId
+    )
+}
+
+fun AuthenticationResponse.toDomain(): AuthenticationTokens {
+    return AuthenticationTokens(
+        accessToken = accessToken,
+        refreshToken = refreshToken
     )
 }
 
