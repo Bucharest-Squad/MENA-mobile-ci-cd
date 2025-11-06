@@ -1,8 +1,8 @@
 package net.thechance.mena.identity.data.mapper
 
 import net.thechance.mena.identity.data.dataSource.local.database.model.UserEntity
-import net.thechance.mena.identity.data.dto.auth.AuthenticationResponse
 import net.thechance.mena.identity.data.dto.auth.RegisterRequestDto
+import net.thechance.mena.identity.data.dto.auth.response.AuthenticationResponse
 import net.thechance.mena.identity.domain.entity.Gender
 import net.thechance.mena.identity.domain.model.AuthenticationTokens
 import net.thechance.mena.identity.domain.model.RegisterRequest
