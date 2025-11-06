@@ -2,6 +2,7 @@ package net.thechance.mena.identity.presentation.screen.imageCropper
 
 import androidx.compose.ui.graphics.ImageBitmap
 import app.cash.turbine.test
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -15,18 +16,21 @@ import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class ImageCropperViewModelTest : BaseCoroutineTest() {
-    private val imageCacheManager = mockk<ImagesRepository>()
-    private val imageDecoder = mockk<ImageDecoder>()
+    private val imageCacheManager = mockk<ImagesRepository>(relaxed = true)
+    private val imageDecoder = mockk<ImageDecoder>(relaxed = true)
     private val imageKey = "profile_image"
     private lateinit var imageCropperViewModel: ImageCropperViewModel
     private val imageBitmap: ImageBitmap = mockk<ImageBitmap>()
+    private val byteArray = ByteArray(0)
 
 
     @BeforeTest
     override fun setUp() {
         super.setUp()
-        every { imageCacheManager.getCachedImage(imageKey) } returns byteArrayOf()
         every { imageDecoder.decodeImage(any()) } returns imageBitmap
+        coEvery { imageDecoder.encodeImage(any()) } returns byteArray
+        coEvery { imageCacheManager.getCachedImage(any()) } returns byteArray
+
         imageCropperViewModel = ImageCropperViewModel(
             imageKey = imageKey,
             imagesRepository = imageCacheManager,
