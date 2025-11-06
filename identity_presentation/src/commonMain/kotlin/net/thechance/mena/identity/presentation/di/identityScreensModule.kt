@@ -6,8 +6,6 @@ import net.thechance.mena.identity.presentation.screen.addresses.pickLocation.Pi
 import net.thechance.mena.identity.presentation.screen.changePassword.ChangePasswordScreenViewModel
 import net.thechance.mena.identity.presentation.screen.editProfile.EditUserProfileViewModel
 import net.thechance.mena.identity.presentation.screen.enableLocationScreen.EnableLocationScreenViewModel
-import net.thechance.mena.identity.presentation.screen.resetPassword.phoneEntry.ForgetPasswordPhoneEntryScreenViewModel
-import net.thechance.mena.identity.presentation.screen.resetPassword.otp.ForgetPasswordOtpScreenViewModel
 import net.thechance.mena.identity.presentation.screen.imageCropper.ImageCropperComponentViewModel
 import net.thechance.mena.identity.presentation.screen.imageCropper.ImageCropperUiState
 import net.thechance.mena.identity.presentation.screen.imageCropper.ImageCropperViewModel
@@ -16,9 +14,13 @@ import net.thechance.mena.identity.presentation.screen.notImplemented.NotImpleme
 import net.thechance.mena.identity.presentation.screen.profile.ProfileScreenViewModel
 import net.thechance.mena.identity.presentation.screen.profile.components.dialog.ShareQrCodeInteractionListener
 import net.thechance.mena.identity.presentation.screen.profile.components.dialog.ShareQrCodeViewModel
-import net.thechance.mena.identity.presentation.screen.register.phoneEntry.RegisterPhoneEntryViewModel
 import net.thechance.mena.identity.presentation.screen.register.createPassword.CreatePasswordViewModel
+import net.thechance.mena.identity.presentation.screen.register.datePicker.DatePickerScreenViewModel
 import net.thechance.mena.identity.presentation.screen.register.otp.RegisterOtpViewModel
+import net.thechance.mena.identity.presentation.screen.register.phoneEntry.RegisterPhoneEntryViewModel
+import net.thechance.mena.identity.presentation.screen.register.selectGender.SelectGenderScreenViewModel
+import net.thechance.mena.identity.presentation.screen.resetPassword.otp.ForgetPasswordOtpScreenViewModel
+import net.thechance.mena.identity.presentation.screen.resetPassword.phoneEntry.ForgetPasswordPhoneEntryScreenViewModel
 import net.thechance.mena.identity.presentation.screen.resetPassword.setNewPassword.SetNewPasswordScreenViewModel
 import net.thechance.mena.identity.presentation.screen.uploadProfileImage.UploadProfileImageViewModel
 import net.thechance.mena.identity.presentation.util.factoryOfOrNull

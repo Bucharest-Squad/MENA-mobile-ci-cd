@@ -141,13 +141,12 @@ class EditUserProfileViewModel(
             gender = value.gender,
         )
 
-        if (value.profileImageUrl.isEmpty()) {
-            userRepository.deleteUserProfileImage()
-        } else {
+        value.profileImageBitmap?.let {
             userRepository.uploadUserProfileImage(
-                imageByteArray = value.profileImageBitmap?.let { imageDecoder.encodeImage(it) }
+                imageByteArray = imageDecoder.encodeImage(it)
             )
         }
+
         userRepository.updateUser(
             user = user,
             shouldUpdateImage = value.shouldUpdateImage,
