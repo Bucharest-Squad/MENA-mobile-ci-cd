@@ -7,6 +7,7 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.LocalDate
 import net.thechance.mena.identity.domain.entity.Gender
+import net.thechance.mena.identity.domain.model.AuthenticationTokens
 import net.thechance.mena.identity.domain.model.RegisterRequest
 import net.thechance.mena.identity.domain.repository.RegisterRepository
 import net.thechance.mena.identity.helper.BaseCoroutineTest
@@ -43,7 +44,11 @@ class SelectGenderScreenViewModelTest: BaseCoroutineTest() {
 
     @Test
     fun `onClickRegister should navigate to upload profile image screen`() = runTest {
-        coEvery { registerRepository.register(any<RegisterRequest>()) } returns Unit
+        val expectedTokens = AuthenticationTokens(
+            accessToken = "test_access_token",
+            refreshToken = "test_refresh_token"
+        )
+        coEvery { registerRepository.register(any<RegisterRequest>()) } returns expectedTokens
         
         selectGenderScreenViewModel.onChangeGender(Gender.MALE)
         
@@ -51,7 +56,10 @@ class SelectGenderScreenViewModelTest: BaseCoroutineTest() {
             selectGenderScreenViewModel.onClickRegister()
             testDispatcher.scheduler.advanceUntilIdle()
             
-            assert(awaitItem() == SelectGenderScreenUIEffect.NavigateToUploadProfileImage)
+            val effect = awaitItem()
+            assert(effect is SelectGenderScreenUIEffect.NavigateToUploadProfileImage)
+            val navigateEffect = effect as SelectGenderScreenUIEffect.NavigateToUploadProfileImage
+            assert(navigateEffect.authTokens == expectedTokens)
         }
     }
 }
