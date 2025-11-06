@@ -298,7 +298,7 @@ class ExportTransactionsViewModel(
             oldState.copy(
                 isDownloadLoading = true,
                 isViewAndShareButtonEnabled = false,
-                isShowAllTransactionsDisabled = true
+                canSelectExportType = true
             )
         }
     }
@@ -493,7 +493,7 @@ class ExportTransactionsViewModel(
             oldState.copy(
                 isDownloadLoading = false,
                 isViewAndShareButtonEnabled = true,
-                isShowAllTransactionsDisabled = false
+                canSelectExportType = false
             )
         }
     }

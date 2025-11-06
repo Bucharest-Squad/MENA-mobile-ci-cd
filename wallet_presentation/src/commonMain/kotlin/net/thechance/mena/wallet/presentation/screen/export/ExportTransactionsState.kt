@@ -17,7 +17,7 @@ data class ExportTransactionsState(
     val filterState: FilterState = FilterState(),
     val dateState: DateState = DateState(),
     val hasNoTransactionsError: Boolean = false,
-    val isShowAllTransactionsDisabled: Boolean = false
+    val canSelectExportType: Boolean = false
 ) {
     val hasActiveFilters: Boolean
         get() = filterState.startDate != null && filterState.endDate != null && filterState.selectedTransactionsTypes.isNotEmpty()
