@@ -1,6 +1,7 @@
 package net.thechance.mena.faith.domain.usecase
 
 
+import net.thechance.mena.faith.domain.entity.Location
 import net.thechance.mena.faith.domain.exception.FaithException
 import kotlin.math.*
 
@@ -8,31 +9,30 @@ import kotlin.math.*
 class CalculateDistanceUseCase {
 
     operator fun invoke(
-        latitude1: Double,
-        longitude1: Double,
-        latitude2: Double,
-        longitude2: Double
+        location1: Location,
+        location2: Location,
+
     ): Double {
 
-        if (latitude1 == latitude2 && longitude1 == longitude2) return 0.0
+        if (location1.latitude == location2.latitude && location1.longitude == location2.longitude) return 0.0
 
-        if (!isValidCoordinate(latitude1, longitude1) || !isValidCoordinate(latitude2, longitude2)) {
+        if (!isValidCoordinate(location1.latitude, location1.longitude) || !isValidCoordinate(location2.latitude, location2.longitude)) {
             throw FaithException.InvalidCoordinates
         }
 
         val earthRadiusKm = 6371.0
 
-        val dLat = toRadians(latitude2 - latitude1)
-        val dLon = toRadians(longitude2 - longitude1)
+        val dLat = toRadians(degrees = location2.latitude - location1.latitude)
+        val dLon = toRadians(degrees = location2.longitude - location1.longitude)
 
         val haversineComponent = sin(dLat / 2).pow(2.0) +
-                cos(toRadians(latitude1)) *
-                cos(toRadians(latitude2)) *
-                sin(dLon / 2).pow(2.0)
+                cos(x = toRadians(degrees = location1.latitude)) *
+                cos(x = toRadians(degrees = location2.latitude)) *
+                sin(x = dLon / 2).pow(x = 2.0)
 
-        val centralAngle = 2 * atan2(sqrt(haversineComponent), sqrt(1 - haversineComponent))
+        val centralAngle = 2 * atan2(sqrt(x = haversineComponent), x = sqrt(1 - haversineComponent))
 
-        return (earthRadiusKm * centralAngle).coerceAtLeast(0.0)
+        return (earthRadiusKm * centralAngle).coerceAtLeast(minimumValue = 0.0)
     }
 
     private fun toRadians(degrees: Double): Double = degrees * (PI / 180)
