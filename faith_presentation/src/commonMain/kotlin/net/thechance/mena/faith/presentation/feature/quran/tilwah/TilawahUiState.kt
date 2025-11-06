@@ -1,6 +1,7 @@
 package net.thechance.mena.faith.presentation.feature.quran.tilwah
 
 data class TilawahUiState(
+    val surahId: Int,
     val reciters: List<ReciterUi> = emptyList(),
     val selectedReciterId: Int? = null,
     )
