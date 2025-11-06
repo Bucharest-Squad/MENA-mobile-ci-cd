@@ -7,7 +7,6 @@ import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import io.ktor.utils.io.core.buildPacket
 import io.ktor.utils.io.core.writeFully
-import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -36,7 +35,7 @@ fun buildMosqueMultipart(
                         append(HttpHeaders.ContentType, ContentType.Image.JPEG.toString())
                         append(
                             HttpHeaders.ContentDisposition,
-                            "form-data; name=\"image\"; filename=\"${Uuid.random()}_${Clock.System.now()}.jpg\""
+                            "form-data; name=\"image\"; filename=\"${Uuid.random()}.jpg\""
                         )
                     }
                 )
