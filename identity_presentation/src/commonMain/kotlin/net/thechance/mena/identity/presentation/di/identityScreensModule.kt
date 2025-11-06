@@ -42,7 +42,7 @@ val identityScreensModule = module {
     includes(platformModule())
     factory(named(LOCATION_FOREGROUND)) { PermissionHandler(get(named(LOCATION_FOREGROUND))) }
     factory(named(GALLERY_IMAGES)) { PermissionHandler(get(named(GALLERY_IMAGES))) }
-    factory { ProfileScreenViewModel(get(), get(named(APP_VERSION))) }
+    factory { ProfileScreenViewModel(get(), get(),get(named(APP_VERSION)),get()) }
     factoryOf(::ImageCropperViewModel)
     factoryOf(::LoginScreenViewModel)
     factoryOf(::NotImplementedScreenViewModel)

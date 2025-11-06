@@ -1,6 +1,8 @@
 package net.thechance.mena.identity.presentation.di
 
 import net.thechance.mena.identity.presentation.util.GalleryPermission
+import net.thechance.mena.identity.domain.service.LocalizationService
+import net.thechance.mena.identity.presentation.util.AppLocalizer
 import net.thechance.mena.identity.presentation.util.LocationForegroundPermission
 import net.thechance.mena.identity.presentation.util.permissionHandler.PermissionController
 import org.koin.core.module.Module
@@ -15,4 +17,12 @@ internal actual fun platformModule(): Module = module {
     single<PermissionController>(named(GALLERY_IMAGES)) {
         GalleryPermission()
     }
+
+    single<LocalizationService> { LocalizationService(settingsRepository = get()) }
+
+    single<AppLocalizer> (
+        createdAtStart = true
+    ){ AppLocalizer(
+        settingsRepository = get()
+    ) }
 }
