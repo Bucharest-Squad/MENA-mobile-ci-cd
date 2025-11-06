@@ -7,6 +7,7 @@ import kotlinx.datetime.LocalDate
 import net.thechance.mena.identity.domain.entity.Gender
 import net.thechance.mena.identity.domain.entity.PhoneNumber
 import net.thechance.mena.identity.domain.exception.AuthenticationException
+import net.thechance.mena.identity.domain.model.AuthenticationTokens
 import net.thechance.mena.identity.domain.model.RegisterRequest
 import net.thechance.mena.identity.domain.repository.RegisterRepository
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
@@ -35,14 +36,14 @@ class SelectGenderScreenViewModel(
         updateState { copy(isRegisterLoading = true, errorMessage = null) }
         tryToExecute(
             function = { register(gender) },
-            onSuccess = { _ -> onRegisterSuccess() },
+            onSuccess = { authResponse -> onRegisterSuccess(authResponse) },
             onError = ::onRegisterError,
             dispatcher = dispatcher
         )
     }
 
-    private suspend fun register(gender: Gender) {
-        registerRepository.register(
+    private suspend fun register(gender: Gender): AuthenticationTokens {
+        return registerRepository.register(
             RegisterRequest(
                 phoneNumber = phoneNumber,
                 username = username,
@@ -55,9 +56,9 @@ class SelectGenderScreenViewModel(
         )
     }
 
-    private fun onRegisterSuccess() {
+    private fun onRegisterSuccess(authTokens: AuthenticationTokens) {
         updateState { copy(isRegisterLoading = false) }
-        sendNewEffect(SelectGenderScreenUIEffect.NavigateToUploadProfileImage)
+        sendNewEffect(SelectGenderScreenUIEffect.NavigateToUploadProfileImage(authTokens))
     }
 
     private fun onRegisterError(throwable: Throwable) {

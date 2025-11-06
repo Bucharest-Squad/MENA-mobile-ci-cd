@@ -95,8 +95,8 @@ class SelectGenderScreen(
         navigator: Navigator
     ) {
         when (effect) {
-            SelectGenderScreenUIEffect.NavigateToUploadProfileImage -> {
-                navigator.push(UploadProfileImageScreen())
+            is SelectGenderScreenUIEffect.NavigateToUploadProfileImage -> {
+                navigator.push(UploadProfileImageScreen(authTokens = effect.authTokens))
             }
         }
     }

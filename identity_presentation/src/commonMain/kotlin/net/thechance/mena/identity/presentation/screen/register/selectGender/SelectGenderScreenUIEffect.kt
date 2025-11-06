@@ -1,5 +1,7 @@
 package net.thechance.mena.identity.presentation.screen.register.selectGender
 
+import net.thechance.mena.identity.domain.model.AuthenticationTokens
+
 sealed interface SelectGenderScreenUIEffect {
-    data object NavigateToUploadProfileImage : SelectGenderScreenUIEffect
+    data class NavigateToUploadProfileImage(val authTokens: AuthenticationTokens) : SelectGenderScreenUIEffect
 }
