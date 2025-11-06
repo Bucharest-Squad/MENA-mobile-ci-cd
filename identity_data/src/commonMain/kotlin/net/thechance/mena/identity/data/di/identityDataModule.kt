@@ -32,6 +32,7 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 private const val IDENTITY_CLIENT = "IdentityClient"
+private const val COIL_CLIENT = "CoilClient"
 private const val BASE_URL = "baseUrl"
 
 expect val IdentityPlatformModule: Module
@@ -63,12 +64,16 @@ val identityDataModule = module {
     singleOf(::ImagesRepositoryImpl) bind ImagesRepository::class
     singleOf(::AuthorizationService)
     single(named(IDENTITY_CLIENT)) {
-        provideHttpClient(
+        provideCoilClient(
             engine = get(),
             baseUrl = get<String>(named(BASE_URL)),
             settings = get(),
             refreshToken = { get<AuthorizationService>().refreshToken() }
         )
+    }
+
+    single(named(COIL_CLIENT)) {
+        provideCoilClient(engine = get())
     }
 
     single { provideDatabaseBuilder() }
