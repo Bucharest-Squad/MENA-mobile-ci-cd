@@ -32,7 +32,7 @@ internal fun AddressSnackBar(
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
     displayDurationMs: Long = 3000L,
-    hideAnimationDelayMs: Long = 200L
+    hideAnimationDelayMs: Long = 300L
 ) {
     var isVisible by remember { mutableStateOf(false) }
 
