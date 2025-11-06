@@ -3,7 +3,6 @@ package net.thechance.mena
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import net.thechance.mena.appEntryPoint.DeepLink
 import net.thechance.mena.appEntryPoint.EntryPoint
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.identity.domain.service.LocalizationService
@@ -12,7 +11,7 @@ import org.koin.compose.koinInject
 
 @Composable
 @Preview
-fun App(deepLink: DeepLink) {
+fun App() {
     val localizationService = koinInject<LocalizationService>()
     val currentLanguage by localizationService.observeLanguage().collectAsStateWithLifecycle()
     MenaTheme(
@@ -20,7 +19,7 @@ fun App(deepLink: DeepLink) {
         content =
             {
                 SetStatusBarIconsDark()
-                EntryPoint(deepLink = deepLink)
+                EntryPoint()
             }
     )
 }

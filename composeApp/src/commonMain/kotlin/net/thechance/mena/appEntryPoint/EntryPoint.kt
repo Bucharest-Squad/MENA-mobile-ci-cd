@@ -30,6 +30,7 @@ import mena.composeapp.generated.resources.ic_trends
 import mena.composeapp.generated.resources.ic_trends_selected
 import mena.composeapp.generated.resources.profile
 import mena.composeapp.generated.resources.trends
+import net.thechance.mena.DeepLinkHandler
 import net.thechance.mena.core_chat.api.CoreChatApi
 import net.thechance.mena.designsystem.presentation.component.bottomNavigation.BottomNavigationBar
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
@@ -44,16 +45,15 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
-
 @Composable
-fun EntryPoint(deepLink: DeepLink) {
+fun EntryPoint() {
     val identityApi = koinInject<IdentityFeatureApi>()
     val authorizationService = koinInject<AuthorizationService>()
 
     val token by authorizationService.observeAccessToken().collectAsStateWithLifecycle()
-    var shouldNavigateToChat by remember {
-        mutableStateOf(deepLink.userId != null)
-    }
+
+    val deepLink = DeepLinkHandler.currentDeepLink
+    var shouldNavigateToChat by remember { mutableStateOf(deepLink?.userId != null) }
 
     if (token.isBlank()) {
         identityApi.LoginFlow()
@@ -74,10 +74,10 @@ fun EntryPoint(deepLink: DeepLink) {
 }
 
 @Composable
-fun ChatEntry(deepLink: DeepLink, onNavigateBack: () -> Unit) {
+fun ChatEntry(deepLink: DeepLink?, onNavigateBack: () -> Unit) {
     val chatApi = koinInject<CoreChatApi>()
     chatApi.ChatEntry(
-        userId = deepLink.userId.orEmpty(),
+        userId = deepLink?.userId.orEmpty(),
         onNavigateBack = onNavigateBack
     )
 }
