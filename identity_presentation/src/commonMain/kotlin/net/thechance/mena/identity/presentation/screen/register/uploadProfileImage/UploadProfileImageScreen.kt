@@ -26,6 +26,7 @@ import net.thechance.mena.designsystem.presentation.component.button.PrimaryButt
 import net.thechance.mena.designsystem.presentation.component.button.TextButton
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import net.thechance.mena.identity.domain.entity.PhoneNumber
 import net.thechance.mena.identity.domain.model.AuthenticationTokens
 import net.thechance.mena.identity.presentation.base.BaseScreen
 import net.thechance.mena.identity.presentation.components.AuthScreenContainer
@@ -37,7 +38,8 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.core.parameter.parametersOf
 
 class UploadProfileImageScreen(
-    private val authTokens: AuthenticationTokens? = null
+    private val authTokens: AuthenticationTokens? = null,
+    private val phoneNumber: PhoneNumber? = null
 ) :
     BaseScreen<UploadProfileImageViewModel, UploadProfileImageUIState, UploadProfileImageUIEffect, UploadProfileImageInteractionListener>() {
     @Composable
@@ -121,7 +123,7 @@ class UploadProfileImageScreen(
         InitScreen(
             getScreenModel(
                 parameters = {
-                    authTokens?.let { parametersOf(it) } ?: parametersOf()
+                    parametersOf(authTokens, phoneNumber)
                 }
             )
         )
