@@ -110,7 +110,9 @@ class QuranRepositoryImpl(
 
         val surahSound = getSurahAudioCachePath(surahNumber, reciterId)
 
-        if (!surahSound.isNullOrEmpty()) findAyahInFolder(surahSound, ayahNumber)
+        if (!surahSound.isNullOrEmpty()) findAyahInFolder(surahSound, ayahNumber)?.let {
+            return it
+        }
 
         return executeApiSafely<String> {
             tilawahApiService.getAyahSoundUrl(
