@@ -18,7 +18,6 @@ object DeepLinkHandler {
     }
 
     fun isURLValid(): Boolean {
-        println("nabil-debug is URL valid ${currentDeepLink?.userId != null}")
         return currentDeepLink?.userId != null
     }
 }
