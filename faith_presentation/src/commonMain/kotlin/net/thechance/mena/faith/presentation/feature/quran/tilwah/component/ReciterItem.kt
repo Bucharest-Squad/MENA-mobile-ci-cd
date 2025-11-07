@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import mena.faith_presentation.generated.resources.Res
 import mena.faith_presentation.generated.resources.download
@@ -36,7 +37,7 @@ fun ReciterItem(
     isSelected: Boolean,
     onSelect: () -> Unit,
     onDownloadClick: () -> Unit,
-    modifier: Modifier =Modifier
+    modifier: Modifier = Modifier
 ) {
     Row(
         modifier = modifier
@@ -59,7 +60,9 @@ fun ReciterItem(
             Text(
                 text = reciter,
                 style = Theme.typography.label.medium,
-                color = Theme.colorScheme.shadePrimary
+                color = Theme.colorScheme.shadePrimary,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1,
             )
 
             RecitersDetails(
@@ -94,8 +97,8 @@ private fun RecitersDetails(
     ) {
         Text(
             text = recitingType,
-            style = Theme.typography.label.medium,
-            color = Theme.colorScheme.shadePrimary
+            style = Theme.typography.label.small,
+            color = Theme.colorScheme.shadeSecondary
         )
         if (isDownloaded) {
             Icon(

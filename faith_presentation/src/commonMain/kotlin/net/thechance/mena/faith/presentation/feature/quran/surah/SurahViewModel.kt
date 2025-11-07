@@ -3,7 +3,6 @@ package net.thechance.mena.faith.presentation.feature.quran.surah
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -39,6 +38,7 @@ class SurahViewModel(
 
     init {
         loadSurahData(surahArgs.surahId)
+        observeDefaultReciter()
     }
 
     private fun loadSurahData(surahId: Int) {
@@ -50,6 +50,23 @@ class SurahViewModel(
             dispatcher = dispatcher
         )
     }
+
+    private fun observeDefaultReciter() {
+        tryToCollect(
+            onEmitNewValue = ::updateDefaultReciter,
+            block = { quranRepository.getDefaultReciter() },
+        )
+    }
+
+    private fun updateDefaultReciter(reciterId: Int) {
+        tryToExecute(
+            execute = { quranRepository.getReciterById(reciterId) },
+            onSuccess = ::updateReciterState
+        )
+    }
+
+    private fun updateReciterState(reciter: Reciter) =
+        updateState { it.copy(currentReciter = reciter.toUiState()) }
 
     override fun highlightAyah(ayahNumber: Int) {
         updateState {
@@ -76,6 +93,7 @@ class SurahViewModel(
     }
 
     override fun onInitialAyahScrolled() {
+        if (uiState.value.isAyahSoundPlaying) return
         viewModelScope.launch {
             delay(2000L)
             updateState { it.copy(selectedAyahNumber = null, initialAyahToScroll = null) }
@@ -175,7 +193,7 @@ class SurahViewModel(
         loadAndPlayAyahSound(
             surahNumber = surahArgs.surahId,
             ayahNumber = ayahNumber,
-            reciterId = 1 //TODO: Get selected reciter id from settings
+            reciterId = uiState.value.currentReciter.id,
         )
         updateState { it.copy(selectedAyahNumber = ayahNumber) }
     }
@@ -197,6 +215,7 @@ class SurahViewModel(
 
         updateState { it.copy(isAyahSoundPlaying = !isPlaying) }
     }
+
     private fun loadAndPlayAyahSound(surahNumber: Int, ayahNumber: Int, reciterId: Int) {
         tryToExecute(
             execute = {
@@ -207,10 +226,17 @@ class SurahViewModel(
                 )
             },
             onSuccess = ::onLoadAyahSoundSuccess,
-            dispatcher = Main
+            onFinally = {
+                updateState {
+                    it.copy(
+                        selectedAyahNumber = ayahNumber,
+                        initialAyahToScroll = ayahNumber
+                    )
+                }
+            },
+            dispatcher = Main,
         )
     }
-
 
     private fun onLoadAyahSoundSuccess(ayahSoundUrl: String) {
         updateState {
@@ -223,6 +249,7 @@ class SurahViewModel(
             )
         }
         quranPlayer.playAyah(ayahSoundUrl)
+        updatePlayPause()
     }
 
     private fun handleLoadSurahSuccess(ayat: List<Ayah>) {
@@ -284,5 +311,11 @@ class SurahViewModel(
         val isFatiha = surahId == Surah.SurahOrder.AlFatihah.order
         val shouldShowBasmala = !(isTawbah || isFatiha)
         updateState { it.copy(isBasmalaVisible = shouldShowBasmala) }
+    }
+
+    private fun updatePlayPause(){
+        quranPlayer.onAyahCompleted {
+            updateState { it.copy(isAyahSoundPlaying = false) }
+        }
     }
 }

@@ -3,11 +3,13 @@ package net.thechance.mena.faith.presentation.feature.quran.tilwah
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.flow.first
 import net.thechance.mena.faith.domain.model.Reciter
 import net.thechance.mena.faith.domain.repository.QuranRepository
 import net.thechance.mena.faith.domain.service.DownloadSurahManager
 import net.thechance.mena.faith.presentation.base.BaseViewModel
 import net.thechance.mena.faith.presentation.feature.quran.surah.args.SurahArgs
+import net.thechance.mena.faith.presentation.base.ErrorState
 
 class TilawahViewModel(
     private val quranRepository: QuranRepository,
@@ -19,6 +21,15 @@ class TilawahViewModel(
 
     init {
         getAllReciters()
+        updateDefaultReciter()
+    }
+
+    private fun updateDefaultReciter() {
+        tryToExecute(
+            execute = { quranRepository.getDefaultReciter() },
+            onSuccess = { reciterId -> updateSelectedReciter(reciterId.first()) },
+            onError = ::handleError
+        )
     }
 
     override fun onBackClick() = sendEffect(TilawahEffect.NavigateBack)
@@ -47,7 +58,11 @@ class TilawahViewModel(
     }
 
     override fun onSelectReciterClick(reciterId: Int) {
-        updateState { it.copy(selectedReciterId = reciterId) }
+        tryToExecute(
+            execute = { quranRepository.saveDefaultReciter(reciterId) },
+            onSuccess = { updateSelectedReciter(reciterId) },
+            onError = ::handleError
+        )
     }
 
     private fun getAllReciters() {
@@ -56,6 +71,20 @@ class TilawahViewModel(
             onSuccess = ::getAllRecitersSuccessfully,
             dispatcher = dispatcher
         )
+            onSuccess = ::getAllRecitersSuccessfully,
+        )
+    }
+
+    private fun updateSelectedReciter(reciterId: Int) {
+        updateState { state ->
+            state.copy(
+                selectedReciterId = reciterId,
+            )
+        }
+    }
+
+    private fun handleError(errorState: ErrorState) {
+        println("Error: $errorState")
     }
 
     private fun getAllRecitersSuccessfully(reciters: List<Reciter>) {
