@@ -5,10 +5,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import net.thechance.mena.identity.domain.model.AuthenticationTokens
 import net.thechance.mena.identity.domain.repository.AuthenticationRepository
+import net.thechance.mena.identity.domain.repository.RegistrationDraftRepository
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
 
 class AccountCreatedViewModel(
     private val authenticationRepository: AuthenticationRepository,
+    private val registrationDraftRepository: RegistrationDraftRepository,
     private val authTokens: AuthenticationTokens? = null,
     val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : BaseScreenModel<AccountCreatedUIState, AccountCreatedUIEffect>
@@ -16,17 +18,19 @@ class AccountCreatedViewModel(
     AccountCreatedInteractionListener {
 
     override fun onClickGoToHome() {
-        val currentAuthTokens = authTokens ?: return
-        
+        authTokens?.let { tokens ->
+            completeRegistration(tokens)
+        }
+    }
+
+    private fun completeRegistration(tokens: AuthenticationTokens) {
         tryToExecute(
             function = {
-                authenticationRepository.saveAuthTokensAndEmit(currentAuthTokens)
+                authenticationRepository.saveAuthTokensAndEmit(tokens)
+                registrationDraftRepository.clearLastPhoneNumber()
             },
-            onSuccess = {
-                // Navigation to home is handled automatically by EntryPoint
-                // when token state changes after saveAuthTokensAndEmit
-            },
-            onError = { },
+            onSuccess = {},
+            onError = {},
             dispatcher = dispatcher
         )
     }

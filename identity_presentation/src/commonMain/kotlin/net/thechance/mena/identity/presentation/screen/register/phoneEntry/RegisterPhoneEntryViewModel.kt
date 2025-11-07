@@ -6,6 +6,7 @@ import kotlinx.coroutines.IO
 import net.thechance.mena.identity.domain.entity.PhoneNumber
 import net.thechance.mena.identity.domain.exception.AuthenticationException
 import net.thechance.mena.identity.domain.repository.RegisterRepository
+import net.thechance.mena.identity.domain.repository.RegistrationDraftRepository
 import net.thechance.mena.identity.domain.useCase.LoginUseCase
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
 import net.thechance.mena.identity.presentation.base.error.ErrorState
@@ -18,10 +19,44 @@ import org.jetbrains.compose.resources.StringResource
 class RegisterPhoneEntryViewModel(
     private val loginUseCase: LoginUseCase,
     private val registerRepository: RegisterRepository,
+    private val registrationDraftRepository: RegistrationDraftRepository,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : BaseScreenModel<RegisterPhoneEntryUIState, RegisterPhoneEntryUIEffect>(
     RegisterPhoneEntryUIState()
 ), RegisterPhoneEntryInteractionListener {
+
+    init {
+        loadSavedData()
+    }
+
+    private fun loadSavedData() {
+        tryToExecute(
+            function = {
+                val lastPhoneNumber = registrationDraftRepository.getLastPhoneNumber()
+                lastPhoneNumber?.let { phoneNumber ->
+                    registrationDraftRepository.getDraft(phoneNumber)
+                }
+            },
+            onSuccess = { savedDraft ->
+                savedDraft?.let { draft ->
+                    val phoneNumber = draft.phoneNumber ?: return@let
+                    updateState {
+                        copy(
+                            phoneNumber = phoneNumber.localNumber,
+                            currentCountry = findCountryByCallingCode(phoneNumber.countryCode)
+                        )
+                    }
+                    changeIsContinueEnabled()
+                }
+            },
+            onError = {},
+            dispatcher = dispatcher
+        )
+    }
+
+    private fun findCountryByCallingCode(callingCode: String): MenaCountry {
+        return MenaCountry.values().find { it.callingCode == callingCode } ?: MenaCountry.IRAQ
+    }
 
     override fun onSelectCountryItem(country: MenaCountry) {
         updateState {
@@ -82,6 +117,26 @@ class RegisterPhoneEntryViewModel(
     override fun onChangePhone(phone: String) {
         updateState { copy(phoneNumber = phone) }
         changeIsContinueEnabled()
+        savePhoneNumber(phone)
+    }
+
+    private fun savePhoneNumber(phone: String) {
+        if (phone.isNotBlank()) {
+            val phoneNumber = createPhoneNumber()
+            tryToExecute(
+                function = {
+                    val existingDraft = registrationDraftRepository.getDraft(phoneNumber)
+                        ?: net.thechance.mena.identity.domain.model.RegistrationDraft()
+                    registrationDraftRepository.saveDraft(
+                        phoneNumber,
+                        existingDraft.copy(phoneNumber = phoneNumber)
+                    )
+                },
+                onSuccess = {},
+                onError = {},
+                dispatcher = dispatcher
+            )
+        }
     }
 
     override fun onClearErrorMessage() {

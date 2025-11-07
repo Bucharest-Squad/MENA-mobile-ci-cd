@@ -7,12 +7,15 @@ import mena.identity_presentation.generated.resources.Res
 import mena.identity_presentation.generated.resources.error_password_mismatch
 import mena.identity_presentation.generated.resources.error_password_validation
 import net.thechance.mena.identity.domain.entity.PhoneNumber
+import net.thechance.mena.identity.domain.model.RegistrationDraft
+import net.thechance.mena.identity.domain.repository.RegistrationDraftRepository
 import net.thechance.mena.identity.domain.useCase.validation.mobileNumber.PasswordValidator
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
 import net.thechance.mena.identity.presentation.util.validatePasswordConfirmation
 
 class CreatePasswordViewModel(
     private val passwordValidator: PasswordValidator,
+    private val registrationDraftRepository: RegistrationDraftRepository,
     private val phoneNumber: PhoneNumber,
     private val firstName: String,
     private val lastName: String,
@@ -22,16 +25,21 @@ class CreatePasswordViewModel(
     CreatePasswordUIState()
 ), CreatePasswordInteractionListener {
 
+    init {
+        loadSavedData()
+    }
+
     override fun onChangeNewPassword(password: String) {
         updateState { copy(newPassword = password) }
         checkCreateButtonEnabled()
+        savePasswordIfValid(password)
     }
 
     override fun onChangeConfirmPassword(password: String) {
         updateState {
             copy(
                 confirmPassword = password,
-                confirmPasswordErrorMessage = validatePasswordConfirmation(newPassword, password),
+                confirmPasswordErrorMessage = validatePasswordConfirmation(newPassword, password)
             )
         }
         checkCreateButtonEnabled()
@@ -50,36 +58,75 @@ class CreatePasswordViewModel(
     }
 
     override fun onClickCreatePassword() {
-        if (state.value.newPassword != state.value.confirmPassword) {
+        if (passwordsDoNotMatch()) {
             updateState { copy(errorMessage = Res.string.error_password_mismatch) }
             return
         }
-
         navigateToDatePicker()
     }
 
-    private fun navigateToDatePicker() {
-        sendNewEffect(
-            CreatePasswordUIEffect.NavigateToDatePicker(
-                phoneNumber = phoneNumber,
-                firstName = firstName,
-                lastName = lastName,
-                username = username,
-                password = state.value.newPassword
-            )
+    private fun loadSavedData() {
+        tryToExecute(
+            function = { registrationDraftRepository.getDraft(phoneNumber) },
+            onSuccess = ::handleSavedDraft,
+            onError = {},
+            dispatcher = dispatcher
         )
     }
 
+    private fun handleSavedDraft(savedDraft: RegistrationDraft?) {
+        savedDraft?.password?.takeIf { it.isNotBlank() }?.let { password ->
+            updateState {
+                copy(
+                    newPassword = password,
+                    confirmPassword = password
+                )
+            }
+            checkCreateButtonEnabled()
+        }
+    }
+
+    private fun savePasswordIfValid(password: String) {
+        if (password.isNotBlank() && passwordValidator.isValid(password)) {
+            savePassword(password)
+        }
+    }
+
+    private fun savePassword(password: String) {
+        tryToExecute(
+            function = {
+                val draft = registrationDraftRepository.getDraft(phoneNumber) ?: RegistrationDraft()
+                registrationDraftRepository.saveDraft(phoneNumber, draft.copy(password = password))
+            },
+            onSuccess = {},
+            onError = {},
+            dispatcher = dispatcher
+        )
+    }
+
+    private fun passwordsDoNotMatch(): Boolean =
+        state.value.newPassword != state.value.confirmPassword
+
+    private fun navigateToDatePicker() {
+        sendNewEffect(createNavigateToDatePickerEffect())
+    }
+
+    private fun createNavigateToDatePickerEffect() = CreatePasswordUIEffect.NavigateToDatePicker(
+        phoneNumber = phoneNumber,
+        firstName = firstName,
+        lastName = lastName,
+        username = username,
+        password = state.value.newPassword
+    )
+
     private fun checkCreateButtonEnabled() {
         updateState {
-            val isPasswordsMatch = newPassword.isNotBlank() && newPassword == confirmPassword
-            val isPasswordSecure = passwordValidator.isValid(newPassword)
+            val passwordsMatch = newPassword.isNotBlank() && newPassword == confirmPassword
+            val passwordSecure = passwordValidator.isValid(newPassword)
 
             copy(
-                newPasswordErrorMessage = if (!isPasswordSecure)
-                    Res.string.error_password_validation
-                else null,
-                isCreateEnabled = isPasswordsMatch && isPasswordSecure
+                newPasswordErrorMessage = if (!passwordSecure) Res.string.error_password_validation else null,
+                isCreateEnabled = passwordsMatch && passwordSecure
             )
         }
     }
