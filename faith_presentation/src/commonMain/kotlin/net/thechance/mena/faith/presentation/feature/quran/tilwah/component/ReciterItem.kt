@@ -34,11 +34,8 @@ fun ReciterItem(
     reciter: String,
     recitingType: String,
     isDownloaded: Boolean,
-    isSelected: Boolean,
-    onSelect: () -> Unit,
     onDownloadClick: () -> Unit,
     onSelect: () -> Unit = {},
-    isSelectedShown: Boolean,
     isSelected: Boolean = false,
     modifier: Modifier = Modifier
 ) {
@@ -73,7 +70,7 @@ fun ReciterItem(
                 isDownloaded = isDownloaded
             )
         }
-        //Fake icon
+        //TODO: Replace with real icon
         Icon(
             painterResource(Res.drawable.download),
             contentDescription = stringResource(Res.string.success),
@@ -130,8 +127,6 @@ private fun Preview() {
             isSelected = true,
             onSelect = {},
             onDownloadClick = {}
-            onSelect = {},
-            isSelectedShown = true
         )
     }
 }
