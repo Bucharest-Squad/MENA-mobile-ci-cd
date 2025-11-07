@@ -70,7 +70,6 @@ fun EntryPoint(viewModel: MainEntryViewModel = koinViewModel()) {
 @Composable
 fun ChatEntry(deepLink: DeepLink?, onNavigateBack: () -> Unit) {
     val chatApi = koinInject<CoreChatApi>()
-    println("nb-debug reached here $deepLink")
     chatApi.ChatEntry(
         userId = deepLink?.userId.orEmpty(),
         onNavigateBack = onNavigateBack

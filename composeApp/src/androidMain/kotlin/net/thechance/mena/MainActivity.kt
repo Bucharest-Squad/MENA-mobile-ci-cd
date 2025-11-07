@@ -2,7 +2,6 @@ package net.thechance.mena
 
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -37,7 +36,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        Log.i("viewModel instance", activityViewModel.hashCode().toString())
         activityViewModel.onDeepLinkChange(
             deepLink = parseDeepLinkFromIntent()
         )
@@ -45,8 +43,6 @@ class MainActivity : ComponentActivity() {
 
     private fun parseDeepLinkFromIntent(): DeepLink {
         val appLinkData: Uri? = intent.data
-        Log.i("new app link", appLinkData.toString())
-        Log.i("view model instance", activityViewModel.hashCode().toString())
         return DeepLink(
             userId = appLinkData?.getQueryParameter("userId"),
         )
