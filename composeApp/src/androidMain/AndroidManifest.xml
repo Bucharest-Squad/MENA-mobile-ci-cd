@@ -30,7 +30,7 @@
 
                 <data android:scheme="https" />
                 <data android:host="mena-dev.the-chance.net" />
-                <data android:pathPrefix="/chat" />
+                <data android:pathPrefix="/download.html" />
             </intent-filter>
 
         </activity>
