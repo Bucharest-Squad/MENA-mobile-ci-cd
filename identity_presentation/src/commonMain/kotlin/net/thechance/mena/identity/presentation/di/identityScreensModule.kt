@@ -120,7 +120,8 @@ val identityScreensModule = module {
     factory {
         ShareQrCodeViewModel(
             get(),
-            get(named(GALLERY_IMAGES))
+            get(named(GALLERY_IMAGES)),
+            get()
         )
     } bind ShareQrCodeInteractionListener::class
 }
