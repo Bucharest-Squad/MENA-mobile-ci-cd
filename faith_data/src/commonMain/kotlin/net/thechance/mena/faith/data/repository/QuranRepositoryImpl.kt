@@ -85,14 +85,11 @@ class QuranRepositoryImpl(
     override suspend fun getRemoteSurahSoundUrl(
         surahId: Int,
         reciterId: Int
-    ): String = "https://everyayah.com/data/Abdul_Basit_Mujawwad_128kbps/zips/001.zip"
-//    {
-//        executeApiSafely {
-//            tilawahApiService.getSurahSoundUrl(
-//                SurahSoundRequest(surahId, reciterId)
-//            )
-//        }
-//    }
+    ): String = executeApiSafely {
+        tilawahApiService.getSurahSoundUrl(
+            SurahSoundRequest(surahId, reciterId)
+        )
+    }
 
     override suspend fun isSurahAudioCached(surahId: Int, reciterId: Int): Boolean =
         executeLocalSafely {
