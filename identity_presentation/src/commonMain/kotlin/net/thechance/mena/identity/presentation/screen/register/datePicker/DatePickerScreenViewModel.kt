@@ -20,8 +20,8 @@ import kotlin.time.ExperimentalTime
 class DatePickerScreenViewModel(
     private val ageValidator: AgeValidator,
     private val registrationDraftRepository: RegistrationDraftRepository,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
-    private val registerUIState: RegisterUIState
+    private val registerUIState: RegisterUIState,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) :
     BaseScreenModel<DatePickerScreenUIState, DatePickerScreenUIEffect>(
         DatePickerScreenUIState()
