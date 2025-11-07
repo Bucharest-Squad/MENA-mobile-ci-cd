@@ -55,6 +55,7 @@ class RegisterPhoneEntryViewModel(
                 )
             }
         }
+        changeIsContinueEnabled()
     }
 
     private fun findCountryByCallingCode(callingCode: String): MenaCountry {
