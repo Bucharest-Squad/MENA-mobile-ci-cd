@@ -110,7 +110,11 @@ class QuranRepositoryImpl(
 
         val surahSound = getSurahAudioCachePath(surahNumber, reciterId)
 
-        if (!surahSound.isNullOrEmpty()) findAyahInFolder(surahSound, ayahNumber)?.let {
+        if (!surahSound.isNullOrEmpty()) findAyahInFolder(
+            surahSound,
+            ayahNumber,
+            surahNumber
+        )?.let {
             return it
         }
 
@@ -121,13 +125,20 @@ class QuranRepositoryImpl(
         }
     }
 
-    private fun findAyahInFolder(folderPath: String, ayahNumber: Int): String? {
+    private fun findAyahInFolder(folderPath: String, ayahNumber: Int, surahNumber: Int): String? {
         val folder = folderPath.toPath()
 
         if (!FileSystem.SYSTEM.exists(folder)) return null
 
-        val fileList = FileSystem.SYSTEM.list(folder)
-        return fileList[ayahNumber.plus(1)].toString()
+        val files = FileSystem.SYSTEM.list(folder)
+        val fileIndex = calculateFileIndex(ayahNumber, surahNumber)
+
+        return files.getOrNull(fileIndex)?.toString()
+    }
+
+    private fun calculateFileIndex(ayahNumber: Int, surahNumber: Int): Int {
+        return if (surahNumber == SURAH_AL_FATIHA) ayahNumber
+        else ayahNumber + AYAH_INDEX_OFFSET
     }
 
     override suspend fun getReciters(): List<Reciter> = loadFromCacheOrFetch(
@@ -155,4 +166,10 @@ class QuranRepositoryImpl(
 
     override suspend fun getDefaultReciter(): Flow<Int> =
         tilawahDataStore.getDefaultReciter()
+
+    private companion object {
+        private const val SURAH_AL_FATIHA = 1
+        private const val AYAH_INDEX_OFFSET = 1
+    }
 }
+
