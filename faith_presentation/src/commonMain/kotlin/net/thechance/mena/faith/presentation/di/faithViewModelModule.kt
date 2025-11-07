@@ -13,7 +13,6 @@ import net.thechance.mena.faith.presentation.feature.prayertime.PrayerTimeViewMo
 import net.thechance.mena.faith.presentation.feature.mosque.mosqueImageCrop.MosqueImageCropViewModel
 import net.thechance.mena.faith.presentation.feature.mosque.shared.SharedImageViewModel
 import net.thechance.mena.faith.presentation.feature.mosque.uploadImageScreen.UploadImageViewModel
-import net.thechance.mena.faith.presentation.feature.prayertime.PrayerTimeViewModel
 import net.thechance.mena.faith.presentation.feature.qiblah.calibratedevice.CalibrateDeviceViewModel
 import net.thechance.mena.faith.presentation.feature.qiblah.compass.CompassViewModel
 import net.thechance.mena.faith.presentation.feature.quran.bookmark.BookmarkViewModel
