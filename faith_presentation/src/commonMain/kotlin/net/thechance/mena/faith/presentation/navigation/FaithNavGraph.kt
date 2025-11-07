@@ -16,8 +16,6 @@ import net.thechance.mena.faith.presentation.feature.qiblah.calibratedevice.Cali
 import net.thechance.mena.faith.presentation.feature.qiblah.compass.CompassScreen
 import net.thechance.mena.faith.presentation.feature.quran.bookmark.BookmarkScreen
 import net.thechance.mena.faith.presentation.feature.quran.downloadedSur.DownloadedSurScreen
-import net.thechance.mena.faith.presentation.feature.quran.search.SearchScreen
-import net.thechance.mena.faith.presentation.feature.quran.downloadedSur.DownloadedSurScreen
 import net.thechance.mena.faith.presentation.feature.quran.reciter.ReciterSearchScreen
 import net.thechance.mena.faith.presentation.feature.quran.search.ayah.SearchScreen
 import net.thechance.mena.faith.presentation.feature.quran.sur.SurScreen
