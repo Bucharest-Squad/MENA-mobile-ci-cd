@@ -42,7 +42,7 @@ class AuthenticationRepositoryImpl(
     }
 
     override suspend fun login(phoneNumber: PhoneNumber, password: String) = safeWrapper {
-        val response = client.postJson<AuthenticationResponse>(
+        val response: AuthenticationResponse = client.postJson(
             LoginRequestDto(phoneNumber.getFormattedPhoneNumber(), password),
             LOGIN_ENDPOINT
         )
@@ -50,8 +50,8 @@ class AuthenticationRepositoryImpl(
     }
 
     override suspend fun refreshAccessToken(): String {
-        val response = safeWrapper {
-            client.postJson<AuthenticationResponse>(
+        val response: AuthenticationResponse = safeWrapper {
+            client.postJson(
                 RefreshRequestDto(settings.refreshToken),
                 REFRESH_ENDPOINT
             )
