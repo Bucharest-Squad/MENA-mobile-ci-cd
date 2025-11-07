@@ -8,7 +8,6 @@ import dev.mokkery.everySuspend
 import dev.mokkery.matcher.any
 import dev.mokkery.mock
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -376,9 +375,13 @@ class SurahViewModelTest {
     @Test
     fun `onReciterClick should navigate to downloaded reciters screen`() = runTest {
         testViewModel.uiEffect.test {
-            testViewModel.onReciterClick()
+            testViewModel.onReciterClick(surahArgs.surahId)
             val effect = awaitItem()
-            assertEquals(SurahScreenEffect.NavigateToDownloadedRecitersScreen, effect)
+            assertEquals(
+                SurahScreenEffect.NavigateToDownloadedRecitersScreen(
+                    surahArgs.surahId
+                ), effect
+            )
         }
     }
 

@@ -1,16 +1,13 @@
 package net.thechance.mena.faith.presentation.feature.main
 
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
-import kotlinx.coroutines.launch
 import net.thechance.mena.faith.domain.entity.Location
 import net.thechance.mena.faith.domain.entity.PrayerTime
 import net.thechance.mena.faith.domain.model.LastAyahForTilawah
 import net.thechance.mena.faith.domain.repository.PrayerTimeRepository
 import net.thechance.mena.faith.domain.repository.QuranRepository
-import net.thechance.mena.faith.domain.service.DownloadSurahManager
 import net.thechance.mena.faith.presentation.base.BaseViewModel
 import net.thechance.mena.faith.presentation.utils.extentions.prayerTime.getHijriReadableDate
 import net.thechance.mena.faith.presentation.utils.extentions.prayerTime.getSunriseTime
@@ -19,7 +16,6 @@ import kotlin.time.ExperimentalTime
 
 class MainViewModel(
     private val quranRepository: QuranRepository,
-    private val downloadSurahManager: DownloadSurahManager,
     private val prayerTimeRepository: PrayerTimeRepository,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : BaseViewModel<MainUiState, MainScreenEffect>(
@@ -28,14 +24,6 @@ class MainViewModel(
 
     init {
         initializeScreenData()
-        viewModelScope.launch {
-            val url = quranRepository.getRemoteSurahSoundUrl(
-                surahId = 1,
-                reciterId = 1
-            )
-            val path = downloadSurahManager.downloadSurahFile(url, 1, 1)
-            quranRepository.saveSurahAudioToCache(1, 1, path)
-        }
     }
 
     private fun initializeScreenData() {
