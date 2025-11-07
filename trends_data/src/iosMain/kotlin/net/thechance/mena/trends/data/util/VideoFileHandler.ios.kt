@@ -54,7 +54,7 @@ class VideoFileHandlerImpl : VideoFileHandler {
 
     override suspend fun extractVideoFrame(filePath: String, timeMs: Long): ByteArray? {
         return runCatching {
-            val fileUrl = NSURL.URLWithString(filePath) ?: NSURL.fileURLWithPath(filePath)
+            val fileUrl = NSURL.fileURLWithPath(filePath)
             val asset = AVURLAsset.URLAssetWithURL(fileUrl, options = null)
             val imageGenerator = createAVAssetImageGenerator(asset)
 
