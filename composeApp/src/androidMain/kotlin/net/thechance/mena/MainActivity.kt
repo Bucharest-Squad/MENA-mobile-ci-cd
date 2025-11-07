@@ -25,13 +25,16 @@ class MainActivity : ComponentActivity() {
         val localizer: AppLocalizer by inject()
         localizer.applyLocaleToContext()
 
-        DeepLinkHandler.onDeepLinkChange(
-            deepLink = parseDeepLinkFromIntent()
-        )
-
         setContent {
             App()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        DeepLinkHandler.onDeepLinkChange(
+            deepLink = parseDeepLinkFromIntent()
+        )
     }
 
     private fun parseDeepLinkFromIntent(): DeepLink {
