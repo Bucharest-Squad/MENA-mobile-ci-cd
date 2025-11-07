@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import io.github.vinceglb.filekit.FileKit
@@ -15,9 +14,10 @@ import net.thechance.mena.appEntryPoint.MainEntryViewModel
 import net.thechance.mena.identity.presentation.util.AppLocalizer
 import net.thechance.mena.identity.presentation.util.PermissionManager
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
-    private val activityViewModel by viewModels<MainEntryViewModel>()
+    private val activityViewModel: MainEntryViewModel by viewModel<MainEntryViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         PermissionManager.init(this)

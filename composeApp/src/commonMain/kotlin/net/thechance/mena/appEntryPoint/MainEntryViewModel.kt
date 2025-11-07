@@ -9,7 +9,7 @@ import kotlinx.coroutines.launch
 import net.thechance.mena.identity.domain.service.AuthorizationService
 
 class MainEntryViewModel(
-    val authorizationService: AuthorizationService,
+    private val authorizationService: AuthorizationService,
 ) : ViewModel(), MainEntryInteractionListener {
     private val _state = MutableStateFlow(MainEntryState())
     val state = _state.asStateFlow()

@@ -27,7 +27,6 @@ import mena.composeapp.generated.resources.profile
 import mena.composeapp.generated.resources.trends
 import net.thechance.mena.core_chat.api.CoreChatApi
 import net.thechance.mena.designsystem.presentation.component.bottomNavigation.BottomNavigationBar
-import net.thechance.mena.designsystem.presentation.component.bottomNavigation.BottomNavigationScope
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.dukan.api.DukanApi
 import net.thechance.mena.faith.api.FaithApi
@@ -54,49 +53,43 @@ fun LoggedInContainer(
 
         BottomNavigationBar(
             selectedItemIndex = getSelectedNavigationIndex(activeFeature),
-            content = { NavigationItems(listener) }
-        )
+        ) {
+            bottomNavigationItem(
+                selectedIcon = painterResource(Res.drawable.ic_home_selected),
+                notSelectedIcon = painterResource(Res.drawable.ic_home),
+                title = stringResource(Res.string.home),
+                entry = { listener.setActiveFeature(Feature.CHAT) }
+            )
+
+            bottomNavigationItem(
+                selectedIcon = painterResource(Res.drawable.ic_dukan_selected),
+                notSelectedIcon = painterResource(Res.drawable.ic_dukan),
+                title = stringResource(Res.string.dukan),
+                entry = { listener.setActiveFeature(Feature.DUKAN) }
+            )
+
+            bottomNavigationItem(
+                selectedIcon = painterResource(Res.drawable.ic_trends_selected),
+                notSelectedIcon = painterResource(Res.drawable.ic_trends),
+                title = stringResource(Res.string.trends),
+                entry = { listener.setActiveFeature(Feature.TREND) }
+            )
+
+            bottomNavigationItem(
+                selectedIcon = painterResource(Res.drawable.ic_faith_selected),
+                notSelectedIcon = painterResource(Res.drawable.ic_faith),
+                title = stringResource(Res.string.faith),
+                entry = { listener.setActiveFeature(Feature.FAITH) }
+            )
+
+            bottomNavigationItem(
+                selectedIcon = painterResource(Res.drawable.ic_profile_selected),
+                notSelectedIcon = painterResource(Res.drawable.ic_profile),
+                title = stringResource(Res.string.profile),
+                entry = { listener.setActiveFeature(Feature.PROFILE) }
+            )
+        }
     }
-}
-
-@Composable
-private fun BottomNavigationScope.NavigationItems(
-    listener: MainEntryInteractionListener
-) {
-    bottomNavigationItem(
-        selectedIcon = painterResource(Res.drawable.ic_home_selected),
-        notSelectedIcon = painterResource(Res.drawable.ic_home),
-        title = stringResource(Res.string.home),
-        entry = { listener.setActiveFeature(Feature.CHAT) }
-    )
-
-    bottomNavigationItem(
-        selectedIcon = painterResource(Res.drawable.ic_dukan_selected),
-        notSelectedIcon = painterResource(Res.drawable.ic_dukan),
-        title = stringResource(Res.string.dukan),
-        entry = { listener.setActiveFeature(Feature.DUKAN) }
-    )
-
-    bottomNavigationItem(
-        selectedIcon = painterResource(Res.drawable.ic_trends_selected),
-        notSelectedIcon = painterResource(Res.drawable.ic_trends),
-        title = stringResource(Res.string.trends),
-        entry = { listener.setActiveFeature(Feature.TREND) }
-    )
-
-    bottomNavigationItem(
-        selectedIcon = painterResource(Res.drawable.ic_faith_selected),
-        notSelectedIcon = painterResource(Res.drawable.ic_faith),
-        title = stringResource(Res.string.faith),
-        entry = { listener.setActiveFeature(Feature.FAITH) }
-    )
-
-    bottomNavigationItem(
-        selectedIcon = painterResource(Res.drawable.ic_profile_selected),
-        notSelectedIcon = painterResource(Res.drawable.ic_profile),
-        title = stringResource(Res.string.profile),
-        entry = { listener.setActiveFeature(Feature.PROFILE) }
-    )
 }
 
 @Composable
