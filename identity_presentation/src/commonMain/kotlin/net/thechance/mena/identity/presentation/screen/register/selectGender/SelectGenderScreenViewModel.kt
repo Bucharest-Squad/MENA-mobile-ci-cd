@@ -15,8 +15,8 @@ import net.thechance.mena.identity.presentation.base.error.ErrorState
 import net.thechance.mena.identity.presentation.base.error.handleAuthenticationException
 import net.thechance.mena.identity.presentation.mapper.mapAuthenticationErrorToMessage
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
-import net.thechance.mena.identity.presentation.screen.register.shared.RegisterUIState
-import net.thechance.mena.identity.presentation.screen.register.shared.toRegisterRequest
+import net.thechance.mena.identity.presentation.screen.register.shared.uiState.RegisterUIState
+import net.thechance.mena.identity.presentation.screen.register.shared.uiState.toRegisterRequest
 import org.jetbrains.compose.resources.StringResource
 
 class SelectGenderScreenViewModel(

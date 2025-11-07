@@ -22,7 +22,7 @@ import net.thechance.mena.identity.presentation.components.AuthScreenContainer
 import net.thechance.mena.identity.presentation.components.GregorianDatePicker
 import net.thechance.mena.identity.presentation.components.PageDescription
 import net.thechance.mena.identity.presentation.screen.register.selectGender.SelectGenderScreen
-import net.thechance.mena.identity.presentation.screen.register.shared.RegisterUIState
+import net.thechance.mena.identity.presentation.screen.register.shared.uiState.RegisterUIState
 import org.jetbrains.compose.resources.stringResource
 import org.koin.core.parameter.parametersOf
 

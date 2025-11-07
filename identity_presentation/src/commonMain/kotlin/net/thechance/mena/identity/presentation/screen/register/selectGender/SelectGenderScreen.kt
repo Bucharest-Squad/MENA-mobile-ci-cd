@@ -22,7 +22,7 @@ import net.thechance.mena.identity.presentation.components.AuthScreenContainer
 import net.thechance.mena.identity.presentation.components.ErrorSnackBar
 import net.thechance.mena.identity.presentation.components.PageDescription
 import net.thechance.mena.identity.presentation.screen.editProfile.components.GenderToggle
-import net.thechance.mena.identity.presentation.screen.register.shared.RegisterUIState
+import net.thechance.mena.identity.presentation.screen.register.shared.uiState.RegisterUIState
 import net.thechance.mena.identity.presentation.screen.register.uploadProfileImage.UploadProfileImageScreen
 import org.jetbrains.compose.resources.stringResource
 import org.koin.core.parameter.parametersOf

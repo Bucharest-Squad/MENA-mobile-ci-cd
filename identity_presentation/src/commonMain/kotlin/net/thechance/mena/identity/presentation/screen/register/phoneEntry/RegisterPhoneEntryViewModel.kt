@@ -17,7 +17,7 @@ import net.thechance.mena.identity.presentation.base.error.handleAuthenticationE
 import net.thechance.mena.identity.presentation.mapper.mapAuthenticationErrorToMessage
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
 import net.thechance.mena.identity.presentation.screen.countryPicker.menaCountries.MenaCountry
-import net.thechance.mena.identity.presentation.screen.register.shared.RegisterUIState
+import net.thechance.mena.identity.presentation.screen.register.shared.uiState.RegisterUIState
 import org.jetbrains.compose.resources.StringResource
 
 class RegisterPhoneEntryViewModel(
