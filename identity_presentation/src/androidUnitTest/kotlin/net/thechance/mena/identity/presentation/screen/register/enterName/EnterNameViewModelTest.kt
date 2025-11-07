@@ -2,24 +2,29 @@ package net.thechance.mena.identity.presentation.screen.register.enterName
 
 import app.cash.turbine.test
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import net.thechance.mena.identity.domain.entity.PhoneNumber
 import net.thechance.mena.identity.domain.repository.RegisterRepository
+import net.thechance.mena.identity.domain.repository.RegistrationDraftRepository
 import net.thechance.mena.identity.helper.BaseCoroutineTest
 import org.junit.Before
 import org.junit.Test
+import kotlin.test.assertEquals
 
 class EnterNameViewModelTest : BaseCoroutineTest() {
     private lateinit var enterNameViewModel: EnterNameViewModel
     private val registerRepository = mockk<RegisterRepository>()
+    private val registrationDraftRepository = mockk<RegistrationDraftRepository>()
     private val testDispatcher = StandardTestDispatcher()
 
     @Before
     fun setup() {
         enterNameViewModel = EnterNameViewModel(
             registerRepository = registerRepository,
+            registrationDraftRepository = registrationDraftRepository,
             phoneNumber = PhoneNumber("+964", "7901234567"),
             dispatcher = testDispatcher
         )
@@ -244,5 +249,59 @@ class EnterNameViewModelTest : BaseCoroutineTest() {
         enterNameViewModel.onClearErrorMessage()
 
         assert(enterNameViewModel.state.value.errorMessage == null)
+    }
+
+    @Test
+    fun `loadSavedData should load saved draft data`() = runTest {
+        val savedDraft = net.thechance.mena.identity.domain.model.RegistrationDraft(
+            firstName = "SavedFirstName",
+            lastName = "SavedLastName",
+            username = "savedusername"
+        )
+        coEvery { registerRepository.checkUserExistence(any()) } returns true
+        coEvery { registrationDraftRepository.getDraft(any()) } returns savedDraft
+
+        val viewModel = EnterNameViewModel(
+            registerRepository = registerRepository,
+            registrationDraftRepository = registrationDraftRepository,
+            phoneNumber = PhoneNumber("+964", "7901234567"),
+            dispatcher = testDispatcher
+        )
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertEquals("SavedFirstName", viewModel.state.value.firstName)
+    }
+
+    @Test
+    fun `onChangeFirstName should save draft`() = runTest {
+        coEvery { registrationDraftRepository.getDraft(any()) } returns net.thechance.mena.identity.domain.model.RegistrationDraft()
+        coEvery { registrationDraftRepository.saveDraft(any(), any()) } returns Unit
+
+        enterNameViewModel.onChangeFirstName("NewFirstName")
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        coVerify { registrationDraftRepository.saveDraft(any(), net.thechance.mena.identity.domain.model.RegistrationDraft(firstName = "NewFirstName")) }
+    }
+
+    @Test
+    fun `onLastNameChange should save draft`() = runTest {
+        coEvery { registrationDraftRepository.getDraft(any()) } returns net.thechance.mena.identity.domain.model.RegistrationDraft()
+        coEvery { registrationDraftRepository.saveDraft(any(), any()) } returns Unit
+
+        enterNameViewModel.onLastNameChange("NewLastName")
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        coVerify { registrationDraftRepository.saveDraft(any(), net.thechance.mena.identity.domain.model.RegistrationDraft(lastName = "NewLastName")) }
+    }
+
+    @Test
+    fun `onUsernameChange should save draft`() = runTest {
+        coEvery { registrationDraftRepository.getDraft(any()) } returns net.thechance.mena.identity.domain.model.RegistrationDraft()
+        coEvery { registrationDraftRepository.saveDraft(any(), any()) } returns Unit
+
+        enterNameViewModel.onUsernameChange("newusername")
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        coVerify { registrationDraftRepository.saveDraft(any(), net.thechance.mena.identity.domain.model.RegistrationDraft(username = "newusername")) }
     }
 }

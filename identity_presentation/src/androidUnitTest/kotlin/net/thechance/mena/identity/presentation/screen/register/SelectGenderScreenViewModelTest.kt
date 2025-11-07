@@ -2,30 +2,45 @@ package net.thechance.mena.identity.presentation.screen.register
 
 import app.cash.turbine.test
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.LocalDate
 import net.thechance.mena.identity.domain.entity.Gender
+import net.thechance.mena.identity.domain.entity.PhoneNumber
 import net.thechance.mena.identity.domain.model.AuthenticationTokens
 import net.thechance.mena.identity.domain.model.RegisterRequest
+import net.thechance.mena.identity.domain.model.RegistrationDraft
+import net.thechance.mena.identity.domain.repository.AuthenticationRepository
+import net.thechance.mena.identity.domain.repository.CachedImageRepository
 import net.thechance.mena.identity.domain.repository.RegisterRepository
+import net.thechance.mena.identity.domain.repository.RegistrationDraftRepository
 import net.thechance.mena.identity.helper.BaseCoroutineTest
 import net.thechance.mena.identity.presentation.screen.register.selectGender.SelectGenderScreenUIEffect
 import net.thechance.mena.identity.presentation.screen.register.selectGender.SelectGenderScreenViewModel
 import org.junit.Before
 import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class SelectGenderScreenViewModelTest: BaseCoroutineTest() {
     private lateinit var selectGenderScreenViewModel: SelectGenderScreenViewModel
     private val registerRepository = mockk<RegisterRepository>()
+    private val registrationDraftRepository = mockk<RegistrationDraftRepository>()
+    private val cachedImageRepository = mockk<CachedImageRepository>()
+    private val authenticationRepository = mockk<AuthenticationRepository>()
     private val testDispatcher = StandardTestDispatcher()
+    private val phoneNumber = PhoneNumber("+964", "7901234567")
 
     @Before
     fun setup() {
         selectGenderScreenViewModel = SelectGenderScreenViewModel(
             registerRepository = registerRepository,
-            phoneNumber = net.thechance.mena.identity.domain.entity.PhoneNumber("+964", "7901234567"),
+            registrationDraftRepository = registrationDraftRepository,
+            cachedImageRepository = cachedImageRepository,
+            authenticationRepository = authenticationRepository,
+            phoneNumber = phoneNumber,
             firstName = "Mohammed",
             lastName = "Ahmed",
             username = "mohammed123",
@@ -49,6 +64,8 @@ class SelectGenderScreenViewModelTest: BaseCoroutineTest() {
             refreshToken = "test_refresh_token"
         )
         coEvery { registerRepository.register(any<RegisterRequest>()) } returns expectedTokens
+        coEvery { authenticationRepository.saveAuthTokensWithoutEmit(any()) } returns Unit
+        coEvery { registrationDraftRepository.clearDraft(phoneNumber) } returns Unit
         
         selectGenderScreenViewModel.onChangeGender(Gender.MALE)
         
@@ -61,5 +78,99 @@ class SelectGenderScreenViewModelTest: BaseCoroutineTest() {
             val navigateEffect = effect as SelectGenderScreenUIEffect.NavigateToUploadProfileImage
             assert(navigateEffect.authTokens == expectedTokens)
         }
+    }
+
+    @Test
+    fun `onClickRegister should save tokens temporarily`() = runTest {
+        val expectedTokens = AuthenticationTokens(
+            accessToken = "test_access_token",
+            refreshToken = "test_refresh_token"
+        )
+        coEvery { registerRepository.register(any<RegisterRequest>()) } returns expectedTokens
+        coEvery { authenticationRepository.saveAuthTokensWithoutEmit(any()) } returns Unit
+        coEvery { registrationDraftRepository.clearDraft(phoneNumber) } returns Unit
+
+        selectGenderScreenViewModel.onChangeGender(Gender.MALE)
+        selectGenderScreenViewModel.onClickRegister()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        coVerify { authenticationRepository.saveAuthTokensWithoutEmit(expectedTokens) }
+    }
+
+    @Test
+    fun `onClickRegister should clear draft`() = runTest {
+        val expectedTokens = AuthenticationTokens(
+            accessToken = "test_access_token",
+            refreshToken = "test_refresh_token"
+        )
+        coEvery { registerRepository.register(any<RegisterRequest>()) } returns expectedTokens
+        coEvery { authenticationRepository.saveAuthTokensWithoutEmit(any()) } returns Unit
+        coEvery { registrationDraftRepository.clearDraft(phoneNumber) } returns Unit
+
+        selectGenderScreenViewModel.onChangeGender(Gender.MALE)
+        selectGenderScreenViewModel.onClickRegister()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        coVerify { registrationDraftRepository.clearDraft(phoneNumber) }
+    }
+
+    @Test
+    fun `loadSavedData should load saved gender from draft`() = runTest {
+        val savedGender = Gender.MALE
+        val savedDraft = RegistrationDraft(gender = savedGender)
+        coEvery { registrationDraftRepository.getDraft(phoneNumber) } returns savedDraft
+
+        val viewModel = SelectGenderScreenViewModel(
+            registerRepository = registerRepository,
+            registrationDraftRepository = registrationDraftRepository,
+            cachedImageRepository = cachedImageRepository,
+            authenticationRepository = authenticationRepository,
+            phoneNumber = phoneNumber,
+            firstName = "Mohammed",
+            lastName = "Ahmed",
+            username = "mohammed123",
+            password = "Password123",
+            birthDate = LocalDate(2000, 1, 1),
+            dispatcher = testDispatcher
+        )
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertEquals(savedGender, viewModel.state.value.gender)
+    }
+
+    @Test
+    fun `loadSavedData should enable register button when gender is loaded`() = runTest {
+        val savedGender = Gender.MALE
+        val savedDraft = RegistrationDraft(gender = savedGender)
+        coEvery { registrationDraftRepository.getDraft(phoneNumber) } returns savedDraft
+
+        val viewModel = SelectGenderScreenViewModel(
+            registerRepository = registerRepository,
+            registrationDraftRepository = registrationDraftRepository,
+            cachedImageRepository = cachedImageRepository,
+            authenticationRepository = authenticationRepository,
+            phoneNumber = phoneNumber,
+            firstName = "Mohammed",
+            lastName = "Ahmed",
+            username = "mohammed123",
+            password = "Password123",
+            birthDate = LocalDate(2000, 1, 1),
+            dispatcher = testDispatcher
+        )
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertTrue(viewModel.state.value.isRegisterEnabled)
+    }
+
+    @Test
+    fun `onChangeGender should save gender to draft`() = runTest {
+        val gender = Gender.FEMALE
+        coEvery { registrationDraftRepository.getDraft(phoneNumber) } returns RegistrationDraft()
+        coEvery { registrationDraftRepository.saveDraft(phoneNumber, any()) } returns Unit
+
+        selectGenderScreenViewModel.onChangeGender(gender)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        coVerify { registrationDraftRepository.saveDraft(phoneNumber, RegistrationDraft(gender = gender)) }
     }
 }
