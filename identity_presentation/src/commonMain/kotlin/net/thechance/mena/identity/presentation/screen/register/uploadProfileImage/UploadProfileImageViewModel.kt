@@ -10,7 +10,7 @@ import net.thechance.mena.identity.domain.entity.PhoneNumber
 import net.thechance.mena.identity.domain.exception.AuthenticationException
 import net.thechance.mena.identity.domain.model.AuthenticationTokens
 import net.thechance.mena.identity.domain.repository.AuthenticationRepository
-import net.thechance.mena.identity.domain.repository.CachedImageRepository
+import net.thechance.mena.identity.domain.repository.ImagesRepository
 import net.thechance.mena.identity.domain.repository.RegistrationDraftRepository
 import net.thechance.mena.identity.domain.repository.UserRepository
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
@@ -22,7 +22,7 @@ import net.thechance.mena.identity.presentation.utils.ImageDecoder
 import org.jetbrains.compose.resources.StringResource
 
 class UploadProfileImageViewModel(
-    private val cachedImageRepository: CachedImageRepository,
+    private val cachedImageRepository: ImagesRepository,
     private val userRepository: UserRepository,
     private val imageDecoder: ImageDecoder,
     private val authenticationRepository: AuthenticationRepository,

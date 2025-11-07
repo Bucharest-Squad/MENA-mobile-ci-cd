@@ -13,7 +13,6 @@ import net.thechance.mena.identity.domain.model.AuthenticationTokens
 import net.thechance.mena.identity.domain.model.RegisterRequest
 import net.thechance.mena.identity.domain.model.RegistrationDraft
 import net.thechance.mena.identity.domain.repository.AuthenticationRepository
-import net.thechance.mena.identity.domain.repository.CachedImageRepository
 import net.thechance.mena.identity.domain.repository.RegisterRepository
 import net.thechance.mena.identity.domain.repository.RegistrationDraftRepository
 import net.thechance.mena.identity.helper.BaseCoroutineTest
@@ -28,7 +27,6 @@ class SelectGenderScreenViewModelTest: BaseCoroutineTest() {
     private lateinit var selectGenderScreenViewModel: SelectGenderScreenViewModel
     private val registerRepository = mockk<RegisterRepository>()
     private val registrationDraftRepository = mockk<RegistrationDraftRepository>()
-    private val cachedImageRepository = mockk<CachedImageRepository>()
     private val authenticationRepository = mockk<AuthenticationRepository>()
     private val testDispatcher = StandardTestDispatcher()
     private val phoneNumber = PhoneNumber("+964", "7901234567")
@@ -38,7 +36,6 @@ class SelectGenderScreenViewModelTest: BaseCoroutineTest() {
         selectGenderScreenViewModel = SelectGenderScreenViewModel(
             registerRepository = registerRepository,
             registrationDraftRepository = registrationDraftRepository,
-            cachedImageRepository = cachedImageRepository,
             authenticationRepository = authenticationRepository,
             phoneNumber = phoneNumber,
             firstName = "Mohammed",
@@ -123,7 +120,6 @@ class SelectGenderScreenViewModelTest: BaseCoroutineTest() {
         val viewModel = SelectGenderScreenViewModel(
             registerRepository = registerRepository,
             registrationDraftRepository = registrationDraftRepository,
-            cachedImageRepository = cachedImageRepository,
             authenticationRepository = authenticationRepository,
             phoneNumber = phoneNumber,
             firstName = "Mohammed",
@@ -147,7 +143,6 @@ class SelectGenderScreenViewModelTest: BaseCoroutineTest() {
         val viewModel = SelectGenderScreenViewModel(
             registerRepository = registerRepository,
             registrationDraftRepository = registrationDraftRepository,
-            cachedImageRepository = cachedImageRepository,
             authenticationRepository = authenticationRepository,
             phoneNumber = phoneNumber,
             firstName = "Mohammed",

@@ -11,7 +11,7 @@ import kotlinx.coroutines.test.runTest
 import net.thechance.mena.identity.domain.entity.PhoneNumber
 import net.thechance.mena.identity.domain.model.AuthenticationTokens
 import net.thechance.mena.identity.domain.repository.AuthenticationRepository
-import net.thechance.mena.identity.domain.repository.CachedImageRepository
+import net.thechance.mena.identity.domain.repository.ImagesRepository
 import net.thechance.mena.identity.domain.repository.RegistrationDraftRepository
 import net.thechance.mena.identity.domain.repository.UserRepository
 import net.thechance.mena.identity.helper.BaseCoroutineTest
@@ -25,7 +25,7 @@ import kotlin.test.assertTrue
 
 class UploadProfileImageViewModelTest : BaseCoroutineTest() {
     private lateinit var viewModel: UploadProfileImageViewModel
-    private val cachedImageRepository = mockk<CachedImageRepository>()
+    private val cachedImageRepository = mockk<ImagesRepository>()
     private val userRepository = mockk<UserRepository>()
     private val imageDecoder = mockk<ImageDecoder>()
     private val authenticationRepository = mockk<AuthenticationRepository>()

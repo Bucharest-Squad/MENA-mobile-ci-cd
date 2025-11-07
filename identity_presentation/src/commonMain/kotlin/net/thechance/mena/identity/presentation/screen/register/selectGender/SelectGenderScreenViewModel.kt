@@ -11,7 +11,6 @@ import net.thechance.mena.identity.domain.model.AuthenticationTokens
 import net.thechance.mena.identity.domain.model.RegisterRequest
 import net.thechance.mena.identity.domain.model.RegistrationDraft
 import net.thechance.mena.identity.domain.repository.AuthenticationRepository
-import net.thechance.mena.identity.domain.repository.CachedImageRepository
 import net.thechance.mena.identity.domain.repository.RegisterRepository
 import net.thechance.mena.identity.domain.repository.RegistrationDraftRepository
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
@@ -24,7 +23,6 @@ import org.jetbrains.compose.resources.StringResource
 class SelectGenderScreenViewModel(
     private val registerRepository: RegisterRepository,
     private val registrationDraftRepository: RegistrationDraftRepository,
-    private val cachedImageRepository: CachedImageRepository,
     private val authenticationRepository: AuthenticationRepository,
     private val phoneNumber: PhoneNumber,
     private val firstName: String,

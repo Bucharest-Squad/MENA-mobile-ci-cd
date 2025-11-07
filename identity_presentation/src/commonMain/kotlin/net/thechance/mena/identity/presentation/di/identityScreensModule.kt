@@ -1,5 +1,8 @@
 package net.thechance.mena.identity.presentation.di
 
+import kotlinx.datetime.LocalDate
+import net.thechance.mena.identity.domain.entity.PhoneNumber
+import net.thechance.mena.identity.domain.model.AuthenticationTokens
 import net.thechance.mena.identity.presentation.screen.addresses.addEditLocation.AddEditLocationScreenViewModel
 import net.thechance.mena.identity.presentation.screen.addresses.myAddresses.AddressesScreenViewModel
 import net.thechance.mena.identity.presentation.screen.addresses.pickLocation.PickLocationScreenViewModel
@@ -56,12 +59,44 @@ val identityScreensModule = module {
     factoryOf(::ForgetPasswordPhoneEntryScreenViewModel)
     factoryOf(::ForgetPasswordOtpScreenViewModel)
     factoryOf(::EditUserProfileViewModel)
-    factoryOf(::UploadProfileImageViewModel)
+    factory { (authTokens: AuthenticationTokens?, phoneNumber: PhoneNumber?) ->
+        UploadProfileImageViewModel(
+            cachedImageRepository = get(),
+            userRepository = get(),
+            imageDecoder = get(),
+            authenticationRepository = get(),
+            registrationDraftRepository = get(),
+            authTokens = authTokens,
+            phoneNumber = phoneNumber
+        )
+    }
     factoryOf(::SetNewPasswordScreenViewModel)
     factoryOf(::AddressesScreenViewModel)
     factoryOf(::EnableLocationScreenViewModel)
-    factoryOf(::DatePickerScreenViewModel)
-    factoryOf(::SelectGenderScreenViewModel)
+    factory {
+        DatePickerScreenViewModel(
+            ageValidator = get(),
+            registrationDraftRepository = get(),
+            phoneNumber = it[0] as PhoneNumber,
+            firstName = it[1] as String,
+            lastName = it[2] as String,
+            username = it[3] as String,
+            password = it[4] as String
+        )
+    }
+    factory {
+        SelectGenderScreenViewModel(
+            registerRepository = get(),
+            registrationDraftRepository = get(),
+            authenticationRepository = get(),
+            phoneNumber = it[0] as PhoneNumber,
+            firstName = it[1] as String,
+            lastName = it[2] as String,
+            username = it[3] as String,
+            password = it[4] as String,
+            birthDate = it[5] as LocalDate
+        )
+    }
     factoryOf(::ChangePasswordScreenViewModel)
     factoryOf(::ImageDecoderImpl) bind ImageDecoder::class
     viewModel { (minScale: Float, maxScale: Float, initialState: ImageCropperUiState) ->
