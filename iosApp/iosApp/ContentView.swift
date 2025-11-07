@@ -17,7 +17,6 @@ struct ContentView: View {
             .ignoresSafeArea()
             .onOpenURL { url in
                 let deepLink = parseDeepLink(from: url)
-                DeepLinkHandler.shared.onDeepLinkChange(deepLink: deepLink)
             }
     }
 }
