@@ -120,7 +120,7 @@ class DatePickerScreenViewModel(
     }
 
     private fun updateNextButtonState() {
-        state.value.selectedDate?.let { date ->
+        state.value.selectedDate.let { date ->
             updateState { copy(isNextEnabled = ageValidator.isValid(date)) }
         }
     }

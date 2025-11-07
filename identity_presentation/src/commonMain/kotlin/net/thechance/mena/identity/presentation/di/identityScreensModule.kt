@@ -1,8 +1,5 @@
 package net.thechance.mena.identity.presentation.di
 
-import kotlinx.datetime.LocalDate
-import net.thechance.mena.identity.domain.entity.PhoneNumber
-import net.thechance.mena.identity.domain.model.AuthenticationTokens
 import net.thechance.mena.identity.presentation.screen.addresses.addEditLocation.AddEditLocationScreenViewModel
 import net.thechance.mena.identity.presentation.screen.addresses.enableLocationScreen.EnableLocationScreenViewModel
 import net.thechance.mena.identity.presentation.screen.addresses.myAddresses.AddressesScreenViewModel

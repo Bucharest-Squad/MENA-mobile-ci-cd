@@ -1,6 +1,5 @@
 package net.thechance.mena.identity.presentation.screen.register.createPassword
 
-import net.thechance.mena.identity.domain.entity.PhoneNumber
 import net.thechance.mena.identity.presentation.screen.register.shared.RegisterUIState
 
 sealed interface CreatePasswordUIEffect {
