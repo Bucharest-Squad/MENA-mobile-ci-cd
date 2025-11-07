@@ -10,6 +10,7 @@ import net.thechance.mena.faith.data.mapper.toAyah
 import net.thechance.mena.faith.data.mapper.toReciter
 import net.thechance.mena.faith.data.mapper.toReciterDto
 import net.thechance.mena.faith.data.mapper.toSurah
+import net.thechance.mena.faith.data.remote.model.tilawah.AyahSoundUrlRequest
 import net.thechance.mena.faith.data.remote.model.tilawah.SurahSoundRequest
 import net.thechance.mena.faith.data.remote.service.TilawahApiService
 import net.thechance.mena.faith.data.utils.executeApiSafely
@@ -112,8 +113,8 @@ class QuranRepositoryImpl(
         if (!surahSound.isNullOrEmpty()) findAyahInFolder(surahSound, ayahNumber)
 
         return executeApiSafely<String> {
-            tilawahApiService.getSurahSoundUrl(
-                SurahSoundRequest(surahNumber, reciterId)
+            tilawahApiService.getAyahSoundUrl(
+                AyahSoundUrlRequest(surahNumber, ayahNumber, reciterId)
             )
         }
     }
