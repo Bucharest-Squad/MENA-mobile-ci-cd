@@ -1,4 +1,4 @@
-package net.thechance.mena.identity.presentation.screen.profile.components.share
+package net.thechance.mena.identity.presentation.screen.profile.components.dialog.share
 
 import android.content.ClipData
 import android.content.Context
@@ -17,15 +17,15 @@ import net.thechance.mena.identity.presentation.R
 import java.io.File
 
 @Composable
-actual fun ShareSheet(title: String, url: String, onDismiss: () -> Unit) {
+actual fun ShareSheet(title: String, message: String, onDismiss: () -> Unit) {
     val context = LocalContext.current
 
-    LaunchedEffect(url, title) {
+    LaunchedEffect(message, title) {
         val contentPreviewUri = getAndCacheImageFile(context = context).toImageUri(context)
 
         val sendIntent = Intent().apply {
             action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, url)
+            putExtra(Intent.EXTRA_TEXT, message)
             putExtra(Intent.EXTRA_TITLE, title)
 
             clipData = ClipData.newRawUri(title, contentPreviewUri)

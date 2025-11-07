@@ -1,4 +1,4 @@
-package net.thechance.mena.identity.presentation.screen.profile.components.share
+package net.thechance.mena.identity.presentation.screen.profile.components.dialog.share
 
 import androidx.compose.runtime.Composable
 import kotlinx.cinterop.BetaInteropApi
@@ -10,9 +10,9 @@ import platform.UIKit.UIApplication
 
 @OptIn(BetaInteropApi::class)
 @Composable
-actual fun ShareSheet(title: String, url: String, onDismiss: () -> Unit) {
+actual fun ShareSheet(title: String, message: String, onDismiss: () -> Unit) {
     val nsTitle = NSString.create(string = title)
-    val nsUrl = NSURL(string = url)
+    val nsUrl = NSURL(string = message)
 
     val shareSheet = UIActivityViewController(
         activityItems = listOf(nsTitle, nsUrl),
