@@ -100,7 +100,8 @@ private fun ResultList(
                 reciter = result.name,
                 recitingType = result.recitingType,
                 isDownloaded = result.isDownloaded,
-                isSelectedShown = false
+                onSelect = {},
+                onDownloadClick = {}
             )
         }
     }
