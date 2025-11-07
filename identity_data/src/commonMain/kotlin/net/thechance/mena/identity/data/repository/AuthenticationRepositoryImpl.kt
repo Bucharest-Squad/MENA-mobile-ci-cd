@@ -4,13 +4,15 @@ import com.russhwolf.settings.Settings
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import net.thechance.mena.identity.data.dto.auth.response.AuthenticationResponse
+import net.thechance.mena.identity.data.dataSource.local.setting.accessToken
+import net.thechance.mena.identity.data.dataSource.local.setting.imageUploadCompleted
+import net.thechance.mena.identity.data.dataSource.local.setting.lastRegistrationPhoneNumber
+import net.thechance.mena.identity.data.dataSource.local.setting.refreshToken
 import net.thechance.mena.identity.data.dto.auth.request.LoginRequestDto
 import net.thechance.mena.identity.data.dto.auth.request.RefreshRequestDto
-import net.thechance.mena.identity.data.dataSource.local.setting.accessToken
+import net.thechance.mena.identity.data.dto.auth.response.AuthenticationResponse
 import net.thechance.mena.identity.data.mapper.toDomain
 import net.thechance.mena.identity.data.utils.postJson
-import net.thechance.mena.identity.data.dataSource.local.setting.refreshToken
 import net.thechance.mena.identity.data.utils.safeWrapper
 import net.thechance.mena.identity.domain.entity.PhoneNumber
 import net.thechance.mena.identity.domain.model.AuthenticationTokens
@@ -22,13 +24,25 @@ class AuthenticationRepositoryImpl(
     private val settings: Settings
 ) : AuthenticationRepository {
 
-    private val observableToken: MutableStateFlow<String> = MutableStateFlow(settings.accessToken)
-    
+    private val observableToken: MutableStateFlow<String> = MutableStateFlow(
+        getInitialToken()
+    )
+
     @Volatile
     private var isTemporaryTokenMode: Boolean = false
 
+    private fun getInitialToken(): String =
+        if (shouldInitializeWithToken()) settings.accessToken else ""
+
+    private fun shouldInitializeWithToken(): Boolean {
+        val lastPhoneNumber = settings.lastRegistrationPhoneNumber
+        val imageUploadCompleted = settings.imageUploadCompleted
+
+        return lastPhoneNumber.isBlank() || imageUploadCompleted
+    }
+
     override suspend fun login(phoneNumber: PhoneNumber, password: String) = safeWrapper {
-        val response: AuthenticationResponse = client.postJson(
+        val response = client.postJson<AuthenticationResponse>(
             LoginRequestDto(phoneNumber.getFormattedPhoneNumber(), password),
             LOGIN_ENDPOINT
         )
@@ -36,8 +50,8 @@ class AuthenticationRepositoryImpl(
     }
 
     override suspend fun refreshAccessToken(): String {
-        val response: AuthenticationResponse = safeWrapper {
-            client.postJson(
+        val response = safeWrapper {
+            client.postJson<AuthenticationResponse>(
                 RefreshRequestDto(settings.refreshToken),
                 REFRESH_ENDPOINT
             )
@@ -48,17 +62,29 @@ class AuthenticationRepositoryImpl(
 
     override suspend fun getAccessToken(): String = settings.accessToken
 
+    override suspend fun getAuthTokens(): AuthenticationTokens? =
+        createAuthTokensIfValid(settings.accessToken, settings.refreshToken)
+
+    private fun createAuthTokensIfValid(
+        accessToken: String,
+        refreshToken: String
+    ): AuthenticationTokens? =
+        AuthenticationTokens(accessToken, refreshToken).takeIf {
+            accessToken.isNotBlank() && refreshToken.isNotBlank()
+        }
+
     override suspend fun saveAuthTokensWithoutEmit(authTokens: AuthenticationTokens) {
         isTemporaryTokenMode = true
         saveTokensToSettings(authTokens)
     }
 
     override suspend fun saveAuthTokensAndEmit(authTokens: AuthenticationTokens) {
+        isTemporaryTokenMode = false
         saveAuthTokens(authTokens)
     }
 
     override suspend fun clearAuthTokens() {
-        saveTokensToSettings(AuthenticationTokens(accessToken = "", refreshToken = ""))
+        saveTokensToSettings(createEmptyTokens())
         isTemporaryTokenMode = false
     }
 
@@ -71,14 +97,23 @@ class AuthenticationRepositoryImpl(
     private suspend fun saveTokens(authTokens: AuthenticationTokens, shouldEmit: Boolean) {
         saveTokensToSettings(authTokens)
         if (shouldEmit) {
-            observableToken.emit(authTokens.accessToken)
+            emitToken(authTokens.accessToken)
         }
+    }
+
+    private suspend fun emitToken(token: String) {
+        observableToken.emit(token)
     }
 
     private fun saveTokensToSettings(authTokens: AuthenticationTokens) {
         settings.accessToken = authTokens.accessToken
         settings.refreshToken = authTokens.refreshToken
     }
+
+    private fun createEmptyTokens() = AuthenticationTokens(
+        accessToken = "",
+        refreshToken = ""
+    )
 
     companion object {
         const val LOGIN_ENDPOINT = "identity/authentication/login"
