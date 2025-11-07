@@ -1,86 +1,55 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.kover)
+    alias(libs.plugins.androidLibrary)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
     alias(libs.plugins.kotlinx.serialization)
-    alias(libs.plugins.kover)
     alias(libs.plugins.mockkery)
+    alias(libs.plugins.ktorfit)
 }
 
 kotlin {
-    androidTarget {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
-        }
-    }
-
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach { iosTarget ->
-        iosTarget.binaries.framework {
-            baseName = "FaithPresentation"
-            isStatic = true
-        }
-    }
+    androidTarget()
+    iosSimulatorArm64()
+    iosX64()
+    iosArm64()
 
     sourceSets {
         androidMain.dependencies {
-            implementation(compose.preview)
-            implementation(libs.androidx.activity.compose)
+            implementation(libs.androidx.room.sqlite.wrapper)
+            implementation(libs.ktor.client.cio)
+            implementation(libs.androidx.media3.exoplayer.v180)
         }
         commonMain.dependencies {
-            implementation(libs.koin.core)
-            implementation(libs.koin.compose)
-            implementation(libs.koin.compose.viewmodel)
-            implementation(projects.faithDomain)
-            implementation(projects.designSystem)
-            implementation(projects.faithApi)
-            implementation(projects.identityDomain)
-            implementation(projects.identityApi)
             implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.ui)
+            implementation(libs.koin.core)
+            implementation(projects.faithDomain)
             implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
-            implementation(libs.androidx.paging.runtime)
-            implementation(libs.androidx.paging.compose)
-            implementation(libs.androidx.navigation.compose)
+            implementation(libs.androidx.room.runtime)
+            implementation(libs.androidx.sqlite.bundled)
             implementation(libs.kotlinx.serialization.json)
-            implementation(libs.coil.compose)
-            implementation(libs.bundles.filekit)
-            implementation(libs.krop.extensions.filekit)
-            implementation(libs.coil.gif)
-            implementation(libs.krop.core)
+            implementation(projects.identityDomain)
+            implementation(libs.bundles.ktor)
+            implementation(libs.androidx.datastore.preferences)
+            api(libs.koin.core)
             implementation(libs.kotlinx.datetime)
             implementation(libs.napier)
-
-            // maps
-            implementation(libs.maplibre.compose)
-        }
-        iosMain.dependencies {
-
+            implementation(libs.bundles.ktorfit)
+            implementation(libs.okio)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
-            implementation(libs.turbine)
             implementation(libs.mokkery.core)
             implementation(libs.kotlinx.coroutines.test)
-            implementation(libs.androidx.paging.testing)
+            implementation(libs.bundles.test)
         }
-    }
-}
 
-android {
-    namespace = "net.thechance.mena.faith.presentation"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
-
-    defaultConfig {
-        minSdk = libs.versions.android.minSdk.get().toInt()
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
+        }
     }
 }
 
@@ -91,24 +60,114 @@ kover.reports {
         }
     }
 
+
+
     filters {
         includes {
             classes(
-                "net.thechance.mena.faith.presentation.feature.quran.bookmark.BookmarkViewModel",
-                "net.thechance.mena.faith.presentation.feature.quran.sur.SurViewModel",
-                "net.thechance.mena.faith.presentation.feature.quran.surah.SurahViewModel",
-                "net.thechance.mena.faith.presentation.feature.qiblah.compass.CompassViewModel",
-                "net.thechance.mena.faith.presentation.feature.qiblah.calibratedevice.CalibrateDeviceViewModel",
-                "net.thechance.mena.faith.presentation.feature.main.MainViewModel",
-                "net.thechance.mena.faith.presentation.feature.quran.search.SearchViewModel",
-                "net.thechance.mena.faith.presentation.feature.prayertime.PrayerTimeViewModel",
+                "*RepositoryImpl",
                 "*MapperKt",
             )
         }
 
         excludes {
-            packages("net.thechance.mena.faith.presentation.util.extentions")
             annotatedBy("net.thechance.mena.faith.domain.annotation.KoverIgnore")
+        }
+    }
+}
+
+android {
+    namespace = "net.thechance.mena.faith_data"
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
+    defaultConfig {
+        minSdk = libs.versions.android.minSdk.get().toInt()
+    }
+}
+
+room {
+    schemaDirectory("$projectDir/schemas")
+}
+
+dependencies {
+    addKsp(libs.androidx.room.compiler)
+    addKsp(libs.ktorfit.ksp)
+}
+
+compose.resources {
+    publicResClass = true
+    packageOfResClass = "net.thechance.mena.faith_data"
+}
+
+listOf(
+    "kspDebugKotlinAndroid",
+    "kspReleaseKotlinAndroid"
+).forEach { taskName ->
+    tasks.matching { it.name == taskName }.configureEach {
+        dependsOn(
+            "generateComposeResClass",
+            "generateExpectResourceCollectorsForCommonMain",
+            "generateResourceAccessorsForCommonMain",
+            "generateResourceAccessorsForAndroidMain",
+            "generateActualResourceCollectorsForAndroidMain"
+        )
+        if (taskName == "kspDebugKotlinAndroid") {
+            dependsOn("generateResourceAccessorsForAndroidDebug")
+        }
+    }
+}
+
+listOf(
+    "kspKotlinIosSimulatorArm64",
+    "kspKotlinIosX64",
+    "kspKotlinIosArm64"
+).forEach { taskName ->
+    tasks.matching { it.name == taskName }.configureEach {
+        dependsOn(
+            "generateComposeResClass",
+            "generateExpectResourceCollectorsForCommonMain",
+            "generateResourceAccessorsForAppleMain",
+            "generateResourceAccessorsForNativeMain",
+            "generateResourceAccessorsForIosMain",
+            "generateResourceAccessorsForCommonMain"
+        )
+        when (taskName) {
+            "kspKotlinIosSimulatorArm64" -> dependsOn(
+                "generateResourceAccessorsForIosSimulatorArm64Main",
+                "generateActualResourceCollectorsForIosSimulatorArm64Main"
+            )
+
+            "kspKotlinIosX64" -> dependsOn(
+                "generateResourceAccessorsForIosX64Main",
+                "generateActualResourceCollectorsForIosX64Main"
+            )
+
+            "kspKotlinIosArm64" -> dependsOn(
+                "generateResourceAccessorsForIosArm64Main",
+                "generateActualResourceCollectorsForIosArm64Main"
+            )
+        }
+    }
+}
+
+fun DependencyHandlerScope.addKsp(dependencyNotation: Any) {
+    val targets = listOf(
+        //"CommonMainMetadata",
+        "Android",
+        "AndroidTest",
+        "IosX64",
+        "IosX64Test",
+        "IosArm64",
+        "IosSimulatorArm64",
+        "IosArm64Test",
+        "IosSimulatorArm64Test"
+    )
+
+    targets.forEach { target ->
+        runCatching {
+            add(
+                configurationName = "ksp$target",
+                dependencyNotation = dependencyNotation
+            )
         }
     }
 }
