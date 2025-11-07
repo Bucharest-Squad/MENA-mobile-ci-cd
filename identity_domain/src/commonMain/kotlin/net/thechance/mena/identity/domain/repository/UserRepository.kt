@@ -6,7 +6,7 @@ import net.thechance.mena.identity.domain.model.AuthenticationTokens
 
 interface UserRepository {
     suspend fun getUser(): Flow<User?>
-    suspend fun updateUser(user: User, shouldUpdateImage: Boolean)
+    suspend fun updateUser(user: User)
     suspend fun uploadUserProfileImage(imageByteArray: ByteArray?)
     suspend fun uploadUserProfileImageWithTokens(imageByteArray: ByteArray?, authTokens: AuthenticationTokens)
     suspend fun deleteUserProfileImage()
