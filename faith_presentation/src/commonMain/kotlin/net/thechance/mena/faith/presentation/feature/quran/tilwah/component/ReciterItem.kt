@@ -37,6 +37,9 @@ fun ReciterItem(
     isSelected: Boolean,
     onSelect: () -> Unit,
     onDownloadClick: () -> Unit,
+    onSelect: () -> Unit = {},
+    isSelectedShown: Boolean,
+    isSelected: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -127,6 +130,8 @@ private fun Preview() {
             isSelected = true,
             onSelect = {},
             onDownloadClick = {}
+            onSelect = {},
+            isSelectedShown = true
         )
     }
 }
