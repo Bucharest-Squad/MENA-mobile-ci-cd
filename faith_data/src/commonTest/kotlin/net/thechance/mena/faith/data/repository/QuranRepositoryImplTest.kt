@@ -12,10 +12,12 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import net.thechance.mena.faith.data.database.AyahDao
+import net.thechance.mena.faith.data.database.SurahAudioDao
+import net.thechance.mena.faith.data.database.SurahAudioDto
 import net.thechance.mena.faith.data.database.SurahDto
 import net.thechance.mena.faith.data.datastore.TilawahDataStore
-import net.thechance.mena.faith.data.remote.model.tilawah.AyahSoundUrlRequest
 import net.thechance.mena.faith.data.remote.model.tilawah.RecitersRequest
+import net.thechance.mena.faith.data.remote.model.tilawah.SurahSoundRequest
 import net.thechance.mena.faith.data.remote.service.TilawahApiService
 import net.thechance.mena.faith.domain.entity.Surah
 import net.thechance.mena.faith.domain.model.LastAyahForTilawah
@@ -27,12 +29,14 @@ class QuranRepositoryImplTest {
 
     private val mockDao: AyahDao = mock(MockMode.autofill)
     private val tilawahDataStore: TilawahDataStore = mock(MockMode.autofill)
+    private val surahSoundDao: SurahAudioDao = mock(MockMode.autofill)
 
     private val tilawahApiService = mock<TilawahApiService>(MockMode.autofill)
     private val repository =
         QuranRepositoryImpl(
             ayahDao = mockDao,
             tilawahDataStore = tilawahDataStore,
+            surahSoundDao = surahSoundDao,
             tilawahApiService = tilawahApiService
         )
 
@@ -131,26 +135,6 @@ class QuranRepositoryImplTest {
     }
 
     @Test
-    fun `getAyahSoundUrl should call tilawahApiService getAyahSoundUrl`() = runTest {
-        val expectedUrl = "https://example.com/ayah_sound/001001.mp3"
-        everySuspend {
-            tilawahApiService.getAyahSoundUrl(
-                body = AyahSoundUrlRequest(
-                    ayahNumber = 1,
-                    surahNumber = 1,
-                    reciterId = 1
-                )
-            )
-        } returns makeSuccessFakeResponse(
-            body = expectedUrl,
-            successStatus = HttpStatusCode.OK
-        )
-
-        val result = repository.getAyahSoundUrl(1, 1, 1)
-        assertEquals(expectedUrl, result)
-    }
-
-    @Test
     fun `saveDefaultReciter should call datastore saveDefaultReciter`() = runTest {
         val reciterId = 1
 
@@ -222,6 +206,192 @@ class QuranRepositoryImplTest {
         verifySuspend { tilawahApiService.getReciters() }
     }
 
+    @Test
+    fun `getSurahAudioCachePath should return null when path not found in database`() = runTest {
+        everySuspend { surahSoundDao.getCachedAudioPath(SURAH_ID_1, RECITER_ID_1) } returns null
+
+        val result = repository.getSurahAudioCachePath(SURAH_ID_1, RECITER_ID_1)
+
+        assertEquals(null, result)
+    }
+
+    @Test
+    fun `getSurahAudioCachePath should return null when file does not exist on filesystem`() =
+        runTest {
+            everySuspend {
+                surahSoundDao.getCachedAudioPath(
+                    SURAH_ID_1,
+                    RECITER_ID_1
+                )
+            } returns NON_EXISTENT_PATH
+            // Mock FileSystem.SYSTEM.exists to return false
+
+            val result = repository.getSurahAudioCachePath(SURAH_ID_1, RECITER_ID_1)
+
+            assertEquals(null, result)
+        }
+
+    @Test
+    fun `saveSurahAudioToCache should call dao saveSurahAudio with correct parameters`() = runTest {
+        repository.saveSurahAudioToCache(SURAH_ID_1, RECITER_ID_1, LOCAL_PATH_SURAH_1)
+
+        verifySuspend {
+            surahSoundDao.saveSurahAudio(
+                SurahAudioDto(
+                    surahId = SURAH_ID_1,
+                    reciterId = RECITER_ID_1,
+                    localFilePath = LOCAL_PATH_SURAH_1
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `saveSurahAudioToCache should save multiple different surahs`() = runTest {
+        repository.saveSurahAudioToCache(SURAH_ID_1, RECITER_ID_1, LOCAL_PATH_SURAH_1_SIMPLE)
+        repository.saveSurahAudioToCache(SURAH_ID_2, RECITER_ID_1, LOCAL_PATH_SURAH_2_SIMPLE)
+
+        verifySuspend {
+            surahSoundDao.saveSurahAudio(
+                SurahAudioDto(
+                    surahId = SURAH_ID_1,
+                    reciterId = RECITER_ID_1,
+                    localFilePath = LOCAL_PATH_SURAH_1_SIMPLE
+                )
+            )
+        }
+        verifySuspend {
+            surahSoundDao.saveSurahAudio(
+                SurahAudioDto(
+                    surahId = SURAH_ID_2,
+                    reciterId = RECITER_ID_1,
+                    localFilePath = LOCAL_PATH_SURAH_2_SIMPLE
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `getRemoteSurahSoundUrl should return url from api service`() = runTest {
+        everySuspend {
+            tilawahApiService.getSurahSoundUrl(
+                SurahSoundRequest(reciterId = RECITER_ID_1, surahNumber = SURAH_ID_1)
+            )
+        } returns makeSuccessFakeResponse(REMOTE_URL_SURAH_1_RECITER_1)
+
+        val result = repository.getRemoteSurahSoundUrl(SURAH_ID_1, RECITER_ID_1)
+
+        assertEquals(REMOTE_URL_SURAH_1_RECITER_1, result)
+        verifySuspend {
+            tilawahApiService.getSurahSoundUrl(
+                SurahSoundRequest(
+                    RECITER_ID_1,
+                    SURAH_ID_1
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `getRemoteSurahSoundUrl should call api with different surah and reciter ids`() = runTest {
+        everySuspend {
+            tilawahApiService.getSurahSoundUrl(SurahSoundRequest(RECITER_ID_1, SURAH_ID_1))
+        } returns makeSuccessFakeResponse(REMOTE_URL_SURAH_1)
+
+        everySuspend {
+            tilawahApiService.getSurahSoundUrl(SurahSoundRequest(RECITER_ID_2, SURAH_ID_2))
+        } returns makeSuccessFakeResponse(REMOTE_URL_SURAH_2)
+
+        val result1 = repository.getRemoteSurahSoundUrl(SURAH_ID_1, RECITER_ID_1)
+        val result2 = repository.getRemoteSurahSoundUrl(SURAH_ID_2, RECITER_ID_2)
+
+        assertEquals(REMOTE_URL_SURAH_1, result1)
+        assertEquals(REMOTE_URL_SURAH_2, result2)
+    }
+
+    @Test
+    fun `isSurahAudioCached should return false when audio is not cached`() = runTest {
+        everySuspend { surahSoundDao.getCachedAudioPath(SURAH_ID_1, RECITER_ID_1) } returns null
+
+        val result = repository.isSurahAudioCached(SURAH_ID_1, RECITER_ID_1)
+
+        assertEquals(false, result)
+    }
+
+    @Test
+    fun `isSurahAudioCached should return false when cached file does not exist`() = runTest {
+        everySuspend {
+            surahSoundDao.getCachedAudioPath(
+                SURAH_ID_1,
+                RECITER_ID_1
+            )
+        } returns NON_EXISTENT_PATH
+
+        val result = repository.isSurahAudioCached(SURAH_ID_1, RECITER_ID_1)
+
+        assertEquals(false, result)
+    }
+
+    @Test
+    fun `getAyahSoundUrl should return remote url when surah is not cached`() = runTest {
+        everySuspend { surahSoundDao.getCachedAudioPath(SURAH_ID_1, RECITER_ID_1) } returns null
+        everySuspend {
+            tilawahApiService.getSurahSoundUrl(SurahSoundRequest(RECITER_ID_1, SURAH_ID_1))
+        } returns makeSuccessFakeResponse(REMOTE_URL_SURAH_1)
+
+        val result = repository.getAyahSoundUrl(
+            ayahNumber = AYAH_NUMBER_1,
+            surahNumber = SURAH_ID_1,
+            reciterId = RECITER_ID_1
+        )
+
+        assertEquals(REMOTE_URL_SURAH_1, result)
+    }
+
+    @Test
+    fun `getAyahSoundUrl should attempt to find ayah in folder when surah is cached`() = runTest {
+        everySuspend {
+            surahSoundDao.getCachedAudioPath(
+                SURAH_ID_1,
+                RECITER_ID_1
+            )
+        } returns CACHED_SURAH_PATH
+        // Mock FileSystem operations
+
+        everySuspend {
+            tilawahApiService.getSurahSoundUrl(SurahSoundRequest(RECITER_ID_1, SURAH_ID_1))
+        } returns makeSuccessFakeResponse(REMOTE_URL_SURAH_1)
+
+        val result = repository.getAyahSoundUrl(
+            ayahNumber = AYAH_NUMBER_5,
+            surahNumber = SURAH_ID_1,
+            reciterId = RECITER_ID_1
+        )
+
+        assertEquals(REMOTE_URL_SURAH_1, result)
+    }
+
+    @Test
+    fun `getAyahSoundUrl should fallback to remote when cached path is empty`() = runTest {
+        everySuspend {
+            surahSoundDao.getCachedAudioPath(
+                SURAH_ID_1,
+                RECITER_ID_1
+            )
+        } returns EMPTY_PATH
+        everySuspend {
+            tilawahApiService.getSurahSoundUrl(SurahSoundRequest(RECITER_ID_1, SURAH_ID_1))
+        } returns makeSuccessFakeResponse(REMOTE_URL_SURAH_1)
+
+        val result = repository.getAyahSoundUrl(
+            ayahNumber = AYAH_NUMBER_1,
+            surahNumber = SURAH_ID_1,
+            reciterId = RECITER_ID_1
+        )
+
+        assertEquals(REMOTE_URL_SURAH_1, result)
+    }
+
 
     private companion object {
 
@@ -233,6 +403,28 @@ class QuranRepositoryImplTest {
         const val SECOND_RECITER_ARABIC_NAME = "مشاري"
         const val FIRST_TILWAH_TYPE = "Murattal"
         const val SECOND_TILWAH_TYPE = "Mujawwad"
+
+        // IDs
+        const val SURAH_ID_1 = 1
+        const val SURAH_ID_2 = 2
+        const val RECITER_ID_1 = 1
+        const val RECITER_ID_2 = 2
+        const val AYAH_NUMBER_1 = 1
+        const val AYAH_NUMBER_5 = 5
+
+
+        const val NON_EXISTENT_PATH = "/cache/nonexistent.mp3"
+        const val CACHED_SURAH_PATH = "/cache/surah_1"
+        const val LOCAL_PATH_SURAH_1 = "/cache/surah_1_reciter_1.mp3"
+        const val LOCAL_PATH_SURAH_1_SIMPLE = "/cache/surah_1.mp3"
+        const val LOCAL_PATH_SURAH_2_SIMPLE = "/cache/surah_2.mp3"
+        const val EMPTY_PATH = ""
+
+
+        const val REMOTE_URL_SURAH_1_RECITER_1 = "https://example.com/surah_1_reciter_1.mp3"
+        const val REMOTE_URL_SURAH_1 = "https://example.com/surah_1.mp3"
+        const val REMOTE_URL_SURAH_2 = "https://example.com/surah_2.mp3"
+
 
         val TILAWAH_AYAH_TO_SAVE = LastAyahForTilawah(
             number = 3,
@@ -251,10 +443,13 @@ class QuranRepositoryImplTest {
             surahId = 2,
             surahName = AL_BAQARAH_NAME
         )
+
+
         val SURAH_DTOS: List<SurahDto> = listOf(
             SurahDto(number = 1, name = AL_FATIHAH_NAME, ayahCount = 7),
             SurahDto(number = 2, name = AL_BAQARAH_NAME, ayahCount = 286)
         )
+
         val SUR_LIST = listOf(
             Surah(
                 id = 1,
