@@ -10,6 +10,7 @@ import net.thechance.mena.identity.domain.exception.NoNetworkException
 import net.thechance.mena.identity.domain.exception.OtpExpiredException
 import net.thechance.mena.identity.domain.exception.PhoneNumberAlreadyExistsException
 import net.thechance.mena.identity.domain.exception.TooManyRequestsException
+import net.thechance.mena.identity.domain.exception.UnAuthorizedException
 import net.thechance.mena.identity.domain.exception.UserIsBlockedException
 import net.thechance.mena.identity.domain.exception.UsernameAlreadyExistsException
 
@@ -28,6 +29,7 @@ fun handleAuthenticationException(
         is UsernameAlreadyExistsException -> AuthenticationErrorState.UsernameAlreadyExists
         is NoNetworkException -> AuthenticationErrorState.NoNetwork
         is InvalidRequestException -> AuthenticationErrorState.InvalidRequest
+        is UnAuthorizedException -> AuthenticationErrorState.IncorrectPassword
         else -> AuthenticationErrorState.SomethingWentWrong(exception.message)
     }
 }
