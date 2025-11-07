@@ -90,7 +90,7 @@ class QuranRepositoryImpl(
         reciterId: Int
     ): String = executeApiSafely {
         tilawahApiService.getSurahSoundUrl(
-            SurahSoundRequest(surahId, reciterId)
+            SurahSoundRequest(reciterId, surahId)
         )
     }
 
@@ -116,7 +116,7 @@ class QuranRepositoryImpl(
 
         return executeApiSafely<String> {
             tilawahApiService.getAyahSoundUrl(
-                AyahSoundUrlRequest(surahNumber, ayahNumber, reciterId)
+                AyahSoundUrlRequest(reciterId, ayahNumber, surahNumber)
             )
         }
     }
