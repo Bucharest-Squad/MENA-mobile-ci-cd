@@ -27,7 +27,6 @@ import mena.composeapp.generated.resources.ic_trends
 import mena.composeapp.generated.resources.ic_trends_selected
 import mena.composeapp.generated.resources.profile
 import mena.composeapp.generated.resources.trends
-import net.thechance.mena.DeepLinkHandler
 import net.thechance.mena.core_chat.api.CoreChatApi
 import net.thechance.mena.designsystem.presentation.component.bottomNavigation.BottomNavigationBar
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
@@ -43,28 +42,29 @@ import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun EntryPoint() {
+fun EntryPoint(viewModel: MainEntryViewModel = koinViewModel()) {
     val identityApi = koinInject<IdentityFeatureApi>()
     val authorizationService = koinInject<AuthorizationService>()
-
     val token by authorizationService.observeAccessToken().collectAsStateWithLifecycle()
+    val activeFeature: Feature by viewModel.activeFeature.collectAsStateWithLifecycle()
+    val currentDeepLink: DeepLink? by viewModel.currentDeepLink.collectAsStateWithLifecycle()
 
     if (token.isBlank()) {
         identityApi.LoginFlow()
         return
     }
 
-    if (DeepLinkHandler.isURLValid()) {
+    if (currentDeepLink?.userId != null) {
         ChatEntry(
-            deepLink = DeepLinkHandler.currentDeepLink,
+            deepLink = currentDeepLink,
             onNavigateBack = {
-                DeepLinkHandler.clearDeepLink()
+                viewModel.clearDeepLink()
             }
         )
         return
     }
 
-    LoggedInContainer()
+    LoggedInContainer(activeFeature, viewModel)
 }
 
 @Composable
@@ -79,9 +79,9 @@ fun ChatEntry(deepLink: DeepLink?, onNavigateBack: () -> Unit) {
 
 @Composable
 private fun LoggedInContainer(
-    viewModel: MainEntryViewModel = koinViewModel()
+    activeFeature: Feature,
+    listener: MainEntryInteractionListener
 ) {
-    val activeFeature: Feature by viewModel.activeFeature.collectAsStateWithLifecycle()
     Column(
         Modifier
             .fillMaxSize()
@@ -97,35 +97,35 @@ private fun LoggedInContainer(
                 selectedIcon = painterResource(Res.drawable.ic_home_selected),
                 notSelectedIcon = painterResource(Res.drawable.ic_home),
                 title = stringResource(Res.string.home),
-                entry = { viewModel.setActiveFeature(Feature.CHAT) }
+                entry = { listener.setActiveFeature(Feature.CHAT) }
             )
 
             bottomNavigationItem(
                 selectedIcon = painterResource(Res.drawable.ic_dukan_selected),
                 notSelectedIcon = painterResource(Res.drawable.ic_dukan),
                 title = stringResource(Res.string.dukan),
-                entry = { viewModel.setActiveFeature(Feature.DUKAN) }
+                entry = { listener.setActiveFeature(Feature.DUKAN) }
             )
 
             bottomNavigationItem(
                 selectedIcon = painterResource(Res.drawable.ic_trends_selected),
                 notSelectedIcon = painterResource(Res.drawable.ic_trends),
                 title = stringResource(Res.string.trends),
-                entry = { viewModel.setActiveFeature(Feature.TREND) }
+                entry = { listener.setActiveFeature(Feature.TREND) }
             )
 
             bottomNavigationItem(
                 selectedIcon = painterResource(Res.drawable.ic_faith_selected),
                 notSelectedIcon = painterResource(Res.drawable.ic_faith),
                 title = stringResource(Res.string.faith),
-                entry = { viewModel.setActiveFeature(Feature.FAITH) }
+                entry = { listener.setActiveFeature(Feature.FAITH) }
             )
 
             bottomNavigationItem(
                 selectedIcon = painterResource(Res.drawable.ic_profile_selected),
                 notSelectedIcon = painterResource(Res.drawable.ic_profile),
                 title = stringResource(Res.string.profile),
-                entry = { viewModel.setActiveFeature(Feature.PROFILE) }
+                entry = { listener.setActiveFeature(Feature.PROFILE) }
             )
         }
     }
