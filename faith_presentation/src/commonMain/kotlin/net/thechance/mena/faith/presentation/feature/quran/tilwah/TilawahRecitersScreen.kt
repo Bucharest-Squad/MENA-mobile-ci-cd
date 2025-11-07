@@ -56,7 +56,6 @@ private fun Content(
                     recitingType = reciter.recitingType,
                     isDownloaded = reciter.isDownloaded,
                     isSelected = uiState.selectedReciterId == reciter.id,
-                    isSelectedShown = true,
                     onSelect = {
                         listener.onSelectReciterClick(reciter.id)
                     },
