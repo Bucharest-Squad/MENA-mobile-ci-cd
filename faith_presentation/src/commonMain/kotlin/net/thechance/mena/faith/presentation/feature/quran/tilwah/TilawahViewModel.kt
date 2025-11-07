@@ -9,11 +9,11 @@ import net.thechance.mena.faith.domain.repository.QuranRepository
 import net.thechance.mena.faith.domain.service.DownloadSurahManager
 import net.thechance.mena.faith.presentation.base.BaseViewModel
 import net.thechance.mena.faith.presentation.base.ErrorState
-import net.thechance.mena.faith.presentation.feature.quran.surah.args.SurahArgs
+import net.thechance.mena.faith.presentation.feature.quran.tilwah.component.args.TilawahSurahArgs
 
 class TilawahViewModel(
     private val quranRepository: QuranRepository,
-    private val surahArgs: SurahArgs,
+    private val surahArgs: TilawahSurahArgs,
     private val downloadManager: DownloadSurahManager,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : BaseViewModel<TilawahUiState, TilawahEffect>(TilawahUiState(surahArgs.surahId)),
