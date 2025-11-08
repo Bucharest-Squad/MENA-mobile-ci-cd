@@ -10,8 +10,11 @@ import net.thechance.mena.faith.domain.entity.PrayerName
 import net.thechance.mena.faith.domain.entity.PrayerTime
 import net.thechance.mena.faith.domain.repository.PrayerTimeRepository
 import net.thechance.mena.faith.presentation.base.BaseViewModel
+import net.thechance.mena.faith.presentation.utils.extentions.prayerTime.convertHijriToReadableFormat
 import net.thechance.mena.faith.presentation.utils.extentions.prayerTime.formatCountdown
 import net.thechance.mena.faith.presentation.utils.extentions.prayerTime.getHijriReadableDate
+import net.thechance.mena.faith.presentation.utils.extentions.prayerTime.getNextHijriDate
+import net.thechance.mena.faith.presentation.utils.extentions.prayerTime.getPreviousHijriDate
 import net.thechance.mena.identity.domain.entity.Address
 import net.thechance.mena.identity.domain.service.LocationService
 import kotlin.time.Clock
@@ -22,13 +25,51 @@ import kotlin.time.Instant
 class PrayerTimeViewModel(
     private val prayerTimeRepository: PrayerTimeRepository,
     private val locationService: LocationService,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : BaseViewModel<PrayerTimeUiState, PrayerTimeEffect>(PrayerTimeUiState()),
     PrayerTimeInteractionListener {
+
+    private var currentHijriDateRaw: String = ""
 
     init {
         getUserLocation()
     }
+
+    override fun onBackClick() = sendEffect(PrayerTimeEffect.NavigateBack)
+
+    override fun onPrevDateClick() {
+        tryToExecute(
+            execute = {
+                if (currentHijriDateRaw.isNotEmpty()) {
+                    val previousDate = getPreviousHijriDate(currentHijriDateRaw)
+                    updateState { it.copy(currentDate = convertHijriToReadableFormat(previousDate)) }
+                    currentHijriDateRaw = previousDate
+                }
+                currentHijriDateRaw
+            },
+            onSuccess = { getHijriPrayerTimes(hijriDateRaw = it) })
+    }
+
+    override fun onNextDateClick() {
+        tryToExecute(
+            execute = {
+                if (currentHijriDateRaw.isNotEmpty()) {
+                    val nextDate = getNextHijriDate(currentHijriDateRaw)
+                    updateState { it.copy(currentDate = convertHijriToReadableFormat(nextDate)) }
+                    currentHijriDateRaw = nextDate
+                }
+                currentHijriDateRaw
+            },
+            onSuccess = { getHijriPrayerTimes(it) })
+    }
+
+    override fun onDateDropdownClick() {}
+
+    override fun onLocationClick() = sendEffect(PrayerTimeEffect.NavigateToAddressesScreen)
+
+    override fun onDateSelected(day: Int, month: Int, year: Int) {}
+
+    override fun onDatePickerDismiss() {}
 
     private fun getUserLocation() {
         tryToExecute(
@@ -41,22 +82,15 @@ class PrayerTimeViewModel(
 
     private fun onGetUserLocationSuccess(address: Address) {
         updateState { state -> state.copy(address = address.addressLine) }
-
-        tryToExecute(
-            execute = {
-                prayerTimeRepository.getPrayerTimes(
-                    date = Clock.System.now(),
-                    address = address
-                )
-            },
-            onSuccess = ::onPrayerTimesSuccess,
-            dispatcher = dispatcher
-        )
+        getPrayerTime(address)
     }
 
     private fun onPrayerTimesSuccess(prayerTimes: List<PrayerTime>) {
         val filteredPrayerTimes = prayerTimes.filter { it.name != PrayerName.SUNRISE }
         val hijriDate = getHijriReadableDate(prayerTimes)
+
+        val hijriDateRaw = prayerTimes.firstOrNull()?.hijriDate ?: ""
+        currentHijriDateRaw = hijriDateRaw
 
         updateState {
             it.copy(
@@ -73,12 +107,52 @@ class PrayerTimeViewModel(
 
         if (prayerTimes.isEmpty()) return
 
-
         val currentTime = Clock.System.now()
         val nextPrayer = findNextPrayer(prayerTimes, currentTime)
 
         if (nextPrayer != null) updateStateWithNextPrayer(nextPrayer, currentTime)
         else handleTomorrowFirstPrayer(prayerTimes, currentTime)
+    }
+
+    private fun getHijriPrayerTimes(hijriDateRaw: String) {
+        tryToExecute(
+            execute = {
+                val formattedHijriDate = hijriDateRaw.split("-").let { (day, month, year) ->
+                    "$year-$month-$day"
+                }
+                prayerTimeRepository.getPrayerTimeWithHijriDate(
+                    date = formattedHijriDate,
+                    isHijri = true,
+                    address = locationService.getActiveAddress()!!
+                )
+            },
+            onSuccess = ::onHijriPrayerTimesSuccess
+        )
+        updateNextPrayerInfo()
+    }
+
+    private fun getPrayerTime(address: Address) {
+        tryToExecute(
+            execute = {
+                prayerTimeRepository.getPrayerTimes(
+                    date = Clock.System.now(),
+                    address = address
+                )
+            },
+            onSuccess = ::onPrayerTimesSuccess,
+        )
+    }
+
+    private fun onHijriPrayerTimesSuccess(prayerTimes: List<PrayerTime>) {
+        val filteredPrayerTimes = prayerTimes.filter { it.name != PrayerName.SUNRISE }
+        val hijriDate = getHijriReadableDate(prayerTimes)
+
+        updateState {
+            it.copy(
+                prayerTimes = filteredPrayerTimes,
+                currentDate = hijriDate
+            )
+        }
     }
 
     private fun findNextPrayer(prayerTimes: List<PrayerTime>, currentTime: Instant): PrayerTime? {
@@ -129,16 +203,6 @@ class PrayerTimeViewModel(
             }
         }
     }
-
-    override fun onBackClick() = sendEffect(PrayerTimeEffect.NavigateBack)
-
-    override fun onPrevDateClick() = sendEffect(PrayerTimeEffect.NavigatePrevDate)
-
-    override fun onNextDateClick() = sendEffect(PrayerTimeEffect.NavigateNextDate)
-
-    override fun onDateDropdownClick() = sendEffect(PrayerTimeEffect.NavigateCalenderDialog)
-
-    override fun onLocationClick() = sendEffect(PrayerTimeEffect.NavigateToAddressesScreen)
 
     private companion object {
         const val ONE_DAY_IN_MILLIS = 24 * 60 * 60 * 1000L

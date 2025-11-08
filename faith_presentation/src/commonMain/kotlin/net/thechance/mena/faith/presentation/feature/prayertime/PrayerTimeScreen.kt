@@ -16,6 +16,7 @@ import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.faith.presentation.base.ObserveAsEffect
 import net.thechance.mena.faith.presentation.feature.main.getPrayerDisplayNameResource
 import net.thechance.mena.faith.presentation.feature.prayertime.component.DateChange
+import net.thechance.mena.faith.presentation.feature.prayertime.component.IslamicDatePickerDialog
 import net.thechance.mena.faith.presentation.feature.prayertime.component.NextPrayerCard
 import net.thechance.mena.faith.presentation.feature.prayertime.component.PrayerItem
 import net.thechance.mena.faith.presentation.feature.prayertime.component.PrayerTimeTopBar
@@ -70,7 +71,16 @@ private fun Content(uiState: PrayerTimeUiState, listener: PrayerTimeInteractionL
                 onLeadingClick = listener::onBackClick,
                 trailingContent = { PrayerTimeTopBar(uiState, listener::onLocationClick) }
             )
-        },
+        }, overlays = {
+            dialog(uiState.showDatePicker) {
+                IslamicDatePickerDialog(
+                    isVisible = uiState.showDatePicker,
+                    selectedDate = uiState.selectedIslamicDate,
+                    onDateChange = listener::onDateSelected,
+                    onDismiss = listener::onDatePickerDismiss
+                )
+            }
+        }
     ) {
         LazyColumn {
             item {

@@ -2,6 +2,7 @@ package net.thechance.mena.faith.presentation.feature.prayertime
 
 import net.thechance.mena.faith.domain.entity.PrayerName
 import net.thechance.mena.faith.domain.entity.PrayerTime
+import net.thechance.mena.faith.presentation.components.IslamicDate
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
@@ -12,5 +13,8 @@ data class PrayerTimeUiState(
     val nextPrayerName: PrayerName = PrayerName.DHUHR,
     val currentDate: String = "",
     val nextPrayerTime: Instant = Instant.fromEpochMilliseconds(0),
-    val address: String = ""
+    val address: String = "",
+    val showDatePicker: Boolean = false,
+    val selectedIslamicDate: IslamicDate? = null,
+    val isToday: Boolean = true
 )

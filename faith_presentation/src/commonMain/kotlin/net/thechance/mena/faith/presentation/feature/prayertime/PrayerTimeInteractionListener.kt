@@ -6,4 +6,6 @@ interface PrayerTimeInteractionListener {
     fun onNextDateClick()
     fun onDateDropdownClick()
     fun onLocationClick()
+    fun onDateSelected(day: Int, month: Int, year: Int)
+    fun onDatePickerDismiss()
 }
