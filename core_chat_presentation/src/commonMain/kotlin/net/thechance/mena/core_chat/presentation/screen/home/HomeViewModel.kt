@@ -188,7 +188,7 @@ class HomeViewModel(
     }
 
     private fun onGetBalanceAmountSuccess(balanceAmount: Double) {
-        updateState { it.copy(balanceAmount = balanceAmount.toString(), isBalanceLoading = false) }
+        updateState { it.copy(balanceAmount = balanceAmount.toInt().toString(), isBalanceLoading = false) }
     }
 
     private fun onGetBalanceAmountError() {
