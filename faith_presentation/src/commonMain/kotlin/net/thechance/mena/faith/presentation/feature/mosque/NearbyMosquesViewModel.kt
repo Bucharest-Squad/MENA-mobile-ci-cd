@@ -62,8 +62,6 @@ internal class NearbyMosquesViewModel(
         }.cachedIn(viewModelScope)
     }
 
-
-
     override fun onQueryChange(query: String) {
         updateState { it.copy(query = query) }
     }
@@ -84,14 +82,15 @@ internal class NearbyMosquesViewModel(
     }
 
     override fun onAddMosqueClick() {
-//        TODO("Not yet implemented")
+        sendEffect(NearbyMosquesEffect.NavigateToAddMosque)
     }
 
     override fun onViewMosqueDetailsClick(mosque: MosqueUiState) {
 //        TODO("Not yet implemented")
     }
+
     private fun handleSearchSuccess(mosques: List<Mosque>, query: String) {
-        if (mosques.isEmpty()&& !uiState.value.isSearchResultsBottomSheetVisible) {
+        if (mosques.isEmpty() && !uiState.value.isSearchResultsBottomSheetVisible) {
             viewModelScope.launch {
                 updateState {
                     it.copy(

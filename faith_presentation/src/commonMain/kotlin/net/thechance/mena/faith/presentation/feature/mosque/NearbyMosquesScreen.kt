@@ -79,7 +79,7 @@ internal fun NearbyMosquesScreen(
     ObserveAsEffect(viewModel.uiEffect) { effect ->
         when (effect) {
             NearbyMosquesEffect.NavigateBack -> {}
-            NearbyMosquesEffect.NavigateToAddMosque -> {}
+            NearbyMosquesEffect.NavigateToAddMosque -> navController.navigate(Route.CreateMosqueRoute)
             NearbyMosquesEffect.NavigateToAddressesScreen -> navController.navigate(Route.UserAddresses)
             is NearbyMosquesEffect.NavigateToMap -> mapNavigator.openMapAtCoordinate(coordinate = effect.coordinate)
         }
@@ -114,8 +114,6 @@ private fun Content(
         }
     }
 
-
-
     val allMosques = buildList {
         addAll(uiState.mosques)
         if (searchResultsPaging != null && searchResultsPaging.itemCount > 0) {
@@ -146,9 +144,11 @@ private fun Content(
                 },
                 trailingContent = {
                     Icon(
-                        modifier = Modifier.size(20.dp),
+                        modifier = Modifier
+                            .size(20.dp)
+                            .clickable(onClick = listener::onAddMosqueClick),
                         painter = painterResource(Res.drawable.ic_add),
-                        contentDescription = stringResource(Res.string.add)
+                        contentDescription = stringResource(Res.string.add),
                     )
                 },
                 onLeadingClick = listener::onBackClick
