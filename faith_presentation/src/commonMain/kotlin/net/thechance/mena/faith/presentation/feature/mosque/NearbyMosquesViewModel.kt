@@ -15,6 +15,7 @@ import net.thechance.mena.faith.domain.entity.Mosque
 import net.thechance.mena.faith.domain.repository.MosqueRepository
 import net.thechance.mena.faith.presentation.base.BaseViewModel
 import net.thechance.mena.faith.presentation.base.createPagingSourceFlow
+import net.thechance.mena.faith.presentation.base.snackbar.SnackBarState
 import net.thechance.mena.faith.presentation.base.snackbar.SnackbarHandler
 import net.thechance.mena.identity.domain.entity.Address
 import net.thechance.mena.identity.domain.service.LocationService
@@ -62,8 +63,6 @@ internal class NearbyMosquesViewModel(
         }.cachedIn(viewModelScope)
     }
 
-
-
     override fun onQueryChange(query: String) {
         updateState { it.copy(query = query) }
     }
@@ -84,14 +83,15 @@ internal class NearbyMosquesViewModel(
     }
 
     override fun onAddMosqueClick() {
-//        TODO("Not yet implemented")
+        sendEffect(NearbyMosquesEffect.NavigateToAddMosque)
     }
 
     override fun onViewMosqueDetailsClick(mosque: MosqueUiState) {
 //        TODO("Not yet implemented")
     }
+
     private fun handleSearchSuccess(mosques: List<Mosque>, query: String) {
-        if (mosques.isEmpty()&& !uiState.value.isSearchResultsBottomSheetVisible) {
+        if (mosques.isEmpty() && !uiState.value.isSearchResultsBottomSheetVisible) {
             viewModelScope.launch {
                 updateState {
                     it.copy(
@@ -191,6 +191,14 @@ internal class NearbyMosquesViewModel(
                 isMosqueBottomSheetVisible = false
             )
         }
+    }
+
+    override fun showSuccessMessage(message: String) {
+        snackbarHandler.showSnackBar(
+            message = { message },
+            status = SnackBarState.Status.Success,
+            scope = viewModelScope
+        )
     }
 
     override fun onViewOnMapClick(coordinate: Coordinate) {
