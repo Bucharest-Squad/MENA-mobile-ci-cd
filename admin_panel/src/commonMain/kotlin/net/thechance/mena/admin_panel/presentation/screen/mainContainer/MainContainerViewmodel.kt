@@ -66,6 +66,8 @@ class MainContainerViewmodel(
     }
 
     private suspend fun onFailureLoggedOut(errorState: ErrorState) {
+        updateState { it.copy(isLogOutDialogShown = false) }
+        delay(1)
         showSnackBar(
             title = stringProvider.getString(errorState.getErrorSnackBarTitle()),
             message = stringProvider.getString(errorState.getErrorSnackBarMsg()),
