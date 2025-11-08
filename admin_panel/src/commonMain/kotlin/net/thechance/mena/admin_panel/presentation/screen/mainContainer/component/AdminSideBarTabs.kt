@@ -8,11 +8,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -44,11 +46,15 @@ fun AdminSideBarTabs(
     ) {
         adminPanelSidePBarTabs.forEach { tab ->
             AdminSidebarItem(
+                modifier = Modifier
+                    .padding(horizontal = 8.dp)
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(16.dp))
+                    .clickable { onTabSelected(tab) },
                 title = stringResource(tab.title),
                 selectedIcon = painterResource(tab.selectedIconRes),
                 notSelectedIcon = painterResource(tab.unSelectedIconRes),
-                isSelected = selectedTab == tab,
-                onClick = { onTabSelected(tab) }
+                isSelected = selectedTab == tab
             )
         }
     }
@@ -60,7 +66,7 @@ private fun AdminSidebarItem(
     selectedIcon: Painter,
     notSelectedIcon: Painter,
     isSelected: Boolean,
-    onClick: () -> Unit
+    modifier: Modifier = Modifier
 ) {
     val titleColor =
         if (isSelected) Theme.colorScheme.shadeSecondary else Theme.colorScheme.brand.brand
@@ -68,10 +74,7 @@ private fun AdminSidebarItem(
         targetValue = titleColor
     )
     Column(
-        modifier = Modifier
-            .padding(horizontal = 8.dp)
-            .fillMaxWidth()
-            .clickable { onClick() },
+        modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
