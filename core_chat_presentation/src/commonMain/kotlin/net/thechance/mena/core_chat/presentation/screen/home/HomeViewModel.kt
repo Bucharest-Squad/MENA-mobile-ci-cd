@@ -188,12 +188,11 @@ class HomeViewModel(
     }
 
     private fun onGetBalanceAmountSuccess(balanceAmount: Double) {
-        val balance = balanceAmount.toInt()
-        updateState { it.copy(balanceAmount = balance, isBalanceLoading = false) }
+        updateState { it.copy(balanceAmount = balanceAmount.toString(), isBalanceLoading = false) }
     }
 
     private fun onGetBalanceAmountError() {
-        updateState { it.copy(isBalanceLoading = false) }
+        updateState { it.copy(isBalanceLoading = false, balanceAmount = "--") }
         showSnackBar(
             titleStringResource = Res.string.error,
             messageStringResource = Res.string.could_not_get_balance,
