@@ -188,7 +188,18 @@ class ChatViewModel(
         subscribeToPendingMessages(chat.id)
         observeReadMessages()
         observeDeleteChat()
+        observeConnectionStatus(chat.id)
         observeMessageReactions()
+    }
+
+    private fun observeConnectionStatus(chatId: Uuid) {
+        tryToCollect(
+            collect = { messageRepository.observeConnectionStatus(chatId) },
+            onCollect = { },
+            onError = {
+                showSnackBar(Res.string.error, Res.string.error_cant_get_messages, true)
+            }
+        )
     }
 
     private fun onGetChatError() {
@@ -371,7 +382,11 @@ class ChatViewModel(
     }
 
     private suspend fun getChatHistory(page: Int): PagedData<Message> {
-        val chatId = state.value.chatId ?: return PagedData(emptyList(), 0, false)
+        val chatId = state.value.chatId ?: return PagedData(
+            data = emptyList(),
+            totalItems = 0,
+            isLastPage = false
+        )
         return messageRepository.loadMessages(
             chatId = chatId,
             page = page,
@@ -775,14 +790,19 @@ class ChatViewModel(
             return
         }
 
-        val message = createAudioMessage(audioByteArray)
+        val audioDuration = audioPlayer.getDuration(filePath)
+
+        val message = createAudioMessage(audioByteArray, audioDuration)
         sendMessage(message)
     }
 
-    private fun createAudioMessage(audioByteArray: ByteArray): MessageUiState {
+    private fun createAudioMessage(audioByteArray: ByteArray, audioDurationMs: Long?): MessageUiState {
         val chatId = state.value.chatId!!
         val senderId = state.value.chatRequesterId!!
-        val content = MessageContent.Audio(AudioData.AudioByteArray(byteArray = audioByteArray))
+        val content = MessageContent.Audio(
+            data = AudioData.AudioByteArray(byteArray = audioByteArray),
+            audioDurationMs = audioDurationMs
+        )
 
         return MessageUiState(
             chatId = chatId,
