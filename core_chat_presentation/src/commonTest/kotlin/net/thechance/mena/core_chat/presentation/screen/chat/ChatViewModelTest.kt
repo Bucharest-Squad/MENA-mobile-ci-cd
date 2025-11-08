@@ -845,6 +845,109 @@ class ChatViewModelTest {
         verifySuspend { messageRepository.removeMessageReaction(message.id, reaction) }
     }
 
+    @Test
+    fun `createAudioMessage should create MessageUiState with correct chatId`() = runTest {
+        val audioByteArray = byteArrayOf(1, 2, 3, 4, 5)
+        val audioDurationMs = 5000L
+        advanceUntilIdle()
+
+        val result = viewModel.createAudioMessage(audioByteArray, audioDurationMs)
+
+        assertThat(result.chatId).isEqualTo(chatId)
+    }
+
+    @Test
+    fun `createAudioMessage should create MessageUiState with correct senderId`() = runTest {
+        val audioByteArray = byteArrayOf(1, 2, 3, 4, 5)
+        val audioDurationMs = 5000L
+        advanceUntilIdle()
+
+        val result = viewModel.createAudioMessage(audioByteArray, audioDurationMs)
+
+        assertThat(result.senderId).isEqualTo(chatRequesterId)
+    }
+
+    @Test
+    fun `createAudioMessage should create MessageUiState with Audio content containing AudioByteArray`() = runTest {
+        val audioByteArray = byteArrayOf(1, 2, 3, 4, 5)
+        val audioDurationMs = 5000L
+        advanceUntilIdle()
+
+        val result = viewModel.createAudioMessage(audioByteArray, audioDurationMs)
+
+        assertThat(result.content).isEqualTo(
+            MessageContent.Audio(
+                data = AudioData.AudioByteArray(byteArray = audioByteArray),
+                audioDurationMs = audioDurationMs
+            )
+        )
+    }
+
+    @Test
+    fun `createAudioMessage should create MessageUiState with correct audioDurationMs`() = runTest {
+        val audioByteArray = byteArrayOf(1, 2, 3, 4, 5)
+        val audioDurationMs = 5000L
+        advanceUntilIdle()
+
+        val result = viewModel.createAudioMessage(audioByteArray, audioDurationMs)
+        val audioContent = result.content as MessageContent.Audio
+
+        assertThat(audioContent.audioDurationMs).isEqualTo(audioDurationMs)
+    }
+
+    @Test
+    fun `createAudioMessage should create MessageUiState with null audioDurationMs when not provided`() = runTest {
+        val audioByteArray = byteArrayOf(1, 2, 3, 4, 5)
+        advanceUntilIdle()
+
+        val result = viewModel.createAudioMessage(audioByteArray, null)
+        val audioContent = result.content as MessageContent.Audio
+
+        assertThat(audioContent.audioDurationMs).isEqualTo(null)
+    }
+
+    @Test
+    fun `createAudioMessage should create MessageUiState with AudioByteArray data type`() = runTest {
+        val audioByteArray = byteArrayOf(1, 2, 3, 4, 5)
+        val audioDurationMs = 5000L
+        advanceUntilIdle()
+
+        val result = viewModel.createAudioMessage(audioByteArray, audioDurationMs)
+        val audioContent = result.content as MessageContent.Audio
+
+        assertThat(audioContent.data).isEqualTo(AudioData.AudioByteArray(byteArray = audioByteArray))
+    }
+
+    @Test
+    fun `createAudioMessage should handle empty byte array`() = runTest {
+        val audioByteArray = byteArrayOf()
+        val audioDurationMs = 0L
+        advanceUntilIdle()
+
+        val result = viewModel.createAudioMessage(audioByteArray, audioDurationMs)
+        val audioContent = result.content as MessageContent.Audio
+        val audioData = audioContent.data as AudioData.AudioByteArray
+
+        assertThat(audioData.byteArray).isEqualTo(audioByteArray)
+        assertThat(audioContent.audioDurationMs).isEqualTo(audioDurationMs)
+    }
+
+    @Test
+    fun `createAudioMessage should handle large byte array`() = runTest {
+        val audioByteArray = ByteArray(1024 * 1024) { it.toByte() } // 1MB array
+        val audioDurationMs = 60000L // 1 minute
+        advanceUntilIdle()
+
+        val result = viewModel.createAudioMessage(audioByteArray, audioDurationMs)
+        val audioContent = result.content as MessageContent.Audio
+        val audioData = audioContent.data as AudioData.AudioByteArray
+
+        assertThat(audioData.byteArray).isEqualTo(audioByteArray)
+        assertThat(audioContent.audioDurationMs).isEqualTo(audioDurationMs)
+        assertThat(result.chatId).isEqualTo(chatId)
+        assertThat(result.senderId).isEqualTo(chatRequesterId)
+    }
+
     private fun List<ChatListItem>.currentUiMessages(): List<MessageUiState> =
         filterIsInstance<ChatListItem.ImageMessages>()
             .flatMap { it.data }

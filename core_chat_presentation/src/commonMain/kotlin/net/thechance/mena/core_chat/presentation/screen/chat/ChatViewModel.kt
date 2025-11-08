@@ -781,7 +781,7 @@ class ChatViewModel(
         sendMessage(message)
     }
 
-    private fun createAudioMessage(audioByteArray: ByteArray, audioDurationMs: Long?): MessageUiState {
+    internal fun createAudioMessage(audioByteArray: ByteArray, audioDurationMs: Long?): MessageUiState {
         val chatId = state.value.chatId!!
         val senderId = state.value.chatRequesterId!!
         val content = MessageContent.Audio(

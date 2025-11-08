@@ -20,8 +20,7 @@ data class MessageDto(
 @Serializable
 data class SendMessageDto(
     val chatId: String,
-    val text: String? = null,
-    val audioDurationMs: Long? = null
+    val text: String? = null
 )
 
 @Serializable
