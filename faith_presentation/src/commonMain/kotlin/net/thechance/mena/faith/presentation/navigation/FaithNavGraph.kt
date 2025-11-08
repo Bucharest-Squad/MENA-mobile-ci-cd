@@ -80,7 +80,9 @@ fun FaithNavigation(identityApi: IdentityFeatureApi = getKoin().get()) {
                     UploadImageScreen()
                 }
                 composable<Route.UserAddresses> {
-                    identityApi.NavigateToAddressesScreen()
+                    identityApi.NavigateToAddressesScreen(
+                        onNavigateBack = { navController.popBackStack() }
+                    )
                 }
             }
         }
