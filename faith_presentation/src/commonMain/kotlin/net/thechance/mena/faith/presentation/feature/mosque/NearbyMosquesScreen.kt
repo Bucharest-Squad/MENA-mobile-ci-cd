@@ -76,6 +76,18 @@ internal fun NearbyMosquesScreen(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val navController = LocalNavController.current
 
+    LaunchedEffect(Unit) {
+        val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
+
+        savedStateHandle?.getStateFlow<String?>("add_mosque_message", null)
+            ?.collect { successMessage ->
+                successMessage?.let {
+                    viewModel.showSuccessMessage(successMessage)
+                    savedStateHandle.remove<String?>("add_mosque_message")
+                }
+            }
+    }
+
     ObserveAsEffect(viewModel.uiEffect) { effect ->
         when (effect) {
             NearbyMosquesEffect.NavigateBack -> {}
@@ -314,6 +326,7 @@ private fun NearbyMosquesScreenPreview() {
             override fun onDismissSearchBottomSheet() {}
             override fun selectMosque(mosque: MosqueUiState) {}
             override fun unselectMosque() {}
+            override fun showSuccessMessage(message: String) {}
         }
     )
 }

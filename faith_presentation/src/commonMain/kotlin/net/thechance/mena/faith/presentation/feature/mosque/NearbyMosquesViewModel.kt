@@ -15,6 +15,7 @@ import net.thechance.mena.faith.domain.entity.Mosque
 import net.thechance.mena.faith.domain.repository.MosqueRepository
 import net.thechance.mena.faith.presentation.base.BaseViewModel
 import net.thechance.mena.faith.presentation.base.createPagingSourceFlow
+import net.thechance.mena.faith.presentation.base.snackbar.SnackBarState
 import net.thechance.mena.faith.presentation.base.snackbar.SnackbarHandler
 import net.thechance.mena.identity.domain.entity.Address
 import net.thechance.mena.identity.domain.service.LocationService
@@ -190,6 +191,14 @@ internal class NearbyMosquesViewModel(
                 isMosqueBottomSheetVisible = false
             )
         }
+    }
+
+    override fun showSuccessMessage(message: String) {
+        snackbarHandler.showSnackBar(
+            message = { message },
+            status = SnackBarState.Status.Success,
+            scope = viewModelScope
+        )
     }
 
     override fun onViewOnMapClick(coordinate: Coordinate) {

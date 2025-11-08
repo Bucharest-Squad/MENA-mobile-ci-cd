@@ -134,5 +134,6 @@
     <string name="listen">استماع</string>
 
     <string name="kilometer_unit">كم</string>
+    <string name="add_mosque_message">تمت إضافة المسجد بنجاح.</string>
 
 </resources>

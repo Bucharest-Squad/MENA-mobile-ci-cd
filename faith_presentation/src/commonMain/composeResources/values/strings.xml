@@ -197,6 +197,7 @@
     <string name="surah_deleted_successfully">Surah deleted successfully</string>
 
     <string name="kilometer_unit">km</string>
+    <string name="add_mosque_message">Added mosque successfully.</string>
 
 
 </resources>

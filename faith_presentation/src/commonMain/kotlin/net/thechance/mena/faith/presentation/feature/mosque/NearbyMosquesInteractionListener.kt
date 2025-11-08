@@ -15,4 +15,5 @@ internal interface NearbyMosquesInteractionListener {
     fun onDismissSearchBottomSheet()
     fun selectMosque(mosque: MosqueUiState)
     fun unselectMosque()
+    fun showSuccessMessage(message: String)
 }
