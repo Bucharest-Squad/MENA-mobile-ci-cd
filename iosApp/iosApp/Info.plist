@@ -34,6 +34,6 @@
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<true/>
 	<key>TRENDS_STORAGE_ACCESS_SECRET</key>
-	<string></string>
+	<string>$(TRENDS_STORAGE_ACCESS_SECRET)</string>
 </dict>
 </plist>
