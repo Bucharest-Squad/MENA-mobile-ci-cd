@@ -19,7 +19,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import kotlin.time.ExperimentalTime
 
 @Composable
-fun TilawahRecitersScreen(
+fun TilawahScreen(
     viewModel: TilawahViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
