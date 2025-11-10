@@ -8,5 +8,5 @@ class TilawahSurahArgsImpl(
     savedStateHandle: SavedStateHandle
 ) : TilawahSurahArgs {
     private val downloadedSurah = savedStateHandle.toRoute<Route.DownloadedSurScreen>()
-    override val surahId: Int = downloadedSurah.surahId
+    override val surahId: Int? = downloadedSurah.surahId
 }
