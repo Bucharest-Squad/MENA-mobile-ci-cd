@@ -1,6 +1,7 @@
 package net.thechance.mena.faith.presentation.feature.quran.tilwah.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -38,14 +39,23 @@ fun ReciterItem(
     isDownloaded: Boolean,
     onDownloadClick: () -> Unit,
     onSelect: () -> Unit = {},
+    isSelectReciter: Boolean,
     modifier: Modifier = Modifier
 ) {
+    val borderColor = if (isSelectReciter)
+        Theme.colorScheme.primary.primary else Theme.colorScheme.background.surfaceLow
+
     Row(
         modifier = modifier
             .fillMaxWidth()
             .heightIn(min = 56.dp)
             .padding(horizontal = Theme.spacing._16)
             .padding(bottom = Theme.spacing._8)
+            .border(
+                width = 1.dp,
+                color = borderColor,
+                shape = RoundedCornerShape(Theme.radius.md)
+            )
             .background(
                 color = Theme.colorScheme.background.surfaceLow,
                 shape = RoundedCornerShape(Theme.radius.md)
@@ -126,7 +136,8 @@ private fun Preview() {
             recitingType = "Teacher - Tajweed",
             isDownloaded = true,
             onSelect = {},
-            onDownloadClick = {}
+            onDownloadClick = {},
+            isSelectReciter = false
         )
     }
 }

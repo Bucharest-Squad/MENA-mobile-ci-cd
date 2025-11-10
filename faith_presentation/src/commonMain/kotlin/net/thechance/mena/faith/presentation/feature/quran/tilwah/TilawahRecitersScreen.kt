@@ -64,7 +64,8 @@ private fun Content(
                             surahId = surahId,
                             reciterId = reciter.id
                         )
-                    }
+                    },
+                    isSelectReciter = reciter.id == uiState.selectedReciterId
                 )
             }
         }
