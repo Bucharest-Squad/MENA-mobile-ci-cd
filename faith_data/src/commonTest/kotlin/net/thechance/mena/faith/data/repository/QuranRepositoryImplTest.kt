@@ -13,11 +13,13 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import net.thechance.mena.faith.data.database.AyahDao
+import net.thechance.mena.faith.data.database.ReciterDto
+import net.thechance.mena.faith.data.database.RecitersDao
 import net.thechance.mena.faith.data.database.SurahAudioDao
 import net.thechance.mena.faith.data.database.SurahAudioDto
-import net.thechance.mena.faith.data.database.ReciterDto
 import net.thechance.mena.faith.data.database.SurahDto
 import net.thechance.mena.faith.data.datastore.TilawahDataStore
+import net.thechance.mena.faith.data.remote.model.tilawah.AyahSoundUrlRequest
 import net.thechance.mena.faith.data.remote.model.tilawah.RecitersRequest
 import net.thechance.mena.faith.data.remote.model.tilawah.SurahSoundRequest
 import net.thechance.mena.faith.data.remote.service.TilawahApiService
@@ -33,6 +35,7 @@ class QuranRepositoryImplTest {
     private val mockDao: AyahDao = mock(MockMode.autofill)
     private val tilawahDataStore: TilawahDataStore = mock(MockMode.autofill)
     private val surahSoundDao: SurahAudioDao = mock(MockMode.autofill)
+    private val recitersDao: RecitersDao = mock(MockMode.autofill)
 
     private val tilawahApiService = mock<TilawahApiService>(MockMode.autofill)
     private val repository =
@@ -40,6 +43,7 @@ class QuranRepositoryImplTest {
             ayahDao = mockDao,
             tilawahDataStore = tilawahDataStore,
             surahSoundDao = surahSoundDao,
+            recitersDao = recitersDao,
             tilawahApiService = tilawahApiService
         )
 
@@ -55,7 +59,8 @@ class QuranRepositoryImplTest {
 
     @Test
     fun `searchForReciter Should return list of reciters when called`() = runTest {
-        everySuspend { mockDao.searchReciters(query = "query") } returns RECITER_DTOS
+
+        everySuspend { recitersDao.searchReciters(query = "query") } returns RECITER_DTOS
 
         val result = repository.searchForReciter(query = "query")
 
@@ -348,7 +353,32 @@ class QuranRepositoryImplTest {
     fun `getAyahSoundUrl should return remote url when surah is not cached`() = runTest {
         everySuspend { surahSoundDao.getCachedAudioPath(SURAH_ID_1, RECITER_ID_1) } returns null
         everySuspend {
-            tilawahApiService.getSurahSoundUrl(SurahSoundRequest(RECITER_ID_1, SURAH_ID_1))
+            // ✅ Use getAyahSoundUrl instead of getSurahSoundUrl
+            tilawahApiService.getAyahSoundUrl(
+                AyahSoundUrlRequest(RECITER_ID_1, AYAH_NUMBER_1, SURAH_ID_1)
+            )
+        } returns makeSuccessFakeResponse(REMOTE_URL_SURAH_1)
+
+        val result = repository.getAyahSoundUrl(
+            ayahNumber = AYAH_NUMBER_1,
+            surahNumber = SURAH_ID_1,
+            reciterId = RECITER_ID_1
+        )
+
+        assertEquals(REMOTE_URL_SURAH_1, result)
+    }
+
+
+    @Test
+    fun `getAyahSoundUrl should fallback to remote when cached path is empty`() = runTest {
+        everySuspend {
+            surahSoundDao.getCachedAudioPath(SURAH_ID_1, RECITER_ID_1)
+        } returns EMPTY_PATH
+
+        everySuspend {
+            tilawahApiService.getAyahSoundUrl(
+                AyahSoundUrlRequest(RECITER_ID_1, AYAH_NUMBER_1, SURAH_ID_1)
+            )
         } returns makeSuccessFakeResponse(REMOTE_URL_SURAH_1)
 
         val result = repository.getAyahSoundUrl(
@@ -363,15 +393,21 @@ class QuranRepositoryImplTest {
     @Test
     fun `getAyahSoundUrl should attempt to find ayah in folder when surah is cached`() = runTest {
         everySuspend {
-            surahSoundDao.getCachedAudioPath(
-                SURAH_ID_1,
-                RECITER_ID_1
-            )
+            surahSoundDao.getCachedAudioPath(SURAH_ID_1, RECITER_ID_1)
         } returns CACHED_SURAH_PATH
-        // Mock FileSystem operations
 
         everySuspend {
-            tilawahApiService.getSurahSoundUrl(SurahSoundRequest(RECITER_ID_1, SURAH_ID_1))
+            mockDao.getSurah(SURAH_ID_1)
+        } returns SurahDto(number = SURAH_ID_1, name = "Al-Fatihah", ayahCount = 7)
+
+        everySuspend {
+            tilawahApiService.getAyahSoundUrl(
+                AyahSoundUrlRequest(
+                    reciterId = RECITER_ID_1,
+                    ayahNumber = AYAH_NUMBER_5,
+                    surahNumber = SURAH_ID_1
+                )
+            )
         } returns makeSuccessFakeResponse(REMOTE_URL_SURAH_1)
 
         val result = repository.getAyahSoundUrl(
@@ -384,64 +420,42 @@ class QuranRepositoryImplTest {
     }
 
     @Test
-    fun `getAyahSoundUrl should fallback to remote when cached path is empty`() = runTest {
-        everySuspend {
-            surahSoundDao.getCachedAudioPath(
-                SURAH_ID_1,
-                RECITER_ID_1
-            )
-        } returns EMPTY_PATH
-        everySuspend {
-            tilawahApiService.getSurahSoundUrl(SurahSoundRequest(RECITER_ID_1, SURAH_ID_1))
-        } returns makeSuccessFakeResponse(REMOTE_URL_SURAH_1)
-
-        val result = repository.getAyahSoundUrl(
-            ayahNumber = AYAH_NUMBER_1,
-            surahNumber = SURAH_ID_1,
-            reciterId = RECITER_ID_1
-        )
-
-        assertEquals(REMOTE_URL_SURAH_1, result)
-    }
-
-
-    @Test
     fun `getReciters Should return cached reciters when cache is not empty`() = runTest {
-        everySuspend { mockDao.getAllReciters() } returns RECITER_DTOS
+        everySuspend { recitersDao.getAllReciters() } returns RECITER_DTOS
 
         val result = repository.getReciters()
 
         assertEquals(RECITER_LIST, result)
-        verifySuspend { mockDao.getAllReciters() }
+        verifySuspend { recitersDao.getAllReciters() }
     }
 
     @Test
     fun `getReciters Should fetch from network when cache is empty`() = runTest {
-        everySuspend { mockDao.getAllReciters() } returns emptyList()
+        everySuspend { recitersDao.getAllReciters() } returns emptyList()
         everySuspend {
             tilawahApiService.getReciters()
         } returns makeSuccessFakeResponse(apiReciters)
-        everySuspend { mockDao.insertReciters(any()) } returns Unit
+        everySuspend { recitersDao.insertReciters(any()) } returns Unit
 
         val result = repository.getReciters()
 
         assertEquals(RECITER_LIST, result)
-        verifySuspend { mockDao.getAllReciters() }
+        verifySuspend { recitersDao.getAllReciters() }
         verifySuspend { tilawahApiService.getReciters() }
-        verifySuspend { mockDao.insertReciters(any()) }
+        verifySuspend { recitersDao.insertReciters(any()) }
     }
 
     @Test
     fun `getReciters Should sync network data to cache when cache is empty`() = runTest {
-        everySuspend { mockDao.getAllReciters() } returns emptyList()
+        everySuspend { recitersDao.getAllReciters() } returns emptyList()
         everySuspend {
             tilawahApiService.getReciters()
         } returns makeSuccessFakeResponse(apiReciters)
-        everySuspend { mockDao.insertReciters(any()) } returns Unit
+        everySuspend { recitersDao.insertReciters(any()) } returns Unit
 
         repository.getReciters()
 
-        verifySuspend { mockDao.insertReciters(any()) }
+        verifySuspend { recitersDao.insertReciters(any()) }
     }
 
     @Test
