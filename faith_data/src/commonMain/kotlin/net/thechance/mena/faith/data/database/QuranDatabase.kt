@@ -10,6 +10,7 @@ import androidx.room.RoomDatabaseConstructor
 abstract class QuranDatabase : RoomDatabase() {
     abstract fun getAyaDao(): AyahDao
     abstract fun getSurahDao(): SurahAudioDao
+    abstract fun getRecitersDao(): RecitersDao
 }
 
 @Suppress("KotlinNoActualForExpect")

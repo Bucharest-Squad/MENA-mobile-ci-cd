@@ -3,6 +3,7 @@ package net.thechance.mena.faith.data.repository
 import kotlinx.coroutines.flow.Flow
 import net.thechance.mena.faith.data.database.AyahDao
 import net.thechance.mena.faith.data.database.AyahDto
+import net.thechance.mena.faith.data.database.RecitersDao
 import net.thechance.mena.faith.data.database.SurahAudioDao
 import net.thechance.mena.faith.data.database.SurahAudioDto
 import net.thechance.mena.faith.data.datastore.TilawahDataStore
@@ -22,12 +23,14 @@ import net.thechance.mena.faith.domain.model.LastAyahForTilawah
 import net.thechance.mena.faith.domain.model.Reciter
 import net.thechance.mena.faith.domain.repository.QuranRepository
 import okio.FileSystem
+import okio.Path
 import okio.Path.Companion.toPath
 import okio.SYSTEM
 
 class QuranRepositoryImpl(
     val ayahDao: AyahDao,
     val surahSoundDao: SurahAudioDao,
+    val recitersDao: RecitersDao,
     val tilawahApiService: TilawahApiService,
     val tilawahDataStore: TilawahDataStore
 ) : QuranRepository {
@@ -85,6 +88,10 @@ class QuranRepositoryImpl(
         }
     }
 
+    override suspend fun deleteSurahWithSpecificReciter(surahId: Int) {
+        recitersDao.deleteSurahWithSpecificReciter(surahId)
+    }
+
     override suspend fun getRemoteSurahSoundUrl(
         surahId: Int,
         reciterId: Int
@@ -100,7 +107,7 @@ class QuranRepositoryImpl(
         }
 
     override suspend fun searchForReciter(query: String): List<Reciter> =
-        executeLocalSafely { ayahDao.searchReciters(query).map { it.toReciter() } }
+        executeLocalSafely { recitersDao.searchReciters(query).map { it.toReciter() } }
 
     override suspend fun getAyahSoundUrl(
         ayahNumber: Int,
@@ -125,35 +132,56 @@ class QuranRepositoryImpl(
         }
     }
 
-    private fun findAyahInFolder(folderPath: String, ayahNumber: Int, surahNumber: Int): String? {
+    private suspend fun findAyahInFolder(
+        folderPath: String,
+        ayahNumber: Int,
+        surahNumber: Int
+    ): String? {
         val folder = folderPath.toPath()
 
         if (!FileSystem.SYSTEM.exists(folder)) return null
 
         val files = FileSystem.SYSTEM.list(folder)
-        val fileIndex = calculateFileIndex(ayahNumber, surahNumber)
+        val ayatCount = ayahDao.getSurah(surahNumber).ayahCount ?: 0
 
+        prepareSurahAudioFiles(
+            files = files,
+            ayatCount = ayatCount
+        )
+
+        val fileIndex = calculateFileIndex(ayahNumber, surahNumber)
         return files.getOrNull(fileIndex)?.toString()
     }
 
+    private fun prepareSurahAudioFiles(
+        files: List<Path>,
+        ayatCount: Int
+    ): List<Path> {
+        return if (files.size > ayatCount)
+            files.subList(
+                INDEX_OFFSET,
+                files.size - ayatCount
+            ) else files
+    }
+
     private fun calculateFileIndex(ayahNumber: Int, surahNumber: Int): Int {
-        return if (surahNumber == SURAH_AL_FATIHA) ayahNumber
-        else ayahNumber + AYAH_INDEX_OFFSET
+        return if (surahNumber == INDEX_OFFSET) ayahNumber
+        else ayahNumber + INDEX_OFFSET
     }
 
     override suspend fun getReciters(): List<Reciter> = loadFromCacheOrFetch(
         cacheBlock = {
-            executeLocalSafely { ayahDao.getAllReciters() }.takeIf { it.isNotEmpty() }
+            executeLocalSafely { recitersDao.getAllReciters() }.takeIf { it.isNotEmpty() }
                 ?.map { it.toReciter() }
         },
         networkBlock = { executeApiSafely { tilawahApiService.getReciters() }.map { it.toReciter() } },
         syncBlock = { reciters ->
-            executeLocalSafely { ayahDao.insertReciters(reciters.map { it.toReciterDto() }) }
+            executeLocalSafely { recitersDao.insertReciters(reciters.map { it.toReciterDto() }) }
         }
     )
 
     override suspend fun getReciterById(reciterId: Int): Reciter = loadFromCacheOrFetch(
-        cacheBlock = { executeLocalSafely { ayahDao.getReciterById(reciterId) }.toReciter() },
+        cacheBlock = { executeLocalSafely { recitersDao.getReciterById(reciterId) }.toReciter() },
         networkBlock = {
             executeApiSafely { tilawahApiService.getReciters() }
                 .first { it.id == reciterId }
@@ -166,10 +194,10 @@ class QuranRepositoryImpl(
 
     override suspend fun getDefaultReciter(): Flow<Int> =
         tilawahDataStore.getDefaultReciter()
-
-    private companion object {
-        private const val SURAH_AL_FATIHA = 1
-        private const val AYAH_INDEX_OFFSET = 1
-    }
 }
+
+private const val INDEX_OFFSET = 1
+
+
+
 
