@@ -22,6 +22,7 @@ import mena.faith_presentation.generated.resources.ic_ad_duha
 import mena.faith_presentation.generated.resources.ic_delete
 import mena.faith_presentation.generated.resources.ic_play_circle
 import mena.faith_presentation.generated.resources.ic_reciter_list
+import mena.faith_presentation.generated.resources.play
 import mena.faith_presentation.generated.resources.reciter_list
 import mena.faith_presentation.generated.resources.surah_arabic_name_icon
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
@@ -53,9 +54,11 @@ fun DownloadedSurahCard(
                         .background(
                             color = Theme.colorScheme.background.surfaceLow,
                             shape = RoundedCornerShape(Theme.radius.md),
-                        ).clip(
-                            shape = RoundedCornerShape(Theme.radius.md),
-                        ).clickable(onClick = onDownloadedSurahClick),
+                        )
+                    .clip(
+                        shape = RoundedCornerShape(Theme.radius.md),
+                    )
+                    .clickable(onClick = onDownloadedSurahClick),
             )
         },
         modifier = modifier,
@@ -130,7 +133,7 @@ private fun PlayButton(modifier: Modifier = Modifier) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
-                .size(44.dp)
+            .size(Theme.spacing._24)
                 .background(
                     color = Theme.colorScheme.background.surface,
                     shape = RoundedCornerShape(Theme.spacing._12),
@@ -138,7 +141,7 @@ private fun PlayButton(modifier: Modifier = Modifier) {
     ) {
         Icon(
             painter = painterResource(Res.drawable.ic_play_circle),
-            contentDescription = "",
+            contentDescription = stringResource(Res.string.play),
         )
     }
 }
