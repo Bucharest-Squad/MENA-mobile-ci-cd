@@ -50,18 +50,18 @@ private fun Content(
         LazyColumn(
             contentPadding = PaddingValues(bottom = Theme.spacing._16),
         ) {
+            val surahId = uiState.surahId ?: return@LazyColumn
             items(uiState.reciters) { reciter ->
                 ReciterItem(
                     reciter = reciter.name,
                     recitingType = reciter.recitingType,
                     isDownloaded = reciter.isDownloaded,
-                    isSelected = uiState.selectedReciterId == reciter.id,
                     onSelect = {
                         listener.onSelectReciterClick(reciter.id)
                     },
                     onDownloadClick = {
                         listener.onDownloadClick(
-                            surahId = uiState.surahId,
+                            surahId = surahId,
                             reciterId = reciter.id
                         )
                     }

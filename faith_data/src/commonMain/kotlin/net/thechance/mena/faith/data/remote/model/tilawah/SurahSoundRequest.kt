@@ -8,5 +8,5 @@ data class SurahSoundRequest(
     @SerialName("reciterId")
     val reciterId: Int,
     @SerialName("surahNumber")
-    val surahNumber: Int,
+    val surahNumber: Int?,
 )
