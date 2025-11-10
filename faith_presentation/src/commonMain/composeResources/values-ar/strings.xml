@@ -133,5 +133,6 @@
     <string name="surah_deleted_successfully">تم حذف السوره بنجاح</string>
     <string name="listen">استماع</string>
     <string name="download_icon">ايقونة التنزيل</string>
+    <string name="prayer_time"> وقت الصلاة </string>
     <string name="kilometer_unit">كم</string>
 </resources>
