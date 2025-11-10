@@ -40,21 +40,32 @@ class TilawahViewModel(
     override fun onDownloadClick(surahId: Int, reciterId: Int) {
         tryToExecute(
             execute = {
-                val remoteUrl = quranRepository.getRemoteSurahSoundUrl(surahId, reciterId)
-
-                val localPath = downloadManager.downloadSurahFile(remoteUrl, surahId, reciterId)
-
-                quranRepository.saveSurahAudioToCache(
-                    surahId = surahId,
-                    reciterId = reciterId,
-                    localPath = localPath
-                )
+                downloadAndCacheSurah(surahId, reciterId)
             },
             onSuccess = {
                 updateState { it.copy(surahId = surahArgs.surahId) }
                 markReciterAsDownloaded(reciterId)
             },
             dispatcher = dispatcher
+        )
+    }
+
+    private suspend fun downloadAndCacheSurah(surahId: Int, reciterId: Int) {
+        val remoteUrl = quranRepository.getRemoteSurahSoundUrl(
+            surahId = surahId,
+            reciterId = reciterId
+        )
+
+        val localPath = downloadManager.downloadSurahFile(
+            url = remoteUrl,
+            surahId = surahId,
+            reciterId = reciterId
+        )
+
+        quranRepository.saveSurahAudioToCache(
+            surahId = surahId,
+            reciterId = reciterId,
+            localPath = localPath
         )
     }
 
