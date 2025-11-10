@@ -19,11 +19,9 @@ interface QuranRepository {
 
     suspend fun getSurahAudioCachePath(surahId: Int, reciterId: Int): String?
 
-    suspend fun saveSurahAudioToCache(
-        surahId: Int,
-        reciterId: Int,
-        localPath: String
-    )
+    suspend fun saveSurahAudioToCache(surahId: Int, reciterId: Int, localPath: String)
+
+    suspend fun deleteSurahWithSpecificReciter(surahId: Int)
 
     suspend fun getRemoteSurahSoundUrl(surahId: Int, reciterId: Int): String
     suspend fun getReciters(): List<Reciter>
