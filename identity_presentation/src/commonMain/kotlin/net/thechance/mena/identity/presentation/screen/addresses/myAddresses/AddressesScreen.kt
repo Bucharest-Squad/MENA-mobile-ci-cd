@@ -21,10 +21,11 @@ import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.identity.presentation.base.BaseScreen
 import net.thechance.mena.identity.presentation.components.AddressSnackBar
-import net.thechance.mena.identity.presentation.components.LoadingProgressBar
 import net.thechance.mena.identity.presentation.components.NoSavedLocationsLayout
 import net.thechance.mena.identity.presentation.screen.addresses.addEditLocation.AddEditLocationScreen
 import net.thechance.mena.identity.presentation.screen.addresses.myAddresses.components.AddressCard
+import net.thechance.mena.identity.presentation.screen.addresses.myAddresses.components.AddressCardShimmer
+import net.thechance.mena.identity.presentation.screen.addresses.myAddresses.components.AddressShimmerPlaceholders
 import net.thechance.mena.identity.presentation.screen.addresses.myAddresses.components.MyAddressesAppBar
 import net.thechance.mena.identity.presentation.screen.addresses.myAddresses.components.deleteAddressDialog
 import org.jetbrains.compose.resources.stringResource
@@ -32,7 +33,9 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
-class AddressesScreen : BaseScreen<
+class AddressesScreen(
+    private val onNavigateBack: (() -> Unit)? = null
+) : BaseScreen<
         AddressesScreenViewModel,
         AddressesScreenUIState,
         AddressesScreenUIEffect,
@@ -80,7 +83,8 @@ class AddressesScreen : BaseScreen<
                         onEditAddressClicked = listener::onEditAddressClicked,
                         onDeleteAddressClicked = listener::onDeleteAddressClicked,
                         onClickAddress = listener::onClickAddress,
-                        animateToCurrentLocation = state.animateToCurrentLocation
+                        animateToCurrentLocation = state.animateToCurrentLocation,
+                        isAddingNewAddress = state.isAddingNewAddress
                     )
                 }
 
@@ -96,11 +100,11 @@ class AddressesScreen : BaseScreen<
                 }
 
                 AnimatedVisibility(
-                    visible = state.isLoading,
+                    visible = state.isLoading && state.addresses.isEmpty(),
                     enter = fadeIn(animationSpec = tween(durationMillis = 500)),
                     exit = fadeOut(animationSpec = tween(durationMillis = 500))
                 ) {
-                    LoadingProgressBar()
+                    AddressShimmerPlaceholders()
                 }
             }
         }
@@ -111,7 +115,9 @@ class AddressesScreen : BaseScreen<
         navigator: Navigator
     ) {
         when (effect) {
-            AddressesScreenUIEffect.NavigateBack -> navigator.pop()
+            AddressesScreenUIEffect.NavigateBack -> {
+                onNavigateBack?.invoke() ?: navigator.pop()
+            }
             is AddressesScreenUIEffect.NavigateToAddressDetailsScreen -> {
                 navigator.push(
                     AddEditLocationScreen(
@@ -131,7 +137,8 @@ private fun AddressesSection(
     onEditAddressClicked: (AddressUIState) -> Unit,
     onDeleteAddressClicked: (Uuid) -> Unit,
     onClickAddress: (Uuid) -> Unit,
-    animateToCurrentLocation: Boolean
+    animateToCurrentLocation: Boolean,
+    isAddingNewAddress: Boolean = false
 ) {
     LazyColumn(
         modifier = Modifier
@@ -139,7 +146,10 @@ private fun AddressesSection(
             .padding(horizontal = Theme.spacing._16),
         verticalArrangement = Arrangement.spacedBy(Theme.spacing._12)
     ) {
-        items(addresses) {
+        items(
+            items = addresses,
+            key = { it.id.toString() }
+        ) {
             AddressCard(
                 addressType = it.addressType,
                 onEditClick = { onEditAddressClicked(it) },
@@ -150,7 +160,15 @@ private fun AddressesSection(
                 animateToCurrentLocation = animateToCurrentLocation,
                 longitude = it.coordinates.longitude,
                 latitude = it.coordinates.latitude,
+                isDeleting = it.isDeleting,
+                isActivating = it.isActivating || it.isRefreshing
             )
+        }
+        
+        if (isAddingNewAddress) {
+            item {
+                AddressCardShimmer()
+            }
         }
     }
 }

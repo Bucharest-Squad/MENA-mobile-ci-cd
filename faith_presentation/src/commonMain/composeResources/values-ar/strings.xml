@@ -135,4 +135,7 @@
     <string name="download_icon">ايقونة التنزيل</string>
     <string name="prayer_time"> وقت الصلاة </string>
     <string name="kilometer_unit">كم</string>
+    <string name="add_mosque_message">تمت إضافة المسجد بنجاح.</string>
+    <string name="mosque_image">صورة المسجد</string>
+
 </resources>
