@@ -16,7 +16,7 @@ class TilawahViewModel(
     private val surahArgs: TilawahSurahArgs,
     private val downloadManager: DownloadSurahManager,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
-) : BaseViewModel<TilawahUiState, TilawahEffect>(TilawahUiState(surahArgs.surahId)),
+) : BaseViewModel<TilawahUiState, TilawahEffect>(TilawahUiState()),
     TilawahInteractionListener {
 
     init {
@@ -51,6 +51,7 @@ class TilawahViewModel(
                 )
             },
             onSuccess = {
+                updateState { it.copy(surahId = surahArgs.surahId) }
                 markReciterAsDownloaded(reciterId)
             },
             dispatcher = dispatcher
@@ -66,6 +67,7 @@ class TilawahViewModel(
     }
 
     private fun getAllReciters() {
+        updateState { it.copy(surahId = surahArgs.surahId) }
         tryToExecute(
             execute = { quranRepository.getReciters() },
             onSuccess = ::getAllRecitersSuccessfully,
@@ -99,23 +101,26 @@ class TilawahViewModel(
     }
 
     private fun checkDownloadedSurahs() {
-        tryToExecute(
-            execute = {
-                val currentReciters = uiState.value.reciters
-                currentReciters.map { reciter ->
-                    val isDownloaded = quranRepository.isSurahAudioCached(
-                        surahId = surahArgs.surahId,
-                        reciterId = reciter.id
-                    )
-                    reciter.copy(isDownloaded = isDownloaded)
-                }
-            },
-            onSuccess = { updatedReciters ->
-                updateState { it.copy(reciters = updatedReciters) }
-            },
-            dispatcher = dispatcher
-        )
+        surahArgs.surahId?.let { surahId ->
+            tryToExecute(
+                execute = {
+                    val currentReciters = uiState.value.reciters
+                    currentReciters.map { reciter ->
+                        val isDownloaded = quranRepository.isSurahAudioCached(
+                            surahId = surahId,
+                            reciterId = reciter.id
+                        )
+                        reciter.copy(isDownloaded = isDownloaded)
+                    }
+                },
+                onSuccess = { updatedReciters ->
+                    updateState { it.copy(reciters = updatedReciters) }
+                },
+                dispatcher = dispatcher
+            )
+        }
     }
+
 
     private fun markReciterAsDownloaded(reciterId: Int) {
         updateState { currentState ->
