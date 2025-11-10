@@ -7,18 +7,19 @@ import mena.faith_presentation.generated.resources.ic_al_kahf
 import mena.faith_presentation.generated.resources.ic_an_nas
 import mena.faith_presentation.generated.resources.ic_ash_shams
 import mena.faith_presentation.generated.resources.surah_deleted_successfully
+import net.thechance.mena.faith.domain.repository.QuranRepository
 import net.thechance.mena.faith.presentation.base.BaseViewModel
 import net.thechance.mena.faith.presentation.base.snackbar.SnackBarState
 import net.thechance.mena.faith.presentation.base.snackbar.SnackbarHandler
 
 class DownloadedSurViewModel(
+    private val quranRepository: QuranRepository,
     snackBarHandler: SnackbarHandler,
-) :
-    BaseViewModel<DownloadedSurUiState, DownloadedSurEffect>(
-        initialState = DownloadedSurUiState(),
-        snackbarHandler = snackBarHandler,
-    ),
-    DownloadedSurInteractionListener {
+) : BaseViewModel<DownloadedSurUiState, DownloadedSurEffect>(
+    initialState = DownloadedSurUiState(),
+    snackbarHandler = snackBarHandler
+), DownloadedSurInteractionListener {
+
     init {
         loadDownloadedSur()
     }
@@ -67,6 +68,9 @@ class DownloadedSurViewModel(
     }
 
     override fun onDeleteSurahClick(surahId: Int) {
+        tryToExecute(
+            execute = {}
+        )
         updateState {
             it.copy(
                 selectedSurahForDelete = surahId,
@@ -79,19 +83,26 @@ class DownloadedSurViewModel(
         updateState { it.copy(selectedSurahForDelete = null, showDeleteConfirmationDialog = false) }
     }
 
-    override fun onConfirmDeleteDownloadedSurahClick() {
-        // TODO("Should integrate with the domain to delete selected surah")
-        updateState { state ->
-            val newSurDetails =
-                state.surDetails - state.surDetails.first { it.id == state.selectedSurahForDelete }
-            state.copy(
-                surDetails = newSurDetails,
-                selectedSurahForDelete = null,
-                showDeleteConfirmationDialog = false,
-            )
-        }
-        showSuccessSnackBar()
+    override fun onConfirmDeleteDownloadedSurahClick(surahId: Int) {
+        tryToExecute(
+            execute = { quranRepository.deleteSurahWithSpecificReciter(surahId) },
+            onSuccess = {
+                updateState { state ->
+                    val newSurDetails =
+                        state.surDetails - state.surDetails.first { it.id == state.selectedSurahForDelete }
+                    state.copy(
+                        surDetails = newSurDetails,
+                        selectedSurahForDelete = null,
+                        showDeleteConfirmationDialog = false,
+                    )
+                }
+                showSuccessSnackBar()
+
+            }
+        )
     }
+
+
 
     private fun showSuccessSnackBar() = snackbarHandler.showSnackBar(
         message = Res.string.surah_deleted_successfully,

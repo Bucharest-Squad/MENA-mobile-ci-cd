@@ -11,5 +11,5 @@ interface DownloadedSurInteractionListener {
 
     fun onDismissDeleteConfirmationDialog()
 
-    fun onConfirmDeleteDownloadedSurahClick()
+    fun onConfirmDeleteDownloadedSurahClick(surahId: Int)
 }

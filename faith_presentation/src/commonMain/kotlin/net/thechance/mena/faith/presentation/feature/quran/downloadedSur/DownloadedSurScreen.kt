@@ -30,6 +30,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun DownloadedSurScreen(viewModel: DownloadedSurViewModel = koinViewModel()) {
+
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val snackBarState by viewModel.snackBarState.collectAsStateWithLifecycle()
     val navController = LocalNavController.current
@@ -37,7 +38,11 @@ fun DownloadedSurScreen(viewModel: DownloadedSurViewModel = koinViewModel()) {
     ObserveAsEffect(viewModel.uiEffect) { effect ->
         when (effect) {
             DownloadedSurEffect.NavigateBack -> navController.navigateUp()
-            DownloadedSurEffect.NavigateToRecitersScreen -> navController.navigate(Route.DownloadedRecitersRoute)
+            DownloadedSurEffect.NavigateToRecitersScreen -> navController.navigate(
+                Route.DownloadedRecitersRoute(
+                    surahId = null
+                )
+            )
             is DownloadedSurEffect.NavigateToDownloadedSurahReciterScreen -> Unit // TODO("Navigate to downloaded surah reciters when done")
         }
     }
@@ -75,7 +80,12 @@ private fun Content(
             ) {
                 DeleteConfirmationDialog(
                     showDialog = uiState.showDeleteConfirmationDialog,
-                    onDeleteClick = listener::onConfirmDeleteDownloadedSurahClick,
+                    onDeleteClick = {
+                        listener.onConfirmDeleteDownloadedSurahClick(
+                            surahId = uiState.selectedSurahForDelete
+                                ?: return@DeleteConfirmationDialog
+                        )
+                    },
                     onDismiss = listener::onDismissDeleteConfirmationDialog,
                 )
             }
@@ -155,7 +165,7 @@ private fun PreviewDownloadedSurScreen() {
 
                     override fun onDismissDeleteConfirmationDialog() {}
 
-                    override fun onConfirmDeleteDownloadedSurahClick() {}
+                    override fun onConfirmDeleteDownloadedSurahClick(surahId: Int) {}
                 },
         )
     }
