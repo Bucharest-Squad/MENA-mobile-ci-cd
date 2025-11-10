@@ -38,6 +38,7 @@ import net.thechance.mena.identity.presentation.screen.addresses.myAddresses.Add
 import net.thechance.mena.identity.presentation.screen.changePassword.ChangePasswordScreen
 import net.thechance.mena.identity.presentation.screen.editProfile.EditUserProfileScreen
 import net.thechance.mena.identity.presentation.screen.notImplemented.NotImplementedScreen
+import net.thechance.mena.identity.presentation.screen.privacyAndPolicy.PrivacyAndPolicyScreen
 import net.thechance.mena.identity.presentation.screen.profile.components.AccountSettingsSection
 import net.thechance.mena.identity.presentation.screen.profile.components.AppSettingsSection
 import net.thechance.mena.identity.presentation.screen.profile.components.InviteFriendsCard
@@ -222,7 +223,7 @@ class ProfileScreen : BaseScreen<
             }
 
             ProfileScreenUIEffect.NavigateToPrivacyAndPolicyScreen -> {
-                navigator.push(NotImplementedScreen())
+                navigator.push(PrivacyAndPolicyScreen())
             }
         }
     }
