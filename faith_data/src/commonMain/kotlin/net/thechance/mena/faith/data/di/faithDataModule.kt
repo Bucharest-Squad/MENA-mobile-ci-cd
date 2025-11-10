@@ -4,6 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import net.thechance.mena.faith.data.database.AyahDao
 import net.thechance.mena.faith.data.database.QuranDatabase
+import net.thechance.mena.faith.data.database.RecitersDao
 import net.thechance.mena.faith.data.database.SurahAudioDao
 import net.thechance.mena.faith.data.datastore.TilawahDataStore
 import net.thechance.mena.faith.data.datastore.TilawahDataStoreImpl
@@ -16,6 +17,7 @@ val faithDataModule = module {
 
     single<AyahDao> { get<QuranDatabase>().getAyaDao() }
     single<SurahAudioDao> { get<QuranDatabase>().getSurahDao() }
+    single<RecitersDao> { get<QuranDatabase>().getRecitersDao() }
     single<DataStore<Preferences>> { createDataStore() }
     singleOf(::TilawahDataStoreImpl) bind TilawahDataStore::class
     includes(platformModule())
