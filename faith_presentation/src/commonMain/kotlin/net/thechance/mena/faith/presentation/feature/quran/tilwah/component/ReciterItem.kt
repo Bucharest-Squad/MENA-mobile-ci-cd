@@ -3,7 +3,6 @@ package net.thechance.mena.faith.presentation.feature.quran.tilwah.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,7 +13,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import mena.faith_presentation.generated.resources.Res
@@ -27,6 +25,7 @@ import mena.faith_presentation.generated.resources.success
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import net.thechance.mena.faith.presentation.components.PlayButton
 import net.thechance.mena.faith.presentation.designSystem.theme.QuranTheme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -56,7 +55,10 @@ fun ReciterItem(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(Theme.spacing._8)
     ) {
-        PlayButton()
+        PlayButton(
+            painterIcon = painterResource(Res.drawable.icon_play),
+            contentDescription = stringResource(Res.string.play),
+        )
         Column(
             modifier = Modifier.weight(1f)
         ) {
@@ -112,24 +114,6 @@ private fun RecitersDetails(
                 color = Theme.colorScheme.success
             )
         }
-    }
-}
-
-@Composable
-private fun PlayButton(modifier: Modifier = Modifier) {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = modifier
-            .size(40.dp)
-            .background(
-                color = Theme.colorScheme.background.surface,
-                shape = RoundedCornerShape(Theme.spacing._12),
-            ).clip(RoundedCornerShape(Theme.spacing._12)),
-    ) {
-        Icon(
-            painter = painterResource(Res.drawable.icon_play),
-            contentDescription = stringResource(Res.string.play),
-        )
     }
 }
 

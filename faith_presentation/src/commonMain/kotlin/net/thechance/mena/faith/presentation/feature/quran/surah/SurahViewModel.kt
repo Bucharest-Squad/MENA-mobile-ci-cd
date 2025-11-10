@@ -94,6 +94,10 @@ class SurahViewModel(
         )
     }
 
+    override fun playSurah(surahId: Int) {
+        TODO("Not yet implemented")
+    }
+
     override fun onInitialAyahScrolled() {
         if (uiState.value.isAyahSoundPlaying) return
         viewModelScope.launch {

@@ -137,5 +137,6 @@
     <string name="kilometer_unit">كم</string>
     <string name="add_mosque_message">تمت إضافة المسجد بنجاح.</string>
     <string name="mosque_image">صورة المسجد</string>
+    <string name="read_all_surah">تلاوة السورة</string>
 
 </resources>
