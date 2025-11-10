@@ -133,7 +133,7 @@ private fun PlayButton(modifier: Modifier = Modifier) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
-            .size(Theme.spacing._24)
+            .size(40.dp)
                 .background(
                     color = Theme.colorScheme.background.surface,
                     shape = RoundedCornerShape(Theme.spacing._12),
