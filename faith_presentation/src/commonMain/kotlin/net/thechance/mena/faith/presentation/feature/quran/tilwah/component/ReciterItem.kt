@@ -3,6 +3,7 @@ package net.thechance.mena.faith.presentation.feature.quran.tilwah.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,14 +14,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import mena.faith_presentation.generated.resources.Res
-import mena.faith_presentation.generated.resources.download
 import mena.faith_presentation.generated.resources.downloaded
 import mena.faith_presentation.generated.resources.ic_tick_double_check
+import mena.faith_presentation.generated.resources.icon_download
+import mena.faith_presentation.generated.resources.icon_play
+import mena.faith_presentation.generated.resources.play
 import mena.faith_presentation.generated.resources.success
-import net.thechance.mena.designsystem.presentation.component.button.radioButton.RadioButton
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
@@ -36,7 +39,6 @@ fun ReciterItem(
     isDownloaded: Boolean,
     onDownloadClick: () -> Unit,
     onSelect: () -> Unit = {},
-    isSelected: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -54,6 +56,7 @@ fun ReciterItem(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(Theme.spacing._8)
     ) {
+        PlayButton()
         Column(
             modifier = Modifier.weight(1f)
         ) {
@@ -70,16 +73,12 @@ fun ReciterItem(
                 isDownloaded = isDownloaded
             )
         }
-        //TODO: Replace with real icon
+
         Icon(
-            painterResource(Res.drawable.download),
+            painterResource(Res.drawable.icon_download),
             contentDescription = stringResource(Res.string.success),
-            modifier = Modifier.size(Theme.spacing._16)
+            modifier = Modifier.size(size = 20.dp)
                 .clickable(onClick = onDownloadClick)
-        )
-        RadioButton(
-            isSelected = isSelected,
-            onClick = onSelect
         )
     }
 }
@@ -116,6 +115,24 @@ private fun RecitersDetails(
     }
 }
 
+@Composable
+private fun PlayButton(modifier: Modifier = Modifier) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier
+            .size(40.dp)
+            .background(
+                color = Theme.colorScheme.background.surface,
+                shape = RoundedCornerShape(Theme.spacing._12),
+            ).clip(RoundedCornerShape(Theme.spacing._12)),
+    ) {
+        Icon(
+            painter = painterResource(Res.drawable.icon_play),
+            contentDescription = stringResource(Res.string.play),
+        )
+    }
+}
+
 @Preview
 @Composable
 private fun Preview() {
@@ -124,7 +141,6 @@ private fun Preview() {
             reciter = "Muhammad Siddiq Al-Minshawi",
             recitingType = "Teacher - Tajweed",
             isDownloaded = true,
-            isSelected = true,
             onSelect = {},
             onDownloadClick = {}
         )

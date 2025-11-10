@@ -34,17 +34,19 @@ internal sealed interface Route {
 
     @Serializable
     data class DownloadedSurScreen(
-        val surahId: Int
+        val surahId: Int? = null
     ) : Route
 
 
     @Serializable
     data class DownloadedRecitersRoute(
-        val surahId: Int
+        val surahId: Int? = null
     ) : Route
 
     @Serializable
-    data object ReciterSearch: Route
+    data class ReciterSearch(
+        val surahId: Int? = null
+    ) : Route
     
     @Serializable
     data object UserAddresses : Route
