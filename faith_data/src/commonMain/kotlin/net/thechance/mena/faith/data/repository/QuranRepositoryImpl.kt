@@ -144,14 +144,16 @@ class QuranRepositoryImpl(
         val files = FileSystem.SYSTEM.list(folder)
         val ayatCount = ayahDao.getSurah(surahNumber).ayahCount ?: 0
 
-        prepareSurahAudioFiles(
+
+        val preparedFiles = prepareSurahAudioFiles(
             files = files,
             ayatCount = ayatCount
         )
 
         val fileIndex = calculateFileIndex(ayahNumber, surahNumber)
-        return files.getOrNull(fileIndex)?.toString()
+        return preparedFiles.getOrNull(fileIndex)?.toString()
     }
+
 
     private fun prepareSurahAudioFiles(
         files: List<Path>,
