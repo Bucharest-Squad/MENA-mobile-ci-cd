@@ -916,7 +916,6 @@ class ChatViewModel(
 
     private fun handleChatHistoryError() {
         viewModelScope.launch {
-            delay(100)
             showSnackBar(
                 titleStringResource = Res.string.error,
                 messageStringResource = Res.string.error_cant_get_messages,

@@ -33,7 +33,7 @@ fun ChatList(
     onMessageLongClick: (MessageUiState) -> Unit,
     onMessageVoiceClick: (Uuid) -> Unit,
 ) {
-    val networkStatus by rememberNetworkStatus()
+    val isConnectedToNetwork by rememberNetworkStatus()
 
     LazyColumn(
         modifier = Modifier
@@ -69,7 +69,7 @@ fun ChatList(
             )
         }
 
-        if (networkStatus.not()) {
+        if (isConnectedToNetwork.not()) {
             item {
                 Box(
                     modifier = Modifier
