@@ -35,7 +35,7 @@ internal fun PrayerTimeTopBar(uiState: PrayerTimeUiState, onClick: () -> Unit) {
             .height(Theme.spacing._24)
             .pointerInput(Unit) {
                 detectTapGestures(
-                    onTap = { onClick }
+                    onTap = { onClick() }
                 )
             },
         horizontalArrangement = Arrangement.spacedBy(Theme.spacing._4),

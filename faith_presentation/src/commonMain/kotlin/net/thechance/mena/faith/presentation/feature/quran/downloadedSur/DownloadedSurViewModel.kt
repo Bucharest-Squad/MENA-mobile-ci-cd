@@ -68,9 +68,6 @@ class DownloadedSurViewModel(
     }
 
     override fun onDeleteSurahClick(surahId: Int) {
-        tryToExecute(
-            execute = {}
-        )
         updateState {
             it.copy(
                 selectedSurahForDelete = surahId,
@@ -87,21 +84,26 @@ class DownloadedSurViewModel(
         tryToExecute(
             execute = { quranRepository.deleteSurahWithSpecificReciter(surahId) },
             onSuccess = {
-                updateState { state ->
-                    val newSurDetails =
-                        state.surDetails - state.surDetails.first { it.id == state.selectedSurahForDelete }
-                    state.copy(
-                        surDetails = newSurDetails,
-                        selectedSurahForDelete = null,
-                        showDeleteConfirmationDialog = false,
-                    )
-                }
-                showSuccessSnackBar()
-
+                onDeleteSurahSuccess()
             }
         )
     }
 
+
+    private fun onDeleteSurahSuccess() {
+        updateState { state ->
+            val newSurDetails =
+                state.surDetails - state.surDetails.first { it.id == state.selectedSurahForDelete }
+
+            state.copy(
+                surDetails = newSurDetails,
+                selectedSurahForDelete = null,
+                showDeleteConfirmationDialog = false
+            )
+        }
+
+        showSuccessSnackBar()
+    }
 
 
     private fun showSuccessSnackBar() = snackbarHandler.showSnackBar(
