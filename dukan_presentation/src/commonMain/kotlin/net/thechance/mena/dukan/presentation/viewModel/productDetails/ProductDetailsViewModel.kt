@@ -193,9 +193,4 @@ class ProductDetailsViewModel(
             onSuccess = {updateState { copy(isFavorite = isCurrentlyFavorite) }},
         )
     }
-
-    fun refreshData(){
-        loadProductDetails()
-        loadCartInfo()
-    }
 }
