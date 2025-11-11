@@ -9,7 +9,7 @@ import androidx.room.RoomDatabaseConstructor
 @ConstructedBy(QuranDatabaseConstructor::class)
 abstract class QuranDatabase : RoomDatabase() {
     abstract fun getAyaDao(): AyahDao
-    abstract fun getSurahDao(): SurahAudioDao
+    abstract fun getSurahAudioDao(): SurahAudioDao
     abstract fun getRecitersDao(): RecitersDao
 }
 

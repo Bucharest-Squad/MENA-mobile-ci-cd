@@ -16,7 +16,7 @@ import org.koin.dsl.module
 val faithDataModule = module {
 
     single<AyahDao> { get<QuranDatabase>().getAyaDao() }
-    single<SurahAudioDao> { get<QuranDatabase>().getSurahDao() }
+    single<SurahAudioDao> { get<QuranDatabase>().getSurahAudioDao() }
     single<RecitersDao> { get<QuranDatabase>().getRecitersDao() }
     single<DataStore<Preferences>> { createDataStore() }
     singleOf(::TilawahDataStoreImpl) bind TilawahDataStore::class
