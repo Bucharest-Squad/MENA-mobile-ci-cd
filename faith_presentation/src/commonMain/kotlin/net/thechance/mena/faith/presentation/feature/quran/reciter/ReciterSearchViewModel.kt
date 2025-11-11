@@ -56,13 +56,17 @@ class ReciterSearchViewModel(
         repository.searchForReciter(query)
 
     private suspend fun onSearchResultSuccess(reciters: List<Reciter>) {
-        val searchResults = reciters.map {
-            it.toUi(
-                repository.isSurahAudioCached(reciterArgs.surahId!!, it.id)
+        val surahId = reciterArgs.surahId ?: return
+
+        val searchResults = reciters.map { reciter ->
+            reciter.toUi(
+                repository.isSurahAudioCached(surahId, reciter.id)
             )
         }
+
         updateState { it.copy(searchResults = searchResults) }
     }
+
 
     private fun isQueryTooShort(query: String): Boolean {
         val isTooShort = query.length < MIN_SEARCH_QUERY_LENGTH
