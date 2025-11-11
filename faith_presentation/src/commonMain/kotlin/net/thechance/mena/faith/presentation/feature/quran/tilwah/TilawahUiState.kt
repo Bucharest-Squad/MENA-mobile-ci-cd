@@ -19,5 +19,5 @@ fun Reciter.toUi(isDownloaded: Boolean) = ReciterUi(
     id = id,
     name = name,
     recitingType = tilawahType,
-    isDownloaded = isDownloaded //Todo not implemented yet
+    isDownloaded = isDownloaded
 )
