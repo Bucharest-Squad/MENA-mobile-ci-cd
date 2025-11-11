@@ -18,15 +18,13 @@ fun PlayButton(
     contentDescription: String,
     modifier: Modifier = Modifier
 ) {
-        Icon(
-            painter = painterIcon,
-            contentDescription = contentDescription,
-            modifier = modifier.padding(Theme.spacing._8)
-                .size(24.dp)
-                .background(
-                    color = Theme.colorScheme.background.surface,
-                    shape = RoundedCornerShape(Theme.spacing._12),
-                )
-                .clip(RoundedCornerShape(Theme.spacing._12)),
-        )
-    }
+    Icon(
+        painter = painterIcon,
+        contentDescription = contentDescription,
+        modifier = modifier
+            .size(40.dp)
+            .clip(RoundedCornerShape(Theme.radius.md))
+            .background(Theme.colorScheme.background.surface)
+            .padding(Theme.spacing._8)
+    )
+}
