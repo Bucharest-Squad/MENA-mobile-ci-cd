@@ -56,6 +56,9 @@ class DownloadedSurViewModel(
     }
 
     override fun onReciterSettingsClick() {
+        tryToExecute(
+            execute = { quranRepository.getReciters() }
+        )
         sendEffect(DownloadedSurEffect.NavigateToRecitersScreen)
     }
 
@@ -80,9 +83,14 @@ class DownloadedSurViewModel(
         updateState { it.copy(selectedSurahForDelete = null, showDeleteConfirmationDialog = false) }
     }
 
-    override fun onConfirmDeleteDownloadedSurahClick(surahId: Int) {
+    override fun onConfirmDeleteDownloadedSurahClick() {
+        val surahId = uiState.value.selectedSurahForDelete
         tryToExecute(
-            execute = { quranRepository.deleteSurahWithSpecificReciter(surahId) },
+            execute = {
+                surahId?.let {
+                    quranRepository.deleteSurahWithSpecificReciter(surahId)
+                }
+            },
             onSuccess = {
                 onDeleteSurahSuccess()
             }

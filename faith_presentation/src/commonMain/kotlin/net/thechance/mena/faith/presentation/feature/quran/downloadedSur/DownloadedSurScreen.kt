@@ -38,7 +38,7 @@ fun DownloadedSurScreen(viewModel: DownloadedSurViewModel = koinViewModel()) {
     ObserveAsEffect(viewModel.uiEffect) { effect ->
         when (effect) {
             DownloadedSurEffect.NavigateBack -> navController.navigateUp()
-            DownloadedSurEffect.NavigateToRecitersScreen -> navController.navigate(Route.DownloadedRecitersRoute())
+            is DownloadedSurEffect.NavigateToRecitersScreen -> navController.navigate(Route.DownloadedRecitersRoute())
             is DownloadedSurEffect.NavigateToDownloadedSurahReciterScreen -> Unit // TODO("Navigate to downloaded surah reciters when done")
         }
     }
@@ -59,7 +59,7 @@ private fun Content(
     Scaffold(
         topBar = {
             DownloadedSurAppBar(
-                onRecitersSettingsClick = listener::onReciterSettingsClick,
+                onRecitersSettingsClick = { listener.onReciterSettingsClick() },
                 onBackClick = listener::onBackClick,
             )
         },
@@ -76,12 +76,7 @@ private fun Content(
             ) {
                 DeleteConfirmationDialog(
                     showDialog = uiState.showDeleteConfirmationDialog,
-                    onDeleteClick = {
-                        listener.onConfirmDeleteDownloadedSurahClick(
-                            surahId = uiState.selectedSurahForDelete
-                                ?: return@DeleteConfirmationDialog
-                        )
-                    },
+                    onDeleteClick = listener::onConfirmDeleteDownloadedSurahClick,
                     onDismiss = listener::onDismissDeleteConfirmationDialog,
                 )
             }
@@ -152,16 +147,11 @@ private fun PreviewDownloadedSurScreen() {
             listener =
                 object : DownloadedSurInteractionListener {
                     override fun onReciterSettingsClick() {}
-
                     override fun onDownloadedSurahClick(surahId: Int) {}
-
                     override fun onBackClick() {}
-
                     override fun onDeleteSurahClick(surahId: Int) {}
-
                     override fun onDismissDeleteConfirmationDialog() {}
-
-                    override fun onConfirmDeleteDownloadedSurahClick(surahId: Int) {}
+                    override fun onConfirmDeleteDownloadedSurahClick() {}
                 },
         )
     }

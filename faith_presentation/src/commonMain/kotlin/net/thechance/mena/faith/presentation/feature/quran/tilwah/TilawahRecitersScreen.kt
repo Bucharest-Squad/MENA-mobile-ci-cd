@@ -28,7 +28,7 @@ fun TilawahScreen(
     ObserveAsEffect(viewModel.uiEffect) { effect ->
         when (effect) {
             TilawahEffect.NavigateBack -> navController.navigateUp()
-            TilawahEffect.NavigateToSearch -> navController.navigate(Route.ReciterSearch)
+            TilawahEffect.NavigateToSearch -> navController.navigate(Route.ReciterSearch())
         }
     }
     Content(uiState = uiState, listener = viewModel)
