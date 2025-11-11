@@ -88,7 +88,7 @@ class ChatViewModel(
             onLoadUpdated = { },
             onRequest = ::getChatHistory,
             getNextKey = { currentPage, _ -> currentPage + 1 },
-            onError = { handleChatHistoryError() },
+            onError = {  },
             onSuccess = { result, _ -> handleChatHistorySuccess(result) },
             endReached = { _, result -> result.isLastPage }
         )
@@ -911,16 +911,6 @@ class ChatViewModel(
     private suspend fun safeUpdateMessages(block: (List<Message>) -> List<Message>) {
         messagesMutex.withLock {
             _messages.update(block)
-        }
-    }
-
-    private fun handleChatHistoryError() {
-        viewModelScope.launch {
-            showSnackBar(
-                titleStringResource = Res.string.error,
-                messageStringResource = Res.string.error_cant_get_messages,
-                isError = true
-            )
         }
     }
 
