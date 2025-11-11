@@ -88,7 +88,6 @@ class ChatViewModel(
             onLoadUpdated = { },
             onRequest = ::getChatHistory,
             getNextKey = { currentPage, _ -> currentPage + 1 },
-            onError = {  },
             onSuccess = { result, _ -> handleChatHistorySuccess(result) },
             endReached = { _, result -> result.isLastPage }
         )
