@@ -8,14 +8,20 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.number
+import kotlinx.datetime.toLocalDateTime
 import net.thechance.mena.faith.domain.entity.PrayerName
 import net.thechance.mena.faith.domain.entity.PrayerTime
 import net.thechance.mena.faith.domain.repository.PrayerTimeRepository
 import net.thechance.mena.faith.domain.usecase.GetNextPrayerTimeUseCase
 import net.thechance.mena.faith.presentation.base.BaseViewModel
-import net.thechance.mena.faith.presentation.utils.extentions.prayerTime.convertHijriToReadableFormat
+import net.thechance.mena.faith.presentation.utils.IslamicDate
+import net.thechance.mena.faith.presentation.utils.IslamicDateCalculator
+import net.thechance.mena.faith.presentation.utils.extentions.prayerTime.calculateNextIslamicDate
+import net.thechance.mena.faith.presentation.utils.extentions.prayerTime.calculatePreviousIslamicDate
+import net.thechance.mena.faith.presentation.utils.extentions.prayerTime.convertIslamicDateToString
 import net.thechance.mena.faith.presentation.utils.extentions.prayerTime.formatCountdown
-import net.thechance.mena.faith.presentation.utils.extentions.prayerTime.getHijriReadableDate
 import net.thechance.mena.identity.domain.entity.Address
 import net.thechance.mena.identity.domain.service.LocationService
 import kotlin.time.Clock
@@ -27,13 +33,14 @@ class PrayerTimeViewModel(
     private val prayerTimeRepository: PrayerTimeRepository,
     private val getNextPrayerTimeUseCase: GetNextPrayerTimeUseCase,
     private val locationService: LocationService,
+    private val islamicDateCalculator: IslamicDateCalculator,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : BaseViewModel<PrayerTimeUiState, PrayerTimeEffect>(PrayerTimeUiState()),
     PrayerTimeInteractionListener {
+
     private var countdownJob: Job? = null
     private var currentAddress: Address? = null
-    private var currentHijriDateRaw: String = ""
-    private var cachedPrayerTimes: List<PrayerTime> = emptyList()
+    private var currentIslamicDate: IslamicDate? = null
 
     init {
         getUserLocation()
@@ -50,15 +57,13 @@ class PrayerTimeViewModel(
 
     private fun onGetUserLocationSuccess(address: Address) {
         currentAddress = address
-        updateState { state -> state.copy(address = address.addressLine) }
+        updateState { it.copy(address = address.addressLine) }
         getPrayerTimes(address, Clock.System.now())
     }
 
     private fun getPrayerTimes(address: Address, date: Instant) {
         tryToExecute(
-            execute = {
-                prayerTimeRepository.getPrayerTimes(date = date, address = address)
-            },
+            execute = { prayerTimeRepository.getPrayerTimes(date = date, address = address) },
             onSuccess = ::onPrayerTimesSuccess,
             dispatcher = dispatcher
         )
@@ -66,16 +71,22 @@ class PrayerTimeViewModel(
 
     private fun onPrayerTimesSuccess(prayerTimes: List<PrayerTime>) {
         val filteredPrayerTimes = prayerTimes.filter { it.name != PrayerName.SUNRISE }
-        val hijriDate = getHijriReadableDate(prayerTimes)
-        val hijriDateRaw = prayerTimes.firstOrNull()?.hijriDate ?: ""
 
-        cachedPrayerTimes = filteredPrayerTimes
-        currentHijriDateRaw = hijriDateRaw
+        val currentDateTime =
+            Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
+        val currentIslamicDate = islamicDateCalculator.gregorianToHijri(
+            currentDateTime.day,
+            currentDateTime.month.number,
+            currentDateTime.year
+        )
+        this.currentIslamicDate = currentIslamicDate
+
+        val readableDate = convertIslamicDateToString(currentIslamicDate)
 
         updateState {
             it.copy(
                 prayerTimes = filteredPrayerTimes,
-                currentDate = hijriDate
+                currentDate = readableDate
             )
         }
         startCountdownTimer()
@@ -97,7 +108,6 @@ class PrayerTimeViewModel(
 
     private suspend fun updateNextPrayerInfoWithFlow() {
         val address = currentAddress ?: return
-
         if (!viewModelScope.isActive) return
 
         runCatching {
@@ -106,7 +116,6 @@ class PrayerTimeViewModel(
 
                 nextPrayer?.let {
                     val remainingMillis = calculateRemainingTime(it.time, Clock.System.now())
-
                     updateState { state ->
                         state.copy(
                             nextPrayerName = it.name,
@@ -125,31 +134,50 @@ class PrayerTimeViewModel(
     override fun onBackClick() = sendEffect(PrayerTimeEffect.NavigateBack)
 
     override fun onPrevDateClick() {
-        if (currentHijriDateRaw.isEmpty()) return
+        val currentDate = currentIslamicDate ?: return
+        val previousIslamicDate = calculatePreviousIslamicDate(currentDate)
+        currentIslamicDate = previousIslamicDate
 
-        val previousDate = getPreviousHijriDate(currentHijriDateRaw)
-        updateState { it.copy(currentDate = convertHijriToReadableFormat(previousDate)) }
-        currentHijriDateRaw = previousDate
-        getHijriPrayerTimes(previousDate)
+        val readableDate = convertIslamicDateToString(previousIslamicDate)
+        updateState { it.copy(currentDate = readableDate) }
+
+        getPrayerTimesForIslamicDate(previousIslamicDate)
     }
 
     override fun onNextDateClick() {
-        if (currentHijriDateRaw.isEmpty()) return
+        val currentDate = currentIslamicDate ?: return
+        val nextIslamicDate = calculateNextIslamicDate(currentDate)
+        currentIslamicDate = nextIslamicDate
 
-        val nextDate = getNextHijriDate(currentHijriDateRaw)
-        updateState { it.copy(currentDate = convertHijriToReadableFormat(nextDate)) }
-        currentHijriDateRaw = nextDate
-        getHijriPrayerTimes(nextDate)
+        val readableDate = convertIslamicDateToString(nextIslamicDate)
+        updateState { it.copy(currentDate = readableDate) }
+
+        getPrayerTimesForIslamicDate(nextIslamicDate)
     }
 
-    private fun getHijriPrayerTimes(hijriDateRaw: String) {
+    override fun onDateDropdownClick() = updateState { it.copy(showDatePicker = true) }
+
+    override fun onLocationClick() = sendEffect(PrayerTimeEffect.NavigateToAddressesScreen)
+
+    override fun onDateSelected(day: Int, month: Int, year: Int) {
+        val selectedIslamicDate = IslamicDate(day, month, year)
+        currentIslamicDate = selectedIslamicDate
+
+        val readableDate = convertIslamicDateToString(selectedIslamicDate)
+        updateState { it.copy(currentDate = readableDate, showDatePicker = false) }
+
+        getPrayerTimesForIslamicDate(selectedIslamicDate)
+    }
+
+    override fun onDatePickerDismiss() = updateState { it.copy(showDatePicker = false) }
+
+    private fun getPrayerTimesForIslamicDate(islamicDate: IslamicDate) {
         val address = currentAddress ?: return
 
         tryToExecute(
             execute = {
-                val formattedHijriDate = hijriDateRaw.split("-").let { (day, month, year) ->
-                    "$year-$month-$day"
-                }
+                val formattedHijriDate =
+                    "${islamicDate.year}-${islamicDate.month}-${islamicDate.day}"
                 prayerTimeRepository.getPrayerTimeWithHijriDate(
                     date = formattedHijriDate,
                     isHijri = true,
@@ -163,89 +191,10 @@ class PrayerTimeViewModel(
 
     private fun onHijriPrayerTimesSuccess(prayerTimes: List<PrayerTime>) {
         val filteredPrayerTimes = prayerTimes.filter { it.name != PrayerName.SUNRISE }
-        val hijriDate = getHijriReadableDate(prayerTimes)
-
-        cachedPrayerTimes = filteredPrayerTimes
-
-        updateState {
-            it.copy(
-                prayerTimes = filteredPrayerTimes,
-                currentDate = hijriDate
-            )
-        }
-    }
-
-    override fun onDateDropdownClick() = sendEffect(PrayerTimeEffect.NavigateCalenderDialog)
-
-    override fun onLocationClick() = sendEffect(PrayerTimeEffect.NavigateToAddressesScreen)
-
-    override fun onDateSelected(day: Int, month: Int, year: Int) {}
-
-    override fun onDatePickerDismiss() {}
-
-    override fun onCleared() {
-        try {
-            countdownJob?.cancel()
-            countdownJob = null
-            currentAddress = null
-            cachedPrayerTimes = emptyList()
-        } catch (e: Exception) {
-            println("Error in onCleared: ${e.message}")
-        } finally {
-            super.onCleared()
-        }
+        updateState { it.copy(prayerTimes = filteredPrayerTimes) }
     }
 
     private companion object {
         const val COUNTDOWN_UPDATE_INTERVAL = 1000L
-    }
-
-    private fun getPreviousHijriDate(hijriDateRaw: String): String {
-        val parts = hijriDateRaw.split("-")
-        if (parts.size != 3) return hijriDateRaw
-
-        val (day, month, year) = parts.map { it.toIntOrNull() ?: 0 }
-        var newDay = day - 1
-        var newMonth = month
-        var newYear = year
-
-        when {
-            newDay < 1 -> {
-                newMonth--
-                newDay = when (newMonth) {
-                    in 1..11 -> 30
-                    12 -> 29
-                    else -> {
-                        newYear--
-                        12
-                    }
-                }
-            }
-        }
-
-        return "$newDay-$newMonth-$newYear"
-    }
-
-    private fun getNextHijriDate(hijriDateRaw: String): String {
-        val parts = hijriDateRaw.split("-")
-        if (parts.size != 3) return hijriDateRaw
-
-        val (day, month, year) = parts.map { it.toIntOrNull() ?: 0 }
-        var newDay = day + 1
-        var newMonth = month
-        var newYear = year
-
-        when {
-            newDay > 30 -> {
-                newDay = 1
-                newMonth++
-                if (newMonth > 12) {
-                    newMonth = 1
-                    newYear++
-                }
-            }
-        }
-
-        return "$newDay-$newMonth-$newYear"
     }
 }

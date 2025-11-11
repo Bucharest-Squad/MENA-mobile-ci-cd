@@ -38,9 +38,6 @@ fun PrayerTimeScreen(
     ObserveAsEffect(viewModel.uiEffect) { effect ->
         when (effect) {
             PrayerTimeEffect.NavigateBack -> navController.navigateUp()
-            PrayerTimeEffect.NavigateCalenderDialog -> {}
-            PrayerTimeEffect.NavigateNextDate -> {}
-            PrayerTimeEffect.NavigatePrevDate -> {}
             PrayerTimeEffect.NavigateToAddressesScreen -> {
                 navController.navigate(Route.UserAddresses)
             }
