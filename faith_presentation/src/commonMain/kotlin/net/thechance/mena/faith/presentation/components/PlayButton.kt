@@ -20,17 +20,17 @@ fun PlayButton(
     modifier: Modifier = Modifier
 ) {
     Box(
-        contentAlignment = Alignment.Center,
-        modifier = modifier
-            .size(40.dp)
-            .background(
-                color = Theme.colorScheme.background.surface,
-                shape = RoundedCornerShape(Theme.spacing._12),
-            ).clip(RoundedCornerShape(Theme.spacing._12)),
+        modifier = modifier,
+        contentAlignment = Alignment.Center
     ) {
         Icon(
             painter = painterIcon,
-            contentDescription = contentDescription
+            contentDescription = contentDescription,
+            modifier = modifier.size(40.dp)
+                .background(
+                    color = Theme.colorScheme.background.surface,
+                    shape = RoundedCornerShape(Theme.spacing._12),
+                ).clip(RoundedCornerShape(Theme.spacing._12)),
         )
     }
 }
