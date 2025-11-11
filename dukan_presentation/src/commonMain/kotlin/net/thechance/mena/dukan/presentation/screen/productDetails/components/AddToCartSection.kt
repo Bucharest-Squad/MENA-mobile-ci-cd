@@ -61,7 +61,6 @@ fun AddToCartSection(
         )
         Button(
             modifier = Modifier
-                .heightIn(min=48.dp)
                 .fillMaxWidth(),
             onClick = onAddToCartClick,
             isEnabled = true,
@@ -72,8 +71,7 @@ fun AddToCartSection(
                 Theme.colorScheme.primary.primary
             ),
             shape = RoundedCornerShape(Theme.radius.md),
-            containerColor = Theme.colorScheme.primary.primary,
-//            contentPadding = PaddingValues(vertical = Theme.spacing._4)
+            containerColor = Theme.colorScheme.primary.primary
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -92,8 +90,7 @@ fun AddToCartSection(
                         .clip(RoundedCornerShape(Theme.radius.full))
                         .background(Theme.colorScheme.primary.onPrimaryBody)
                 )
-                Column(
-                ) {
+                Column {
                     Text(
                         text = "$$productPrice",
                         style = Theme.typography.label.small,
