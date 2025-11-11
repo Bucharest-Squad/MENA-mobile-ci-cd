@@ -59,7 +59,7 @@ import net.thechance.mena.identity.presentation.screen.profile.components.dialog
 import net.thechance.mena.identity.presentation.screen.profile.components.dialog.ShareQrCodeInteractionListener
 import net.thechance.mena.identity.presentation.screen.profile.components.dialog.ShareQrCodeUIEffect
 import net.thechance.mena.identity.presentation.screen.profile.components.dialog.ShareQrCodeUIState
-import net.thechance.mena.identity.presentation.screen.profile.components.dialog.utils.createQrByteArray
+import net.thechance.mena.identity.presentation.screen.profile.components.dialog.utils.createQrCodeByteArray
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -200,7 +200,7 @@ private fun ScaffoldScope.ShareQrCodeContent(
                     contentDescription = stringResource(Res.string.download_icon_content_description),
                     isLoading = state.isLoading,
                     onClick = {
-                        createQrByteArray(
+                        createQrCodeByteArray(
                             painter = qrCodePainter,
                             density = density,
                             layoutDirection = layoutDirection,

@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.toSize
 import io.github.alexzhirkevich.qrose.ImageFormat
 import io.github.alexzhirkevich.qrose.toByteArray
 
-fun createQrByteArray(
+fun createQrCodeByteArray(
     painter: Painter,
     density: Density,
     layoutDirection: LayoutDirection,
