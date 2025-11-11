@@ -56,9 +56,6 @@ class DownloadedSurViewModel(
     }
 
     override fun onReciterSettingsClick() {
-        tryToExecute(
-            execute = { quranRepository.getReciters() }
-        )
         sendEffect(DownloadedSurEffect.NavigateToRecitersScreen)
     }
 

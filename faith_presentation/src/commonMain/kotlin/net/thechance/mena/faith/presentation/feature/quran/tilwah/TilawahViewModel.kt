@@ -78,7 +78,6 @@ class TilawahViewModel(
     }
 
     private fun getAllReciters() {
-        updateState { it.copy(surahId = surahArgs.surahId) }
         tryToExecute(
             execute = { quranRepository.getReciters() },
             onSuccess = ::getAllRecitersSuccessfully,
