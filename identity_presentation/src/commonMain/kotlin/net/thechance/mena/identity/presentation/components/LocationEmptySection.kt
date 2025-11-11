@@ -65,7 +65,7 @@ fun LocationEmptySection(
         )
 
         PrimaryButton(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().padding(bottom = Theme.spacing._12),
             text = stringResource(buttonTextResource),
             contentPadding = PaddingValues(horizontal = Theme.spacing._24),
             onClick = onButtonClicked,
