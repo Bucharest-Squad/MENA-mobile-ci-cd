@@ -3,6 +3,7 @@ package net.thechance.mena.identity.presentation.screen.changePassword.component
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -34,7 +35,7 @@ fun NewPasswordContent(
 ) {
     val scrollState = rememberScrollState()
 
-    Column(modifier.fillMaxWidth().verticalScroll(scrollState)) {
+    Column(modifier.fillMaxSize().verticalScroll(scrollState)) {
 
         Text(
             text = stringResource(Res.string.enter_your_new_password),
