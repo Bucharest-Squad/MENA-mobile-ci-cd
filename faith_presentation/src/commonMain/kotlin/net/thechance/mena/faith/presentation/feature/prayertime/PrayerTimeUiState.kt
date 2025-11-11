@@ -2,7 +2,7 @@ package net.thechance.mena.faith.presentation.feature.prayertime
 
 import net.thechance.mena.faith.domain.entity.PrayerName
 import net.thechance.mena.faith.domain.entity.PrayerTime
-import net.thechance.mena.faith.presentation.components.IslamicDate
+import net.thechance.mena.faith.presentation.utils.IslamicDate
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 

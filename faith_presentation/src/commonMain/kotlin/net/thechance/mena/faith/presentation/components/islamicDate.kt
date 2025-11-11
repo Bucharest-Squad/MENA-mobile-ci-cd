@@ -6,39 +6,27 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import kotlinx.datetime.LocalDate
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import net.thechance.mena.designsystem.presentation.component.datePicker.WheelDatePicker
-import kotlin.time.ExperimentalTime
-
-data class IslamicDate(
-    val day: Int,
-    val month: Int,
-    val year: Int
-)
+import net.thechance.mena.faith.presentation.utils.IslamicDate
 
 @Composable
 fun IslamicDatePicker(
-    selectedDate: IslamicDate?,
-    modifier: Modifier = Modifier,
-    minYear: Int = 1300,
-    maxYear: Int = 1450,
+    selectedDate: IslamicDate,
     onDateChange: (day: Int, month: Int, year: Int) -> Unit,
+    modifier: Modifier = Modifier,
+    minYear: Int = 1350,
+    maxYear: Int = 1450
 ) {
-    val dateToUse = getEffectiveIslamicDate(selectedDate)
     val islamicMonthNames = getIslamicMonthNames()
     val yearList = createYearList(minYear, maxYear)
 
-    val (currentMonthState, currentYearState) = rememberIslamicMonthYearState(dateToUse)
+    val (currentMonthState, currentYearState) = rememberIslamicMonthYearState(selectedDate)
     val currentMonth = currentMonthState.value
     val currentYear = currentYearState.value
 
     val daysList = createIslamicDaysList(currentMonth, currentYear)
     val selectedIndices = calculateIslamicSelectionIndices(
-        date = dateToUse,
-        month = currentMonth,
-        year = currentYear,
+        date = selectedDate,
         daysCount = daysList.size,
         minYear = minYear
     )
@@ -65,25 +53,6 @@ fun IslamicDatePicker(
             )
         }
     )
-}
-
-@OptIn(ExperimentalTime::class)
-@Composable
-private fun getEffectiveIslamicDate(selectedDate: IslamicDate?): IslamicDate {
-    return remember {
-        selectedDate ?: run {
-            val today =
-                kotlin.time.Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
-            convertGregorianToIslamic(today)
-        }
-    }
-}
-
-@Composable
-private fun createYearList(minYear: Int, maxYear: Int): List<String> {
-    return remember(minYear, maxYear) {
-        (minYear..maxYear).map { it.toString() }
-    }
 }
 
 @Composable
@@ -115,17 +84,16 @@ private fun createIslamicDaysList(month: Int, year: Int): List<String> {
 }
 
 private fun getIslamicMonthDays(month: Int, year: Int): Int {
-    return if (month in listOf(1, 3, 5, 7, 9, 11)) {
-        30
-    } else if (month in listOf(2, 4, 6, 8, 10)) {
-        29
-    } else {
-        if (isIslamicLeapYear(year)) 30 else 29
+    return when (month) {
+        1, 3, 5, 7, 9, 11 -> 30
+        2, 4, 6, 8, 10 -> 29
+        12 -> if (isIslamicLeapYear(year)) 30 else 29
+        else -> 30
     }
 }
 
 private fun isIslamicLeapYear(year: Int): Boolean {
-    return (year * 11 + 3) % 30 < 11
+    return (year * 11 + 14) % 30 < 11
 }
 
 private fun getIslamicMonthNames(): List<String> {
@@ -145,30 +113,11 @@ private fun getIslamicMonthNames(): List<String> {
     )
 }
 
-private fun convertGregorianToIslamic(gregorianDate: LocalDate): IslamicDate {
-    val jd = toJulianDay(gregorianDate.year, gregorianDate.monthNumber, gregorianDate.dayOfMonth)
-    return fromJulianDay(jd)
-}
-
-private fun toJulianDay(year: Int, month: Int, day: Int): Int {
-    val a = (14 - month) / 12
-    val y = year + 4800 - a
-    val m = month + 12 * a - 3
-    return day + (153 * m + 2) / 5 + 365 * y + y / 4 - y / 100 + y / 400 - 32045
-}
-
-private fun fromJulianDay(jd: Int): IslamicDate {
-    val l = jd + 1948440 - 385
-    val n = (4 * l) / 146097
-    val l2 = l - (146097 * n) / 4
-    val i = (4000 * (l2 + 1)) / 1461001
-    val l3 = l2 - (1461 * i) / 4 + 300
-    val j = (30 * l3) / 10646
-    val day = l3 - (10646 * j) / 30
-    val month = j + 1
-    val year = 100 * n + i - 4800 + j / 11
-
-    return IslamicDate(day, month, year)
+@Composable
+private fun createYearList(minYear: Int, maxYear: Int): List<String> {
+    return remember(minYear, maxYear) {
+        (minYear..maxYear).map { it.toString() }
+    }
 }
 
 private data class SelectionIndices(
@@ -179,14 +128,12 @@ private data class SelectionIndices(
 
 private fun calculateIslamicSelectionIndices(
     date: IslamicDate,
-    month: Int,
-    year: Int,
     daysCount: Int,
     minYear: Int
 ): SelectionIndices {
     val dayIndex = (date.day.coerceIn(1, daysCount) - 1)
-    val monthIndex = month - 1
-    val yearIndex = year - minYear
+    val monthIndex = date.month - 1
+    val yearIndex = date.year - minYear
 
     return SelectionIndices(
         dayIndex = dayIndex,
