@@ -915,11 +915,17 @@ class ChatViewModel(
     }
 
     private fun handleChatHistoryError() {
-        updateState { state -> state.copy(paginationError = true) }
+        viewModelScope.launch {
+            delay(100)
+            showSnackBar(
+                titleStringResource = Res.string.error,
+                messageStringResource = Res.string.error_cant_get_messages,
+                isError = true
+            )
+        }
     }
 
     private suspend fun handleChatHistorySuccess(result: PagedData<Message>) {
-        updateState { state -> state.copy(paginationError = false) }
         onGetChatHistorySuccess(result)
     }
 
