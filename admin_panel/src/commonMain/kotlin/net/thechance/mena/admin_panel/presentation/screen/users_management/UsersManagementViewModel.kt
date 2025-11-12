@@ -196,6 +196,7 @@ class UsersManagementViewModel(
         isSuccess: Boolean,
         durationMillis: Long = 3000L
     ) {
+        if (state.value.snackBar.isVisible && state.value.snackBar.message == message) return
         updateState { oldState ->
             oldState.copy(
                 snackBar = SnackBarState(
