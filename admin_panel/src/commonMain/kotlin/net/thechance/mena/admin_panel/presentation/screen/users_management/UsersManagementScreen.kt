@@ -4,9 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -73,7 +73,7 @@ private fun UsersManagementScreenContent(
                 onValueChange = listener::onSearchQueryChanged,
                 onClearQueryClicked = listener::onClearQueryClicked,
                 modifier = Modifier
-                    .fillMaxWidth(0.3f)
+                    .widthIn(max = 400.dp)
                     .align(Alignment.End)
                     .padding(16.dp)
             )
