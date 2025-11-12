@@ -99,7 +99,7 @@ class PrivacyAndPolicyScreen :
         navigator: Navigator
     ) {
         when (effect) {
-            PrivacyAndPolicyScreenUIEffect.NavigateToBack -> navigator.pop()
+            PrivacyAndPolicyScreenUIEffect.NavigateBack -> navigator.pop()
         }
     }
 

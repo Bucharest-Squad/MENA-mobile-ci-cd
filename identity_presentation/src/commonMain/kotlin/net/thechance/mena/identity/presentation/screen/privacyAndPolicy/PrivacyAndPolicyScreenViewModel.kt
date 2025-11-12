@@ -22,7 +22,7 @@ class PrivacyAndPolicyScreenViewModel(
     }
 
     override fun onClickBack() {
-        sendNewEffect(PrivacyAndPolicyScreenUIEffect.NavigateToBack)
+        sendNewEffect(PrivacyAndPolicyScreenUIEffect.NavigateBack)
     }
 
     override fun onClearErrorMessage() {

@@ -29,7 +29,7 @@ class PrivacyAndPolicyScreenViewModelTest : BaseCoroutineTest() {
         viewModel.effect.test {
             viewModel.onClickBack()
             val effect = awaitItem()
-            assertTrue(effect is PrivacyAndPolicyScreenUIEffect.NavigateToBack)
+            assertTrue(effect is PrivacyAndPolicyScreenUIEffect.NavigateBack)
         }
     }
 
