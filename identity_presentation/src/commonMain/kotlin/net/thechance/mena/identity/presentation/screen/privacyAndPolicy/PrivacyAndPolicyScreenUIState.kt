@@ -5,7 +5,7 @@ import org.jetbrains.compose.resources.StringResource
 
 data class PrivacyAndPolicyScreenUIState(
     val lastUpdateDate: String = "",
-    val policySections: List<PolicySectionUIState> = emptyList(),
+    val privacyAndPolicySections: List<PolicySectionUIState> = emptyList(),
     val isLoading:Boolean = false ,
     val errorMessage: StringResource? = null
 )
