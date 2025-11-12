@@ -58,7 +58,8 @@ private fun UsersManagementScreenContent(
                     title = stringResource(Res.string.block_user),
                     description = stringResource(Res.string.block_user_confirmation_message),
                     confirmationButtonText = stringResource(Res.string.block),
-                    onConfirm = listener::onBlockConfirmed
+                    onConfirm = listener::onBlockConfirmed,
+                    modifier = Modifier.widthIn(max = 400.dp)
                 )
             }
         },
