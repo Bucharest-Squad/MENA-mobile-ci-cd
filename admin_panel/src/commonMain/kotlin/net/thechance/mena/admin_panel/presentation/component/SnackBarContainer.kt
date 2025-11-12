@@ -7,14 +7,18 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
-import net.thechance.mena.admin_panel.resources.ic_check_circle
-import net.thechance.mena.admin_panel.resources.ic_close_circle
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import net.thechance.mena.admin_panel.presentation.model.SnackBarState
 import net.thechance.mena.admin_panel.resources.Res
+import net.thechance.mena.admin_panel.resources.ic_check_circle
+import net.thechance.mena.admin_panel.resources.ic_close_circle
 import net.thechance.mena.designsystem.presentation.component.snackbar.SnackBar
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
@@ -50,7 +54,7 @@ fun SnackBarContainer(
                 title = snackBarState.title ?: "",
                 message = snackBarState.message ?: "",
                 leadingIcon = painterResource(leadingIcon),
-                modifier = modifier,
+                modifier = modifier.dropShadow(),
                 tint = animatedTint
             )
         }
@@ -68,3 +72,10 @@ private val EXIT_ANIMATION = fadeOut(tween(ANIMATION_DURATION)) +
             animationSpec = tween(ANIMATION_DURATION),
             targetOffsetX = { it / 2 },
         )
+
+private fun Modifier.dropShadow() = this.shadow(
+    elevation = 40.dp,
+    shape = RoundedCornerShape(8.dp),
+    ambientColor = Color.Black.copy(alpha = 0.08f),
+    spotColor = Color.Black.copy(alpha = 0.08f)
+)
