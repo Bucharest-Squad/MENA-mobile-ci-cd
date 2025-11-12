@@ -1,0 +1,56 @@
+package net.thechance.mena.identity.presentation.screen.privacyAndPolicy
+
+import app.cash.turbine.test
+import io.mockk.coEvery
+import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
+import net.thechance.mena.identity.domain.exception.UnAuthorizedException
+import net.thechance.mena.identity.domain.repository.PolicyRepository
+import net.thechance.mena.identity.helper.BaseCoroutineTest
+import org.junit.Before
+import org.junit.Test
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
+
+class PrivacyAndPolicyScreenViewModelTest : BaseCoroutineTest() {
+
+    private val privacyRepository = mockk<PolicyRepository>()
+    private lateinit var viewModel: PrivacyAndPolicyScreenViewModel
+
+
+    @Before
+    override fun setUp() {
+        super.setUp()
+        viewModel = PrivacyAndPolicyScreenViewModel(privacyRepository)
+    }
+
+    @Test
+    fun `getPrivacyAndPolicy() should update state when get privacy and policy successfully`() = runTest {
+        coEvery { privacyRepository.getPrivacyAndPolicy() } returns emptyList()
+        //TODO:Update this after implementing the endpoint.
+       assertTrue { viewModel.state.value.policySections.isEmpty() }
+    }
+
+    @Test
+    fun `getPrivacyAndPolicy() should update error message when get privacy and policy throws exception`() = runTest {
+        coEvery { privacyRepository.getPrivacyAndPolicy() } throws UnAuthorizedException()
+        val state = viewModel.state.value
+        assertTrue { state.errorMessage != null}
+    }
+    
+    @Test
+    fun `onBackButtonClicked should emit NavigateBack effect`() = runTest {
+        viewModel.effect.test {
+            viewModel.onClickBack()
+            val effect = awaitItem()
+            assertTrue(effect is PrivacyAndPolicyScreenUIEffect.NavigateToBack)
+        }
+    }
+
+    @Test
+    fun `onClearErrorMessage() should update errorMessage to null`() = runTest {
+        val state = viewModel.state.value
+        viewModel.onClearErrorMessage()
+        assertNull(state.errorMessage)
+    }
+}
