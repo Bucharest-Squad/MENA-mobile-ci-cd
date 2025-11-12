@@ -14,7 +14,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
@@ -58,7 +57,7 @@ fun ScaffoldScope.AdminConfirmationDialog(
                 confirmationButtonText = confirmationButtonText
             )
         },
-        modifier = modifier.blur(if (isVisible) 4.dp else 0.dp)
+        modifier = modifier
     ) {
         AdminConfirmationDialogContent(
             dialogIcon = dialogIcon,
