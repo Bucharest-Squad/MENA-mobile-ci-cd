@@ -35,9 +35,8 @@ class PrivacyAndPolicyScreenViewModelTest : BaseCoroutineTest() {
 
     @Test
     fun `onClearErrorMessage() should update errorMessage to null`() = runTest {
-        val state = viewModel.state.value
         viewModel.onClearErrorMessage()
-        assertNull(state.errorMessage)
+        assertNull(viewModel.state.value.errorMessage)
     }
 
     @Test
