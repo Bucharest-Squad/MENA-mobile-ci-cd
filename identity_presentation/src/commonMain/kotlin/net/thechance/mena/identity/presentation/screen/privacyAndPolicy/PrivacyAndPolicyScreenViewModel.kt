@@ -1,8 +1,12 @@
 package net.thechance.mena.identity.presentation.screen.privacyAndPolicy
 
+import net.thechance.mena.identity.domain.model.PolicySection
+import net.thechance.mena.identity.domain.repository.PolicyRepository
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
 
-class PrivacyAndPolicyScreenViewModel() :
+class PrivacyAndPolicyScreenViewModel(
+    private val policyRepository: PolicyRepository
+) :
     BaseScreenModel<PrivacyAndPolicyScreenUIState, PrivacyAndPolicyScreenUIEffect>(
         PrivacyAndPolicyScreenUIState()
     ), PrivacyAndPolicyScreenInteractionListener {
@@ -15,25 +19,7 @@ class PrivacyAndPolicyScreenViewModel() :
         sendNewEffect(PrivacyAndPolicyScreenUIEffect.NavigateToBack)
     }
 
-    private fun getPolicyAndPolicy(): List<PrivacyAndPolicyScreenUIState.PolicySectionUIState> {
-
-        val title = "What is Lorem Ipsum?"
-        val loremContent = "is simply dummy text of the printing and typesetting industry. " +
-                    "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, " +
-                    "when an unknown printer took a galley of type and scrambled it to make a type specimen book. " +
-                    "It has survived not only five centuries"
-
-        val sections = listOf(
-            PrivacyAndPolicyScreenUIState.PolicySectionUIState(
-                title = title,
-                content = loremContent
-            ),
-            PrivacyAndPolicyScreenUIState.PolicySectionUIState(
-                title = title,
-                content = loremContent
-            )
-        )
-
-        return sections
+    private fun getPolicyAndPolicy(): List<PolicySection> {
+        return policyRepository.getPolicyAndPolicy()
     }
 }

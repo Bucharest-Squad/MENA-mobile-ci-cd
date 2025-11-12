@@ -1,12 +1,9 @@
 package net.thechance.mena.identity.presentation.screen.privacyAndPolicy
 
+import net.thechance.mena.identity.domain.model.PolicySection
+
 data class PrivacyAndPolicyScreenUIState(
-    val lastUpdateDate: String = "29/11/2025",
-    val policySections: List<PolicySectionUIState> = emptyList(),
-) {
-    data class PolicySectionUIState(
-        val title: String,
-        val content: String
-    )
-}
+    val lastUpdateDate: String = "",
+    val policySections: List<PolicySection> = emptyList(),
+)
 
