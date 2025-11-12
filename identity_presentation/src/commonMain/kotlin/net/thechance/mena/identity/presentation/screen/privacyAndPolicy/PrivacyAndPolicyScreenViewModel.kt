@@ -19,7 +19,7 @@ class PrivacyAndPolicyScreenViewModel(
         sendNewEffect(PrivacyAndPolicyScreenUIEffect.NavigateToBack)
     }
 
-    private fun getPolicyAndPolicy(): List<PolicySection> {
-        return policyRepository.getPolicyAndPolicy()
+    private fun getPolicyAndPolicy(): List<PolicySectionUIState> {
+        return policyRepository.getPolicyAndPolicy().map { it.toUIState() }
     }
 }
