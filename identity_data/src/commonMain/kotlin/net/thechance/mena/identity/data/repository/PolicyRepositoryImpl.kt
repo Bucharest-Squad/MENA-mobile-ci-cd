@@ -5,7 +5,7 @@ import net.thechance.mena.identity.domain.repository.PolicyRepository
 
 class PolicyRepositoryImpl: PolicyRepository {
 
-    override fun getPolicyAndPolicy(): List<PolicySection> {
+    override suspend fun getPrivacyAndPolicy(): List<PolicySection> {
        //TODO:Call EndPoint
         return emptyList()
     }
