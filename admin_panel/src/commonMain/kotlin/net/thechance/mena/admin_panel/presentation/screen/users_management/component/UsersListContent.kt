@@ -50,6 +50,7 @@ fun UsersListContent(
         } else {
             UsersListTable(
                 users = state.users,
+                pageInfo = state.pageInfo,
                 onToggleUserStatusClicked = listener::onToggleUserStatusClicked,
                 modifier = Modifier.weight(1f)
             )
@@ -69,6 +70,7 @@ fun UsersListContent(
 @Composable
 private fun UsersListTable(
     users: List<UsersManagementScreenState.UserItem>,
+    pageInfo: UsersManagementScreenState.UserPageInfo,
     onToggleUserStatusClicked: (userId: Uuid, userStatus: User.Status) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -80,8 +82,9 @@ private fun UsersListTable(
     ) {
         itemsIndexed(users) { index, user ->
             val isLastItem = index == users.lastIndex
+            val rowNumber = pageInfo.page * 8 + index + 1
             UserItemRow(
-                index = index + 1,
+                index = rowNumber,
                 user = user,
                 isLastItem = isLastItem,
                 hasBackground = index % 2 != 0,
