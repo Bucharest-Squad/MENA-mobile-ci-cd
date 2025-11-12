@@ -111,6 +111,7 @@ class PrivacyAndPolicyScreen :
 fun PrivacyAndPolicyScreenPreview() {
 
     val fakeState = PrivacyAndPolicyScreenUIState(
+        lastUpdateDate = "12/2/2025",
         policySections = listOf(
             PolicySectionUIState(
                 title = "What is Lorem Ipsum?",
