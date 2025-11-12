@@ -2,11 +2,13 @@ package net.thechance.mena.faith.data.database
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.PrimaryKey
 
-@Entity(tableName = "surah_audio")
+@Entity(
+    tableName = "surah_audio",
+    primaryKeys = ["surahId", "reciter_id"]
+)
 data class SurahAudioDto(
-    @PrimaryKey val surahId: Int?,
+    val surahId: Int,
     @ColumnInfo(name = "reciter_id")
     val reciterId: Int,
     @ColumnInfo(name = "local_file_path")

@@ -7,6 +7,6 @@ import net.thechance.mena.faith.presentation.navigation.Route
 class TilawahSurahArgsImpl(
     savedStateHandle: SavedStateHandle
 ) : TilawahSurahArgs {
-    private val downloadedSurah = savedStateHandle.toRoute<Route.DownloadedSurScreen>()
+    private val downloadedSurah = savedStateHandle.toRoute<Route.DownloadedRecitersRoute>()
     override val surahId: Int? = downloadedSurah.surahId
 }

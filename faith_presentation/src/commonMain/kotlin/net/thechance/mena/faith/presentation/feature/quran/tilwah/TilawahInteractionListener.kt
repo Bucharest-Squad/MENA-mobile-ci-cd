@@ -4,7 +4,7 @@ interface TilawahInteractionListener {
     fun onBackClick()
     fun onSearchClick()
 
-    fun onDownloadClick(surahId: Int, reciterId: Int)
+    fun onDownloadClick(reciterId: Int)
 
     fun onSelectReciterClick(reciterId: Int)
 }

@@ -31,6 +31,7 @@ fun TilawahScreen(
             TilawahEffect.NavigateToSearch -> navController.navigate(Route.ReciterSearch())
         }
     }
+
     Content(uiState = uiState, listener = viewModel)
 }
 
@@ -50,7 +51,7 @@ private fun Content(
         LazyColumn(
             contentPadding = PaddingValues(bottom = Theme.spacing._16),
         ) {
-            val surahId = uiState.surahId ?: return@LazyColumn
+
             items(uiState.reciters) { reciter ->
                 ReciterItem(
                     reciter = reciter.name,
@@ -60,10 +61,7 @@ private fun Content(
                         listener.onSelectReciterClick(reciter.id)
                     },
                     onDownloadClick = {
-                        listener.onDownloadClick(
-                            surahId = surahId,
-                            reciterId = reciter.id
-                        )
+                        listener.onDownloadClick(reciterId = reciter.id)
                     },
                     isSelectReciter = reciter.id == uiState.selectedReciterId
                 )
@@ -105,7 +103,7 @@ private fun Preview() {
             listener = object : TilawahInteractionListener {
                 override fun onBackClick() {}
                 override fun onSearchClick() {}
-                override fun onDownloadClick(surahId: Int, reciterId: Int) {}
+                override fun onDownloadClick(reciterId: Int) {}
                 override fun onSelectReciterClick(reciterId: Int) {}
             }
         )
