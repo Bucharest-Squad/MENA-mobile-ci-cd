@@ -1,21 +1,21 @@
 package net.thechance.mena.identity.presentation.screen.privacyAndPolicy
 
-import net.thechance.mena.identity.domain.model.PolicySection
+import net.thechance.mena.identity.domain.model.PrivacyAndPolicySection
 import org.jetbrains.compose.resources.StringResource
 
 data class PrivacyAndPolicyScreenUIState(
     val lastUpdateDate: String = "",
-    val privacyAndPolicySections: List<PolicySectionUIState> = emptyList(),
+    val privacyAndPolicySections: List<PrivacyAndPolicySectionUIState> = emptyList(),
     val isLoading:Boolean = false ,
     val errorMessage: StringResource? = null
 )
-data class PolicySectionUIState(
+data class PrivacyAndPolicySectionUIState(
     val title: String,
     val content: String
 )
 
-fun PolicySection.toUIState(): PolicySectionUIState{
-    return PolicySectionUIState(
+fun PrivacyAndPolicySection.toUIState(): PrivacyAndPolicySectionUIState{
+    return PrivacyAndPolicySectionUIState(
         title = this.title,
         content = this.content
     )

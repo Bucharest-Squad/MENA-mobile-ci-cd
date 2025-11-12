@@ -10,7 +10,7 @@ import net.thechance.mena.identity.data.dataSource.local.database.IdentityDataba
 import net.thechance.mena.identity.data.dataSource.local.database.dao.UserDao
 import net.thechance.mena.identity.data.repository.AuthenticationRepositoryImpl
 import net.thechance.mena.identity.data.repository.ImagesRepositoryImpl
-import net.thechance.mena.identity.data.repository.PolicyRepositoryImpl
+import net.thechance.mena.identity.data.repository.PrivacyAndPolicyRepositoryImpl
 import net.thechance.mena.identity.data.repository.RegisterRepositoryImpl
 import net.thechance.mena.identity.data.repository.RegistrationDraftRepositoryImpl
 import net.thechance.mena.identity.data.repository.ResetPasswordRepositoryImpl
@@ -22,7 +22,7 @@ import net.thechance.mena.identity.data.repository.location.MobileGeocoderWrappe
 import net.thechance.mena.identity.domain.repository.AddressesRepository
 import net.thechance.mena.identity.domain.repository.AuthenticationRepository
 import net.thechance.mena.identity.domain.repository.ImagesRepository
-import net.thechance.mena.identity.domain.repository.PolicyRepository
+import net.thechance.mena.identity.domain.repository.PrivacyAndPolicyRepository
 import net.thechance.mena.identity.domain.repository.RegisterRepository
 import net.thechance.mena.identity.domain.repository.RegistrationDraftRepository
 import net.thechance.mena.identity.domain.repository.ResetPasswordRepository
@@ -61,8 +61,8 @@ val identityDataModule = module {
     single<RegisterRepository> {
         RegisterRepositoryImpl(client = get(named(IDENTITY_CLIENT)))
     }
-    single<PolicyRepository> {
-        PolicyRepositoryImpl(client = get(named(IDENTITY_CLIENT)))
+    single<PrivacyAndPolicyRepository> {
+        PrivacyAndPolicyRepositoryImpl(client = get(named(IDENTITY_CLIENT)))
     }
 
     single<RegistrationDraftRepository> {

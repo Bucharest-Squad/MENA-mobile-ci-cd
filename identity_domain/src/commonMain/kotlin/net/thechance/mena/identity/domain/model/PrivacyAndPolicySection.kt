@@ -1,6 +1,6 @@
 package net.thechance.mena.identity.domain.model
 
-data class PolicySection (
+data class PrivacyAndPolicySection (
     val title:String,
     val content:String
 )

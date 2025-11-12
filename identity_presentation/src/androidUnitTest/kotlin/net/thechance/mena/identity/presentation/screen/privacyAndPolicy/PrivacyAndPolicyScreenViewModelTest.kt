@@ -5,7 +5,7 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import net.thechance.mena.identity.domain.exception.UnAuthorizedException
-import net.thechance.mena.identity.domain.repository.PolicyRepository
+import net.thechance.mena.identity.domain.repository.PrivacyAndPolicyRepository
 import net.thechance.mena.identity.helper.BaseCoroutineTest
 import org.junit.Before
 import org.junit.Test
@@ -14,7 +14,7 @@ import kotlin.test.assertTrue
 
 class PrivacyAndPolicyScreenViewModelTest : BaseCoroutineTest() {
 
-    private val privacyRepository = mockk<PolicyRepository>()
+    private val privacyRepository = mockk<PrivacyAndPolicyRepository>()
     private lateinit var viewModel: PrivacyAndPolicyScreenViewModel
 
 
@@ -43,7 +43,7 @@ class PrivacyAndPolicyScreenViewModelTest : BaseCoroutineTest() {
     fun `getPrivacyAndPolicy() should update state when get privacy and policy successfully`() = runTest {
         coEvery { privacyRepository.getPrivacyAndPolicy() } returns emptyList()
         //TODO:Update this after implementing the endpoint.
-       assertTrue { viewModel.state.value.policySections.isEmpty() }
+       assertTrue { viewModel.state.value.privacyAndPolicySections.isEmpty() }
     }
 
     @Test
