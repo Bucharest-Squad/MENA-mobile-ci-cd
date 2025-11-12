@@ -18,13 +18,7 @@ class PrivacyAndPolicyScreenViewModel(
     ), PrivacyAndPolicyScreenInteractionListener {
 
     init {
-        updateState { copy(isLoading = true , errorMessage = null) }
-        tryToExecute(
-            function = { policyRepository.getPrivacyAndPolicy() },
-            onSuccess = ::onGetPrivacyAndPolicySuccess,
-            onError = ::onGetPrivacyAndPolicyError
-        )
-
+        getPrivacyAndPolicy()
     }
 
     override fun onClickBack() {
@@ -35,6 +29,14 @@ class PrivacyAndPolicyScreenViewModel(
         updateState { copy(errorMessage = null) }
     }
 
+    private fun getPrivacyAndPolicy(){
+        updateState { copy(isLoading = true , errorMessage = null) }
+        tryToExecute(
+            function = { policyRepository.getPrivacyAndPolicy() },
+            onSuccess = ::onGetPrivacyAndPolicySuccess,
+            onError = ::onGetPrivacyAndPolicyError
+        )
+    }
     private fun onGetPrivacyAndPolicySuccess(policySections: List<PolicySection>){
         updateState { copy(policySections = policySections.map { it.toUIState() }) }
     }
