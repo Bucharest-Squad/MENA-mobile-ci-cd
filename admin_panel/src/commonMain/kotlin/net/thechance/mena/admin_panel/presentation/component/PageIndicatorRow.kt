@@ -158,7 +158,7 @@ private fun PageNumberButton(
             .size(40.dp)
             .clip(RoundedCornerShape(Theme.radius.md))
             .background(animatedBackgroundColor)
-            .clickable { onClick() }
+            .clickable (enabled = !isSelected){ onClick() }
             .padding(vertical = 4.dp)
             .wrapContentHeight(Alignment.CenterVertically)
     )
