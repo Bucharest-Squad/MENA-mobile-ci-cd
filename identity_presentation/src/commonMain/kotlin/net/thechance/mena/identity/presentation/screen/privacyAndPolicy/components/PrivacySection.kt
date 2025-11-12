@@ -1,5 +1,6 @@
 package net.thechance.mena.identity.presentation.screen.privacyAndPolicy.components
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -16,14 +17,16 @@ fun PrivacySection(
     content: String,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier.fillMaxWidth()) {
+    Column(
+        modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(Theme.spacing._8)
+    ) {
         Text(
             text = title,
             style = Theme.typography.title.small,
             color = Theme.colorScheme.shadeSecondary,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = Theme.spacing._12)
 
         )
         Text(
@@ -32,7 +35,6 @@ fun PrivacySection(
             color = Theme.colorScheme.shadeTertiary,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = Theme.spacing._8)
 
         )
 

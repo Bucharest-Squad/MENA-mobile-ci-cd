@@ -2,7 +2,9 @@ package net.thechance.mena.identity.presentation.screen.privacyAndPolicy.compone
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -21,7 +23,7 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun PrivacyScreenContainer(
     modifier: Modifier = Modifier,
-    content:  LazyListScope.() -> Unit
+    content: LazyListScope.() -> Unit
 ) {
     Box(
         modifier = modifier
@@ -37,7 +39,6 @@ fun PrivacyScreenContainer(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 16.dp)
                 .systemBarsPadding()
                 .background(
                     Brush.linearGradient(
@@ -48,7 +49,12 @@ fun PrivacyScreenContainer(
                             Theme.colorScheme.background.surface.copy(alpha = 0.2f),
                         )
                     )
-                )
+                ),
+            contentPadding = PaddingValues(
+                vertical = Theme.spacing._8,
+                horizontal = Theme.spacing._16
+            ),
+            verticalArrangement = Arrangement.spacedBy(Theme.spacing._12)
 
         ) {
             content()

@@ -60,14 +60,13 @@ class PrivacyAndPolicyScreen :
                         contentDescription = null,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = Theme.spacing._8, bottom = Theme.spacing._12)
                             .size(64.dp)
                     )
                 }
 
                 item {
                     Text(
-                        text = stringResource(Res.string.last_update,state.lastUpdateDate),
+                        text = stringResource(Res.string.last_update, state.lastUpdateDate),
                         textAlign = TextAlign.Center,
                         style = Theme.typography.label.small,
                         color = Theme.colorScheme.shadeTertiary,
