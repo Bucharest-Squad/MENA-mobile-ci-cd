@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -20,6 +21,7 @@ import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.identity.presentation.base.BaseScreen
 import net.thechance.mena.identity.presentation.components.AuthAppBar
+import net.thechance.mena.identity.presentation.components.ErrorSnackBar
 import net.thechance.mena.identity.presentation.screen.privacyAndPolicy.components.PrivacyScreenContainer
 import net.thechance.mena.identity.presentation.screen.privacyAndPolicy.components.PrivacySection
 import org.jetbrains.compose.resources.painterResource
@@ -83,7 +85,13 @@ class PrivacyAndPolicyScreen :
 
             }
         }
-
+        ErrorSnackBar(
+            errorMessage = state.errorMessage?.let { stringResource(it) },
+            onDismiss = {
+                listener.onClearErrorMessage()
+            },
+            modifier = Modifier.statusBarsPadding()
+        )
     }
 
     override fun onEffect(
@@ -130,6 +138,7 @@ fun PrivacyAndPolicyScreenPreview() {
 
     val fakeListener = object : PrivacyAndPolicyScreenInteractionListener {
         override fun onClickBack() {}
+        override fun onClearErrorMessage() {}
     }
 
     MenaTheme {
