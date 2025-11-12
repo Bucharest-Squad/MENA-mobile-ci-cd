@@ -3,6 +3,7 @@ package net.thechance.mena.identity.presentation.screen.privacyAndPolicy
 import app.cash.turbine.test
 import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import net.thechance.mena.identity.domain.exception.UnAuthorizedException
 import net.thechance.mena.identity.domain.repository.PrivacyAndPolicyRepository
@@ -49,6 +50,7 @@ class PrivacyAndPolicyScreenViewModelTest : BaseCoroutineTest() {
     @Test
     fun `getPrivacyAndPolicy() should update error message when get privacy and policy throws exception`() = runTest {
         coEvery { privacyRepository.getPrivacyAndPolicy() } throws UnAuthorizedException()
+        testScheduler.advanceUntilIdle()
         val state = viewModel.state.value
         assertTrue { state.errorMessage != null}
     }
