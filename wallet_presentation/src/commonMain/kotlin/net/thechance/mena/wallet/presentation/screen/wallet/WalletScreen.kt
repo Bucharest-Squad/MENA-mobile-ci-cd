@@ -96,7 +96,7 @@ private fun WalletContent(
             modifier = Modifier
                 .fillMaxHeight()
                 .padding(horizontal = 16.dp)
-                .padding(top = 16.dp, bottom = 8.dp)
+                .padding(top = 16.dp)
                 .verticalScroll(rememberScrollState())
         ) {
             BalanceCard(
@@ -137,7 +137,7 @@ private fun WalletContent(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp)
+                    .padding(vertical = 16.dp)
             )
         }
     }
