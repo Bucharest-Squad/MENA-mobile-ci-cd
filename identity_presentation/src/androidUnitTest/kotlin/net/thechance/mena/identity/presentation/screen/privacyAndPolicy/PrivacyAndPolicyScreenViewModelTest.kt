@@ -25,20 +25,6 @@ class PrivacyAndPolicyScreenViewModelTest : BaseCoroutineTest() {
     }
 
     @Test
-    fun `getPrivacyAndPolicy() should update state when get privacy and policy successfully`() = runTest {
-        coEvery { privacyRepository.getPrivacyAndPolicy() } returns emptyList()
-        //TODO:Update this after implementing the endpoint.
-       assertTrue { viewModel.state.value.policySections.isEmpty() }
-    }
-
-    @Test
-    fun `getPrivacyAndPolicy() should update error message when get privacy and policy throws exception`() = runTest {
-        coEvery { privacyRepository.getPrivacyAndPolicy() } throws UnAuthorizedException()
-        val state = viewModel.state.value
-        assertTrue { state.errorMessage != null}
-    }
-    
-    @Test
     fun `onBackButtonClicked should emit NavigateBack effect`() = runTest {
         viewModel.effect.test {
             viewModel.onClickBack()
@@ -53,4 +39,20 @@ class PrivacyAndPolicyScreenViewModelTest : BaseCoroutineTest() {
         viewModel.onClearErrorMessage()
         assertNull(state.errorMessage)
     }
+
+    @Test
+    fun `getPrivacyAndPolicy() should update state when get privacy and policy successfully`() = runTest {
+        coEvery { privacyRepository.getPrivacyAndPolicy() } returns emptyList()
+        //TODO:Update this after implementing the endpoint.
+       assertTrue { viewModel.state.value.policySections.isEmpty() }
+    }
+
+    @Test
+    fun `getPrivacyAndPolicy() should update error message when get privacy and policy throws exception`() = runTest {
+        coEvery { privacyRepository.getPrivacyAndPolicy() } throws UnAuthorizedException()
+        val state = viewModel.state.value
+        assertTrue { state.errorMessage != null}
+    }
+    
+
 }
