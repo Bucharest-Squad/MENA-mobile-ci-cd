@@ -1,7 +1,7 @@
 package net.thechance.mena.identity.domain.repository
 
-import net.thechance.mena.identity.domain.model.PrivacyAndPolicySection
+import net.thechance.mena.identity.domain.model.PrivacyAndPolicy
 
 interface PrivacyAndPolicyRepository {
-    suspend fun getPrivacyAndPolicy(): List<PrivacyAndPolicySection>
+    suspend fun getPrivacyAndPolicy(): PrivacyAndPolicy
 }
