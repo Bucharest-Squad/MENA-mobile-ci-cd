@@ -1,5 +1,6 @@
 package net.thechance.mena.admin_panel.data.repository.dukan
 
+import net.thechance.mena.admin_panel.data.local.InMemoryDukanDataStore
 import net.thechance.mena.admin_panel.data.mapper.dukan.toEntity
 import net.thechance.mena.admin_panel.data.mapper.toEntityPagedResult
 import net.thechance.mena.admin_panel.data.remote.api_service.DukanApiService
@@ -11,6 +12,7 @@ import net.thechance.mena.admin_panel.data.utils.executeApiSafely
 import net.thechance.mena.admin_panel.domain.entity.dukan.Dukan
 import net.thechance.mena.admin_panel.domain.entity.dukan.Product
 import net.thechance.mena.admin_panel.domain.entity.dukan.Shelf
+import net.thechance.mena.admin_panel.domain.model.DukanQueryParams
 import net.thechance.mena.admin_panel.domain.model.PagedResult
 import net.thechance.mena.admin_panel.domain.repository.dukan.DukanRepository
 import org.koin.core.annotation.Single
@@ -21,13 +23,25 @@ import kotlin.uuid.Uuid
 @Single
 class DukanRepositoryImpl(
     private val dukanApiService: DukanApiService,
+    private val inMemoryDukanDataStore: InMemoryDukanDataStore
 ) : DukanRepository {
-
-    override suspend fun getDukanDetails(dukanId: Uuid): Dukan {
-        return executeApiSafely<DukanDto> {
-            dukanApiService.getDukanDetails(dukanId.toString())
-        }.toEntity()
+    override suspend fun getDukans(dukanQueryParams: DukanQueryParams): PagedResult<Dukan> {
+        val dukans = executeApiSafely<DukanPagedResponse<DukanDto>> {
+            dukanApiService.getDukans(
+                status = dukanQueryParams.status.toString(),
+                query = dukanQueryParams.searchInput,
+                page = dukanQueryParams.page,
+                size = dukanQueryParams.size,
+            )
+        }
+        inMemoryDukanDataStore.storeDukans(dukans)
+        return dukans.toEntityPagedResult(DukanDto::toEntity)
     }
+
+    override suspend fun getDukanDetails(dukanId: Uuid): Dukan =
+        inMemoryDukanDataStore.getDukanById(dukanId.toString())
+            ?.toEntity()
+            ?: throw IllegalStateException("Dukan with id $dukanId not found in local cache")
 
     override suspend fun getDukanShelves(dukanId: Uuid, page: Int, size: Int): PagedResult<Shelf> {
         return executeApiSafely<DukanPagedResponse<ShelfDto>> {

@@ -7,5 +7,18 @@ data class Dukan(
     val address: String,
     val latitude: Double,
     val longitude: Double,
-    val categories: List<Category>
-)
+    val categories: List<Category>,
+    val activationStatus: ActivationStatus,
+    val status: Status
+) {
+    enum class ActivationStatus {
+        ACTIVED,
+        DEACTIVATED,
+    }
+
+    enum class Status {
+        APPROVED,
+        REJECTED,
+        PENDENING
+    }
+}
