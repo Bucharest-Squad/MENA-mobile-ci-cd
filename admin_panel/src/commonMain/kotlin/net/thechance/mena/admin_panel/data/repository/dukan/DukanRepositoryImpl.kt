@@ -1,6 +1,7 @@
 package net.thechance.mena.admin_panel.data.repository.dukan
 
 import net.thechance.mena.admin_panel.data.local.InMemoryDukanDataStore
+import net.thechance.mena.admin_panel.data.mapper.dukan.buildSortQueries
 import net.thechance.mena.admin_panel.data.mapper.dukan.toEntity
 import net.thechance.mena.admin_panel.data.mapper.toEntityPagedResult
 import net.thechance.mena.admin_panel.data.remote.api_service.DukanApiService
@@ -26,10 +27,15 @@ class DukanRepositoryImpl(
     private val inMemoryDukanDataStore: InMemoryDukanDataStore
 ) : DukanRepository {
     override suspend fun getDukans(dukanQueryParams: DukanQueryParams): PagedResult<Dukan> {
+        val sortParam = buildSortQueries(
+            property = dukanQueryParams.sortType,
+            direction = dukanQueryParams.sortDirection
+        )
         val dukans = executeApiSafely<DukanPagedResponse<DukanDto>> {
             dukanApiService.getDukans(
                 status = dukanQueryParams.status.toString(),
                 query = dukanQueryParams.searchInput,
+                sort = sortParam,
                 page = dukanQueryParams.page,
                 size = dukanQueryParams.size,
             )

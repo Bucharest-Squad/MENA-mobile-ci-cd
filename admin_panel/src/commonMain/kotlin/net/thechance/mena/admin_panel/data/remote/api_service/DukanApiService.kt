@@ -14,6 +14,7 @@ interface DukanApiService {
     suspend fun getDukans(
         @Query("status") status: String,
         @Query("query") query: String? = null,
+        @Query("sort") sort: List<String>? = null,
         @Query("page") page: Int? = null,
         @Query("size") size: Int? = null
     ): Response<DukanPagedResponse<DukanDto>>
