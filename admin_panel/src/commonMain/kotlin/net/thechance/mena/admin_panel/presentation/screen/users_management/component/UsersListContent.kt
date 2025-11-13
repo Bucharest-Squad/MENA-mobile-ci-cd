@@ -51,7 +51,8 @@ fun UsersListContent(
             UsersListTable(
                 users = state.users,
                 onToggleUserStatusClicked = listener::onToggleUserStatusClicked,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                pageInfo = state.pageInfo
             )
         }
 
@@ -69,10 +70,12 @@ fun UsersListContent(
 @Composable
 private fun UsersListTable(
     users: List<UsersManagementScreenState.UserItem>,
+    pageInfo: UsersManagementScreenState.UserPageInfo,
     onToggleUserStatusClicked: (userId: Uuid, userStatus: User.Status) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val listState = rememberLazyListState()
+    val startIndex = pageInfo.page * pageInfo.itemsCount
 
     LazyColumn(
         state = listState,
@@ -81,7 +84,7 @@ private fun UsersListTable(
         itemsIndexed(users) { index, user ->
             val isLastItem = index == users.lastIndex
             UserItemRow(
-                index = index + 1,
+                index = startIndex + index + 1,
                 user = user,
                 isLastItem = isLastItem,
                 hasBackground = index % 2 != 0,

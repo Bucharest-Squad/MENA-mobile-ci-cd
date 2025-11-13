@@ -20,7 +20,8 @@ data class DukanRequestsScreenState(
 ) {
     data class DukanPageInfo(
         val page: Int = 0,
-        val totalPages: Int = 1
+        val totalPages: Int = 1,
+        val itemsCount: Int = 8
     )
 
     data class DukanItem(

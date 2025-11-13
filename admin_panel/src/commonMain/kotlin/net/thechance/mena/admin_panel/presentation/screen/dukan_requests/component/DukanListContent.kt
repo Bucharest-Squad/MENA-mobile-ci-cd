@@ -8,12 +8,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -37,11 +35,8 @@ import net.thechance.mena.admin_panel.presentation.screen.users_management.compo
 import net.thechance.mena.admin_panel.resources.Res
 import net.thechance.mena.admin_panel.resources.ic_dukan_location
 import net.thechance.mena.admin_panel.resources.ic_dukan_placholder
-import net.thechance.mena.admin_panel.resources.ic_view_details
 import net.thechance.mena.admin_panel.resources.image
 import net.thechance.mena.admin_panel.resources.location
-import net.thechance.mena.admin_panel.resources.view_details
-import net.thechance.mena.designsystem.presentation.component.button.OutlinedButton
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
@@ -68,7 +63,8 @@ fun DukanListContent(
             DukanListTable(
                 dukan = state.dukans,
                 onViewDetailsClicked = listener::onViewDetailsClicked,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                pageInfo = state.pageInfo
             )
         }
 
@@ -86,10 +82,13 @@ fun DukanListContent(
 @Composable
 private fun DukanListTable(
     dukan: List<DukanRequestsScreenState.DukanItem>,
+    pageInfo: DukanRequestsScreenState.DukanPageInfo,
     onViewDetailsClicked: (dukanId: Uuid) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val listState = rememberLazyListState()
+    val startIndex = pageInfo.page * pageInfo.itemsCount
+
     LazyColumn(
         state = listState,
         modifier = modifier.fillMaxWidth()
@@ -97,7 +96,7 @@ private fun DukanListTable(
         itemsIndexed(items = dukan) { index, dukanItem ->
             val isLastItem = index == dukan.lastIndex
             DukanItemRow(
-                index = index + 1,
+                index = startIndex + index + 1,
                 dukan = dukanItem,
                 isLastItem = isLastItem,
                 hasBackground = index % 2 != 0,

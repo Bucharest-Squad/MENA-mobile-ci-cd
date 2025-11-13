@@ -21,7 +21,8 @@ data class UsersManagementScreenState(
 ) {
     data class UserPageInfo(
         val page: Int = 0,
-        val totalPages: Int = 1
+        val totalPages: Int = 1,
+        val itemsCount: Int = 8
     )
 
     data class UserItem(
