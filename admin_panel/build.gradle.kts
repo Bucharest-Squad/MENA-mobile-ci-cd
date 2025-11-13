@@ -52,7 +52,7 @@ kotlin {
             implementation(libs.bundles.ktorfit)
 
             // Coil
-            implementation(libs.coil.compose)
+            implementation(libs.bundles.coil)
 
             //Navigation
             implementation(libs.androidx.navigation.compose)

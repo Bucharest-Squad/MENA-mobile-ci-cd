@@ -9,7 +9,7 @@ import kotlin.uuid.ExperimentalUuidApi
 @OptIn(ExperimentalUuidApi::class)
 fun Dukan.toUIState(): DukanRequestsScreenState.DukanItem {
     return DukanRequestsScreenState.DukanItem(
-        id = id.toString(),
+        id = id,
         name = name,
         imageUrl = imageUrl,
         address = address,
