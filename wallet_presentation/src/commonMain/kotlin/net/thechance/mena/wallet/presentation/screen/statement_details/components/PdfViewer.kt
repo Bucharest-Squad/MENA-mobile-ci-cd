@@ -34,7 +34,6 @@ fun PdfViewer(
     LaunchedEffect(pdf) {
         pages = splitPdfToPngs(pdfData = pdf)
     }
-
     if (pages == null) {
         Box(modifier = Modifier.fillMaxSize()) {
             ThreeDotsLoadingIndicator(modifier = Modifier.align(Alignment.Center))
