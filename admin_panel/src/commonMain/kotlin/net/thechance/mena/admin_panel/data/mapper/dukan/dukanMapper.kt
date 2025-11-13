@@ -1,5 +1,6 @@
 package net.thechance.mena.admin_panel.data.mapper.dukan
 
+import net.thechance.mena.admin_panel.data.mapper.parseLocalDateTimeOrDefault
 import net.thechance.mena.admin_panel.data.mapper.toUuidOrNull
 import net.thechance.mena.admin_panel.data.utils.orZero
 import net.thechance.mena.admin_panel.data.remote.dto.dukan.CategoryDto
@@ -17,17 +18,9 @@ fun DukanDto.toEntity() = Dukan(
     latitude = latitude.orZero(),
     longitude = longitude.orZero(),
     categories = categories?.map(CategoryDto::toEntity).orEmpty(),
-    activationStatus = when (activationStatus?.uppercase()) {
-        "ACTIVED" -> Dukan.ActivationStatus.ACTIVATED
-        "DEACTIVATED" -> Dukan.ActivationStatus.DEACTIVATED
-        else -> Dukan.ActivationStatus.DEACTIVATED
-    },
-    status = when (status?.uppercase()) {
-        "APPROVED" -> Dukan.Status.APPROVED
-        "REJECTED" -> Dukan.Status.REJECTED
-        "PENDING" -> Dukan.Status.PENDING
-        else -> Dukan.Status.PENDING
-    }
+    activationStatus = Dukan.ActivationStatus.valueOfOrDefault(activationStatus),
+    status = Dukan.Status.valueOfOrDefault(status),
+    createdAt = parseLocalDateTimeOrDefault(createdAt)
 )
 
 fun CategoryDto.toEntity() = Category(
