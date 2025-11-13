@@ -10,6 +10,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import net.thechance.mena.dukan.presentation.component.loading.LoadingDots
 import net.thechance.mena.dukan.presentation.navigation.DukanRoute
 import net.thechance.mena.dukan.presentation.navigation.DukanRoute.ShelfDetails
+import net.thechance.mena.dukan.presentation.navigation.DukanRoute.DukanCart
 import net.thechance.mena.dukan.presentation.navigation.LocalNavController
 import net.thechance.mena.dukan.presentation.screen.dukanDetails.content.NoImageDukanDetailsContent
 import net.thechance.mena.dukan.presentation.screen.dukanDetails.content.SmallImageDukanDetailsContent
@@ -39,21 +40,18 @@ fun DukanDetailsScreen(
                 ShelfDetails(effect.id, effect.name, effect.dukanId)
             )
 
-            is DukanDetailsEffects.NavigateToViewDukanOnMap -> {
-
-            }
-
-            is DukanDetailsEffects.NavigateToCartScreen -> {
-                navController.navigate(
-                    DukanRoute.CheckoutScreenRoute(
-                        dukanId = effect.dukanId
-                    )
+            is DukanDetailsEffects.NavigateToViewDukanOnMap -> navController.navigate(
+                DukanRoute.DukanLocation(
+                    latitude = effect.latitude,
+                    longitude = effect.longitude
                 )
-            }
+            )
 
             is DukanDetailsEffects.NavigateToProductDetails -> navController.navigate(
                 DukanRoute.ProductDetails(productId = effect.productId, dukanId = effect.dukanId)
             )
+            is DukanDetailsEffects.NavigateToCart ->
+                navController.navigate(DukanCart(effect.dukanId))
         }
     }
 

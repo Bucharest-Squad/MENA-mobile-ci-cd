@@ -18,9 +18,13 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import mena.dukan_presentation.generated.resources.Res
 import mena.dukan_presentation.generated.resources.no_internet_connection
+import net.thechance.mena.dukan.domain.entity.Cart
+import net.thechance.mena.dukan.domain.entity.Color
+import net.thechance.mena.dukan.domain.entity.Dukan
 import net.thechance.mena.dukan.domain.entity.Product
 import net.thechance.mena.dukan.domain.exceptions.NoInternetException
 import net.thechance.mena.dukan.domain.repository.CartRepository
+import net.thechance.mena.dukan.domain.repository.DukanManagementRepository
 import net.thechance.mena.dukan.domain.repository.ProductRepository
 import net.thechance.mena.dukan.presentation.component.shared.SnackBarType
 import kotlin.test.AfterTest
@@ -39,6 +43,8 @@ class ProductDetailsViewModelTest {
 
     private val productRepository = mock<ProductRepository>(mode = MockMode.autofill)
     private val dukanCartRepository = mock<CartRepository>(mode = MockMode.autofill)
+    private val dukanManagementRepository =
+        mock<DukanManagementRepository>(mode = MockMode.autofill)
 
     private val testDispatcher = StandardTestDispatcher()
 
@@ -63,6 +69,35 @@ class ProductDetailsViewModelTest {
     @AfterTest
     fun cleanup() {
         Dispatchers.resetMain()
+    }
+
+    @OptIn(ExperimentalUuidApi::class)
+    @Test
+    fun `init SHOULD load dukan details successfully`() = runTest {
+        everySuspend { dukanManagementRepository.getDukanDetailsByDukanId(any()) } returns dummyDukanDetails()
+
+        val viewModel = createViewModel()
+        advanceUntilIdle()
+        viewModel.state.test {
+            val state = awaitItem()
+            assertEquals(parseHexColor(dummyDukanDetails().color.hexCode), state.dukanColor)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @OptIn(ExperimentalUuidApi::class)
+    @Test
+    fun `init SHOULD load cart info successfully`() = runTest {
+        everySuspend { dukanCartRepository.getCartInfo(any()) } returns dummyCart()
+
+        val viewModel = createViewModel()
+        advanceUntilIdle()
+
+        viewModel.state.test {
+            val state = awaitItem()
+            assertEquals(true, state.hasProductInCart)
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
@@ -207,9 +242,9 @@ class ProductDetailsViewModelTest {
     }
 
     @Test
-    fun `onMinusClicked keeps quantity same when equal to 1`() = runTest {
+    fun `onMinusClicked keeps quantity same when equal to 0`() = runTest {
         // Given
-        productDetailsViewModel.updateState { copy(product.copy(inCartQuantity = 1)) }
+        productDetailsViewModel.updateState { copy(product.copy(inCartQuantity = 0)) }
 
         // When
         productDetailsViewModel.onMinusClicked("10")
@@ -217,7 +252,7 @@ class ProductDetailsViewModelTest {
 
         // Then
         val updatedQuantity = productDetailsViewModel.state.value.product.inCartQuantity
-        assertEquals(1, updatedQuantity)
+        assertEquals(0, updatedQuantity)
     }
 
     @Test
@@ -241,13 +276,13 @@ class ProductDetailsViewModelTest {
             verifySuspend {
                 dukanCartRepository.updateProductQuantity(any())
             }
-            assertTrue (productDetailsViewModel.state.value.snackBarState!=null)
+            assertTrue(productDetailsViewModel.state.value.snackBarState != null)
 
 
         }
 
     @Test
-    fun `onAddToCartClicked SHOULD add new product when quantity equal 1`() =
+    fun `onAddToCartClicked SHOULD add new product when quantity equal 0`() =
         runTest {
             // Given
             val productId = "1"
@@ -264,9 +299,9 @@ class ProductDetailsViewModelTest {
             advanceUntilIdle()
             //Then
             verifySuspend {
-                dukanCartRepository.updateProductQuantity(any())
+                dukanCartRepository.addProductQuantity(any())
             }
-            assertTrue (productDetailsViewModel.state.value.snackBarState!=null)
+            assertTrue(productDetailsViewModel.state.value.snackBarState != null)
 
         }
 
@@ -281,30 +316,108 @@ class ProductDetailsViewModelTest {
     }
 
     @Test
-    fun `onErrorUpdateProductQuantity SHOULD show error snackbar when NoInternetException thrown`() = runTest {
-        // Given
-        val productId = "1"
+    fun `onErrorUpdateProductQuantity SHOULD show error snackbar when NoInternetException thrown`() =
+        runTest {
+            // Given
+            val productId = "1"
 
-        everySuspend { dukanCartRepository.updateProductQuantity(any()) } throws NoInternetException()
+            everySuspend { dukanCartRepository.updateProductQuantity(any()) } throws NoInternetException()
+
+            // When
+            productDetailsViewModel.onAddToCartClicked(productId)
+            advanceUntilIdle()
+
+            // Then
+            val state = productDetailsViewModel.state.value
+            assertEquals(Res.string.no_internet_connection, state.snackBarState?.message)
+            assertEquals(SnackBarType.ERROR, state.snackBarState?.snackBarType)
+        }
+
+    @OptIn(ExperimentalUuidApi::class)
+    private val testProductId = dummyProductDetails().id.toString()
+
+
+    @OptIn(ExperimentalUuidApi::class)
+    @Test
+    fun `onToggleProductToFavoriteClicked_whenAddingToFavorites_SHOULD callRepository`() = runTest {
+        // Given
+        productDetailsViewModel.updateState { copy(isFavorite = false) }
+        everySuspend { productRepository.toggleProductToFavorites(testProductId) } returns Unit
 
         // When
-        productDetailsViewModel.onAddToCartClicked(productId)
+        productDetailsViewModel.onToggleProductToFavoriteClicked()
         advanceUntilIdle()
 
         // Then
-        val state = productDetailsViewModel.state.value
-        assertEquals(Res.string.no_internet_connection, state.snackBarState?.message)
-        assertEquals(SnackBarType.ERROR, state.snackBarState?.snackBarType)
+        verifySuspend { productRepository.toggleProductToFavorites(testProductId) }
     }
+
+
+    @OptIn(ExperimentalUuidApi::class)
+    @Test
+    fun `onToggleProductToFavoriteClicked_whenRemovingFromFavorites_SHOULD callRepository`() =
+        runTest {
+            // Given
+            productDetailsViewModel.updateState { copy(isFavorite = true) }
+            everySuspend { productRepository.toggleProductToFavorites(testProductId) } returns Unit
+
+            // When
+            productDetailsViewModel.onToggleProductToFavoriteClicked()
+            advanceUntilIdle()
+
+            // Then
+            verifySuspend { productRepository.toggleProductToFavorites(testProductId) }
+        }
+
+
+    @OptIn(ExperimentalUuidApi::class)
+    @Test
+    fun `onToggleProductToFavoriteClicked_whenErrorOccurs_SHOULD callRepository`() = runTest {
+        // Given
+        val networkError = NoInternetException()
+        productDetailsViewModel.updateState { copy(isFavorite = false) }
+        everySuspend { productRepository.toggleProductToFavorites(testProductId) } throws networkError
+
+        // When
+        productDetailsViewModel.onToggleProductToFavoriteClicked()
+        advanceUntilIdle()
+
+        // Then
+        verifySuspend { productRepository.toggleProductToFavorites(testProductId) }
+    }
+
+    @Test
+    fun `onToggleProductToFavoriteClicked_whenErrorOccurs_SHOULD keep the change in ui`() =
+        runTest {
+            // Given
+            val networkError = NoInternetException()
+            productDetailsViewModel.updateState { copy(isFavorite = false) }
+            everySuspend { productRepository.toggleProductToFavorites(any()) } throws networkError
+
+            // When
+            productDetailsViewModel.onToggleProductToFavoriteClicked()
+            advanceUntilIdle()
+
+            // Then
+            val state = productDetailsViewModel.state.value
+            assertTrue(state.isFavorite)
+        }
+
 
     private fun createViewModel() = ProductDetailsViewModel(
         productRepository = productRepository,
         defaultDispatcher = testDispatcher,
         savedStateHandle = savedStateHandle,
-        dukanCartRepository = dukanCartRepository
-
+        dukanCartRepository = dukanCartRepository,
+        dukanManagementRepository = dukanManagementRepository
     )
 }
+
+@OptIn(ExperimentalUuidApi::class)
+private fun dummyCart() = Cart(
+    id = Uuid.parse("123e4567-e89b-12d3-a456-426614174003"),
+    totalPrice = 500.0,
+)
 
 @OptIn(ExperimentalUuidApi::class)
 private fun dummyProductDetails(): Product = Product(
@@ -318,5 +431,20 @@ private fun dummyProductDetails(): Product = Product(
     ),
     createdAt = "2025-10-31T12:00:00Z",
     quantityInCart = 10,
-    shelfId = Uuid.parse("123e4567-e89b-12d3-a456-000000000124")
-    )
+    shelfId = Uuid.parse("123e4567-e89b-12d3-a456-000000000124"),
+    isFavorite = false
+)
+
+@OptIn(ExperimentalUuidApi::class)
+private fun dummyDukanDetails() = Dukan(
+    id = Uuid.parse("123e4567-e89b-12d3-a456-426614174003"),
+    name = "Test Dukan",
+    isFavorite = true,
+    address = "123 Test Street",
+    imageUrl = "https://example.com/image.png",
+    coordinates = Dukan.Coordinates(latitude = 30.0, longitude = 31.0),
+    color = Color(id = Uuid.random(), hexCode = "#FF0000"),
+    style = Dukan.Style.WIDE_IMAGE,
+    categories = emptySet(),
+    status = Dukan.Status.APPROVED,
+)

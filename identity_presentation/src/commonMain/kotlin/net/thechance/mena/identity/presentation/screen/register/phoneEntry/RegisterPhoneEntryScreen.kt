@@ -12,32 +12,33 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.Navigator
 import mena.identity_presentation.generated.resources.Res
-import mena.identity_presentation.generated.resources.register_prompt_title
-import mena.identity_presentation.generated.resources.you_already_have_account
 import mena.identity_presentation.generated.resources.login
 import mena.identity_presentation.generated.resources.register
 import mena.identity_presentation.generated.resources.register_prompt_description
+import mena.identity_presentation.generated.resources.register_prompt_title
+import mena.identity_presentation.generated.resources.you_already_have_account
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
+import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.identity.presentation.base.BaseScreen
-import net.thechance.mena.identity.presentation.screen.countryPicker.CountryPicker
+import net.thechance.mena.identity.presentation.components.AuthPrompt
 import net.thechance.mena.identity.presentation.components.AuthScreenContainer
 import net.thechance.mena.identity.presentation.components.ErrorSnackBar
 import net.thechance.mena.identity.presentation.components.LabeledInputPhoneNumber
 import net.thechance.mena.identity.presentation.components.PageDescription
-import net.thechance.mena.identity.presentation.screen.register.otp.RegisterOtpScreen
-import net.thechance.mena.identity.presentation.screen.login.LoginScreen
-import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
-import net.thechance.mena.identity.presentation.components.AuthPrompt
+import net.thechance.mena.identity.presentation.screen.countryPicker.CountryPicker
 import net.thechance.mena.identity.presentation.screen.countryPicker.menaCountries.MenaCountry
-import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.jetbrains.compose.resources.stringResource
+import net.thechance.mena.identity.presentation.screen.login.LoginScreen
+import net.thechance.mena.identity.presentation.screen.register.otp.RegisterOtpScreen
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 class RegisterPhoneEntryScreen : BaseScreen<
         RegisterPhoneEntryViewModel,
@@ -55,9 +56,13 @@ class RegisterPhoneEntryScreen : BaseScreen<
         listener: RegisterPhoneEntryInteractionListener
     ) {
         val keyboardController = LocalSoftwareKeyboardController.current
+        val focusManager = LocalFocusManager.current
         LaunchedEffect(state.showCountryBottomSheet) {
-            if (state.showCountryBottomSheet)
+            if (state.showCountryBottomSheet){
+                focusManager.clearFocus()
                 keyboardController?.hide()
+
+            }
         }
 
         Scaffold(
@@ -100,7 +105,8 @@ class RegisterPhoneEntryScreen : BaseScreen<
                         isEnabled = state.isRegisterEnabled,
                         isLoading = state.isLoading,
                         contentPadding = PaddingValues(vertical = 13.dp),
-                        modifier = Modifier.fillMaxWidth().padding(bottom = Theme.spacing._12)
+                        modifier = Modifier.fillMaxWidth()
+                            .padding(top = Theme.spacing._24, bottom = Theme.spacing._12)
                     )
 
                     AuthPrompt(
@@ -125,12 +131,9 @@ class RegisterPhoneEntryScreen : BaseScreen<
     ) {
         when (effect) {
             is RegisterPhoneEntryUIEffect.NavigateToOTP -> navigator.push(
-                item = RegisterOtpScreen(
-                    phoneNumber = effect.phoneNumber,
-                    countryCode = effect.countryCode,
-                    callingCode = effect.callingCode
-                )
+                item = RegisterOtpScreen(effect.registerUIState)
             )
+
             RegisterPhoneEntryUIEffect.NavigateToLogin -> navigator.push(LoginScreen())
         }
     }

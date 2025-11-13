@@ -104,7 +104,8 @@ class EditProductViewModel(
                 price = product.price.toString(),
                 description = product.description,
                 existingImageUrls = filteredImages,
-                isTextFieldEnabled = true
+                isTextFieldEnabled = true,
+                isOutOfStock = product.isOutOfStock
             ).updateButtonState()
         }
     }
@@ -234,6 +235,12 @@ class EditProductViewModel(
     override fun onDescriptionChange(description: String) {
         updateState {
             copy(description = description).updateButtonState()
+        }
+    }
+
+    override fun onOutOfStockChange(isOutOfStock: Boolean) {
+        updateState {
+            copy(isOutOfStock = isOutOfStock).updateButtonState()
         }
     }
 
@@ -444,12 +451,12 @@ class EditProductViewModel(
     private suspend fun uploadSingleImage(bitmap: ImageBitmap): String {
         val bytes = bitmap.toPngByteArray()
         val fileName = bytes.toFileName()
-        val result = productRepository.uploadProductImages(
-            fileName = listOf(fileName),
-            fileBytes = listOf(bytes),
+        val result = productRepository.uploadProductImage(
+            fileName = fileName,
+            fileBytes =bytes,
             productId = productId
         )
-        return result.first()
+        return result
     }
 
     private suspend fun validateFinalImageUrls(finalImageUrls: List<String>) {
@@ -485,7 +492,8 @@ class EditProductViewModel(
             description = trimmedDescription,
             price = state.value.price.toDoubleOrNull(),
             shelfId = state.value.selectedShelf?.id,
-            imageUrls = finalImageUrls
+            imageUrls = finalImageUrls,
+            isOutOfStock = state.value.isOutOfStock
         )
     }
 

@@ -10,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.datetime.LocalDate
 import mena.identity_presentation.generated.resources.Res
+import mena.identity_presentation.generated.resources.error_age_restriction
 import mena.identity_presentation.generated.resources.error_camera_permission_required
 import mena.identity_presentation.generated.resources.error_first_name_required
 import mena.identity_presentation.generated.resources.error_last_name_required
@@ -17,9 +18,11 @@ import mena.identity_presentation.generated.resources.error_username_required
 import net.thechance.mena.identity.domain.entity.Gender
 import net.thechance.mena.identity.domain.entity.User
 import net.thechance.mena.identity.domain.exception.AuthenticationException
-import net.thechance.mena.identity.domain.repository.CachedImageRepository
+import net.thechance.mena.identity.domain.repository.ImagesRepository
 import net.thechance.mena.identity.domain.repository.UserRepository
+import net.thechance.mena.identity.domain.useCase.validation.age.AgeValidator
 import net.thechance.mena.identity.domain.util.getCurrentDate
+import net.thechance.mena.identity.domain.util.orCurrent
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
 import net.thechance.mena.identity.presentation.base.error.ErrorState
 import net.thechance.mena.identity.presentation.base.error.handleAuthenticationException
@@ -31,11 +34,12 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 class EditUserProfileViewModel(
+    val permissionsController: PermissionsController,
+    private val ageValidator: AgeValidator,
     private val userRepository: UserRepository,
-    private val permissionsController: PermissionsController,
-    private val cachedImageRepository: CachedImageRepository,
+    private val imagesRepository: ImagesRepository,
     private val imageDecoder: ImageDecoder,
-    val dispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : BaseScreenModel<EditUserProfileUIState, EditUserProfileUIEffect>(EditUserProfileUIState()),
     EditUserProfileInteractionListener {
     @OptIn(ExperimentalUuidApi::class)
@@ -69,10 +73,6 @@ class EditUserProfileViewModel(
         }
     }
 
-    private fun onGetUserInfoError(throwable: Throwable) {
-        updateState { copy(errorMessage = mapErrorMessage(throwable)) }
-    }
-
     override fun onChangeFirstName(firstName: String) {
         updateState { copy(firstName = firstName) }
     }
@@ -99,68 +99,6 @@ class EditUserProfileViewModel(
             onError = ::handleSaveError,
             dispatcher = dispatcher
         )
-    }
-
-    private fun validateFormInputs(): Boolean {
-        val currentState = state.value
-
-        return when {
-            currentState.username.isEmpty() -> {
-                updateState { copy(errorMessage = Res.string.error_username_required) }
-                false
-            }
-
-            currentState.firstName.isEmpty() -> {
-                updateState { copy(errorMessage = Res.string.error_first_name_required) }
-                false
-            }
-
-            currentState.lastName.isEmpty() -> {
-                updateState { copy(errorMessage = Res.string.error_last_name_required) }
-                false
-            }
-
-            else -> true
-        }
-    }
-
-    @OptIn(ExperimentalUuidApi::class)
-    private suspend fun saveUserProfile() {
-        if (userId == null) {
-            throw Exception("User ID not found")
-        }
-
-        val value = state.value
-        val user = User(
-            id = userId!!,
-            firstName = value.firstName,
-            lastName = value.lastName,
-            username = value.username.lowercase(),
-            profileImageUrl = value.profileImageUrl,
-            birthDate = value.birthDate ?: getCurrentDate(),
-            gender = value.gender,
-        )
-
-        if (value.profileImageUrl.isEmpty()) {
-            userRepository.deleteUserProfileImage()
-        } else {
-            userRepository.uploadUserProfileImage(
-                imageByteArray = value.profileImageBitmap?.let { imageDecoder.encodeImage(it) }
-            )
-        }
-        userRepository.updateUser(
-            user = user,
-            shouldUpdateImage = value.shouldUpdateImage,
-        )
-    }
-
-    private fun handleSaveSuccess() {
-        updateState { copy(isLoading = false) }
-        sendNewEffect(EditUserProfileUIEffect.NavigateBackToProfile)
-    }
-
-    private fun handleSaveError(throwable: Throwable) {
-        updateState { copy(isLoading = false, errorMessage = mapErrorMessage(throwable)) }
     }
 
     override fun onClickCancelButton() {
@@ -196,6 +134,7 @@ class EditUserProfileViewModel(
             copy(
                 profileImageUrl = "",
                 profileImageBitmap = null,
+                profileImageAction = EditUserProfileUIState.ProfileImageAction.DELETE
             )
         }
     }
@@ -204,10 +143,104 @@ class EditUserProfileViewModel(
         cacheRequiredCropImage(imageBitmap)
     }
 
+    override fun onOpenCamera() {
+        updateState { copy(showCamera = false) }
+    }
+
+    override fun onTakeImageFromCamera() {
+        tryToExecute(
+            function = ::requestCameraPermission,
+            onSuccess = { onCameraPermissionSuccess() },
+            onError = ::handleCameraPermissionError,
+            dispatcher = dispatcher
+        )
+    }
+
+    private fun onGetUserInfoError(throwable: Throwable) {
+        updateState { copy(errorMessage = mapErrorMessage(throwable)) }
+    }
+
+    private fun validateFormInputs(): Boolean {
+        val currentState = state.value
+
+        return when {
+            currentState.username.isEmpty() -> {
+                updateState { copy(errorMessage = Res.string.error_username_required) }
+                false
+            }
+
+            currentState.firstName.isEmpty() -> {
+                updateState { copy(errorMessage = Res.string.error_first_name_required) }
+                false
+            }
+
+            currentState.lastName.isEmpty() -> {
+                updateState { copy(errorMessage = Res.string.error_last_name_required) }
+                false
+            }
+
+            !ageValidator.isValid(currentState.birthDate.orCurrent()) -> {
+                updateState { copy(errorMessage = Res.string.error_age_restriction) }
+                false
+            }
+
+            else -> true
+        }
+    }
+
+    @OptIn(ExperimentalUuidApi::class)
+    private suspend fun saveUserProfile() {
+        if (userId == null) {
+            throw Exception("User ID not found")
+        }
+
+        val value = state.value
+        val user = User(
+            id = userId!!,
+            firstName = value.firstName,
+            lastName = value.lastName,
+            username = value.username.lowercase(),
+            profileImageUrl = value.profileImageUrl,
+            birthDate = value.birthDate ?: getCurrentDate(),
+            gender = value.gender,
+        )
+        updateProfileImage()
+        userRepository.updateUser(user = user)
+    }
+
+    private suspend fun updateProfileImage() {
+        val imageBitmap = state.value.profileImageBitmap
+        val action = state.value.profileImageAction
+        when (action) {
+            EditUserProfileUIState.ProfileImageAction.UPDATE -> {
+                imageBitmap?.let {
+                    userRepository.uploadUserProfileImage(
+                        imageByteArray = imageDecoder.encodeImage(it)
+                    )
+                }
+            }
+
+            EditUserProfileUIState.ProfileImageAction.DELETE -> {
+                userRepository.deleteUserProfileImage()
+            }
+
+            EditUserProfileUIState.ProfileImageAction.NONE -> Unit
+        }
+    }
+
+    private fun handleSaveSuccess() {
+        updateState { copy(isLoading = false) }
+        sendNewEffect(EditUserProfileUIEffect.NavigateBackToProfile)
+    }
+
+    private fun handleSaveError(throwable: Throwable) {
+        updateState { copy(isLoading = false, errorMessage = mapErrorMessage(throwable)) }
+    }
+
     private fun cacheRequiredCropImage(imageBitmap: ImageBitmap) {
         tryToExecute(
             function = {
-                cachedImageRepository.cacheImage(
+                imagesRepository.cacheImage(
                     PROFILE_IMAGE,
                     imageDecoder.encodeImage(imageBitmap)
                 )
@@ -223,11 +256,11 @@ class EditUserProfileViewModel(
             EditUserProfileUIEffect.NavigateToCropScreen(
                 imageKey = PROFILE_IMAGE,
                 onResult = { croppedImageKey ->
-                    val imageByteArray = cachedImageRepository.getCachedImage(croppedImageKey)
+                    val imageByteArray = imagesRepository.getCachedImage(croppedImageKey)
                     updateState {
                         copy(
                             profileImageBitmap = imageByteArray?.let { imageDecoder.decodeImage(it) },
-                            shouldUpdateImage = true
+                            profileImageAction = EditUserProfileUIState.ProfileImageAction.UPDATE
                         )
                     }
                 }
@@ -238,15 +271,6 @@ class EditUserProfileViewModel(
 
     private fun onCacheCropImageError(throwable: Throwable) {
         updateState { copy(errorMessage = mapErrorMessage(throwable)) }
-    }
-
-    override fun onTakeImageFromCamera() {
-        tryToExecute(
-            function = ::requestCameraPermission,
-            onSuccess = { onCameraPermissionSuccess() },
-            onError = ::handleCameraPermissionError,
-            dispatcher = dispatcher
-        )
     }
 
     private suspend fun requestCameraPermission() {
@@ -271,10 +295,6 @@ class EditUserProfileViewModel(
 
             else -> updateState { copy(errorMessage = mapErrorMessage(throwable)) }
         }
-    }
-
-    override fun onOpenCamera() {
-        updateState { copy(showCamera = false) }
     }
 
     private fun mapErrorMessage(throwable: Throwable): StringResource {

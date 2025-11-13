@@ -11,12 +11,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import net.thechance.mena.core_chat.presentation.screen.chat.ChatListItem
 import net.thechance.mena.core_chat.presentation.screen.chat.MessageUiState
+import net.thechance.mena.core_chat.presentation.utils.rememberNetworkStatus
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -29,14 +30,10 @@ fun ChatList(
     onMessageClick: (Uuid) -> Unit,
     onMessageImageClick: (List<MessageUiState>, Int) -> Unit,
     onFailedMessageClick: (MessageUiState) -> Unit,
-    paginationError: Boolean,
+    onMessageLongClick: (MessageUiState) -> Unit,
     onMessageVoiceClick: (Uuid) -> Unit,
 ) {
-    if (items.isNotEmpty()) {
-        LaunchedEffect(items[0]) {
-            chatListState.animateScrollToItem(0)
-        }
-    }
+    val isConnectedToNetwork by rememberNetworkStatus()
 
     LazyColumn(
         modifier = Modifier
@@ -67,11 +64,12 @@ fun ChatList(
                 onMessageImageClick = onMessageImageClick,
                 onMessageVoiceClick = onMessageVoiceClick,
                 onFailedMessageClick = onFailedMessageClick,
+                onMessageLongClick = onMessageLongClick,
                 modifier = Modifier.padding(bottom = paddingBottom)
             )
         }
 
-        if (paginationError) {
+        if (isConnectedToNetwork.not()) {
             item {
                 Box(
                     modifier = Modifier

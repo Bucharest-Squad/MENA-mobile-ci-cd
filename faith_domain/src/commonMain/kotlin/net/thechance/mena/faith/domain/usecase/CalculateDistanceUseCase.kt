@@ -1,33 +1,42 @@
 package net.thechance.mena.faith.domain.usecase
 
-
-import net.thechance.mena.faith.domain.entity.Location
+import net.thechance.mena.faith.domain.entity.Mosque
 import net.thechance.mena.faith.domain.exception.FaithException
-import kotlin.math.*
-
+import kotlin.math.PI
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.pow
+import kotlin.math.sin
+import kotlin.math.sqrt
 
 class CalculateDistanceUseCase {
 
     operator fun invoke(
-        location1: Location,
-        location2: Location,
-
+        firstLocation: Mosque.Coordinates,
+        secondLocation: Mosque.Coordinates,
     ): Double {
 
-        if (location1.latitude == location2.latitude && location1.longitude == location2.longitude) return 0.0
+        if (firstLocation.latitude == secondLocation.latitude && firstLocation.longitude == secondLocation.longitude) return 0.0
 
-        if (!isValidCoordinate(location1.latitude, location1.longitude) || !isValidCoordinate(location2.latitude, location2.longitude)) {
+        if (!isValidCoordinate(
+                firstLocation.latitude,
+                firstLocation.longitude
+            ) || !isValidCoordinate(
+                secondLocation.latitude,
+                secondLocation.longitude
+            )
+        ) {
             throw FaithException.InvalidCoordinates
         }
 
         val earthRadiusKm = 6371.0
 
-        val dLat = toRadians(degrees = location2.latitude - location1.latitude)
-        val dLon = toRadians(degrees = location2.longitude - location1.longitude)
+        val dLat = toRadians(degrees = secondLocation.latitude - firstLocation.latitude)
+        val dLon = toRadians(degrees = secondLocation.longitude - firstLocation.longitude)
 
         val haversineComponent = sin(dLat / 2).pow(2.0) +
-                cos(x = toRadians(degrees = location1.latitude)) *
-                cos(x = toRadians(degrees = location2.latitude)) *
+                cos(x = toRadians(degrees = firstLocation.latitude)) *
+                cos(x = toRadians(degrees = secondLocation.latitude)) *
                 sin(x = dLon / 2).pow(x = 2.0)
 
         val centralAngle = 2 * atan2(sqrt(x = haversineComponent), x = sqrt(1 - haversineComponent))

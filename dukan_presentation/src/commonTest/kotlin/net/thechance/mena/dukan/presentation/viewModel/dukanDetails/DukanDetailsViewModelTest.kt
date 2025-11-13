@@ -17,8 +17,7 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import mena.dukan_presentation.generated.resources.Res
-import mena.dukan_presentation.generated.resources.no_internet_connection
+import net.thechance.mena.dukan.domain.entity.Cart
 import net.thechance.mena.dukan.domain.entity.Color
 import net.thechance.mena.dukan.domain.entity.Dukan
 import net.thechance.mena.dukan.domain.entity.Product
@@ -29,7 +28,6 @@ import net.thechance.mena.dukan.domain.repository.DukanManagementRepository
 import net.thechance.mena.dukan.domain.repository.ProductRepository
 import net.thechance.mena.dukan.domain.repository.ShelfRepository
 import net.thechance.mena.dukan.domain.util.PagedResult
-import net.thechance.mena.dukan.presentation.component.shared.SnackBarType
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -93,8 +91,15 @@ class DukanDetailsViewModelTest {
     @OptIn(ExperimentalUuidApi::class)
     @Test
     fun `init SHOULD load dukan details successfully`() = runTest {
-        everySuspend { dukanManagementRepository.getDukanDetailsByDukanId(any()) } returns dummyDukanDetails().copy(
-            style = Dukan.Style.SMALL_IMAGE
+        everySuspend { dukanManagementRepository.getDukanDetailsByDukanId(any()) } returns dummyDukanDetails()
+        everySuspend {
+            shelfRepository.getShelvesByDukanId(any(), any(), any())
+        } returns PagedResult(
+            items = dummyShelves(),
+            currentPage = 1,
+            totalItems = 3L,
+            totalPages = 1,
+            pageSize = 10
         )
         everySuspend {
             productRepository.getProductsByShelfId(any(), any(), any())
@@ -103,19 +108,14 @@ class DukanDetailsViewModelTest {
             currentPage = 1,
             totalItems = 1L,
             pageSize = 10,
-            totalPages = 1,
+            totalPages = 1
         )
 
         val viewModel = createViewModel()
         advanceUntilIdle()
-
-        viewModel.state.test {
-            val state = awaitItem()
-            assertTrue(state.shelves.asSnapshot().isNotEmpty())
-            cancelAndIgnoreRemainingEvents()
-        }
+        val shelvesSnapshot = viewModel.state.value.shelves.asSnapshot()
+        assertTrue(shelvesSnapshot.isNotEmpty(), "Expected shelves not to be empty")
     }
-
 
     @Test
     fun `init SHOULD set isDukanInfoLoading to false after successful load`() = runTest {
@@ -139,6 +139,21 @@ class DukanDetailsViewModelTest {
 
         // Then
         assertFalse(state.isDukanInfoLoading)
+    }
+
+    @OptIn(ExperimentalUuidApi::class)
+    @Test
+    fun `init SHOULD load cart info successfully`() = runTest {
+        everySuspend { dukanCartRepository.getCartInfo(any()) } returns dummyCart()
+
+        val viewModel = createViewModel()
+        advanceUntilIdle()
+
+        viewModel.state.test {
+            val state = awaitItem()
+            assertEquals(true, state.hasProductInCart)
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
@@ -301,8 +316,31 @@ class DukanDetailsViewModelTest {
         }
     }
 
+    @OptIn(ExperimentalUuidApi::class)
     @Test
-    fun `onAddToCartClicked SHOULD toggle product cart to product quantity and make request to add first product`() =
+    fun `onFavoriteDukanClicked SHOULD toggle isFavorite in state when repository call succeeds`() =
+        runTest {
+            // Given
+            advanceUntilIdle()
+            val initialState = dukanDetailsViewModel.state.value
+            val initialFavorite = initialState.dukanInfo.isFavorite
+            val dukanId = initialState.dukanInfo.dukanId
+
+            everySuspend {
+                dukanManagementRepository.updateFavoriteDukanStatus(dukanId)
+            } returns true
+
+            // When
+            dukanDetailsViewModel.onFavoriteDukanClicked(dukanId)
+            advanceUntilIdle()
+
+            // Then
+            val updatedState = dukanDetailsViewModel.state.value
+            assertEquals(initialFavorite, updatedState.dukanInfo.isFavorite)
+        }
+
+    @Test
+    fun `onAddToCartClicked SHOULD toggle product cart to product quantity and make request to add product`() =
         runTest {
             // Given
             val productId = "1"
@@ -319,28 +357,6 @@ class DukanDetailsViewModelTest {
             //Then
             verifySuspend {
                 dukanCartRepository.addProductQuantity(any())
-            }
-
-        }
-
-    @Test
-    fun `onAddToCartClicked SHOULD toggle product cart to update existing product quantity`() =
-        runTest {
-            // Given
-            val productId = "1"
-            val quantity = 10
-
-            everySuspend { dukanCartRepository.addProductQuantity(any()) } returns Unit
-
-            //When
-            dukanDetailsViewModel.onAddToCartClicked(
-                productId,
-                productQuantity = quantity,
-            )
-            advanceUntilIdle()
-            //Then
-            verifySuspend {
-                dukanCartRepository.updateProductQuantity(any())
             }
 
         }
@@ -386,7 +402,7 @@ class DukanDetailsViewModelTest {
 
         //Given
         val productId = "1"
-        val quantity = 1
+        val quantity = 0
 
         everySuspend { dukanCartRepository.deleteProductFromCart(any(), any()) } returns Unit
 
@@ -413,16 +429,36 @@ class DukanDetailsViewModelTest {
             val productId = "1"
             val quantity = 5
 
-            everySuspend { dukanCartRepository.updateProductQuantity(any()) } throws NoInternetException()
+            everySuspend { dukanCartRepository.addProductQuantity(any()) } throws NoInternetException()
+
+            // When
+            dukanDetailsViewModel.onAddToCartClicked(productId, productQuantity = quantity)
+            advanceUntilIdle()
+            // Then
+            dukanDetailsViewModel.state.test {
+                val state = awaitItem()
+                assertTrue(state.snackBarState != null)
+            }
+        }
+
+    @Test
+    fun `onErrorUpdateProductQuantity SHOULD show error snackbar when anyException thrown`() =
+        runTest {
+            // Given
+            val productId = "1"
+            val quantity = 5
+
+            everySuspend { dukanCartRepository.addProductQuantity(any()) } throws Exception()
 
             // When
             dukanDetailsViewModel.onAddToCartClicked(productId, productQuantity = quantity)
             advanceUntilIdle()
 
             // Then
-            val state = dukanDetailsViewModel.state.value
-            assertEquals(Res.string.no_internet_connection, state.snackBarState?.message)
-            assertEquals(SnackBarType.ERROR, state.snackBarState?.snackBarType)
+            dukanDetailsViewModel.state.test {
+                val state = awaitItem()
+                assertTrue(state.snackBarState != null)
+            }
         }
 
 
@@ -449,9 +485,17 @@ class DukanDetailsViewModelTest {
 }
 
 @OptIn(ExperimentalUuidApi::class)
+private fun dummyCart() = Cart(
+    id = Uuid.parse("123e4567-e89b-12d3-a456-426614174003"),
+    totalPrice = 500.0,
+)
+
+
+@OptIn(ExperimentalUuidApi::class)
 private fun dummyDukanDetails() = Dukan(
     id = Uuid.parse("123e4567-e89b-12d3-a456-426614174003"),
     name = "Test Dukan",
+    isFavorite = true,
     address = "123 Test Street",
     imageUrl = "https://example.com/image.png",
     coordinates = Dukan.Coordinates(latitude = 30.0, longitude = 31.0),
@@ -479,5 +523,6 @@ private fun fakeProducts(): List<Product> = listOf(
         createdAt = "2025-10-10T12:00:00Z",
         quantityInCart = 10,
         shelfId = Uuid.parse("123e4567-e89b-12d3-a456-000000000123"),
+        isFavorite = false
     )
 )

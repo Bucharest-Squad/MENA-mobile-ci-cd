@@ -15,17 +15,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import io.github.dellisd.spatialk.geojson.Position
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.emptyFlow
 import mena.faith_presentation.generated.resources.Res
 import mena.faith_presentation.generated.resources.add
 import mena.faith_presentation.generated.resources.arrow_left
@@ -51,79 +53,51 @@ import net.thechance.mena.faith.presentation.feature.mosque.component.SearchResu
 import net.thechance.mena.faith.presentation.navigation.LocalNavController
 import net.thechance.mena.faith.presentation.navigation.Route
 import net.thechance.mena.faith.presentation.utils.MapNavigator
-import net.thechance.mena.faith.presentation.utils.MapStyle
+import net.thechance.mena.faith.presentation.feature.mosque.component.MapView
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
-import org.maplibre.compose.camera.CameraPosition
-import org.maplibre.compose.camera.rememberCameraState
-import org.maplibre.compose.map.MaplibreMap
-import org.maplibre.compose.style.BaseStyle
+import kotlin.uuid.ExperimentalUuidApi
 
 @Composable
 internal fun NearbyMosquesScreen(
-    mapNavigator: MapNavigator = koinInject(),
     viewModel: NearbyMosquesViewModel = koinViewModel(),
+    mapNavigator: MapNavigator = koinInject(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val navController = LocalNavController.current
+
+    LaunchedEffect(Unit) {
+        val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
+        savedStateHandle?.getStateFlow<String?>("add_mosque_message", null)
+            ?.collect { successMessage ->
+                successMessage?.let {
+                    viewModel.showSuccessMessage(successMessage)
+                    savedStateHandle.remove<String?>("add_mosque_message")
+                }
+            }
+    }
+
     ObserveAsEffect(viewModel.uiEffect) { effect ->
         when (effect) {
-            NearbyMosquesEffect.NavigateBack -> {
-                //TODO()
-            }
-
-            NearbyMosquesEffect.NavigateToAddMosque -> {
-                //TODO()
-            }
-
+            NearbyMosquesEffect.NavigateBack -> navController.navigateUp()
+            NearbyMosquesEffect.NavigateToAddMosque -> navController.navigate(Route.CreateMosqueRoute)
             NearbyMosquesEffect.NavigateToAddressesScreen -> navController.navigate(Route.UserAddresses)
-
             is NearbyMosquesEffect.NavigateToMap -> mapNavigator.openMapAtCoordinate(coordinate = effect.coordinate)
         }
     }
-    Content(
-        uiState = state,
-        listener = viewModel
-    )
+    Content(uiState = state, listener = viewModel)
 }
 
+@OptIn(ExperimentalUuidApi::class)
 @Composable
 private fun Content(
     uiState: NearbyMosquesMapUiState,
     listener: NearbyMosquesInteractionListener
 ) {
-    val initialCameraPosition = CameraPosition(
-        target = Position(
-            longitude = uiState.centerOfMap?.longitude ?: 0.0,
-            latitude = uiState.centerOfMap?.latitude ?: 0.0
-        ),
-        zoom = 14.0
-    )
-    val cameraState = rememberCameraState(firstPosition = initialCameraPosition)
-    LaunchedEffect(cameraState) {
-        snapshotFlow { cameraState.position }
-            .collect {
-                if (!cameraState.isCameraMoving) {
-                    listener.mapPositionChanged(
-                        coordinate = Coordinate(
-                            latitude = cameraState.position.target.latitude,
-                            longitude = cameraState.position.target.longitude
-                        )
-                    )
-                }
-            }
-    }
-    LaunchedEffect(cameraState.isCameraMoving) {
-        listener.changeSearchButtonVisibility(!cameraState.isCameraMoving)
-        delay(500)
-        listener.changeSearchButtonVisibility(true)
-    }
-    LaunchedEffect(uiState.centerOfMap) {
-        cameraState.animateTo(initialCameraPosition)
-    }
+    val keyboardController = LocalSoftwareKeyboardController.current
     Scaffold(
         topBar = {
             AppBar(
@@ -137,9 +111,11 @@ private fun Content(
                 },
                 trailingContent = {
                     Icon(
-                        modifier = Modifier.size(20.dp),
+                        modifier = Modifier
+                            .size(20.dp)
+                            .clickable(onClick = listener::onAddMosqueClick),
                         painter = painterResource(Res.drawable.ic_add),
-                        contentDescription = stringResource(Res.string.add)
+                        contentDescription = stringResource(Res.string.add),
                     )
                 },
                 onLeadingClick = listener::onBackClick
@@ -149,7 +125,7 @@ private fun Content(
             bottomSheet(isVisible = uiState.isSearchResultsBottomSheetVisible) { isVisible ->
                 SearchResultsBottomSheet(
                     isVisible = isVisible,
-                    mosques = uiState.mosquesSearchResults,
+                    mosques = uiState.mosquesSearchResults ?: emptyFlow(),
                     onMosqueClick = listener::onSearchResultClick,
                     onDismiss = listener::onDismissSearchBottomSheet
                 )
@@ -168,13 +144,25 @@ private fun Content(
             }
         }
     ) {
-        Box(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            MaplibreMap(
+        Box(modifier = Modifier.fillMaxSize()) {
+            MapView(
                 modifier = Modifier.fillMaxSize(),
-                cameraState = cameraState,
-                baseStyle = BaseStyle.Uri(MapStyle.BRIGHT),
+                centerLatitude = uiState.centerOfMap?.latitude ?: 0.0,
+                centerLongitude = uiState.centerOfMap?.longitude ?: 0.0,
+                zoomLevel = 15.0,
+                markers = uiState.mosques,
+                canMove = uiState.canMove,
+                onMarkerClick = {
+                    listener.selectMosque(it)
+                },
+                onCameraMove = { _, _ ->
+                    listener.changeSearchButtonVisibility(false)
+                },
+                onMapIdle = { lat, lon ->
+                    listener.changeSearchButtonVisibility(true)
+                    listener.changeMapMovement(false)
+                    listener.changeCenterOfMap(Coordinate(lat, lon))
+                }
             )
             Column(
                 modifier = Modifier
@@ -189,14 +177,25 @@ private fun Content(
                     leadingIcon = painterResource(Res.drawable.ic_outline_search),
                     leadingIconTint = Theme.colorScheme.shadeSecondary,
                     onValueChanged = listener::onQueryChange,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            keyboardController?.hide()
+                            listener.onSearchSubmit()
+                        }
+                    )
                 )
-                if (uiState.isSearchButtonVisible) {
+                AnimatedVisibility(
+                    visible = uiState.isSearchButtonVisible,
+                    enter = fadeIn(tween()),
+                    exit = fadeOut(tween()),
+                ) {
                     SearchMosquesButton(onClick = {
-                        listener.onSearchByCoordinatesClick(
+                        listener.onSearchByCoordinates(
                             coordinate = Coordinate(
-                                latitude = cameraState.position.target.latitude,
-                                longitude = cameraState.position.target.longitude
+                                latitude = uiState.centerOfMap?.latitude ?: 0.0,
+                                longitude = uiState.centerOfMap?.longitude ?: 0.0
                             )
                         )
                     })
@@ -218,9 +217,11 @@ private fun Content(
             Icon(
                 modifier = Modifier
                     .padding(Theme.spacing._16)
-                    .clip(shape = RoundedCornerShape(Theme.radius.md))
+                    .clip(RoundedCornerShape(Theme.radius.md))
                     .background(color = Theme.colorScheme.primary.primary)
-                    .clickable(onClick = listener::getUserLocation)
+                    .clickable {
+                        listener.getUserLocation()
+                    }
                     .padding(horizontal = Theme.spacing._16, vertical = 14.dp)
                     .align(Alignment.BottomStart),
                 painter = painterResource(Res.drawable.ic_gps),
@@ -231,10 +232,7 @@ private fun Content(
 }
 
 @Composable
-private fun SearchMosquesButton(
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit
-) {
+private fun SearchMosquesButton(onClick: () -> Unit) {
     Button(
         onClick = onClick,
         content = {
@@ -246,7 +244,7 @@ private fun SearchMosquesButton(
         },
         containerColor = Theme.colorScheme.primary.primary,
         contentPadding = PaddingValues(vertical = 10.dp, horizontal = 16.dp),
-        modifier = modifier.clip(shape = RoundedCornerShape(Theme.radius.xl))
+        modifier = Modifier.clip(RoundedCornerShape(Theme.radius.xl))
     )
 }
 
@@ -261,14 +259,17 @@ private fun NearbyMosquesScreenPreview() {
             override fun getUserLocation() {}
             override fun onViewMosqueDetailsClick(mosque: MosqueUiState) {}
             override fun onViewOnMapClick(coordinate: Coordinate) {}
-            override fun onSearchByCoordinatesClick(coordinate: Coordinate) {}
+            override fun onSearchByCoordinates(coordinate: Coordinate) {}
             override fun onSearchResultClick(mosque: MosqueUiState) {}
-            override fun mapPositionChanged(coordinate: Coordinate) {}
+            override fun changeCenterOfMap(coordinate: Coordinate) {}
             override fun onQueryChange(query: String) {}
+            override fun onSearchSubmit() {}
             override fun changeSearchButtonVisibility(isVisible: Boolean) {}
             override fun onDismissSearchBottomSheet() {}
             override fun selectMosque(mosque: MosqueUiState) {}
             override fun unselectMosque() {}
+            override fun changeMapMovement(canMove: Boolean) {}
+            override fun showSuccessMessage(message: String) {}
         }
     )
 }

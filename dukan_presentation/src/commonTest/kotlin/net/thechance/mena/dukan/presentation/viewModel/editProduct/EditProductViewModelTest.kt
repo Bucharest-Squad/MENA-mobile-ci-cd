@@ -226,6 +226,32 @@ class EditProductViewModelTest {
     }
 
     @Test
+    fun `onOutOfStockChange SHOULD update isOutOfStock to true`() = scope.runTest {
+        viewModel.onOutOfStockChange(true)
+        assertTrue(viewModel.state.value.isOutOfStock)
+    }
+
+    @Test
+    fun `onOutOfStockChange SHOULD update isOutOfStock to false`() = scope.runTest {
+        viewModel.updateState { copy(isOutOfStock = true) }
+        assertTrue(viewModel.state.value.isOutOfStock)
+
+        viewModel.onOutOfStockChange(false)
+        assertFalse(viewModel.state.value.isOutOfStock)
+    }
+
+    @Test
+    fun `onOutOfStockChange SHOULD call updateButtonState`() = scope.runTest {
+        viewModel.updateStateWithValidProduct()
+
+        viewModel.onOutOfStockChange(true)
+        val updatedState = viewModel.state.value
+
+        assertTrue(updatedState.isOutOfStock)
+        assertNotNull(updatedState.isSaveButtonEnabled)
+    }
+
+    @Test
     fun `onShelfSelect SHOULD update selected shelf`() = scope.runTest {
         val shelf = CreateProductUiState.ShelfUiState(
             id = fakeShelves()[0].id.toString(),
@@ -1499,6 +1525,7 @@ private fun fakeProduct(): Product {
         imageUrls = listOf("image1.jpg", "image2.jpg"),
         createdAt = "2025-09-16T15:06:57.507394",
         quantityInCart = 4,
+        isFavorite = false
     )
 }
 

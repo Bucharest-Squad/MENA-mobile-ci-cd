@@ -47,17 +47,37 @@ fun createHttpClient(
                 loadTokens {
                     BearerTokens(
                         accessToken = authorizationService.getAccessToken(),
-                        refreshToken = ""
+                        refreshToken = authorizationService.getRefreshToken()
                     )
                 }
                 refreshTokens {
                     BearerTokens(
-                        accessToken = authorizationService.refreshToken(),
-                        refreshToken = ""
+                        accessToken = authorizationService.getNewAccessToken(),
+                        refreshToken = authorizationService.getRefreshToken()
                     )
                 }
             }
         }
+
+        install(Logging) {
+            logger = Logger.SIMPLE
+            level = LogLevel.ALL
+        }
+
+        install(HttpTimeout) {
+            requestTimeoutMillis = timeOutIntervalMilliSeconds
+            connectTimeoutMillis = timeOutIntervalMilliSeconds
+            socketTimeoutMillis = timeOutIntervalMilliSeconds
+        }
+    }
+}
+
+fun createMediaHttpClient(
+    httpClientEngineFactory: HttpClientEngineFactory<HttpClientEngineConfig>
+): HttpClient {
+    val timeOutIntervalMilliSeconds = 30_000L
+
+    return HttpClient(httpClientEngineFactory) {
 
         install(Logging) {
             logger = Logger.SIMPLE

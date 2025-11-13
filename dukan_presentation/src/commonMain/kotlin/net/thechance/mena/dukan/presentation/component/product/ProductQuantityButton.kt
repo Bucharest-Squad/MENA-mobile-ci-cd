@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,13 +32,14 @@ fun ProductQuantityButton(
     onPlusClick: () -> Unit,
     onMinusClick: () -> Unit,
     inCartQuantity: Int,
+    dukanColor: Color = Theme.colorScheme.primary.primary,
     backgroundColor: Color = Theme.colorScheme.background.surface,
     iconPadding: PaddingValues = PaddingValues(Theme.spacing._4 + Theme.spacing._2)
 ) {
     Row(
         modifier = Modifier.background(
             color = backgroundColor,
-            shape = RoundedCornerShape(size = Theme.radius.full)
+            shape = CircleShape
         ).padding(vertical = Theme.spacing._2, horizontal = Theme.spacing._2),
         horizontalArrangement = Arrangement.spacedBy(Theme.spacing._4),
         verticalAlignment = Alignment.CenterVertically
@@ -46,15 +47,19 @@ fun ProductQuantityButton(
         Icon(
             painter = painterResource(Res.drawable.remove_01),
             contentDescription = stringResource(Res.string.remove_product),
-            tint =Theme.colorScheme.primary.primary,
+            tint = dukanColor,
             modifier = Modifier
-                .clip(RoundedCornerShape(size = Theme.radius.full))
+                .clip(CircleShape)
                 .background(color = Theme.colorScheme.background.surfaceLow)
-                .clickable(onClick = onMinusClick,indication = null, interactionSource = MutableInteractionSource())
+                .clickable(
+                    onClick = onMinusClick,
+                    indication = null,
+                    interactionSource = MutableInteractionSource()
+                )
                 .padding(iconPadding)
         )
         Text(
-            text = if (inCartQuantity < 10) "0$inCartQuantity" else "$inCartQuantity",
+            text = if (inCartQuantity < 10 && inCartQuantity != 0) "0$inCartQuantity" else "$inCartQuantity",
             style = Theme.typography.label.small,
             color = Theme.colorScheme.primary.primary,
             modifier = Modifier.padding(horizontal = Theme.spacing._4)
@@ -62,11 +67,15 @@ fun ProductQuantityButton(
         Icon(
             painter = painterResource(Res.drawable.add_icon),
             contentDescription = stringResource(Res.string.add_product),
-            tint = Theme.colorScheme.primary.primary,
+            tint = dukanColor,
             modifier = Modifier
-                .clip(RoundedCornerShape(size = Theme.radius.full))
+                .clip(CircleShape)
                 .background(color = Theme.colorScheme.background.surfaceLow)
-                .clickable(onClick = onPlusClick,indication = null, interactionSource = MutableInteractionSource())
+                .clickable(
+                    onClick = onPlusClick,
+                    indication = null,
+                    interactionSource = MutableInteractionSource()
+                )
                 .padding(iconPadding)
         )
 

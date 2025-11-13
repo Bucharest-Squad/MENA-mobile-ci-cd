@@ -1,6 +1,7 @@
 package net.thechance.mena.faith.presentation.feature.main.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -9,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import mena.faith_presentation.generated.resources.Res
 import mena.faith_presentation.generated.resources.faith_title
@@ -26,6 +28,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun MainTopBar(
     locationName: String,
+    onLocationChange: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     AppBar(
@@ -38,7 +41,11 @@ fun MainTopBar(
                         color = Theme.colorScheme.background.surfaceLow,
                         shape = RoundedCornerShape(Theme.radius.full)
                     )
-                    .padding(horizontal = Theme.spacing._8, vertical = Theme.spacing._4),
+                    .padding(horizontal = Theme.spacing._8, vertical = Theme.spacing._4)
+                    .pointerInput(Unit) {
+                        detectTapGestures(onTap = { onLocationChange() }
+                        )
+                    },
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(Theme.spacing._4)
             ) {
@@ -51,7 +58,8 @@ fun MainTopBar(
                 Text(
                     text = locationName,
                     color = Theme.colorScheme.shadePrimary,
-                    style = Theme.typography.label.small
+                    style = Theme.typography.label.small,
+                    maxLines = 1
                 )
             }
         }
@@ -63,7 +71,8 @@ fun MainTopBar(
 private fun Preview() {
     QuranTheme {
         MainTopBar(
-            locationName = "Palestine, Gaza"
+            locationName = "Palestine, Gaza",
+            onLocationChange = {}
         )
     }
 }

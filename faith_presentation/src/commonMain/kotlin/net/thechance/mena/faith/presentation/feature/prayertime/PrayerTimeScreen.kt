@@ -9,6 +9,7 @@ import androidx.compose.runtime.getValue
 import mena.faith_presentation.generated.resources.Res
 import mena.faith_presentation.generated.resources.arrow_left
 import mena.faith_presentation.generated.resources.ic_arrow_left
+import mena.faith_presentation.generated.resources.prayer_time
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
@@ -20,6 +21,7 @@ import net.thechance.mena.faith.presentation.feature.prayertime.component.NextPr
 import net.thechance.mena.faith.presentation.feature.prayertime.component.PrayerItem
 import net.thechance.mena.faith.presentation.feature.prayertime.component.PrayerTimeTopBar
 import net.thechance.mena.faith.presentation.navigation.LocalNavController
+import net.thechance.mena.faith.presentation.navigation.Route
 import net.thechance.mena.faith.presentation.utils.extentions.prayerTime.formatInstantToTimeString
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -39,7 +41,9 @@ fun PrayerTimeScreen(
             PrayerTimeEffect.NavigateCalenderDialog -> {}
             PrayerTimeEffect.NavigateNextDate -> {}
             PrayerTimeEffect.NavigatePrevDate -> {}
-            PrayerTimeEffect.NavigateToChangeLocation -> {}
+            PrayerTimeEffect.NavigateToAddressesScreen -> {
+                navController.navigate(Route.UserAddresses)
+            }
         }
     }
     Content(
@@ -54,7 +58,7 @@ private fun Content(uiState: PrayerTimeUiState, listener: PrayerTimeInteractionL
     Scaffold(
         topBar = {
             AppBar(
-                title = "Prayer time",
+                title = stringResource(Res.string.prayer_time),
                 contentPadding = PaddingValues(
                     horizontal = Theme.spacing._16, vertical = Theme.spacing._8
                 ),
@@ -65,7 +69,7 @@ private fun Content(uiState: PrayerTimeUiState, listener: PrayerTimeInteractionL
                     )
                 },
                 onLeadingClick = listener::onBackClick,
-                trailingContent = { PrayerTimeTopBar(listener::onChangeLocation) }
+                trailingContent = { PrayerTimeTopBar(uiState, listener::onLocationClick) }
             )
         },
     ) {

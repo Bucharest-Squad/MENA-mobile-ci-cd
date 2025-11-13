@@ -11,8 +11,12 @@ sealed interface AuthenticationErrorState {
     data object TooManyRequests : AuthenticationErrorState
     data object OTPExpired : AuthenticationErrorState
     data object PhoneNumberAlreadyExists : AuthenticationErrorState
-    
+    data object UsernameAlreadyExists : AuthenticationErrorState
+
+
+    data object IncorrectPassword : AuthenticationErrorState
     data object NoNetwork : AuthenticationErrorState
+    data object InvalidCredentials : AuthenticationErrorState
 
     data object InvalidRequest :AuthenticationErrorState
     data class SomethingWentWrong(val message: String?) : AuthenticationErrorState

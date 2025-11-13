@@ -2,12 +2,10 @@ package net.thechance.mena.dukan.presentation.screen.main.components
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,22 +18,27 @@ import mena.dukan_presentation.generated.resources.dukan_button
 import mena.dukan_presentation.generated.resources.dukan_icon
 import mena.dukan_presentation.generated.resources.ic_add_dukan
 import mena.dukan_presentation.generated.resources.ic_dukan
+import mena.dukan_presentation.generated.resources.ic_search
+import mena.dukan_presentation.generated.resources.search_icon
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
+import net.thechance.mena.designsystem.presentation.component.appBar.AppBarOptionContainer
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
+import net.thechance.mena.designsystem.presentation.component.indicator.DotsProgressIndicator
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.dukan.presentation.component.loading.LoadingDots
 import net.thechance.mena.dukan.presentation.util.animation.fadeTransitionSpec
 import net.thechance.mena.dukan.presentation.viewModel.mainScreen.MainScreenUiState
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import sv.lib.squircleshape.SquircleShape
 
 @Composable
 fun TopAppBar(
-    modifier: Modifier = Modifier,
-    onDukanIconClicked: () -> Unit,
     dukanButtonStatus: MainScreenUiState.DukanStatusUi,
+    onDukanIconClicked: () -> Unit,
+    onSearchIconClicked: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     AppBar(
         title = stringResource(resource = Res.string.dukan),
@@ -46,28 +49,41 @@ fun TopAppBar(
             vertical = Theme.spacing._8
         ),
         trailingContent = {
-            DukanIconButton(
-                dukanButtonStatus = dukanButtonStatus,
-                onDukanIconClicked = onDukanIconClicked,
-            )
+            AppBarOptionContainer(
+                onClick = onSearchIconClicked,
+            ) {
+                SearchIconButton()
+            }
+            AppBarOptionContainer (
+                onClick = onDukanIconClicked,
+            ){
+                DukanIconButton(
+                    dukanButtonStatus = dukanButtonStatus,
+                )
+            }
         }
+    )
+}
+
+@Composable
+private fun SearchIconButton() {
+    Icon(
+        painter = painterResource(resource = Res.drawable.ic_search),
+        contentDescription = stringResource(resource = Res.string.search_icon),
+        modifier = Modifier.size(size = 20.dp),
+        tint = Theme.colorScheme.shadePrimary
     )
 }
 
 @Composable
 private fun DukanIconButton(
     dukanButtonStatus: MainScreenUiState.DukanStatusUi,
-    onDukanIconClicked: () -> Unit,
 ) {
     Box(
         modifier = Modifier
             .size(40.dp)
-            .background(
-                color = Theme.colorScheme.background.surfaceLow,
-                shape = RoundedCornerShape(Theme.radius.md)
-            )
-            .clip(shape = RoundedCornerShape(Theme.radius.md))
-            .clickable(onClick = onDukanIconClicked),
+            .clip(shape = SquircleShape(Theme.radius.md))
+            .background(Theme.colorScheme.background.surfaceLow),
         contentAlignment = Alignment.Center
     ) {
         DukanIcon(dukanStatus = dukanButtonStatus)
@@ -111,7 +127,7 @@ private fun DukanIcon(dukanStatus: MainScreenUiState.DukanStatusUi) {
             }
 
             MainScreenUiState.DukanStatusUi.Loading -> {
-                LoadingDots(modifier = Modifier.size(size = 20.dp))
+                DotsProgressIndicator()
             }
         }
     }
@@ -130,7 +146,9 @@ private fun TopAppBarPreview() {
         ) {
             TopAppBar(
                 dukanButtonStatus = MainScreenUiState.DukanStatusUi.None,
-                onDukanIconClicked = {})
+                onDukanIconClicked = {},
+                onSearchIconClicked = {}
+            )
         }
     }
 }

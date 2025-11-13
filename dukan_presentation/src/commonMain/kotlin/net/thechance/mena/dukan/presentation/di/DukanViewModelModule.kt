@@ -9,13 +9,16 @@ import net.thechance.mena.dukan.presentation.viewModel.createDukan.CreateDukanVi
 import net.thechance.mena.dukan.presentation.viewModel.createProduct.CreateProductViewModel
 import net.thechance.mena.dukan.presentation.viewModel.createShelf.CreateShelfViewModel
 import net.thechance.mena.dukan.presentation.viewModel.cropImage.ImageCropViewModel
+import net.thechance.mena.dukan.presentation.viewModel.dukanCart.DukanCartViewModel
 import net.thechance.mena.dukan.presentation.viewModel.dukanCategories.DukanCategoriesViewModel
 import net.thechance.mena.dukan.presentation.viewModel.dukanDetails.DukanDetailsViewModel
+import net.thechance.mena.dukan.presentation.viewModel.dukanLocation.DukanLocationViewModel
 import net.thechance.mena.dukan.presentation.viewModel.editProduct.EditProductViewModel
 import net.thechance.mena.dukan.presentation.viewModel.mainScreen.MainViewModel
 import net.thechance.mena.dukan.presentation.viewModel.manageDukan.ManageDukanViewModel
 import net.thechance.mena.dukan.presentation.viewModel.manageShelf.ManageShelfViewModel
 import net.thechance.mena.dukan.presentation.viewModel.productDetails.ProductDetailsViewModel
+import net.thechance.mena.dukan.presentation.viewModel.search.SearchViewModel
 import net.thechance.mena.dukan.presentation.viewModel.shelfDetails.ShelfDetailsViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
@@ -37,5 +40,8 @@ internal val dukanViewModelModule = module {
     viewModelOf(::CategoryDukansViewModel)
     viewModelOf(::ShelfDetailsViewModel)
     viewModelOf(::ProductDetailsViewModel)
+    viewModelOf(::DukanCartViewModel)
     viewModelOf(::CheckoutViewModel)
+    viewModelOf(::SearchViewModel)
+    viewModelOf(::DukanLocationViewModel)
 }

@@ -13,17 +13,22 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.backhandler.BackHandler
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.icerock.moko.permissions.compose.BindEffect
 import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.launch
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.you
 import net.thechance.mena.core_chat.presentation.components.snackBarHost.LocalSnackBarHostController
@@ -32,21 +37,24 @@ import net.thechance.mena.core_chat.presentation.screen.chat.components.Attachme
 import net.thechance.mena.core_chat.presentation.screen.chat.components.ChatHeader
 import net.thechance.mena.core_chat.presentation.screen.chat.components.ChatInputBar
 import net.thechance.mena.core_chat.presentation.screen.chat.components.ChatList
-import net.thechance.mena.core_chat.presentation.screen.chat.components.ChatScreenOverlays
 import net.thechance.mena.core_chat.presentation.screen.chat.components.FullImagePagerView
-import net.thechance.mena.core_chat.presentation.screen.chat.components.chatActionsMenuOverlay
-import net.thechance.mena.core_chat.presentation.utils.EffectHandler
 import net.thechance.mena.core_chat.presentation.screen.chat.components.RecordingBar
+import net.thechance.mena.core_chat.presentation.screen.chat.components.chatActionsMenuDialog
+import net.thechance.mena.core_chat.presentation.screen.chat.components.messageReactionDialog
+import net.thechance.mena.core_chat.presentation.screen.chat.components.resendFailedMessageDialog
+import net.thechance.mena.core_chat.presentation.utils.EffectHandler
 import net.thechance.mena.core_chat.presentation.utils.PaginationTrigger
 import net.thechance.mena.core_chat.presentation.utils.rememberCameraManager
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
+import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.uuid.ExperimentalUuidApi
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun ChatScreen() {
+fun ChatScreen(onClickBackFromChat: () -> Unit = {}) {
     val factory = rememberPermissionsControllerFactory()
     val controller = remember(factory) { factory.createPermissionsController() }
 
@@ -54,13 +62,21 @@ fun ChatScreen() {
 
     BindEffect(controller)
 
+    BackHandler(enabled = true) {
+        viewModel.onBackClicked()
+    }
+
     val state by viewModel.state.collectAsStateWithLifecycle()
     val effects = viewModel.effect
 
-    EffectsHandler(effects = effects)
+    val chatLazyListState = rememberLazyListState()
+
+
+    EffectsHandler(effects = effects, chatLazyListState = chatLazyListState, onClickBackFromChat = onClickBackFromChat)
 
     ChatScreenContent(
         state = state,
+        chatLazyListState = chatLazyListState,
         interactions = viewModel
     )
 }
@@ -68,10 +84,9 @@ fun ChatScreen() {
 @Composable
 fun ChatScreenContent(
     state: ChatScreenState,
+    chatLazyListState: LazyListState,
     interactions: ChatInteractionListener
 ) {
-    val chatListState = rememberLazyListState()
-
     val cameraManager = rememberCameraManager(
         onResult = interactions::onCameraResult
     )
@@ -87,6 +102,8 @@ fun ChatScreenContent(
         contentAlignment = Alignment.Center
     ) {
         Scaffold(
+            statusBarColor = Theme.colorScheme.background.surfaceLow,
+            backgroundColor = Theme.colorScheme.background.surface,
             topBar = {
                 ChatHeader(
                     chatName = state.chatName,
@@ -129,14 +146,14 @@ fun ChatScreenContent(
                 }
             },
             overlays = {
-                ChatScreenOverlays(
+                resendFailedMessageDialog(
                     showResendMessageDialog = state.isResendMessageDialogVisible,
                     onDismissResendMessageDialog = interactions::onResendMessageDialogDismissed,
                     onDeleteFailedMessageClick = interactions::onDeleteFailedMessageClicked,
                     onResendFailedMessageClick = interactions::onResendMessageClicked,
                 )
 
-                chatActionsMenuOverlay(
+                chatActionsMenuDialog(
                     showChatActionsDialog = state.isChatActionsDialogVisible,
                     showConfirmDeleteChatDialog = state.isConfirmDeleteChatDialogVisible,
                     actionsMenuInteractionListener = interactions as ActionsMenuInteractionListener
@@ -146,12 +163,12 @@ fun ChatScreenContent(
             ChatList(
                 items = state.chatListItems,
                 chatAvatarUrl = state.chatAvatarUrl,
-                chatListState = chatListState,
+                chatListState = chatLazyListState,
                 onMessageClick = interactions::onMessageClicked,
                 onMessageImageClick = interactions::onMessageImageClicked,
                 onMessageVoiceClick = interactions::onMessageVoiceClicked,
                 onFailedMessageClick = interactions::onFailedMessageClicked,
-                paginationError = state.paginationError,
+                onMessageLongClick = interactions::onMessageLongClicked,
             )
         }
 
@@ -169,6 +186,7 @@ fun ChatScreenContent(
                 senderImageUrl = senderImageUrl,
                 initialPage = state.currentImageIndexForPreview,
                 onCloseClick = interactions::onCloseImageViewClicked,
+                onImageLongClick = interactions::onMessageLongClicked,
                 onDownloadClick = interactions::onDownloadImageClicked,
             )
         }
@@ -187,27 +205,43 @@ fun ChatScreenContent(
 
     PaginationTrigger(
         list = state.chatListItems,
-        listState = chatListState,
+        listState = chatLazyListState,
         remainingItemsToLoadNextPage = 15,
         loadNextItems = interactions::onMessagesScrolled
+    )
+
+    messageReactionDialog(
+        isVisible = state.isReactionDialogVisible,
+        message = state.messageToReactTo,
+        currentUserId = state.chatRequesterId,
+        onDismiss = interactions::onReactionDialogDismissed,
+        onReactionClicked = interactions::onReactionSelected
     )
 }
 
 @Composable
 private fun EffectsHandler(
     effects: SharedFlow<ChatScreenEffect>,
+    chatLazyListState: LazyListState,
+    onClickBackFromChat: () -> Unit
 ) {
     val snackBarHostController = LocalSnackBarHostController.current
     val navController = LocalNavController.current
+    val scope = rememberCoroutineScope()
 
-    EffectHandler(effects) { effect ->
+    EffectHandler(effects, key1 = navController.currentBackStackEntry) { effect ->
         when (effect) {
             is ChatScreenEffect.NavigateBack -> {
+                onClickBackFromChat()
                 navController.popBackStack()
             }
 
             is ChatScreenEffect.ShowSnackBar -> {
                 snackBarHostController.showSnackBar(effect.snackBarData)
+            }
+
+            is ChatScreenEffect.ScrollToBottom -> {
+                scope.launch { chatLazyListState.animateScrollToItem(0) }
             }
         }
     }

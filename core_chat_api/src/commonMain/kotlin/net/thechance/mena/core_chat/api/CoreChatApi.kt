@@ -5,4 +5,10 @@ import androidx.compose.runtime.Composable
 interface CoreChatApi {
     @Composable
     fun TabEntry()
+
+    @Composable
+    fun ChatEntry(userId: String, onNavigateBack: () -> Unit)
+
+    @Composable
+    fun ShareAyahToChatEntry(surahId: String, ayahNumber: Int, ayahContent: String, onNavigateBack: () -> Unit)
 }

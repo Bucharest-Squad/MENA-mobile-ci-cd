@@ -85,7 +85,10 @@ abstract class BaseViewModel<S, E>(
             try {
                 val result = block()
                 onSuccess(result)
-            } catch (e: Exception) {
+            } catch (e: CancellationException){
+                return@launch
+            }
+            catch (e: Exception) {
                 onError(e)
             }
         }
@@ -141,7 +144,9 @@ abstract class BaseViewModel<S, E>(
             pagingSourceFactory = {
                 BasePagationSource(onError = onError, onFetchPage = block)
             }
-        ).flow.map { pagingData ->
+        ).flow
+            .catch{onError(it as Exception)}
+            .map { pagingData ->
             pagingData.map(mapper)
         }.cachedIn(viewModelScope)
     }

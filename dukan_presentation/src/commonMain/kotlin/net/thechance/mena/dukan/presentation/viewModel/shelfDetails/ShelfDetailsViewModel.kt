@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import mena.dukan_presentation.generated.resources.Res
 import mena.dukan_presentation.generated.resources.no_internet_connection
+import mena.dukan_presentation.generated.resources.something_went_wrong
+import net.thechance.mena.dukan.domain.entity.Cart
 import net.thechance.mena.dukan.domain.entity.Dukan
 import net.thechance.mena.dukan.domain.exceptions.NoInternetException
 import net.thechance.mena.dukan.domain.model.UpdateProductCartQuantityParams
@@ -38,6 +40,23 @@ class ShelfDetailsViewModel(
         updateState { copy(shelfName = args.shelfName) }
         loadDukanDetails()
         loadProductsFromRepository()
+        loadCartInfo()
+    }
+
+    private fun loadCartInfo() {
+        tryToExecute(
+            block = { dukanCartRepository.getCartInfo(args.dukanId) },
+            onError = ::onCartInfoError,
+            onSuccess = ::onLoadCartSuccess
+        )
+    }
+
+    private fun onCartInfoError(throwable: Throwable) {
+        updateState { copy(hasProductInCart = false) }
+    }
+
+    private fun onLoadCartSuccess(cart: Cart) {
+        updateState { copy(hasProductInCart = cart.totalPrice > 0) }
     }
 
     private fun loadDukanDetails() {
@@ -95,28 +114,16 @@ class ShelfDetailsViewModel(
         val domainRequest = uiRequest.toDomainParams(args.dukanId)
 
         tryToExecute(
-            block = {
-                addToCartBlock(
-                    domainRequest = domainRequest,
-                    productQuantity = productQuantity
-                )
-            },
+            block = { dukanCartRepository.addProductQuantity(domainRequest) },
             onError = ::onErrorUpdateProductQuantity
         )
-    }
-
-    private suspend fun addToCartBlock(
-        domainRequest: UpdateProductCartQuantityParams,
-        productQuantity: Int
-    ) {
-        if (productQuantity == 1) dukanCartRepository.addProductQuantity(domainRequest)
-        dukanCartRepository.updateProductQuantity(domainRequest)
     }
 
     override fun onPlusClicked(
         productId: String,
         productQuantity: Int,
     ) {
+        updateState { copy(hasProductInCart = true) }
 
         val uiRequest =
             ShelfDetailsUiState.ProductUiState(id = productId, inCartQuantity = productQuantity)
@@ -152,7 +159,7 @@ class ShelfDetailsViewModel(
         productId: String,
         domainRequest: UpdateProductCartQuantityParams
     ) {
-        if (productQuantity == 1) deleteProductFromCart(productId)
+        if (productQuantity == 0) deleteProductFromCart(productId)
         else dukanCartRepository.updateProductQuantity(domainRequest)
     }
 
@@ -164,19 +171,21 @@ class ShelfDetailsViewModel(
                     productId = productId
                 )
             },
+            onSuccess = {
+                loadCartInfo()
+            }
         )
     }
 
     private fun onErrorUpdateProductQuantity(throwable: Throwable) {
-        if (throwable is NoInternetException) {
-            showSnackBar(
-                message = Res.string.no_internet_connection,
-                type = SnackBarType.ERROR
-            )
+        val messageRes = when (throwable) {
+            is NoInternetException -> Res.string.no_internet_connection
+            else -> Res.string.something_went_wrong
         }
+        showSnackBar(message = messageRes)
     }
 
-    private fun showSnackBar(message: StringResource, type: SnackBarType) {
+    private fun showSnackBar(message: StringResource, type: SnackBarType = SnackBarType.ERROR) {
         updateState {
             copy(
                 snackBarState = SnackBarUiState(
@@ -205,6 +214,7 @@ class ShelfDetailsViewModel(
 
     fun refreshProducts() {
         loadProductsFromRepository()
+        loadCartInfo()
     }
 
 }

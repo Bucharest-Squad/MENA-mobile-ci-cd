@@ -1,8 +1,13 @@
 package net.thechance.mena.dukan.presentation.screen.dukanDetails.components.noImageDukanDetails
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -48,14 +53,22 @@ fun NoImageDukanShelfWithProducts(
             modifier = Modifier.fillMaxWidth().padding(bottom = Theme.spacing._8),
             viewAllColor = Color(dukanColor)
         )
-        shelf.products.forEachIndexed { index, product ->
-            val topPadding = if (index > 0) Theme.spacing._8 else 0.dp
-            ProductItem(
-                product = product,
-                listener = listener,
-                dukanColor = Color(dukanColor),
-                modifier = Modifier.padding(top = topPadding)
-            )
+        val spacing = Theme.spacing._8
+        val minCardWidth = 320.dp
+
+        LazyVerticalGrid(
+            modifier = Modifier.heightIn(min = 0.dp, max = 10_000.dp),
+            columns = GridCells.Adaptive(minSize = minCardWidth),
+            horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(spacing),
+            verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(spacing)
+        ) {
+            items(shelf.products) { product ->
+                ProductItem(
+                    product = product,
+                    listener = listener,
+                    dukanColor = Color(dukanColor)
+                )
+            }
         }
     }
 }
@@ -68,11 +81,11 @@ private fun ProductItem(
     dukanColor: Color,
     modifier: Modifier = Modifier
 ) {
-    var toggleCartToQuantity by rememberSaveable { mutableStateOf(product.inCartQuantity>1) }
+    var toggleCartToQuantity by rememberSaveable { mutableStateOf(product.inCartQuantity > 0) }
     var productQuantity by rememberSaveable { mutableIntStateOf(product.inCartQuantity) }
 
     LaunchedEffect(product) {
-        toggleCartToQuantity = product.inCartQuantity > 1
+        toggleCartToQuantity = product.inCartQuantity > 0
         productQuantity = product.inCartQuantity
     }
 
@@ -83,7 +96,7 @@ private fun ProductItem(
         productPrice = product.price,
         productCardBackground = Theme.colorScheme.background.surfaceLow,
         modifier = modifier,
-        onClick = { listener.onProductClicked(product.id) },
+        onProductClick = { listener.onProductClicked(product.id) },
         productAction = {
             NoImageDukanProductAction(
                 showProductQuantity = toggleCartToQuantity,
@@ -91,6 +104,7 @@ private fun ProductItem(
                 dukanColor = dukanColor,
                 onAddToCartClick = {
                     toggleCartToQuantity = true
+                    productQuantity += 1
                     listener.onAddToCartClicked(
                         productId = product.id,
                         productQuantity = productQuantity
@@ -105,7 +119,7 @@ private fun ProductItem(
                 },
                 onMinusClick = {
                     if (productQuantity == 1) toggleCartToQuantity = false
-                    else productQuantity -= 1
+                    productQuantity -= 1
                     listener.onMinusClicked(
                         productId = product.id,
                         productQuantity = productQuantity

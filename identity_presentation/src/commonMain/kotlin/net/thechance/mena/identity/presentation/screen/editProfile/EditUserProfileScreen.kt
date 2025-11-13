@@ -1,16 +1,11 @@
 package net.thechance.mena.identity.presentation.screen.editProfile
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -20,7 +15,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.Navigator
 import dev.icerock.moko.permissions.compose.BindEffect
@@ -40,8 +34,6 @@ import mena.identity_presentation.generated.resources.first_name
 import mena.identity_presentation.generated.resources.ic_arrow_left
 import mena.identity_presentation.generated.resources.ic_close_circle
 import mena.identity_presentation.generated.resources.last_name
-import mena.identity_presentation.generated.resources.more_horizontal
-import mena.identity_presentation.generated.resources.options
 import mena.identity_presentation.generated.resources.save_changes
 import mena.identity_presentation.generated.resources.username
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
@@ -58,6 +50,7 @@ import net.thechance.mena.identity.presentation.components.GregorianDatePicker
 import net.thechance.mena.identity.presentation.screen.editProfile.components.AtPrefixTransformation
 import net.thechance.mena.identity.presentation.screen.editProfile.components.EditProfileImage
 import net.thechance.mena.identity.presentation.screen.editProfile.components.GenderToggle
+import net.thechance.mena.identity.presentation.screen.editProfile.components.MoreActionsButton
 import net.thechance.mena.identity.presentation.screen.editProfile.components.ProfileEditText
 import net.thechance.mena.identity.presentation.screen.editProfile.dialog.GetImageDialog
 import net.thechance.mena.identity.presentation.screen.imageCropper.ImageCropperScreen
@@ -65,7 +58,6 @@ import net.thechance.mena.identity.presentation.util.rememberCameraPicker
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.core.parameter.parametersOf
-import sv.lib.squircleshape.SquircleShape
 
 class EditUserProfileScreen : BaseScreen<
         EditUserProfileViewModel,
@@ -76,8 +68,10 @@ class EditUserProfileScreen : BaseScreen<
     override fun Content() {
         val factory = rememberPermissionsControllerFactory()
         val controller = remember(factory) { factory.createPermissionsController() }
-        InitScreen(getScreenModel(parameters = { parametersOf(controller) }))
-        BindEffect(controller)
+        val viewModel: EditUserProfileViewModel =
+            getScreenModel(parameters = { parametersOf(controller) })
+        InitScreen(viewModel)
+        BindEffect(viewModel.permissionsController)
     }
 
     @Composable
@@ -114,20 +108,13 @@ class EditUserProfileScreen : BaseScreen<
 
         Scaffold(
             snakeBar = {
-                AnimatedVisibility(
-                    visible = state.errorMessage != null,
-                    enter = slideInHorizontally(initialOffsetX = { it }),
-                    exit = slideOutHorizontally(targetOffsetX = { it }),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    SnackBar(
-                        title = stringResource(Res.string.error),
-                        message = state.errorMessage?.let { stringResource(it) } ?: "",
-                        leadingIcon = painterResource(Res.drawable.ic_close_circle),
-                        modifier = Modifier.fillMaxWidth().padding(bottom = Theme.spacing._16)
-                            .padding(horizontal = Theme.spacing._16)
-                    )
-                }
+                SnackBar(
+                    isVisible = state.errorMessage != null,
+                    title = stringResource(Res.string.error),
+                    message = state.errorMessage?.let { stringResource(it) } ?: "",
+                    leadingIcon = painterResource(Res.drawable.ic_close_circle),
+                    onDismiss = listener::clearErrorMessage,
+                )
             },
             overlays = {
                 dialog(state.showEditImageDialog) {
@@ -171,16 +158,7 @@ class EditUserProfileScreen : BaseScreen<
                     },
                     onLeadingClick = listener::onClickCancelButton,
                     trailingContent = {
-                        Icon(
-                            modifier = Modifier
-                                .clip(SquircleShape(Theme.radius.md))
-                                .background(Theme.colorScheme.background.surfaceLow)
-                                .clickable(onClick = { listener.onClickShowLogoutOptions() })
-                                .padding(10.dp)
-                                .size(20.dp),
-                            painter = painterResource(Res.drawable.more_horizontal),
-                            contentDescription = stringResource(Res.string.options),
-                        )
+                        MoreActionsButton(onClick = listener::onClickShowLogoutOptions)
                     }
                 )
 

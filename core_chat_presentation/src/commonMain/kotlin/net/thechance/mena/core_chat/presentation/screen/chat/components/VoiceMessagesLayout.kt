@@ -4,6 +4,7 @@ package net.thechance.mena.core_chat.presentation.screen.chat.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -53,6 +55,8 @@ fun VoiceMessageLayout(
     totalSeconds: Long = 0,
     waveformData: List<Float> = emptyList(),
     chatAvatarUrl: String? = null,
+    onMessageClick: () -> Unit = {},
+    onMessageLongClick: () -> Unit = {},
     onPlayClick: (MessageUiState) -> Unit = {},
     onFailClick: (MessageUiState) -> Unit = {},
 ) {
@@ -60,11 +64,6 @@ fun VoiceMessageLayout(
         if (message.isMine) Theme.colorScheme.background.surfaceLow
         else Theme.colorScheme.brand.brandVariant
 
-
-    val messagePaddingStart = if (message.isMine)
-        Theme.spacing._24
-    else
-        Theme.spacing._8
 
     val messagePaddingEnd = if (message.isMine) 0.dp else Theme.spacing._8
 
@@ -91,7 +90,7 @@ fun VoiceMessageLayout(
 
 
     Column(
-        modifier = modifier.padding(start = messagePaddingStart, end = messagePaddingEnd),
+        modifier = modifier.padding( end = messagePaddingEnd),
         verticalArrangement = Arrangement.spacedBy(Theme.spacing._2),
         horizontalAlignment = messageAlignment
     ) {
@@ -122,8 +121,12 @@ fun VoiceMessageLayout(
                 modifier = Modifier
                     .clip(messageShape)
                     .background(color = messageBackground, shape = messageShape)
+                    .combinedClickable(
+                        onClick = onMessageClick,
+                        onLongClick = onMessageLongClick
+                    )
                     .padding(
-                        horizontal =  Theme.spacing._8,
+                        horizontal = Theme.spacing._8,
                         vertical = Theme.spacing._4
                     )
             ) {
@@ -140,7 +143,8 @@ fun VoiceMessageLayout(
                     VoiceMessageWaveform(
                         waveData = waveformData.ifEmpty { generateRandomWaveformData() },
                         progress = progress,
-                        modifier = Modifier.weight(1f).height(44.dp).padding(vertical = Theme.spacing._4)
+                        modifier = Modifier.weight(1f).height(44.dp)
+                            .padding(vertical = Theme.spacing._4)
                     )
 
                     Text(
@@ -152,19 +156,33 @@ fun VoiceMessageLayout(
             }
         }
 
-        AnimatedVisibility(
-            visible = showMessageInfo,
-            modifier = Modifier.align(messageInfoAlignment)
+        Row(
+            modifier = Modifier.align(messageInfoAlignment),
+            horizontalArrangement = Arrangement.spacedBy(Theme.spacing._4),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            MessageInfo(
-                messageTime = message.sendTime,
-                messageStatus = message.status,
-                messageIsMine = message.isMine,
-                onFailClick = { onFailClick(message) },
-                modifier = Modifier
-                    .align(messageInfoAlignment)
+            if (!message.isMine && message.reactions.isNotEmpty()) {
+                ReactionBubble(
+                    reactions = message.reactions,
+                    modifier= Modifier.offset(y = (-8).dp)
+                )
+            }
 
-            )
+            AnimatedVisibility(visible = showMessageInfo) {
+                MessageInfo(
+                    messageTime = message.sendTime,
+                    messageStatus = message.status,
+                    messageIsMine = message.isMine,
+                    onFailClick = { onFailClick(message) }
+                )
+            }
+
+            if (message.isMine && message.reactions.isNotEmpty()) {
+                ReactionBubble(
+                    reactions = message.reactions,
+                    modifier= Modifier.offset(y = (-8).dp)
+                )
+            }
         }
     }
 }

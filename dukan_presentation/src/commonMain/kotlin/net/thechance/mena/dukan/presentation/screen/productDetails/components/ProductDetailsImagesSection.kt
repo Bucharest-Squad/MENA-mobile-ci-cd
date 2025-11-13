@@ -6,6 +6,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -21,9 +22,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,14 +35,18 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import coil3.compose.AsyncImagePainter
 import mena.dukan_presentation.generated.resources.Res
+import mena.dukan_presentation.generated.resources.ic_no_image_loaded
 import mena.dukan_presentation.generated.resources.product_image
 import mena.dukan_presentation.generated.resources.product_thumbnail
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.dukan.presentation.screen.productDetails.components.util.ShimmerBox
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import sv.lib.squircleshape.SquircleShape
 
 @Composable
 fun ProductDetailsImagesSection(
@@ -89,7 +96,7 @@ private fun ProductDetailsImageShimmer(modifier: Modifier = Modifier) {
             height = 288.dp,
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(Theme.radius.md))
+                .clip(SquircleShape(Theme.radius.md))
         )
 
         Spacer(modifier = Modifier.height(Theme.spacing._16))
@@ -100,7 +107,7 @@ private fun ProductDetailsImageShimmer(modifier: Modifier = Modifier) {
                 ShimmerBox(
                     width = 56.dp,
                     height = 56.dp,
-                    modifier = Modifier.clip(RoundedCornerShape(Theme.radius.sm))
+                    modifier = Modifier.clip(SquircleShape(Theme.radius.sm))
                 )
             }
         }
@@ -134,15 +141,38 @@ fun ProductDetailsMainImage(
     imageUrl: String,
     modifier: Modifier = Modifier
 ) {
-    AsyncImage(
-        model = imageUrl,
-        contentDescription = stringResource(Res.string.product_image),
+    var isError by remember { mutableStateOf(false) }
+    var isLoading by remember { mutableStateOf(false) }
+
+    Box(
         modifier = modifier
             .fillMaxWidth()
             .height(288.dp)
-            .clip(RoundedCornerShape(Theme.radius.md)),
-        contentScale = ContentScale.Crop
-    )
+            .clip(SquircleShape(Theme.radius.md))
+            .background(if (isError) Color.Gray else Color.Transparent)
+    ) {
+        AsyncImage(
+            model = imageUrl,
+            contentDescription = stringResource(Res.string.product_image),
+            contentScale = ContentScale.Crop,
+            onState = { state ->
+                isError = state is AsyncImagePainter.State.Error
+                isLoading = state is AsyncImagePainter.State.Loading
+            },
+            modifier = Modifier.fillMaxSize()
+        )
+
+        if (isError || isLoading) {
+            Image(
+                painter = painterResource(Res.drawable.ic_no_image_loaded),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(64.dp)
+                    .align(Alignment.Center),
+                contentScale = ContentScale.Fit
+            )
+        }
+    }
 }
 
 @Composable
@@ -155,7 +185,7 @@ fun ProductDetailsSecondaryImages(
     LazyRow(
         modifier = modifier
             .height(64.dp)
-            .clip(RoundedCornerShape(Theme.radius.md))
+            .clip(SquircleShape(Theme.radius.md))
             .background(Theme.colorScheme.background.surfaceLow),
         horizontalArrangement = Arrangement.spacedBy(Theme.spacing._4),
         verticalAlignment = Alignment.CenterVertically,
@@ -178,7 +208,9 @@ private fun ProductDetailsSecondaryImageItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val shape = RoundedCornerShape(Theme.radius.sm)
+    val shape = SquircleShape(Theme.radius.sm)
+    var isError by remember { mutableStateOf(false) }
+    var isLoading by remember { mutableStateOf(false) }
 
     val targetBorderColor = if (isSelected) {
         Theme.colorScheme.primary.primary
@@ -191,16 +223,36 @@ private fun ProductDetailsSecondaryImageItem(
         label = "BorderColorAnimation"
     )
 
-    AsyncImage(
-        model = imageUrl,
-        contentDescription = stringResource(Res.string.product_thumbnail),
-        contentScale = ContentScale.Crop,
+    Box(
         modifier = modifier
             .size(56.dp)
             .clip(shape)
+            .background(if (isError) Color.Gray else Color.Transparent)
             .border(1.dp, animatedBorderColor, shape)
             .clickable(onClick = onClick)
-    )
+    ) {
+        AsyncImage(
+            model = imageUrl,
+            contentDescription = stringResource(Res.string.product_thumbnail),
+            contentScale = ContentScale.Crop,
+            onState = { state ->
+                isError = state is AsyncImagePainter.State.Error
+                isLoading = state is AsyncImagePainter.State.Loading
+            },
+            modifier = Modifier.fillMaxSize()
+        )
+
+        if (isError || isLoading) {
+            Image(
+                painter = painterResource(Res.drawable.ic_no_image_loaded),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(24.dp)
+                    .align(Alignment.Center),
+                contentScale = ContentScale.Fit
+            )
+        }
+    }
 }
 
 @Preview

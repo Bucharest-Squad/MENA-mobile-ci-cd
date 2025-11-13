@@ -1,9 +1,9 @@
 package net.thechance.mena.dukan.presentation.screen.dukanDetails.components.wideImageDukanDetails
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,7 +27,7 @@ import mena.dukan_presentation.generated.resources.back_arrow
 import mena.dukan_presentation.generated.resources.favorite_icon
 import mena.dukan_presentation.generated.resources.ic_arrow_left
 import mena.dukan_presentation.generated.resources.ic_favorite
-import mena.dukan_presentation.generated.resources.ic_share
+import mena.dukan_presentation.generated.resources.ic_favorite_filled
 import mena.dukan_presentation.generated.resources.ic_shopping_basket
 import mena.dukan_presentation.generated.resources.wide_dukan_image
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
@@ -42,9 +42,11 @@ import net.thechance.mena.dukan.presentation.viewModel.dukanDetails.DukanDetails
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import sv.lib.squircleshape.SquircleShape
 
 @Composable
 fun WideImageDukanAppBar(
+    isBadgeVisible : Boolean,
     onBackClicked: () -> Unit,
     onCartClicked: () -> Unit
 ) {
@@ -59,9 +61,8 @@ fun WideImageDukanAppBar(
         onLeadingClick = onBackClicked,
         trailingContent = {
             AppBarOptionContainer(
-                // when cart contains products
-                isBadgeVisible = true,
-                onClick = { onCartClicked }
+                isBadgeVisible = isBadgeVisible,
+                onClick = { onCartClicked() }
             ) {
                 Icon(
                     painter = painterResource(Res.drawable.ic_shopping_basket),
@@ -73,7 +74,10 @@ fun WideImageDukanAppBar(
 }
 
 @Composable
-fun WideImageDukanHeader(state: DukanDetailsUiState.DukanInfo) {
+fun WideImageDukanHeader(
+    state: DukanDetailsUiState.DukanInfo,
+    onFavoriteClicked: (dukanId: String) -> Unit,
+) {
     Box(
         modifier = Modifier.fillWidthOfParent(16.dp)
     ) {
@@ -85,7 +89,8 @@ fun WideImageDukanHeader(state: DukanDetailsUiState.DukanInfo) {
         )
         DukanActionButtons(
             state = state,
-            modifier = Modifier.align(Alignment.TopEnd)
+            modifier = Modifier.align(Alignment.TopEnd),
+            onFavoriteClicked = onFavoriteClicked
         )
     }
 }
@@ -93,17 +98,24 @@ fun WideImageDukanHeader(state: DukanDetailsUiState.DukanInfo) {
 @Composable
 private fun DukanActionButtons(
     state: DukanDetailsUiState.DukanInfo,
+    onFavoriteClicked: (dukanId: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+
     Column(modifier = modifier.padding(top = Theme.spacing._8)) {
-        DukanIconButton(
-            icon = painterResource(Res.drawable.ic_share),
-            iconColor = Color(state.color),
-        )
-        DukanIconButton(
-            icon = painterResource(Res.drawable.ic_favorite),
-            iconColor = Color(state.color),
-        )
+        Crossfade(
+            targetState = state.isFavorite,
+            label = "favoriteCrossfade"
+        ) { isFavorite ->
+            val favoriteIcon = if (isFavorite) Res.drawable.ic_favorite_filled
+            else Res.drawable.ic_favorite
+
+            DukanIconButton(
+                icon = painterResource(favoriteIcon),
+                iconColor = Color(state.color),
+                onIconClick = { onFavoriteClicked(state.dukanId) }
+            )
+        }
     }
 }
 
@@ -117,7 +129,7 @@ private fun DukanImageAndTitle(
         modifier = modifier
             .fillMaxWidth()
             .height(188.dp)
-            .clip(RoundedCornerShape(Theme.radius.md)),
+            .clip(SquircleShape(Theme.radius.md)),
         contentAlignment = Alignment.Center
     ) {
         AsyncImage(
@@ -164,13 +176,17 @@ private fun DukanIconButton(
         tint = iconColor,
         modifier = modifier
             .size(40.dp)
-            .clip(RoundedCornerShape(Theme.radius.full))
-            .clickable(onClick = onIconClick,indication = null, interactionSource = MutableInteractionSource())
+            .clip(CircleShape)
+            .clickable(
+                onClick = onIconClick,
+                indication = null,
+                interactionSource =null
+            )
             .background(color = Theme.colorScheme.background.surfaceLow)
             .border(
                 width = 3.dp,
                 color = Theme.colorScheme.background.surface,
-                shape = RoundedCornerShape(Theme.radius.full)
+                shape = CircleShape
             )
             .padding(Theme.spacing._8 + Theme.spacing._2)
     )
@@ -187,6 +203,7 @@ private fun DukanActionButtonsPreview() {
         ) {
             DukanActionButtons(
                 state = fakeDukanInfo,
+                onFavoriteClicked = {},
                 modifier = Modifier.align(Alignment.TopEnd)
             )
         }

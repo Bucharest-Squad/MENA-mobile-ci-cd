@@ -1,6 +1,8 @@
 package net.thechance.mena.faith.data.database
 
 import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.RewriteQueriesToDropUnusedColumns
 
@@ -24,7 +26,6 @@ interface AyahDao {
     GROUP BY sura_no, sura_name_en
 """)
     suspend fun getSur(): List<SurahDto>
-
 
     @Query("SELECT * FROM ayat WHERE aya_no = :ayahId AND sura_no = :surahId")
     suspend fun getAyah(ayahId: Int, surahId: Int): AyahDto
@@ -59,4 +60,21 @@ interface AyahDao {
         """
     )
     suspend fun searchForAyahInSurah(surahId: Int, query: String): List<AyahDto>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertReciters(reciters: List<ReciterDto>)
+
+    @Query("SELECT * FROM reciters")
+    suspend fun getAllReciters(): List<ReciterDto>
+
+    @Query("""
+    SELECT * FROM reciters 
+    WHERE name LIKE '%'||:query||'%' 
+       OR name_ar LIKE '%'||:query||'%'
+    ORDER BY name ASC
+""")
+    suspend fun searchReciters(query: String): List<ReciterDto>
+
+    @Query("SELECT * FROM reciters WHERE id = :reciterId")
+    suspend fun getReciterById(reciterId: Int): ReciterDto
 }

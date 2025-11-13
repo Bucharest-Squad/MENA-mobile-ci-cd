@@ -9,7 +9,6 @@ import mena.core_chat_presentation.generated.resources.today
 import mena.core_chat_presentation.generated.resources.yesterday
 import net.thechance.mena.core_chat.domain.entity.Message
 import net.thechance.mena.core_chat.domain.entity.MessageContent
-import net.thechance.mena.core_chat.presentation.utils.AudioPlayer
 import net.thechance.mena.core_chat.presentation.utils.UiText
 import net.thechance.mena.core_chat.presentation.utils.format
 import net.thechance.mena.core_chat.presentation.utils.minusDays
@@ -18,6 +17,7 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 fun Message.toUi(): MessageUiState {
+
     return MessageUiState(
         id = id,
         senderId = senderId,
@@ -25,7 +25,9 @@ fun Message.toUi(): MessageUiState {
         sendTime = sendAt,
         status = status,
         isMine = isMine,
-        content = content
+        content = content,
+        reactions = reactions,
+        waveformData = null
     )
 }
 
@@ -37,7 +39,8 @@ fun MessageUiState.toEntity(): Message {
         content = content,
         sendAt = sendTime,
         status = status,
-        isMine = isMine
+        isMine = isMine,
+        reactions = reactions
     )
 }
 
@@ -96,17 +99,21 @@ fun List<MessageUiState>.toGroupedMessagesChatList(shouldGroupMessages: (Message
                     tempImages.add(msg)
                 }
             }
+
             is MessageContent.Audio -> {
                 groupAndClear()
-                grouped.add(ChatListItem.VoiceMessage(
-                    data = msg,
-                    isPlaying = false,
-                    isLoading = false,
-                    progress = 0f,
-                    duration = 0L,
-                    waveformData = generateWaveformData()
-                ))
+                grouped.add(
+                    ChatListItem.VoiceMessage(
+                        data = msg,
+                        isPlaying = false,
+                        isLoading = false,
+                        progress = 0f,
+                        duration = msg.content.audioDurationMs ?: 0L,
+                        waveformData = msg.waveformData ?: emptyList()
+                    )
+                )
             }
+
             is MessageContent.Text -> {
                 groupAndClear()
                 grouped.add(ChatListItem.TextMessage(msg))
@@ -144,6 +151,8 @@ fun generateWaveformData(): List<Float> {
 
 fun List<ChatListItem>.toggleMessageInfo(messageId: Uuid): List<ChatListItem> = map { item ->
     if (item is ChatListItem.TextMessage && item.data.id == messageId)
+        item.copy(data = item.data.copy(isVisibleMessageInfo = !item.data.isVisibleMessageInfo))
+    else if (item is ChatListItem.VoiceMessage && item.data.id == messageId)
         item.copy(data = item.data.copy(isVisibleMessageInfo = !item.data.isVisibleMessageInfo))
     else item
 }

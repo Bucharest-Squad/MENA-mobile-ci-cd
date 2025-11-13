@@ -12,7 +12,8 @@ fun Product.toUiState(): ProductDetailsUiState.ProductInfo {
         price = price,
         description = description,
         images = imageUrls,
-        inCartQuantity = if (quantityInCart == 0) quantityInCart + 1 else quantityInCart)
+        inCartQuantity = quantityInCart
+    )
 }
 
 fun ProductDetailsUiState.ProductInfo.toDomainParams(dukanId: String): UpdateProductCartQuantityParams {
@@ -22,3 +23,4 @@ fun ProductDetailsUiState.ProductInfo.toDomainParams(dukanId: String): UpdatePro
         dukanId = dukanId
     )
 }
+fun parseHexColor(color: String): Long = color.removePrefix("#").toLong(16) or 0xFF000000

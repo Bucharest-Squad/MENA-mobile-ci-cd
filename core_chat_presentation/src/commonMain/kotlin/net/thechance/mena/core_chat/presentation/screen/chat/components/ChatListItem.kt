@@ -6,9 +6,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import net.thechance.mena.core_chat.domain.entity.MessageStatus
 import net.thechance.mena.core_chat.presentation.screen.chat.ChatListItem
 import net.thechance.mena.core_chat.presentation.screen.chat.MessageUiState
@@ -24,8 +26,9 @@ fun ChatListItem(
     chatAvatarUrl: String,
     onMessageClick: (Uuid) -> Unit,
     onMessageImageClick: (List<MessageUiState>, Int) -> Unit,
-    onMessageVoiceClick : (Uuid) -> Unit,
+    onMessageVoiceClick: (Uuid) -> Unit,
     onFailedMessageClick: (MessageUiState) -> Unit,
+    onMessageLongClick: (MessageUiState) -> Unit,
     modifier: Modifier = Modifier
 ) {
     when (item) {
@@ -50,6 +53,7 @@ fun ChatListItem(
                 showMessageInfo = (markedMessage.isVisibleMessageInfo || markedMessage.isLastInSeries || markedMessage.status == MessageStatus.FAILED),
                 isMarkedLastInSeries = markedMessage.isLastInSeries,
                 onMessageClick = { onMessageClick(markedMessage.id) },
+                onMessageLongClick = { onMessageLongClick(markedMessage) },
                 onFailClick = { onFailedMessageClick(markedMessage) },
             )
         }
@@ -67,21 +71,24 @@ fun ChatListItem(
             )
         }
 
-        is ChatListItem.VoiceMessage ->{
+        is ChatListItem.VoiceMessage -> {
             val markedMessage = item.data
             Row(
                 modifier = modifier.fillMaxWidth(),
                 horizontalArrangement = if (markedMessage.isMine) Arrangement.End else Arrangement.Start
             ) {
                 VoiceMessageLayout(
+                    modifier = Modifier.width(280.dp),
                     message = markedMessage,
                     chatAvatarUrl = chatAvatarUrl,
                     showMessageInfo = (markedMessage.isVisibleMessageInfo || markedMessage.isLastInSeries || markedMessage.status == MessageStatus.FAILED),
                     isMarkedLastInSeries = markedMessage.isLastInSeries,
                     isMessageLoading = item.isLoading || item.isPlaying,
                     progress = item.progress,
-                    totalSeconds = item.duration.div(1000) ,
+                    totalSeconds = item.duration.div(1000),
                     waveformData = item.waveformData,
+                    onMessageClick = { onMessageClick(markedMessage.id) },
+                    onMessageLongClick = { onMessageLongClick(markedMessage) },
                     onPlayClick = { onMessageVoiceClick(markedMessage.id) },
                     onFailClick = { onFailedMessageClick(markedMessage) },
                 )

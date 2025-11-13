@@ -9,6 +9,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.BackHandler
@@ -28,10 +29,7 @@ import net.thechance.mena.identity.presentation.screen.profile.SnackBarUiState
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-enum class PasswordPage(val index:Int) {
-    CURRENT_PASSWORD(0),
-    NEW_PASSWORD(1)
-}
+
 class ChangePasswordScreen(
     val onSuccess: (SnackBarUiState?) -> Unit,
 ) : BaseScreen<ChangePasswordScreenViewModel,
@@ -50,10 +48,10 @@ class ChangePasswordScreen(
         state: ChangePasswordScreenUIState,
         listener: ChangePasswordScreenInteractionListener
     ) {
-        val pagerState = rememberPagerState(initialPage = state.currentPage, pageCount = { 2 })
+        val pagerState = rememberPagerState(initialPage = state.currentPage.index, pageCount = { 2 })
 
         LaunchedEffect(state.currentPage) {
-            pagerState.animateScrollToPage(state.currentPage)
+            pagerState.animateScrollToPage(state.currentPage.index)
         }
         Scaffold(
             topBar = {
@@ -73,6 +71,7 @@ class ChangePasswordScreen(
                 HorizontalPager(
                     state = pagerState,
                     userScrollEnabled = false,
+                    verticalAlignment = Alignment.Top,
                     modifier = Modifier.weight(1f)
                 ) { page ->
                     when (page) {
