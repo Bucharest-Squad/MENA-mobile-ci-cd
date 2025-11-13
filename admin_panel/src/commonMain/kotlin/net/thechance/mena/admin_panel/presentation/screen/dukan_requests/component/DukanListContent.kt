@@ -219,7 +219,7 @@ private fun ImagePlaceHolder(
     Icon(
         painter = painterResource(Res.drawable.ic_dukan_placholder),
         contentDescription = stringResource(Res.string.image),
-        modifier = modifier.size(32.dp)
+        modifier = modifier
     )
 }
 
