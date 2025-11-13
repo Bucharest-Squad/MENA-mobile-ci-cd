@@ -7,13 +7,18 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
+import net.thechance.mena.admin_panel.resources.ic_check_circle
+import net.thechance.mena.admin_panel.resources.ic_close_circle
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.shadow.Shadow
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import net.thechance.mena.admin_panel.presentation.model.SnackBarState
 import net.thechance.mena.admin_panel.resources.Res
@@ -44,6 +49,7 @@ fun SnackBarContainer(
         exit = EXIT_ANIMATION
     ) {
         Crossfade(
+            modifier = Modifier.padding(8.dp),
             targetState = snackBarState.isSuccess,
             animationSpec = tween(ANIMATION_DURATION)
         ) { isSuccess ->
@@ -54,7 +60,14 @@ fun SnackBarContainer(
                 title = snackBarState.title ?: "",
                 message = snackBarState.message ?: "",
                 leadingIcon = painterResource(leadingIcon),
-                modifier = modifier.dropShadow(),
+                modifier = modifier.dropShadow(
+                    shape = RoundedCornerShape(8.dp),
+                    shadow = Shadow(
+                        radius = 8.dp,
+                        color = Color.Black.copy(alpha = 0.2f),
+                        offset = DpOffset(x = 0.dp, 4.dp)
+                    )
+                ),
                 tint = animatedTint
             )
         }
@@ -62,20 +75,13 @@ fun SnackBarContainer(
 }
 
 private val ENTER_ANIMATION = fadeIn(tween(ANIMATION_DURATION)) +
-        slideInHorizontally (
+        slideInHorizontally(
             animationSpec = tween(ANIMATION_DURATION),
             initialOffsetX = { it / 2 },
         )
 
 private val EXIT_ANIMATION = fadeOut(tween(ANIMATION_DURATION)) +
-        slideOutHorizontally (
+        slideOutHorizontally(
             animationSpec = tween(ANIMATION_DURATION),
             targetOffsetX = { it / 2 },
         )
-
-private fun Modifier.dropShadow() = this.shadow(
-    elevation = 40.dp,
-    shape = RoundedCornerShape(8.dp),
-    ambientColor = Color.Black.copy(alpha = 0.08f),
-    spotColor = Color.Black.copy(alpha = 0.08f)
-)

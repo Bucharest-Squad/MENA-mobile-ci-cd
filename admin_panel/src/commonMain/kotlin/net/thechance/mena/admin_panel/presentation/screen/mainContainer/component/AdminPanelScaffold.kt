@@ -107,7 +107,6 @@ private fun AdminPanelScaffoldMainContent(
         AdminPanelNavHost(
             modifier = Modifier.weight(1f),
             navController = navController,
-            isUserLoggedIn = state.authenticationStatus
         )
     }
 }
