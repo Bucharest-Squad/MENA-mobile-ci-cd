@@ -7,6 +7,6 @@ import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalUuidApi::class)
 fun ShelfDto.toEntity() = Shelf(
-    id = id.toUuidOrNull() ?: throw IllegalStateException("Invalid User id"),
+    id = id.toUuidOrNull() ?: throw IllegalStateException("Invalid shelf id"),
     title = title.orEmpty()
 )

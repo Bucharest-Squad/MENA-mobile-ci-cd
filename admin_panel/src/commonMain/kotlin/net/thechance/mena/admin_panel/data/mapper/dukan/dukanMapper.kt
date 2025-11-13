@@ -12,7 +12,7 @@ import net.thechance.mena.admin_panel.domain.entity.dukan.Dukan
 import kotlin.uuid.ExperimentalUuidApi
 
 fun DukanDto.toEntity() = Dukan(
-    id = id.toUuidOrNull() ?: throw IllegalStateException("Invalid User id"),
+    id = id.toUuidOrNull() ?: throw IllegalStateException("Invalid dukan id"),
     name = name.orEmpty(),
     address = address.orEmpty(),
     imageUrl = imageUrl.orEmpty(),
@@ -25,6 +25,6 @@ fun DukanDto.toEntity() = Dukan(
 )
 
 fun CategoryDto.toEntity() = Category(
-    id = id.toUuidOrNull() ?: throw IllegalStateException("Invalid User id"),
+    id = id.toUuidOrNull() ?: throw IllegalStateException("Invalid category id"),
     title = title.orEmpty()
 )

@@ -8,7 +8,7 @@ import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalUuidApi::class)
 fun ProductDto.toEntity() = Product(
-    id = id.toUuidOrNull() ?: throw IllegalStateException("Invalid User id"),
+    id = id.toUuidOrNull() ?: throw IllegalStateException("Invalid product id"),
     name = name.orEmpty(),
     price = price.orZero(),
     discountedPrice = discountedPrice,
