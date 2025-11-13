@@ -16,13 +16,13 @@ data class Dukan(
     val status: Status
 ) {
     enum class ActivationStatus {
-        ACTIVED,
+        ACTIVATED,
         DEACTIVATED,
     }
 
     enum class Status {
         APPROVED,
         REJECTED,
-        PENDENING
+        PENDING
     }
 }

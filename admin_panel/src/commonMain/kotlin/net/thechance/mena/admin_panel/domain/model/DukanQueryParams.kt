@@ -12,11 +12,11 @@ data class DukanQueryParams(
     enum class DukanStatus {
         APPROVED,
         REJECTED,
-        PENDENING
+        PENDING
     }
 
     enum class DukanActivationStatus {
-        ACTIVED,
+        ACTIVATED,
         DEACTIVATED,
     }
 

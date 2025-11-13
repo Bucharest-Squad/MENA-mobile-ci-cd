@@ -18,15 +18,15 @@ fun DukanDto.toEntity() = Dukan(
     longitude = longitude.orZero(),
     categories = categories?.map(CategoryDto::toEntity).orEmpty(),
     activationStatus = when (activationStatus?.uppercase()) {
-        "ACTIVED" -> Dukan.ActivationStatus.ACTIVED
+        "ACTIVED" -> Dukan.ActivationStatus.ACTIVATED
         "DEACTIVATED" -> Dukan.ActivationStatus.DEACTIVATED
         else -> Dukan.ActivationStatus.DEACTIVATED
     },
     status = when (status?.uppercase()) {
         "APPROVED" -> Dukan.Status.APPROVED
         "REJECTED" -> Dukan.Status.REJECTED
-        "PENDING" -> Dukan.Status.PENDENING
-        else -> Dukan.Status.PENDENING
+        "PENDING" -> Dukan.Status.PENDING
+        else -> Dukan.Status.PENDING
     }
 )
 

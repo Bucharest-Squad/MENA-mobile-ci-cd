@@ -2,9 +2,9 @@ package net.thechance.mena.admin_panel.data.local
 
 import net.thechance.mena.admin_panel.data.remote.dto.DukanPagedResponse
 import net.thechance.mena.admin_panel.data.remote.dto.dukan.DukanDto
-import org.koin.core.annotation.Provided
+import org.koin.core.annotation.Single
 
-@Provided
+@Single
 class InMemoryDukanDataStore {
     private val dukans = mutableMapOf<String, DukanDto>()
 
