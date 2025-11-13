@@ -7,11 +7,11 @@ import kotlin.uuid.Uuid
 
 interface DukanRequestsInteractionListener {
     fun onSortClicked(type: DukanRequestsScreenState.SortType)
-    fun onViewDetailsClicked(dukanId: String)
+    fun onViewDetailsClicked(dukanId: Uuid)
     fun onRetryClicked()
     fun onPageChanged(page: Int)
-    fun onApproveClicked(dukanId: String)
-    fun onRejectDialogClicked(dukanId: String)
+    fun onApproveClicked(dukanId: Uuid)
+    fun onRejectDialogClicked(dukanId: Uuid)
     fun onRejectDialogCanceled()
     fun onRejectConfirmed()
 }

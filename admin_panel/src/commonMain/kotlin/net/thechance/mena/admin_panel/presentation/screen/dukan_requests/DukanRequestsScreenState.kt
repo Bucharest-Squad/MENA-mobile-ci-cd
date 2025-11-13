@@ -24,7 +24,7 @@ data class DukanRequestsScreenState(
     )
 
     data class DukanItem(
-        val id: String,
+        val id: Uuid,
         val name: String,
         val imageUrl: String,
         val address: String,

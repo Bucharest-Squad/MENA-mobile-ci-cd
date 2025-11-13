@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalUuidApi::class)
+
 package net.thechance.mena.admin_panel.presentation.screen.dukan_requests.component
 
 import androidx.compose.animation.animateColorAsState
@@ -82,7 +84,7 @@ fun DukanListContent(
 @Composable
 private fun DukanListTable(
     dukan: List<DukanRequestsScreenState.DukanItem>,
-    onViewDetailsClicked: (dukanId: String) -> Unit,
+    onViewDetailsClicked: (dukanId: Uuid) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val listState = rememberLazyListState()
@@ -206,7 +208,11 @@ private fun DukanImage(
         }
     } else {
         AsyncImage(
-            model = imageUrl, contentDescription = stringResource(Res.string.image)
+            model = imageUrl,
+            contentDescription = stringResource(Res.string.image),
+            modifier = modifier.fillMaxWidth(),
+            error = painterResource(Res.drawable.ic_dukan_placholder),
+            placeholder = painterResource(Res.drawable.ic_dukan_placholder)
         )
     }
 }

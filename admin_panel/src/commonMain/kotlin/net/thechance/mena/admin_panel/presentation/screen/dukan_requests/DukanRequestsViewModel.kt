@@ -17,6 +17,7 @@ import net.thechance.mena.admin_panel.presentation.utils.getErrorSnackBarTitle
 import org.koin.android.annotation.KoinViewModel
 import org.koin.core.annotation.Provided
 import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
 @KoinViewModel
@@ -89,7 +90,7 @@ class DukanRequestsViewModel(
         getRequestedDukans()
     }
 
-    override fun onViewDetailsClicked(dukanId: String) {}
+    override fun onViewDetailsClicked(dukanId: Uuid) {}
 
     override fun onRetryClicked() {
         getRequestedDukans()
@@ -100,9 +101,9 @@ class DukanRequestsViewModel(
         getRequestedDukans()
     }
 
-    override fun onApproveClicked(dukanId: String) {}
+    override fun onApproveClicked(dukanId: Uuid) {}
 
-    override fun onRejectDialogClicked(dukanId: String) {}
+    override fun onRejectDialogClicked(dukanId: Uuid) {}
 
     override fun onRejectDialogCanceled() {}
 
