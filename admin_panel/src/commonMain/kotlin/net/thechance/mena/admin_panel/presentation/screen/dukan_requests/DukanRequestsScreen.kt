@@ -13,7 +13,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import net.thechance.mena.admin_panel.presentation.component.PanelScaffold
 import net.thechance.mena.admin_panel.presentation.component.SnackBarContainer
 import net.thechance.mena.admin_panel.presentation.screen.dukan_requests.component.DukanListContent
-import net.thechance.mena.admin_panel.presentation.screen.dukan_requests.component.RequestCounter
+import net.thechance.mena.admin_panel.presentation.component.DukansCounter
 import net.thechance.mena.admin_panel.resources.Res
 import net.thechance.mena.admin_panel.resources.dukan_requests
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
@@ -40,7 +40,7 @@ private fun DukanRequestsScreenContent(
         onRetry = listener::onRetryClicked
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-            RequestCounter(
+            DukansCounter(
                 count = state.totalRequestedDukans,
                 modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 16.dp)
             )

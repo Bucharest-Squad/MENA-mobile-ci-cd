@@ -56,7 +56,6 @@ class DukanRequestsViewModel(
                 ),
                 errorState = null
             )
-
         }
     }
 
@@ -101,13 +100,14 @@ class DukanRequestsViewModel(
         getRequestedDukans()
     }
 
-    override fun onApproveClicked(dukanId: Uuid) {}
+    override fun onApproveDukanClicked(dukanId: Uuid) {}
 
-    override fun onRejectDialogClicked(dukanId: Uuid) {}
+    override fun onRejectDukanDialogClicked(dukanId: Uuid) {}
 
-    override fun onRejectDialogCanceled() {}
+    override fun onRejectDukanDialogCanceled() {}
 
-    override fun onRejectConfirmed() {}
+    override fun onRejectDukanConfirmed() {}
+    override fun onRejectionMessageChanged() {}
 
     override fun mapError(throwable: Throwable): ErrorState {
         return when (throwable) {

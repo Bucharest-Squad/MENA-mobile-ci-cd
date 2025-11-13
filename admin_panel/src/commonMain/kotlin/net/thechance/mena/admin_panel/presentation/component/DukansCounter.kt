@@ -1,4 +1,4 @@
-package net.thechance.mena.admin_panel.presentation.screen.dukan_requests.component
+package net.thechance.mena.admin_panel.presentation.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -19,7 +19,7 @@ import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun RequestCounter(
+fun DukansCounter(
     count: Int,
     modifier: Modifier = Modifier
 ) {
@@ -51,7 +51,7 @@ private fun CountItem(
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "$count",
+            text = count.toString(),
             style = Theme.typography.label.medium
         )
     }

@@ -30,9 +30,10 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import net.thechance.mena.admin_panel.presentation.component.PagesIndicatorRow
 import net.thechance.mena.admin_panel.presentation.component.TableCellText
+import net.thechance.mena.admin_panel.presentation.component.ViewDukanDetailsButton
 import net.thechance.mena.admin_panel.presentation.screen.dukan_requests.DukanRequestsInteractionListener
 import net.thechance.mena.admin_panel.presentation.screen.dukan_requests.DukanRequestsScreenState
-import net.thechance.mena.admin_panel.presentation.screen.users_management.component.UsersLoadingIndicator
+import net.thechance.mena.admin_panel.presentation.screen.users_management.component.LoadingIndicator
 import net.thechance.mena.admin_panel.resources.Res
 import net.thechance.mena.admin_panel.resources.ic_dukan_location
 import net.thechance.mena.admin_panel.resources.ic_dukan_placholder
@@ -62,7 +63,7 @@ fun DukanListContent(
             onSortClicked = listener::onSortClicked
         )
         if (state.isLoading) {
-            UsersLoadingIndicator()
+            LoadingIndicator()
         } else {
             DukanListTable(
                 dukan = state.dukans,
@@ -211,18 +212,5 @@ private fun DukanImage(
         modifier = modifier
             .size(width = 64.dp, height = 44.dp)
             .clip(RoundedCornerShape(Theme.radius.sm))
-    )
-}
-
-@Composable
-private fun ViewDukanDetailsButton(
-    onClick: () -> Unit, modifier: Modifier = Modifier
-) {
-    OutlinedButton(
-        text = stringResource(Res.string.view_details),
-        trailingIcon = painterResource(Res.drawable.ic_view_details),
-        onClick = onClick,
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 13.dp),
-        modifier = modifier.wrapContentWidth(),
     )
 }

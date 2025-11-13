@@ -91,7 +91,6 @@ fun DukanTableHeaderRow(
             modifier = Modifier.weight(0.8f)
         )
     }
-
 }
 
 @Composable

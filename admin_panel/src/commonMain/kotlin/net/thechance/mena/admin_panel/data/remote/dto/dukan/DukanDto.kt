@@ -25,7 +25,5 @@ data class DukanDto(
     @SerialName("createdAt")
     val createdAt: String? = null,
     @SerialName("categories")
-    val categories: List<CategoryDto>? = null,
-    @SerialName("date")
-    val date: LocalDateTime? = null
+    val categories: List<CategoryDto>? = null
 )

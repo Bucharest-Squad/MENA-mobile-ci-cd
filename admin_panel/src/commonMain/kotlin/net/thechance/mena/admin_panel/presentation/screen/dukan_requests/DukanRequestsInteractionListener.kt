@@ -10,8 +10,9 @@ interface DukanRequestsInteractionListener {
     fun onViewDetailsClicked(dukanId: Uuid)
     fun onRetryClicked()
     fun onPageChanged(page: Int)
-    fun onApproveClicked(dukanId: Uuid)
-    fun onRejectDialogClicked(dukanId: Uuid)
-    fun onRejectDialogCanceled()
-    fun onRejectConfirmed()
+    fun onApproveDukanClicked(dukanId: Uuid)
+    fun onRejectDukanDialogClicked(dukanId: Uuid)
+    fun onRejectDukanDialogCanceled()
+    fun onRejectDukanConfirmed()
+    fun onRejectionMessageChanged()
 }

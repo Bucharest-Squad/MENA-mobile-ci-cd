@@ -46,7 +46,7 @@ fun UsersListContent(
         )
 
         if (state.isLoading) {
-            UsersLoadingIndicator()
+            LoadingIndicator()
         } else {
             UsersListTable(
                 users = state.users,
