@@ -11,7 +11,9 @@ import kotlin.uuid.Uuid
 @OptIn(ExperimentalUuidApi::class)
 interface DukanRepository {
     suspend fun getDukans(dukanQueryParams: DukanQueryParams): PagedResult<Dukan>
-    suspend fun getDukanDetails(dukanId: Uuid): Dukan
+    fun getDukanDetails(): Dukan
+    fun storeDukanDetails(dukan: Dukan)
+    fun clearDukanDetails()
     suspend fun getDukanShelves(dukanId: Uuid, page: Int, size: Int): PagedResult<Shelf>
     suspend fun getShelfProducts(shelfId: Uuid, page: Int, size: Int): PagedResult<Product>
 }

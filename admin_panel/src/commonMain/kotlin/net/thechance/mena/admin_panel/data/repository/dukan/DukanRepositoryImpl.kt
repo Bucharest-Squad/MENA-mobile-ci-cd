@@ -26,12 +26,13 @@ class DukanRepositoryImpl(
     private val dukanApiService: DukanApiService,
     private val inMemoryDukanDataStore: InMemoryDukanDataStore
 ) : DukanRepository {
+
     override suspend fun getDukans(dukanQueryParams: DukanQueryParams): PagedResult<Dukan> {
         val sortParam = buildSortQueries(
             property = dukanQueryParams.sortType,
             direction = dukanQueryParams.sortDirection
         )
-        val dukans = executeApiSafely<DukanPagedResponse<DukanDto>> {
+        return executeApiSafely<DukanPagedResponse<DukanDto>> {
             dukanApiService.getDukans(
                 status = dukanQueryParams.status.toString(),
                 query = dukanQueryParams.searchInput,
@@ -39,19 +40,27 @@ class DukanRepositoryImpl(
                 page = dukanQueryParams.page,
                 size = dukanQueryParams.size,
             )
-        }
-        inMemoryDukanDataStore.storeDukans(dukans)
-        return dukans.toEntityPagedResult(DukanDto::toEntity)
+        }.toEntityPagedResult(DukanDto::toEntity)
     }
 
-    override suspend fun getDukanDetails(dukanId: Uuid): Dukan =
-        inMemoryDukanDataStore.getDukanById(dukanId.toString())
-            ?.toEntity()
-            ?: throw IllegalStateException("Dukan with id $dukanId not found in local cache")
+    override fun storeDukanDetails(dukan: Dukan) = inMemoryDukanDataStore.storeDukan(dukan)
 
-    override suspend fun getDukanShelves(dukanId: Uuid, page: Int, size: Int): PagedResult<Shelf> {
+
+    override fun clearDukanDetails() = inMemoryDukanDataStore.clear()
+
+    override fun getDukanDetails(): Dukan = requireNotNull(inMemoryDukanDataStore.getDukan())
+
+    override suspend fun getDukanShelves(
+        dukanId: Uuid,
+        page: Int,
+        size: Int
+    ): PagedResult<Shelf> {
         return executeApiSafely<DukanPagedResponse<ShelfDto>> {
-            dukanApiService.getDukanShelves(dukanId = dukanId.toString(), page = page, size = size)
+            dukanApiService.getDukanShelves(
+                dukanId = dukanId.toString(),
+                page = page,
+                size = size
+            )
         }.toEntityPagedResult(ShelfDto::toEntity)
     }
 
@@ -61,7 +70,11 @@ class DukanRepositoryImpl(
         size: Int
     ): PagedResult<Product> {
         return executeApiSafely<DukanPagedResponse<ProductDto>> {
-            dukanApiService.getShelfProducts(shelfId = shelfId.toString(), page = page, size = size)
+            dukanApiService.getShelfProducts(
+                shelfId = shelfId.toString(),
+                page = page,
+                size = size
+            )
         }.toEntityPagedResult(ProductDto::toEntity)
     }
 }

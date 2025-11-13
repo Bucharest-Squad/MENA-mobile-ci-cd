@@ -1,20 +1,19 @@
 package net.thechance.mena.admin_panel.data.local
 
-import net.thechance.mena.admin_panel.data.remote.dto.DukanPagedResponse
-import net.thechance.mena.admin_panel.data.remote.dto.dukan.DukanDto
+import net.thechance.mena.admin_panel.domain.entity.dukan.Dukan
 import org.koin.core.annotation.Single
 
 @Single
 class InMemoryDukanDataStore {
-    private val dukans = mutableMapOf<String, DukanDto>()
+    private var dukan: Dukan? = null
 
-    fun storeDukans(dukanList: DukanPagedResponse<DukanDto>) {
-        dukanList.content?.forEach { dukan ->
-            dukans[dukan.id] = dukan
-        }
+    fun storeDukan(value: Dukan) {
+        dukan = value
     }
 
-    fun getDukanById(dukanId: String): DukanDto? = dukans[dukanId]
+    fun getDukan(): Dukan? = dukan
 
-    fun clear() = dukans.clear()
+    fun clear() {
+        dukan = null
+    }
 }
