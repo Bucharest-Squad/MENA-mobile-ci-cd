@@ -6,4 +6,6 @@ sealed interface ChatScreenEffect {
     object NavigateBack : ChatScreenEffect
     data class ShowSnackBar(val snackBarData: SnackBarData) : ChatScreenEffect
     object ScrollToBottom: ChatScreenEffect
+    object NavigateToWallet : ChatScreenEffect
+
 }

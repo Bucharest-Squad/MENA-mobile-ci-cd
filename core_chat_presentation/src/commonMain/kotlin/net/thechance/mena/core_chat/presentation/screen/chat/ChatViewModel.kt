@@ -452,7 +452,12 @@ class ChatViewModel(
     }
 
     override fun onChatActionsMenuClicked() {
-        updateState { it.copy(isChatActionsDialogVisible = true, isAttachmentsOverlayVisible = false) }
+        updateState {
+            it.copy(
+                isChatActionsDialogVisible = true,
+                isAttachmentsOverlayVisible = false
+            )
+        }
     }
 
     override fun onChatActionsMenuDialogDismissed() {
@@ -889,6 +894,11 @@ class ChatViewModel(
             onSuccess = { onCameraPermissionGranted() },
             onError = { showSnackBar(Res.string.error, Res.string.permission_denied_title, true) }
         )
+    }
+
+    override fun onSendMoneyClicked() {
+        updateState { it.copy(isAttachmentsOverlayVisible = false) }
+        emitEffect(ChatScreenEffect.NavigateToWallet)
     }
 
     override fun onCameraResult(image: ImageBitmap?) {

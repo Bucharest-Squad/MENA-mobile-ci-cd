@@ -40,6 +40,7 @@ interface AttachmentsInteractionListener {
     fun onSendImageClicked(imageByteArrays: List<ByteArray>)
     fun onGalleryClicked()
     fun onCameraClicked()
+    fun onSendMoneyClicked()
     fun onCameraResult(image: ImageBitmap?)
     fun onCloseAttachmentClicked()
 }

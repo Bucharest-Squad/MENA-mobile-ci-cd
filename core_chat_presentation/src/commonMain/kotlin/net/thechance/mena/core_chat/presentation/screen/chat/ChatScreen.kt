@@ -33,6 +33,7 @@ import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.you
 import net.thechance.mena.core_chat.presentation.components.snackBarHost.LocalSnackBarHostController
 import net.thechance.mena.core_chat.presentation.navigation.LocalNavController
+import net.thechance.mena.core_chat.presentation.navigation.WalletRoute
 import net.thechance.mena.core_chat.presentation.screen.chat.components.AttachmentsBottomSheet
 import net.thechance.mena.core_chat.presentation.screen.chat.components.ChatHeader
 import net.thechance.mena.core_chat.presentation.screen.chat.components.ChatInputBar
@@ -72,7 +73,11 @@ fun ChatScreen(onClickBackFromChat: () -> Unit = {}) {
     val chatLazyListState = rememberLazyListState()
 
 
-    EffectsHandler(effects = effects, chatLazyListState = chatLazyListState, onClickBackFromChat = onClickBackFromChat)
+    EffectsHandler(
+        effects = effects,
+        chatLazyListState = chatLazyListState,
+        onClickBackFromChat = onClickBackFromChat
+    )
 
     ChatScreenContent(
         state = state,
@@ -131,7 +136,7 @@ fun ChatScreenContent(
                 ) { isRecording ->
                     if (isRecording) {
                         RecordingBar(
-                            onSendClick =interactions::onSendRecordClicked,
+                            onSendClick = interactions::onSendRecordClicked,
                             onCancelClick = interactions::onCancelRecordClicked
                         )
                     } else {
@@ -242,6 +247,12 @@ private fun EffectsHandler(
 
             is ChatScreenEffect.ScrollToBottom -> {
                 scope.launch { chatLazyListState.animateScrollToItem(0) }
+            }
+
+            ChatScreenEffect.NavigateToWallet -> {
+                navController.navigate(
+                    WalletRoute
+                )
             }
         }
     }
