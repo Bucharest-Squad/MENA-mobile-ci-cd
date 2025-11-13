@@ -7,7 +7,7 @@ import net.thechance.mena.admin_panel.domain.entity.dukan.Dukan
 import net.thechance.mena.admin_panel.domain.exceptions.NoInternetException
 import net.thechance.mena.admin_panel.domain.model.DukanQueryParams
 import net.thechance.mena.admin_panel.domain.model.PagedResult
-import net.thechance.mena.admin_panel.domain.repository.dukan.DukanRequestRepository
+import net.thechance.mena.admin_panel.domain.repository.dukan.DukanRepository
 import net.thechance.mena.admin_panel.presentation.base.BaseViewModel
 import net.thechance.mena.admin_panel.presentation.base.ErrorState
 import net.thechance.mena.admin_panel.presentation.model.SnackBarState
@@ -17,12 +17,11 @@ import net.thechance.mena.admin_panel.presentation.utils.getErrorSnackBarTitle
 import org.koin.android.annotation.KoinViewModel
 import org.koin.core.annotation.Provided
 import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
 @KoinViewModel
 class DukanRequestsViewModel(
-    @Provided private val dukanRequestRepository: DukanRequestRepository,
+    @Provided private val dukanRepository: DukanRepository,
     @Provided private val stringProvider: StringProvider,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : BaseViewModel<DukanRequestsScreenState, Unit>(
@@ -36,7 +35,7 @@ class DukanRequestsViewModel(
     private fun getRequestedDukans() {
         val queryParams = getDukanQueryParams()
         tryToExecute(
-            callee = { dukanRequestRepository.getRequestedDukans(queryParams) },
+            callee = { dukanRepository.getDukans(queryParams) },
             onSuccess = ::onGetRequestedDukansSuccess,
             onError = ::onError,
             onStart = { updateState { it.copy(isLoading = true) } },
@@ -49,6 +48,7 @@ class DukanRequestsViewModel(
         updateState {
             it.copy(
                 dukans = result.items.map(Dukan::toUIState),
+                totalRequestedDukans = result.totalElements,
                 pageInfo = DukanRequestsScreenState.DukanPageInfo(
                     page = result.currentPage,
                     totalPages = result.totalPages
@@ -63,8 +63,11 @@ class DukanRequestsViewModel(
         return DukanQueryParams(
             sortType = currentState.sort.type.toEntity(),
             sortDirection = currentState.sort.direction.toEntity(),
+            status = Dukan.Status.PENDING,
             page = currentState.pageInfo.page,
-            size = PAGE_SIZE
+            size = PAGE_SIZE,
+            searchInput = null,
+            activationStatus = null
         )
     }
 
