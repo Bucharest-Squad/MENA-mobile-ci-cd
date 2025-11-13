@@ -23,10 +23,10 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
 import net.thechance.mena.admin_panel.domain.entity.user.User
 import net.thechance.mena.admin_panel.presentation.component.PagesIndicatorRow
+import net.thechance.mena.admin_panel.presentation.component.TableCellText
 import net.thechance.mena.admin_panel.presentation.component.TableHeaderRow
 import net.thechance.mena.admin_panel.presentation.screen.users_management.UsersManagementInteractionListener
 import net.thechance.mena.admin_panel.presentation.screen.users_management.UsersManagementScreenState
-import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -154,18 +154,4 @@ private fun UserItemRow(
             )
         }
     }
-}
-
-@Composable
-private fun TableCellText(
-    text: String,
-    modifier: Modifier = Modifier
-) {
-    Text(
-        text = text,
-        style = Theme.typography.body.medium,
-        color = Theme.colorScheme.shadePrimary,
-        softWrap = false,
-        modifier = modifier
-    )
 }

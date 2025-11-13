@@ -1,5 +1,6 @@
 package net.thechance.mena.admin_panel.data.remote.dto.dukan
 
+import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import net.thechance.mena.admin_panel.domain.entity.dukan.Dukan
@@ -21,5 +22,7 @@ data class DukanDto(
     @SerialName("color")
     val color: ColorDto? = null,
     @SerialName("categories")
-    val categories: List<CategoryDto>? = null
+    val categories: List<CategoryDto>? = null,
+    @SerialName("date")
+    val date: LocalDateTime? = null
 )

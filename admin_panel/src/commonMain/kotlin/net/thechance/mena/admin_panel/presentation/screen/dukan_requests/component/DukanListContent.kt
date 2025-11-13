@@ -1,0 +1,238 @@
+package net.thechance.mena.admin_panel.presentation.screen.dukan_requests.component
+
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
+import net.thechance.mena.admin_panel.presentation.component.PagesIndicatorRow
+import net.thechance.mena.admin_panel.presentation.component.TableCellText
+import net.thechance.mena.admin_panel.presentation.screen.dukan_requests.DukanRequestsInteractionListener
+import net.thechance.mena.admin_panel.presentation.screen.dukan_requests.DukanRequestsScreenState
+import net.thechance.mena.admin_panel.presentation.screen.users_management.component.UsersLoadingIndicator
+import net.thechance.mena.admin_panel.resources.Res
+import net.thechance.mena.admin_panel.resources.ic_dukan_location
+import net.thechance.mena.admin_panel.resources.ic_dukan_placholder
+import net.thechance.mena.admin_panel.resources.ic_view_details
+import net.thechance.mena.admin_panel.resources.image
+import net.thechance.mena.admin_panel.resources.location
+import net.thechance.mena.admin_panel.resources.view_details
+import net.thechance.mena.designsystem.presentation.component.button.OutlinedButton
+import net.thechance.mena.designsystem.presentation.component.icon.Icon
+import net.thechance.mena.designsystem.presentation.component.text.Text
+import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
+
+@OptIn(ExperimentalUuidApi::class)
+@Composable
+fun DukanListContent(
+    state: DukanRequestsScreenState,
+    listener: DukanRequestsInteractionListener,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier.padding(horizontal = 16.dp)) {
+        DukanTableHeaderRow(
+            sortState = state.sort,
+            onSortClicked = listener::onSortClicked
+        )
+        if (state.isLoading) {
+            UsersLoadingIndicator()
+        } else {
+            DukanListTable(
+                dukan = state.dukans,
+                onViewDetailsClicked = listener::onViewDetailsClicked,
+                modifier = Modifier.weight(1f)
+            )
+        }
+
+        PagesIndicatorRow(
+            currentPage = state.pageInfo.page,
+            totalPages = state.pageInfo.totalPages,
+            onPageChanged = listener::onPageChanged,
+            modifier = Modifier
+                .padding(top = 8.dp, bottom = 14.dp)
+                .align(Alignment.Start)
+        )
+    }
+}
+
+@Composable
+private fun DukanListTable(
+    dukan: List<DukanRequestsScreenState.DukanItem>,
+    onViewDetailsClicked: (dukanId: String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val listState = rememberLazyListState()
+    LazyColumn(
+        state = listState,
+        modifier = modifier.fillMaxWidth()
+    ) {
+        itemsIndexed(items = dukan) { index, dukanItem ->
+            val isLastItem = index == dukan.lastIndex
+            DukanItemRow(
+                index = index + 1,
+                dukan = dukanItem,
+                isLastItem = isLastItem,
+                hasBackground = index % 2 != 0,
+                onViewDetailsClicked = {
+                    onViewDetailsClicked(dukanItem.id)
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun DukanItemRow(
+    index: Int,
+    isLastItem: Boolean,
+    dukan: DukanRequestsScreenState.DukanItem,
+    onViewDetailsClicked: () -> Unit,
+    hasBackground: Boolean,
+    modifier: Modifier = Modifier
+) {
+    val backgroundColor = if (hasBackground) Theme.colorScheme.background.surfaceLow
+    else Theme.colorScheme.background.surface
+
+    val animatedBackgroundColor by animateColorAsState(
+        targetValue = backgroundColor,
+        animationSpec = tween(durationMillis = 300),
+        label = "buttonBackgroundColor"
+    )
+
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(
+                animatedBackgroundColor,
+                shape = if (isLastItem) RoundedCornerShape(
+                    bottomStart = Theme.radius.lg,
+                    bottomEnd = Theme.radius.lg
+                ) else RectangleShape
+            )
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+
+        TableCellText(text = index.toString(), modifier = Modifier.weight(0.3f))
+
+        Box(
+            modifier = Modifier.weight(0.5f)
+                .clip(RoundedCornerShape(Theme.radius.sm)),
+            contentAlignment = Alignment.CenterStart
+        ) {
+            DukanImage(imageUrl = dukan.imageUrl)
+        }
+
+        TableCellText(text = dukan.name, modifier = Modifier.weight(1f))
+
+        Box(
+            modifier = Modifier.weight(1.5f),
+            contentAlignment = Alignment.CenterStart
+        ) {
+            DukanLocation(location = dukan.address)
+        }
+
+        TableCellText(text = dukan.date, modifier = Modifier.weight(0.5f))
+
+        Box(
+            modifier = modifier.padding(start = 16.dp).weight(0.8f),
+            contentAlignment = Alignment.CenterStart
+        ) {
+            ViewDukanDetailsButton(onClick = onViewDetailsClicked)
+        }
+    }
+}
+
+@Composable
+private fun DukanLocation(
+    location: String, modifier: Modifier = Modifier
+) {
+
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            painter = painterResource(Res.drawable.ic_dukan_location),
+            contentDescription = stringResource(Res.string.location),
+            modifier = Modifier.size(20.dp)
+        )
+        Text(
+            text = location,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            softWrap = false,
+            style = Theme.typography.label.large,
+            color = Theme.colorScheme.shadePrimary
+        )
+    }
+}
+
+@Composable
+private fun DukanImage(
+    imageUrl: String,
+    modifier: Modifier = Modifier
+) {
+    if (imageUrl.isEmpty()) {
+        Box(
+            modifier = modifier, contentAlignment = Alignment.CenterStart
+        ) {
+            ImagePlaceHolder()
+        }
+    } else {
+        AsyncImage(
+            model = imageUrl, contentDescription = stringResource(Res.string.image)
+        )
+    }
+}
+
+@Composable
+private fun ImagePlaceHolder(
+    modifier: Modifier = Modifier
+) {
+    Icon(
+        painter = painterResource(Res.drawable.ic_dukan_placholder),
+        contentDescription = stringResource(Res.string.image),
+        modifier = modifier.size(32.dp)
+    )
+}
+
+@Composable
+private fun ViewDukanDetailsButton(
+    onClick: () -> Unit, modifier: Modifier = Modifier
+) {
+
+    OutlinedButton(
+        text = stringResource(Res.string.view_details),
+        trailingIcon = painterResource(Res.drawable.ic_view_details),
+        onClick = onClick,
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 13.dp),
+        modifier = modifier.wrapContentWidth(),
+    )
+}

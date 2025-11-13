@@ -1,5 +1,6 @@
 package net.thechance.mena.admin_panel.data.mapper.dukan
 
+import kotlinx.datetime.LocalDateTime
 import net.thechance.mena.admin_panel.data.utils.orZero
 import net.thechance.mena.admin_panel.data.remote.dto.dukan.CategoryDto
 import net.thechance.mena.admin_panel.data.remote.dto.dukan.DukanDto
@@ -14,6 +15,7 @@ fun DukanDto.toEntity() = Dukan(
     latitude = latitude.orZero(),
     longitude = longitude.orZero(),
     categories = categories?.map(CategoryDto::toEntity).orEmpty(),
+    date = date ?: LocalDateTime(2024, 11, 9, 14, 30, 0)
 )
 
 fun CategoryDto.toEntity() = Category(

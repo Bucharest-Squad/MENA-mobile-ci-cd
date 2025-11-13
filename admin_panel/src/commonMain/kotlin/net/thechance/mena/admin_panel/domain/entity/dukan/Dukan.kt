@@ -1,5 +1,7 @@
 package net.thechance.mena.admin_panel.domain.entity.dukan
 
+import kotlinx.datetime.LocalDateTime
+
 data class Dukan(
     val id: String,
     val name: String,
@@ -7,5 +9,6 @@ data class Dukan(
     val address: String,
     val latitude: Double,
     val longitude: Double,
-    val categories: List<Category>
+    val categories: List<Category>,
+    val date: LocalDateTime
 )
