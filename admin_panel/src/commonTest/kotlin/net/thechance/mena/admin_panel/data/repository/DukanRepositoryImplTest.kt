@@ -14,15 +14,20 @@ import net.thechance.mena.admin_panel.data.local.InMemoryDukanDataStore
 import net.thechance.mena.admin_panel.data.mapper.parseLocalDateTimeOrDefault
 import net.thechance.mena.admin_panel.data.remote.api_service.DukanApiService
 import net.thechance.mena.admin_panel.data.remote.dto.DukanPagedResponse
+import net.thechance.mena.admin_panel.data.remote.dto.dukan.DukanDto
 import net.thechance.mena.admin_panel.data.remote.dto.dukan.ProductDto
 import net.thechance.mena.admin_panel.data.remote.dto.dukan.ShelfDto
 import net.thechance.mena.admin_panel.data.repository.dukan.DukanRepositoryImpl
 import net.thechance.mena.admin_panel.domain.entity.dukan.Dukan
 import net.thechance.mena.admin_panel.domain.exceptions.UnauthorizedException
+import net.thechance.mena.admin_panel.domain.model.DukanQueryParams
+import net.thechance.mena.admin_panel.domain.model.DukansSortType
+import net.thechance.mena.admin_panel.domain.model.SortDirection
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertNotNull
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -40,6 +45,46 @@ class DukanRepositoryImplTest {
         dukanRepository = DukanRepositoryImpl(dukanApiService, inMemoryDukanDataStore)
     }
 
+
+    @Test
+    fun `getDukans should return mapped dukans paged result on success`() = runTest {
+        everySuspend {
+            dukanApiService.getDukans(any(), any(), any(), any(), any())
+        } returns successfulResponse(DUKAN_PAGED)
+
+        val result = dukanRepository.getDukans(SUCCESS_STATE_QUERY_PARAMS)
+
+        assertEquals(1, result.items.size)
+        assertEquals("Test Dukan", result.items.first().name)
+        assertEquals(1, result.totalPages)
+        assertEquals(0, result.currentPage)
+    }
+
+    @Test
+    fun `getDukans should throw UnauthorizedException on 401 Unauthorized`() = runTest {
+        everySuspend {
+            dukanApiService.getDukans(any(), any(), any(), any(), any())
+        } returns unauthorizedResponse()
+
+        val exception = assertFailsWith<UnauthorizedException> {
+            dukanRepository.getDukans(UNAUTHORIZED_EXCEPTION_QUERY_PARAMS)
+        }
+
+        assertTrue(exception.message?.contains("Unauthorized") == true)
+    }
+
+    @Test
+    fun `getDukans should handle empty results`() = runTest {
+        everySuspend {
+            dukanApiService.getDukans(any(), any(), any(), any(), any())
+        } returns successfulResponse(EMPTY_RESULT_RESPONSE)
+
+        val result = dukanRepository.getDukans(EmptyResultqueryParams)
+
+        assertEquals(0, result.items.size)
+    }
+
+
     @Test
     fun `getDukanShelves should return mapped shelves paged result on success`() = runTest {
         everySuspend {
@@ -53,6 +98,31 @@ class DukanRepositoryImplTest {
     }
 
     @Test
+    fun `getDukanShelves should throw UnauthorizedException on 401 Unauthorized`() = runTest {
+        everySuspend {
+            dukanApiService.getDukanShelves(any(), any(), any())
+        } returns unauthorizedResponse()
+
+        val exception = assertFailsWith<UnauthorizedException> {
+            dukanRepository.getDukanShelves(Uuid.random(), page = 0, size = 10)
+        }
+
+        assertTrue(exception.message?.contains("Unauthorized") == true)
+    }
+
+    @Test
+    fun `getDukanShelves should handle multiple pages`() = runTest {
+        everySuspend {
+            dukanApiService.getDukanShelves(any(), any(), any())
+        } returns successfulResponse(MULTI_PAGE_RESPONSE)
+
+        val result = dukanRepository.getDukanShelves(FAKE_UUID, page = 1, size = 10)
+
+        assertEquals(3, result.totalPages)
+    }
+
+
+    @Test
     fun `getShelfProducts should return mapped products paged result on success`() = runTest {
         everySuspend {
             dukanApiService.getShelfProducts(any(), any(), any())
@@ -62,6 +132,8 @@ class DukanRepositoryImplTest {
 
         assertEquals(1, result.items.size)
         assertEquals("Product 1", result.items.first().name)
+        assertEquals(100.0, result.items.first().price)
+        assertEquals(80.0, result.items.first().discountedPrice)
     }
 
     @Test
@@ -78,11 +150,49 @@ class DukanRepositoryImplTest {
     }
 
     @Test
+    fun `getShelfProducts should handle empty product list`() = runTest {
+        everySuspend {
+            dukanApiService.getShelfProducts(any(), any(), any())
+        } returns successfulResponse(EMPTY_PRODUCT_RESPONSE)
+
+        val result = dukanRepository.getShelfProducts(FAKE_SHELF_ID, page = 0, size = 10)
+
+        assertEquals(0, result.items.size)
+    }
+
+    @Test
+    fun `getShelfProducts should correctly map multiple products`() = runTest {
+        everySuspend {
+            dukanApiService.getShelfProducts(any(), any(), any())
+        } returns successfulResponse(MULTI_PRODUCT_RESPONSE)
+
+        val result = dukanRepository.getShelfProducts(FAKE_SHELF_ID, page = 0, size = 10)
+
+        assertEquals(2, result.items.size)
+        assertEquals("Product 1", result.items[0].name)
+        assertEquals("Product 2", result.items[1].name)
+    }
+
+
+    @Test
     fun `storeDukanDetails then getDukanDetails should return same dukan`() {
         dukanRepository.storeDukanDetails(FAKE_DUKAN)
         val result = dukanRepository.getDukanDetails()
 
         assertEquals(FAKE_DUKAN, result)
+        assertEquals(FAKE_DUKAN.id, result.id)
+        assertEquals(FAKE_DUKAN.name, result.name)
+    }
+
+    @Test
+    fun `storeDukanDetails should overwrite previous dukan`() {
+        dukanRepository.storeDukanDetails(FAKE_DUKAN)
+
+        val newDukan = FAKE_DUKAN.copy(name = "Updated Dukan")
+        dukanRepository.storeDukanDetails(newDukan)
+
+        val result = dukanRepository.getDukanDetails()
+        assertEquals("Updated Dukan", result.name)
     }
 
     @Test
@@ -95,12 +205,54 @@ class DukanRepositoryImplTest {
         }
     }
 
+    @Test
+    fun `getDukanDetails should throw exception when no dukan is stored`() {
+        assertFailsWith<IllegalArgumentException> {
+            dukanRepository.getDukanDetails()
+        }
+    }
+
+    @Test
+    fun `multiple store and clear operations should work correctly`() {
+        dukanRepository.storeDukanDetails(FAKE_DUKAN)
+        assertNotNull(dukanRepository.getDukanDetails())
+
+        dukanRepository.clearDukanDetails()
+        assertFailsWith<IllegalArgumentException> {
+            dukanRepository.getDukanDetails()
+        }
+
+        dukanRepository.storeDukanDetails(FAKE_DUKAN)
+        assertNotNull(dukanRepository.getDukanDetails())
+    }
+
     companion object {
         @OptIn(ExperimentalUuidApi::class)
         val FAKE_UUID: Uuid = Uuid.random()
 
         @OptIn(ExperimentalUuidApi::class)
         val FAKE_SHELF_ID: Uuid = Uuid.random()
+
+        val DUKAN_DTO = DukanDto(
+            id = FAKE_UUID.toString(),
+            name = "Test Dukan",
+            imageUrl = "",
+            address = "Test Address",
+            latitude = 30.0,
+            longitude = 31.0,
+            categories = emptyList(),
+            createdAt = "2025-10-31T00:00:00",
+            activationStatus = "ACTIVATED",
+            status = "APPROVED"
+        )
+
+        val DUKAN_PAGED = DukanPagedResponse(
+            totalPages = 1,
+            totalElements = 1,
+            size = 10,
+            content = listOf(DUKAN_DTO),
+            number = 0
+        )
 
         val SHELF_DTO = ShelfDto(id = FAKE_UUID.toString(), title = "Top Shelf")
 
@@ -140,6 +292,70 @@ class DukanRepositoryImplTest {
             createdAt = parseLocalDateTimeOrDefault("2025-10-31T00:00:00"),
             activationStatus = Dukan.ActivationStatus.ACTIVATED,
             status = Dukan.Status.APPROVED
+        )
+        val EmptyResultqueryParams = DukanQueryParams(
+            searchInput = "",
+            status = Dukan.Status.APPROVED,
+            activationStatus = null,
+            sortType = DukansSortType.CREATED_AT,
+            sortDirection = SortDirection.DESC,
+            page = 0,
+            size = 10
+        )
+        val EMPTY_RESULT_RESPONSE = DukanPagedResponse<DukanDto>(
+            totalPages = 0,
+            totalElements = 0,
+            size = 10,
+            content = emptyList(),
+            number = 0
+        )
+        val UNAUTHORIZED_EXCEPTION_QUERY_PARAMS = DukanQueryParams(
+            searchInput = "",
+            status = Dukan.Status.APPROVED,
+            activationStatus = null,
+            sortType = DukansSortType.CREATED_AT,
+            sortDirection = SortDirection.DESC,
+            page = 0,
+            size = 10
+        )
+        val SUCCESS_STATE_QUERY_PARAMS = DukanQueryParams(
+            searchInput = "test",
+            status = Dukan.Status.APPROVED,
+            activationStatus = Dukan.ActivationStatus.ACTIVATED,
+            sortType = DukansSortType.CREATED_AT,
+            sortDirection = SortDirection.DESC,
+            page = 0,
+            size = 10
+        )
+        val PRODUCT2 = ProductDto(
+            id = Uuid.random().toString(),
+            name = "Product 2",
+            price = 200.0,
+            discountedPrice = 150.0,
+            description = "Better",
+            imageUrls = listOf("https://img2"),
+            createdAt = "2025-11-01T00:00:00"
+        )
+        val MULTI_PRODUCT_RESPONSE = DukanPagedResponse(
+            totalPages = 1,
+            totalElements = 2,
+            size = 10,
+            content = listOf(PRODUCT_DTO, PRODUCT2),
+            number = 0
+        )
+        val EMPTY_PRODUCT_RESPONSE = DukanPagedResponse<ProductDto>(
+            totalPages = 0,
+            totalElements = 0,
+            size = 10,
+            content = emptyList(),
+            number = 0
+        )
+        val MULTI_PAGE_RESPONSE = DukanPagedResponse(
+            totalPages = 3,
+            totalElements = 25,
+            size = 10,
+            content = listOf(SHELF_DTO),
+            number = 1
         )
 
         private fun <T> successfulResponse(body: T): Response<T> {
