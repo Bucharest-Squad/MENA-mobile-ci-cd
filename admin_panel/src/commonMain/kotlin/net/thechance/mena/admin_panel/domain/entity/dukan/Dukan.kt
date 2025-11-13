@@ -22,10 +22,10 @@ data class Dukan(
         DEACTIVATED;
 
         companion object {
-            fun valueOfOrDefault(value: String?): ActivationStatus {
+            fun valueOfOrNull(value: String?): ActivationStatus? {
                 return runCatching {
-                    value?.uppercase()?.let { ActivationStatus.valueOf(it) } ?: ACTIVATED
-                }.getOrDefault(ACTIVATED)
+                    value?.uppercase()?.let { valueOf(it) }
+                }.getOrNull()
             }
         }
     }

@@ -18,7 +18,7 @@ fun DukanDto.toEntity() = Dukan(
     latitude = latitude.orZero(),
     longitude = longitude.orZero(),
     categories = categories?.map(CategoryDto::toEntity).orEmpty(),
-    activationStatus = Dukan.ActivationStatus.valueOfOrDefault(activationStatus),
+    activationStatus = Dukan.ActivationStatus.valueOfOrNull(activationStatus),
     status = Dukan.Status.valueOfOrDefault(status),
     createdAt = parseLocalDateTimeOrDefault(createdAt)
 )
