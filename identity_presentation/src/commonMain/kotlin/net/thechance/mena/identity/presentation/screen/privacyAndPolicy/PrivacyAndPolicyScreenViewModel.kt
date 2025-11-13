@@ -4,7 +4,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import net.thechance.mena.identity.domain.exception.AuthenticationException
-import net.thechance.mena.identity.domain.model.PrivacyAndPolicySection
+import net.thechance.mena.identity.domain.model.PrivacyAndPolicy
 import net.thechance.mena.identity.domain.repository.PrivacyAndPolicyRepository
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
 import net.thechance.mena.identity.presentation.base.error.ErrorState
@@ -42,8 +42,13 @@ class PrivacyAndPolicyScreenViewModel(
             dispatcher = dispatcher
         )
     }
-    private fun onGetPrivacyAndPolicySuccess(privacyAndPolicySections: List<PrivacyAndPolicySection>){
-        updateState { copy(privacyAndPolicySections = privacyAndPolicySections.map { it.toUIState() }) }
+    private fun onGetPrivacyAndPolicySuccess(privacyAndPolicy: PrivacyAndPolicy){
+        updateState {
+            copy(
+                isLoading =false,
+                privacyAndPolicySections = privacyAndPolicy.sections.map { it.toUIState() },
+                lastUpdateDate = privacyAndPolicy.updateDate?.split("T")[0]?:""
+            ) }
     }
     private fun onGetPrivacyAndPolicyError(throwable: Throwable) {
         updateState {
