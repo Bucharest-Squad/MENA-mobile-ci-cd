@@ -1,23 +1,35 @@
 package net.thechance.mena.faith.presentation.feature.quran.tilwah
 
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.first
+import mena.faith_presentation.generated.resources.Res
+import mena.faith_presentation.generated.resources.reciter_deleted_successfully
 import net.thechance.mena.faith.domain.model.Reciter
 import net.thechance.mena.faith.domain.repository.QuranRepository
 import net.thechance.mena.faith.domain.service.DownloadSurahManager
 import net.thechance.mena.faith.presentation.base.BaseViewModel
 import net.thechance.mena.faith.presentation.base.ErrorState
+import net.thechance.mena.faith.presentation.base.snackbar.SnackBarState
+import net.thechance.mena.faith.presentation.base.snackbar.SnackbarHandler
 import net.thechance.mena.faith.presentation.feature.quran.tilwah.component.args.TilawahSurahArgs
 
 class TilawahViewModel(
+    snackBarHandler: SnackbarHandler,
     private val quranRepository: QuranRepository,
     private val surahArgs: TilawahSurahArgs,
     private val downloadManager: DownloadSurahManager,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
-) : BaseViewModel<TilawahUiState, TilawahEffect>(TilawahUiState(surahId = surahArgs.surahId)),
-    TilawahInteractionListener {
+) : BaseViewModel<TilawahUiState, TilawahEffect>(
+    initialState = TilawahUiState(
+        surahId = surahArgs.surahId,
+        isSwipeable = surahArgs.isSwipeToDeleteEnabled,
+        isDownloadButtonShown = surahArgs.isDownloadButtonShown
+    ),
+    snackbarHandler = snackBarHandler,
+), TilawahInteractionListener {
 
     init {
         getAllReciters()
@@ -77,6 +89,38 @@ class TilawahViewModel(
         )
     }
 
+    override fun onDeleteReciterClick(reciterId: Int) {
+        updateState {
+            it.copy(
+                selectedReciterForDelete = reciterId,
+                showDeleteConfirmationDialog = true,
+            )
+        }
+    }
+
+    override fun onConfirmDeleteReciterClick() {
+        tryToExecute(
+            execute = { deleteSelectedReciter() },
+            onSuccess = { showSuccessSnackBar() },
+            onError = ::handleError
+        )
+    }
+
+    override fun onDismissDeleteConfirmationDialog() {
+        updateState {
+            it.copy(
+                selectedReciterForDelete = null,
+                showDeleteConfirmationDialog = false
+            )
+        }
+    }
+
+    private fun showSuccessSnackBar() = snackbarHandler.showSnackBar(
+        message = Res.string.reciter_deleted_successfully,
+        status = SnackBarState.Status.Success,
+        scope = viewModelScope,
+    )
+
     private fun getAllReciters() {
         tryToExecute(
             execute = { quranRepository.getReciters() },
@@ -96,15 +140,33 @@ class TilawahViewModel(
     }
 
     private suspend fun getAllRecitersSuccessfully(reciters: List<Reciter>) {
-        val surahId = surahArgs.surahId ?: return
+        val surahId = surahArgs.surahId
 
-        val recitersUi = reciters.map { reciter ->
-            reciter.toUi(
-                isDownloaded = quranRepository.isSurahAudioCached(surahId, reciter.id)
-            )
+        val recitersUi = if (surahId != null) {
+            reciters.map { reciter ->
+                reciter.toUi(
+                    isDownloaded = quranRepository.isSurahAudioCached(surahId, reciter.id)
+                )
+            }
+        } else {
+            reciters.map { reciter ->
+                reciter.toUi(isDownloaded = false)
+            }
         }
 
         updateState { it.copy(reciters = recitersUi) }
+    }
+
+    private fun deleteSelectedReciter() {
+        updateState { state ->
+            val newReciters =
+                state.reciters - state.reciters.first { it.id == state.selectedReciterForDelete }
+            state.copy(
+                reciters = newReciters,
+                selectedReciterForDelete = null,
+                showDeleteConfirmationDialog = false,
+            )
+        }
     }
 
     private suspend fun onDownloadComplete(reciterId: Int) {

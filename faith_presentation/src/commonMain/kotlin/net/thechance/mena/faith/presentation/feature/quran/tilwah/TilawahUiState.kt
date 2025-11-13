@@ -6,6 +6,10 @@ data class TilawahUiState(
     val surahId: Int? = null,
     val reciters: List<ReciterUi> = emptyList(),
     val selectedReciterId: Int? = null,
+    val selectedReciterForDelete: Int? = null,
+    val showDeleteConfirmationDialog: Boolean = false,
+    val isSwipeable: Boolean = false,
+    val isDownloadButtonShown: Boolean = true,
     )
 
 data class ReciterUi(
