@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -200,31 +201,16 @@ private fun DukanImage(
     imageUrl: String,
     modifier: Modifier = Modifier
 ) {
-    if (imageUrl.isEmpty()) {
-        Box(
-            modifier = modifier, contentAlignment = Alignment.CenterStart
-        ) {
-            ImagePlaceHolder()
-        }
-    } else {
-        AsyncImage(
-            model = imageUrl,
-            contentDescription = stringResource(Res.string.image),
-            modifier = modifier.fillMaxWidth(),
-            error = painterResource(Res.drawable.ic_dukan_placholder),
-            placeholder = painterResource(Res.drawable.ic_dukan_placholder)
-        )
-    }
-}
-
-@Composable
-private fun ImagePlaceHolder(
-    modifier: Modifier = Modifier
-) {
-    Icon(
-        painter = painterResource(Res.drawable.ic_dukan_placholder),
+    AsyncImage(
+        model = imageUrl,
         contentDescription = stringResource(Res.string.image),
+        error = painterResource(Res.drawable.ic_dukan_placholder),
+        placeholder = painterResource(Res.drawable.ic_dukan_placholder),
+
+        contentScale = ContentScale.Crop,
         modifier = modifier
+            .size(width = 64.dp, height = 44.dp)
+            .clip(RoundedCornerShape(Theme.radius.sm))
     )
 }
 
