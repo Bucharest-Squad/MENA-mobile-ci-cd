@@ -1,6 +1,6 @@
 package net.thechance.mena.identity.presentation.screen.privacyAndPolicy
 
-import net.thechance.mena.identity.domain.model.PrivacyAndPolicySection
+import net.thechance.mena.identity.domain.model.Section
 import org.jetbrains.compose.resources.StringResource
 
 data class PrivacyAndPolicyScreenUIState(
@@ -14,7 +14,7 @@ data class PrivacyAndPolicySectionUIState(
     val content: String
 )
 
-fun PrivacyAndPolicySection.toUIState(): PrivacyAndPolicySectionUIState{
+fun Section.toUIState(): PrivacyAndPolicySectionUIState{
     return PrivacyAndPolicySectionUIState(
         title = this.title,
         content = this.content
