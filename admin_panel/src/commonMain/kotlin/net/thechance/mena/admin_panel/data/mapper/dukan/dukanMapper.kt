@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalUuidApi::class)
+
 package net.thechance.mena.admin_panel.data.mapper.dukan
 
 import net.thechance.mena.admin_panel.data.mapper.parseLocalDateTimeOrDefault
@@ -9,7 +11,6 @@ import net.thechance.mena.admin_panel.domain.entity.dukan.Category
 import net.thechance.mena.admin_panel.domain.entity.dukan.Dukan
 import kotlin.uuid.ExperimentalUuidApi
 
-@OptIn(ExperimentalUuidApi::class)
 fun DukanDto.toEntity() = Dukan(
     id = id.toUuidOrNull() ?: throw IllegalStateException("Invalid User id"),
     name = name.orEmpty(),
@@ -24,6 +25,6 @@ fun DukanDto.toEntity() = Dukan(
 )
 
 fun CategoryDto.toEntity() = Category(
-    id = id,
+    id = id.toUuidOrNull() ?: throw IllegalStateException("Invalid User id"),
     title = title.orEmpty()
 )
