@@ -172,7 +172,6 @@ private fun DukanItemRow(
 private fun DukanLocation(
     location: String, modifier: Modifier = Modifier
 ) {
-
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -227,7 +226,6 @@ private fun ImagePlaceHolder(
 private fun ViewDukanDetailsButton(
     onClick: () -> Unit, modifier: Modifier = Modifier
 ) {
-
     OutlinedButton(
         text = stringResource(Res.string.view_details),
         trailingIcon = painterResource(Res.drawable.ic_view_details),

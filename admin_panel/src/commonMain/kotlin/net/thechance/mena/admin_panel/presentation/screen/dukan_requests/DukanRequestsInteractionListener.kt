@@ -6,7 +6,6 @@ import kotlin.uuid.Uuid
 @OptIn(ExperimentalUuidApi::class)
 
 interface DukanRequestsInteractionListener {
-
     fun onSortClicked(type: DukanRequestsScreenState.SortType)
     fun onViewDetailsClicked(dukanId: String)
     fun onRetryClicked()

@@ -94,7 +94,6 @@ fun DukanTableHeaderRow(
 
 }
 
-
 @Composable
 private fun SortableHeaderCell(
     text: String,
