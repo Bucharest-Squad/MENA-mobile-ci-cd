@@ -1,5 +1,6 @@
 package net.thechance.mena.admin_panel.domain.entity.dukan
 
+import kotlinx.datetime.LocalDateTime
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -11,18 +12,35 @@ data class Dukan(
     val address: String,
     val latitude: Double,
     val longitude: Double,
+    val createdAt: LocalDateTime,
     val categories: List<Category>,
-    val activationStatus: ActivationStatus,
+    val activationStatus: ActivationStatus?,
     val status: Status
 ) {
     enum class ActivationStatus {
         ACTIVATED,
-        DEACTIVATED,
+        DEACTIVATED;
+
+        companion object {
+            fun valueOfOrDefault(value: String?): ActivationStatus {
+                return runCatching {
+                    value?.uppercase()?.let { ActivationStatus.valueOf(it) } ?: ACTIVATED
+                }.getOrDefault(ACTIVATED)
+            }
+        }
     }
 
     enum class Status {
         APPROVED,
         REJECTED,
-        PENDING
+        PENDING;
+
+        companion object {
+            fun valueOfOrDefault(value: String?): Status {
+                return runCatching {
+                    value?.uppercase()?.let { valueOf(it) } ?: PENDING
+                }.getOrDefault(PENDING)
+            }
+        }
     }
 }

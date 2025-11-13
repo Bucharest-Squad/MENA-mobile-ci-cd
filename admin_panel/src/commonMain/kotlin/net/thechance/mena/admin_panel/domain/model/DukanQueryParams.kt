@@ -22,7 +22,7 @@ data class DukanQueryParams(
 
     enum class DukansSortType() {
         NAME,
-        CREATED_DATE,
+        CREATED_AT,
         ACTIVATION_STATUS
     }
 }
