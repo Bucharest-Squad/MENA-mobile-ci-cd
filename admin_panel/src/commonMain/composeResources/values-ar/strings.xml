@@ -33,8 +33,8 @@
     <string name="date">التاريخ</string>
 
     <!-- Dukan Requests -->
-    <string name="requests">Requests </string>
-    <string name="view_details">View details</string>
+    <string name="requests">'طلبات</string>
+    <string name="view_details">عرض التفاصيل</string>
     <!-- User Status -->
     <string name="active">نشط</string>
     <string name="blocked">محظور</string>
