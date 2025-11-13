@@ -142,22 +142,22 @@ class TilawahViewModel(
     private suspend fun getAllRecitersSuccessfully(reciters: List<Reciter>) {
         val surahId = surahArgs.surahId
 
-        val recitersUi = if (surahId != null) {
+        val recitersUi = surahId?.let {
             reciters.map { reciter ->
                 reciter.toUi(
-                    isDownloaded = quranRepository.isSurahAudioCached(surahId, reciter.id)
+                    isDownloaded = quranRepository.isSurahAudioCached(
+                        surahId = surahId,
+                        reciterId = reciter.id
+                    )
                 )
             }
-        } else {
-            reciters.map { reciter ->
-                reciter.toUi(isDownloaded = false)
-            }
-        }
+        } ?: reciters.map { reciter -> reciter.toUi(isDownloaded = false) }
 
         updateState { it.copy(reciters = recitersUi) }
     }
 
     private fun deleteSelectedReciter() {
+        // TODO: That is a fake delete, implement real delete from data source
         updateState { state ->
             val newReciters =
                 state.reciters - state.reciters.first { it.id == state.selectedReciterForDelete }
