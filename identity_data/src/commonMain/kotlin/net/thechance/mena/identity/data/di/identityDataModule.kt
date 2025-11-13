@@ -29,6 +29,7 @@ import net.thechance.mena.identity.domain.repository.ResetPasswordRepository
 import net.thechance.mena.identity.domain.repository.SettingsRepository
 import net.thechance.mena.identity.domain.repository.UserRepository
 import net.thechance.mena.identity.domain.service.AuthorizationService
+import net.thechance.mena.identity.domain.service.LocalizationService
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
@@ -62,7 +63,9 @@ val identityDataModule = module {
         RegisterRepositoryImpl(client = get(named(IDENTITY_CLIENT)))
     }
     single<PrivacyAndPolicyRepository> {
-        PrivacyAndPolicyRepositoryImpl(client = get(named(IDENTITY_CLIENT)))
+        PrivacyAndPolicyRepositoryImpl(
+            client = get(named(IDENTITY_CLIENT)),
+            get ())
     }
 
     single<RegistrationDraftRepository> {
@@ -74,6 +77,7 @@ val identityDataModule = module {
 
     singleOf(::ImagesRepositoryImpl) bind ImagesRepository::class
     singleOf(::AuthorizationService)
+    singleOf(::LocalizationService)
     single(named(IDENTITY_CLIENT)) {
         provideHttpClient(
             engine = get(),
