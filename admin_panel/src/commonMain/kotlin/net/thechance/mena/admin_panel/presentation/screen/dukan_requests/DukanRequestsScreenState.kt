@@ -9,7 +9,7 @@ import kotlin.uuid.Uuid
 
 data class DukanRequestsScreenState(
     val dukans: List<DukanItem> = emptyList(),
-    val totalRequestedDukans: Long = 0,
+    val totalRequestedDukans: Int = 0,
     val pageInfo: DukanPageInfo = DukanPageInfo(),
     val sort: SortState = SortState(),
     val isLoading: Boolean = false,
@@ -36,7 +36,6 @@ data class DukanRequestsScreenState(
             val longitude: Double = 0.0,
         )
     }
-
 
     data class SortState(
         val type: SortType = SortType.DUKAN_NAME,
