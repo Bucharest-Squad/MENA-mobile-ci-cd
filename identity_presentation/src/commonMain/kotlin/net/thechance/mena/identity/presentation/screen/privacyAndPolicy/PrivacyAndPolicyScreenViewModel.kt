@@ -1,5 +1,8 @@
 package net.thechance.mena.identity.presentation.screen.privacyAndPolicy
 
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import net.thechance.mena.identity.domain.exception.AuthenticationException
 import net.thechance.mena.identity.domain.model.PrivacyAndPolicySection
 import net.thechance.mena.identity.domain.repository.PrivacyAndPolicyRepository
@@ -11,7 +14,8 @@ import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
 import org.jetbrains.compose.resources.StringResource
 
 class PrivacyAndPolicyScreenViewModel(
-    private val policyRepository: PrivacyAndPolicyRepository
+    private val policyRepository: PrivacyAndPolicyRepository,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) :
     BaseScreenModel<PrivacyAndPolicyScreenUIState, PrivacyAndPolicyScreenUIEffect>(
         PrivacyAndPolicyScreenUIState()
@@ -34,7 +38,8 @@ class PrivacyAndPolicyScreenViewModel(
         tryToExecute(
             function = { policyRepository.getPrivacyAndPolicy() },
             onSuccess = ::onGetPrivacyAndPolicySuccess,
-            onError = ::onGetPrivacyAndPolicyError
+            onError = ::onGetPrivacyAndPolicyError,
+            dispatcher = dispatcher
         )
     }
     private fun onGetPrivacyAndPolicySuccess(privacyAndPolicySections: List<PrivacyAndPolicySection>){
