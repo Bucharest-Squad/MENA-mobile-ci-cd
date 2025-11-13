@@ -3,23 +3,21 @@ package net.thechance.mena.admin_panel.data.repository
 import de.jensklingenberg.ktorfit.Response
 import dev.mokkery.MockMode
 import dev.mokkery.answering.returns
-import dev.mokkery.answering.throws
 import dev.mokkery.everySuspend
 import dev.mokkery.matcher.any
 import dev.mokkery.mock
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpStatusCode
-import io.ktor.utils.io.InternalAPI
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.test.runTest
-import kotlinx.io.IOException
+import net.thechance.mena.admin_panel.data.local.InMemoryDukanDataStore
+import net.thechance.mena.admin_panel.data.mapper.parseLocalDateTimeOrDefault
 import net.thechance.mena.admin_panel.data.remote.api_service.DukanApiService
 import net.thechance.mena.admin_panel.data.remote.dto.DukanPagedResponse
-import net.thechance.mena.admin_panel.data.remote.dto.dukan.DukanDto
 import net.thechance.mena.admin_panel.data.remote.dto.dukan.ProductDto
 import net.thechance.mena.admin_panel.data.remote.dto.dukan.ShelfDto
 import net.thechance.mena.admin_panel.data.repository.dukan.DukanRepositoryImpl
-import net.thechance.mena.admin_panel.domain.exceptions.NoInternetException
+import net.thechance.mena.admin_panel.domain.entity.dukan.Dukan
 import net.thechance.mena.admin_panel.domain.exceptions.UnauthorizedException
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -33,27 +31,15 @@ class DukanRepositoryImplTest {
 
     private lateinit var dukanApiService: DukanApiService
     private lateinit var dukanRepository: DukanRepositoryImpl
+    private lateinit var inMemoryDukanDataStore: InMemoryDukanDataStore
 
     @BeforeTest
     fun setup() {
         dukanApiService = mock<DukanApiService>(mode = MockMode.autofill)
-        dukanRepository = DukanRepositoryImpl(dukanApiService)
+        inMemoryDukanDataStore = InMemoryDukanDataStore()
+        dukanRepository = DukanRepositoryImpl(dukanApiService, inMemoryDukanDataStore)
     }
 
-    @OptIn(ExperimentalUuidApi::class)
-    @Test
-    fun `getDukanDetails should return mapped dukan on success`() = runTest {
-        everySuspend {
-            dukanApiService.getDukanDetails(any())
-        } returns successfulResponse(FAKE_DUKAN_DTO)
-
-        val result = dukanRepository.getDukanDetails(FAKE_UUID)
-
-        assertEquals("Test Dukan", result.name)
-        assertEquals("Test Address", result.address)
-    }
-
-    @OptIn(ExperimentalUuidApi::class)
     @Test
     fun `getDukanShelves should return mapped shelves paged result on success`() = runTest {
         everySuspend {
@@ -66,7 +52,6 @@ class DukanRepositoryImplTest {
         assertEquals("Top Shelf", result.items.first().title)
     }
 
-    @OptIn(ExperimentalUuidApi::class)
     @Test
     fun `getShelfProducts should return mapped products paged result on success`() = runTest {
         everySuspend {
@@ -77,17 +62,6 @@ class DukanRepositoryImplTest {
 
         assertEquals(1, result.items.size)
         assertEquals("Product 1", result.items.first().name)
-    }
-
-    @Test
-    fun `getDukanDetails should throw NoInternetException on IOException`() = runTest {
-        everySuspend {
-            dukanApiService.getDukanDetails(any())
-        } throws IOException("No internet")
-
-        assertFailsWith<NoInternetException> {
-            dukanRepository.getDukanDetails(Uuid.random())
-        }
     }
 
     @Test
@@ -103,6 +77,24 @@ class DukanRepositoryImplTest {
         assertTrue(exception.message?.contains("Unauthorized") == true)
     }
 
+    @Test
+    fun `storeDukanDetails then getDukanDetails should return same dukan`() {
+        dukanRepository.storeDukanDetails(FAKE_DUKAN)
+        val result = dukanRepository.getDukanDetails()
+
+        assertEquals(FAKE_DUKAN, result)
+    }
+
+    @Test
+    fun `clearDukanDetails should remove stored dukan`() {
+        dukanRepository.storeDukanDetails(FAKE_DUKAN)
+        dukanRepository.clearDukanDetails()
+
+        assertFailsWith<IllegalArgumentException> {
+            dukanRepository.getDukanDetails()
+        }
+    }
+
     companion object {
         @OptIn(ExperimentalUuidApi::class)
         val FAKE_UUID: Uuid = Uuid.random()
@@ -110,18 +102,7 @@ class DukanRepositoryImplTest {
         @OptIn(ExperimentalUuidApi::class)
         val FAKE_SHELF_ID: Uuid = Uuid.random()
 
-        val FAKE_DUKAN_DTO = DukanDto(
-            id = FAKE_UUID.toString(),
-            name = "Test Dukan",
-            imageUrl = "https://example.com/image.png",
-            address = "Test Address",
-            latitude = 30.0,
-            longitude = 31.0,
-            color = null,
-            categories = emptyList()
-        )
-
-        val SHELF_DTO = ShelfDto(id = "shelf-1", title = "Top Shelf")
+        val SHELF_DTO = ShelfDto(id = FAKE_UUID.toString(), title = "Top Shelf")
 
         val SHELF_PAGED = DukanPagedResponse(
             totalPages = 1,
@@ -132,7 +113,7 @@ class DukanRepositoryImplTest {
         )
 
         val PRODUCT_DTO = ProductDto(
-            id = "prod-1",
+            id = FAKE_UUID.toString(),
             name = "Product 1",
             price = 100.0,
             discountedPrice = 80.0,
@@ -148,8 +129,19 @@ class DukanRepositoryImplTest {
             content = listOf(PRODUCT_DTO),
             number = 0
         )
+        val FAKE_DUKAN = Dukan(
+            id = FAKE_UUID,
+            name = "Test Dukan",
+            imageUrl = "",
+            address = "Test Address",
+            latitude = 30.0,
+            longitude = 31.0,
+            categories = emptyList(),
+            createdAt = parseLocalDateTimeOrDefault("2025-10-31T00:00:00"),
+            activationStatus = Dukan.ActivationStatus.ACTIVATED,
+            status = Dukan.Status.APPROVED
+        )
 
-        @OptIn(InternalAPI::class)
         private fun <T> successfulResponse(body: T): Response<T> {
             val mockHttpResponse: HttpResponse = mock(MockMode.autofill) {
                 everySuspend { status } returns HttpStatusCode.OK
@@ -157,7 +149,6 @@ class DukanRepositoryImplTest {
             return Response.success(body = body, rawResponse = mockHttpResponse) as Response<T>
         }
 
-        @OptIn(InternalAPI::class)
         private fun <T> unauthorizedResponse(): Response<T> {
             val mockHttpResponse: HttpResponse = mock(MockMode.autofill) {
                 everySuspend { status } returns HttpStatusCode.Unauthorized
