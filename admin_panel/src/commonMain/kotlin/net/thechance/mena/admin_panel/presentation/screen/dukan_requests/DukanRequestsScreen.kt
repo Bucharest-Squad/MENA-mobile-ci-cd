@@ -41,7 +41,7 @@ private fun DukanRequestsScreenContent(
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             DukansCounter(
-                count = state.totalRequestedDukans,
+                count = state.totalDukanRequests,
                 modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 16.dp)
             )
             DukanListContent(

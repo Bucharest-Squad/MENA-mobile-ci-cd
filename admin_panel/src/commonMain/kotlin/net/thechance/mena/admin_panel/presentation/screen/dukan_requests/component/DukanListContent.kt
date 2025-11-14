@@ -144,8 +144,7 @@ private fun DukanItemRow(
         TableCellText(text = index.toString(), modifier = Modifier.weight(0.3f))
 
         Box(
-            modifier = Modifier.weight(0.5f)
-                .clip(RoundedCornerShape(Theme.radius.sm)),
+            modifier = Modifier.weight(0.5f),
             contentAlignment = Alignment.CenterStart
         ) {
             DukanImage(imageUrl = dukan.imageUrl)
@@ -153,27 +152,26 @@ private fun DukanItemRow(
 
         TableCellText(text = dukan.name, modifier = Modifier.weight(1f))
 
-        Box(
-            modifier = Modifier.weight(1.5f),
-            contentAlignment = Alignment.CenterStart
-        ) {
-            DukanLocation(location = dukan.address)
-        }
+        DukanLocation(
+            location = dukan.address,
+            modifier = Modifier.weight(1.5f)
+        )
 
         TableCellText(text = dukan.date, modifier = Modifier.weight(0.5f))
 
-        Box(
-            modifier = modifier.padding(start = 16.dp).weight(0.8f),
-            contentAlignment = Alignment.CenterStart
-        ) {
-            ViewDukanDetailsButton(onClick = onViewDetailsClicked)
-        }
+        ViewDukanDetailsButton(
+            onClick = onViewDetailsClicked,
+            modifier = Modifier
+                .padding(start = 16.dp)
+                .weight(0.8f)
+        )
     }
 }
 
 @Composable
 private fun DukanLocation(
-    location: String, modifier: Modifier = Modifier
+    location: String,
+    modifier: Modifier = Modifier
 ) {
     Row(
         modifier = modifier,
@@ -206,7 +204,6 @@ private fun DukanImage(
         contentDescription = stringResource(Res.string.image),
         error = painterResource(Res.drawable.ic_dukan_placholder),
         placeholder = painterResource(Res.drawable.ic_dukan_placholder),
-
         contentScale = ContentScale.Crop,
         modifier = modifier
             .size(width = 64.dp, height = 44.dp)

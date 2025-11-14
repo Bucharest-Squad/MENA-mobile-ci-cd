@@ -2,11 +2,11 @@ package net.thechance.mena.admin_panel.presentation.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -41,18 +41,15 @@ fun DukansCounter(
 private fun CountItem(
     count: Int
 ) {
-    Box(
+    Text(
+        text = count.toString(),
+        style = Theme.typography.label.medium,
         modifier = Modifier
             .size(32.dp)
             .background(
                 color = Theme.colorScheme.background.surfaceLow,
                 shape = RoundedCornerShape(Theme.radius.full)
-            ),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = count.toString(),
-            style = Theme.typography.label.medium
-        )
-    }
+            )
+            .wrapContentSize(Alignment.Center)
+    )
 }

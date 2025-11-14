@@ -9,7 +9,7 @@ import kotlin.uuid.Uuid
 
 data class DukanRequestsScreenState(
     val dukans: List<DukanItem> = emptyList(),
-    val totalRequestedDukans: Int = 0,
+    val totalDukanRequests: Int = 0,
     val pageInfo: DukanPageInfo = DukanPageInfo(),
     val sort: SortState = SortState(),
     val isLoading: Boolean = false,
@@ -31,8 +31,8 @@ data class DukanRequestsScreenState(
         val address: String,
         val date: String,
         val coordinates: CoordinatesUiState = CoordinatesUiState()
-    )
-    { data class CoordinatesUiState(
+    ) {
+        data class CoordinatesUiState(
             val latitude: Double = 0.0,
             val longitude: Double = 0.0,
         )

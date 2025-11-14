@@ -61,7 +61,7 @@ class DukanRequestsViewModelTest {
             val currentState = awaitItem()
             assertFalse(currentState.isLoading)
             assertEquals(dukansList.items.size, currentState.dukans.size)
-            assertEquals(dukansList.totalElements, currentState.totalRequestedDukans)
+            assertEquals(dukansList.totalElements, currentState.totalDukanRequests)
             assertNull(currentState.errorState)
             cancelAndIgnoreRemainingEvents()
         }

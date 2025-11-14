@@ -49,7 +49,7 @@ class DukanRequestsViewModel(
         updateState {
             it.copy(
                 dukans = result.items.map(Dukan::toUIState),
-                totalRequestedDukans = result.totalElements,
+                totalDukanRequests = result.totalElements,
                 pageInfo = DukanRequestsScreenState.DukanPageInfo(
                     page = result.currentPage,
                     totalPages = result.totalPages
