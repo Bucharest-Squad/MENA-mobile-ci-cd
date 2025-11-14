@@ -80,6 +80,7 @@ class TilawahViewModel(
             onError = ::handleError
         )
     }
+
     private fun getAllReciters() {
         tryToExecute(
             execute = { quranRepository.getReciters() },
