@@ -19,7 +19,7 @@ import net.thechance.mena.admin_panel.presentation.component.PanelScaffold
 import net.thechance.mena.admin_panel.presentation.component.SearchBar
 import net.thechance.mena.admin_panel.presentation.component.SnackBarContainer
 import net.thechance.mena.admin_panel.presentation.screen.users_management.component.UsersListContent
-import net.thechance.mena.admin_panel.presentation.screen.users_management.component.UsersLoadingIndicator
+import net.thechance.mena.admin_panel.presentation.component.LoadingIndicator
 import net.thechance.mena.admin_panel.resources.Res
 import net.thechance.mena.admin_panel.resources.block
 import net.thechance.mena.admin_panel.resources.block_user
@@ -80,7 +80,7 @@ private fun UsersManagementScreenContent(
             )
 
             when {
-                state.isLoading -> UsersLoadingIndicator()
+                state.isLoading -> LoadingIndicator()
 
                 state.users.isEmpty() -> {
                     if (state.query.isNotEmpty()) {

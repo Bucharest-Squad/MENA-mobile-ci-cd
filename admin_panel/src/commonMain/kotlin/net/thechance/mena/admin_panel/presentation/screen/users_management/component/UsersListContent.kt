@@ -22,11 +22,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
 import net.thechance.mena.admin_panel.domain.entity.user.User
+import net.thechance.mena.admin_panel.presentation.component.LoadingIndicator
 import net.thechance.mena.admin_panel.presentation.component.PagesIndicatorRow
+import net.thechance.mena.admin_panel.presentation.component.TableCellText
 import net.thechance.mena.admin_panel.presentation.component.TableHeaderRow
 import net.thechance.mena.admin_panel.presentation.screen.users_management.UsersManagementInteractionListener
 import net.thechance.mena.admin_panel.presentation.screen.users_management.UsersManagementScreenState
-import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -46,13 +47,13 @@ fun UsersListContent(
         )
 
         if (state.isLoading) {
-            UsersLoadingIndicator()
+            LoadingIndicator()
         } else {
             UsersListTable(
                 users = state.users,
-                pageInfo = state.pageInfo,
                 onToggleUserStatusClicked = listener::onToggleUserStatusClicked,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                pageInfo = state.pageInfo
             )
         }
 
@@ -82,9 +83,8 @@ private fun UsersListTable(
     ) {
         itemsIndexed(users) { index, user ->
             val isLastItem = index == users.lastIndex
-            val rowNumber = pageInfo.page * 8 + index + 1
             UserItemRow(
-                index = rowNumber,
+                index = user.index,
                 user = user,
                 isLastItem = isLastItem,
                 hasBackground = index % 2 != 0,
@@ -157,18 +157,4 @@ private fun UserItemRow(
             )
         }
     }
-}
-
-@Composable
-private fun TableCellText(
-    text: String,
-    modifier: Modifier = Modifier
-) {
-    Text(
-        text = text,
-        style = Theme.typography.body.medium,
-        color = Theme.colorScheme.shadePrimary,
-        softWrap = false,
-        modifier = modifier
-    )
 }
