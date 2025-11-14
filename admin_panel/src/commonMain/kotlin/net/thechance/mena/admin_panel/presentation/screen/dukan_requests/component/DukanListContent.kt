@@ -87,7 +87,6 @@ private fun DukanListTable(
     modifier: Modifier = Modifier
 ) {
     val listState = rememberLazyListState()
-    val startIndex = pageInfo.page * pageInfo.itemsCount
 
     LazyColumn(
         state = listState,
@@ -96,7 +95,7 @@ private fun DukanListTable(
         itemsIndexed(items = dukan) { index, dukanItem ->
             val isLastItem = index == dukan.lastIndex
             DukanItemRow(
-                index = startIndex + index + 1,
+                index = dukanItem.index,
                 dukan = dukanItem,
                 isLastItem = isLastItem,
                 hasBackground = index % 2 != 0,

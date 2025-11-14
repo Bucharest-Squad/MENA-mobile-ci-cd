@@ -7,8 +7,10 @@ import net.thechance.mena.admin_panel.presentation.utils.format
 import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalUuidApi::class)
-fun Dukan.toUIState(): DukanRequestsScreenState.DukanItem {
+fun Dukan.toUIState(currentPage: Int, indexInList: Int): DukanRequestsScreenState.DukanItem {
+    val startIndex = currentPage * ITEMS_COUNT
     return DukanRequestsScreenState.DukanItem(
+        index = startIndex + indexInList + 1,
         id = id,
         name = name,
         imageUrl = imageUrl,
@@ -30,3 +32,5 @@ fun DukanRequestsScreenState.SortDirection.toEntity(): SortDirection? = when (th
     DukanRequestsScreenState.SortDirection.ASC -> SortDirection.ASC
     DukanRequestsScreenState.SortDirection.DESC -> SortDirection.DESC
 }
+
+const val ITEMS_COUNT = 8

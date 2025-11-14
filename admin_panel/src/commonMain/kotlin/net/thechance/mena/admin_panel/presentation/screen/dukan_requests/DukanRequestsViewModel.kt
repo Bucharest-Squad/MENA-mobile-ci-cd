@@ -48,7 +48,12 @@ class DukanRequestsViewModel(
     private fun onGetRequestedDukansSuccess(result: PagedResult<Dukan>) {
         updateState {
             it.copy(
-                dukans = result.items.map(Dukan::toUIState),
+                dukans = result.items.mapIndexed { index, dukan ->
+                    dukan.toUIState(
+                        currentPage = result.currentPage,
+                        indexInList = index
+                    )
+                },
                 totalDukanRequests = result.totalElements,
                 pageInfo = DukanRequestsScreenState.DukanPageInfo(
                     page = result.currentPage,
@@ -152,6 +157,7 @@ class DukanRequestsViewModel(
             oldState.copy(snackBar = oldState.snackBar.copy(isVisible = false))
         }
     }
+
 
     private companion object {
         const val PAGE_SIZE = 8

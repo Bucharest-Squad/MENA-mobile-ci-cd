@@ -76,7 +76,6 @@ private fun UsersListTable(
     modifier: Modifier = Modifier
 ) {
     val listState = rememberLazyListState()
-    val startIndex = pageInfo.page * pageInfo.itemsCount
 
     LazyColumn(
         state = listState,
@@ -85,7 +84,7 @@ private fun UsersListTable(
         itemsIndexed(users) { index, user ->
             val isLastItem = index == users.lastIndex
             UserItemRow(
-                index = startIndex + index + 1,
+                index = user.index,
                 user = user,
                 isLastItem = isLastItem,
                 hasBackground = index % 2 != 0,
