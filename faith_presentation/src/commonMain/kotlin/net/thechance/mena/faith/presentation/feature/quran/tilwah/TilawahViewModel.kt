@@ -99,18 +99,13 @@ class TilawahViewModel(
     }
 
     private suspend fun getAllRecitersSuccessfully(reciters: List<Reciter>) {
-        val surahId = surahArgs.surahId
+        val surahId = surahArgs.surahId ?: return
 
-        val recitersUi = surahId?.let {
-            reciters.map { reciter ->
-                reciter.toUi(
-                    isDownloaded = quranRepository.isSurahAudioCached(
-                        surahId = surahId,
-                        reciterId = reciter.id
-                    )
-                )
-            }
-        } ?: reciters.map { reciter -> reciter.toUi(isDownloaded = false) }
+        val recitersUi = reciters.map { reciter ->
+            reciter.toUi(
+                isDownloaded = quranRepository.isSurahAudioCached(surahId, reciter.id)
+            )
+        }
 
         updateState { it.copy(reciters = recitersUi) }
     }
