@@ -4,6 +4,8 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import net.thechance.mena.faith.data.database.AyahDao
+import net.thechance.mena.faith.data.database.AyahDto
+import net.thechance.mena.faith.data.database.SurahDto
 import net.thechance.mena.faith.data.mapper.ayahBookmark.toAyahBookmark
 import net.thechance.mena.faith.data.mapper.toAyah
 import net.thechance.mena.faith.data.mapper.toSurah
@@ -33,13 +35,39 @@ class BookmarkRepositoryImpl(
                 )
             )
         }
-        val surah = executeLocalSafely { ayahDao.getSurah(surahId) }
-        val ayah = executeLocalSafely { ayahDao.getAyah(surahId, ayahNumber) }
+
+        val surahDto = try {
+            ayahDao.getSurah(surahId)
+        } catch (_: Exception) {
+            SurahDto(
+                number = surahId,
+                name = "",
+                ayahCount = null
+            )
+        }
+
+        val ayahDto = try {
+            ayahDao.getAyah(ayahNumber, surahId)
+        } catch (_: Exception) {
+            AyahDto(
+                id = 0,
+                surahNumber = surahId,
+                surahNameEn = surahDto.name,
+                surahNameAr = "",
+                number = ayahNumber,
+                content = "",
+                plainContent = "",
+                lineStart = 0,
+                lineEnd = 0,
+                jozz = 0,
+                page = 0
+            )
+        }
 
         return AyahBookmark(
             id = bookmarkDto.id.toInt(),
-            surah = surah.toSurah(),
-            ayah = ayah.toAyah(),
+            surah = surahDto.toSurah(),
+            ayah = ayahDto.toAyah(),
             createdAt = Instant.parse(bookmarkDto.createdAt)
         )
     }
