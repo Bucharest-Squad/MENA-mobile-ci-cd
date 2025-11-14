@@ -675,7 +675,11 @@ class ChatViewModel(
 
                 val currentPosition = audioPlayer.getCurrentPosition()
 
-                val completed = isPlaybackCompleted(totalDuration = totalDuration, currentPosition = currentPosition, lastPosition = lastPositionMilliSeconds)
+                val completed = isPlaybackCompleted(
+                    totalDuration = totalDuration,
+                    currentPosition = currentPosition,
+                    lastPosition = lastPositionMilliSeconds
+                )
 
                 if (completed) {
                     updateVoiceMessageState(messageId, isPlaying = false, progress = 0f)
@@ -912,8 +916,29 @@ class ChatViewModel(
     }
 
     override fun onSendMoneyClicked() {
-        updateState { it.copy(isAttachmentsOverlayVisible = false) }
-        emitEffect(ChatScreenEffect.NavigateToWallet)
+
+        updateState {
+            it.copy(
+                value = "",
+                isAttachmentsOverlayVisible = false,
+                isSendMoneyDialogVisible = true
+            )
+        }
+
+    }
+
+    override fun onValueChanged(value: String) {
+        updateState {
+            it.copy(
+                isEnabled = value.isNotBlank(),
+                value = value
+            )
+        }
+    }
+
+    override fun onSendClicked() {
+        emitEffect(ChatScreenEffect.NavigateToConfirmPayment(amount = state.value.value))
+        updateState { it.copy(isSendMoneyDialogVisible = false) }
     }
 
     override fun onCameraResult(image: ImageBitmap?) {

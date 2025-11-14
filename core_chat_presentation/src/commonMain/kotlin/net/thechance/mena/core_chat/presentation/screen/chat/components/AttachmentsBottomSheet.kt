@@ -140,8 +140,10 @@ private fun PreviewAddPhotoBottomSheet() {
                     override fun onCameraClicked() {}
                     override fun onSendMoneyClicked() {}
 
+
                     override fun onCameraResult(image: ImageBitmap?) {}
                     override fun onCloseAttachmentClicked() {}
+
                 }
             )
         }

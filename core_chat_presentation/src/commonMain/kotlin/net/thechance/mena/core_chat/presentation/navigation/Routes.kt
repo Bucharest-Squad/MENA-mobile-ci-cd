@@ -9,7 +9,8 @@ data object HomeRoute : ChatRoute
 
 @Serializable
 data object WalletRoute : ChatRoute
-
+@Serializable
+data class ConfirmPaymentRoute(val amount: String) : ChatRoute
 @Serializable
 data object ContactsRoute : ChatRoute
 

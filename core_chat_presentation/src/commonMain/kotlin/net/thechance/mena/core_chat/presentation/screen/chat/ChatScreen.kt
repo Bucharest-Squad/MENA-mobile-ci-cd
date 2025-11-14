@@ -32,9 +32,10 @@ import kotlinx.coroutines.launch
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.you
 import net.thechance.mena.core_chat.presentation.components.snackBarHost.LocalSnackBarHostController
+import net.thechance.mena.core_chat.presentation.navigation.ConfirmPaymentRoute
 import net.thechance.mena.core_chat.presentation.navigation.LocalNavController
-import net.thechance.mena.core_chat.presentation.navigation.WalletRoute
 import net.thechance.mena.core_chat.presentation.screen.chat.components.AttachmentsBottomSheet
+import net.thechance.mena.core_chat.presentation.screen.chat.components.AttachmentsSendMoneyBottomSheet
 import net.thechance.mena.core_chat.presentation.screen.chat.components.ChatHeader
 import net.thechance.mena.core_chat.presentation.screen.chat.components.ChatInputBar
 import net.thechance.mena.core_chat.presentation.screen.chat.components.ChatList
@@ -206,6 +207,19 @@ fun ChatScreenContent(
                 attachmentsInteractionListener = interactions
             )
         }
+        AnimatedVisibility(
+            visible = state.isSendMoneyDialogVisible,
+            enter = slideInVertically(initialOffsetY = { it }),
+            exit = slideOutVertically(targetOffsetY = { it }),
+            modifier = Modifier.align(Alignment.BottomCenter)
+        ) {
+            AttachmentsSendMoneyBottomSheet(
+                attachmentsInteractionListener = interactions,
+                value = state.value,
+                isEnabled = state.isEnabled,
+                onValueChange = interactions::onValueChanged
+            )
+        }
     }
 
     PaginationTrigger(
@@ -249,9 +263,11 @@ private fun EffectsHandler(
                 scope.launch { chatLazyListState.animateScrollToItem(0) }
             }
 
-            ChatScreenEffect.NavigateToWallet -> {
+            is ChatScreenEffect.NavigateToConfirmPayment -> {
                 navController.navigate(
-                    WalletRoute
+                    ConfirmPaymentRoute(
+                        effect.amount
+                    )
                 )
             }
         }

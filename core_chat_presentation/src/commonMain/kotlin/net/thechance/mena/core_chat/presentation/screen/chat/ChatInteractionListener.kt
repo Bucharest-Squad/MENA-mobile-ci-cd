@@ -8,7 +8,9 @@ import kotlin.uuid.Uuid
 
 
 interface ChatInteractionListener : MessageListInteractionListener,
-    FullImageViewInteractionListener, AttachmentsInteractionListener, ActionsMenuInteractionListener {
+    FullImageViewInteractionListener, AttachmentsInteractionListener,
+    AttachmentsSendMoneyInteractionListener,
+    ActionsMenuInteractionListener {
 
     fun onBackClicked()
     fun onAttachmentClicked()
@@ -40,9 +42,14 @@ interface AttachmentsInteractionListener {
     fun onSendImageClicked(imageByteArrays: List<ByteArray>)
     fun onGalleryClicked()
     fun onCameraClicked()
-    fun onSendMoneyClicked()
     fun onCameraResult(image: ImageBitmap?)
     fun onCloseAttachmentClicked()
+    fun onSendMoneyClicked()
+}
+
+interface AttachmentsSendMoneyInteractionListener {
+    fun onValueChanged(value: String)
+    fun onSendClicked()
 }
 
 interface FullImageViewInteractionListener {
