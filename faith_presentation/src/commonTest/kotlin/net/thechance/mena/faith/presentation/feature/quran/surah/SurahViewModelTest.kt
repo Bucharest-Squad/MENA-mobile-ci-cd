@@ -326,7 +326,11 @@ class SurahViewModelTest {
         everySuspend { quranRepository.getAyatOfSurah(DEFAULT_SURAH_ID) } returns dummyAyat
         testViewModel.onAyahLongPress(TEST_AYAH_CONTENT, TEST_AYAH_INDEX)
 
-        testViewModel.onShareClick(TEST_AYAH_CONTENT)
+        testViewModel.onShareClick(
+            surahId = DEFAULT_SURAH_ID,
+            ayahNumber = TEST_AYAH_NUMBER,
+            ayahContent = TEST_AYAH_CONTENT
+        )
         advanceUntilIdle()
 
         assertFalse(testViewModel.uiState.value.isAyahActionButtonsVisible)
@@ -334,7 +338,11 @@ class SurahViewModelTest {
 
     @Test
     fun `onShareClick should update selectedAyah with ayah content when called`() = runTest {
-        testViewModel.onShareClick(AYAH_TO_SHARE)
+        testViewModel.onShareClick(
+            surahId = DEFAULT_SURAH_ID,
+            ayahNumber = TEST_AYAH_NUMBER,
+            ayahContent = AYAH_TO_SHARE
+        )
 
         assertEquals(AYAH_TO_SHARE, testViewModel.uiState.value.selectedAyah)
     }
@@ -342,8 +350,16 @@ class SurahViewModelTest {
     @Test
     fun `onShareClick should navigate to ShareAyah when onShareClick is invoked`() = runTest {
         testViewModel.uiEffect.test {
-            testViewModel.onShareClick(AYAH_TO_SHARE)
-            assertEquals(SurahScreenEffect.ShareAyah(AYAH_TO_SHARE), awaitItem())
+            testViewModel.onShareClick(
+                surahId = DEFAULT_SURAH_ID,
+                ayahNumber = TEST_AYAH_NUMBER,
+                ayahContent = TEST_AYAH_CONTENT
+            )
+            assertEquals(SurahScreenEffect.ShareAyah(
+                surahId = DEFAULT_SURAH_ID.toString(),
+                ayahNumber = TEST_AYAH_NUMBER,
+                ayahContent = TEST_AYAH_CONTENT
+            ), awaitItem())
         }
     }
 
@@ -432,12 +448,6 @@ class SurahViewModelTest {
                     surahArgs.surahId
                 ), effect
             )
-        }
-        fun `highlightAyah should update initialAyahToScroll and selectedAyahNumber`() = runTest {
-            testViewModel.highlightAyah(TRACKED_AYAH_NUMBER)
-
-            assertEquals(TRACKED_AYAH_NUMBER, testViewModel.uiState.value.selectedAyahNumber)
-            assertEquals(TRACKED_AYAH_NUMBER, testViewModel.uiState.value.initialAyahToScroll)
         }
 
         @Test
