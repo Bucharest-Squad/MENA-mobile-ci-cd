@@ -25,20 +25,20 @@ import java.io.ByteArrayInputStream
 private const val BASE_URL = "https://a.basemaps.cartocdn.com/rastertiles/voyager_no_buildings"
 private const val FACTORY_NAME = "cartocdn"
 private const val IMAGE_PATH = "drawable/map_marker.svg"
-private const val WIDTH_MARKER = 46
-private const val HEIGHT_MARKER = 58
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun OSMMapView(
     latitude: Double,
     longitude: Double,
+    markerWidth: Int,
+    markerHeight: Int,
     initialZoom: Int = 7,
     modifier: Modifier = Modifier
 ) {
     val markerIcon = runBlocking {
         val bytes = Res.readBytes(IMAGE_PATH)
-        svgToBufferedImage(bytes)
+        svgToBufferedImage(bytes, markerWidth, markerHeight)
     }
 
     val markerPosition = GeoPosition(latitude, longitude)
@@ -86,9 +86,10 @@ private fun updateMarkerPosition(
     mapViewer.repaint()
 }
 
-private fun svgToBufferedImage(svgBytes: ByteArray): BufferedImage {
+private fun svgToBufferedImage(svgBytes: ByteArray, markerWidth: Int, markerHeight: Int)
+: BufferedImage {
 
-    val image = BufferedImage(WIDTH_MARKER, HEIGHT_MARKER, BufferedImage.TYPE_INT_ARGB)
+    val image = BufferedImage(markerWidth, markerHeight, BufferedImage.TYPE_INT_ARGB)
 
     try {
         val transcoder = object : ImageTranscoder() {
@@ -103,8 +104,8 @@ private fun svgToBufferedImage(svgBytes: ByteArray): BufferedImage {
             }
         }
 
-        transcoder.addTranscodingHint(ImageTranscoder.KEY_WIDTH, WIDTH_MARKER.toFloat())
-        transcoder.addTranscodingHint(ImageTranscoder.KEY_HEIGHT, HEIGHT_MARKER.toFloat())
+        transcoder.addTranscodingHint(ImageTranscoder.KEY_WIDTH, markerWidth.toFloat())
+        transcoder.addTranscodingHint(ImageTranscoder.KEY_HEIGHT, markerHeight.toFloat())
 
         val input = TranscoderInput(ByteArrayInputStream(svgBytes))
         transcoder.transcode(input, null)
