@@ -182,7 +182,11 @@ class SurahViewModel(
         }
     }
 
-    override fun onShareClick(ayahContent: String) {
+    override fun onShareClick(
+        surahId: Int,
+        ayahNumber: Int,
+        ayahContent: String
+    ) {
         updateState {
             it.copy(
                 isAyahActionButtonsVisible = false,
@@ -190,7 +194,11 @@ class SurahViewModel(
                 selectedAyahNumber = null
             )
         }
-        sendEffect(SurahScreenEffect.ShareAyah(ayahContent))
+        sendEffect(SurahScreenEffect.ShareAyah(
+            surahId = surahId.toString(),
+            ayahNumber = ayahNumber,
+            ayahContent = ayahContent,
+        ))
     }
 
     private fun playAyah(ayahNumber: Int) {
