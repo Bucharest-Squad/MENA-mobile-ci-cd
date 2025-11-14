@@ -2,7 +2,6 @@ package net.thechance.mena.faith.presentation.feature.quran.tilwah.component.arg
 
 interface TilawahSurahArgs {
     val surahId: Int?
-        get() = null
 
     val isSwipeToDeleteEnabled: Boolean
         get() = false

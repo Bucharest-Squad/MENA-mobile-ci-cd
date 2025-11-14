@@ -45,7 +45,6 @@ fun ReciterItem(
     recitingType: String,
     isDownloaded: Boolean,
     isSwipeable: Boolean,
-    onDeleteReciterClick: () -> Unit = {},
     onDownloadClick: () -> Unit,
     onSelect: () -> Unit = {},
     isSelectReciter: Boolean,
@@ -54,7 +53,7 @@ fun ReciterItem(
     SwappableCard(
         isSwipeable = isSwipeable,
         id = reciterId,
-        onClick = onDeleteReciterClick,
+        onClick = {},
         backgroundIcon = painterResource(Res.drawable.ic_delete),
         contentDescription = stringResource(Res.string.delete),
         cardContent = { contentModifier ->
@@ -73,7 +72,6 @@ fun ReciterItem(
             .padding(bottom = Theme.spacing._8)
     )
 }
-
 
 @Composable
 private fun CardContent(

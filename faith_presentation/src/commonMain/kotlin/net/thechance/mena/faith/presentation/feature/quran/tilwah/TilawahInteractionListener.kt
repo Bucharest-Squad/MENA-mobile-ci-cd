@@ -7,7 +7,4 @@ interface TilawahInteractionListener {
     fun onDownloadClick(reciterId: Int)
 
     fun onSelectReciterClick(reciterId: Int)
-    fun onDeleteReciterClick(reciterId: Int)
-    fun onConfirmDeleteReciterClick()
-    fun onDismissDeleteConfirmationDialog()
 }
