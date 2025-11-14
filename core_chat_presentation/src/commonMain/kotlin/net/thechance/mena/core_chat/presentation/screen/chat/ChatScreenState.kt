@@ -21,7 +21,6 @@ data class ChatScreenState(
     val isChatActionsDialogVisible: Boolean = false,
     val isSendMoneyDialogVisible: Boolean = false,
     val value:String="",
-    val isEnabled: Boolean=false,
     val isConfirmDeleteChatDialogVisible: Boolean = false,
     val currentImageIndexForPreview: Int = 0,
     val isResendMessageDialogVisible: Boolean = false,

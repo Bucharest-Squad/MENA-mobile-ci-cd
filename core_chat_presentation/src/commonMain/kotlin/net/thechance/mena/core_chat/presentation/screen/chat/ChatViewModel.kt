@@ -930,7 +930,6 @@ class ChatViewModel(
     override fun onValueChanged(value: String) {
         updateState {
             it.copy(
-                isEnabled = value.isNotBlank(),
                 value = value
             )
         }

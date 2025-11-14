@@ -38,7 +38,6 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun AttachmentsSendMoneyBottomSheet(
     value: String,
-    isEnabled: Boolean,
     onValueChange: (String) -> Unit,
     attachmentsInteractionListener: AttachmentsSendMoneyInteractionListener,
     modifier: Modifier = Modifier,
@@ -74,7 +73,6 @@ fun AttachmentsSendMoneyBottomSheet(
         )
         AttachmentSendMoneyBottomSheetContent(
             value = value,
-            isEnabled = isEnabled,
             onValueChange = onValueChange,
             modifier = Modifier.fillMaxWidth(),
             attachmentsInteractionListener = attachmentsInteractionListener
@@ -86,7 +84,6 @@ fun AttachmentsSendMoneyBottomSheet(
 @Composable
 private fun AttachmentSendMoneyBottomSheetContent(
     value: String,
-    isEnabled: Boolean,
     onValueChange: (String) -> Unit,
     attachmentsInteractionListener: AttachmentsSendMoneyInteractionListener,
     modifier: Modifier = Modifier
@@ -124,7 +121,7 @@ private fun AttachmentSendMoneyBottomSheetContent(
             text = stringResource(Res.string.send),
             onClick = attachmentsInteractionListener::onSendClicked,
             modifier = Modifier.padding(bottom = Theme.spacing._24).fillMaxWidth(),
-            isEnabled = isEnabled
+            isEnabled = value.isNotEmpty()
         )
 
     }
@@ -141,7 +138,6 @@ private fun AttachmentsSendMoneyBottomSheetPreview() {
         ) {
             AttachmentsSendMoneyBottomSheet(
                 value = "",
-                isEnabled = false,
                 onValueChange = {},
                 attachmentsInteractionListener = object : AttachmentsSendMoneyInteractionListener {
                     override fun onValueChanged(value: String) {}

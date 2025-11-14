@@ -216,7 +216,6 @@ fun ChatScreenContent(
             AttachmentsSendMoneyBottomSheet(
                 attachmentsInteractionListener = interactions,
                 value = state.value,
-                isEnabled = state.isEnabled,
                 onValueChange = interactions::onValueChanged
             )
         }
