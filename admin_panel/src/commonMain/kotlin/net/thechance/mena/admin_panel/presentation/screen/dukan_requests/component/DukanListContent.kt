@@ -31,7 +31,7 @@ import net.thechance.mena.admin_panel.presentation.component.TableCellText
 import net.thechance.mena.admin_panel.presentation.component.ViewDukanDetailsButton
 import net.thechance.mena.admin_panel.presentation.screen.dukan_requests.DukanRequestsInteractionListener
 import net.thechance.mena.admin_panel.presentation.screen.dukan_requests.DukanRequestsScreenState
-import net.thechance.mena.admin_panel.presentation.screen.users_management.component.LoadingIndicator
+import net.thechance.mena.admin_panel.presentation.component.LoadingIndicator
 import net.thechance.mena.admin_panel.resources.Res
 import net.thechance.mena.admin_panel.resources.ic_dukan_location
 import net.thechance.mena.admin_panel.resources.ic_dukan_placholder

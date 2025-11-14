@@ -1,4 +1,4 @@
-package net.thechance.mena.admin_panel.presentation.screen.users_management.component
+package net.thechance.mena.admin_panel.presentation.component
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
