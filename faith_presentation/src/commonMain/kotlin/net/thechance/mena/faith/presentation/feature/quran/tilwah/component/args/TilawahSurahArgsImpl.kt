@@ -10,5 +10,4 @@ class TilawahSurahArgsImpl(
     private val downloadedSurah = savedStateHandle.toRoute<Route.DownloadedRecitersRoute>()
     override val surahId: Int? = downloadedSurah.surahId
     override val isSwipeToDeleteEnabled: Boolean = downloadedSurah.isCardsSwipable
-    override val isDownloadButtonShown: Boolean = downloadedSurah.isDownloadShown
 }

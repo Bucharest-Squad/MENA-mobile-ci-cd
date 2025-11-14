@@ -9,7 +9,6 @@ data class TilawahUiState(
     val selectedReciterForDelete: Int? = null,
     val showDeleteConfirmationDialog: Boolean = false,
     val isSwipeable: Boolean = false,
-    val isDownloadButtonShown: Boolean = true,
     )
 
 data class ReciterUi(

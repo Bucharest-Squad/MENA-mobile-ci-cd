@@ -44,7 +44,6 @@ fun ReciterItem(
     reciter: String,
     recitingType: String,
     isDownloaded: Boolean,
-    isDownloadIconShown: Boolean,
     isSwipeable: Boolean,
     onDeleteReciterClick: () -> Unit = {},
     onDownloadClick: () -> Unit,
@@ -63,7 +62,6 @@ fun ReciterItem(
                 reciter = reciter,
                 recitingType = recitingType,
                 isDownloaded = isDownloaded,
-                isDownloadShown = isDownloadIconShown,
                 modifier = contentModifier,
                 onDownloadClick = onDownloadClick,
                 onSelect = onSelect,
@@ -82,7 +80,6 @@ private fun CardContent(
     reciter: String,
     recitingType: String,
     isDownloaded: Boolean,
-    isDownloadShown: Boolean,
     onDownloadClick: () -> Unit,
     onSelect: () -> Unit = {},
     isSelectReciter: Boolean,
@@ -132,13 +129,12 @@ private fun CardContent(
                 isDownloaded = isDownloaded
             )
         }
-        if (isDownloadShown)
-            Icon(
-                painterResource(Res.drawable.icon_download),
-                contentDescription = stringResource(Res.string.success),
-                modifier = Modifier.size(size = 20.dp)
-                    .clickable(onClick = onDownloadClick)
-            )
+        Icon(
+            painterResource(Res.drawable.icon_download),
+            contentDescription = stringResource(Res.string.success),
+            modifier = Modifier.size(size = 20.dp)
+                .clickable(onClick = onDownloadClick)
+        )
     }
 }
 
@@ -186,7 +182,6 @@ private fun Preview() {
             onSelect = {},
             onDownloadClick = {},
             isSelectReciter = false,
-            isDownloadIconShown = true,
             isSwipeable = true,
         )
     }

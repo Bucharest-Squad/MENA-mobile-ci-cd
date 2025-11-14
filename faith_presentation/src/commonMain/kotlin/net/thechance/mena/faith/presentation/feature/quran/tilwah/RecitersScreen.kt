@@ -103,7 +103,6 @@ private fun Content(
                         listener.onDeleteReciterClick(reciter.id)
                     },
                     isSwipeable = uiState.isSwipeable,
-                    isDownloadIconShown = uiState.isDownloadButtonShown,
                 )
             }
         }

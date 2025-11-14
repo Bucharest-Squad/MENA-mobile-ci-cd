@@ -6,7 +6,4 @@ interface TilawahSurahArgs {
 
     val isSwipeToDeleteEnabled: Boolean
         get() = false
-
-    val isDownloadButtonShown: Boolean
-        get() = true
 }

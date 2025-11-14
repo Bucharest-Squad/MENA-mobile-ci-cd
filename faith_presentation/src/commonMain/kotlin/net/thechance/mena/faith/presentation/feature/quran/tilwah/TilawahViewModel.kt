@@ -26,7 +26,6 @@ class TilawahViewModel(
     initialState = TilawahUiState(
         surahId = surahArgs.surahId,
         isSwipeable = surahArgs.isSwipeToDeleteEnabled,
-        isDownloadButtonShown = surahArgs.isDownloadButtonShown
     ),
     snackbarHandler = snackBarHandler,
 ), TilawahInteractionListener {
