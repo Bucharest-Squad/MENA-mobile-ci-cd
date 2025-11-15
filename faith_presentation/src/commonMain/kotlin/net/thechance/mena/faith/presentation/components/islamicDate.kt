@@ -6,8 +6,11 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import mena.faith_presentation.generated.resources.Res
+import mena.faith_presentation.generated.resources.hijri_months
 import net.thechance.mena.designsystem.presentation.component.datePicker.WheelDatePicker
 import net.thechance.mena.faith.presentation.utils.IslamicDate
+import org.jetbrains.compose.resources.stringArrayResource
 
 @Composable
 fun IslamicDatePicker(
@@ -96,22 +99,8 @@ private fun isIslamicLeapYear(year: Int): Boolean {
     return (year * 11 + 14) % 30 < 11
 }
 
-private fun getIslamicMonthNames(): List<String> {
-    return listOf(
-        "محرم",
-        "صفر",
-        "ربيع الأول",
-        "ربيع الثاني",
-        "جمادى الأولى",
-        "جمادى الثانية",
-        "رجب",
-        "شعبان",
-        "رمضان",
-        "شوال",
-        "ذو القعدة",
-        "ذو الحجة"
-    )
-}
+@Composable
+private fun getIslamicMonthNames(): List<String> = stringArrayResource(Res.array.hijri_months)
 
 @Composable
 private fun createYearList(minYear: Int, maxYear: Int): List<String> {
