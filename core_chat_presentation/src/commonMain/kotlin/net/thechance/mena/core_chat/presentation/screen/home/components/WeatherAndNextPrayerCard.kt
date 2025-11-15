@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.ic_prayer
 import mena.core_chat_presentation.generated.resources.ic_tempreature
+import mena.core_chat_presentation.generated.resources.`in`
 import mena.core_chat_presentation.generated.resources.next_prayer
 import mena.core_chat_presentation.generated.resources.prayer_weather_pattern_shape
 import net.thechance.mena.core_chat.presentation.screen.home.HomeScreenState
@@ -52,7 +53,7 @@ fun WeatherAndNextPrayerCard(
         if (prayerUiState != null) {
             InfoCard(
                 leadingIcon = painterResource(Res.drawable.ic_prayer),
-                leadingText = "${stringResource(Res.string.next_prayer)} ${prayerUiState.nextPrayerName} in:",
+                leadingText = "${stringResource(Res.string.next_prayer)} ${prayerUiState.nextPrayerName} ${stringResource(Res.string.`in`)}:",
                 trailingText = prayerUiState.nextPrayerTime,
                 modifier = Modifier.padding(top = 52.dp)
             )
