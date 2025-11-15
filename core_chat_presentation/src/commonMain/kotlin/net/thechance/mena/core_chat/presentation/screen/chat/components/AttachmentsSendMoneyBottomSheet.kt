@@ -39,6 +39,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun AttachmentsSendMoneyBottomSheet(
     value: String,
     onValueChange: (String) -> Unit,
+    isLoading: Boolean,
     attachmentsInteractionListener: AttachmentsSendMoneyInteractionListener,
     modifier: Modifier = Modifier,
 ) {
@@ -56,8 +57,8 @@ fun AttachmentsSendMoneyBottomSheet(
             .background(
                 color = Theme.colorScheme.background.surface,
                 shape = RoundedCornerShape(topStart = Theme.radius.xl, topEnd = Theme.radius.xl)
-            ),
-        horizontalAlignment = Alignment.CenterHorizontally
+            )
+            .padding(horizontal = Theme.spacing._16),
     ) {
         Box(
             modifier = Modifier
@@ -69,28 +70,8 @@ fun AttachmentsSendMoneyBottomSheet(
                 .background(
                     color = Theme.colorScheme.shadeTertiary,
                     shape = RoundedCornerShape(Theme.radius.full)
-                ),
+                ).align(Alignment.CenterHorizontally),
         )
-        AttachmentSendMoneyBottomSheetContent(
-            value = value,
-            onValueChange = onValueChange,
-            modifier = Modifier.fillMaxWidth(),
-            attachmentsInteractionListener = attachmentsInteractionListener
-        )
-
-    }
-}
-
-@Composable
-private fun AttachmentSendMoneyBottomSheetContent(
-    value: String,
-    onValueChange: (String) -> Unit,
-    attachmentsInteractionListener: AttachmentsSendMoneyInteractionListener,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier.padding(horizontal = Theme.spacing._16).fillMaxWidth(),
-    ) {
         Text(
             modifier = Modifier.padding(vertical = Theme.spacing._16),
             text = stringResource(Res.string.send_a_money),
@@ -121,9 +102,9 @@ private fun AttachmentSendMoneyBottomSheetContent(
             text = stringResource(Res.string.send),
             onClick = attachmentsInteractionListener::onSendClicked,
             modifier = Modifier.padding(bottom = Theme.spacing._24).fillMaxWidth(),
-            isEnabled = value.isNotEmpty()
+            isEnabled = value.isNotEmpty(),
+            isLoading = isLoading
         )
-
     }
 }
 
@@ -145,6 +126,7 @@ private fun AttachmentsSendMoneyBottomSheetPreview() {
                     override fun onSendClicked() {}
 
                 },
+                isLoading = true,
             )
         }
     }

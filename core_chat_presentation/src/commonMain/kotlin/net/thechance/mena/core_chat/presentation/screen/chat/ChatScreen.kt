@@ -169,6 +169,21 @@ fun ChatScreenContent(
                     showConfirmDeleteChatDialog = state.isConfirmDeleteChatDialogVisible,
                     actionsMenuInteractionListener = interactions as ActionsMenuInteractionListener
                 )
+                bottomSheet(state.isSendMoneyDialogVisible) {
+                    AnimatedVisibility(
+                        visible = state.isSendMoneyDialogVisible,
+                        enter = slideInVertically(initialOffsetY = { it }),
+                        exit = slideOutVertically(targetOffsetY = { it }),
+                        modifier = Modifier.align(Alignment.BottomCenter)
+                    ) {
+                        AttachmentsSendMoneyBottomSheet(
+                            attachmentsInteractionListener = interactions,
+                            value = state.value,
+                            onValueChange = interactions::onValueChanged,
+                            isLoading = state.isLoading,
+                        )
+                    }
+                }
             }
         ) {
             ChatList(
@@ -212,18 +227,8 @@ fun ChatScreenContent(
                 attachmentsInteractionListener = interactions
             )
         }
-        AnimatedVisibility(
-            visible = state.isSendMoneyDialogVisible,
-            enter = slideInVertically(initialOffsetY = { it }),
-            exit = slideOutVertically(targetOffsetY = { it }),
-            modifier = Modifier.align(Alignment.BottomCenter)
-        ) {
-            AttachmentsSendMoneyBottomSheet(
-                attachmentsInteractionListener = interactions,
-                value = state.value,
-                onValueChange = interactions::onValueChanged
-            )
-        }
+
+
     }
 
     PaginationTrigger(
