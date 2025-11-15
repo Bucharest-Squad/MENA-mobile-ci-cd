@@ -30,39 +30,40 @@ fun AyatOfSurah(
     state: SurahUiState,
     modifier: Modifier = Modifier
 ) {
-    BoxWithConstraints(modifier) {
-        LaunchedEffect(maxWidth) {
-            state.lastVisibleAyahNumber ?: 1
-            listener.onConfigrationChange()
 
-        }
-    }
     val lazyListState = rememberLazyListState()
     val ayahChunks = remember(state.ayatOfSurah) { state.ayatOfSurah.chunked(AYAT_PER_PAGE) }
     val preRenderedChunks = rememberPreRenderedChunks(ayahChunks)
     var textLayoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
     var currentChunkAyat by remember { mutableStateOf(listOf<Ayah>()) }
 
-    SetupScrollTracking(
-        lazyListState = lazyListState,
-        ayahChunks = ayahChunks,
-        state = state,
-        listener = listener,
-        textLayoutResult = textLayoutResult,
-        currentChunkAyat = currentChunkAyat
-    )
+    BoxWithConstraints(modifier) {
+        LaunchedEffect(maxWidth) {
+            listener.onConfigrationChange()
 
-    AyahList(
-        modifier = Modifier.fillMaxWidth(),
-        lazyListState = lazyListState,
-        state = state,
-        ayahChunks = ayahChunks,
-        preRenderedChunks = preRenderedChunks,
-        listener = listener,
-        textLayoutResult = textLayoutResult,
-        onTextLayoutResultChange = { textLayoutResult = it },
-        onChunkChanged = { currentChunkAyat = it }
-    )
+        }
+
+        SetupScrollTracking(
+            lazyListState = lazyListState,
+            ayahChunks = ayahChunks,
+            state = state,
+            listener = listener,
+            textLayoutResult = textLayoutResult,
+            currentChunkAyat = currentChunkAyat
+        )
+
+        AyahList(
+            modifier = Modifier.fillMaxWidth(),
+            lazyListState = lazyListState,
+            state = state,
+            ayahChunks = ayahChunks,
+            preRenderedChunks = preRenderedChunks,
+            listener = listener,
+            textLayoutResult = textLayoutResult,
+            onTextLayoutResultChange = { textLayoutResult = it },
+            onChunkChanged = { currentChunkAyat = it }
+        )
+    }
 }
 
 @Composable
