@@ -62,6 +62,7 @@ open class BaseViewModel<S, E>(
         onStart: () -> Unit = {},
         execute: suspend () -> T,
         onSuccess: suspend (T) -> Unit = {},
+        onFinish: (suspend () -> Unit) = {},
         onError: (Throwable) -> Unit = {},
         coroutineScope: CoroutineScope = viewModelScope,
         dispatcher: CoroutineDispatcher = defaultDispatcher,
@@ -71,6 +72,7 @@ open class BaseViewModel<S, E>(
             onStart()
             val result = execute()
             onSuccess(result)
+            onFinish()
         }
     }
 
