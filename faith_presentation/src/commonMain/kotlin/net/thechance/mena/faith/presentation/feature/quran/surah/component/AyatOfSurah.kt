@@ -1,11 +1,13 @@
 package net.thechance.mena.faith.presentation.feature.quran.surah.component
 
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,6 +30,13 @@ fun AyatOfSurah(
     state: SurahUiState,
     modifier: Modifier = Modifier
 ) {
+    BoxWithConstraints(modifier) {
+        LaunchedEffect(maxWidth) {
+            val ayahToScroll = state.lastVisibleAyahNumber ?: 0
+            listener.onScrollPositionChanged(ayahToScroll)
+
+        }
+    }
     val lazyListState = rememberLazyListState()
     val ayahChunks = remember(state.ayatOfSurah) { state.ayatOfSurah.chunked(AYAT_PER_PAGE) }
     val preRenderedChunks = rememberPreRenderedChunks(ayahChunks)
@@ -44,7 +53,7 @@ fun AyatOfSurah(
     )
 
     AyahList(
-        modifier = modifier,
+        modifier = Modifier.fillMaxWidth(),
         lazyListState = lazyListState,
         state = state,
         ayahChunks = ayahChunks,
@@ -164,6 +173,7 @@ private fun Preview() {
                 override fun onShareClick(ayahContent: String) {}
                 override fun highlightAyah(ayahNumber: Int) {}
                 override fun updateContinueTilawah(ayahNumber: Int) {}
+                override fun onScrollPositionChanged(lastAyah: Int) {}
                 override fun playSurah(surahId: Int) {}
                 override fun onInitialAyahScrolled() {}
             }
