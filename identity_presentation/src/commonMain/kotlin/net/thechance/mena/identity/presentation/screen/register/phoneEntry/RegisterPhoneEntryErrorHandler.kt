@@ -1,26 +1,24 @@
-package net.thechance.mena.identity.presentation.base.error.handler.authentication.login
+package net.thechance.mena.identity.presentation.screen.register.phoneEntry
 
 import net.thechance.mena.identity.domain.exception.AuthenticationException
 import net.thechance.mena.identity.domain.exception.InvalidCountryCodeException
-import net.thechance.mena.identity.domain.exception.InvalidCredentialsException
-import net.thechance.mena.identity.domain.exception.InvalidMobileNumberException
-import net.thechance.mena.identity.domain.exception.InvalidPasswordException
+import net.thechance.mena.identity.domain.exception.InvalidRequestException
 import net.thechance.mena.identity.domain.exception.NoNetworkException
+import net.thechance.mena.identity.domain.exception.PhoneNumberAlreadyExistsException
 import net.thechance.mena.identity.domain.exception.TooManyRequestsException
 import net.thechance.mena.identity.domain.exception.UserIsBlockedException
-import net.thechance.mena.identity.presentation.base.error.AuthenticationErrorState
+import net.thechance.mena.identity.presentation.base.errorState.AuthenticationErrorState
 
-fun handleLoginException(
+fun handleRegisterPhoneEntryException(
     exception: AuthenticationException,
 ): AuthenticationErrorState {
     return when (exception) {
         is InvalidCountryCodeException -> AuthenticationErrorState.InvalidCountryCode
-        is InvalidMobileNumberException -> AuthenticationErrorState.InvalidMobileNumber
-        is InvalidPasswordException -> AuthenticationErrorState.InvalidPassword
         is UserIsBlockedException -> AuthenticationErrorState.UserIsBlocked
         is TooManyRequestsException -> AuthenticationErrorState.TooManyRequests
         is NoNetworkException -> AuthenticationErrorState.NoNetwork
-        is InvalidCredentialsException -> AuthenticationErrorState.InvalidCredentials
+        is InvalidRequestException -> AuthenticationErrorState.InvalidMobileNumber
+        is PhoneNumberAlreadyExistsException -> AuthenticationErrorState.PhoneNumberAlreadyExists
         else -> AuthenticationErrorState.SomethingWentWrong(exception.message)
     }
 }
