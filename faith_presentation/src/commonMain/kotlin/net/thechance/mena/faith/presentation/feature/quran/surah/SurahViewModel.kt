@@ -70,10 +70,10 @@ class SurahViewModel(
     private fun updateReciterState(reciter: Reciter) =
         updateState { it.copy(currentReciter = reciter.toUiState()) }
 
-    override fun onConfigrationChange(lastAyah: Int) {
+    override fun onConfigrationChange() {
         updateState {
             it.copy(
-                initialAyahToScroll = lastAyah,
+                initialAyahToScroll = uiState.value.lastVisibleAyahNumber,
                 selectedAyahNumber = null
             )
         }
@@ -99,13 +99,15 @@ class SurahViewModel(
                 quranRepository.saveLastAyahForTilawah(lastAyah)
                 lastAyah
             },
-            dispatcher = dispatcher
+            dispatcher = dispatcher,
+            onSuccess = {
+                updateState {
+                    it.copy(
+                        lastVisibleAyahNumber = ayahNumber,
+                    )
+                }
+            }
         )
-        updateState {
-            it.copy(
-                lastVisibleAyahNumber = ayahNumber,
-            )
-        }
     }
 
     // TODO("Not yet implemented")
