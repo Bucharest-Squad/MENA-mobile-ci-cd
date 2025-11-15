@@ -4,8 +4,8 @@ package net.thechance.mena.core_chat.presentation.screen.chat
 
 import kotlinx.datetime.LocalDateTime
 import net.thechance.mena.core_chat.domain.entity.MessageContent
-import net.thechance.mena.core_chat.domain.entity.MessageStatus
 import net.thechance.mena.core_chat.domain.entity.MessageReaction
+import net.thechance.mena.core_chat.domain.entity.MessageStatus
 import net.thechance.mena.core_chat.presentation.utils.UiText
 import net.thechance.mena.core_chat.presentation.utils.now
 import kotlin.uuid.ExperimentalUuidApi
@@ -20,7 +20,8 @@ data class ChatScreenState(
     val chatListItems: List<ChatListItem> = emptyList(),
     val isChatActionsDialogVisible: Boolean = false,
     val isSendMoneyDialogVisible: Boolean = false,
-    val value:String="",
+    val value: String = "",
+    val isLoading: Boolean = false,
     val isConfirmDeleteChatDialogVisible: Boolean = false,
     val currentImageIndexForPreview: Int = 0,
     val isResendMessageDialogVisible: Boolean = false,
@@ -33,7 +34,7 @@ data class ChatScreenState(
     val selectedImageMessages: List<MessageUiState> = emptyList(),
     val isReactionDialogVisible: Boolean = false,
     val messageToReactTo: MessageUiState? = null,
-    val isRecordingVoice : Boolean = false
+    val isRecordingVoice: Boolean = false
 )
 
 data class UserData(
