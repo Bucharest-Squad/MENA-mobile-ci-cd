@@ -39,12 +39,12 @@ import net.thechance.mena.core_chat.presentation.components.snackBarHost.LocalSn
 import net.thechance.mena.core_chat.presentation.navigation.ConfirmPaymentRoute
 import net.thechance.mena.core_chat.presentation.navigation.LocalNavController
 import net.thechance.mena.core_chat.presentation.screen.chat.components.AttachmentsBottomSheet
-import net.thechance.mena.core_chat.presentation.screen.chat.components.AttachmentsSendMoneyBottomSheet
 import net.thechance.mena.core_chat.presentation.screen.chat.components.ChatHeader
 import net.thechance.mena.core_chat.presentation.screen.chat.components.ChatInputBar
 import net.thechance.mena.core_chat.presentation.screen.chat.components.ChatList
 import net.thechance.mena.core_chat.presentation.screen.chat.components.FullImagePagerView
 import net.thechance.mena.core_chat.presentation.screen.chat.components.RecordingBar
+import net.thechance.mena.core_chat.presentation.screen.chat.components.attachmentsSendMoneyBottomSheet
 import net.thechance.mena.core_chat.presentation.screen.chat.components.chatActionsMenuDialog
 import net.thechance.mena.core_chat.presentation.screen.chat.components.messageReactionDialog
 import net.thechance.mena.core_chat.presentation.screen.chat.components.resendFailedMessageDialog
@@ -169,21 +169,13 @@ fun ChatScreenContent(
                     showConfirmDeleteChatDialog = state.isConfirmDeleteChatDialogVisible,
                     actionsMenuInteractionListener = interactions as ActionsMenuInteractionListener
                 )
-                bottomSheet(state.isSendMoneyDialogVisible) {
-                    AnimatedVisibility(
-                        visible = state.isSendMoneyDialogVisible,
-                        enter = slideInVertically(initialOffsetY = { it }),
-                        exit = slideOutVertically(targetOffsetY = { it }),
-                        modifier = Modifier.align(Alignment.BottomCenter)
-                    ) {
-                        AttachmentsSendMoneyBottomSheet(
-                            attachmentsInteractionListener = interactions,
-                            value = state.value,
-                            onValueChange = interactions::onValueChanged,
-                            isLoading = state.isLoading,
-                        )
-                    }
-                }
+
+                attachmentsSendMoneyBottomSheet(
+                    isVisible = state.isSendMoneyDialogVisible,
+                    attachmentsInteractionListener = interactions,
+                    value = state.amountToTransfer,
+                    isLoading = state.isLoadingSendMoneyButton,
+                )
             }
         ) {
             ChatList(
@@ -293,7 +285,8 @@ private fun EffectsHandler(
             is ChatScreenEffect.NavigateToConfirmPayment -> {
                 navController.navigate(
                     ConfirmPaymentRoute(
-                        effect.amount
+                        effect.amount,
+                        effect.transactionId.toString()
                     )
                 )
             }

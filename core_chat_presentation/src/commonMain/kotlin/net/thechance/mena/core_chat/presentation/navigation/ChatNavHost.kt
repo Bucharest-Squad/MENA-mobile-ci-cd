@@ -14,6 +14,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import net.thechance.mena.core_chat.presentation.components.snackBarHost.AnimatedSnackBarHost
 import net.thechance.mena.core_chat.presentation.components.snackBarHost.LocalSnackBarHostController
 import net.thechance.mena.core_chat.presentation.components.snackBarHost.SnackBarHostController
@@ -64,9 +65,9 @@ fun ChatNavHost(
                         navController.popBackStack()
                     })
                 }
-                composable<ConfirmPaymentRoute> {
+                composable<ConfirmPaymentRoute> { backStack ->
                     walletApi.ConfirmPaymentEntry(
-                        transactionId = Uuid.random(),
+                        transactionId = Uuid.parse(backStack.savedStateHandle.toRoute<ConfirmPaymentRoute>().transactionId),
                         navigateBack = {
                             navController.popBackStack()
                         }

@@ -31,7 +31,10 @@ import mena.core_chat_presentation.generated.resources.error_get_user_info
 import mena.core_chat_presentation.generated.resources.error_invalid_recording
 import mena.core_chat_presentation.generated.resources.error_recording_failed
 import mena.core_chat_presentation.generated.resources.image_saved_successfully
+import mena.core_chat_presentation.generated.resources.no_internet
+import mena.core_chat_presentation.generated.resources.no_internet_connected
 import mena.core_chat_presentation.generated.resources.permission_denied_title
+import mena.core_chat_presentation.generated.resources.something_went_wrong
 import mena.core_chat_presentation.generated.resources.success
 import net.thechance.mena.core_chat.domain.entity.AudioData
 import net.thechance.mena.core_chat.domain.entity.Chat
@@ -58,6 +61,8 @@ import net.thechance.mena.core_chat.presentation.utils.convertAudioFileToByteArr
 import net.thechance.mena.core_chat.presentation.utils.encodeToByteArrayWithCompressionToMaxSize
 import net.thechance.mena.core_chat.presentation.utils.getUuidOrNull
 import net.thechance.mena.core_chat.presentation.utils.now
+import net.thechance.mena.wallet.domain.exceptions.NoInternetException
+import net.thechance.mena.wallet.domain.repository.TransactionRepository
 import org.jetbrains.compose.resources.StringResource
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -70,6 +75,7 @@ class ChatViewModel(
     private val imageDownloaderService: ImageDownloaderService,
     private val permissionsController: PermissionsController,
     private val audioPlayer: AudioPlayer,
+    private val transactionRepository: TransactionRepository,
     chatArgs: ChatArgs,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : BaseViewModel<ChatScreenState, ChatScreenEffect>(ChatScreenState(), dispatcher),
@@ -677,10 +683,10 @@ class ChatViewModel(
 
                 val completed =
                     isPlaybackCompleted(
-                    totalDuration = totalDuration,
-                    currentPosition = currentPosition,
-                    lastPosition = lastPositionMilliSeconds
-                )
+                        totalDuration = totalDuration,
+                        currentPosition = currentPosition,
+                        lastPosition = lastPositionMilliSeconds
+                    )
 
                 if (completed) {
                     updateVoiceMessageState(messageId, isPlaying = false, progress = 0f)
@@ -920,25 +926,84 @@ class ChatViewModel(
 
         updateState {
             it.copy(
-                value = "",
+                amountToTransfer = "",
                 isAttachmentsOverlayVisible = false,
                 isSendMoneyDialogVisible = true
             )
         }
-
     }
 
     override fun onValueChanged(value: String) {
         updateState {
             it.copy(
-                value = value
+                amountToTransfer = value
             )
         }
     }
 
     override fun onSendClicked() {
-        emitEffect(ChatScreenEffect.NavigateToConfirmPayment(amount = state.value.value))
-        updateState { it.copy(isSendMoneyDialogVisible = false) }
+        tryToExecute(
+            onStart = { updateState { it.copy(isLoadingSendMoneyButton = true) } },
+            execute = ::sendMoney,
+            onSuccess = { transactionId -> onSendMoneySuccess(transactionId) },
+            onError = ::onSendMoneyFailed,
+        )
+    }
+
+    private suspend fun sendMoney(): Uuid {
+        val receiverId = Uuid.random()  //todo Replace with actual receiver ID
+        val amount = state.value.amountToTransfer.toDouble()
+        return getTransactionId(receiverId, amount)
+    }
+
+    private fun onSendMoneySuccess(transactionId: Uuid) {
+        updateState {
+            it.copy(
+                isSendMoneyDialogVisible = false,
+                isLoadingSendMoneyButton = false
+            )
+        }
+        emitEffect(
+            ChatScreenEffect.NavigateToConfirmPayment(
+                state.value.amountToTransfer,
+                transactionId
+            )
+        )
+    }
+
+    override fun onDismiss() {
+        updateState {
+            it.copy(
+                isSendMoneyDialogVisible = false
+            )
+        }
+    }
+
+    private fun onSendMoneyFailed(e: Throwable) {
+        updateState { it.copy(isLoadingSendMoneyButton = false) }
+        when (e) {
+            is NoInternetException -> {
+                showSnackBar(
+                    titleStringResource = Res.string.no_internet,
+                    messageStringResource = Res.string.no_internet_connected,
+                    isError = true
+                )
+            }
+
+            else -> showSnackBar(
+                titleStringResource = Res.string.error,
+                messageStringResource = Res.string.something_went_wrong,
+                isError = true
+            )
+        }
+    }
+
+
+    private suspend fun getTransactionId(receiverId: Uuid, amount: Double): Uuid {
+        return transactionRepository.addPendingTransaction(
+            receiverId = receiverId,
+            amount = amount,
+        )
     }
 
     override fun onCameraResult(image: ImageBitmap?) {
