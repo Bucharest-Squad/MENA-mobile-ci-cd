@@ -22,7 +22,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
 import net.thechance.mena.admin_panel.domain.entity.user.User
-import net.thechance.mena.admin_panel.presentation.component.LoadingIndicator
+import net.thechance.mena.admin_panel.presentation.component.ActivationStatus
+import net.thechance.mena.admin_panel.presentation.component.AdminPanelContentLoading
 import net.thechance.mena.admin_panel.presentation.component.PagesIndicatorRow
 import net.thechance.mena.admin_panel.presentation.component.TableCellText
 import net.thechance.mena.admin_panel.presentation.component.TableHeaderRow
@@ -47,13 +48,12 @@ fun UsersListContent(
         )
 
         if (state.isLoading) {
-            LoadingIndicator()
+            AdminPanelContentLoading()
         } else {
             UsersListTable(
                 users = state.users,
                 onToggleUserStatusClicked = listener::onToggleUserStatusClicked,
                 modifier = Modifier.weight(1f),
-                pageInfo = state.pageInfo
             )
         }
 
@@ -71,7 +71,6 @@ fun UsersListContent(
 @Composable
 private fun UsersListTable(
     users: List<UsersManagementScreenState.UserItem>,
-    pageInfo: UsersManagementScreenState.UserPageInfo,
     onToggleUserStatusClicked: (userId: Uuid, userStatus: User.Status) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -144,7 +143,7 @@ private fun UserItemRow(
             modifier = Modifier.weight(0.8f),
             contentAlignment = Alignment.CenterStart
         ) {
-            UserStatusButton(isActive = user.status == User.Status.ACTIVE)
+            ActivationStatus(isActive = user.status == User.Status.ACTIVE)
         }
 
         Box(
