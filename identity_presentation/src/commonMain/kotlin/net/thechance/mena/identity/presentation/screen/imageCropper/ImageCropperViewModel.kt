@@ -33,6 +33,10 @@ class ImageCropperViewModel(
         sendNewEffect(ImageCropperScreenEffect.NavigateBackToEditProfile)
     }
 
+    override fun onDismissSnackBar() {
+        updateState { copy(errorMessage = null) }
+    }
+
     private fun encodeAndCacheImage(imageByteArray: ByteArray) {
         imagesRepository.cacheImage(imageKey, imageByteArray)
     }

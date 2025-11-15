@@ -26,13 +26,12 @@ import mena.identity_presentation.generated.resources.Res
 import mena.identity_presentation.generated.resources.back
 import mena.identity_presentation.generated.resources.error
 import mena.identity_presentation.generated.resources.ic_arrow_left
-import mena.identity_presentation.generated.resources.ic_close_circle
 import mena.identity_presentation.generated.resources.image_preview
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
-import net.thechance.mena.designsystem.presentation.component.snackbar.SnackBar
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.identity.presentation.base.BaseScreen
+import net.thechance.mena.identity.presentation.components.ErrorSnackBar
 import net.thechance.mena.identity.presentation.screen.imageCropper.components.ImageCropperComponent
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
@@ -61,7 +60,10 @@ class ImageCropperScreen(
         state: ImageCropperScreenState,
         listener: ImageCropperInteractionListener
     ) {
-        ScreenLayout(errorMessage = state.errorMessage) {
+        ScreenLayout(
+            errorMessage = state.errorMessage,
+            onDismissSnackBar = listener::onDismissSnackBar
+        ) {
             Screen(state = state, listener = listener)
         }
     }
@@ -79,6 +81,7 @@ class ImageCropperScreen(
     @Composable
     private fun ScreenLayout(
         errorMessage: StringResource?,
+        onDismissSnackBar: () -> Unit,
         content: @Composable () -> Unit
     ) {
         Scaffold(
@@ -89,10 +92,9 @@ class ImageCropperScreen(
                     exit = slideOutHorizontally(targetOffsetX = { it }),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    SnackBar(
-                        title = stringResource(Res.string.error),
-                        message = errorMessage?.let { stringResource(it) } ?: "",
-                        leadingIcon = painterResource(Res.drawable.ic_close_circle),
+                    ErrorSnackBar(
+                        errorMessage = stringResource(Res.string.error),
+                        onDismiss = onDismissSnackBar,
                         modifier = Modifier.fillMaxWidth().padding(bottom = Theme.spacing._16)
                             .padding(horizontal = Theme.spacing._16)
                     )
