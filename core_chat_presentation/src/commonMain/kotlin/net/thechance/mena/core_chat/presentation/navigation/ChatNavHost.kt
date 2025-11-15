@@ -64,13 +64,9 @@ fun ChatNavHost(
                         navController.popBackStack()
                     })
                 }
-                composable<ConfirmPaymentRoute> { backStack ->
-                    val amount = backStack.savedStateHandle["amount"] ?: ""
-
-                    val parsedAmount = amount.replace(',', '.').toDoubleOrNull() ?: 0.0
+                composable<ConfirmPaymentRoute> {
                     walletApi.ConfirmPaymentEntry(
                         transactionId = Uuid.random(),
-                        totalAmount = parsedAmount,
                         navigateBack = {
                             navController.popBackStack()
                         }
