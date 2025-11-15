@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
@@ -54,7 +55,8 @@ fun PrivacyScreenContainer(
                 vertical = Theme.spacing._8,
                 horizontal = Theme.spacing._16
             ),
-            verticalArrangement = Arrangement.spacedBy(Theme.spacing._12)
+            verticalArrangement = Arrangement.spacedBy(Theme.spacing._12),
+            horizontalAlignment = Alignment.CenterHorizontally
 
         ) {
             content()

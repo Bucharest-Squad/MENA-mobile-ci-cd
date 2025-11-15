@@ -1,5 +1,9 @@
 package net.thechance.mena.identity.presentation.screen.privacyAndPolicy
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -23,7 +27,10 @@ import net.thechance.mena.identity.presentation.base.BaseScreen
 import net.thechance.mena.identity.presentation.components.AuthAppBar
 import net.thechance.mena.identity.presentation.components.ErrorSnackBar
 import net.thechance.mena.identity.presentation.screen.privacyAndPolicy.components.PrivacyScreenContainer
+import net.thechance.mena.identity.presentation.screen.privacyAndPolicy.components.PrivacyScreenContent
+import net.thechance.mena.identity.presentation.screen.privacyAndPolicy.components.PrivacyScreenContentShimmer
 import net.thechance.mena.identity.presentation.screen.privacyAndPolicy.components.PrivacySection
+import net.thechance.mena.identity.presentation.util.animation.shimmerLoading
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -52,36 +59,19 @@ class PrivacyAndPolicyScreen :
                 )
             }
         ) {
-            PrivacyScreenContainer {
-
-                item {
-                    Image(
-                        painter = painterResource(Res.drawable.privacy_logo),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .size(64.dp)
-                    )
-                }
-
-                item {
-                    Text(
-                        text = stringResource(Res.string.last_update, state.lastUpdateDate),
-                        textAlign = TextAlign.Center,
-                        style = Theme.typography.label.small,
-                        color = Theme.colorScheme.shadeTertiary,
-                        modifier = Modifier.fillMaxWidth()
-                            .padding(bottom = Theme.spacing._4)
-                    )
-                }
-
-                items(state.privacyAndPolicySections) { item ->
-                    PrivacySection(
-                        title = item.title,
-                        content = item.content
-                    )
-                }
-
+            AnimatedVisibility(
+                visible = state.isLoading && state.privacyAndPolicySections.isEmpty(),
+                enter = fadeIn(animationSpec = tween(durationMillis = 500)),
+                exit = fadeOut(animationSpec = tween(durationMillis = 500))
+            ){
+                PrivacyScreenContentShimmer()
+            }
+            AnimatedVisibility(
+                visible = !state.isLoading && !state.privacyAndPolicySections.isEmpty(),
+                enter = fadeIn(animationSpec = tween(durationMillis = 500)),
+                exit = fadeOut(animationSpec = tween(durationMillis = 500))
+            ){
+                PrivacyScreenContent(state,listener)
             }
         }
         ErrorSnackBar(
