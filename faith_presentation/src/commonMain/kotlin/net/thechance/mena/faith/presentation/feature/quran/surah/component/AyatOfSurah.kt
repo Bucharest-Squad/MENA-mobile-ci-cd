@@ -32,7 +32,7 @@ fun AyatOfSurah(
 ) {
     BoxWithConstraints(modifier) {
         LaunchedEffect(maxWidth) {
-            val ayahToScroll = state.lastVisibleAyahNumber ?: 0
+            val ayahToScroll = state.lastVisibleAyahNumber ?: 1
             listener.onConfigrationChange(ayahToScroll)
 
         }
