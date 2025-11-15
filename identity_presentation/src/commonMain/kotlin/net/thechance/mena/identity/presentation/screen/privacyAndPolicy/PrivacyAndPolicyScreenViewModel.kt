@@ -11,6 +11,7 @@ import net.thechance.mena.identity.presentation.base.error.ErrorState
 import net.thechance.mena.identity.presentation.base.error.handleAuthenticationException
 import net.thechance.mena.identity.presentation.mapper.mapAuthenticationErrorToMessage
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
+import net.thechance.mena.identity.presentation.util.toFormattedDate
 import org.jetbrains.compose.resources.StringResource
 
 class PrivacyAndPolicyScreenViewModel(
@@ -33,8 +34,8 @@ class PrivacyAndPolicyScreenViewModel(
         updateState { copy(errorMessage = null) }
     }
 
-    private fun getPrivacyAndPolicy(){
-        updateState { copy(isLoading = true , errorMessage = null) }
+    private fun getPrivacyAndPolicy() {
+        updateState { copy(isLoading = true, errorMessage = null) }
         tryToExecute(
             function = { policyRepository.getPrivacyAndPolicy() },
             onSuccess = ::onGetPrivacyAndPolicySuccess,
@@ -42,14 +43,17 @@ class PrivacyAndPolicyScreenViewModel(
             dispatcher = dispatcher
         )
     }
-    private fun onGetPrivacyAndPolicySuccess(privacyAndPolicy: PrivacyAndPolicy){
+
+    private fun onGetPrivacyAndPolicySuccess(privacyAndPolicy: PrivacyAndPolicy) {
         updateState {
             copy(
-                isLoading =false,
+                isLoading = false,
                 privacyAndPolicySections = privacyAndPolicy.sections.map { it.toUIState() },
-                lastUpdateDate = privacyAndPolicy.updateDate?.split("T")[0]?:""
-            ) }
+                lastUpdateDate = privacyAndPolicy.updateDate.toFormattedDate()
+            )
+        }
     }
+
     private fun onGetPrivacyAndPolicyError(throwable: Throwable) {
         updateState {
             copy(
@@ -58,15 +62,16 @@ class PrivacyAndPolicyScreenViewModel(
             )
         }
     }
+
     private fun mapErrorMessage(throwable: Throwable): StringResource {
         return when (throwable) {
             is AuthenticationException -> mapAuthenticationErrorToMessage(
                 handleAuthenticationException(throwable)
             )
+
             else -> mapErrorToMessage(ErrorState.GenericError(throwable))
         }
     }
-
 
 
 }
