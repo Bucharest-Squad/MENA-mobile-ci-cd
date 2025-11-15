@@ -81,12 +81,10 @@ class PrayerTimeViewModel(
         )
         this.currentIslamicDate = currentIslamicDate
 
-        val readableDate = convertIslamicDateToString(currentIslamicDate)
-
         updateState {
             it.copy(
                 prayerTimes = filteredPrayerTimes,
-                currentDate = readableDate
+                currentDate = currentIslamicDate,
             )
         }
         startCountdownTimer()
@@ -138,8 +136,7 @@ class PrayerTimeViewModel(
         val previousIslamicDate = calculatePreviousIslamicDate(currentDate)
         currentIslamicDate = previousIslamicDate
 
-        val readableDate = convertIslamicDateToString(previousIslamicDate)
-        updateState { it.copy(currentDate = readableDate) }
+        updateState { it.copy(currentDate = previousIslamicDate) }
 
         getPrayerTimesForIslamicDate(previousIslamicDate)
     }
@@ -149,8 +146,7 @@ class PrayerTimeViewModel(
         val nextIslamicDate = calculateNextIslamicDate(currentDate)
         currentIslamicDate = nextIslamicDate
 
-        val readableDate = convertIslamicDateToString(nextIslamicDate)
-        updateState { it.copy(currentDate = readableDate) }
+        updateState { it.copy(currentDate = nextIslamicDate) }
 
         getPrayerTimesForIslamicDate(nextIslamicDate)
     }
@@ -163,8 +159,7 @@ class PrayerTimeViewModel(
         val selectedIslamicDate = IslamicDate(day, month, year)
         currentIslamicDate = selectedIslamicDate
 
-        val readableDate = convertIslamicDateToString(selectedIslamicDate)
-        updateState { it.copy(currentDate = readableDate, showDatePicker = false) }
+        updateState { it.copy(currentDate = selectedIslamicDate, showDatePicker = false) }
 
         getPrayerTimesForIslamicDate(selectedIslamicDate)
     }

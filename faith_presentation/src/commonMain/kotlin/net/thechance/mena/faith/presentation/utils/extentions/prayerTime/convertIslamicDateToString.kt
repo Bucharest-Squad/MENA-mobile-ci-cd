@@ -1,13 +1,14 @@
 package net.thechance.mena.faith.presentation.utils.extentions.prayerTime
 
+import androidx.compose.runtime.Composable
+import mena.faith_presentation.generated.resources.Res
+import mena.faith_presentation.generated.resources.hijri_months
 import net.thechance.mena.faith.presentation.utils.IslamicDate
+import org.jetbrains.compose.resources.stringArrayResource
 
-fun convertIslamicDateToString(date: IslamicDate): String {
-        val months = listOf(
-            "Muharram", "Safar", "Rabi' al-awwal", "Rabi' al-thani",
-            "Jumada al-awwal", "Jumada al-thani", "Rajab", "Sha'ban",
-            "Ramadan", "Shawwal", "Dhu al-Qi'dah", "Dhu al-Hijjah"
-        )
-        val monthName = months.getOrNull(date.month - 1) ?: "Unknown"
-        return "${date.day} $monthName ${date.year}"
-    }
+@Composable
+fun IslamicDate.convertIslamicDateToString(): String {
+    val months = stringArrayResource(Res.array.hijri_months)
+    val monthName = months.getOrNull(month - 1) ?: "Unknown"
+    return "$day $monthName $year"
+}

@@ -11,7 +11,7 @@ data class PrayerTimeUiState(
     val prayerTimes: List<PrayerTime> = emptyList(),
     val nextPrayerCountdown: String = "",
     val nextPrayerName: PrayerName = PrayerName.DHUHR,
-    val currentDate: String = "",
+    val currentDate: IslamicDate = IslamicDate(1,1,1),
     val nextPrayerTime: Instant = Instant.fromEpochMilliseconds(0),
     val address: String = "",
     val showDatePicker: Boolean = false,
