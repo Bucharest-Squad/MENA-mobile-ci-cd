@@ -675,7 +675,8 @@ class ChatViewModel(
 
                 val currentPosition = audioPlayer.getCurrentPosition()
 
-                val completed = isPlaybackCompleted(
+                val completed =
+                    isPlaybackCompleted(
                     totalDuration = totalDuration,
                     currentPosition = currentPosition,
                     lastPosition = lastPositionMilliSeconds
@@ -973,6 +974,21 @@ class ChatViewModel(
 
     private suspend fun handleChatHistorySuccess(result: PagedData<Message>) {
         onGetChatHistorySuccess(result)
+    }
+
+    override fun onStopAudioPlayback() {
+        audioPlayer.pause()
+        if (audioRecordRepository.isRecording()) audioRecordRepository.stopRecording()
+
+        updateState { currentState ->
+            val updatedItems = currentState.chatListItems.map { item ->
+                if (item is ChatListItem.VoiceMessage && item.isPlaying) item.copy(isPlaying = false) else item
+            }
+            currentState.copy(
+                chatListItems = updatedItems,
+                isRecordingVoice = false
+            )
+        }
     }
 
     companion object {
