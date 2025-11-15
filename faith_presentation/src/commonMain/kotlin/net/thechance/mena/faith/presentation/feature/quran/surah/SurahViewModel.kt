@@ -70,7 +70,7 @@ class SurahViewModel(
     private fun updateReciterState(reciter: Reciter) =
         updateState { it.copy(currentReciter = reciter.toUiState()) }
 
-    override fun onScrollPositionChanged(lastAyah: Int) {
+    override fun onConfigrationChange(lastAyah: Int) {
         updateState {
             it.copy(
                 initialAyahToScroll = lastAyah,

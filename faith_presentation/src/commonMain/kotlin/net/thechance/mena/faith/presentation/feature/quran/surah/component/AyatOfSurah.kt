@@ -33,7 +33,7 @@ fun AyatOfSurah(
     BoxWithConstraints(modifier) {
         LaunchedEffect(maxWidth) {
             val ayahToScroll = state.lastVisibleAyahNumber ?: 0
-            listener.onScrollPositionChanged(ayahToScroll)
+            listener.onConfigrationChange(ayahToScroll)
 
         }
     }
@@ -173,7 +173,7 @@ private fun Preview() {
                 override fun onShareClick(ayahContent: String) {}
                 override fun highlightAyah(ayahNumber: Int) {}
                 override fun updateContinueTilawah(ayahNumber: Int) {}
-                override fun onScrollPositionChanged(lastAyah: Int) {}
+                override fun onConfigrationChange(lastAyah: Int) {}
                 override fun playSurah(surahId: Int) {}
                 override fun onInitialAyahScrolled() {}
             }
