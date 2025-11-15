@@ -196,6 +196,7 @@ private fun Preview() {
                     override fun onInitialAyahScrolled() {}
                     override fun highlightAyah(ayahNumber: Int) {}
                     override fun updateContinueTilawah(ayahNumber: Int) {}
+                    override fun onScrollPositionChanged(lastAyah: Int) {}
                     override fun playSurah(surahId: Int) {}
 
                 },
