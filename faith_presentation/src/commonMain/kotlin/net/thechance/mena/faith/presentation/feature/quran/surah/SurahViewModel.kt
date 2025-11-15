@@ -70,6 +70,15 @@ class SurahViewModel(
     private fun updateReciterState(reciter: Reciter) =
         updateState { it.copy(currentReciter = reciter.toUiState()) }
 
+    override fun onScrollPositionChanged(lastAyah: Int) {
+        updateState {
+            it.copy(
+                initialAyahToScroll = lastAyah,
+                selectedAyahNumber = null
+            )
+        }
+    }
+
     override fun highlightAyah(ayahNumber: Int) {
         updateState {
             it.copy(
@@ -92,6 +101,11 @@ class SurahViewModel(
             },
             dispatcher = dispatcher
         )
+        updateState {
+            it.copy(
+                lastVisibleAyahNumber = ayahNumber,
+            )
+        }
     }
 
     // TODO("Not yet implemented")
