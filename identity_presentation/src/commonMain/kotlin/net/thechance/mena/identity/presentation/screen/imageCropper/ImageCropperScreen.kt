@@ -18,6 +18,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.decodeToImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.Navigator
@@ -116,9 +117,9 @@ class ImageCropperScreen(
 
             Spacer(Modifier.weight(0.2f))
 
-            state.imageBitmap?.let {
+            state.imageByteArray?.let {
                 ImageCropperComponent(
-                    image = BitmapPainter(it),
+                    image = BitmapPainter(it.decodeToImageBitmap()),
                     onSaveButtonClicked = listener::onCropImage,
                     onUploadAnotherImageClicked = listener::onChangeImage,
                 )
