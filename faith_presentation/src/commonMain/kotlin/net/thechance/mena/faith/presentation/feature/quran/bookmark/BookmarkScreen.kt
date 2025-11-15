@@ -108,7 +108,7 @@ private fun Content(
                 enter = fadeIn(tween()),
                 exit = fadeOut(tween()),
             ) {
-                EmptyBookmarkState(listener::onBackClick)
+                EmptyBookmarksView(listener::onBackClick)
             }
 
             AnimatedVisibility(
@@ -135,7 +135,7 @@ private fun Content(
 }
 
 @Composable
-private fun EmptyBookmarkState(onStartTilawahClick: () -> Unit) {
+private fun EmptyBookmarksView(onStartTilawahClick: () -> Unit) {
     EmptyBookmarkState(
         title = stringResource(Res.string.empty_state_bookmark_title),
         icon = painterResource(Res.drawable.ic_not_saved_book_mark),
