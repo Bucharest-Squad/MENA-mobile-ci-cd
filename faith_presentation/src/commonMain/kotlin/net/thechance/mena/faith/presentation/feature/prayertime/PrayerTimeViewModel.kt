@@ -8,9 +8,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.number
-import kotlinx.datetime.toLocalDateTime
 import net.thechance.mena.faith.domain.entity.PrayerName
 import net.thechance.mena.faith.domain.entity.PrayerTime
 import net.thechance.mena.faith.domain.repository.PrayerTimeRepository
@@ -159,7 +156,7 @@ class PrayerTimeViewModel(
             it.copy(
                 islamicDatePickerUiState = it.islamicDatePickerUiState.copy(
                     selectedIslamicDate = selectedIslamicDate,
-                    isClearDateActive = selectedIslamicDate == uiState.value.currentDate,
+                    isClearDateActive = selectedIslamicDate != IslamicDate.now(islamicDateCalculator),
                 )
             )
         }
@@ -181,7 +178,7 @@ class PrayerTimeViewModel(
         updateState {
             it.copy(
                 islamicDatePickerUiState = it.islamicDatePickerUiState.copy(
-                    selectedIslamicDate = it.currentDate,
+                    selectedIslamicDate = IslamicDate.now(islamicDateCalculator),
                     isClearDateActive = false,
                 )
             )
