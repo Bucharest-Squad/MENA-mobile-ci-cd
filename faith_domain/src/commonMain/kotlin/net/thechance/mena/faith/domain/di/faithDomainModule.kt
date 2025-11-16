@@ -1,5 +1,6 @@
 package net.thechance.mena.faith.domain.di
 
+import net.thechance.mena.faith.domain.service.PrayerTimeService
 import net.thechance.mena.faith.domain.service.QuranService
 import net.thechance.mena.faith.domain.usecase.CalculateDistanceUseCase
 import net.thechance.mena.faith.domain.usecase.GetNextPrayerTimeUseCase
@@ -12,4 +13,5 @@ val faithDomainModule = module {
     singleOf(::CalculateDistanceUseCase)
     singleOf(::GetNextPrayerTimeUseCase)
     singleOf(::QuranService)
+    singleOf(::PrayerTimeService)
 }

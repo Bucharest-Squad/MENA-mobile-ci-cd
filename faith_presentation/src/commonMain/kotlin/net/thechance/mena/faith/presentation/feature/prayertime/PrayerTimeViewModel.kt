@@ -1,17 +1,12 @@
 package net.thechance.mena.faith.presentation.feature.prayertime
 
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import net.thechance.mena.faith.domain.entity.PrayerName
 import net.thechance.mena.faith.domain.entity.PrayerTime
 import net.thechance.mena.faith.domain.repository.PrayerTimeRepository
-import net.thechance.mena.faith.domain.usecase.GetNextPrayerTimeUseCase
+import net.thechance.mena.faith.domain.service.PrayerTimeService
 import net.thechance.mena.faith.presentation.base.BaseViewModel
 import net.thechance.mena.faith.presentation.utils.IslamicDate
 import net.thechance.mena.faith.presentation.utils.IslamicDateCalculator
@@ -27,14 +22,13 @@ import kotlin.time.Instant
 @OptIn(ExperimentalTime::class)
 class PrayerTimeViewModel(
     private val prayerTimeRepository: PrayerTimeRepository,
-    private val getNextPrayerTimeUseCase: GetNextPrayerTimeUseCase,
     private val locationService: LocationService,
+    private val prayerTimeService: PrayerTimeService,
     private val islamicDateCalculator: IslamicDateCalculator,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : BaseViewModel<PrayerTimeUiState, PrayerTimeEffect>(PrayerTimeUiState()),
     PrayerTimeInteractionListener {
 
-    private var countdownJob: Job? = null
     private var currentAddress: Address? = null
 
     init {
@@ -59,63 +53,66 @@ class PrayerTimeViewModel(
     private fun getPrayerTimes(address: Address, date: Instant) {
         tryToExecute(
             execute = { prayerTimeRepository.getPrayerTimes(date = date, address = address) },
-            onSuccess = ::onPrayerTimesSuccess,
+            onSuccess = { onPrayerTimesSuccess(prayerTimes = it, address = address) },
             dispatcher = dispatcher
         )
     }
 
-    private fun onPrayerTimesSuccess(prayerTimes: List<PrayerTime>) {
-        val filteredPrayerTimes = prayerTimes.filter { it.name != PrayerName.SUNRISE }
+    private fun onPrayerTimesSuccess(prayerTimes: List<PrayerTime>, address: Address) {
+        tryToExecute(
+            execute = {
+                val filteredPrayerTimes = prayerTimes.filter { it.name != PrayerName.SUNRISE }
 
-        val currentIslamicDate = IslamicDate.now(islamicDateCalculator)
+                val currentIslamicDate = IslamicDate.now(islamicDateCalculator)
 
-        updateState {
-            it.copy(
-                prayerTimes = filteredPrayerTimes,
-                currentDate = currentIslamicDate,
-            )
-        }
-        startCountdownTimer()
-    }
-
-    private fun startCountdownTimer() {
-        countdownJob?.cancel()
-        countdownJob = viewModelScope.launch(dispatcher) {
-            try {
-                while (isActive) {
-                    updateNextPrayerInfoWithFlow()
-                    delay(COUNTDOWN_UPDATE_INTERVAL)
+                updateState {
+                    it.copy(
+                        prayerTimes = filteredPrayerTimes,
+                        currentDate = currentIslamicDate,
+                    )
                 }
-            } finally {
-                countdownJob = null
+            },
+            onSuccess = {
+                startNextPrayerObserver(address)
             }
-        }
+        )
     }
 
-    private suspend fun updateNextPrayerInfoWithFlow() {
-        val address = currentAddress ?: return
-        if (!viewModelScope.isActive) return
-
-        runCatching {
-            getNextPrayerTimeUseCase.getNextPrayer(address).collect { nextPrayer ->
-                if (!viewModelScope.isActive) return@collect
-
-                nextPrayer?.let {
-                    val remainingMillis = calculateRemainingTime(it.time, Clock.System.now())
-                    updateState { state ->
-                        state.copy(
-                            nextPrayerName = it.name,
-                            nextPrayerCountdown = formatCountdown(remainingMillis),
-                            nextPrayerTime = it.time
-                        )
+    private fun startNextPrayerObserver(address: Address) {
+        tryToCollect(
+            block = { prayerTimeService.getNextPrayer(address) },
+            onEmitNewValue =
+                { nextPrayer ->
+                    nextPrayer?.let {
+                        startCountdownTimer(nextPrayer = it, address = address)
+                    } ?: run {
+                        updateState { state ->
+                            state.copy(
+                                nextPrayerName = null,
+                                nextPrayerCountdown = ""
+                            )
+                        }
                     }
-                }
-            }
-        }
+                },
+            dispatcher = dispatcher
+        )
     }
 
-    private fun calculateRemainingTime(prayerTime: Instant, currentTime: Instant): Long =
-        prayerTime.toEpochMilliseconds() - currentTime.toEpochMilliseconds()
+    private fun startCountdownTimer(nextPrayer: PrayerTime, address: Address) {
+        val currentTime = Clock.System.now()
+        val remainingMillis =
+            nextPrayer.time.toEpochMilliseconds() - currentTime.toEpochMilliseconds()
+        tryToExecute(
+            execute = {
+                updateState { state ->
+                    state.copy(
+                        nextPrayerName = nextPrayer.name,
+                        nextPrayerCountdown = formatCountdown(remainingMillis)
+                    )
+                }
+            },
+            onSuccess = { startNextPrayerObserver(address) })
+    }
 
     override fun onBackClick() = sendEffect(PrayerTimeEffect.NavigateBack)
 
@@ -213,9 +210,5 @@ class PrayerTimeViewModel(
     private fun onHijriPrayerTimesSuccess(prayerTimes: List<PrayerTime>) {
         val filteredPrayerTimes = prayerTimes.filter { it.name != PrayerName.SUNRISE }
         updateState { it.copy(prayerTimes = filteredPrayerTimes) }
-    }
-
-    private companion object {
-        const val COUNTDOWN_UPDATE_INTERVAL = 1000L
     }
 }
