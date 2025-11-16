@@ -11,6 +11,7 @@ import mena.faith_presentation.generated.resources.hijri_months
 import net.thechance.mena.designsystem.presentation.component.datePicker.WheelDatePicker
 import net.thechance.mena.faith.presentation.utils.IslamicDate
 import org.jetbrains.compose.resources.stringArrayResource
+import org.koin.compose.getKoin
 
 @Composable
 fun IslamicDatePicker(
@@ -18,7 +19,7 @@ fun IslamicDatePicker(
     onDateChange: (day: Int, month: Int, year: Int) -> Unit,
     modifier: Modifier = Modifier,
     minYear: Int = 1350,
-    maxYear: Int = 1450
+    maxYear: Int = IslamicDate.now(getKoin().get()).year.plus(10)
 ) {
     val islamicMonthNames = getIslamicMonthNames()
     val yearList = createYearList(minYear, maxYear)
