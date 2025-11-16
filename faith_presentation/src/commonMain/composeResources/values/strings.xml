@@ -164,6 +164,20 @@
         <item>Dhul-Qa'dah</item>
         <item>Dhul-Hijjah</item>
     </string-array>
+    <string-array name="hijri_months_shortened">
+        <item>Muharram</item>
+        <item>Safar</item>
+        <item>Rabi' I</item>
+        <item>Rabi' II</item>
+        <item>Jumada I</item>
+        <item>Jumada II</item>
+        <item>Rajab</item>
+        <item>Sha'ban</item>
+        <item>Ramadan</item>
+        <item>Shawwal</item>
+        <item>Dhul-Qa'dah</item>
+        <item>Dhul-Hijjah</item>
+    </string-array>
 
 
     <!-- Surah Specific -->

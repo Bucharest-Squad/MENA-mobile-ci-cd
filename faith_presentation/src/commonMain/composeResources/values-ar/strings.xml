@@ -172,6 +172,21 @@
         <item>ذو الحجة</item>
     </string-array>
 
+    <string-array name="hijri_months_shortened">
+        <item>محرم</item>
+        <item>صفر</item>
+        <item>ربيع I</item>
+        <item>ربيع II</item>
+        <item>جمادى I</item>
+        <item>جمادى II</item>
+        <item>رجب</item>
+        <item>شعبان</item>
+        <item>رمضان</item>
+        <item>شوال</item>
+        <item>ذو القعدة</item>
+        <item>ذو الحجة</item>
+    </string-array>
+
     <string name="read_all_surah">تلاوة السورة</string>
     <string name="remove_aya">حذف الآية</string>
     <string name="bookmark_added_successfully">تم إضافة الإشارة المرجعية بنجاح</string>

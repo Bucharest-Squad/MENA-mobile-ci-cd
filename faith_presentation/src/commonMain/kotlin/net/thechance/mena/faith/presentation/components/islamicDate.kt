@@ -1,13 +1,15 @@
 package net.thechance.mena.faith.presentation.components
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.dp
 import mena.faith_presentation.generated.resources.Res
 import mena.faith_presentation.generated.resources.hijri_months
+import mena.faith_presentation.generated.resources.hijri_months_shortened
 import net.thechance.mena.designsystem.presentation.component.datePicker.WheelDatePicker
 import net.thechance.mena.faith.presentation.utils.IslamicDate
 import org.jetbrains.compose.resources.stringArrayResource
@@ -18,19 +20,24 @@ fun IslamicDatePicker(
     selectedDate: IslamicDate,
     onDateChange: (day: Int, month: Int, year: Int) -> Unit,
     modifier: Modifier = Modifier,
-    minYear: Int = 1350,
-    maxYear: Int = IslamicDate.now(getKoin().get()).year.plus(10)
+    minYear: Int = IslamicDate.now(getKoin().get()).year.minus(10),
+    maxYear: Int = IslamicDate.now(getKoin().get()).year.plus(10),
 ) {
-    val islamicMonthNames = getIslamicMonthNames()
-    val yearList = createYearList(minYear, maxYear)
+    val containerWidth by remember { mutableIntStateOf(0) }
+    val density = LocalDensity.current
 
-    val (currentMonthState, currentYearState) = rememberIslamicMonthYearState(selectedDate)
-    val currentMonth = currentMonthState.value
-    val currentYear = currentYearState.value
+    val shouldUseShortNames = (with(density) { containerWidth.toDp() } < 340.dp)
 
-    val daysList = createIslamicDaysList(currentMonth, currentYear)
+    val islamicMonthNames = getHijriMonthNames(shouldUseShortNames)
+    val yearList = remember(minYear, maxYear) { createYearList(minYear, maxYear) }
+    val daysList = remember(selectedDate.month, selectedDate.year) {
+        createIslamicDaysList(
+            selectedDate.month,
+            selectedDate.year
+        )
+    }
     val selectedIndices = calculateIslamicSelectionIndices(
-        date = selectedDate,
+        selectedDate = selectedDate,
         daysCount = daysList.size,
         minYear = minYear
     )
@@ -45,46 +52,14 @@ fun IslamicDatePicker(
         modifier = modifier,
         onDateChange = { dayIndex, monthIndex, yearIndex ->
             handleIslamicWheelDateChange(
-                dayIndex = dayIndex,
-                monthIndex = monthIndex,
-                yearIndex = yearIndex,
+                dayIndex,
+                monthIndex,
+                yearIndex,
                 minYear = minYear,
-                onMonthYearUpdate = { month, year ->
-                    currentMonthState.value = month
-                    currentYearState.value = year
-                },
-                onDateChange = onDateChange
+                onDateChanged = onDateChange
             )
         }
     )
-}
-
-@Composable
-private fun rememberIslamicMonthYearState(
-    initialDate: IslamicDate
-): Pair<MutableState<Int>, MutableState<Int>> {
-    val currentMonthState = remember { mutableStateOf(initialDate.month) }
-    val currentYearState = remember { mutableStateOf(initialDate.year) }
-
-    LaunchedEffect(initialDate.month, initialDate.year) {
-        currentMonthState.value = initialDate.month
-        currentYearState.value = initialDate.year
-    }
-
-    return currentMonthState to currentYearState
-}
-
-@Composable
-private fun createIslamicDaysList(month: Int, year: Int): List<String> {
-    val daysCount = remember(month, year) {
-        getIslamicMonthDays(month, year)
-    }
-
-    return remember(daysCount) {
-        (1..daysCount).map { day ->
-            day.toString().padStart(2, '0')
-        }
-    }
 }
 
 private fun getIslamicMonthDays(month: Int, year: Int): Int {
@@ -96,18 +71,24 @@ private fun getIslamicMonthDays(month: Int, year: Int): Int {
     }
 }
 
+private fun createIslamicDaysList(month: Int, year: Int): List<String> {
+    val daysInMonth = getIslamicMonthDays(month, year)
+    return (1..daysInMonth).map { day ->
+        day.toString().padStart(2, '0')
+    }
+}
+
 private fun isIslamicLeapYear(year: Int): Boolean {
     return (year * 11 + 14) % 30 < 11
 }
 
 @Composable
-private fun getIslamicMonthNames(): List<String> = stringArrayResource(Res.array.hijri_months)
+private fun getHijriMonthNames(isShortened: Boolean): List<String> =
+    if (isShortened) stringArrayResource(Res.array.hijri_months_shortened)
+    else stringArrayResource(Res.array.hijri_months)
 
-@Composable
 private fun createYearList(minYear: Int, maxYear: Int): List<String> {
-    return remember(minYear, maxYear) {
-        (minYear..maxYear).map { it.toString() }
-    }
+    return (minYear..maxYear).map { it.toString() }
 }
 
 private data class SelectionIndices(
@@ -117,13 +98,13 @@ private data class SelectionIndices(
 )
 
 private fun calculateIslamicSelectionIndices(
-    date: IslamicDate,
+    selectedDate: IslamicDate,
     daysCount: Int,
     minYear: Int
 ): SelectionIndices {
-    val dayIndex = (date.day.coerceIn(1, daysCount) - 1)
-    val monthIndex = date.month - 1
-    val yearIndex = date.year - minYear
+    val dayIndex = (selectedDate.day.coerceIn(1, daysCount) - 1)
+    val monthIndex = selectedDate.month - 1
+    val yearIndex = selectedDate.year - minYear
 
     return SelectionIndices(
         dayIndex = dayIndex,
@@ -132,27 +113,18 @@ private fun calculateIslamicSelectionIndices(
     )
 }
 
-private fun convertMonthIndexToValue(monthIndex: Int): Int = monthIndex + 1
-
-private fun convertYearIndexToValue(yearIndex: Int, minYear: Int): Int = minYear + yearIndex
-
-private fun convertDayIndexToValue(dayIndex: Int): Int = dayIndex + 1
-
 private fun handleIslamicWheelDateChange(
     dayIndex: Int,
     monthIndex: Int,
     yearIndex: Int,
     minYear: Int,
-    onMonthYearUpdate: (month: Int, year: Int) -> Unit,
-    onDateChange: (day: Int, month: Int, year: Int) -> Unit
+    onDateChanged: (day: Int, month: Int, year: Int) -> Unit
 ) {
-    val month = convertMonthIndexToValue(monthIndex)
-    val year = convertYearIndexToValue(yearIndex, minYear)
-
-    onMonthYearUpdate(month, year)
+    val month = monthIndex + 1
+    val year = yearIndex + minYear
+    val dayFromIndex = dayIndex + 1
 
     val daysInMonth = getIslamicMonthDays(month, year)
-    val day = convertDayIndexToValue(dayIndex).coerceIn(1, daysInMonth)
-
-    onDateChange(day, month, year)
+    val day = dayFromIndex.coerceIn(1, daysInMonth)
+    onDateChanged(day, month, year)
 }
