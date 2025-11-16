@@ -326,11 +326,7 @@ class SurahViewModelTest {
         everySuspend { quranRepository.getAyatOfSurah(DEFAULT_SURAH_ID) } returns dummyAyat
         testViewModel.onAyahLongPress(TEST_AYAH_CONTENT, TEST_AYAH_INDEX)
 
-        testViewModel.onShareClick(
-            surahId = DEFAULT_SURAH_ID,
-            ayahNumber = TEST_AYAH_NUMBER,
-            ayahContent = TEST_AYAH_CONTENT
-        )
+        testViewModel.onShareClick()
         advanceUntilIdle()
 
         assertFalse(testViewModel.uiState.value.isAyahActionButtonsVisible)
@@ -338,32 +334,10 @@ class SurahViewModelTest {
 
     @Test
     fun `onShareClick should update selectedAyah with ayah content when called`() = runTest {
-        testViewModel.onShareClick(
-            surahId = DEFAULT_SURAH_ID,
-            ayahNumber = TEST_AYAH_NUMBER,
-            ayahContent = AYAH_TO_SHARE
-        )
-
-        assertEquals(AYAH_TO_SHARE, testViewModel.uiState.value.selectedAyah)
+        testViewModel.onShareClick()
+        assertEquals("", testViewModel.uiState.value.selectedAyah)
     }
 
-    @Test
-    fun `onShareClick should navigate to ShareAyah when onShareClick is invoked`() = runTest {
-        testViewModel.uiEffect.test {
-            testViewModel.onShareClick(
-                surahId = DEFAULT_SURAH_ID,
-                ayahNumber = TEST_AYAH_NUMBER,
-                ayahContent = TEST_AYAH_CONTENT
-            )
-            assertEquals(SurahScreenEffect.ShareAyah(
-                surahId = DEFAULT_SURAH_ID.toString(),
-                ayahNumber = TEST_AYAH_NUMBER,
-                ayahContent = TEST_AYAH_CONTENT
-            ), awaitItem())
-        }
-    }
-
-    // Copy Tests
     @Test
     fun `onCopyClick should show success snackbar when copy succeeds`() = runTest {
         testViewModel.snackBarState.test {
@@ -497,7 +471,6 @@ class SurahViewModelTest {
         const val FIRST_AYAH_CONTENT = "First ayah"
         const val SECOND_AYAH_CONTENT = "Second ayah"
         const val SELECTED_AYAH_CONTENT = "Selected ayah content"
-        const val AYAH_TO_SHARE = "Ayah to share"
         const val EMPTY_STRING = ""
         const val AYAH_CONTENT = "Test ayah content"
         const val AYAH_TO_COPY = "Test ayah to copy"

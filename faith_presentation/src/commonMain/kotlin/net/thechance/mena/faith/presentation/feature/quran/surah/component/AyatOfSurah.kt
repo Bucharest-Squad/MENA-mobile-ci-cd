@@ -161,11 +161,7 @@ private fun Preview() {
                 override fun onDismissActionButtons() {}
                 override fun onBookmarkClick(ayahNumber: Int) {}
                 override fun onCopyClick(ayahContent: String) {}
-                override fun onShareClick(
-                    surahId: Int,
-                    ayahNumber: Int,
-                    ayahContent: String
-                ) {}
+                override fun onShareClick() {}
                 override fun highlightAyah(ayahNumber: Int) {}
                 override fun updateContinueTilawah(ayahNumber: Int) {}
                 override fun playSurah(surahId: Int) {}

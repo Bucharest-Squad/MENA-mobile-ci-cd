@@ -182,11 +182,10 @@ class SurahViewModel(
         }
     }
 
-    override fun onShareClick(
-        surahId: Int,
-        ayahNumber: Int,
-        ayahContent: String
-    ) {
+    override fun onShareClick() {
+        val surahId: Int = uiState.value.surahId
+        val ayahNumber: Int = uiState.value.selectedAyahNumber ?: 1
+        val ayahContent: String = uiState.value.selectedAyah
         updateState {
             it.copy(
                 isAyahActionButtonsVisible = false,

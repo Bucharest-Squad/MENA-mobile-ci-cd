@@ -189,11 +189,7 @@ private fun Preview() {
                 listener = object : SurahInteractionListener {
                     override fun onBackClick() {}
                     override fun onDismissActionButtons() {}
-                    override fun onShareClick(
-                        surahId: Int,
-                        ayahNumber: Int,
-                        ayahContent: String
-                    ) {}
+                    override fun onShareClick() {}
                     override fun onBookmarkClick(ayahNumber: Int) {}
                     override fun onAyahLongPress(ayahContent: String, ayahIndex: Int) {}
                     override fun onSearchClick() {}
