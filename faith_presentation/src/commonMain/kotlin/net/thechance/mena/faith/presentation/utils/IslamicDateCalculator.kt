@@ -6,6 +6,7 @@ import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
+@Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 expect class IslamicDateCalculatorImpl: IslamicDateCalculator {
     override fun gregorianToHijri(day: Int, month: Int, year: Int): IslamicDate
 }
