@@ -13,10 +13,8 @@ interface PrayerTimesDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertPrayerTimes(prayerTimes: PrayerTimesLocal)
 
-    @Query("SELECT * FROM prayer_times WHERE latitude = :latitude AND longitude = :longitude AND date = :date LIMIT 1")
+    @Query("SELECT * FROM prayer_times WHERE date = :date LIMIT 1")
     suspend fun getPrayerTimes(
-        latitude: Double,
-        longitude: Double,
         date: LocalDate
     ): PrayerTimesLocal
 
