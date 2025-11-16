@@ -4,10 +4,15 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format
 import kotlinx.datetime.toLocalDateTime
+import net.thechance.mena.faith.data.database.prayertimes.PrayerTimesDao
+import net.thechance.mena.faith.data.database.prayertimes.toDomain
+import net.thechance.mena.faith.data.database.prayertimes.toLocal
 import net.thechance.mena.faith.data.mapper.prayertime.toDomain
 import net.thechance.mena.faith.data.remote.model.prayertime.PrayerTimesDto
 import net.thechance.mena.faith.data.remote.service.PrayerTimeApiService
 import net.thechance.mena.faith.data.utils.executeApiSafely
+import net.thechance.mena.faith.data.utils.executeLocalSafely
+import net.thechance.mena.faith.data.utils.loadFromCacheOrFetch
 import net.thechance.mena.faith.domain.entity.PrayerTime
 import net.thechance.mena.faith.domain.repository.PrayerTimeRepository
 import net.thechance.mena.identity.domain.entity.Address
@@ -16,20 +21,53 @@ import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
 class PrayerTimeRepositoryImpl(
-    private val prayerTimeApiService: PrayerTimeApiService
+    private val prayerTimeApiService: PrayerTimeApiService,
+    private val prayerTimesDao: PrayerTimesDao
 ) : PrayerTimeRepository {
+
+    init {
+//        val scope = CoroutineScope(Dispatchers.IO)
+//        scope.launch {
+//
+//            prayerTimesDao.deleteExpiredPrayerTimes(
+//                expiredDate = Clock.System.todayIn(TimeZone.currentSystemDefault()).minus(
+//                    5, DateTimeUnit.DAY
+//                )
+//            )
+//        }
+    }
 
     override suspend fun getPrayerTimes(
         date: Instant,
         address: Address,
         timeZone: TimeZone,
-    ): List<PrayerTime> = executeApiSafely<PrayerTimesDto> {
-        prayerTimeApiService.getPrayerTimes(
-            date = date.toDateString(timeZone = timeZone),
-            latitude = address.latitude,
-            longitude = address.longitude
-        )
-    }.toDomain()
+    ): List<PrayerTime> {
+        return loadFromCacheOrFetch(
+            cacheBlock = {
+                executeLocalSafely {
+                    prayerTimesDao.getPrayerTimes(
+                        latitude = address.latitude,
+                        longitude = address.longitude,
+                        date = LocalDate.parse(date.toDateString(timeZone = timeZone))
+                    )
+                }
+            },
+            networkBlock = {
+                executeApiSafely {
+                    prayerTimeApiService.getPrayerTimes(
+                        date = date.toDateString(timeZone = timeZone),
+                        latitude = address.latitude,
+                        longitude = address.longitude
+                    )
+                }.toLocal(
+                    date = LocalDate.parse(date.toDateString(timeZone = timeZone)),
+                    latitude = address.latitude,
+                    longitude = address.longitude
+                )
+            },
+            syncBlock = { prayerTimesDao.insertPrayerTimes(it) }
+        ).toDomain()
+    }
 
     override suspend fun getPrayerTimeWithHijriDate(
         date: String,
@@ -50,4 +88,5 @@ class PrayerTimeRepositoryImpl(
         this.toLocalDateTime(timeZone = timeZone).date.format(
             format = LocalDate.Formats.ISO
         )
+
 }
