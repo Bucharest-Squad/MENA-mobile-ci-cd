@@ -72,8 +72,10 @@ private fun Content(uiState: PrayerTimeUiState, listener: PrayerTimeInteractionL
             dialog(uiState.showDatePicker) {
                 IslamicDatePickerDialog(
                     isVisible = uiState.showDatePicker,
-                    selectedDate = uiState.selectedIslamicDate,
-                    onDateChange = listener::onDateSelected,
+                    islamicDatePickerUiState = uiState.islamicDatePickerUiState,
+                    onDateChange = listener::onSelectedDateChange,
+                    onConfirmDateClick = listener::onDateSelected,
+                    onClearDateClick = listener::onClearSelectedDate,
                     onDismiss = listener::onDatePickerDismiss
                 )
             }

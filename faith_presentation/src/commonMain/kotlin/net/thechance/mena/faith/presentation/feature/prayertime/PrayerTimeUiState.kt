@@ -11,10 +11,14 @@ data class PrayerTimeUiState(
     val prayerTimes: List<PrayerTime> = emptyList(),
     val nextPrayerCountdown: String = "",
     val nextPrayerName: PrayerName = PrayerName.DHUHR,
-    val currentDate: IslamicDate = IslamicDate(1,1,1),
+    val currentDate: IslamicDate = IslamicDate(1,1,1447),
     val nextPrayerTime: Instant = Instant.fromEpochMilliseconds(0),
     val address: String = "",
     val showDatePicker: Boolean = false,
-    val selectedIslamicDate: IslamicDate? = null,
-    val isToday: Boolean = true
-)
+    val islamicDatePickerUiState: IslamicDatePickerUiState = IslamicDatePickerUiState(),
+) {
+    data class IslamicDatePickerUiState(
+        val selectedIslamicDate: IslamicDate = IslamicDate(1,1,1447),
+        val isClearDateActive: Boolean = false,
+    )
+}

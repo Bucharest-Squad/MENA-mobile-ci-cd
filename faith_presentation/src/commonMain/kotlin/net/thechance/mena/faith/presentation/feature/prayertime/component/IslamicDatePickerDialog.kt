@@ -1,11 +1,14 @@
 package net.thechance.mena.faith.presentation.feature.prayertime.component
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,28 +30,21 @@ import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.faith.presentation.components.IslamicDatePicker
 import net.thechance.mena.faith.presentation.designSystem.theme.QuranTheme
+import net.thechance.mena.faith.presentation.feature.prayertime.PrayerTimeUiState
 import net.thechance.mena.faith.presentation.utils.IslamicDate
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.getKoin
 
 @Composable
 fun ScaffoldScope.IslamicDatePickerDialog(
     isVisible: Boolean,
-    selectedDate: IslamicDate?,
+    islamicDatePickerUiState: PrayerTimeUiState.IslamicDatePickerUiState,
     onDateChange: (Int, Int, Int) -> Unit,
+    onConfirmDateClick: () -> Unit,
+    onClearDateClick: () -> Unit,
     onDismiss: () -> Unit,
 ) {
-    // Store temporary selected date locally
-    var tempSelectedDay by remember(isVisible, selectedDate) {
-        mutableStateOf(selectedDate?.day ?: 1)
-    }
-    var tempSelectedMonth by remember(isVisible, selectedDate) {
-        mutableStateOf(selectedDate?.month ?: 1)
-    }
-    var tempSelectedYear by remember(isVisible, selectedDate) {
-        mutableStateOf(selectedDate?.year ?: 1445)
-    }
-
     BasicDialog(
         onDismiss = onDismiss,
         onCancelClick = onDismiss,
@@ -70,12 +66,8 @@ fun ScaffoldScope.IslamicDatePickerDialog(
             )
 
             IslamicDatePicker(
-                selectedDate = IslamicDate(tempSelectedDay, tempSelectedMonth, tempSelectedYear),
-                onDateChange = { day, month, year ->
-                    tempSelectedDay = day
-                    tempSelectedMonth = month
-                    tempSelectedYear = year
-                },
+                selectedDate = islamicDatePickerUiState.selectedIslamicDate,
+                onDateChange = onDateChange,
             )
 
             Row(
@@ -89,13 +81,26 @@ fun ScaffoldScope.IslamicDatePickerDialog(
                 Text(
                     text = stringResource(Res.string.clear_selection),
                     style = Theme.typography.label.medium,
-                    color = Theme.colorScheme.disabled,
+                    color = if (islamicDatePickerUiState.isClearDateActive) Theme.colorScheme.primary.primary else Theme.colorScheme.disabled,
+                    modifier = Modifier
+                        .clickable(
+                            enabled = islamicDatePickerUiState.isClearDateActive,
+                            onClick = onClearDateClick,
+                            indication = ripple(),
+                            interactionSource = remember { MutableInteractionSource() }
+                        )
                 )
 
                 Text(
                     text = stringResource(Res.string.ok),
                     style = Theme.typography.label.medium,
                     color = Theme.colorScheme.primary.primary,
+                    modifier = Modifier
+                        .clickable(
+                            onClick = onConfirmDateClick,
+                            indication = ripple(),
+                            interactionSource = remember { MutableInteractionSource() }
+                        ),
                 )
             }
         }
@@ -112,8 +117,10 @@ fun IslamicDatePickerDialogPreview() {
                     dialog(isVisible = true) {
                         IslamicDatePickerDialog(
                             isVisible = true,
-                            selectedDate = IslamicDate(1, 1, 1445),
+                            islamicDatePickerUiState = PrayerTimeUiState.IslamicDatePickerUiState(),
                             onDateChange = { _, _, _ -> },
+                            onConfirmDateClick = {},
+                            onClearDateClick = {},
                             onDismiss = {}
                         )
                     }
