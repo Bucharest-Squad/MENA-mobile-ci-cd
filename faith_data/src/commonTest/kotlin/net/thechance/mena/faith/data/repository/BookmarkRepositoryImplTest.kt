@@ -93,7 +93,7 @@ class BookmarkRepositoryImplTest {
             val bookmark = repository.addAyahBookmark(surahId = 1, ayahNumber = 1)
 
             // Then
-            assertThat(bookmark).isEqualTo(AYAH_BOOKMARK_ITEM)
+            assertThat(bookmark).isEqualTo(Unit)
         }
 
     @Test
@@ -238,21 +238,5 @@ class BookmarkRepositoryImplTest {
             createdAt = "2023-01-01T00:00:00Z"
         )
 
-        val AYAH_BOOKMARK_ITEM = AyahBookmark(
-            id = 1,
-            surah = Surah(
-                id = 1,
-                order = Surah.SurahOrder.AlFatihah,
-                name = "Al-Fatiha",
-                ayahCount = 2,
-            ),
-            ayah = Ayah(
-                number = 1,
-                surahId = 1,
-                content = "Ayah content",
-                plainContent = "Ayah plain content"
-            ),
-            createdAt = Instant.parse("2023-01-01T00:00:00Z")
-        )
     }
 }
