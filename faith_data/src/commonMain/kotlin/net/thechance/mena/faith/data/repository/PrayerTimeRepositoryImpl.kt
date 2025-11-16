@@ -39,34 +39,34 @@ class PrayerTimeRepositoryImpl(
 
     override suspend fun getPrayerTimes(
         date: Instant,
-        address: Address,
+        address: Address?,
         timeZone: TimeZone,
     ): List<PrayerTime> {
         return loadFromCacheOrFetch(
             cacheBlock = {
                 executeLocalSafely {
                     prayerTimesDao.getPrayerTimes(
-                        latitude = address.latitude,
-                        longitude = address.longitude,
                         date = LocalDate.parse(date.toDateString(timeZone = timeZone))
                     )
                 }
             },
             networkBlock = {
-                executeApiSafely {
-                    prayerTimeApiService.getPrayerTimes(
-                        date = date.toDateString(timeZone = timeZone),
+                address?.let {
+                    executeApiSafely {
+                        prayerTimeApiService.getPrayerTimes(
+                            date = date.toDateString(timeZone = timeZone),
+                            latitude = address.latitude,
+                            longitude = address.longitude
+                        )
+                    }.toLocal(
+                        date = LocalDate.parse(date.toDateString(timeZone = timeZone)),
                         latitude = address.latitude,
                         longitude = address.longitude
                     )
-                }.toLocal(
-                    date = LocalDate.parse(date.toDateString(timeZone = timeZone)),
-                    latitude = address.latitude,
-                    longitude = address.longitude
-                )
+                }
             },
-            syncBlock = { prayerTimesDao.insertPrayerTimes(it) }
-        ).toDomain()
+            syncBlock = { it?.let { prayerTimesDao.insertPrayerTimes(it) } }
+        )?.toDomain() ?: emptyList()
     }
 
     override suspend fun getPrayerTimeWithHijriDate(

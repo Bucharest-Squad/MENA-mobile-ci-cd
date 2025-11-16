@@ -27,6 +27,7 @@ class MainViewModel(
 
     init {
         getUserLocation()
+        loadPrayerTimes()
         loadLastAyahForTilawah()
     }
 
@@ -44,7 +45,7 @@ class MainViewModel(
         loadPrayerTimes(address)
     }
 
-    private fun loadPrayerTimes(address: Address) {
+    private fun loadPrayerTimes(address: Address? = null) {
         tryToExecute(
             execute = {
                 prayerTimeRepository.getPrayerTimes(
