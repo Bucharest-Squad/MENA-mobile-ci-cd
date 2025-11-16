@@ -18,6 +18,7 @@ data class EditProductUiState(
     val selectedShelf: ShelfUiState? = null,
     val productName: String = "",
     val price: String = "",
+    val priceAfterDiscount: String = "",
     val description: String = "",
     val images: List<ProductImageUi> = emptyList(),
     val existingImageUrls: List<String> = emptyList(),
@@ -29,6 +30,7 @@ data class EditProductUiState(
     val isTextFieldEnabled: Boolean = true,
     val isCancelImageEnabled: Boolean = true,
     val deleteDialog: DeleteDialogState? = null,
+    val isOutOfStock: Boolean = false,
 ) {
     data class DeleteDialogState(
         val title: StringResource,

@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -28,6 +29,7 @@ import net.thechance.mena.identity.presentation.screen.addresses.myAddresses.com
 import net.thechance.mena.identity.presentation.screen.addresses.myAddresses.components.AddressShimmerPlaceholders
 import net.thechance.mena.identity.presentation.screen.addresses.myAddresses.components.MyAddressesAppBar
 import net.thechance.mena.identity.presentation.screen.addresses.myAddresses.components.deleteAddressDialog
+import net.thechance.mena.identity.presentation.screen.addresses.shared.AddressUIState
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.uuid.ExperimentalUuidApi
@@ -144,7 +146,8 @@ private fun AddressesSection(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = Theme.spacing._16),
-        verticalArrangement = Arrangement.spacedBy(Theme.spacing._12)
+        verticalArrangement = Arrangement.spacedBy(Theme.spacing._12),
+        contentPadding = PaddingValues(bottom = Theme.spacing._16)
     ) {
         items(
             items = addresses,

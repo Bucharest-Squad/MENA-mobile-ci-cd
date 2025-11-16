@@ -3,6 +3,7 @@ package net.thechance.mena.faith.presentation.feature.quran.surah
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -33,13 +34,13 @@ class SurahViewModel(
     private val quranPlayer: QuranPlayer,
     snackbarHandler: SnackbarHandler
 ) : BaseViewModel<SurahUiState, SurahScreenEffect>(
-    initialState = SurahUiState(surahId = surahArgs.surahId, surahName = surahArgs.surahName),
+    initialState = SurahUiState(surahId = surahArgs.surahId),
     snackbarHandler = snackbarHandler
 ), SurahInteractionListener {
 
     init {
-        observeDefaultReciter()
         loadSurahData(surahArgs.surahId)
+        observeDefaultReciter()
     }
 
     private fun loadSurahData(surahId: Int) {
@@ -69,6 +70,15 @@ class SurahViewModel(
     private fun updateReciterState(reciter: Reciter) =
         updateState { it.copy(currentReciter = reciter.toUiState()) }
 
+    override fun onConfigrationChange() {
+        updateState {
+            it.copy(
+                initialAyahToScroll = uiState.value.lastVisibleAyahNumber,
+                selectedAyahNumber = null
+            )
+        }
+    }
+
     override fun highlightAyah(ayahNumber: Int) {
         updateState {
             it.copy(
@@ -83,18 +93,27 @@ class SurahViewModel(
             execute = {
                 val lastAyah = LastAyahForTilawah(
                     surahId = surahArgs.surahId,
-                    surahName = surahArgs.surahName,
                     number = ayahNumber
                 )
                 quranRepository.saveLastAyahForTilawah(lastAyah)
                 lastAyah
             },
-            dispatcher = dispatcher
+            dispatcher = dispatcher,
+            onSuccess = {
+                updateState {
+                    it.copy(
+                        lastVisibleAyahNumber = ayahNumber,
+                    )
+                }
+            }
         )
     }
 
+    // TODO("Not yet implemented")
+    override fun playSurah(surahId: Int) {}
+
     override fun onInitialAyahScrolled() {
-        if (uiState.value.isAyahSoundPlaying) return
+        if (uiState.value.isAyahSoundPlaying || uiState.value.isPlayerVisible) return
         viewModelScope.launch {
             delay(2000L)
             updateState { it.copy(selectedAyahNumber = null, initialAyahToScroll = null) }
@@ -113,12 +132,13 @@ class SurahViewModel(
     }
 
     override fun onSearchClick() {
-        sendEffect(SurahScreenEffect.NavigateToSearchScreen(surahArgs.surahId, surahArgs.surahName))
+        sendEffect(SurahScreenEffect.NavigateToSearchScreen(surahArgs.surahId))
     }
 
     override fun onListenClick() = playAyah(uiState.value.selectedAyahNumber ?: 1)
 
-    override fun onReciterClick() = sendEffect(SurahScreenEffect.NavigateToDownloadedRecitersScreen)
+    override fun onReciterClick(surahId: Int) =
+        sendEffect(SurahScreenEffect.NavigateToDownloadedRecitersScreen(surahArgs.surahId))
 
     override fun onNextAyahClick() = moveToAyah(offset = 1)
 
@@ -195,6 +215,7 @@ class SurahViewModel(
             ayahNumber = ayahNumber,
             reciterId = uiState.value.currentReciter.id,
         )
+        updateState { it.copy(selectedAyahNumber = ayahNumber) }
     }
 
     private fun moveToAyah(offset: Int) {
@@ -233,7 +254,7 @@ class SurahViewModel(
                     )
                 }
             },
-            dispatcher = Dispatchers.Main,
+            dispatcher = Main,
         )
     }
 
@@ -253,6 +274,7 @@ class SurahViewModel(
 
     private fun handleLoadSurahSuccess(ayat: List<Ayah>) {
         handleBasmalaVisibility(surahArgs.surahId)
+
         updateState {
             it.copy(
                 ayatOfSurah = ayat,
@@ -260,6 +282,15 @@ class SurahViewModel(
                 selectedAyahNumber = surahArgs.ayahNumber
             )
         }
+        updateSurahName(surahArgs.surahId)
+    }
+
+    private fun updateSurahName(surahId: Int) {
+        tryToExecute(
+            execute = { quranRepository.getSurahById(surahId) },
+            onSuccess = { surah -> updateState { it.copy(surahName = surah.name) } },
+            dispatcher = dispatcher
+        )
     }
 
     private fun handleCopySuccess(ayahContent: String) {

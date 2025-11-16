@@ -7,17 +7,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.navOptions
 import mena.dukan_presentation.generated.resources.Res
 import mena.dukan_presentation.generated.resources.add
 import mena.dukan_presentation.generated.resources.add_product
+import mena.dukan_presentation.generated.resources.price
+import mena.dukan_presentation.generated.resources.price_after_discount
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
@@ -132,9 +132,19 @@ private fun CreateProductContent(
 
             item {
                 PriceSection(
+                    title = stringResource(Res.string.price),
                     price = state.price,
                     isTextFieldEnabled = state.isTextFieldEnabled,
                     onPriceChange = interactionListener::onPriceChange
+                )
+            }
+
+            item {
+                PriceSection(
+                    title = stringResource(Res.string.price_after_discount),
+                    price = state.priceAfterDiscount,
+                    isTextFieldEnabled = state.isTextFieldEnabled,
+                    onPriceChange = interactionListener::onPriceAfterDiscountChange
                 )
             }
 
@@ -168,7 +178,6 @@ private fun CreateProductSnackBar(
         SnackBar(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(Theme.radius.md))
                 .clickable(onClick = interactionListener::onDismissSnackBar),
             onDismiss = interactionListener::onDismissSnackBar,
             snackBarUiState = snackBarState

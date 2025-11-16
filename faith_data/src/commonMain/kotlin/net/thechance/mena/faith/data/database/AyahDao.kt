@@ -21,12 +21,12 @@ interface AyahDao {
     SELECT 
         sura_no,
         sura_name_en,
+        sura_name_ar,
         CAST(COUNT(*) AS INTEGER) AS ayahCount
     FROM ayat 
     GROUP BY sura_no, sura_name_en
 """)
     suspend fun getSur(): List<SurahDto>
-
 
     @Query("SELECT * FROM ayat WHERE aya_no = :ayahId AND sura_no = :surahId")
     suspend fun getAyah(ayahId: Int, surahId: Int): AyahDto
