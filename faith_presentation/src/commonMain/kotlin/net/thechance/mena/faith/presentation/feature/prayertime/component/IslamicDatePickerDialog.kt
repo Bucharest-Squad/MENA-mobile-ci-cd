@@ -8,12 +8,8 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -21,7 +17,6 @@ import mena.faith_presentation.generated.resources.Res
 import mena.faith_presentation.generated.resources.clear_selection
 import mena.faith_presentation.generated.resources.ok
 import mena.faith_presentation.generated.resources.select_date
-import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
 import net.thechance.mena.designsystem.presentation.component.dialog.BasicDialog
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.component.scaffold.ScaffoldScope
@@ -31,10 +26,8 @@ import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.faith.presentation.components.IslamicDatePicker
 import net.thechance.mena.faith.presentation.designSystem.theme.QuranTheme
 import net.thechance.mena.faith.presentation.feature.prayertime.PrayerTimeUiState
-import net.thechance.mena.faith.presentation.utils.IslamicDate
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.compose.getKoin
 
 @Composable
 fun ScaffoldScope.IslamicDatePickerDialog(
@@ -86,7 +79,6 @@ fun ScaffoldScope.IslamicDatePickerDialog(
                         .clickable(
                             enabled = islamicDatePickerUiState.isClearDateActive,
                             onClick = onClearDateClick,
-                            indication = ripple(),
                             interactionSource = remember { MutableInteractionSource() }
                         )
                 )
@@ -98,7 +90,6 @@ fun ScaffoldScope.IslamicDatePickerDialog(
                     modifier = Modifier
                         .clickable(
                             onClick = onConfirmDateClick,
-                            indication = ripple(),
                             interactionSource = remember { MutableInteractionSource() }
                         ),
                 )

@@ -54,7 +54,7 @@ fun PrayerTimesCard(
     if (prayerTimesUiState == null) return
 
     Box(
-        modifier = modifier
+        modifier = modifier.pointerInput(Unit) { detectTapGestures(onTap = { onClick() }) }
     ) {
         Box(
             modifier = Modifier
@@ -64,10 +64,6 @@ fun PrayerTimesCard(
                 .padding(top = Theme.spacing._16)
                 .clip(RoundedCornerShape(Theme.radius.lg))
                 .background(Theme.colorScheme.background.surfaceLow)
-                .pointerInput(Unit) {
-                    detectTapGestures(onTap = { onClick() }
-                    )
-                }
         )
         Image(
             painter = painterResource(Res.drawable.ic_mosque_bg),
