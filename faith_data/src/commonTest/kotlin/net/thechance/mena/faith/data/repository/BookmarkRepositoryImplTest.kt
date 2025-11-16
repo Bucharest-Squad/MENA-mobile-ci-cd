@@ -154,7 +154,7 @@ class BookmarkRepositoryImplTest {
     }
 
     @OptIn(InternalAPI::class)
-    private fun successfulAddBookmarkResponse(): Response<AyahBookmarkDto> {
+    private fun successfulAddBookmarkResponse(): Response<Unit> {
         val mockHttpResponse: HttpResponse = mock(MockMode.autofill) {
             everySuspend { status } returns HttpStatusCode.OK
         }
@@ -162,7 +162,7 @@ class BookmarkRepositoryImplTest {
         return Response.success(
             body = AYAH_BOOKMARK_ITEM_DTO,
             rawResponse = mockHttpResponse
-        ) as Response<AyahBookmarkDto>
+        ) as Response<Unit>
     }
 
     @OptIn(InternalAPI::class)
