@@ -20,6 +20,7 @@ import net.thechance.mena.faith.domain.entity.Ayah
 import net.thechance.mena.faith.domain.mediaPlayer.QuranPlayer
 import net.thechance.mena.faith.domain.repository.BookmarkRepository
 import net.thechance.mena.faith.domain.repository.QuranRepository
+import net.thechance.mena.faith.presentation.base.snackbar.SnackBarState
 import net.thechance.mena.faith.presentation.base.snackbar.SnackbarHandler
 import net.thechance.mena.faith.presentation.feature.quran.surah.args.SurahArgs
 import net.thechance.mena.faith.presentation.utils.ClipboardManager
@@ -333,7 +334,6 @@ class SurahViewModelTest {
             quranRepository = quranRepository,
             clipboardManager = clipboardManager,
             bookmarkRepository = bookmarkRepository,
-            snackbarHandler = snackbarHandler,
             quranPlayer = quranPlayer
         )
         advanceUntilIdle()
@@ -432,7 +432,6 @@ class SurahViewModelTest {
             quranRepository = quranRepository,
             clipboardManager = clipboardManager,
             bookmarkRepository = bookmarkRepository,
-            snackbarHandler = snackbarHandler,
             quranPlayer = quranPlayer
         )
         advanceUntilIdle()
