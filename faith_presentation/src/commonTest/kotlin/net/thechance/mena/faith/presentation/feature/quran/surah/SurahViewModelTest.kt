@@ -320,6 +320,16 @@ class SurahViewModelTest {
         assertFalse(testViewModel.uiState.value.isAyahActionButtonsVisible)
     }
 
+    @Test
+    fun `highlightAyah should update initialAyahToScroll and selectedAyahNumber`() = runTest {
+
+        testViewModel.highlightAyah(TRACKED_AYAH_NUMBER)
+
+        assertEquals(TRACKED_AYAH_NUMBER, testViewModel.uiState.value.selectedAyahNumber)
+        assertEquals(TRACKED_AYAH_NUMBER, testViewModel.uiState.value.initialAyahToScroll)
+    }
+
+
     // Share Tests
     @Test
     fun `onShareClick should hide action buttons after share click`() = runTest {
