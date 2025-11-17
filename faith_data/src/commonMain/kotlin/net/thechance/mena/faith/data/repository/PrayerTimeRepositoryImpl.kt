@@ -47,13 +47,10 @@ class PrayerTimeRepositoryImpl(
                 val localPrayerTimes =
                     getLocalPrayerTimesByDate(LocalDate.parse(date.toDateString(timeZone = timeZone)))
 
-                if (address != null) {
-                    localPrayerTimes.takeIf {
-                        it.latitude == address.latitude && it.longitude == address.longitude
-                    }
-                } else {
-                    localPrayerTimes
+                if (address != null) localPrayerTimes.firstOrNull {
+                    it.latitude == address.latitude && it.longitude == address.longitude
                 }
+                else localPrayerTimes.first()
             },
             networkBlock = {
                 address?.let {
@@ -77,7 +74,7 @@ class PrayerTimeRepositoryImpl(
         return loadFromCacheOrFetch(
             cacheBlock = {
                 executeLocalSafely {
-                    prayerTimesDao.getPrayerTimesByHijri(hijriDate = date).toDomain()
+                    prayerTimesDao.getPrayerTimesByHijri(hijriDate = date).first().toDomain()
                 }
             },
             networkBlock = {
@@ -94,7 +91,8 @@ class PrayerTimeRepositoryImpl(
 
     private suspend fun getLocalPrayerTimesByDate(
         date: LocalDate
-    ) = executeLocalSafely { prayerTimesDao.getPrayerTimesByDate(date = date) }
+    ): List<PrayerTimesLocal> =
+        executeLocalSafely { prayerTimesDao.getPrayerTimesByDate(date = date) }
 
     private suspend fun getRemotePrayerTimesByDateAndMapToLocal(
         date: Instant,

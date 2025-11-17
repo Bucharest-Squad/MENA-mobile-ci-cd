@@ -13,11 +13,11 @@ interface PrayerTimesDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertPrayerTimes(prayerTimes: PrayerTimesLocal)
 
-    @Query("SELECT * FROM prayer_times WHERE date = :date LIMIT 1")
-    suspend fun getPrayerTimesByDate(date: LocalDate): PrayerTimesLocal
+    @Query("SELECT * FROM prayer_times WHERE date = :date")
+    suspend fun getPrayerTimesByDate(date: LocalDate): List<PrayerTimesLocal>
 
-    @Query("SELECT * FROM prayer_times WHERE hijri_date = :hijriDate LIMIT 1")
-    suspend fun getPrayerTimesByHijri(hijriDate: String): PrayerTimesLocal
+    @Query("SELECT * FROM prayer_times WHERE hijri_date = :hijriDate")
+    suspend fun getPrayerTimesByHijri(hijriDate: String): List<PrayerTimesLocal>
 
     @OptIn(ExperimentalTime::class)
     @Query("DELETE FROM prayer_times WHERE saved_in < :expiredDate")
