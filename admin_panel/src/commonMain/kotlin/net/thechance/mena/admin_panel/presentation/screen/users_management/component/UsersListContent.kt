@@ -62,7 +62,9 @@ fun UsersListContent(
                 users = state.users,
                 onToggleUserStatusClicked = listener::onToggleUserStatusClicked,
                 horizontalScrollState = horizontalScrollState,
-                modifier = Modifier.fillMaxWidth().weight(1f)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
             )
         }
 
@@ -93,7 +95,9 @@ private fun UsersListTable(
         itemsIndexed(users) { index, user ->
             val isLastItem = index == users.lastIndex
             UserItemRow(
-                modifier = Modifier.fillMaxWidth().horizontalScroll(horizontalScrollState),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(horizontalScrollState),
                 index = user.index,
                 user = user,
                 isLastItem = isLastItem,
@@ -134,11 +138,11 @@ private fun UserItemRow(
                     bottomEnd = Theme.radius.lg
                 ) else RectangleShape
             )
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+        ,
+        horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-
         TableCellText(text = index.toString(), modifier = Modifier.widthIn(min = 78.dp))
 
         TableCellText(text = user.fullName, modifier = Modifier.widthIn(min = 268.dp))
@@ -152,9 +156,7 @@ private fun UserItemRow(
         Box(
             modifier = Modifier.widthIn(min = 126.dp),
             contentAlignment = Alignment.CenterStart
-        ) {
-            ActivationStatusButton(isActive = user.status == User.Status.ACTIVE)
-        }
+        ) { ActivationStatusButton(isActive = user.status == User.Status.ACTIVE) }
 
         Box(
             modifier = Modifier.widthIn(min = 151.dp),

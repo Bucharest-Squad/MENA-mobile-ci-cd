@@ -34,7 +34,7 @@ fun TableHeaderRow(
     Row(
         modifier = modifier
             .background(
-                Theme.colorScheme.background.surfaceLow,
+                color = Theme.colorScheme.background.surfaceLow,
                 shape = RoundedCornerShape(
                     topStart = Theme.radius.lg,
                     topEnd = Theme.radius.lg
@@ -42,7 +42,7 @@ fun TableHeaderRow(
             )
             .padding(horizontal = 16.dp, vertical = 10.dp)
             .horizontalScroll(horizontalScrollState),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
@@ -51,15 +51,13 @@ fun TableHeaderRow(
             color = Theme.colorScheme.shadePrimary,
             modifier = Modifier.widthIn(min = 78.dp)
         )
-
         SortableHeaderCell(
             text = stringResource(Res.string.user_name),
             sortType = UsersManagementScreenState.SortType.USERNAME,
             currentSort = sortState,
             onSortClicked = onSortClicked,
-            modifier = Modifier.widthIn(min = 268.dp)
+            modifier = Modifier.widthIn(min = 268.dp, max = 268.dp)
         )
-
         Text(
             text = stringResource(Res.string.phone_number),
             style = Theme.typography.label.large,
@@ -67,7 +65,6 @@ fun TableHeaderRow(
             softWrap = false,
             modifier = Modifier.widthIn(min = 171.dp)
         )
-
         SortableHeaderCell(
             text = stringResource(Res.string.last_login_date),
             sortType = UsersManagementScreenState.SortType.LAST_LOGIN_DATE,
@@ -75,7 +72,6 @@ fun TableHeaderRow(
             onSortClicked = onSortClicked,
             modifier = Modifier.widthIn(min = 175.dp)
         )
-
         SortableHeaderCell(
             text = stringResource(Res.string.last_visit_date),
             sortType = UsersManagementScreenState.SortType.LAST_VISIT_DATE,
@@ -83,15 +79,13 @@ fun TableHeaderRow(
             onSortClicked = onSortClicked,
             modifier = Modifier.widthIn(min = 167.dp)
         )
-
-        Text(
+        SortableHeaderCell(
             text = stringResource(Res.string.status),
-            style = Theme.typography.label.large,
-            softWrap = false,
-            color = Theme.colorScheme.shadePrimary,
+            sortType = UsersManagementScreenState.SortType.ACTIVATION_STATUS,
+            currentSort = sortState,
+            onSortClicked = onSortClicked,
             modifier = Modifier.widthIn(min = 126.dp)
         )
-
         Text(
             text = "",
             style = Theme.typography.label.large,
