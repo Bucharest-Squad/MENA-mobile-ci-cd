@@ -13,6 +13,7 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.TimeZone
+import net.thechance.mena.faith.data.database.prayertimes.PrayerTimesDao
 import net.thechance.mena.faith.data.remote.model.prayertime.PrayerTimesDto
 import net.thechance.mena.faith.data.remote.service.PrayerTimeApiService
 import net.thechance.mena.faith.domain.entity.PrayerTime
@@ -22,12 +23,17 @@ import net.thechance.mena.identity.domain.entity.AddressType
 import kotlin.test.Test
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
+import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalTime::class)
 class PrayerTimeRepositoryImplTest {
 
     private val prayerTimeApiService: PrayerTimeApiService = mock(MockMode.autofill)
-    private val prayerTimeRepository = PrayerTimeRepositoryImpl(prayerTimeApiService)
+    private val prayerTimesDao: PrayerTimesDao = mock(MockMode.autofill)
+    private val prayerTimeRepository = PrayerTimeRepositoryImpl(
+        prayerTimeApiService,
+        prayerTimesDao = prayerTimesDao
+    )
 
     @Test
     fun `getPrayerTimes should return list of PrayerTime when api service return valid data`() =
@@ -307,7 +313,7 @@ class PrayerTimeRepositoryImplTest {
             }.isInstanceOf<FaithException.UnknownException>()
         }
 
-    @OptIn(kotlin.uuid.ExperimentalUuidApi::class)
+    @OptIn(ExperimentalUuidApi::class)
     private companion object {
         val timeZone = TimeZone.of("Africa/Cairo")
         const val HIJRI_DATE = "01-10-1447"

@@ -44,7 +44,16 @@ class PrayerTimeRepositoryImpl(
     ): List<PrayerTime> {
         return loadFromCacheOrFetch(
             cacheBlock = {
-                getLocalPrayerTimesByDate(LocalDate.parse(date.toDateString(timeZone = timeZone)))
+                val localPrayerTimes =
+                    getLocalPrayerTimesByDate(LocalDate.parse(date.toDateString(timeZone = timeZone)))
+
+                if (address != null) {
+                    localPrayerTimes.takeIf {
+                        it.latitude == address.latitude && it.longitude == address.longitude
+                    }
+                } else {
+                    localPrayerTimes
+                }
             },
             networkBlock = {
                 address?.let {
