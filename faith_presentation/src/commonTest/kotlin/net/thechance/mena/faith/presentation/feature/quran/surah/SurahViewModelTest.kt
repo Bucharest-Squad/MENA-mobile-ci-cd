@@ -450,49 +450,50 @@ class SurahViewModelTest {
                 ), effect
             )
         }
+    }
 
-        @Test
-        fun `highlightAyah should update initialAyahToScroll and selectedAyahNumber`() = runTest {
+    @Test
+    fun `highlightAyah should update initialAyahToScroll and selectedAyahNumber`() = runTest {
+        testViewModel.highlightAyah(TRACKED_AYAH_NUMBER)
+
+        assertEquals(TRACKED_AYAH_NUMBER, testViewModel.uiState.value.selectedAyahNumber)
+        assertEquals(TRACKED_AYAH_NUMBER, testViewModel.uiState.value.initialAyahToScroll)
+    }
+
+    @Test
+    fun `onInitialAyahScrolled should clear selection after delay when not playing`() =
+        runTest {
             testViewModel.highlightAyah(TRACKED_AYAH_NUMBER)
-
-            assertEquals(TRACKED_AYAH_NUMBER, testViewModel.uiState.value.selectedAyahNumber)
-            assertEquals(TRACKED_AYAH_NUMBER, testViewModel.uiState.value.initialAyahToScroll)
-        }
-
-        @Test
-        fun `onInitialAyahScrolled should clear selection after delay when not playing`() =
-            runTest {
-                testViewModel.highlightAyah(TRACKED_AYAH_NUMBER)
-                testViewModel.onInitialAyahScrolled()
-                advanceUntilIdle()
-
-                assertNull(testViewModel.uiState.value.selectedAyahNumber)
-                assertNull(testViewModel.uiState.value.initialAyahToScroll)
-            }
-
-        // Audio Loading Tests
-        @Test
-        fun `loadAndPlayAyahSound should update current playing ayah url`() = runTest {
-            val testUrl = "https://example.com/ayah.mp3"
-            everySuspend { quranRepository.getAyahSoundUrl(any(), any(), any()) } returns testUrl
-
-            testViewModel.onListenClick()
+            testViewModel.onInitialAyahScrolled()
             advanceUntilIdle()
 
-            assertEquals(testUrl, testViewModel.uiState.value.currentPlayingAyahUrl)
+            assertNull(testViewModel.uiState.value.selectedAyahNumber)
+            assertNull(testViewModel.uiState.value.initialAyahToScroll)
         }
 
-        @Test
-        fun `loadAndPlayAyahSound should show player and hide action buttons`() = runTest {
-            everySuspend { quranRepository.getAyahSoundUrl(any(), any(), any()) } returns "test_url"
+    // Audio Loading Tests
+    @Test
+    fun `loadAndPlayAyahSound should update current playing ayah url`() = runTest {
+        val testUrl = "https://example.com/ayah.mp3"
+        everySuspend { quranRepository.getAyahSoundUrl(any(), any(), any()) } returns testUrl
 
-            testViewModel.onAyahLongPress(TEST_AYAH_CONTENT, TEST_AYAH_INDEX)
-            testViewModel.onListenClick()
-            advanceUntilIdle()
+        testViewModel.onListenClick()
+        advanceUntilIdle()
 
-            assertTrue(testViewModel.uiState.value.isPlayerVisible)
-            assertFalse(testViewModel.uiState.value.isAyahActionButtonsVisible)
-        }
+        assertEquals(testUrl, testViewModel.uiState.value.currentPlayingAyahUrl)
+    }
+
+    @Test
+    fun `loadAndPlayAyahSound should show player and hide action buttons`() = runTest {
+        everySuspend { quranRepository.getAyahSoundUrl(any(), any(), any()) } returns "test_url"
+
+        testViewModel.onAyahLongPress(TEST_AYAH_CONTENT, TEST_AYAH_INDEX)
+        testViewModel.onListenClick()
+        advanceUntilIdle()
+
+        assertTrue(testViewModel.uiState.value.isPlayerVisible)
+        assertFalse(testViewModel.uiState.value.isAyahActionButtonsVisible)
+
     }
 
 
