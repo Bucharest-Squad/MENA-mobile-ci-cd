@@ -20,10 +20,12 @@ import net.thechance.mena.faith.domain.entity.Ayah
 import net.thechance.mena.faith.domain.mediaPlayer.QuranPlayer
 import net.thechance.mena.faith.domain.repository.BookmarkRepository
 import net.thechance.mena.faith.domain.repository.QuranRepository
-import net.thechance.mena.faith.presentation.base.snackbar.SnackBarState
 import net.thechance.mena.faith.presentation.base.snackbar.SnackbarHandler
 import net.thechance.mena.faith.presentation.feature.quran.surah.args.SurahArgs
 import net.thechance.mena.faith.presentation.utils.ClipboardManager
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
+import org.koin.dsl.module
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -40,14 +42,15 @@ class SurahViewModelTest {
     private val quranRepository: QuranRepository = mock(mode = MockMode.autofill)
     private val bookmarkRepository: BookmarkRepository = mock(mode = MockMode.autofill)
     private val clipboardManager: ClipboardManager = mock(mode = MockMode.autofill)
-    private val snackbarHandler: SnackbarHandler = mock(mode = MockMode.autofill)
     private val quranPlayer: QuranPlayer = mock(mode = MockMode.autofill)
     private val surahArgs = mock<SurahArgs>(mode = MockMode.autofill)
 
     @BeforeTest
     fun setup() {
+        startKoin {
+            modules(module { single { mock<SnackbarHandler>(MockMode.autofill) } })
+        }
         testDispatcher = StandardTestDispatcher()
-        // Set the Main dispatcher to use the test dispatcher
         Dispatchers.setMain(testDispatcher)
 
         testViewModel = SurahViewModel(
@@ -56,15 +59,14 @@ class SurahViewModelTest {
             quranRepository = quranRepository,
             clipboardManager = clipboardManager,
             bookmarkRepository = bookmarkRepository,
-            snackbarHandler = SnackbarHandler.Empty,
             quranPlayer = quranPlayer
         )
     }
 
     @AfterTest
     fun tearDown() {
-        // Reset the Main dispatcher after each test
         Dispatchers.resetMain()
+        stopKoin()
     }
 
     // Navigation Tests
@@ -192,7 +194,6 @@ class SurahViewModelTest {
             quranRepository = quranRepository,
             clipboardManager = clipboardManager,
             bookmarkRepository = bookmarkRepository,
-            snackbarHandler = SnackbarHandler.Empty,
             quranPlayer = quranPlayer
         )
 
@@ -200,12 +201,35 @@ class SurahViewModelTest {
         assertFalse(viewModel.uiState.value.isLoading)
     }
 
-    // Ayah Selection Tests
     @Test
     fun `onAyahLongPress should show action buttons when it called`() = runTest {
         testViewModel.onAyahLongPress(TEST_AYAH_CONTENT, TEST_AYAH_INDEX)
 
         assertTrue(testViewModel.uiState.value.isAyahActionButtonsVisible)
+    }
+
+    @Test
+    fun `onInitialAyahScrolled should make selectedAyahNumber and initialAyahToScroll null when it called`() =
+        runTest {
+            testViewModel.onInitialAyahScrolled()
+
+            assertNull(testViewModel.uiState.value.selectedAyahNumber)
+            assertNull(testViewModel.uiState.value.initialAyahToScroll)
+        }
+
+    @Test
+    fun `highlightAyah should update initialAyahToScroll and selectedAyahNumber `() = runTest {
+        testViewModel.highlightAyah(TRACKED_AYAH_NUMBER)
+
+        assertEquals(testViewModel.uiState.value.initialAyahToScroll, TRACKED_AYAH_NUMBER)
+        assertEquals(testViewModel.uiState.value.selectedAyahNumber, TRACKED_AYAH_NUMBER)
+    }
+
+    @Test
+    fun `playSurah should play audio from selected ayah to ath the end of surah`() = runTest {
+        testViewModel.playSurah(surahNumber = SURAH_BAQARAH_ID)
+
+        assertTrue(testViewModel.uiState.value.isAutoPlayEnabled)
     }
 
     @Test
@@ -320,16 +344,6 @@ class SurahViewModelTest {
         assertFalse(testViewModel.uiState.value.isAyahActionButtonsVisible)
     }
 
-    @Test
-    fun `highlightAyah should update initialAyahToScroll and selectedAyahNumber`() = runTest {
-
-        testViewModel.highlightAyah(TRACKED_AYAH_NUMBER)
-
-        assertEquals(TRACKED_AYAH_NUMBER, testViewModel.uiState.value.selectedAyahNumber)
-        assertEquals(TRACKED_AYAH_NUMBER, testViewModel.uiState.value.initialAyahToScroll)
-    }
-
-
     // Share Tests
     @Test
     fun `onShareClick should hide action buttons after share click`() = runTest {
@@ -398,7 +412,6 @@ class SurahViewModelTest {
             quranRepository = quranRepository,
             clipboardManager = clipboardManager,
             bookmarkRepository = bookmarkRepository,
-            snackbarHandler = snackbarHandler,
             quranPlayer = quranPlayer
         )
         advanceUntilIdle()
@@ -453,6 +466,14 @@ class SurahViewModelTest {
                     surahArgs.surahId
                 ), effect
             )
+        }
+
+        @Test
+        fun `highlightAyah should update initialAyahToScroll and selectedAyahNumber`() = runTest {
+            testViewModel.highlightAyah(TRACKED_AYAH_NUMBER)
+
+            assertEquals(TRACKED_AYAH_NUMBER, testViewModel.uiState.value.selectedAyahNumber)
+            assertEquals(TRACKED_AYAH_NUMBER, testViewModel.uiState.value.initialAyahToScroll)
         }
 
         @Test
