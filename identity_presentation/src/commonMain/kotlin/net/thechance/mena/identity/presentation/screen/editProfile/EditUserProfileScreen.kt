@@ -28,17 +28,24 @@ import mena.identity_presentation.generated.resources.Res
 import mena.identity_presentation.generated.resources.back
 import mena.identity_presentation.generated.resources.cancel
 import mena.identity_presentation.generated.resources.date_of_birth
+import mena.identity_presentation.generated.resources.delete_account
+import mena.identity_presentation.generated.resources.delete_account_description
+import mena.identity_presentation.generated.resources.delete_account_title
 import mena.identity_presentation.generated.resources.edit_profile_information
 import mena.identity_presentation.generated.resources.error
 import mena.identity_presentation.generated.resources.first_name
 import mena.identity_presentation.generated.resources.ic_arrow_left
 import mena.identity_presentation.generated.resources.ic_close_circle
 import mena.identity_presentation.generated.resources.last_name
+import mena.identity_presentation.generated.resources.logout
+import mena.identity_presentation.generated.resources.logout_description
+import mena.identity_presentation.generated.resources.logout_title
 import mena.identity_presentation.generated.resources.save_changes
 import mena.identity_presentation.generated.resources.username
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.button.OutlinedButton
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
+import net.thechance.mena.designsystem.presentation.component.button.TextButton
 import net.thechance.mena.designsystem.presentation.component.dialog.Dialog
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
@@ -53,6 +60,7 @@ import net.thechance.mena.identity.presentation.screen.editProfile.components.Ge
 import net.thechance.mena.identity.presentation.screen.editProfile.components.MoreActionsButton
 import net.thechance.mena.identity.presentation.screen.editProfile.components.ProfileEditText
 import net.thechance.mena.identity.presentation.screen.editProfile.components.dialog.GetImageDialog
+import net.thechance.mena.identity.presentation.screen.editProfile.components.dialog.ProfileSettingsDialog
 import net.thechance.mena.identity.presentation.screen.imageCropper.ImageCropperScreen
 import net.thechance.mena.identity.presentation.util.rememberCameraPicker
 import org.jetbrains.compose.resources.painterResource
@@ -128,12 +136,49 @@ class EditUserProfileScreen : BaseScreen<
                 }
 
                 dialog(state.showLogoutDialog) {
+                    ProfileSettingsDialog(
+                        isVisible = it,
+                        onDismiss = listener::onDismissLogoutDialog,
+                        onClickLogout = listener::onClickLogout,
+                        onClickDeleteAccount = listener::onClickDeleteAccount,
+                    )
+                }
+
+                dialog(state.showConfirmLogoutDialog) {
                     Dialog(
                         isVisible = it,
-                        title = "HI",
-                        message = "Not Yet Implemented",
-                        onDismiss = listener::onDismissLogoutDialog,
-                        actionButtons = {}
+                        title = stringResource(Res.string.logout_title),
+                        message = stringResource(Res.string.logout_description),
+                        onDismiss = listener::onDismissConfirmLogoutDialog,
+                        actionButtons = {
+                            TextButton(
+                                modifier = Modifier
+                                    .padding(vertical = Theme.spacing._24, horizontal = Theme.spacing._8)
+                                    .align(Alignment.End),
+                                text = stringResource(Res.string.logout),
+                                onClick = listener::onConfirmLogout,
+                                contentColor = Theme.colorScheme.error
+                            )
+                        }
+                    )
+                }
+
+                dialog(state.showConfirmDeleteAccountDialog) {
+                    Dialog(
+                        isVisible = it,
+                        title = stringResource(Res.string.delete_account_title),
+                        message = stringResource(Res.string.delete_account_description),
+                        onDismiss = listener::onDismissConfirmDeleteAccountDialog,
+                        actionButtons = {
+                            TextButton(
+                                modifier = Modifier
+                                    .padding(vertical = Theme.spacing._24, horizontal = Theme.spacing._8)
+                                    .align(Alignment.End),
+                                text = stringResource(Res.string.delete_account),
+                                onClick = listener::onConfirmDeleteAccount,
+                                contentColor = Theme.colorScheme.error
+                            )
+                        }
                     )
                 }
             }
