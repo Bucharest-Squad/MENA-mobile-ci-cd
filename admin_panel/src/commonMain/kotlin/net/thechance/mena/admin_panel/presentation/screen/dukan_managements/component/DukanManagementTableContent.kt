@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -34,7 +35,10 @@ import net.thechance.mena.admin_panel.presentation.component.TableCellText
 import net.thechance.mena.admin_panel.presentation.component.ViewDukanDetailsButton
 import net.thechance.mena.admin_panel.presentation.screen.dukan_managements.DukanManagementInteractionListener
 import net.thechance.mena.admin_panel.presentation.screen.dukan_managements.DukanManagementScreenState
+import net.thechance.mena.admin_panel.resources.Res
+import net.thechance.mena.admin_panel.resources.deactivated
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import org.jetbrains.compose.resources.stringResource
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -147,7 +151,7 @@ private fun DukanItemRow(
             contentAlignment = Alignment.CenterStart
         ) { DukanImage(imageUrl = dukan.imageUrl) }
 
-        TableCellText(text = dukan.name, modifier = Modifier.widthIn(min = 200.dp, max = 200.dp))
+        TableCellText(text = dukan.name, modifier = Modifier.width(200.dp))
 
         DukanLocation(
             location = dukan.location,
@@ -157,7 +161,12 @@ private fun DukanItemRow(
         Box(
             modifier = Modifier.widthIn(min = 157.dp),
             contentAlignment = Alignment.CenterStart
-        ) { ActivationStatusButton(isActive = dukan.isActive) }
+        ) {
+            ActivationStatusButton(
+                isActive = dukan.isActive,
+                deactivationText = stringResource(resource = Res.string.deactivated)
+            )
+        }
 
         TableCellText(text = dukan.addedDate, modifier = Modifier.widthIn(min = 168.dp))
 

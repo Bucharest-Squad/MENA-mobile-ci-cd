@@ -33,7 +33,10 @@ import net.thechance.mena.admin_panel.presentation.component.TableCellText
 import net.thechance.mena.admin_panel.presentation.component.TableHeaderRow
 import net.thechance.mena.admin_panel.presentation.screen.users_management.UsersManagementInteractionListener
 import net.thechance.mena.admin_panel.presentation.screen.users_management.UsersManagementScreenState
+import net.thechance.mena.admin_panel.resources.Res
+import net.thechance.mena.admin_panel.resources.blocked
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import org.jetbrains.compose.resources.stringResource
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -138,8 +141,7 @@ private fun UserItemRow(
                     bottomEnd = Theme.radius.lg
                 ) else RectangleShape
             )
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-        ,
+            .padding(horizontal = 16.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -156,7 +158,12 @@ private fun UserItemRow(
         Box(
             modifier = Modifier.widthIn(min = 126.dp),
             contentAlignment = Alignment.CenterStart
-        ) { ActivationStatusButton(isActive = user.status == User.Status.ACTIVE) }
+        ) {
+            ActivationStatusButton(
+                isActive = user.status == User.Status.ACTIVE,
+                deactivationText = stringResource(resource = Res.string.blocked)
+            )
+        }
 
         Box(
             modifier = Modifier.widthIn(min = 151.dp),

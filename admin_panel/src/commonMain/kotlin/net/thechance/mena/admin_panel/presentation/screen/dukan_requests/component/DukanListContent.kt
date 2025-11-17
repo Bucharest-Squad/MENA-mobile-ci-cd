@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -147,11 +148,12 @@ private fun DukanItemRow(
             modifier = Modifier.widthIn(min = 112.dp),
             contentAlignment = Alignment.CenterStart
         ) { DukanImage(imageUrl = dukan.imageUrl) }
+
         TableCellText(text = dukan.name, modifier = Modifier.widthIn(min = 315.dp, max = 315.dp))
 
         DukanLocation(
             location = dukan.address,
-            modifier = Modifier.widthIn(min = 315.dp, max = 315.dp)
+            modifier = Modifier.width(315.dp)
         )
 
         TableCellText(text = dukan.date, modifier = Modifier.widthIn(min = 139.dp))

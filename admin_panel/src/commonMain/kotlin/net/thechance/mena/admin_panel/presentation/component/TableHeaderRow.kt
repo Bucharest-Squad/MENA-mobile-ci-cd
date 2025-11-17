@@ -6,6 +6,7 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -56,7 +57,7 @@ fun TableHeaderRow(
             sortType = UsersManagementScreenState.SortType.USERNAME,
             currentSort = sortState,
             onSortClicked = onSortClicked,
-            modifier = Modifier.widthIn(min = 268.dp, max = 268.dp)
+            modifier = Modifier.width(268.dp)
         )
         Text(
             text = stringResource(Res.string.phone_number),

@@ -43,6 +43,7 @@
     <string name="blocked">Blocked</string>
     <string name="block">Block</string>
     <string name="activate">Activate</string>
+    <string name="deactivated">Deactivated</string>
     <!-- Search -->
     <string name="no_search_result">No search result!</string>
     <string name="no_search_result_description">please try with another keyword.</string>
