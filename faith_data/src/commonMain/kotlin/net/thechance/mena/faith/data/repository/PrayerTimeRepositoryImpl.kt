@@ -13,9 +13,8 @@ import kotlinx.datetime.toLocalDateTime
 import kotlinx.datetime.todayIn
 import net.thechance.mena.faith.data.database.prayertimes.PrayerTimesDao
 import net.thechance.mena.faith.data.database.prayertimes.PrayerTimesLocal
-import net.thechance.mena.faith.data.database.prayertimes.toDomain
-import net.thechance.mena.faith.data.database.prayertimes.toLocal
 import net.thechance.mena.faith.data.mapper.prayertime.toDomain
+import net.thechance.mena.faith.data.mapper.prayertime.toLocal
 import net.thechance.mena.faith.data.remote.service.PrayerTimeApiService
 import net.thechance.mena.faith.data.utils.executeApiSafely
 import net.thechance.mena.faith.data.utils.executeLocalSafely
