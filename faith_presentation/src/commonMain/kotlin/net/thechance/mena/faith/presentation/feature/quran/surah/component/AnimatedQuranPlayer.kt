@@ -60,7 +60,7 @@ private fun Preview(){
                     override fun onReciterClick(surahId: Int) {}
                     override fun onPreviousAyahClick() {}
                     override fun onDismissActionButtons() {}
-                    override fun onShareClick(ayahContent: String) {}
+                    override fun onShareClick() {}
                     override fun onBookmarkClick(ayahNumber: Int) {}
                     override fun onAyahLongPress(
                         ayahContent: String,
