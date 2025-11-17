@@ -179,6 +179,7 @@ fun ChatScreenContent(
             }
         ) {
             ChatList(
+                chatName = state.chatName,
                 items = state.chatListItems,
                 chatAvatarUrl = state.chatAvatarUrl,
                 chatListState = chatLazyListState,

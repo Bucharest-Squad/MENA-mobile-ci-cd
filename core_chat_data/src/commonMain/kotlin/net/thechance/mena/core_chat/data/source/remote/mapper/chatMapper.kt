@@ -56,7 +56,8 @@ fun ChatDto.toDomain(): Chat {
         id = id.toUuid(),
         imageUrl = imageUrl,
         name = name,
-        requesterId = requesterId.toUuid()
+        requesterId = requesterId.toUuid(),
+        receiverId = Uuid.random() //todo use actual value
     )
 }
 
@@ -75,6 +76,7 @@ fun CachedChatLocalDto.toDomain(): Chat {
         imageUrl = imageUrl,
         name = name,
         requesterId = requesterId.toUuid(),
+        receiverId = Uuid.random() //todo use actual value
     )
 }
 

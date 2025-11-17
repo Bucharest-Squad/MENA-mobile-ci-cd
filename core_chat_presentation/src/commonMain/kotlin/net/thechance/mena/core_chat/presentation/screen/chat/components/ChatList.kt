@@ -31,6 +31,7 @@ import kotlin.uuid.Uuid
 
 @Composable
 fun ChatList(
+    chatName: String,
     items: List<ChatListItem>,
     chatAvatarUrl: String,
     chatListState: LazyListState,
@@ -75,6 +76,7 @@ fun ChatList(
                 Theme.spacing._2
 
             ChatListItem(
+                chatName = chatName,
                 item = item,
                 chatAvatarUrl = chatAvatarUrl,
                 onMessageClick = onMessageClick,
