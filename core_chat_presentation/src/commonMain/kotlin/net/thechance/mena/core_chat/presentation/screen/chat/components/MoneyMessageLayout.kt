@@ -22,6 +22,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.ic_coin
+import mena.core_chat_presentation.generated.resources.mine_send_message
+import mena.core_chat_presentation.generated.resources.mine_wallet
+import mena.core_chat_presentation.generated.resources.other_send_message
+import mena.core_chat_presentation.generated.resources.other_wallet
+import mena.core_chat_presentation.generated.resources.to
 import net.thechance.mena.core_chat.domain.entity.MessageReaction
 import net.thechance.mena.core_chat.domain.entity.MessageStatus
 import net.thechance.mena.core_chat.presentation.screen.chat.MessageDetailsUiState
@@ -31,7 +36,9 @@ import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -181,25 +188,22 @@ private fun MessageContent(
     chatName: String,
     messageDetailsUiState: MessageDetailsUiState
 ) {
-    val firstMessageContent = if (messageDetailsUiState.isMine) {
-        "You send"
-    } else {
-        "$chatName send"
-    }
-    val lastMessageContent = if (messageDetailsUiState.isMine) {
-        "To $chatName wallet"
-    } else {
-        "To your wallet"
-    }
+    val sendMessage =
+        if (messageDetailsUiState.isMine) Res.string.mine_send_message else Res.string.other_send_message
+    val walletMessage =
+        if (messageDetailsUiState.isMine) Res.string.mine_wallet else Res.string.other_wallet
 
     FlowRow(
         horizontalArrangement = Arrangement.spacedBy(Theme.spacing._4),
     ) {
-        Text(
-            text = firstMessageContent,
-            style = Theme.typography.body.small,
-            color = Theme.colorScheme.shadeSecondary
-        )
+        if (!messageDetailsUiState.isMine) {
+            Text(
+                text = chatName,
+                style = Theme.typography.body.small,
+                color = Theme.colorScheme.shadeSecondary
+            )
+        }
+        MessageText(sendMessage)
 
         Text(
             text = "$amount",
@@ -210,15 +214,27 @@ private fun MessageContent(
         Icon(
             painter = painterResource(Res.drawable.ic_coin),
             contentDescription = null,
-            modifier = Modifier.size(24.dp)
+            modifier = Modifier.size(20.dp)
         )
-
-        Text(
-            text = lastMessageContent,
-            style = Theme.typography.body.small,
-            color = Theme.colorScheme.shadeSecondary
-        )
+        MessageText(Res.string.to)
+        MessageText(walletMessage)
+        if (messageDetailsUiState.isMine) {
+            Text(
+                text = chatName,
+                style = Theme.typography.body.small,
+                color = Theme.colorScheme.shadeSecondary
+            )
+        }
     }
+}
+
+@Composable
+private fun MessageText(content: StringResource) {
+    Text(
+        text = stringResource(content),
+        style = Theme.typography.body.small,
+        color = Theme.colorScheme.shadeSecondary
+    )
 }
 
 @OptIn(ExperimentalUuidApi::class)
@@ -227,7 +243,8 @@ private fun MessageContent(
 private fun MoneyMessageLayoutPreview() {
     MenaTheme {
         Column(
-            modifier = Modifier.fillMaxWidth(0.9f)
+            modifier = Modifier.fillMaxWidth(0.88f),
+            verticalArrangement = Arrangement.Center
         ) {
             MoneyMessageLayout(
                 chatName = "The princess\uD83D\uDC51 \uD83D\uDC78\uD83C\uDFFC",

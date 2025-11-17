@@ -39,6 +39,11 @@
     <string name="success">Success</string>
     <string name="send_a_money">Send a money</string>
     <string name="amount">Amount</string>
+    <string name="mine_send_message">You send</string>
+    <string name="other_send_message">send</string>
+    <string name="to">To</string>
+    <string name="mine_wallet">wallet of</string>
+    <string name="other_wallet">your wallet</string>
     <string name="send">Send</string>
     <string name="image_saved_successfully">Download photo to your device successfully.</string>
     <string name="today">Today</string>
