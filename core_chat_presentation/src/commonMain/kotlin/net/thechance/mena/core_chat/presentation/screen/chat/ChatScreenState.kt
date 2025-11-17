@@ -54,6 +54,7 @@ sealed class MessageUiState(open val messageDetails: MessageDetailsUiState) : Ch
         is ImageMessageUiState -> copy(messageDetails = messageDetails)
         is TextMessageUiState -> copy(messageDetails = messageDetails)
         is AyahMessageUiState -> copy(messageDetails = messageDetails)
+        is MoneyMessageUiState -> copy(messageDetails = messageDetails)
     }
 }
 
@@ -97,5 +98,10 @@ data class AudioMessageUiState(
     val progress: Float,
     val duration: Long,
     val waveformData: List<Float> = emptyList(),
+    override val messageDetails: MessageDetailsUiState
+) : MessageUiState(messageDetails)
+
+data class MoneyMessageUiState(
+    val amount: Double,
     override val messageDetails: MessageDetailsUiState
 ) : MessageUiState(messageDetails)
