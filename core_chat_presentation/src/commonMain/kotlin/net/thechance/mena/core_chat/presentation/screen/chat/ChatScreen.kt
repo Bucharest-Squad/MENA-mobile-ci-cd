@@ -46,7 +46,7 @@ import net.thechance.mena.core_chat.presentation.screen.chat.components.FullImag
 import net.thechance.mena.core_chat.presentation.screen.chat.components.RecordingBar
 import net.thechance.mena.core_chat.presentation.screen.chat.components.attachmentsSendMoneyBottomSheet
 import net.thechance.mena.core_chat.presentation.screen.chat.components.chatActionsMenuDialog
-import net.thechance.mena.core_chat.presentation.screen.chat.components.messageReactionDialog
+import net.thechance.mena.core_chat.presentation.screen.chat.components.MessageReactionDialog
 import net.thechance.mena.core_chat.presentation.screen.chat.components.resendFailedMessageDialog
 import net.thechance.mena.core_chat.presentation.utils.EffectHandler
 import net.thechance.mena.core_chat.presentation.utils.PaginationTrigger
@@ -66,7 +66,7 @@ fun ChatScreen(onClickBackFromChat: () -> Unit = {}) {
 
     val viewModel: ChatViewModel = koinViewModel(parameters = { parametersOf(controller) })
 
-    BindEffect(controller)
+    BindEffect(viewModel.permissionsController)
 
     BackHandler(enabled = true) {
         viewModel.onBackClicked()
@@ -149,7 +149,7 @@ fun ChatScreenContent(
                         ChatInputBar(
                             userInput = state.inputMessage,
                             onTextChange = interactions::onInputMessageChanged,
-                            onSendButtonClick = interactions::onSendMessageClicked,
+                            onSendButtonClick = interactions::onSendTextMessageClicked,
                             onAttachButtonClick = interactions::onAttachmentClicked,
                             onVoiceRecordClick = interactions::onRecordClicked
                         )
@@ -194,7 +194,7 @@ fun ChatScreenContent(
             visible = state.isImagePagerVisible,
             modifier = Modifier.fillMaxSize(),
         ) {
-            val isMine = state.selectedMessage?.isMine == true
+            val isMine = state.selectedMessage?.messageDetails?.isMine == true
             val senderName = if (isMine) stringResource(Res.string.you) else state.chatName
             val senderImageUrl = if (isMine) state.userData.imageUrl else state.chatAvatarUrl
 
@@ -230,7 +230,7 @@ fun ChatScreenContent(
         loadNextItems = interactions::onMessagesScrolled
     )
 
-    messageReactionDialog(
+    MessageReactionDialog(
         isVisible = state.isReactionDialogVisible,
         message = state.messageToReactTo,
         currentUserId = state.chatRequesterId,
