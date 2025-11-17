@@ -87,6 +87,7 @@ private fun ProductCardLoaded(
                         )
                     },
                     onProductClick = { listener.onProductClicked(product.id) },
+                    isOutOfStock = product.isOutOfStock
                 )
             }
         }

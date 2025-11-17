@@ -82,6 +82,7 @@ private fun ProductItem(
         productImageUrl = product.imageUrl,
         productDescription = product.description,
         productPrice = product.price,
+        isOutOfStock = product.isOutOfStock,
         productCardBackground = Theme.colorScheme.background.surfaceLow,
         modifier = modifier,
         onProductClick = { listener.onProductClicked(product.id) },

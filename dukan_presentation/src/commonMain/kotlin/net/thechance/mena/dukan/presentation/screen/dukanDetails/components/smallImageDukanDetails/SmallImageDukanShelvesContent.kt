@@ -164,6 +164,7 @@ private fun ProductItem(
         productName = product.name,
         productImageUrl = product.imageUrl,
         productDescription = product.description,
+        isOutOfStock = product.isOutOfStock,
         productPrice = product.price,
         productCardBackground = Theme.colorScheme.background.surfaceLow,
         onProductClick = { listener.onProductClicked(product.id) },

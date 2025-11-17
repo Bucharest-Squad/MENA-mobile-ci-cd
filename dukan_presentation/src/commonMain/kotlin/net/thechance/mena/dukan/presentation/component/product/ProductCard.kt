@@ -27,10 +27,13 @@ import coil3.compose.AsyncImagePainter
 import mena.dukan_presentation.generated.resources.Res
 import mena.dukan_presentation.generated.resources.ic_no_image_loaded
 import mena.dukan_presentation.generated.resources.koin_icon
+import mena.dukan_presentation.generated.resources.out_of_stock
 import mena.dukan_presentation.generated.resources.product_image
 import mena.dukan_presentation.generated.resources.silver_tc
+import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import net.thechance.mena.designsystem.presentation.util.AppTheme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -43,6 +46,7 @@ fun ProductCard(
     productImageUrl: String,
     productDescription: String,
     productPrice: Double,
+    isOutOfStock: Boolean,
     modifier: Modifier = Modifier,
     productCardBackground: Color? = null,
     productImageBackground: Color = Theme.colorScheme.background.surfaceLow,
@@ -82,6 +86,23 @@ fun ProductCard(
                     .clip(SquircleShape(Theme.radius.sm)),
                 contentScale = ContentScale.Crop
             )
+            if (isOutOfStock) {
+                Box(
+                    modifier = Modifier
+                        .clip(SquircleShape(topEnd = Theme.radius.sm, topStart = Theme.radius.sm))
+                        .background(color = Theme.colorScheme.brand.brand)
+                        .padding(horizontal = 6.dp, vertical = 3.dp)
+                        .align(Alignment.BottomCenter)
+
+                ) {
+                    Text(
+                        text = stringResource(Res.string.out_of_stock),
+                        style = Theme.typography.label.extraSmall,
+                        color = Theme.colorScheme.primary.onPrimary
+                    )
+                }
+            }
+
             if (isError || isLoading) {
                 Image(
                     painter = painterResource(Res.drawable.ic_no_image_loaded),
@@ -129,7 +150,9 @@ fun ProductCard(
 @Preview
 @Composable
 private fun ProductCardPreview() {
-    MenaTheme {
+    MenaTheme(
+        appTheme = AppTheme.LIGHT.name
+    ) {
         ProductCard(
             productName = "Girls Crochet Tank Top",
             productImageUrl = "https://calvinklein.scene7.com/is/image/CalvinKlein/LX001376_100_alternate1?wid=1728&qlt=80%2C0&resMode=sharp2&op_usm=0.9%2C1.0%2C8%2C0&iccEmbed=0&fmt=webp",
@@ -138,6 +161,8 @@ private fun ProductCardPreview() {
             productCardBackground = Theme.colorScheme.background.surfaceLow,
             productAction = { EditProductIcon(onClick = {}) },
             modifier = Modifier.padding(Theme.spacing._12),
+            isOutOfStock = true,
+
         )
     }
 }
