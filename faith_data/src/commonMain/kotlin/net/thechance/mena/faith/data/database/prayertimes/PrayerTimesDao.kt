@@ -14,9 +14,10 @@ interface PrayerTimesDao {
     suspend fun insertPrayerTimes(prayerTimes: PrayerTimesLocal)
 
     @Query("SELECT * FROM prayer_times WHERE date = :date LIMIT 1")
-    suspend fun getPrayerTimes(
-        date: LocalDate
-    ): PrayerTimesLocal
+    suspend fun getPrayerTimesByDate(date: LocalDate): PrayerTimesLocal
+
+    @Query("SELECT * FROM prayer_times WHERE hijri_date = :hijriDate LIMIT 1")
+    suspend fun getPrayerTimesByHijri(hijriDate: String): PrayerTimesLocal
 
     @OptIn(ExperimentalTime::class)
     @Query("DELETE FROM prayer_times WHERE saved_in < :expiredDate")
