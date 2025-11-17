@@ -16,19 +16,20 @@ import net.thechance.mena.faith.presentation.feature.qiblah.calibratedevice.Cali
 import net.thechance.mena.faith.presentation.feature.qiblah.compass.CompassViewModel
 import net.thechance.mena.faith.presentation.feature.quran.bookmark.BookmarkViewModel
 import net.thechance.mena.faith.presentation.feature.quran.downloadedSur.DownloadedSurViewModel
-import net.thechance.mena.faith.presentation.feature.quran.reciter.ReciterSearchViewModel
 import net.thechance.mena.faith.presentation.feature.quran.reciter.args.ReciterArgs
 import net.thechance.mena.faith.presentation.feature.quran.reciter.args.ReciterArgsImpl
 import net.thechance.mena.faith.presentation.feature.quran.search.ayah.SearchViewModel
 import net.thechance.mena.faith.presentation.feature.quran.search.ayah.args.SearchArgs
 import net.thechance.mena.faith.presentation.feature.quran.search.ayah.args.SearchArgsImpl
+import net.thechance.mena.faith.presentation.feature.quran.reciter.downloadedSurahRecitersScreen.DownloadedSurahRecitersViewModel
 import net.thechance.mena.faith.presentation.feature.quran.sur.SurViewModel
 import net.thechance.mena.faith.presentation.feature.quran.surah.SurahViewModel
 import net.thechance.mena.faith.presentation.feature.quran.surah.args.SurahArgs
 import net.thechance.mena.faith.presentation.feature.quran.surah.args.SurahArgsImpl
-import net.thechance.mena.faith.presentation.feature.quran.tilwah.TilawahViewModel
-import net.thechance.mena.faith.presentation.feature.quran.tilwah.component.args.TilawahSurahArgs
-import net.thechance.mena.faith.presentation.feature.quran.tilwah.component.args.TilawahSurahArgsImpl
+import net.thechance.mena.faith.presentation.feature.quran.reciter.downloadedSurahRecitersScreen.args.TilawahSurahArgs
+import net.thechance.mena.faith.presentation.feature.quran.reciter.downloadedSurahRecitersScreen.args.TilawahSurahArgsImpl
+import net.thechance.mena.faith.presentation.feature.quran.reciter.manageDownloadsReciters.ManageDownloadsRecitersViewModel
+import net.thechance.mena.faith.presentation.feature.quran.reciter.reciterSelection.ReciterSelectionViewModel
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
@@ -52,12 +53,14 @@ internal val faithViewModelModule = module {
     viewModelOf(::MainViewModel)
     viewModelOf(::PrayerTimeViewModel)
     viewModelOf(::NearbyMosquesViewModel)
-    viewModelOf(::TilawahViewModel)
+    viewModelOf(::DownloadedSurahRecitersViewModel)
+    viewModelOf(::ManageDownloadsRecitersViewModel)
     viewModelOf(::DownloadedSurViewModel)
-    viewModelOf(::ReciterSearchViewModel)
+    viewModelOf(::ReciterSelectionViewModel)
     viewModelOf(::CreateMosqueViewModel)
     viewModelOf(::MosqueImageCropViewModel)
     viewModelOf(::UploadImageViewModel)
     singleOf(::SharedImageViewModel)
+
 }
 

@@ -17,11 +17,12 @@ import net.thechance.mena.faith.presentation.feature.qiblah.calibratedevice.Cali
 import net.thechance.mena.faith.presentation.feature.qiblah.compass.CompassScreen
 import net.thechance.mena.faith.presentation.feature.quran.bookmark.BookmarkScreen
 import net.thechance.mena.faith.presentation.feature.quran.downloadedSur.DownloadedSurScreen
-import net.thechance.mena.faith.presentation.feature.quran.reciter.ReciterSearchScreen
+import net.thechance.mena.faith.presentation.feature.quran.reciter.manageDownloadsReciters.ManageDownloadsRecitersScreen
 import net.thechance.mena.faith.presentation.feature.quran.search.ayah.SearchScreen
 import net.thechance.mena.faith.presentation.feature.quran.sur.SurScreen
 import net.thechance.mena.faith.presentation.feature.quran.surah.SurahScreen
-import net.thechance.mena.faith.presentation.feature.quran.tilwah.TilawahScreen
+import net.thechance.mena.faith.presentation.feature.quran.reciter.downloadedSurahRecitersScreen.DownloadedSurahRecitersScreen
+import net.thechance.mena.faith.presentation.feature.quran.reciter.reciterSelection.ReciterSelectionScreen
 import net.thechance.mena.identity.api.IdentityFeatureApi
 import org.koin.compose.getKoin
 
@@ -68,11 +69,14 @@ fun FaithNavigation(identityApi: IdentityFeatureApi = getKoin().get()) {
                 composable<Route.DownloadedSurScreen> {
                     DownloadedSurScreen()
                 }
-                composable<Route.DownloadedRecitersRoute> {
-                    TilawahScreen()
+                composable<Route.DownloadedSurahRecitersRoute> {
+                    DownloadedSurahRecitersScreen()
                 }
-                composable<Route.ReciterSearch> {
-                    ReciterSearchScreen()
+                composable<Route.ReciterSelectionRoute> {
+                    ReciterSelectionScreen()
+                }
+                composable<Route.ManageDownloadsReciters> {
+                    ManageDownloadsRecitersScreen()
                 }
                 composable<Route.UserAddresses> {
                     identityApi.NavigateToAddressesScreen(

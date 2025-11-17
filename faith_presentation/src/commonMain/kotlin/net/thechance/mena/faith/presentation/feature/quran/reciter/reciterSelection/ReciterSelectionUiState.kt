@@ -1,0 +1,25 @@
+package net.thechance.mena.faith.presentation.feature.quran.reciter.reciterSelection
+
+import net.thechance.mena.faith.domain.model.Reciter
+
+
+data class ReciterSelectionUiState(
+    val query: String = "",
+    val queryHint: String = "",
+    val lastSearchedQuery: String = "",
+    val searchResults: List<ReciterSelectionUi> = emptyList(),
+)
+
+data class ReciterSelectionUi(
+    val id: Int,
+    val name: String,
+    val recitingType: String,
+    val isDownloaded: Boolean,
+)
+
+fun Reciter.toUi(isDownloaded: Boolean) = ReciterSelectionUi(
+    id = id,
+    name = name,
+    recitingType = tilawahType,
+    isDownloaded = isDownloaded
+)

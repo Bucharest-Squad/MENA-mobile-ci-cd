@@ -1,4 +1,4 @@
-package net.thechance.mena.faith.presentation.feature.quran.tilwah.component
+package net.thechance.mena.faith.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -30,9 +30,8 @@ import mena.faith_presentation.generated.resources.play
 import mena.faith_presentation.generated.resources.success
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.text.Text
+import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.faith.presentation.components.PlayButton
-import net.thechance.mena.faith.presentation.components.SwappableCard
 import net.thechance.mena.faith.presentation.designSystem.theme.QuranTheme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -127,12 +126,14 @@ private fun CardContent(
                 isDownloaded = isDownloaded
             )
         }
-        Icon(
-            painterResource(Res.drawable.icon_download),
-            contentDescription = stringResource(Res.string.success),
-            modifier = Modifier.size(size = 20.dp)
-                .clickable(onClick = onDownloadClick)
-        )
+        if (!isDownloaded) {
+            Icon(
+                painterResource(Res.drawable.icon_download),
+                contentDescription = stringResource(Res.string.success),
+                modifier = Modifier.size(size = 20.dp)
+                    .clickable(onClick = onDownloadClick)
+            )
+        }
     }
 }
 
@@ -171,6 +172,7 @@ private fun RecitersDetails(
 @Preview
 @Composable
 private fun Preview() {
+    MenaTheme {
     QuranTheme {
         ReciterItem(
             reciterId = 1,
@@ -182,5 +184,6 @@ private fun Preview() {
             isSelectReciter = false,
             isSwipeable = true,
         )
+    }
     }
 }

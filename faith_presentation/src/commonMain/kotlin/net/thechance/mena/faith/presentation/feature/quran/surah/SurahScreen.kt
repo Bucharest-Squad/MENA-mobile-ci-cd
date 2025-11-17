@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
+import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.faith.domain.entity.Ayah
 import net.thechance.mena.faith.presentation.base.ObserveAsEffect
@@ -24,7 +25,7 @@ import net.thechance.mena.faith.presentation.feature.quran.surah.component.Anima
 import net.thechance.mena.faith.presentation.feature.quran.surah.component.AyatOfSurah
 import net.thechance.mena.faith.presentation.feature.quran.surah.component.SurahAppBar
 import net.thechance.mena.faith.presentation.navigation.LocalNavController
-import net.thechance.mena.faith.presentation.navigation.Route.DownloadedRecitersRoute
+import net.thechance.mena.faith.presentation.navigation.Route
 import net.thechance.mena.faith.presentation.navigation.Route.SearchRoute
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
@@ -49,7 +50,7 @@ fun SurahScreen(
             }
 
             is SurahScreenEffect.NavigateToDownloadedRecitersScreen -> {
-                navController.navigate(DownloadedRecitersRoute(effect.surahId))
+                navController.navigate(Route.DownloadedSurahRecitersRoute(effect.surahId))
             }
         }
     }
@@ -121,6 +122,7 @@ private fun Content(
 @Composable
 @Preview
 private fun Preview() {
+    MenaTheme {
     QuranTheme {
         CompositionLocalProvider(LocalNavController provides rememberNavController()) {
             Content(
@@ -201,5 +203,6 @@ private fun Preview() {
                 snackBarState = SnackBarState()
             )
         }
+    }
     }
 }

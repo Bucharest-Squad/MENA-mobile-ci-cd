@@ -17,6 +17,7 @@ import mena.faith_presentation.generated.resources.ic_al_kahf
 import mena.faith_presentation.generated.resources.ic_an_nas
 import mena.faith_presentation.generated.resources.ic_ash_shams
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
+import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.faith.presentation.base.ObserveAsEffect
 import net.thechance.mena.faith.presentation.base.snackbar.SnackBarState
@@ -42,13 +43,11 @@ fun DownloadedSurScreen(viewModel: DownloadedSurViewModel = koinViewModel()) {
         when (effect) {
             DownloadedSurEffect.NavigateBack -> navController.navigateUp()
             is DownloadedSurEffect.NavigateToRecitersScreen ->
-                navController.navigate(Route.DownloadedRecitersRoute(surahId = effect.surahId))
-
+                navController.navigate(Route.ReciterSelectionRoute(surahId = effect.surahId))
             is DownloadedSurEffect.NavigateToDownloadedSurahReciterScreen -> {
                 navController.navigate(
-                    Route.DownloadedRecitersRoute(
+                    Route.ManageDownloadsReciters(
                         surahId = effect.surahId,
-                        isCardsSwipable = true,
                     )
                 )
             }
@@ -126,10 +125,11 @@ private fun Content(
 @Preview
 @Composable
 private fun PreviewDownloadedSurScreen() {
+    MenaTheme {
     QuranTheme {
         Content(
             uiState = DownloadedSurUiState(
-                showDeleteConfirmationDialog = true,
+                showDeleteConfirmationDialog = false,
                 surDetails = listOf(
                     DownloadedSurUiState.SurahDetailsUiState(
                         1,
@@ -168,5 +168,6 @@ private fun PreviewDownloadedSurScreen() {
                     override fun onConfirmDeleteDownloadedSurahClick() {}
                 },
         )
+    }
     }
 }

@@ -1,4 +1,4 @@
-package net.thechance.mena.faith.presentation.feature.quran.tilwah.component
+package net.thechance.mena.faith.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,7 +19,9 @@ import mena.faith_presentation.generated.resources.reciters
 import mena.faith_presentation.generated.resources.search_icon
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
+import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import net.thechance.mena.faith.presentation.designSystem.theme.QuranTheme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -63,8 +65,12 @@ private fun SearchIcon(onSearchClick: () -> Unit) {
 @Preview
 @Composable
 private fun Preview() {
-    TilawahTopBar(
-        onSearchClick = {},
-        onBackClick = {},
-    )
+    MenaTheme {
+        QuranTheme {
+            TilawahTopBar(
+                onSearchClick = {},
+                onBackClick = {},
+            )
+        }
+    }
 }

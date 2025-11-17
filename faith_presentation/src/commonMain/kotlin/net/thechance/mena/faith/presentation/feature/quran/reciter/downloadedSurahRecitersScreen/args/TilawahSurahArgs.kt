@@ -1,4 +1,4 @@
-package net.thechance.mena.faith.presentation.feature.quran.tilwah.component.args
+package net.thechance.mena.faith.presentation.feature.quran.reciter.downloadedSurahRecitersScreen.args
 
 interface TilawahSurahArgs {
     val surahId: Int?

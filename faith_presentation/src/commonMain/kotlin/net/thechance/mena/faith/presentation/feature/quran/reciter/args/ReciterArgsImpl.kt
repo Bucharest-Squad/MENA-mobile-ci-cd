@@ -7,8 +7,8 @@ import net.thechance.mena.faith.presentation.navigation.Route
 class ReciterArgsImpl(
     savedStateHandle: SavedStateHandle
 ) : ReciterArgs {
-    private val reciterSearchArgs = savedStateHandle.toRoute<Route.ReciterSearch>()
+    private val reciterSelectionRouteArgs = savedStateHandle.toRoute<Route.ReciterSelectionRoute>()
 
-    override val surahId: Int? = reciterSearchArgs.surahId
+    override val surahId: Int? = reciterSelectionRouteArgs.surahId
 
 }

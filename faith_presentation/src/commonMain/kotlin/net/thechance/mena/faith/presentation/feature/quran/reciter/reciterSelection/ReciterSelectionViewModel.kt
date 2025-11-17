@@ -1,4 +1,4 @@
-package net.thechance.mena.faith.presentation.feature.quran.reciter
+package net.thechance.mena.faith.presentation.feature.quran.reciter.reciterSelection
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -10,26 +10,31 @@ import net.thechance.mena.faith.domain.model.Reciter
 import net.thechance.mena.faith.domain.repository.QuranRepository
 import net.thechance.mena.faith.presentation.base.BaseViewModel
 import net.thechance.mena.faith.presentation.feature.quran.reciter.args.ReciterArgs
-import net.thechance.mena.faith.presentation.feature.quran.tilwah.toUi
 import org.jetbrains.compose.resources.getString
 
-class ReciterSearchViewModel(
+class ReciterSelectionViewModel(
     private val repository: QuranRepository,
     private val reciterArgs: ReciterArgs,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
-) : BaseViewModel<ReciterSearchUiState, ReciterSearchEffect>(
-    ReciterSearchUiState()
-), ReciterSearchInteractionListener {
+) : BaseViewModel<ReciterSelectionUiState, ReciterSelectionEffect>(
+    ReciterSelectionUiState()
+), ReciterSelectionListener {
 
     private var searchJob: Job? = null
 
     init {
         initializeSearchHint()
+        fetchAllReciters()
     }
 
-    override fun onBackClick() = sendEffect(ReciterSearchEffect.NavigateBack)
+    override fun onBackClick() = sendEffect(ReciterSelectionEffect.NavigateBack)
 
-    override fun onClearQueryClick() = updateState { it.copy(query = "") }
+    override fun onSearchClick() = sendEffect(ReciterSelectionEffect.NavigateToSearch)
+
+    override fun onClearQueryClick() {
+        updateState { it.copy(query = "") }
+        fetchAllReciters()
+    }
 
     override fun onQueryChange(query: String) {
         val lastSearchedQuery = uiState.value.query
@@ -67,16 +72,13 @@ class ReciterSearchViewModel(
         updateState { it.copy(searchResults = searchResults) }
     }
 
-
     private fun isQueryTooShort(query: String): Boolean {
         val isTooShort = query.length < MIN_SEARCH_QUERY_LENGTH
         if (isTooShort) {
-            clearSearchResults()
+            fetchAllReciters()
         }
         return isTooShort
     }
-
-    private fun clearSearchResults() = updateState { it.copy(searchResults = emptyList()) }
 
     private fun initializeSearchHint() {
         tryToExecute(
@@ -84,6 +86,20 @@ class ReciterSearchViewModel(
                 val hint = getString(Res.string.search_reciter)
                 updateState { it.copy(queryHint = hint) }
             }
+        )
+    }
+
+    private fun fetchAllReciters() {
+        tryToExecute(
+            execute = {
+                val allReciters = repository.getReciters()
+                val surahId = reciterArgs.surahId ?: return@tryToExecute
+                val uiReciters = allReciters.map { reciter ->
+                    reciter.toUi(repository.isSurahAudioCached(surahId, reciter.id))
+                }
+                updateState { it.copy(searchResults = uiReciters) }
+            },
+            dispatcher = dispatcher
         )
     }
 

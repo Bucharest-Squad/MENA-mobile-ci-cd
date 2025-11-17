@@ -38,13 +38,17 @@ internal sealed interface Route {
 
 
     @Serializable
-    data class DownloadedRecitersRoute(
+    data class DownloadedSurahRecitersRoute(
         val surahId: Int? = null,
-        val isCardsSwipable: Boolean = false,
     ) : Route
 
     @Serializable
-    data class ReciterSearch(
+    data class ReciterSelectionRoute(
+        val surahId: Int? = null
+    ) : Route
+
+    @Serializable
+    data class ManageDownloadsReciters(
         val surahId: Int? = null
     ) : Route
     
