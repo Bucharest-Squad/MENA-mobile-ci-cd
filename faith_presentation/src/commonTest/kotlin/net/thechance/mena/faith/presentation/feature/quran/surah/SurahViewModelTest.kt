@@ -339,6 +339,27 @@ class SurahViewModelTest {
     }
 
     @Test
+    fun `onShareClick should navigate to ShareAyah when onShareClick is invoked`() = runTest {
+
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        testViewModel.uiEffect.test {
+            testViewModel.onShareClick()
+
+            assertEquals(
+                SurahScreenEffect.ShareAyah(
+                    surahId = 0.toString(),
+                    ayahNumber = 1,
+                    ayahContent = AYAH_TO_SHARE
+                ),
+                awaitItem()
+            )
+        }
+    }
+
+
+    // Copy Tests
+    @Test
     fun `onCopyClick should show success snackbar when copy succeeds`() = runTest {
         testViewModel.snackBarState.test {
             testViewModel.onCopyClick(AYAH_TO_COPY)
@@ -471,6 +492,7 @@ class SurahViewModelTest {
         const val FIRST_AYAH_CONTENT = "First ayah"
         const val SECOND_AYAH_CONTENT = "Second ayah"
         const val SELECTED_AYAH_CONTENT = "Selected ayah content"
+        const val AYAH_TO_SHARE = ""
         const val EMPTY_STRING = ""
         const val AYAH_CONTENT = "Test ayah content"
         const val AYAH_TO_COPY = "Test ayah to copy"
