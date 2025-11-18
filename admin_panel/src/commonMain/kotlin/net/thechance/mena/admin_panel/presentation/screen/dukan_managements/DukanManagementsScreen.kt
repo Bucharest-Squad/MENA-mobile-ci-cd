@@ -81,9 +81,10 @@ fun DukanManagementsContent(
                 query = state.query
             )
             when {
-                state.isLoading -> AdminPanelContentLoading()
+                state.isLoading && state.query.isEmpty() && state.pageInfo.totalPages == 0 ->
+                    AdminPanelContentLoading()
 
-                state.dukans.isEmpty()  -> {
+                state.dukans.isEmpty() -> {
                     if (state.query.isNotEmpty())
                         EmptySearchState(
                             modifier = Modifier
@@ -93,7 +94,7 @@ fun DukanManagementsContent(
                     else {
                         EmptyDukanState(
                             description = stringResource(Res.string.no_dukan_results),
-                            modifier = Modifier.offset(y=-(76.dp))
+                            modifier = Modifier.offset(y = -(76.dp))
                         )
                     }
                 }
@@ -113,7 +114,7 @@ private fun onDukanManagementEffect(
 ) {
     when (effect) {
         is DukanManagementEffect.NavigateToDukanDetails -> {
-            navController.navigate(DukanDetails){
+            navController.navigate(DukanDetails) {
                 popUpTo(DukanDetails)
             }
         }
