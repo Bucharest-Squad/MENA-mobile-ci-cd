@@ -85,8 +85,6 @@ private fun Content(
             ResultList(
                 listener = listener,
                 uiState = state,
-                isNotBlankQuery = state.query.isNotBlank(),
-                isNotEmptyResult = state.searchResults.isNotEmpty(),
                 results = state.searchResults,
                 modifier = Modifier.fillMaxWidth().weight(1f).padding(top = Theme.spacing._16)
             )
@@ -98,13 +96,10 @@ private fun Content(
 private fun ResultList(
     uiState : ReciterSelectionUiState,
     listener : ReciterSelectionListener,
-    isNotBlankQuery: Boolean,
-    isNotEmptyResult: Boolean,
     results: List<ReciterSelectionUi>,
     modifier: Modifier = Modifier
 ) {
-    val shouldShowResults = isNotBlankQuery && isNotEmptyResult
-    if (!shouldShowResults) return
+
 
     LazyColumn(
         modifier = modifier,
