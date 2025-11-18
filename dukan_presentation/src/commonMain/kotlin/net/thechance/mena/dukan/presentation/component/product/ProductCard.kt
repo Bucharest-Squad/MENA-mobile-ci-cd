@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -87,20 +88,7 @@ fun ProductCard(
                 contentScale = ContentScale.Crop
             )
             if (isOutOfStock) {
-                Box(
-                    modifier = Modifier
-                        .clip(SquircleShape(topEnd = Theme.radius.sm, topStart = Theme.radius.sm))
-                        .background(color = Theme.colorScheme.brand.brand)
-                        .padding(horizontal = 6.dp, vertical = 3.dp)
-                        .align(Alignment.BottomCenter)
-
-                ) {
-                    Text(
-                        text = stringResource(Res.string.out_of_stock),
-                        style = Theme.typography.label.extraSmall,
-                        color = Theme.colorScheme.primary.onPrimary
-                    )
-                }
+                OutOfStockLabel()
             }
 
             if (isError || isLoading) {
@@ -147,6 +135,23 @@ fun ProductCard(
     }
 }
 
+@Composable
+private fun BoxScope.OutOfStockLabel(){
+    Box(
+        modifier = Modifier
+            .clip(SquircleShape(topEnd = Theme.radius.sm, topStart = Theme.radius.sm))
+            .background(color = Theme.colorScheme.brand.brand)
+            .padding(horizontal = 6.dp, vertical = 3.dp)
+            .align(Alignment.BottomCenter)
+
+    ) {
+        Text(
+            text = stringResource(Res.string.out_of_stock),
+            style = Theme.typography.label.extraSmall,
+            color = Theme.colorScheme.primary.onPrimary
+        )
+    }
+}
 @Preview
 @Composable
 private fun ProductCardPreview() {

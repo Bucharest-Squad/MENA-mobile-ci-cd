@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -70,6 +71,7 @@ fun LazyGridScope.wideImageProductsGrid(
                 imageUrl = product.imageUrl,
                 title = product.name,
                 price = "${product.price}",
+                isOutOfStock = product.isOutOfStock,
                 onClick = { listener.onProductClicked(product.id) },
                 productAction = {
                     if (product.isOutOfStock.not()) {
@@ -109,6 +111,7 @@ private fun ProductCard(
     imageUrl: String,
     title: String,
     price: String,
+    isOutOfStock: Boolean,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     productAction: @Composable () -> Unit,
@@ -116,7 +119,6 @@ private fun ProductCard(
     var isError by remember { mutableStateOf(false) }
     var isLoading by remember { mutableStateOf(false) }
 
-    val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
 
     Box(
         modifier = modifier
@@ -189,7 +191,14 @@ private fun ProductCard(
                 )
             }
         }
+        if (isOutOfStock)
+            OutOfStockLabel()
+    }
+}
 
+@Composable
+private fun BoxScope.OutOfStockLabel() {
+    val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
         Box(
             modifier = Modifier
                 .align(Alignment.TopStart)
@@ -231,7 +240,6 @@ private fun ProductCard(
                     color = badgeColor
                 )
             }
-        }
     }
 }
 
@@ -257,7 +265,8 @@ private fun ProductCardPreview() {
                     cartIcon = painterResource(Res.drawable.wide_image_shoppingcart)
                 )
             },
-            onClick = {}
+            onClick = {},
+            isOutOfStock = false
         )
     }
 }
