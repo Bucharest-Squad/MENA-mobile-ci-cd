@@ -77,7 +77,7 @@ private fun DukanRequestsScreenContent(
                 modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 16.dp)
             )
             when {
-                state.isLoading -> AdminPanelContentLoading()
+                state.isLoading && state.pageInfo.totalPages == 0 -> AdminPanelContentLoading()
 
                 state.dukans.isEmpty() -> EmptyState(
                     description = stringResource(Res.string.no_dukan_results_description_for_requests),

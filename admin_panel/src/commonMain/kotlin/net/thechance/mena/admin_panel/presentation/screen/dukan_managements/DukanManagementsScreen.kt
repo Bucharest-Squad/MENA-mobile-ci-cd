@@ -85,7 +85,8 @@ fun DukanManagementsContent(
                 query = state.query
             )
             when {
-                state.isLoading -> AdminPanelContentLoading()
+                state.isLoading && state.query.isEmpty() && state.pageInfo.totalPages == 0 ->
+                    AdminPanelContentLoading()
 
                 state.dukans.isEmpty() -> {
                     if (state.query.isNotEmpty())
