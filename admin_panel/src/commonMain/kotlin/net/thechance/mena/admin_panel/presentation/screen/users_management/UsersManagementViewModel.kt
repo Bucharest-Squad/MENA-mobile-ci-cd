@@ -63,12 +63,16 @@ class UsersManagementViewModel(
     override fun onSearchQueryChanged(query: String) {
         if (query == currentState.query) return
 
+        val trimmedQuery = query.trim().replace(Regex("\\s+"), " ")
+
         updateState { it.copy(query = query, pageInfo = it.pageInfo.copy(page = 0)) }
         searchJob?.cancel()
 
-        searchJob = viewModelScope.launch {
-            delay(SEARCH_DEBOUNCE_DELAY)
-            getUsers()
+        if (trimmedQuery.isNotBlank()) {
+            searchJob = viewModelScope.launch {
+                delay(SEARCH_DEBOUNCE_DELAY)
+                getUsers()
+            }
         }
     }
 

@@ -39,13 +39,17 @@ class DukanManagementViewmodel(
     override fun onSearchQueryChanged(query: String) {
         if (query == currentState.query) return
 
+        val trimmedQuery = query.trim().replace(Regex("\\s+"), " ")
+
         updateState { it.copy(query = query) }
         searchJob?.cancel()
 
-        searchJob = viewModelScope.launch {
-            delay(SEARCH_DEBOUNCE_DELAY)
-            updateState { it.copy(pageInfo = it.pageInfo.copy(page = 0)) }
-            getDukans()
+        if (trimmedQuery.isNotBlank()) {
+            searchJob = viewModelScope.launch {
+                delay(SEARCH_DEBOUNCE_DELAY)
+                updateState { it.copy(pageInfo = it.pageInfo.copy(page = 0)) }
+                getDukans()
+            }
         }
     }
 
