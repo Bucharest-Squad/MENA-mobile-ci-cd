@@ -139,6 +139,10 @@ private fun Preview() {
                 listener = object : PrayerTimeInteractionListener {
                     override fun onBackClick() {}
                     override fun onLocationClick() {}
+                    override fun onSelectedDateChange(day: Int, month: Int, year: Int) {}
+                    override fun onDateSelected() {}
+                    override fun onClearSelectedDate() {}
+                    override fun onDatePickerDismiss() {}
                     override fun onPrevDateClick() {}
                     override fun onNextDateClick() {}
                     override fun onDateDropdownClick() {}
