@@ -192,6 +192,7 @@ class ChatViewModel(
                 chatName = chat.name,
                 chatAvatarUrl = chat.imageUrl.orEmpty(),
                 chatRequesterId = chat.requesterId,
+                receiverId = chat.receiverId
             )
         }
 
@@ -984,9 +985,9 @@ class ChatViewModel(
     }
 
     private suspend fun sendMoney(): Uuid {
-        val receiverId = Uuid.random() //todo Replace with actual receiver ID
+        val receiverId = state.value.receiverId
         val amount = state.value.amountToTransfer.toDouble()
-        return getTransactionId(receiverId, amount)
+        return getTransactionId(receiverId!!, amount)
     }
 
     private fun onSendMoneySuccess(transactionId: Uuid) {

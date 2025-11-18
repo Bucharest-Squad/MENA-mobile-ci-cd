@@ -12,7 +12,7 @@ class MessageSenderFactory(
         is MessageContent.Image -> imageMessageSender
         is MessageContent.Audio -> audioMessageSender
         is MessageContent.Ayah -> throw IllegalArgumentException("Ayah message sender is not implemented yet")
-        is MessageContent.Money -> throw IllegalArgumentException("Money message sender is not implemented yet")
+        is MessageContent.Money -> throw IllegalArgumentException("Money message can not send by mobile")
 
     }
 }

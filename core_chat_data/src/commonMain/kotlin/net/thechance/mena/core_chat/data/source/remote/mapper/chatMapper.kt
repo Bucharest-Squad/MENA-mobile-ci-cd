@@ -42,7 +42,7 @@ fun MessageContentDto.toDomain(): MessageContent {
         is MessageContentDto.Text -> MessageContent.Text(text)
         is MessageContentDto.Image -> MessageContent.Image(ImageUrl(url))
         is MessageContentDto.Audio -> MessageContent.Audio(AudioUrl(url), duration)
-        is MessageContentDto.Money -> MessageContent.Text(amount.toString())
+        is MessageContentDto.Money -> MessageContent.Money(amount=amount)
     }
 }
 
@@ -69,7 +69,8 @@ fun ChatDto.toLocalDto(): CachedChatLocalDto {
         id = id,
         imageUrl = imageUrl,
         name = name,
-        requesterId = requesterId
+        requesterId = requesterId,
+        receiverId = receiverId
     )
 }
 
@@ -79,7 +80,7 @@ fun CachedChatLocalDto.toDomain(): Chat {
         imageUrl = imageUrl,
         name = name,
         requesterId = requesterId.toUuid(),
-        receiverId = Uuid.random() //todo use actual value
+        receiverId = receiverId.toUuid()
     )
 }
 
