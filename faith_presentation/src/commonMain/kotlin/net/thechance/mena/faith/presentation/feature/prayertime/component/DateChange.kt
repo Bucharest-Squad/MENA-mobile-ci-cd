@@ -20,7 +20,9 @@ import mena.faith_presentation.generated.resources.dropdown_icon
 import mena.faith_presentation.generated.resources.ic_arrow_down
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.text.Text
+import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import net.thechance.mena.faith.presentation.designSystem.theme.QuranTheme
 import net.thechance.mena.faith.presentation.feature.prayertime.PrayerTimeUiState
 import net.thechance.mena.faith.presentation.utils.extentions.prayerTime.convertIslamicDateToString
 import org.jetbrains.compose.resources.painterResource
@@ -82,10 +84,14 @@ internal fun DateChange(
 @Preview
 @Composable
 private fun Preview() {
-    DateChange(
-        uiState = PrayerTimeUiState(),
-        onPrevClick = {},
-        onNextClick = {},
-        onDropDownClick = {}
-    )
+    MenaTheme {
+        QuranTheme {
+            DateChange(
+                uiState = PrayerTimeUiState(),
+                onPrevClick = {},
+                onNextClick = {},
+                onDropDownClick = {}
+            )
+        }
+    }
 }
