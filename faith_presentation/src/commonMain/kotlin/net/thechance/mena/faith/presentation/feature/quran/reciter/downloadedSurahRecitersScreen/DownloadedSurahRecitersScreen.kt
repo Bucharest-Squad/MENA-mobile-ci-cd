@@ -9,6 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import mena.faith_presentation.generated.resources.Res
+import mena.faith_presentation.generated.resources.reciters
 import mena.faith_presentation.generated.resources.search_reciter
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
@@ -19,6 +21,7 @@ import net.thechance.mena.faith.presentation.designSystem.theme.QuranTheme
 import net.thechance.mena.faith.presentation.feature.quran.reciter.component.SearchReciter
 import net.thechance.mena.faith.presentation.feature.quran.search.ayah.component.SearchEmptyState
 import net.thechance.mena.faith.presentation.navigation.LocalNavController
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.time.ExperimentalTime
@@ -49,6 +52,7 @@ private fun Content(
     Scaffold(
         topBar = {
             SearchReciter(
+                title = stringResource(Res.string.reciters),
                 query = uiState.query,
                 hint = uiState.queryHint,
                 onQueryChange = listener::onQueryChange,
@@ -68,7 +72,7 @@ private fun Content(
             if (uiState.query.isNotBlank() && uiState.reciters.isEmpty()) {
                 item {
                     SearchEmptyState(
-                        subtitle = mena.faith_presentation.generated.resources.Res.string.search_reciter,
+                        subtitle = Res.string.search_reciter,
                         isStartState = false,
                         isResultsState = true,
                         modifier = Modifier.fillMaxWidth(),
@@ -86,6 +90,7 @@ private fun Content(
                     onDownloadClick = { listener.onDownloadClick(reciter.id) },
                     isSelectReciter = reciter.id == uiState.selectedReciterId,
                     isSwipeable = false,
+                    downloadedIcon = true
                 )
             }
         }

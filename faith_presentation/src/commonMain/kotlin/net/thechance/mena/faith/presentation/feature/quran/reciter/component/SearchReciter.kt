@@ -15,6 +15,7 @@ import mena.faith_presentation.generated.resources.back
 import mena.faith_presentation.generated.resources.ic_arrow_left
 import mena.faith_presentation.generated.resources.ic_clear
 import mena.faith_presentation.generated.resources.ic_outline_search
+import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.component.textField.TextField
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
@@ -25,6 +26,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun SearchReciter(
+    title : String,
     query: String,
     hint: String,
     onQueryChange: (String) -> Unit,
@@ -78,6 +80,15 @@ fun SearchReciter(
                 onTrailingIconClick = clearQuery
             )
         } else {
+            Text(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = Theme.spacing._8),
+                text = title,
+                color = Theme.colorScheme.shadePrimary,
+                style = Theme.typography.title.medium
+            )
+
             Box(
                 modifier = Modifier
                     .size(40.dp)
@@ -86,6 +97,7 @@ fun SearchReciter(
                     .clickable { isSearchMode = true },
                 contentAlignment = Alignment.Center
             ) {
+
                 Image(
                     modifier = Modifier.size(20.dp),
                     painter = painterResource(Res.drawable.ic_outline_search),
@@ -106,7 +118,8 @@ private fun SearchHeaderPreview() {
             hint = "Search in Reciter...",
             onQueryChange = {},
             clearQuery = {},
-            onBackClick = {}
+            onBackClick = {},
+            title = "Select Reciter"
         )
     }
     }

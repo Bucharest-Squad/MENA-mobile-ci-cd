@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import mena.faith_presentation.generated.resources.Res
+import mena.faith_presentation.generated.resources.reciters
 import mena.faith_presentation.generated.resources.search_reciter
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
@@ -22,6 +23,7 @@ import net.thechance.mena.faith.presentation.designSystem.theme.QuranTheme
 import net.thechance.mena.faith.presentation.feature.quran.reciter.component.SearchReciter
 import net.thechance.mena.faith.presentation.feature.quran.search.ayah.component.SearchEmptyState
 import net.thechance.mena.faith.presentation.navigation.LocalNavController
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -53,7 +55,8 @@ private fun Content(
     Scaffold(
         topBar = {
             SearchReciter(
-                    query = state.query,
+                title = stringResource(Res.string.reciters),
+                query = state.query,
                     hint = state.queryHint,
                     onQueryChange = listener::onQueryChange,
                     clearQuery = listener::onClearQueryClick,
@@ -115,6 +118,7 @@ private fun ResultList(
                 onDownloadClick = {},
                 isSelectReciter = false,
                 isSwipeable = false,
+                downloadedIcon = false
             )
         }
     }
