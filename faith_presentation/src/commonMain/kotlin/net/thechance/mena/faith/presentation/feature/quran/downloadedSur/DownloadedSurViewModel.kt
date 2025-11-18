@@ -2,10 +2,7 @@ package net.thechance.mena.faith.presentation.feature.quran.downloadedSur
 
 import androidx.lifecycle.viewModelScope
 import mena.faith_presentation.generated.resources.Res
-import mena.faith_presentation.generated.resources.ic_ad_duha
 import mena.faith_presentation.generated.resources.ic_al_kahf
-import mena.faith_presentation.generated.resources.ic_an_nas
-import mena.faith_presentation.generated.resources.ic_ash_shams
 import mena.faith_presentation.generated.resources.surah_deleted_successfully
 import net.thechance.mena.faith.domain.repository.QuranRepository
 import net.thechance.mena.faith.presentation.base.BaseViewModel
@@ -25,34 +22,29 @@ class DownloadedSurViewModel(
     }
 
     private fun loadDownloadedSur() {
-        // TODO: After the domain is done, integrate this function to load the real data
-        val dummyData = listOf(
-            DownloadedSurUiState.SurahDetailsUiState(
-                1,
-                Res.drawable.ic_ad_duha,
-                "Al-Duha",
-                listOf("Al Minshawi", "Sudais"),
-            ),
-            DownloadedSurUiState.SurahDetailsUiState(
-                2,
-                Res.drawable.ic_an_nas,
-                "An-Nas",
-                listOf("Sudais"),
-            ),
-            DownloadedSurUiState.SurahDetailsUiState(
-                3,
-                Res.drawable.ic_al_kahf,
-                "Al-Kahf",
-                listOf("Al Minshawi", "Sudais"),
-            ),
-            DownloadedSurUiState.SurahDetailsUiState(
-                4,
-                Res.drawable.ic_ash_shams,
-                "Ash-Shams",
-                listOf("Al Minshawi", "Sudais"),
-            ),
+        tryToExecute(
+            execute = {
+                val surahs = quranRepository.getSur()
+                surahs.map { surah ->
+                    DownloadedSurUiState.SurahDetailsUiState(
+                        id = surah.id,
+                        arabicNameImg =  Res.drawable.ic_al_kahf,
+                        surahName = surah.name,
+                        downloadedReciters = getDownloadedRecitersNames(surah.id)
+                    )
+                }
+            },
+            onSuccess = { surahUiList ->
+                updateState { it.copy(surDetails = surahUiList) }
+            }
         )
-        updateState { it.copy(dummyData) }
+    }
+
+    private suspend fun getDownloadedRecitersNames(surahId: Int): List<String> {
+        val reciters = quranRepository.getReciters()
+        return reciters.filter { reciter ->
+            quranRepository.isSurahAudioCached(surahId, reciter.id)
+        }.map { it.name }
     }
 
     override fun onReciterSettingsClick() {

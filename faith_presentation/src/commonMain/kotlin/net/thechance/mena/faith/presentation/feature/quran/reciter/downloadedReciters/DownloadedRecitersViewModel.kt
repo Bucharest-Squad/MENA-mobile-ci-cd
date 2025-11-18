@@ -55,6 +55,32 @@ class DownloadedRecitersViewModel(
 
         updateState { it.copy(reciters = filtered) }
     }
+    override fun onDeleteReciterAudioClick(reciterId: Int) {
+        val surahId = uiState.value.surahId ?: return
+
+        tryToExecute(
+            execute = { quranRepository.deleteSurahAudioByReciter(surahId, reciterId) },
+            onSuccess = { updateReciterAfterDelete(reciterId) },
+            onError = ::handleError,
+            dispatcher = dispatcher
+        )
+    }
+
+    private fun updateReciterAfterDelete(reciterId: Int) {
+        val updated = uiState.value.allReciters.map { reciterUi ->
+            if (reciterUi.id == reciterId)
+                reciterUi.copy(isDownloaded = false)
+            else reciterUi
+        }
+
+        updateState {
+            it.copy(
+                allReciters = updated,
+                reciters = updated
+            )
+        }
+    }
+
 
     override fun onSelectReciterClick(reciterId: Int) {
         tryToExecute(

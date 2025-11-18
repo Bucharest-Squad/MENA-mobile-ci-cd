@@ -5,4 +5,5 @@ interface DownloadedRecitersListener {
     fun onQueryChange(query: String)
     fun onClearQueryClick()
     fun onSelectReciterClick(reciterId: Int)
+    fun onDeleteReciterAudioClick(reciterId: Int)
 }

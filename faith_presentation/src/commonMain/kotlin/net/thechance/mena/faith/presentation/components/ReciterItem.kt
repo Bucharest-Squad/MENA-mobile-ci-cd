@@ -48,12 +48,13 @@ fun ReciterItem(
     onDownloadClick: () -> Unit,
     onSelect: () -> Unit = {},
     isSelectReciter: Boolean,
+    onDelete: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     SwappableCard(
         isSwipeable = isSwipeable,
         id = reciterId,
-        onClick = {},
+        onClick = { onDelete(reciterId) },
         backgroundIcon = painterResource(Res.drawable.ic_delete),
         contentDescription = stringResource(Res.string.delete),
         cardContent = { contentModifier ->
@@ -186,7 +187,8 @@ private fun Preview() {
             onDownloadClick = {},
             isSelectReciter = false,
             isSwipeable = true,
-            downloadedIcon =  true
+            downloadedIcon =  true,
+            onDelete = {}
         )
     }
     }

@@ -120,7 +120,8 @@ private fun ResultList(
                 onDownloadClick = {},
                 isSelectReciter = result.id == uiState.selectedReciterId,
                 isSwipeable = false,
-                downloadedIcon = false
+                downloadedIcon = false,
+                onDelete = {}
             )
         }
     }

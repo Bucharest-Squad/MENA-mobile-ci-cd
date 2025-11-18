@@ -173,6 +173,12 @@ class QuranRepositoryImpl(
             ) else files
     }
 
+    override suspend fun deleteSurahAudioByReciter(surahId: Int, reciterId: Int) {
+        executeLocalSafely {
+            recitersDao.deleteSpecificDownloadedAudio(surahId, reciterId)
+        }
+    }
+
     private fun calculateFileIndex(ayahNumber: Int, surahNumber: Int): Int {
         return if (surahNumber == INDEX_OFFSET) ayahNumber
         else ayahNumber + INDEX_OFFSET

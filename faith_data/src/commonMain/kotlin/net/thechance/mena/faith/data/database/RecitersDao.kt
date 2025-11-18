@@ -29,4 +29,14 @@ interface RecitersDao {
 
     @Query("DELETE FROM surah_audio WHERE surahId = :surahId")
     suspend fun deleteSurahWithSpecificReciter(surahId: Int)
+
+    @Query("""
+    DELETE FROM surah_audio 
+    WHERE surahId = :surahId AND reciter_id = :reciterId
+""")
+    suspend fun deleteSpecificDownloadedAudio(
+        surahId: Int,
+        reciterId: Int
+    )
+
 }

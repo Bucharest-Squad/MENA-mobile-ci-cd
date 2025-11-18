@@ -86,7 +86,8 @@ private fun Content(
                     onDownloadClick = { listener.onDownloadClick(reciter.id) },
                     isSelectReciter = reciter.id == uiState.selectedReciterId,
                     isSwipeable = false,
-                    downloadedIcon = true
+                    downloadedIcon = true,
+                    onDelete = {}
                 )
             }
         }

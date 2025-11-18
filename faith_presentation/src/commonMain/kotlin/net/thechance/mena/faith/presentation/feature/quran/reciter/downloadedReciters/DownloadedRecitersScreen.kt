@@ -97,7 +97,8 @@ private fun Content(
                         onDownloadClick = {},
                         isSelectReciter = reciter.id == uiState.selectedReciterId,
                         isSwipeable = uiState.isSwipeable,
-                        downloadedIcon = false
+                        downloadedIcon = false,
+                        onDelete = { listener.onDeleteReciterAudioClick(it) }
                     )
                 }
             }
@@ -141,6 +142,7 @@ private fun Preview() {
                     override fun onQueryChange(query: String) {}
                     override fun onClearQueryClick() {}
                     override fun onSelectReciterClick(reciterId: Int) {}
+                    override fun onDeleteReciterAudioClick(reciterId: Int) {}
                 }
             )
         }
