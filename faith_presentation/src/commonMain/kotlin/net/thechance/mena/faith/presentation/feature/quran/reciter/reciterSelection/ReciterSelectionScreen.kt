@@ -1,5 +1,6 @@
 package net.thechance.mena.faith.presentation.feature.quran.reciter.reciterSelection
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -55,43 +56,47 @@ private fun Content(
             SearchReciter(
                 title = stringResource(Res.string.reciters),
                 query = state.query,
-                    hint = state.queryHint,
-                    onQueryChange = listener::onQueryChange,
-                    clearQuery = listener::onClearQueryClick,
-                    onBackClick = listener::onBackClick,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = Theme.spacing._16, vertical = Theme.spacing._4)
-                )
+                hint = state.queryHint,
+                onQueryChange = listener::onQueryChange,
+                clearQuery = listener::onClearQueryClick,
+                onBackClick = listener::onBackClick,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = Theme.spacing._16, vertical = Theme.spacing._4)
+            )
         })
 
     {
-
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-
-            if (state.query.isNotBlank() && state.searchResults.isEmpty()) {
+        if (state.query.isNotBlank() && state.searchResults.isEmpty()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
                 SearchEmptyState(
                     subtitle = Res.string.search_reciter,
                     isStartState = false,
-                    isResultsState = true, 
+                    isResultsState = true,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(1f),
+                        .padding(Theme.spacing._16)
                 )
             }
-            ResultList(
-                listener = listener,
-                uiState = state,
-                results = state.searchResults,
-                modifier = Modifier.fillMaxWidth().weight(1f).padding(top = Theme.spacing._16)
-            )
+        } else {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                ResultList(
+                    listener = listener,
+                    uiState = state,
+                    results = state.searchResults,
+                    modifier = Modifier.fillMaxWidth().weight(1f).padding(top = Theme.spacing._16)
+                )
+            }
         }
     }
 }
-
 @Composable
 private fun ResultList(
     uiState : ReciterSelectionUiState,

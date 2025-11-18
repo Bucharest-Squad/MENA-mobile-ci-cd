@@ -46,7 +46,7 @@ fun DownloadedSurScreen(viewModel: DownloadedSurViewModel = koinViewModel()) {
                 navController.navigate(Route.ReciterSelectionRoute(surahId = effect.surahId))
             is DownloadedSurEffect.NavigateToDownloadedSurahReciterScreen -> {
                 navController.navigate(
-                    Route.ManageDownloadsReciters(
+                    Route.DownloadedRecitersRoute(
                         surahId = effect.surahId,
                     )
                 )

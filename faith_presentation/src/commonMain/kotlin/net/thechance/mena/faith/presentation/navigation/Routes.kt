@@ -38,7 +38,7 @@ internal sealed interface Route {
 
 
     @Serializable
-    data class DownloadedSurahRecitersRoute(
+    data class SurahRecitersRoute(
         val surahId: Int? = null,
     ) : Route
 
@@ -48,7 +48,7 @@ internal sealed interface Route {
     ) : Route
 
     @Serializable
-    data class ManageDownloadsReciters(
+    data class DownloadedRecitersRoute(
         val surahId: Int? = null
     ) : Route
     

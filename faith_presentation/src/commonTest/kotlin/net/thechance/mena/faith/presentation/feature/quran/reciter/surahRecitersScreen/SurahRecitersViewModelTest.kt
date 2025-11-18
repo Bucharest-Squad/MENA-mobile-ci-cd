@@ -17,7 +17,7 @@ import net.thechance.mena.faith.domain.model.Reciter
 import net.thechance.mena.faith.domain.repository.QuranRepository
 import net.thechance.mena.faith.domain.service.DownloadSurahManager
 import net.thechance.mena.faith.presentation.base.snackbar.SnackbarHandler
-import net.thechance.mena.faith.presentation.feature.quran.reciter.args.ReciterArgs
+import net.thechance.mena.faith.presentation.feature.quran.reciter.surahRecitersScreen.args.SurahRecitersArgs
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -31,14 +31,13 @@ class SurahRecitersViewModelTest {
     private lateinit var testViewModel: SurahRecitersViewModel
     private val quranRepository: QuranRepository = mock(mode = MockMode.autofill)
     private val downloadManager: DownloadSurahManager = mock(mode = MockMode.autofill)
-    private val surahArgs: ReciterArgs = mock(mode = MockMode.autofill)
+    private val surahArgs: SurahRecitersArgs = mock(mode = MockMode.autofill)
     private val snackbarHandler: SnackbarHandler = SnackbarHandler.Empty
 
     @BeforeTest
     fun setup() {
         testDispatcher = StandardTestDispatcher()
         everySuspend { surahArgs.surahId } returns TEST_SURAH_ID
-        everySuspend { surahArgs.isSwipeToDeleteEnabled } returns true
         everySuspend { quranRepository.getDefaultReciter() } returns flowOf(DEFAULT_RECITER_ID)
         everySuspend { quranRepository.getReciters() } returns dummyReciters
         everySuspend { quranRepository.isSurahAudioCached(TEST_SURAH_ID, any()) } returns false

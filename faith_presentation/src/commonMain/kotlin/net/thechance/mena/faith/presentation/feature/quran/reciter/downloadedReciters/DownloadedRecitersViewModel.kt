@@ -11,11 +11,11 @@ import net.thechance.mena.faith.presentation.base.BaseViewModel
 import net.thechance.mena.faith.presentation.base.ErrorState
 import net.thechance.mena.faith.presentation.base.snackbar.SnackBarState
 import net.thechance.mena.faith.presentation.base.snackbar.SnackbarHandler
-import net.thechance.mena.faith.presentation.feature.quran.reciter.args.ReciterArgs
+import net.thechance.mena.faith.presentation.feature.quran.reciter.downloadedReciters.args.DownloadedRecitersArgs
 
 class DownloadedRecitersViewModel(
     private val quranRepository: QuranRepository,
-    private val surahArgs: ReciterArgs,
+    private val surahArgs: DownloadedRecitersArgs,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
     snackBarHandler: SnackbarHandler,
 ) : BaseViewModel<DownloadedRecitersUiState, DownloadedRecitersEffect>(

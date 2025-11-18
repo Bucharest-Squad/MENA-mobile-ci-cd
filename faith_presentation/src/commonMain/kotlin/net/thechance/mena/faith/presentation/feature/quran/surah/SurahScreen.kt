@@ -50,7 +50,7 @@ fun SurahScreen(
             }
 
             is SurahScreenEffect.NavigateToDownloadedRecitersScreen -> {
-                navController.navigate(Route.DownloadedSurahRecitersRoute(effect.surahId))
+                navController.navigate(Route.SurahRecitersRoute(effect.surahId))
             }
         }
     }

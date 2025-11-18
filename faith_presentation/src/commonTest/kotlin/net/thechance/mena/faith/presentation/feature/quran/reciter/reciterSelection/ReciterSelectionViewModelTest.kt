@@ -15,7 +15,7 @@ import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.runTest
 import net.thechance.mena.faith.domain.model.Reciter
 import net.thechance.mena.faith.domain.repository.QuranRepository
-import net.thechance.mena.faith.presentation.feature.quran.reciter.args.ReciterArgs
+import net.thechance.mena.faith.presentation.feature.quran.reciter.downloadedReciters.args.DownloadedRecitersArgs
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -27,18 +27,17 @@ class ReciterSelectionViewModelTest {
     private lateinit var testDispatcher: TestDispatcher
     private lateinit var testViewModel: ReciterSelectionViewModel
     private val quranRepository: QuranRepository = mock(mode = MockMode.autofill)
-    private val reciterArgs: ReciterArgs = mock(mode = MockMode.autofill)
+    private val downloadedRecitersArgs: DownloadedRecitersArgs = mock(mode = MockMode.autofill)
 
     @BeforeTest
     fun setup() {
         testDispatcher = StandardTestDispatcher()
-        everySuspend { reciterArgs.surahId } returns TEST_SURAH_ID
+        everySuspend { downloadedRecitersArgs.surahId } returns TEST_SURAH_ID
         everySuspend { quranRepository.getReciters() } returns dummyReciters
         everySuspend { quranRepository.isSurahAudioCached(TEST_SURAH_ID, any()) } returns false
 
         testViewModel = ReciterSelectionViewModel(
             repository = quranRepository,
-            reciterArgs = reciterArgs,
             dispatcher = testDispatcher
         )
         testDispatcher.scheduler.advanceUntilIdle()
@@ -62,16 +61,6 @@ class ReciterSelectionViewModelTest {
 
             val effect = awaitItem()
             assertTrue(effect is ReciterSelectionEffect.NavigateBack)
-        }
-    }
-
-    @Test
-    fun `onSearchClick should navigate to search`() = runTest {
-        testViewModel.uiEffect.test {
-            testViewModel.onSearchClick()
-
-            val effect = awaitItem()
-            assertTrue(effect is ReciterSelectionEffect.NavigateToSearch)
         }
     }
 
@@ -173,42 +162,6 @@ class ReciterSelectionViewModelTest {
     }
 
     @Test
-    fun `search results should include download status from cache`() = runTest {
-        everySuspend {
-            quranRepository.isSurahAudioCached(TEST_SURAH_ID, DOWNLOADED_RECITER_ID)
-        } returns true
-        everySuspend { quranRepository.searchForReciter(VALID_QUERY) } returns listOf(
-            dummyReciters.first { it.id == DOWNLOADED_RECITER_ID }
-        )
-
-        testViewModel.onQueryChange(VALID_QUERY)
-        testDispatcher.scheduler.advanceUntilIdle()
-
-        verifySuspend(atLeast(1)) {
-            quranRepository.isSurahAudioCached(TEST_SURAH_ID, DOWNLOADED_RECITER_ID)
-        }
-    }
-
-    @Test
-    fun `all reciters should be checked for download status on init`() = runTest {
-        verifySuspend(exactly(dummyReciters.size)) {
-            quranRepository.isSurahAudioCached(TEST_SURAH_ID, any())
-        }
-    }
-
-    @Test
-    fun `search results should be checked for download status`() = runTest {
-        everySuspend { quranRepository.searchForReciter(VALID_QUERY) } returns filteredReciters
-
-        testViewModel.onQueryChange(VALID_QUERY)
-        testDispatcher.scheduler.advanceUntilIdle()
-
-        verifySuspend(atLeast(filteredReciters.size)) {
-            quranRepository.isSurahAudioCached(TEST_SURAH_ID, any())
-        }
-    }
-
-    @Test
     fun `query with two characters should trigger search`() = runTest {
         everySuspend { quranRepository.searchForReciter(TWO_CHAR_QUERY) } returns filteredReciters
 
@@ -259,7 +212,6 @@ class ReciterSelectionViewModelTest {
 
     private companion object {
         const val TEST_SURAH_ID = 1
-        const val DOWNLOADED_RECITER_ID = 1
         const val TEST_QUERY = "Abdul"
         const val VALID_QUERY = "Basit"
         const val FIRST_QUERY = "Ab"

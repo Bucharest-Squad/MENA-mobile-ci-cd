@@ -69,13 +69,13 @@ fun FaithNavigation(identityApi: IdentityFeatureApi = getKoin().get()) {
                 composable<Route.DownloadedSurScreen> {
                     DownloadedSurScreen()
                 }
-                composable<Route.DownloadedSurahRecitersRoute> {
+                composable<Route.SurahRecitersRoute> {
                     SurahRecitersScreen()
                 }
                 composable<Route.ReciterSelectionRoute> {
                     ReciterSelectionScreen()
                 }
-                composable<Route.ManageDownloadsReciters> {
+                composable<Route.DownloadedRecitersRoute> {
                     DownloadedRecitersScreen()
                 }
                 composable<Route.UserAddresses> {
