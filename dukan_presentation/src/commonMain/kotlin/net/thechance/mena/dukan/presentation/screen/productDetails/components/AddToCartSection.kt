@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import mena.dukan_presentation.generated.resources.Res
 import mena.dukan_presentation.generated.resources.add_to_cart
+import mena.dukan_presentation.generated.resources.sold_out
 import net.thechance.mena.designsystem.presentation.component.button.Button
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
 import net.thechance.mena.designsystem.presentation.component.text.Text
@@ -41,7 +42,7 @@ fun AddToCartSection(
 ) {
     if (state.product.isOutOfStock) {
         PrimaryButton(
-            text = "Sold Out",
+            text = stringResource(Res.string.sold_out),
             onClick = {},
             modifier = Modifier
                 .padding(
