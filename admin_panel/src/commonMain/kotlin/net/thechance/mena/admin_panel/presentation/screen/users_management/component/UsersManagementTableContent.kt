@@ -30,7 +30,6 @@ import net.thechance.mena.admin_panel.presentation.component.ActivationStatusBut
 import net.thechance.mena.admin_panel.presentation.component.AdminPanelContentLoading
 import net.thechance.mena.admin_panel.presentation.component.PagesIndicatorRow
 import net.thechance.mena.admin_panel.presentation.component.TableCellText
-import net.thechance.mena.admin_panel.presentation.component.TableHeaderRow
 import net.thechance.mena.admin_panel.presentation.screen.users_management.UsersManagementInteractionListener
 import net.thechance.mena.admin_panel.presentation.screen.users_management.UsersManagementScreenState
 import net.thechance.mena.admin_panel.resources.Res
@@ -42,7 +41,7 @@ import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
 @Composable
-fun UsersListContent(
+fun UsersManagementTableContent(
     state: UsersManagementScreenState,
     listener: UsersManagementInteractionListener,
     modifier: Modifier = Modifier
@@ -70,15 +69,16 @@ fun UsersListContent(
                     .weight(1f)
             )
         }
-
-        PagesIndicatorRow(
-            currentPage = state.pageInfo.page,
-            totalPages = state.pageInfo.totalPages,
-            onPageChanged = listener::onPageChanged,
-            modifier = Modifier
-                .padding(top = 8.dp, bottom = 14.dp)
-                .align(Alignment.Start)
-        )
+        if (state.pageInfo.totalPages > 1) {
+            PagesIndicatorRow(
+                currentPage = state.pageInfo.page,
+                totalPages = state.pageInfo.totalPages,
+                onPageChanged = listener::onPageChanged,
+                modifier = Modifier
+                    .padding(top = 8.dp, bottom = 14.dp)
+                    .align(Alignment.Start)
+            )
+        }
     }
 }
 

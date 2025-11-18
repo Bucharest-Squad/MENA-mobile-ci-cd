@@ -5,14 +5,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import net.thechance.mena.admin_panel.resources.Res
-import net.thechance.mena.admin_panel.resources.img_empty_dukan
-import net.thechance.mena.admin_panel.resources.no_dukan_results
-import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.resources.stringResource
+import androidx.compose.ui.graphics.painter.Painter
 
 @Composable
-fun EmptyDukanState(
+fun EmptyState(
+    image: Painter,
+    title: String,
     description: String,
     modifier: Modifier = Modifier
 ) {
@@ -21,8 +19,8 @@ fun EmptyDukanState(
         contentAlignment = Alignment.Center
     ) {
         StatePlaceholder(
-            image = painterResource(Res.drawable.img_empty_dukan),
-            title = stringResource(Res.string.no_dukan_results),
+            image = image,
+            title = title,
             description = description,
             modifier = Modifier.align(Alignment.Center)
         )

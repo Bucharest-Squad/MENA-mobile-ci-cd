@@ -19,14 +19,18 @@ import net.thechance.mena.admin_panel.presentation.component.PanelScaffold
 import net.thechance.mena.admin_panel.presentation.component.SnackBarContainer
 import net.thechance.mena.admin_panel.presentation.screen.dukan_managements.component.DukanManagementHeader
 import net.thechance.mena.admin_panel.presentation.screen.dukan_managements.component.DukanManagementTableContent
-import net.thechance.mena.admin_panel.presentation.component.EmptyDukanState
-import net.thechance.mena.admin_panel.presentation.component.EmptySearchState
+import net.thechance.mena.admin_panel.presentation.component.EmptyState
 import net.thechance.mena.admin_panel.presentation.utils.ObserveAsEffect
 import net.thechance.mena.admin_panel.resources.Res
 import net.thechance.mena.admin_panel.resources.dukan_management
+import net.thechance.mena.admin_panel.resources.img_empty_dukan
+import net.thechance.mena.admin_panel.resources.img_empty_search
 import net.thechance.mena.admin_panel.resources.no_dukan_results
+import net.thechance.mena.admin_panel.resources.no_search_result
+import net.thechance.mena.admin_panel.resources.no_search_result_description
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.uuid.ExperimentalUuidApi
@@ -83,17 +87,20 @@ fun DukanManagementsContent(
             when {
                 state.isLoading -> AdminPanelContentLoading()
 
-                state.dukans.isEmpty()  -> {
+                state.dukans.isEmpty() -> {
                     if (state.query.isNotEmpty())
-                        EmptySearchState(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .offset(y = -(76.dp))
+                        EmptyState(
+                            image = painterResource(Res.drawable.img_empty_search),
+                            title = stringResource(Res.string.no_search_result),
+                            description = stringResource(Res.string.no_search_result_description),
+                            modifier = Modifier.fillMaxSize().offset(y = -(76.dp))
                         )
                     else {
-                        EmptyDukanState(
+                        EmptyState(
                             description = stringResource(Res.string.no_dukan_results),
-                            modifier = Modifier.offset(y=-(76.dp))
+                            title = stringResource(Res.string.no_dukan_results),
+                            image = painterResource(Res.drawable.img_empty_dukan),
+                            modifier = Modifier.offset(y = -(76.dp))
                         )
                     }
                 }
@@ -113,7 +120,7 @@ private fun onDukanManagementEffect(
 ) {
     when (effect) {
         is DukanManagementEffect.NavigateToDukanDetails -> {
-            navController.navigate(DukanDetails){
+            navController.navigate(DukanDetails) {
                 popUpTo(DukanDetails)
             }
         }

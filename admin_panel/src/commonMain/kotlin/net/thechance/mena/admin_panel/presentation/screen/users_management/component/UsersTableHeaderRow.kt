@@ -1,4 +1,4 @@
-package net.thechance.mena.admin_panel.presentation.component
+package net.thechance.mena.admin_panel.presentation.screen.users_management.component
 
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import net.thechance.mena.admin_panel.presentation.component.SortableHeaderCell
 import net.thechance.mena.admin_panel.presentation.screen.users_management.UsersManagementScreenState
 import net.thechance.mena.admin_panel.resources.Res
 import net.thechance.mena.admin_panel.resources.last_login_date
@@ -55,7 +56,7 @@ fun TableHeaderRow(
         SortableHeaderCell(
             text = stringResource(Res.string.user_name),
             sortType = UsersManagementScreenState.SortType.USERNAME,
-            currentSort = sortState,
+            currentSortType = sortState.type,
             onSortClicked = onSortClicked,
             modifier = Modifier.width(268.dp)
         )
@@ -69,21 +70,21 @@ fun TableHeaderRow(
         SortableHeaderCell(
             text = stringResource(Res.string.last_login_date),
             sortType = UsersManagementScreenState.SortType.LAST_LOGIN_DATE,
-            currentSort = sortState,
+            currentSortType = sortState.type,
             onSortClicked = onSortClicked,
             modifier = Modifier.widthIn(min = 175.dp)
         )
         SortableHeaderCell(
             text = stringResource(Res.string.last_visit_date),
             sortType = UsersManagementScreenState.SortType.LAST_VISIT_DATE,
-            currentSort = sortState,
+            currentSortType = sortState.type,
             onSortClicked = onSortClicked,
             modifier = Modifier.widthIn(min = 167.dp)
         )
         SortableHeaderCell(
             text = stringResource(Res.string.status),
             sortType = UsersManagementScreenState.SortType.ACTIVATION_STATUS,
-            currentSort = sortState,
+            currentSortType = sortState.type,
             onSortClicked = onSortClicked,
             modifier = Modifier.widthIn(min = 126.dp)
         )

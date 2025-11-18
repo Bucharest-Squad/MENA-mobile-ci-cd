@@ -14,21 +14,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import net.thechance.mena.admin_panel.presentation.component.AdminConfirmationDialog
-import net.thechance.mena.admin_panel.presentation.component.EmptySearchState
+import net.thechance.mena.admin_panel.presentation.component.AdminPanelContentLoading
+import net.thechance.mena.admin_panel.presentation.component.EmptyState
 import net.thechance.mena.admin_panel.presentation.component.PanelScaffold
 import net.thechance.mena.admin_panel.presentation.component.SearchBar
 import net.thechance.mena.admin_panel.presentation.component.SnackBarContainer
-import net.thechance.mena.admin_panel.presentation.screen.users_management.component.UsersListContent
-import net.thechance.mena.admin_panel.presentation.component.AdminPanelContentLoading
-import net.thechance.mena.admin_panel.presentation.component.EmptyUsersState
+import net.thechance.mena.admin_panel.presentation.screen.users_management.component.UsersManagementTableContent
 import net.thechance.mena.admin_panel.resources.Res
 import net.thechance.mena.admin_panel.resources.block
 import net.thechance.mena.admin_panel.resources.block_user
 import net.thechance.mena.admin_panel.resources.block_user_confirmation_message
+import net.thechance.mena.admin_panel.resources.empty_users
 import net.thechance.mena.admin_panel.resources.ic_block
 import net.thechance.mena.admin_panel.resources.ic_user_block
+import net.thechance.mena.admin_panel.resources.img_empty_search
+import net.thechance.mena.admin_panel.resources.no_search_result
+import net.thechance.mena.admin_panel.resources.no_search_result_description
+import net.thechance.mena.admin_panel.resources.no_users_yet
 import net.thechance.mena.admin_panel.resources.search_hint
 import net.thechance.mena.admin_panel.resources.users_management
+import net.thechance.mena.admin_panel.resources.users_will_appear
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
@@ -48,7 +53,13 @@ private fun UsersManagementScreenContent(
     listener: UsersManagementInteractionListener
 ) {
     PanelScaffold(
-        topBar = { UsersManagementTopBar() },
+        topBar = {
+            AppBar(
+                title = stringResource(Res.string.users_management),
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 18.dp),
+                modifier = Modifier.background(Theme.colorScheme.background.surfaceLow)
+            )
+        },
         overlays = {
             dialog(state.isBlockDialogShown) {
                 AdminConfirmationDialog(
@@ -85,18 +96,24 @@ private fun UsersManagementScreenContent(
 
                 state.users.isEmpty() -> {
                     if (state.query.isNotEmpty()) {
-                        UsersSearchEmptyState()
+                        EmptyState(
+                            image = painterResource(Res.drawable.img_empty_search),
+                            title = stringResource(Res.string.no_search_result),
+                            description = stringResource(Res.string.no_search_result_description),
+                            modifier = Modifier.fillMaxSize().offset(y = -(76.dp))
+                        )
                     } else {
-                        EmptyUsersState(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .offset(y = -(76.dp))
+                        EmptyState(
+                            image = painterResource(Res.drawable.empty_users),
+                            title = stringResource(Res.string.no_users_yet),
+                            description = stringResource(Res.string.users_will_appear),
+                            modifier = Modifier.fillMaxSize().offset(y = -(76.dp))
                         )
                     }
                 }
 
                 else -> {
-                    UsersListContent(
+                    UsersManagementTableContent(
                         listener = listener,
                         state = state,
                         modifier = Modifier.fillMaxSize()
@@ -106,23 +123,3 @@ private fun UsersManagementScreenContent(
         }
     }
 }
-
-@Composable
-private fun UsersManagementTopBar() {
-    AppBar(
-        title = stringResource(Res.string.users_management),
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 18.dp),
-        modifier = Modifier.background(Theme.colorScheme.background.surfaceLow)
-    )
-}
-
-@Composable
-private fun UsersSearchEmptyState() {
-    EmptySearchState(
-        modifier = Modifier
-            .fillMaxSize()
-            .offset(y = -(76.dp))
-    )
-}
-
-
