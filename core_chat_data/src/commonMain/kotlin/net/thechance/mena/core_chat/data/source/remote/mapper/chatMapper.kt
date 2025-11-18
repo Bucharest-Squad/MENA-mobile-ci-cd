@@ -60,7 +60,7 @@ fun ChatDto.toDomain(): Chat {
         imageUrl = imageUrl,
         name = name,
         requesterId = requesterId.toUuid(),
-        receiverId = Uuid.random() //todo use actual value
+        receiverId = receiverId.toUuid()
     )
 }
 
