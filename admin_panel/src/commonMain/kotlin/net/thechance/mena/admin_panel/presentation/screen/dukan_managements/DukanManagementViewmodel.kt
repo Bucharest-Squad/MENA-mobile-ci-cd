@@ -115,10 +115,18 @@ class DukanManagementViewmodel(
             callee = { dukanRepository.getDukans(getDukansQueryParams()) },
             onSuccess = ::onGetDukansSuccess,
             onError = ::onGetDukansError,
-            onStart = { updateState { it.copy(isLoading = true) } },
-            onFinish = { updateState { it.copy(isLoading = false) } },
+            onStart = ::onGetDukansStart,
+            onFinish = ::onGetDukansFinish,
             dispatcher = dispatcher
         )
+    }
+
+    private fun onGetDukansStart() {
+        updateState { it.copy(isLoading = true) }
+    }
+
+    private fun onGetDukansFinish() {
+        updateState { it.copy(isLoading = false, isInitialLoading = false) }
     }
 
     private fun onGetDukansSuccess(result: PagedResult<Dukan>) {

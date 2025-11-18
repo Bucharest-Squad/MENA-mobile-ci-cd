@@ -28,6 +28,7 @@ fun DukansCounter(
         Text(
             text = title,
             style = Theme.typography.title.small,
+            color = Theme.colorScheme.shadePrimary,
             modifier = Modifier.padding(end = 8.dp)
         )
         Text(

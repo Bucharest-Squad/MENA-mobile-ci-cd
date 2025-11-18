@@ -120,10 +120,18 @@ class UsersManagementViewModel(
             callee = { userRepository.getUsers(queryParams) },
             onSuccess = ::onGetUsersSuccess,
             onError = ::onError,
-            onStart = { updateState { it.copy(isLoading = true) } },
-            onFinish = { updateState { it.copy(isLoading = false) } },
+            onStart = ::onGetUsersStart,
+            onFinish = ::onGetUsersFinish,
             dispatcher = dispatcher
         )
+    }
+
+    private fun onGetUsersStart() {
+        updateState { it.copy(isLoading = true) }
+    }
+
+    private fun onGetUsersFinish() {
+        updateState { it.copy(isLoading = false, isInitialLoading = false) }
     }
 
     private fun getUserQueryParams(): UserQueryParams {
