@@ -1,5 +1,6 @@
 package net.thechance.mena.faith.presentation.feature.quran.reciter.downloadedSurahRecitersScreen
 
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -9,17 +10,21 @@ import net.thechance.mena.faith.domain.repository.QuranRepository
 import net.thechance.mena.faith.domain.service.DownloadSurahManager
 import net.thechance.mena.faith.presentation.base.BaseViewModel
 import net.thechance.mena.faith.presentation.base.ErrorState
+import net.thechance.mena.faith.presentation.base.snackbar.SnackBarState
+import net.thechance.mena.faith.presentation.base.snackbar.SnackbarHandler
 import net.thechance.mena.faith.presentation.feature.quran.reciter.args.ReciterArgs
 
 class DownloadedSurahRecitersViewModel(
     private val quranRepository: QuranRepository,
     private val surahArgs: ReciterArgs,
     private val downloadManager: DownloadSurahManager,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
-) : BaseViewModel<DownloadedSurahRecitersUiState, DownloadedSurahRecitersScreenEffect>(
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
+    snackBarHandler: SnackbarHandler,
+    ) : BaseViewModel<DownloadedSurahRecitersUiState, DownloadedSurahRecitersScreenEffect>(
     initialState = DownloadedSurahRecitersUiState(
         surahId = surahArgs.surahId,
     ),
+    snackbarHandler = snackBarHandler
 ), DownloadedSurahRecitersListener {
 
     init {
@@ -161,8 +166,11 @@ class DownloadedSurahRecitersViewModel(
         }
     }
 
-    private fun handleError(errorState: ErrorState) {
-        println("Error: $errorState")
-    }
+    private fun handleError(errorState: ErrorState) =
+        snackbarHandler.showSnackBar(
+            message = errorState.message,
+            status = SnackBarState.Status.Error,
+            scope = viewModelScope,
+        )
 }
 

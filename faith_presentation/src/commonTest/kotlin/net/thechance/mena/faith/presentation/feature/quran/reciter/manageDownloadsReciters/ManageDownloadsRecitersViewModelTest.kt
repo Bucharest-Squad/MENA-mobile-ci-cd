@@ -15,7 +15,7 @@ import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.runTest
 import net.thechance.mena.faith.domain.model.Reciter
 import net.thechance.mena.faith.domain.repository.QuranRepository
-import net.thechance.mena.faith.domain.service.DownloadSurahManager
+import net.thechance.mena.faith.presentation.base.snackbar.SnackbarHandler
 import net.thechance.mena.faith.presentation.feature.quran.reciter.args.ReciterArgs
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -28,8 +28,8 @@ class ManageDownloadsRecitersViewModelTest {
     private lateinit var testDispatcher: TestDispatcher
     private lateinit var testViewModel: ManageDownloadsRecitersViewModel
     private val quranRepository: QuranRepository = mock(mode = MockMode.autofill)
-    private val downloadManager: DownloadSurahManager = mock(mode = MockMode.autofill)
     private val surahArgs: ReciterArgs = mock(mode = MockMode.autofill)
+    private val snackbarHandler: SnackbarHandler = SnackbarHandler.Empty
 
     @BeforeTest
     fun setup() {
@@ -43,8 +43,9 @@ class ManageDownloadsRecitersViewModelTest {
         testViewModel = ManageDownloadsRecitersViewModel(
             quranRepository = quranRepository,
             surahArgs = surahArgs,
-            downloadManager = downloadManager,
-            dispatcher = testDispatcher
+            dispatcher = testDispatcher,
+            snackBarHandler = snackbarHandler
+
         )
         testDispatcher.scheduler.advanceUntilIdle()
     }
@@ -223,8 +224,9 @@ class ManageDownloadsRecitersViewModelTest {
         testViewModel = ManageDownloadsRecitersViewModel(
             quranRepository = quranRepository,
             surahArgs = surahArgs,
-            downloadManager = downloadManager,
-            dispatcher = testDispatcher
+            dispatcher = testDispatcher,
+            snackBarHandler = snackbarHandler
+
         )
         testDispatcher.scheduler.advanceUntilIdle()
 
@@ -242,8 +244,8 @@ class ManageDownloadsRecitersViewModelTest {
         testViewModel = ManageDownloadsRecitersViewModel(
             quranRepository = quranRepository,
             surahArgs = surahArgs,
-            downloadManager = downloadManager,
-            dispatcher = testDispatcher
+            dispatcher = testDispatcher,
+            snackBarHandler = snackbarHandler
         )
         testDispatcher.scheduler.advanceUntilIdle()
 
@@ -300,8 +302,8 @@ class ManageDownloadsRecitersViewModelTest {
         testViewModel = ManageDownloadsRecitersViewModel(
             quranRepository = quranRepository,
             surahArgs = surahArgs,
-            downloadManager = downloadManager,
-            dispatcher = testDispatcher
+            dispatcher = testDispatcher,
+            snackBarHandler = snackbarHandler
         )
         testDispatcher.scheduler.advanceUntilIdle()
 

@@ -1,26 +1,29 @@
 package net.thechance.mena.faith.presentation.feature.quran.reciter.manageDownloadsReciters
 
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.first
 import net.thechance.mena.faith.domain.model.Reciter
 import net.thechance.mena.faith.domain.repository.QuranRepository
-import net.thechance.mena.faith.domain.service.DownloadSurahManager
 import net.thechance.mena.faith.presentation.base.BaseViewModel
 import net.thechance.mena.faith.presentation.base.ErrorState
+import net.thechance.mena.faith.presentation.base.snackbar.SnackBarState
+import net.thechance.mena.faith.presentation.base.snackbar.SnackbarHandler
 import net.thechance.mena.faith.presentation.feature.quran.reciter.args.ReciterArgs
 
 class ManageDownloadsRecitersViewModel(
     private val quranRepository: QuranRepository,
     private val surahArgs: ReciterArgs,
-    private val downloadManager: DownloadSurahManager,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
+    snackBarHandler: SnackbarHandler,
 ) : BaseViewModel<ManageDownloadsRecitersUiState, ManageDownloadsRecitersEffect>(
     initialState = ManageDownloadsRecitersUiState(
         surahId = surahArgs.surahId,
         isSwipeable = surahArgs.isSwipeToDeleteEnabled,
     ),
+    snackbarHandler = snackBarHandler
 ), ManageDownloadsRecitersListener {
 
     init {
@@ -99,8 +102,12 @@ class ManageDownloadsRecitersViewModel(
         }
     }
 
-    private fun handleError(errorState: ErrorState) {
-        println("Error: $errorState")
-    }
+    private fun handleError(errorState: ErrorState) =
+        snackbarHandler.showSnackBar(
+            message = errorState.message,
+            status = SnackBarState.Status.Error,
+            scope = viewModelScope,
+        )
+
 
 }
