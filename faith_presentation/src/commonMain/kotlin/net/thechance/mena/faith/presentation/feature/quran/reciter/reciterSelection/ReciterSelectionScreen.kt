@@ -83,11 +83,12 @@ private fun Content(
                 )
             }
             ResultList(
+                listener = listener,
+                uiState = state,
                 isNotBlankQuery = state.query.isNotBlank(),
                 isNotEmptyResult = state.searchResults.isNotEmpty(),
                 results = state.searchResults,
                 modifier = Modifier.fillMaxWidth().weight(1f).padding(top = Theme.spacing._16)
-
             )
         }
     }
@@ -95,6 +96,8 @@ private fun Content(
 
 @Composable
 private fun ResultList(
+    uiState : ReciterSelectionUiState,
+    listener : ReciterSelectionListener,
     isNotBlankQuery: Boolean,
     isNotEmptyResult: Boolean,
     results: List<ReciterSelectionUi>,
@@ -112,9 +115,11 @@ private fun ResultList(
                 reciter = result.name,
                 recitingType = result.recitingType,
                 isDownloaded = false,
-                onSelect = {},
+                onSelect = {
+                    listener.onSelectReciterClick(result.id)
+                },
                 onDownloadClick = {},
-                isSelectReciter = false,
+                isSelectReciter = result.id == uiState.selectedReciterId,
                 isSwipeable = false,
                 downloadedIcon = false
             )
@@ -136,28 +141,28 @@ private fun SearchScreenPreview() {
                             id = 1,
                             name = "Mishary Rashid Alafasy",
                             recitingType = "Murattal",
-                            isDownloaded = false
+
                         ),
                         ReciterSelectionUi(
                             id = 2,
                             name = "Abdul Basit Abdul Samad",
                             recitingType = "Mujawwad",
-                            isDownloaded = false
                         ),
                         ReciterSelectionUi(
                             id = 3,
                             name = "Saad Al Ghamdi",
                             recitingType = "Murattal",
-                            isDownloaded = false
                         )
                     ),
                     lastSearchedQuery = "",
-                    queryHint = ""
-                ),
+                    queryHint = "",
+                    selectedReciterId = 1,
+                    ),
                 listener = object : ReciterSelectionListener {
                     override fun onBackClick() {}
                     override fun onClearQueryClick() {}
                     override fun onQueryChange(query: String) {}
+                    override fun onSelectReciterClick(reciterId: Int) {}
                 })
         }
     }

@@ -1,14 +1,18 @@
 package net.thechance.mena.faith.presentation.feature.quran.reciter.reciterSelection
 
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.first
 import mena.faith_presentation.generated.resources.Res
 import mena.faith_presentation.generated.resources.search_reciter
 import net.thechance.mena.faith.domain.model.Reciter
 import net.thechance.mena.faith.domain.repository.QuranRepository
 import net.thechance.mena.faith.presentation.base.BaseViewModel
+import net.thechance.mena.faith.presentation.base.ErrorState
+import net.thechance.mena.faith.presentation.base.snackbar.SnackBarState
 import org.jetbrains.compose.resources.getString
 
 class ReciterSelectionViewModel(
@@ -23,6 +27,7 @@ class ReciterSelectionViewModel(
     init {
         initializeSearchHint()
         fetchAllReciters()
+        updateDefaultReciter()
     }
 
     override fun onBackClick() = sendEffect(ReciterSelectionEffect.NavigateBack)
@@ -42,6 +47,24 @@ class ReciterSelectionViewModel(
         if (query == lastSearchedQuery) return
 
         performSearchWithDelay(query)
+    }
+    override fun onSelectReciterClick(reciterId: Int) {
+        tryToExecute(
+            execute = { repository.saveDefaultReciter(reciterId) },
+            onSuccess = { updateSelectedReciter(reciterId) },
+            onError = ::handleError
+        )
+    }
+
+    private fun updateDefaultReciter() {
+        tryToExecute(
+            execute = { repository.getDefaultReciter() },
+            onSuccess = { id -> updateSelectedReciter(id.first()) },
+            onError = ::handleError
+        )
+    }
+    private fun updateSelectedReciter(reciterId: Int) {
+        updateState { it.copy(selectedReciterId = reciterId) }
     }
 
     private fun cancelPreviousSearch() = searchJob?.cancel()
@@ -94,7 +117,12 @@ class ReciterSelectionViewModel(
             dispatcher = dispatcher
         )
     }
-
+    private fun handleError(errorState: ErrorState) =
+        snackbarHandler.showSnackBar(
+            message = errorState.message,
+            status = SnackBarState.Status.Error,
+            scope = viewModelScope,
+        )
     private companion object {
         const val MIN_SEARCH_QUERY_LENGTH = 2
     }

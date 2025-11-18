@@ -4,4 +4,5 @@ interface ReciterSelectionListener {
     fun onBackClick()
     fun onClearQueryClick()
     fun onQueryChange(query: String)
+    fun onSelectReciterClick(reciterId: Int)
 }

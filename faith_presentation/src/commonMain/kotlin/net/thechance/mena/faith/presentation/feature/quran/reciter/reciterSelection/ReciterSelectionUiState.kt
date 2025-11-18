@@ -8,7 +8,8 @@ data class ReciterSelectionUiState(
     val queryHint: String = "",
     val lastSearchedQuery: String = "",
     val searchResults: List<ReciterSelectionUi> = emptyList(),
-)
+    val selectedReciterId: Int? = null,
+    )
 
 data class ReciterSelectionUi(
     val id: Int,
