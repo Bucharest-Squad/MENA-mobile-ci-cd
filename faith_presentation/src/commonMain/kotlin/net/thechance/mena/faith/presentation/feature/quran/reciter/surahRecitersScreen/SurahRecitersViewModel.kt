@@ -9,6 +9,7 @@ import net.thechance.mena.faith.domain.model.Reciter
 import net.thechance.mena.faith.domain.repository.QuranRepository
 import net.thechance.mena.faith.domain.service.DownloadSurahManager
 import net.thechance.mena.faith.presentation.base.BaseViewModel
+import net.thechance.mena.faith.presentation.feature.quran.tilwah.component.args.TilawahSurahArgs
 import net.thechance.mena.faith.presentation.base.ErrorState
 import net.thechance.mena.faith.presentation.base.snackbar.SnackBarState
 import net.thechance.mena.faith.presentation.base.snackbar.SnackbarHandler
@@ -35,10 +36,7 @@ class SurahRecitersViewModel(
     private fun updateDefaultReciter() {
         tryToExecute(
             execute = { quranRepository.getDefaultReciter() },
-            onSuccess = { reciterId ->
-                updateSelectedReciter(reciterId.first())
-            },
-            onError = ::handleError
+            onSuccess = { reciterId -> updateSelectedReciter(reciterId.first()) },
         )
     }
 
@@ -78,7 +76,6 @@ class SurahRecitersViewModel(
                 downloadAndCacheSurah(surahId, reciterId)
             },
             onSuccess = { onDownloadComplete(reciterId) },
-            onError = ::handleError,
             dispatcher = dispatcher
         )
     }
@@ -106,7 +103,6 @@ class SurahRecitersViewModel(
         tryToExecute(
             execute = { quranRepository.saveDefaultReciter(reciterId) },
             onSuccess = { updateSelectedReciter(reciterId) },
-            onError = ::handleError
         )
     }
 
@@ -116,6 +112,12 @@ class SurahRecitersViewModel(
             onSuccess = ::getAllRecitersSuccessfully,
             dispatcher = dispatcher
         )
+    }
+
+    private fun updateSelectedReciter(reciterId: Int) {
+        updateState { state ->
+            state.copy(selectedReciterId = reciterId)
+        }
     }
 
     private suspend fun getAllRecitersSuccessfully(reciters: List<Reciter>) {
@@ -162,12 +164,4 @@ class SurahRecitersViewModel(
             )
         }
     }
-
-    private fun handleError(errorState: ErrorState) =
-        snackbarHandler.showSnackBar(
-            message = errorState.message,
-            status = SnackBarState.Status.Error,
-            scope = viewModelScope,
-        )
 }
-

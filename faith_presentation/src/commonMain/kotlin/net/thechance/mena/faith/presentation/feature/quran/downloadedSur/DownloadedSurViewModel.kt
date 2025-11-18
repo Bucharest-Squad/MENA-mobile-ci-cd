@@ -1,20 +1,15 @@
 package net.thechance.mena.faith.presentation.feature.quran.downloadedSur
 
-import androidx.lifecycle.viewModelScope
 import mena.faith_presentation.generated.resources.Res
 import mena.faith_presentation.generated.resources.ic_al_kahf
 import mena.faith_presentation.generated.resources.surah_deleted_successfully
 import net.thechance.mena.faith.domain.repository.QuranRepository
 import net.thechance.mena.faith.presentation.base.BaseViewModel
-import net.thechance.mena.faith.presentation.base.snackbar.SnackBarState
-import net.thechance.mena.faith.presentation.base.snackbar.SnackbarHandler
 
 class DownloadedSurViewModel(
     private val quranRepository: QuranRepository,
-    snackBarHandler: SnackbarHandler,
 ) : BaseViewModel<DownloadedSurUiState, DownloadedSurEffect>(
     initialState = DownloadedSurUiState(),
-    snackbarHandler = snackBarHandler
 ), DownloadedSurInteractionListener {
 
     init {
@@ -22,29 +17,11 @@ class DownloadedSurViewModel(
     }
 
     private fun loadDownloadedSur() {
+        // TODO: After the domain is done, integrate this function to load the real data
         tryToExecute(
-            execute = {
-                val surahs = quranRepository.getSur()
-                surahs.map { surah ->
-                    DownloadedSurUiState.SurahDetailsUiState(
-                        id = surah.id,
-                        arabicNameImg =  Res.drawable.ic_al_kahf,
-                        surahName = surah.name,
-                        downloadedReciters = getDownloadedRecitersNames(surah.id)
-                    )
-                }
-            },
-            onSuccess = { surahUiList ->
-                updateState { it.copy(surDetails = surahUiList) }
-            }
+            execute = {},
+            onSuccess = {},
         )
-    }
-
-    private suspend fun getDownloadedRecitersNames(surahId: Int): List<String> {
-        val reciters = quranRepository.getReciters()
-        return reciters.filter { reciter ->
-            quranRepository.isSurahAudioCached(surahId, reciter.id)
-        }.map { it.name }
     }
 
     override fun onReciterSettingsClick() {
@@ -89,7 +66,6 @@ class DownloadedSurViewModel(
         )
     }
 
-
     private fun onDeleteSurahSuccess() {
         updateState { state ->
             val newSurDetails =
@@ -102,13 +78,7 @@ class DownloadedSurViewModel(
             )
         }
 
-        showSuccessSnackBar()
+        handleSuccessSnackBar(Res.string.surah_deleted_successfully)
     }
 
-
-    private fun showSuccessSnackBar() = snackbarHandler.showSnackBar(
-        message = Res.string.surah_deleted_successfully,
-        status = SnackBarState.Status.Success,
-        scope = viewModelScope,
-    )
 }

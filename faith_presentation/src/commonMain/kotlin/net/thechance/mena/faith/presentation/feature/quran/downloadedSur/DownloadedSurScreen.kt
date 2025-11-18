@@ -124,50 +124,50 @@ private fun Content(
 
 @Preview
 @Composable
-private fun PreviewDownloadedSurScreen() {
+private fun Preview() {
     MenaTheme {
-    QuranTheme {
-        Content(
-            uiState = DownloadedSurUiState(
-                showDeleteConfirmationDialog = false,
-                surDetails = listOf(
-                    DownloadedSurUiState.SurahDetailsUiState(
-                        1,
-                        Res.drawable.ic_ad_duha,
-                        "Al-Duha",
-                        listOf("Al Minshawi", "Sudais"),
-                    ),
-                    DownloadedSurUiState.SurahDetailsUiState(
-                        1,
-                        Res.drawable.ic_an_nas,
-                        "An-Nas",
-                        listOf("Sudais"),
-                    ),
-                    DownloadedSurUiState.SurahDetailsUiState(
-                        1,
-                        Res.drawable.ic_al_kahf,
-                        "Al-Kahf",
-                        listOf("Al Minshawi", "Sudais"),
-                    ),
-                    DownloadedSurUiState.SurahDetailsUiState(
-                        1,
-                        Res.drawable.ic_ash_shams,
-                        "Ash-Shams",
-                        listOf("Al Minshawi", "Sudais"),
+        QuranTheme {
+            Content(
+                uiState = DownloadedSurUiState(
+                    showDeleteConfirmationDialog = true,
+                    surDetails = listOf(
+                        DownloadedSurUiState.SurahDetailsUiState(
+                            1,
+                            Res.drawable.ic_ad_duha,
+                            "Al-Duha",
+                            listOf("Al Minshawi", "Sudais"),
+                        ),
+                        DownloadedSurUiState.SurahDetailsUiState(
+                            1,
+                            Res.drawable.ic_an_nas,
+                            "An-Nas",
+                            listOf("Sudais"),
+                        ),
+                        DownloadedSurUiState.SurahDetailsUiState(
+                            1,
+                            Res.drawable.ic_al_kahf,
+                            "Al-Kahf",
+                            listOf("Al Minshawi", "Sudais"),
+                        ),
+                        DownloadedSurUiState.SurahDetailsUiState(
+                            1,
+                            Res.drawable.ic_ash_shams,
+                            "Ash-Shams",
+                            listOf("Al Minshawi", "Sudais"),
+                        ),
                     ),
                 ),
-            ),
-            snackBar = SnackBarState(),
-            listener =
-                object : DownloadedSurInteractionListener {
-                    override fun onReciterSettingsClick() {}
-                    override fun onDownloadedSurahClick(surahId: Int) {}
-                    override fun onBackClick() {}
-                    override fun onDeleteSurahClick(surahId: Int) {}
-                    override fun onDismissDeleteConfirmationDialog() {}
-                    override fun onConfirmDeleteDownloadedSurahClick() {}
-                },
-        )
-    }
+                snackBar = SnackBarState(),
+                listener =
+                    object : DownloadedSurInteractionListener {
+                        override fun onReciterSettingsClick() {}
+                        override fun onDownloadedSurahClick(surahId: Int) {}
+                        override fun onBackClick() {}
+                        override fun onDeleteSurahClick(surahId: Int) {}
+                        override fun onDismissDeleteConfirmationDialog() {}
+                        override fun onConfirmDeleteDownloadedSurahClick() {}
+                    },
+            )
+        }
     }
 }
