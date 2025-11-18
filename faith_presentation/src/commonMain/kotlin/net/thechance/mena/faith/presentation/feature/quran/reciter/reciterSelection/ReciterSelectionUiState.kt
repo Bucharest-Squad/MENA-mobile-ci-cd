@@ -14,12 +14,10 @@ data class ReciterSelectionUi(
     val id: Int,
     val name: String,
     val recitingType: String,
-    val isDownloaded: Boolean,
 )
 
-fun Reciter.toUi(isDownloaded: Boolean) = ReciterSelectionUi(
+fun Reciter.toUi() = ReciterSelectionUi(
     id = id,
     name = name,
     recitingType = tilawahType,
-    isDownloaded = isDownloaded
 )

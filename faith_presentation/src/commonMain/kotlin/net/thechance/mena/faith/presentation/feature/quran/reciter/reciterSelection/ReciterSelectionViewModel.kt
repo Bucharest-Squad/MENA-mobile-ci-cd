@@ -9,12 +9,10 @@ import mena.faith_presentation.generated.resources.search_reciter
 import net.thechance.mena.faith.domain.model.Reciter
 import net.thechance.mena.faith.domain.repository.QuranRepository
 import net.thechance.mena.faith.presentation.base.BaseViewModel
-import net.thechance.mena.faith.presentation.feature.quran.reciter.args.ReciterArgs
 import org.jetbrains.compose.resources.getString
 
 class ReciterSelectionViewModel(
     private val repository: QuranRepository,
-    private val reciterArgs: ReciterArgs,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : BaseViewModel<ReciterSelectionUiState, ReciterSelectionEffect>(
     ReciterSelectionUiState()
@@ -59,13 +57,9 @@ class ReciterSelectionViewModel(
     private suspend fun searchForReciter(query: String): List<Reciter> =
         repository.searchForReciter(query)
 
-    private suspend fun onSearchResultSuccess(reciters: List<Reciter>) {
-        val surahId = reciterArgs.surahId ?: return
-
+    private fun onSearchResultSuccess(reciters: List<Reciter>) {
         val searchResults = reciters.map { reciter ->
-            reciter.toUi(
-                repository.isSurahAudioCached(surahId, reciter.id)
-            )
+            reciter.toUi()
         }
 
         updateState { it.copy(searchResults = searchResults) }
@@ -92,9 +86,8 @@ class ReciterSelectionViewModel(
         tryToExecute(
             execute = {
                 val allReciters = repository.getReciters()
-                val surahId = reciterArgs.surahId ?: return@tryToExecute
                 val uiReciters = allReciters.map { reciter ->
-                    reciter.toUi(repository.isSurahAudioCached(surahId, reciter.id))
+                    reciter.toUi()
                 }
                 updateState { it.copy(searchResults = uiReciters) }
             },
