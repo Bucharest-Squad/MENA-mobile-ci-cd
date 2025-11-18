@@ -40,7 +40,7 @@ fun ProductDto.toDomain(): Product = Product(
     quantityInCart = quantityInCart,
     shelfId = shelfId,
     isFavorite = isFavorite,
-    isOutOfStock = true
+    isOutOfStock = isOutOfStock
 )
 
 @OptIn(ExperimentalUuidApi::class)

@@ -72,30 +72,32 @@ fun LazyGridScope.wideImageProductsGrid(
                 price = "${product.price}",
                 onClick = { listener.onProductClicked(product.id) },
                 productAction = {
-                    SmallAndWideImageDukanProductAction(
-                        showProductQuantity = quantity > 0,
-                        inCartQuantity = quantity,
-                        dukanColor = Color(state.dukanInfo.color),
-                        cartIcon = painterResource(Res.drawable.wide_image_shoppingcart),
-                        onAddToCartClick = {
-                            listener.onAddToCartClicked(
-                                productId = product.id,
-                                productQuantity = quantity + 1
-                            )
-                        },
-                        onPlusClick = {
-                            listener.onPlusClicked(
-                                productId = product.id,
-                                productQuantity = quantity + 1
-                            )
-                        },
-                        onMinusClick = {
-                            listener.onMinusClicked(
-                                productId = product.id,
-                                productQuantity = quantity - 1
-                            )
-                        }
-                    )
+                    if (product.isOutOfStock.not()) {
+                        SmallAndWideImageDukanProductAction(
+                            showProductQuantity = quantity > 0,
+                            inCartQuantity = quantity,
+                            dukanColor = Color(state.dukanInfo.color),
+                            cartIcon = painterResource(Res.drawable.wide_image_shoppingcart),
+                            onAddToCartClick = {
+                                listener.onAddToCartClicked(
+                                    productId = product.id,
+                                    productQuantity = quantity + 1
+                                )
+                            },
+                            onPlusClick = {
+                                listener.onPlusClicked(
+                                    productId = product.id,
+                                    productQuantity = quantity + 1
+                                )
+                            },
+                            onMinusClick = {
+                                listener.onMinusClicked(
+                                    productId = product.id,
+                                    productQuantity = quantity - 1
+                                )
+                            }
+                        )
+                    }
                 }
             )
         }

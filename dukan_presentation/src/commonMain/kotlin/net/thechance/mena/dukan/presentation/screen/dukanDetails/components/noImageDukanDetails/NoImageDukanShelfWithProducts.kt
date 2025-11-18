@@ -87,29 +87,31 @@ private fun ProductItem(
         modifier = modifier,
         onProductClick = { listener.onProductClicked(product.id) },
         productAction = {
-            NoImageDukanProductAction(
-                showProductQuantity = quantity > 0,
-                inCartQuantity = quantity,
-                dukanColor = dukanColor,
-                onAddToCartClick = {
-                    listener.onAddToCartClicked(
-                        productId = product.id,
-                        productQuantity = quantity + 1
-                    )
-                },
-                onPlusClick = {
-                    listener.onPlusClicked(
-                        productId = product.id,
-                        productQuantity = quantity + 1
-                    )
-                },
-                onMinusClick = {
-                    listener.onMinusClicked(
-                        productId = product.id,
-                        productQuantity = quantity - 1
-                    )
-                }
-            )
+            if (product.isOutOfStock.not()) {
+                NoImageDukanProductAction(
+                    showProductQuantity = quantity > 0,
+                    inCartQuantity = quantity,
+                    dukanColor = dukanColor,
+                    onAddToCartClick = {
+                        listener.onAddToCartClicked(
+                            productId = product.id,
+                            productQuantity = quantity + 1
+                        )
+                    },
+                    onPlusClick = {
+                        listener.onPlusClicked(
+                            productId = product.id,
+                            productQuantity = quantity + 1
+                        )
+                    },
+                    onMinusClick = {
+                        listener.onMinusClicked(
+                            productId = product.id,
+                            productQuantity = quantity - 1
+                        )
+                    }
+                )
+            }
         }
     )
 }
