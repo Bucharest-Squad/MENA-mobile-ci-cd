@@ -9,7 +9,6 @@ data class DownloadedSurahRecitersUiState(
     val query: String = "",
     val queryHint: String = "Search...",
     val selectedReciterId: Int? = null,
-    val isSwipeable: Boolean = false,
 )
 
 

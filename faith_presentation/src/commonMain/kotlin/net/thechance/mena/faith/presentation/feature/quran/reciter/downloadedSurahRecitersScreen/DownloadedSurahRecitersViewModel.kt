@@ -9,17 +9,16 @@ import net.thechance.mena.faith.domain.repository.QuranRepository
 import net.thechance.mena.faith.domain.service.DownloadSurahManager
 import net.thechance.mena.faith.presentation.base.BaseViewModel
 import net.thechance.mena.faith.presentation.base.ErrorState
-import net.thechance.mena.faith.presentation.feature.quran.reciter.downloadedSurahRecitersScreen.args.TilawahSurahArgs
+import net.thechance.mena.faith.presentation.feature.quran.reciter.args.ReciterArgs
 
 class DownloadedSurahRecitersViewModel(
     private val quranRepository: QuranRepository,
-    private val surahArgs: TilawahSurahArgs,
+    private val surahArgs: ReciterArgs,
     private val downloadManager: DownloadSurahManager,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : BaseViewModel<DownloadedSurahRecitersUiState, DownloadedSurahRecitersScreenEffect>(
     initialState = DownloadedSurahRecitersUiState(
         surahId = surahArgs.surahId,
-        isSwipeable = surahArgs.isSwipeToDeleteEnabled,
     ),
 ), DownloadedSurahRecitersListener {
 

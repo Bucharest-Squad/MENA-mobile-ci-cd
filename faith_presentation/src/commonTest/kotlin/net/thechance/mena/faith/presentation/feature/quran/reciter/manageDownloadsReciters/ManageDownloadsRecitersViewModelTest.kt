@@ -16,7 +16,7 @@ import kotlinx.coroutines.test.runTest
 import net.thechance.mena.faith.domain.model.Reciter
 import net.thechance.mena.faith.domain.repository.QuranRepository
 import net.thechance.mena.faith.domain.service.DownloadSurahManager
-import net.thechance.mena.faith.presentation.feature.quran.reciter.downloadedSurahRecitersScreen.args.TilawahSurahArgs
+import net.thechance.mena.faith.presentation.feature.quran.reciter.args.ReciterArgs
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -29,7 +29,7 @@ class ManageDownloadsRecitersViewModelTest {
     private lateinit var testViewModel: ManageDownloadsRecitersViewModel
     private val quranRepository: QuranRepository = mock(mode = MockMode.autofill)
     private val downloadManager: DownloadSurahManager = mock(mode = MockMode.autofill)
-    private val surahArgs: TilawahSurahArgs = mock(mode = MockMode.autofill)
+    private val surahArgs: ReciterArgs = mock(mode = MockMode.autofill)
 
     @BeforeTest
     fun setup() {

@@ -16,7 +16,7 @@ import kotlinx.coroutines.test.runTest
 import net.thechance.mena.faith.domain.model.Reciter
 import net.thechance.mena.faith.domain.repository.QuranRepository
 import net.thechance.mena.faith.domain.service.DownloadSurahManager
-import net.thechance.mena.faith.presentation.feature.quran.reciter.downloadedSurahRecitersScreen.args.TilawahSurahArgs
+import net.thechance.mena.faith.presentation.feature.quran.reciter.args.ReciterArgs
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -30,7 +30,7 @@ class DownloadedSurahRecitersViewModelTest {
     private lateinit var testViewModel: DownloadedSurahRecitersViewModel
     private val quranRepository: QuranRepository = mock(mode = MockMode.autofill)
     private val downloadManager: DownloadSurahManager = mock(mode = MockMode.autofill)
-    private val surahArgs: TilawahSurahArgs = mock(mode = MockMode.autofill)
+    private val surahArgs: ReciterArgs = mock(mode = MockMode.autofill)
 
     @BeforeTest
     fun setup() {
@@ -64,11 +64,6 @@ class DownloadedSurahRecitersViewModelTest {
     @Test
     fun `state should initialize with correct surahId from args`() = runTest {
         assertEquals(TEST_SURAH_ID, testViewModel.uiState.value.surahId)
-    }
-
-    @Test
-    fun `state should initialize with isSwipeable from args`() = runTest {
-        assertTrue(testViewModel.uiState.value.isSwipeable)
     }
 
     @Test

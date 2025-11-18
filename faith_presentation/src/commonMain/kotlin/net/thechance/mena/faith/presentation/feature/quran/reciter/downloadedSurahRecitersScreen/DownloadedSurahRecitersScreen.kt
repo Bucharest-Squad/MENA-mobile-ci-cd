@@ -85,7 +85,7 @@ private fun Content(
                     onSelect = { listener.onSelectReciterClick(reciter.id) },
                     onDownloadClick = { listener.onDownloadClick(reciter.id) },
                     isSelectReciter = reciter.id == uiState.selectedReciterId,
-                    isSwipeable = uiState.isSwipeable,
+                    isSwipeable = false,
                 )
             }
         }
