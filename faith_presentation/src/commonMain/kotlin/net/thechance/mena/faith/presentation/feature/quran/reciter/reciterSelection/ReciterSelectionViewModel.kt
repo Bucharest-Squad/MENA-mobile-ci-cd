@@ -29,7 +29,6 @@ class ReciterSelectionViewModel(
 
     override fun onBackClick() = sendEffect(ReciterSelectionEffect.NavigateBack)
 
-    override fun onSearchClick() = sendEffect(ReciterSelectionEffect.NavigateToSearch)
 
     override fun onClearQueryClick() {
         updateState { it.copy(query = "") }
