@@ -20,9 +20,9 @@ fun EmptyDukansState(
         contentAlignment = Alignment.Center
     ) {
         StatePlaceholder(
-            description = stringResource(Res.string.no_dukan_results),
-            title = stringResource(Res.string.no_dukan_results),
             image = painterResource(Res.drawable.img_empty_dukan),
+            title = stringResource(Res.string.no_dukan_results),
+            description = stringResource(Res.string.no_dukan_results),
             modifier = Modifier.align(Alignment.Center)
         )
     }
