@@ -73,9 +73,8 @@ class DownloadedSurahRecitersViewModel(
     override fun onDownloadClick(reciterId: Int) {
         tryToExecute(
             execute = {
-                surahArgs.surahId?.let {
-                    downloadAndCacheSurah(it, reciterId)
-                }
+                val surahId = surahArgs.surahId ?: return@tryToExecute
+                downloadAndCacheSurah(surahId, reciterId)
             },
             onSuccess = { onDownloadComplete(reciterId) },
             onError = ::handleError,
