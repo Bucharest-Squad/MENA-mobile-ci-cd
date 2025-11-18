@@ -34,7 +34,7 @@ fun ScaffoldScope.attachmentsSendMoneyBottomSheet(
     bottomSheet(isVisible) { showBottomSheet ->
         BottomSheet(
             isVisible = showBottomSheet,
-            onDismissRequest = attachmentsInteractionListener::onDismiss,
+            onDismissRequest = attachmentsInteractionListener::onDismissSendMonyDialog,
             modifier = modifier
         ) {
             Column(

@@ -957,7 +957,6 @@ class ChatViewModel(
     }
 
     override fun onSendMoneyClicked() {
-
         updateState {
             it.copy(
                 amountToTransfer = "",
@@ -985,7 +984,7 @@ class ChatViewModel(
     }
 
     private suspend fun sendMoney(): Uuid {
-        val receiverId = Uuid.random()  //todo Replace with actual receiver ID
+        val receiverId = Uuid.random() //todo Replace with actual receiver ID
         val amount = state.value.amountToTransfer.toDouble()
         return getTransactionId(receiverId, amount)
     }
@@ -1005,7 +1004,7 @@ class ChatViewModel(
         )
     }
 
-    override fun onDismiss() {
+    override fun onDismissSendMonyDialog() {
         updateState {
             it.copy(
                 isSendMoneyDialogVisible = false
