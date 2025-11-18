@@ -62,7 +62,6 @@ private fun Content(
                 onBackClick = listener::onBackClick,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = Theme.spacing._16, vertical = Theme.spacing._4)
             )
         }
     ) {
