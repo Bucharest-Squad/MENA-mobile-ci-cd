@@ -48,8 +48,7 @@ fun ScaffoldScope.IslamicDatePickerDialog(
         )
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(

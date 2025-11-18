@@ -13,8 +13,8 @@ fun calculatePreviousIslamicDate(currentDate: IslamicDate): IslamicDate {
             month = 12
             year--
         }
-        day = getIslamicMonthDays(month, year)
+        day = getIslamicMonthDays(month = month, year = year)
     }
 
-    return IslamicDate(day, month, year)
+    return IslamicDate(day = day, month = month, year = year)
 }

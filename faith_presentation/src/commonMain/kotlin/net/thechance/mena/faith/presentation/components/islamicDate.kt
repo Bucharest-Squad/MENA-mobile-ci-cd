@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
@@ -13,6 +12,7 @@ import mena.faith_presentation.generated.resources.hijri_months
 import mena.faith_presentation.generated.resources.hijri_months_shortened
 import net.thechance.mena.designsystem.presentation.component.datePicker.WheelDatePicker
 import net.thechance.mena.faith.presentation.utils.IslamicDate
+import net.thechance.mena.faith.presentation.utils.extentions.prayerTime.getIslamicMonthDays
 import org.jetbrains.compose.resources.stringArrayResource
 import org.koin.compose.getKoin
 
@@ -30,11 +30,11 @@ fun IslamicDatePicker(
     val shouldUseShortNames = (with(density) { containerWidth.toDp() } < 340.dp)
 
     val islamicMonthNames = getHijriMonthNames(shouldUseShortNames)
-    val yearList = remember(minYear, maxYear) { createYearList(minYear, maxYear) }
+    val yearList =  createYearList(minYear, maxYear)
     val daysList = remember(selectedDate.month, selectedDate.year) {
         createIslamicDaysList(
-            selectedDate.month,
-            selectedDate.year
+            month = selectedDate.month,
+            year = selectedDate.year
         )
     }
     val selectedIndices = calculateIslamicSelectionIndices(
@@ -63,15 +63,6 @@ fun IslamicDatePicker(
     )
 }
 
-private fun getIslamicMonthDays(month: Int, year: Int): Int {
-    return when (month) {
-        1, 3, 5, 7, 9, 11 -> 30
-        2, 4, 6, 8, 10 -> 29
-        12 -> if (isIslamicLeapYear(year)) 30 else 29
-        else -> 30
-    }
-}
-
 private fun createIslamicDaysList(month: Int, year: Int): List<String> {
     val daysInMonth = getIslamicMonthDays(month, year)
     return (1..daysInMonth).map { day ->
@@ -79,18 +70,12 @@ private fun createIslamicDaysList(month: Int, year: Int): List<String> {
     }
 }
 
-private fun isIslamicLeapYear(year: Int): Boolean {
-    return (year * 11 + 14) % 30 < 11
-}
-
 @Composable
 private fun getHijriMonthNames(isShortened: Boolean): List<String> =
     if (isShortened) stringArrayResource(Res.array.hijri_months_shortened)
     else stringArrayResource(Res.array.hijri_months)
 
-private fun createYearList(minYear: Int, maxYear: Int): List<String> {
-    return (minYear..maxYear).map { it.toString() }
-}
+private fun createYearList(minYear: Int, maxYear: Int): List<String> = (minYear..maxYear).map { it.toString() }
 
 private data class SelectionIndices(
     val dayIndex: Int,
