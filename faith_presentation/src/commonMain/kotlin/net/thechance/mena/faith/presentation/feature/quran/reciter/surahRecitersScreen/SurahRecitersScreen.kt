@@ -1,4 +1,4 @@
-package net.thechance.mena.faith.presentation.feature.quran.reciter.downloadedSurahRecitersScreen
+package net.thechance.mena.faith.presentation.feature.quran.reciter.surahRecitersScreen
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,17 +27,15 @@ import org.koin.compose.viewmodel.koinViewModel
 import kotlin.time.ExperimentalTime
 
 @Composable
-fun DownloadedSurahRecitersScreen(
-    viewModel: DownloadedSurahRecitersViewModel = koinViewModel()
+fun SurahRecitersScreen(
+    viewModel: SurahRecitersViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val navController = LocalNavController.current
 
     ObserveAsEffect(viewModel.uiEffect) { effect ->
         when (effect) {
-            DownloadedSurahRecitersScreenEffect.NavigateBack -> navController.navigateUp()
-            DownloadedSurahRecitersScreenEffect.NavigateToSearch -> {}
-        }
+            SurahRecitersScreenEffect.NavigateBack -> navController.navigateUp() }
     }
 
     Content(uiState = uiState, listener = viewModel)
@@ -46,8 +44,8 @@ fun DownloadedSurahRecitersScreen(
 @OptIn(ExperimentalTime::class)
 @Composable
 private fun Content(
-    uiState: DownloadedSurahRecitersUiState,
-    listener: DownloadedSurahRecitersListener,
+    uiState: SurahRecitersUiState,
+    listener: SurahRecitersListener,
 ) {
     Scaffold(
         topBar = {
@@ -105,21 +103,21 @@ private fun Preview() {
     MenaTheme {
         QuranTheme {
             Content(
-                uiState = DownloadedSurahRecitersUiState(
+                uiState = SurahRecitersUiState(
                     reciters = listOf(
-                        DownloadedSurahRecitersUi(
+                        SurahRecitersUi(
                             id = 1,
                             name = "Mishary Rashid Alafasy",
                             recitingType = "Murattal",
                             isDownloaded = true
                         ),
-                        DownloadedSurahRecitersUi(
+                        SurahRecitersUi(
                             id = 2,
                             name = "Abdul Basit Abdul Samad",
                             recitingType = "Mujawwad",
                             isDownloaded = false
                         ),
-                        DownloadedSurahRecitersUi(
+                        SurahRecitersUi(
                             id = 3,
                             name = "Saad Al Ghamdi",
                             recitingType = "Murattal",
@@ -129,9 +127,8 @@ private fun Preview() {
                     selectedReciterId = 1,
                     surahId = 1
                 ),
-                listener = object : DownloadedSurahRecitersListener {
+                listener = object : SurahRecitersListener {
                     override fun onBackClick() {}
-                    override fun onSearchClick() {}
                     override fun onDownloadClick(reciterId: Int) {}
                     override fun onSelectReciterClick(reciterId: Int) {}
                     override fun onQueryChange(newQuery: String) {}

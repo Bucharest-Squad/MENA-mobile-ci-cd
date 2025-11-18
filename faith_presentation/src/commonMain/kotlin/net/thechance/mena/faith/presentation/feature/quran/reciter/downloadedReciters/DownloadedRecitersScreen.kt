@@ -1,4 +1,4 @@
-package net.thechance.mena.faith.presentation.feature.quran.reciter.manageDownloadsReciters
+package net.thechance.mena.faith.presentation.feature.quran.reciter.downloadedReciters
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -30,16 +30,15 @@ import org.koin.compose.viewmodel.koinViewModel
 import kotlin.time.ExperimentalTime
 
 @Composable
-fun ManageDownloadsRecitersScreen(
-    viewModel: ManageDownloadsRecitersViewModel = koinViewModel()
+fun DownloadedRecitersScreen(
+    viewModel: DownloadedRecitersViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val navController = LocalNavController.current
 
     ObserveAsEffect(viewModel.uiEffect) { effect ->
         when (effect) {
-            ManageDownloadsRecitersEffect.NavigateBack -> navController.navigateUp()
-            ManageDownloadsRecitersEffect.NavigateToSearch -> {}
+            DownloadedRecitersEffect.NavigateBack -> navController.navigateUp()
         }
     }
 
@@ -49,8 +48,8 @@ fun ManageDownloadsRecitersScreen(
 @OptIn(ExperimentalTime::class)
 @Composable
 private fun Content(
-    uiState: ManageDownloadsRecitersUiState,
-    listener: ManageDownloadsRecitersListener,
+    uiState: DownloadedRecitersUiState,
+    listener: DownloadedRecitersListener,
 ) {
     Scaffold(
         topBar = {
@@ -114,21 +113,21 @@ private fun Preview() {
     MenaTheme {
         QuranTheme {
             Content(
-                uiState = ManageDownloadsRecitersUiState(
+                uiState = DownloadedRecitersUiState(
                     reciters = listOf(
-                        ManageDownloadsRecitersUi(
+                        DownloadedRecitersUi(
                             id = 1,
                             name = "Mishary Rashid Alafasy",
                             recitingType = "Murattal",
                             isDownloaded = true
                         ),
-                        ManageDownloadsRecitersUi(
+                        DownloadedRecitersUi(
                             id = 2,
                             name = "Abdul Basit Abdul Samad",
                             recitingType = "Mujawwad",
                             isDownloaded = false
                         ),
-                        ManageDownloadsRecitersUi(
+                        DownloadedRecitersUi(
                             id = 3,
                             name = "Saad Al Ghamdi",
                             recitingType = "Murattal",
@@ -138,9 +137,8 @@ private fun Preview() {
                     selectedReciterId = 1,
                     surahId = 1
                 ),
-                listener = object : ManageDownloadsRecitersListener {
+                listener = object : DownloadedRecitersListener {
                     override fun onBackClick() {}
-                    override fun onSearchClick() {}
                     override fun onQueryChange(query: String) {}
                     override fun onClearQueryClick() {}
                     override fun onSelectReciterClick(reciterId: Int) {}

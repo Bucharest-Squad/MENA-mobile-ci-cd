@@ -114,12 +114,12 @@ private fun SearchHeaderPreview() {
     MenaTheme {
     QuranTheme {
         SearchReciter(
-            query = "",
+            query = "s",
             hint = "Search in Reciter...",
             onQueryChange = {},
             clearQuery = {},
             onBackClick = {},
-            title = "Select Reciter"
+            title = " Reciter"
         )
     }
     }

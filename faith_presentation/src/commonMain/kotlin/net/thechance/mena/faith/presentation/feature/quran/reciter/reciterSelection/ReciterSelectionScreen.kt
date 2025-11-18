@@ -37,8 +37,6 @@ fun ReciterSelectionScreen(
     ObserveAsEffect(viewModel.uiEffect) { effect ->
         when (effect) {
             ReciterSelectionEffect.NavigateBack -> navController.popBackStack()
-            ReciterSelectionEffect.NavigateToSearch -> {
-            }
         }
     }
     Content(
@@ -160,7 +158,6 @@ private fun SearchScreenPreview() {
                     override fun onBackClick() {}
                     override fun onClearQueryClick() {}
                     override fun onQueryChange(query: String) {}
-                    override fun onSearchClick() {}
                 })
         }
     }

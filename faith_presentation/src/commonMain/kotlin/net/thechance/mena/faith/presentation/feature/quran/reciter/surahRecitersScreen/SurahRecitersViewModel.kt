@@ -1,4 +1,4 @@
-package net.thechance.mena.faith.presentation.feature.quran.reciter.downloadedSurahRecitersScreen
+package net.thechance.mena.faith.presentation.feature.quran.reciter.surahRecitersScreen
 
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineDispatcher
@@ -14,18 +14,18 @@ import net.thechance.mena.faith.presentation.base.snackbar.SnackBarState
 import net.thechance.mena.faith.presentation.base.snackbar.SnackbarHandler
 import net.thechance.mena.faith.presentation.feature.quran.reciter.args.ReciterArgs
 
-class DownloadedSurahRecitersViewModel(
+class SurahRecitersViewModel(
     private val quranRepository: QuranRepository,
     private val surahArgs: ReciterArgs,
     private val downloadManager: DownloadSurahManager,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
     snackBarHandler: SnackbarHandler,
-    ) : BaseViewModel<DownloadedSurahRecitersUiState, DownloadedSurahRecitersScreenEffect>(
-    initialState = DownloadedSurahRecitersUiState(
+    ) : BaseViewModel<SurahRecitersUiState, SurahRecitersScreenEffect>(
+    initialState = SurahRecitersUiState(
         surahId = surahArgs.surahId,
     ),
     snackbarHandler = snackBarHandler
-), DownloadedSurahRecitersListener {
+), SurahRecitersListener {
 
     init {
         getAllReciters()
@@ -69,10 +69,7 @@ class DownloadedSurahRecitersViewModel(
     }
 
     override fun onBackClick() =
-        sendEffect(DownloadedSurahRecitersScreenEffect.NavigateBack)
-
-    override fun onSearchClick() =
-        sendEffect(DownloadedSurahRecitersScreenEffect.NavigateToSearch)
+        sendEffect(SurahRecitersScreenEffect.NavigateBack)
 
     override fun onDownloadClick(reciterId: Int) {
         tryToExecute(

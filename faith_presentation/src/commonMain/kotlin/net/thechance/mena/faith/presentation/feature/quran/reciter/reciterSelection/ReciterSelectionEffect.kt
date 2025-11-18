@@ -2,6 +2,4 @@ package net.thechance.mena.faith.presentation.feature.quran.reciter.reciterSelec
 
 sealed interface ReciterSelectionEffect {
     data object NavigateBack : ReciterSelectionEffect
-    data object NavigateToSearch: ReciterSelectionEffect
-
 }

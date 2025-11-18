@@ -1,4 +1,4 @@
-package net.thechance.mena.faith.presentation.feature.quran.reciter.manageDownloadsReciters
+package net.thechance.mena.faith.presentation.feature.quran.reciter.downloadedReciters
 
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineDispatcher
@@ -13,27 +13,26 @@ import net.thechance.mena.faith.presentation.base.snackbar.SnackBarState
 import net.thechance.mena.faith.presentation.base.snackbar.SnackbarHandler
 import net.thechance.mena.faith.presentation.feature.quran.reciter.args.ReciterArgs
 
-class ManageDownloadsRecitersViewModel(
+class DownloadedRecitersViewModel(
     private val quranRepository: QuranRepository,
     private val surahArgs: ReciterArgs,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
     snackBarHandler: SnackbarHandler,
-) : BaseViewModel<ManageDownloadsRecitersUiState, ManageDownloadsRecitersEffect>(
-    initialState = ManageDownloadsRecitersUiState(
+) : BaseViewModel<DownloadedRecitersUiState, DownloadedRecitersEffect>(
+    initialState = DownloadedRecitersUiState(
         surahId = surahArgs.surahId,
         isSwipeable = surahArgs.isSwipeToDeleteEnabled,
     ),
     snackbarHandler = snackBarHandler
-), ManageDownloadsRecitersListener {
+), DownloadedRecitersListener {
 
     init {
         getAllReciters()
         updateDefaultReciter()
     }
 
-    override fun onBackClick() = sendEffect(ManageDownloadsRecitersEffect.NavigateBack)
+    override fun onBackClick() = sendEffect(DownloadedRecitersEffect.NavigateBack)
 
-    override fun onSearchClick() = sendEffect(ManageDownloadsRecitersEffect.NavigateToSearch)
 
     override fun onQueryChange(query: String) {
         updateState { it.copy(query = query) }

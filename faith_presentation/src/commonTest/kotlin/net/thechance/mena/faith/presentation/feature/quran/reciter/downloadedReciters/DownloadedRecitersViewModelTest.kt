@@ -1,4 +1,4 @@
-package net.thechance.mena.faith.presentation.feature.quran.reciter.manageDownloadsReciters
+package net.thechance.mena.faith.presentation.feature.quran.reciter.downloadedReciters
 
 import app.cash.turbine.test
 import dev.mokkery.MockMode
@@ -23,10 +23,10 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class ManageDownloadsRecitersViewModelTest {
+class DownloadedRecitersViewModelTest {
 
     private lateinit var testDispatcher: TestDispatcher
-    private lateinit var testViewModel: ManageDownloadsRecitersViewModel
+    private lateinit var testViewModel: DownloadedRecitersViewModel
     private val quranRepository: QuranRepository = mock(mode = MockMode.autofill)
     private val surahArgs: ReciterArgs = mock(mode = MockMode.autofill)
     private val snackbarHandler: SnackbarHandler = SnackbarHandler.Empty
@@ -40,7 +40,7 @@ class ManageDownloadsRecitersViewModelTest {
         everySuspend { quranRepository.getReciters() } returns dummyReciters
         everySuspend { quranRepository.isSurahAudioCached(TEST_SURAH_ID, any()) } returns false
 
-        testViewModel = ManageDownloadsRecitersViewModel(
+        testViewModel = DownloadedRecitersViewModel(
             quranRepository = quranRepository,
             surahArgs = surahArgs,
             dispatcher = testDispatcher,
@@ -90,19 +90,10 @@ class ManageDownloadsRecitersViewModelTest {
             testViewModel.onBackClick()
 
             val effect = awaitItem()
-            assertTrue(effect is ManageDownloadsRecitersEffect.NavigateBack)
+            assertTrue(effect is DownloadedRecitersEffect.NavigateBack)
         }
     }
 
-    @Test
-    fun `onSearchClick should navigate to search`() = runTest {
-        testViewModel.uiEffect.test {
-            testViewModel.onSearchClick()
-
-            val effect = awaitItem()
-            assertTrue(effect is ManageDownloadsRecitersEffect.NavigateToSearch)
-        }
-    }
 
     @Test
     fun `onQueryChange should update query in state`() = runTest {
@@ -221,7 +212,7 @@ class ManageDownloadsRecitersViewModelTest {
         } returns true
         everySuspend { quranRepository.getReciters() } returns dummyReciters
 
-        testViewModel = ManageDownloadsRecitersViewModel(
+        testViewModel = DownloadedRecitersViewModel(
             quranRepository = quranRepository,
             surahArgs = surahArgs,
             dispatcher = testDispatcher,
@@ -241,7 +232,7 @@ class ManageDownloadsRecitersViewModelTest {
             quranRepository.isSurahAudioCached(TEST_SURAH_ID, DOWNLOADED_RECITER_ID)
         } returns true
 
-        testViewModel = ManageDownloadsRecitersViewModel(
+        testViewModel = DownloadedRecitersViewModel(
             quranRepository = quranRepository,
             surahArgs = surahArgs,
             dispatcher = testDispatcher,
@@ -299,7 +290,7 @@ class ManageDownloadsRecitersViewModelTest {
     fun `swipeable state should be passed from args`() = runTest {
         everySuspend { surahArgs.isSwipeToDeleteEnabled } returns false
 
-        testViewModel = ManageDownloadsRecitersViewModel(
+        testViewModel = DownloadedRecitersViewModel(
             quranRepository = quranRepository,
             surahArgs = surahArgs,
             dispatcher = testDispatcher,

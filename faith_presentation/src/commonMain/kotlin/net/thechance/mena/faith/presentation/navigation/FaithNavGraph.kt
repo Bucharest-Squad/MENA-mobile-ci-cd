@@ -17,11 +17,11 @@ import net.thechance.mena.faith.presentation.feature.qiblah.calibratedevice.Cali
 import net.thechance.mena.faith.presentation.feature.qiblah.compass.CompassScreen
 import net.thechance.mena.faith.presentation.feature.quran.bookmark.BookmarkScreen
 import net.thechance.mena.faith.presentation.feature.quran.downloadedSur.DownloadedSurScreen
-import net.thechance.mena.faith.presentation.feature.quran.reciter.manageDownloadsReciters.ManageDownloadsRecitersScreen
+import net.thechance.mena.faith.presentation.feature.quran.reciter.downloadedReciters.DownloadedRecitersScreen
 import net.thechance.mena.faith.presentation.feature.quran.search.ayah.SearchScreen
 import net.thechance.mena.faith.presentation.feature.quran.sur.SurScreen
 import net.thechance.mena.faith.presentation.feature.quran.surah.SurahScreen
-import net.thechance.mena.faith.presentation.feature.quran.reciter.downloadedSurahRecitersScreen.DownloadedSurahRecitersScreen
+import net.thechance.mena.faith.presentation.feature.quran.reciter.surahRecitersScreen.SurahRecitersScreen
 import net.thechance.mena.faith.presentation.feature.quran.reciter.reciterSelection.ReciterSelectionScreen
 import net.thechance.mena.identity.api.IdentityFeatureApi
 import org.koin.compose.getKoin
@@ -70,13 +70,13 @@ fun FaithNavigation(identityApi: IdentityFeatureApi = getKoin().get()) {
                     DownloadedSurScreen()
                 }
                 composable<Route.DownloadedSurahRecitersRoute> {
-                    DownloadedSurahRecitersScreen()
+                    SurahRecitersScreen()
                 }
                 composable<Route.ReciterSelectionRoute> {
                     ReciterSelectionScreen()
                 }
                 composable<Route.ManageDownloadsReciters> {
-                    ManageDownloadsRecitersScreen()
+                    DownloadedRecitersScreen()
                 }
                 composable<Route.UserAddresses> {
                     identityApi.NavigateToAddressesScreen(

@@ -1,4 +1,4 @@
-package net.thechance.mena.faith.presentation.feature.quran.reciter.downloadedSurahRecitersScreen
+package net.thechance.mena.faith.presentation.feature.quran.reciter.surahRecitersScreen
 
 import app.cash.turbine.test
 import dev.mokkery.MockMode
@@ -25,10 +25,10 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class DownloadedSurahRecitersViewModelTest {
+class SurahRecitersViewModelTest {
 
     private lateinit var testDispatcher: TestDispatcher
-    private lateinit var testViewModel: DownloadedSurahRecitersViewModel
+    private lateinit var testViewModel: SurahRecitersViewModel
     private val quranRepository: QuranRepository = mock(mode = MockMode.autofill)
     private val downloadManager: DownloadSurahManager = mock(mode = MockMode.autofill)
     private val surahArgs: ReciterArgs = mock(mode = MockMode.autofill)
@@ -43,7 +43,7 @@ class DownloadedSurahRecitersViewModelTest {
         everySuspend { quranRepository.getReciters() } returns dummyReciters
         everySuspend { quranRepository.isSurahAudioCached(TEST_SURAH_ID, any()) } returns false
 
-        testViewModel = DownloadedSurahRecitersViewModel(
+        testViewModel = SurahRecitersViewModel(
             quranRepository = quranRepository,
             surahArgs = surahArgs,
             downloadManager = downloadManager,
@@ -135,17 +135,7 @@ class DownloadedSurahRecitersViewModelTest {
             testViewModel.onBackClick()
 
             val effect = awaitItem()
-            assertTrue(effect is DownloadedSurahRecitersScreenEffect.NavigateBack)
-        }
-    }
-
-    @Test
-    fun `onSearchClick should navigate to search`() = runTest {
-        testViewModel.uiEffect.test {
-            testViewModel.onSearchClick()
-
-            val effect = awaitItem()
-            assertTrue(effect is DownloadedSurahRecitersScreenEffect.NavigateToSearch)
+            assertTrue(effect is SurahRecitersScreenEffect.NavigateBack)
         }
     }
 
@@ -302,7 +292,7 @@ class DownloadedSurahRecitersViewModelTest {
         } returns true
         everySuspend { quranRepository.getReciters() } returns dummyReciters
 
-        testViewModel = DownloadedSurahRecitersViewModel(
+        testViewModel = SurahRecitersViewModel(
             quranRepository = quranRepository,
             surahArgs = surahArgs,
             downloadManager = downloadManager,
@@ -324,7 +314,7 @@ class DownloadedSurahRecitersViewModelTest {
             quranRepository.isSurahAudioCached(TEST_SURAH_ID, DOWNLOADED_RECITER_ID)
         } returns true
 
-        testViewModel = DownloadedSurahRecitersViewModel(
+        testViewModel = SurahRecitersViewModel(
             quranRepository = quranRepository,
             surahArgs = surahArgs,
             downloadManager = downloadManager,

@@ -21,12 +21,12 @@ import net.thechance.mena.faith.presentation.feature.quran.reciter.args.ReciterA
 import net.thechance.mena.faith.presentation.feature.quran.search.ayah.SearchViewModel
 import net.thechance.mena.faith.presentation.feature.quran.search.ayah.args.SearchArgs
 import net.thechance.mena.faith.presentation.feature.quran.search.ayah.args.SearchArgsImpl
-import net.thechance.mena.faith.presentation.feature.quran.reciter.downloadedSurahRecitersScreen.DownloadedSurahRecitersViewModel
+import net.thechance.mena.faith.presentation.feature.quran.reciter.surahRecitersScreen.SurahRecitersViewModel
 import net.thechance.mena.faith.presentation.feature.quran.sur.SurViewModel
 import net.thechance.mena.faith.presentation.feature.quran.surah.SurahViewModel
 import net.thechance.mena.faith.presentation.feature.quran.surah.args.SurahArgs
 import net.thechance.mena.faith.presentation.feature.quran.surah.args.SurahArgsImpl
-import net.thechance.mena.faith.presentation.feature.quran.reciter.manageDownloadsReciters.ManageDownloadsRecitersViewModel
+import net.thechance.mena.faith.presentation.feature.quran.reciter.downloadedReciters.DownloadedRecitersViewModel
 import net.thechance.mena.faith.presentation.feature.quran.reciter.reciterSelection.ReciterSelectionViewModel
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
@@ -50,8 +50,8 @@ internal val faithViewModelModule = module {
     viewModelOf(::MainViewModel)
     viewModelOf(::PrayerTimeViewModel)
     viewModelOf(::NearbyMosquesViewModel)
-    viewModelOf(::DownloadedSurahRecitersViewModel)
-    viewModelOf(::ManageDownloadsRecitersViewModel)
+    viewModelOf(::SurahRecitersViewModel)
+    viewModelOf(::DownloadedRecitersViewModel)
     viewModelOf(::DownloadedSurViewModel)
     viewModelOf(::ReciterSelectionViewModel)
     viewModelOf(::CreateMosqueViewModel)

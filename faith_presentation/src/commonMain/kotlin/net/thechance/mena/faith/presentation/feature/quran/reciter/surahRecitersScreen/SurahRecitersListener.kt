@@ -1,8 +1,7 @@
-package net.thechance.mena.faith.presentation.feature.quran.reciter.downloadedSurahRecitersScreen
+package net.thechance.mena.faith.presentation.feature.quran.reciter.surahRecitersScreen
 
-interface DownloadedSurahRecitersListener {
+interface SurahRecitersListener {
     fun onBackClick()
-    fun onSearchClick()
     fun onDownloadClick(reciterId: Int)
     fun onSelectReciterClick(reciterId: Int)
     fun onQueryChange(newQuery: String)
