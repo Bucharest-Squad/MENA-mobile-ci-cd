@@ -1,4 +1,4 @@
-package net.thechance.mena.faith.presentation.feature.quran.reciter
+package net.thechance.mena.faith.presentation.feature.quran.reciter.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

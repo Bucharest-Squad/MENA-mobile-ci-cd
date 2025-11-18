@@ -20,7 +20,7 @@ import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.faith.presentation.base.ObserveAsEffect
 import net.thechance.mena.faith.presentation.components.ReciterItem
 import net.thechance.mena.faith.presentation.designSystem.theme.QuranTheme
-import net.thechance.mena.faith.presentation.feature.quran.reciter.SearchReciter
+import net.thechance.mena.faith.presentation.feature.quran.reciter.component.SearchReciter
 import net.thechance.mena.faith.presentation.feature.quran.search.ayah.component.SearchEmptyState
 import net.thechance.mena.faith.presentation.navigation.LocalNavController
 import org.jetbrains.compose.ui.tooling.preview.Preview
