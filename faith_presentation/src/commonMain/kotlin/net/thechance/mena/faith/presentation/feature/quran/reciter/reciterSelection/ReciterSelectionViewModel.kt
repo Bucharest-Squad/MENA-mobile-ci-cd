@@ -1,6 +1,5 @@
 package net.thechance.mena.faith.presentation.feature.quran.reciter.reciterSelection
 
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -11,8 +10,6 @@ import mena.faith_presentation.generated.resources.search_reciter
 import net.thechance.mena.faith.domain.model.Reciter
 import net.thechance.mena.faith.domain.repository.QuranRepository
 import net.thechance.mena.faith.presentation.base.BaseViewModel
-import net.thechance.mena.faith.presentation.base.ErrorState
-import net.thechance.mena.faith.presentation.base.snackbar.SnackBarState
 import org.jetbrains.compose.resources.getString
 
 class ReciterSelectionViewModel(
@@ -52,7 +49,6 @@ class ReciterSelectionViewModel(
         tryToExecute(
             execute = { repository.saveDefaultReciter(reciterId) },
             onSuccess = { updateSelectedReciter(reciterId) },
-            onError = ::handleError
         )
     }
 
@@ -60,7 +56,6 @@ class ReciterSelectionViewModel(
         tryToExecute(
             execute = { repository.getDefaultReciter() },
             onSuccess = { id -> updateSelectedReciter(id.first()) },
-            onError = ::handleError
         )
     }
     private fun updateSelectedReciter(reciterId: Int) {
@@ -117,12 +112,7 @@ class ReciterSelectionViewModel(
             dispatcher = dispatcher
         )
     }
-    private fun handleError(errorState: ErrorState) =
-        snackbarHandler.showSnackBar(
-            message = errorState.message,
-            status = SnackBarState.Status.Error,
-            scope = viewModelScope,
-        )
+
     private companion object {
         const val MIN_SEARCH_QUERY_LENGTH = 2
     }

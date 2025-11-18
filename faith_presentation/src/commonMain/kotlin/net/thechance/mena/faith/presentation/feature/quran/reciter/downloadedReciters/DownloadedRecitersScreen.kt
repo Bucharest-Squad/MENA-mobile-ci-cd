@@ -95,7 +95,7 @@ private fun Content(
                             listener.onSelectReciterClick(reciter.id)
                         },
                         onDownloadClick = {},
-                        isSelectReciter = reciter.id == uiState.selectedReciterId,
+                        isSelectReciter = false,
                         isSwipeable = uiState.isSwipeable,
                         downloadedIcon = false,
                         onDelete = { listener.onDeleteReciterAudioClick(it) }

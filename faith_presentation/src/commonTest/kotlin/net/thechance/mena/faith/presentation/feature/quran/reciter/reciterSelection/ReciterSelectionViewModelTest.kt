@@ -15,7 +15,12 @@ import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.runTest
 import net.thechance.mena.faith.domain.model.Reciter
 import net.thechance.mena.faith.domain.repository.QuranRepository
+import net.thechance.mena.faith.presentation.base.snackbar.SnackbarHandler
 import net.thechance.mena.faith.presentation.feature.quran.reciter.downloadedReciters.args.DownloadedRecitersArgs
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
+import org.koin.dsl.module
+import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -31,6 +36,14 @@ class ReciterSelectionViewModelTest {
 
     @BeforeTest
     fun setup() {
+        startKoin {
+            modules(
+                module {
+                    single { mock<SnackbarHandler>(MockMode.autofill) }
+                }
+            )
+        }
+
         testDispatcher = StandardTestDispatcher()
         everySuspend { downloadedRecitersArgs.surahId } returns TEST_SURAH_ID
         everySuspend { quranRepository.getReciters() } returns dummyReciters
@@ -41,6 +54,10 @@ class ReciterSelectionViewModelTest {
             dispatcher = testDispatcher
         )
         testDispatcher.scheduler.advanceUntilIdle()
+    }
+    @AfterTest
+    fun tearDown() {
+        stopKoin()
     }
 
     @Test

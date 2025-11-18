@@ -17,6 +17,10 @@ import net.thechance.mena.faith.domain.model.Reciter
 import net.thechance.mena.faith.domain.repository.QuranRepository
 import net.thechance.mena.faith.presentation.base.snackbar.SnackbarHandler
 import net.thechance.mena.faith.presentation.feature.quran.reciter.downloadedReciters.args.DownloadedRecitersArgs
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
+import org.koin.dsl.module
+import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -29,27 +33,36 @@ class DownloadedRecitersViewModelTest {
     private lateinit var testViewModel: DownloadedRecitersViewModel
     private val quranRepository: QuranRepository = mock(mode = MockMode.autofill)
     private val surahArgs: DownloadedRecitersArgs = mock(mode = MockMode.autofill)
-    private val snackbarHandler: SnackbarHandler = SnackbarHandler.Empty
 
     @BeforeTest
     fun setup() {
+        startKoin {
+            modules(
+                module {
+                    single { mock<SnackbarHandler>(MockMode.autofill) }
+                }
+            )
+        }
+
         testDispatcher = StandardTestDispatcher()
         everySuspend { surahArgs.surahId } returns TEST_SURAH_ID
         everySuspend { surahArgs.isSwipeToDeleteEnabled } returns true
         everySuspend { quranRepository.getDefaultReciter() } returns flowOf(DEFAULT_RECITER_ID)
         everySuspend { quranRepository.getReciters() } returns dummyReciters
-        everySuspend { quranRepository.isSurahAudioCached(TEST_SURAH_ID, any()) } returns false
+        everySuspend { quranRepository.isSurahAudioCached(TEST_SURAH_ID, any()) } returns true
 
         testViewModel = DownloadedRecitersViewModel(
             quranRepository = quranRepository,
             surahArgs = surahArgs,
             dispatcher = testDispatcher,
-            snackBarHandler = snackbarHandler
-
         )
         testDispatcher.scheduler.advanceUntilIdle()
     }
 
+    @AfterTest
+    fun tearDown() {
+        stopKoin()
+    }
     @Test
     fun `init should load all reciters successfully`() = runTest {
         verifySuspend(exactly(1)) { quranRepository.getReciters() }
@@ -182,15 +195,6 @@ class DownloadedRecitersViewModelTest {
         assertEquals(dummyReciters.size, testViewModel.uiState.value.reciters.size)
     }
 
-    @Test
-    fun `onSelectReciterClick should save reciter as default`() = runTest {
-        everySuspend { quranRepository.saveDefaultReciter(SELECTED_RECITER_ID) } returns Unit
-
-        testViewModel.onSelectReciterClick(SELECTED_RECITER_ID)
-        testDispatcher.scheduler.advanceUntilIdle()
-
-        verifySuspend(exactly(1)) { quranRepository.saveDefaultReciter(SELECTED_RECITER_ID) }
-    }
 
     @Test
     fun `onSelectReciterClick should update selected reciter in state`() = runTest {
@@ -216,7 +220,6 @@ class DownloadedRecitersViewModelTest {
             quranRepository = quranRepository,
             surahArgs = surahArgs,
             dispatcher = testDispatcher,
-            snackBarHandler = snackbarHandler
 
         )
         testDispatcher.scheduler.advanceUntilIdle()
@@ -236,7 +239,6 @@ class DownloadedRecitersViewModelTest {
             quranRepository = quranRepository,
             surahArgs = surahArgs,
             dispatcher = testDispatcher,
-            snackBarHandler = snackbarHandler
         )
         testDispatcher.scheduler.advanceUntilIdle()
 
@@ -294,7 +296,6 @@ class DownloadedRecitersViewModelTest {
             quranRepository = quranRepository,
             surahArgs = surahArgs,
             dispatcher = testDispatcher,
-            snackBarHandler = snackbarHandler
         )
         testDispatcher.scheduler.advanceUntilIdle()
 

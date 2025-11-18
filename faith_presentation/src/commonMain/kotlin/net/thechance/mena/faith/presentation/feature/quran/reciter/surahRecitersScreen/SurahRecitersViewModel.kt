@@ -1,6 +1,5 @@
 package net.thechance.mena.faith.presentation.feature.quran.reciter.surahRecitersScreen
 
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -9,10 +8,6 @@ import net.thechance.mena.faith.domain.model.Reciter
 import net.thechance.mena.faith.domain.repository.QuranRepository
 import net.thechance.mena.faith.domain.service.DownloadSurahManager
 import net.thechance.mena.faith.presentation.base.BaseViewModel
-import net.thechance.mena.faith.presentation.feature.quran.tilwah.component.args.TilawahSurahArgs
-import net.thechance.mena.faith.presentation.base.ErrorState
-import net.thechance.mena.faith.presentation.base.snackbar.SnackBarState
-import net.thechance.mena.faith.presentation.base.snackbar.SnackbarHandler
 import net.thechance.mena.faith.presentation.feature.quran.reciter.surahRecitersScreen.args.SurahRecitersArgs
 
 class SurahRecitersViewModel(
@@ -20,12 +15,10 @@ class SurahRecitersViewModel(
     private val surahArgs: SurahRecitersArgs,
     private val downloadManager: DownloadSurahManager,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
-    snackBarHandler: SnackbarHandler,
     ) : BaseViewModel<SurahRecitersUiState, SurahRecitersScreenEffect>(
     initialState = SurahRecitersUiState(
         surahId = surahArgs.surahId,
     ),
-    snackbarHandler = snackBarHandler
 ), SurahRecitersListener {
 
     init {
@@ -140,11 +133,6 @@ class SurahRecitersViewModel(
         }
     }
 
-    private fun updateSelectedReciter(reciterId: Int) {
-        updateState { state ->
-            state.copy(selectedReciterId = reciterId)
-        }
-    }
 
     private suspend fun onDownloadComplete(reciterId: Int) {
         val surahId = surahArgs.surahId ?: return

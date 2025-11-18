@@ -18,6 +18,10 @@ import net.thechance.mena.faith.domain.repository.QuranRepository
 import net.thechance.mena.faith.domain.service.DownloadSurahManager
 import net.thechance.mena.faith.presentation.base.snackbar.SnackbarHandler
 import net.thechance.mena.faith.presentation.feature.quran.reciter.surahRecitersScreen.args.SurahRecitersArgs
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
+import org.koin.dsl.module
+import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -32,10 +36,17 @@ class SurahRecitersViewModelTest {
     private val quranRepository: QuranRepository = mock(mode = MockMode.autofill)
     private val downloadManager: DownloadSurahManager = mock(mode = MockMode.autofill)
     private val surahArgs: SurahRecitersArgs = mock(mode = MockMode.autofill)
-    private val snackbarHandler: SnackbarHandler = SnackbarHandler.Empty
 
     @BeforeTest
     fun setup() {
+        startKoin {
+            modules(
+                module {
+                    single { mock<SnackbarHandler>(MockMode.autofill) }
+                }
+            )
+        }
+
         testDispatcher = StandardTestDispatcher()
         everySuspend { surahArgs.surahId } returns TEST_SURAH_ID
         everySuspend { quranRepository.getDefaultReciter() } returns flowOf(DEFAULT_RECITER_ID)
@@ -47,10 +58,15 @@ class SurahRecitersViewModelTest {
             surahArgs = surahArgs,
             downloadManager = downloadManager,
             dispatcher = testDispatcher,
-            snackBarHandler = snackbarHandler
         )
         testDispatcher.scheduler.advanceUntilIdle()
     }
+
+    @AfterTest
+    fun tearDown() {
+        stopKoin()
+    }
+
 
     @Test
     fun `init should load all reciters successfully`() = runTest {
@@ -296,7 +312,6 @@ class SurahRecitersViewModelTest {
             surahArgs = surahArgs,
             downloadManager = downloadManager,
             dispatcher = testDispatcher,
-            snackBarHandler = snackbarHandler
 
 
         )
@@ -318,7 +333,6 @@ class SurahRecitersViewModelTest {
             surahArgs = surahArgs,
             downloadManager = downloadManager,
             dispatcher = testDispatcher,
-            snackBarHandler = snackbarHandler
         )
         testDispatcher.scheduler.advanceUntilIdle()
 

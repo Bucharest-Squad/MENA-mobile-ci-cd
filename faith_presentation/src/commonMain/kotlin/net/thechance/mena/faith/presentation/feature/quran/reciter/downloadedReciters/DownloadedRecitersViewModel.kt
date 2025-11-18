@@ -1,6 +1,5 @@
 package net.thechance.mena.faith.presentation.feature.quran.reciter.downloadedReciters
 
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -8,22 +7,17 @@ import kotlinx.coroutines.flow.first
 import net.thechance.mena.faith.domain.model.Reciter
 import net.thechance.mena.faith.domain.repository.QuranRepository
 import net.thechance.mena.faith.presentation.base.BaseViewModel
-import net.thechance.mena.faith.presentation.base.ErrorState
-import net.thechance.mena.faith.presentation.base.snackbar.SnackBarState
-import net.thechance.mena.faith.presentation.base.snackbar.SnackbarHandler
 import net.thechance.mena.faith.presentation.feature.quran.reciter.downloadedReciters.args.DownloadedRecitersArgs
 
 class DownloadedRecitersViewModel(
     private val quranRepository: QuranRepository,
     private val surahArgs: DownloadedRecitersArgs,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
-    snackBarHandler: SnackbarHandler,
 ) : BaseViewModel<DownloadedRecitersUiState, DownloadedRecitersEffect>(
     initialState = DownloadedRecitersUiState(
         surahId = surahArgs.surahId,
         isSwipeable = surahArgs.isSwipeToDeleteEnabled,
     ),
-    snackbarHandler = snackBarHandler
 ), DownloadedRecitersListener {
 
     init {
@@ -61,7 +55,6 @@ class DownloadedRecitersViewModel(
         tryToExecute(
             execute = { quranRepository.deleteSurahAudioByReciter(surahId, reciterId) },
             onSuccess = { updateReciterAfterDelete(reciterId) },
-            onError = ::handleError,
             dispatcher = dispatcher
         )
     }
@@ -86,7 +79,6 @@ class DownloadedRecitersViewModel(
         tryToExecute(
             execute = { quranRepository.saveDefaultReciter(reciterId) },
             onSuccess = { updateSelectedReciter(reciterId) },
-            onError = ::handleError
         )
     }
 
@@ -94,7 +86,6 @@ class DownloadedRecitersViewModel(
         tryToExecute(
             execute = { quranRepository.getDefaultReciter() },
             onSuccess = { id -> updateSelectedReciter(id.first()) },
-            onError = ::handleError
         )
     }
 
@@ -113,9 +104,13 @@ class DownloadedRecitersViewModel(
     private suspend fun onGetAllRecitersSuccess(reciters: List<Reciter>) {
         val surahId = surahArgs.surahId ?: return
 
-        val mapped = reciters.map { reciter ->
+        val downloadedReciters = reciters.filter { reciter ->
+            quranRepository.isSurahAudioCached(surahId, reciter.id)
+        }
+
+        val mapped = downloadedReciters.map { reciter ->
             reciter.toUi(
-                isDownloaded = quranRepository.isSurahAudioCached(surahId, reciter.id)
+                isDownloaded = true
             )
         }
 
@@ -126,13 +121,6 @@ class DownloadedRecitersViewModel(
             )
         }
     }
-
-    private fun handleError(errorState: ErrorState) =
-        snackbarHandler.showSnackBar(
-            message = errorState.message,
-            status = SnackBarState.Status.Error,
-            scope = viewModelScope,
-        )
 
 
 }
