@@ -92,8 +92,7 @@ private fun UsersManagementScreenContent(
             )
 
             when {
-                state.isLoading && state.query.isEmpty() && state.pageInfo.totalPages == 0 ->
-                    AdminPanelContentLoading()
+                state.isLoading && state.query.isEmpty() -> AdminPanelContentLoading()
 
                 state.users.isEmpty() -> {
                     if (state.query.isNotEmpty()) {
