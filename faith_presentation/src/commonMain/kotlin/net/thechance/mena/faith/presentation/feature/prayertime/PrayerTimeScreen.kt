@@ -14,10 +14,12 @@ import mena.faith_presentation.generated.resources.prayer_time
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
+import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.faith.presentation.base.ObserveAsEffect
 import net.thechance.mena.faith.presentation.base.snackbar.SnackBarState
 import net.thechance.mena.faith.presentation.components.FaithSnackBar
+import net.thechance.mena.faith.presentation.designSystem.theme.QuranTheme
 import net.thechance.mena.faith.presentation.feature.main.getPrayerDisplayNameResource
 import net.thechance.mena.faith.presentation.feature.prayertime.component.DateChange
 import net.thechance.mena.faith.presentation.feature.prayertime.component.IslamicDatePickerDialog
@@ -29,6 +31,7 @@ import net.thechance.mena.faith.presentation.navigation.Route
 import net.thechance.mena.faith.presentation.utils.extentions.prayerTime.formatInstantToTimeString
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.time.ExperimentalTime
 
@@ -117,6 +120,31 @@ private fun Content(
                     isNextPrayer = (prayer.name == uiState.nextPrayerName && uiState.isTodayPrayer)
                 )
             }
+        }
+    }
+}
+
+@OptIn(ExperimentalTime::class)
+@Preview
+@Composable
+private fun Preview() {
+    MenaTheme {
+        QuranTheme {
+            Content(
+                uiState = PrayerTimeUiState(),
+                snackBarState = SnackBarState(),
+                listener = object : PrayerTimeInteractionListener {
+                    override fun onBackClick() {}
+                    override fun onLocationClick() {}
+                    override fun onSelectedDateChange(day: Int, month: Int, year: Int) {}
+                    override fun onDateSelected() {}
+                    override fun onClearSelectedDate() {}
+                    override fun onDatePickerDismiss() {}
+                    override fun onPrevDateClick() {}
+                    override fun onNextDateClick() {}
+                    override fun onDateDropdownClick() {}
+                }
+            )
         }
     }
 }

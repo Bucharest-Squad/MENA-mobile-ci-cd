@@ -7,7 +7,7 @@ fun calculateNextIslamicDate(currentDate: IslamicDate): IslamicDate {
     var month = currentDate.month
     var year = currentDate.year
 
-    val daysInMonth = getIslamicMonthDays(month, year)
+    val daysInMonth = getIslamicMonthDays(month = month, year = year)
     if (day > daysInMonth) {
         day = 1
         month++
@@ -17,5 +17,5 @@ fun calculateNextIslamicDate(currentDate: IslamicDate): IslamicDate {
         }
     }
 
-    return IslamicDate(day, month, year)
+    return IslamicDate(day = day, month = month, year = year)
 }
