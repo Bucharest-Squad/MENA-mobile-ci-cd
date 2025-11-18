@@ -160,11 +160,13 @@ class PrayerTimeViewModel(
     }
 
     override fun onDateSelected() {
+        val selectedIslamicDate = uiState.value.islamicDatePickerUiState.selectedIslamicDate
         updateState {
             it.copy(
                 showDatePicker = false,
-                currentDate = it.islamicDatePickerUiState.selectedIslamicDate,
-                islamicDatePickerUiState = PrayerTimeUiState.IslamicDatePickerUiState()
+                currentDate = selectedIslamicDate,
+                isTodayPrayer = selectedIslamicDate == IslamicDate.now(islamicDateCalculator),
+                islamicDatePickerUiState = PrayerTimeUiState.IslamicDatePickerUiState(),
             )
         }
 

@@ -16,6 +16,7 @@ data class PrayerTimeUiState(
     val address: String = "",
     val showDatePicker: Boolean = false,
     val islamicDatePickerUiState: IslamicDatePickerUiState = IslamicDatePickerUiState(),
+    val isTodayPrayer: Boolean = true,
 ) {
     data class IslamicDatePickerUiState(
         val selectedIslamicDate: IslamicDate = IslamicDate(1,1,1447),
