@@ -173,7 +173,6 @@ class ProfileScreen : BaseScreen<
                             onEditProfileInfoClicked = listener::onEditProfileInfoClicked,
                             onChangePasswordClicked = listener::onChangePasswordClicked,
                             onAddressesClicked = listener::onAddressesClicked,
-                            onPrivacySettingsClicked = listener::onPrivacySettingsClicked
                         )
                     }
                     item {
