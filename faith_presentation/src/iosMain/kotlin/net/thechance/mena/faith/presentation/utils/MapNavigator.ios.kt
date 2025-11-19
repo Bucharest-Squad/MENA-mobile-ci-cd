@@ -7,8 +7,6 @@ import platform.UIKit.UIApplication
 internal actual class MapNavigatorImpl : MapNavigator {
     actual override fun openMapAtCoordinate(coordinate: Coordinate) {
         val url = NSURL(string = "http://maps.apple.com/?ll=${coordinate.latitude},${coordinate.longitude}")
-        if (url != null) {
-            UIApplication.sharedApplication.openURL(url)
-        }
+        UIApplication.sharedApplication.openURL(url)
     }
 }
