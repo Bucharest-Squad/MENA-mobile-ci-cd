@@ -8,7 +8,7 @@ import net.thechance.mena.faith.presentation.feature.mosque.Coordinate
 internal actual class MapNavigatorImpl(
     private val context: Context
 ) : MapNavigator {
-    actual override fun openMapAtCoordinate(coordinate: Coordinate)  {
+    actual override fun openMapAtCoordinate(coordinate: Coordinate) {
         val lat = coordinate.latitude
         val lon = coordinate.longitude
 
