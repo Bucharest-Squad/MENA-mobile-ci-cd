@@ -16,6 +16,7 @@ import mena.core_chat_presentation.generated.resources.something_went_wrong
 import net.thechance.mena.core_chat.domain.entity.ChatSummary
 import net.thechance.mena.core_chat.domain.entity.Message
 import net.thechance.mena.core_chat.domain.entity.MessageContent
+import net.thechance.mena.core_chat.domain.entity.WeatherDetails
 import net.thechance.mena.core_chat.domain.event.DeleteChatEvent
 import net.thechance.mena.core_chat.domain.event.MarkMessageAsReadEvent
 import net.thechance.mena.core_chat.domain.model.PagedData
@@ -23,6 +24,7 @@ import net.thechance.mena.core_chat.domain.model.SyncState
 import net.thechance.mena.core_chat.domain.repository.ChatRepository
 import net.thechance.mena.core_chat.domain.repository.ContactsRepository
 import net.thechance.mena.core_chat.domain.repository.MessageRepository
+import net.thechance.mena.core_chat.domain.repository.WeatherRepository
 import net.thechance.mena.core_chat.presentation.components.snackBarHost.SnackBarData
 import net.thechance.mena.core_chat.presentation.screen.home.HomeScreenState.ChatUiState
 import net.thechance.mena.core_chat.presentation.shared.BaseViewModel
@@ -44,6 +46,7 @@ class HomeViewModel(
     private val balanceRepository: BalanceRepository,
     private val prayerTimeService: PrayerTimeService,
     private val locationService: LocationService,
+    private val weatherRepository: WeatherRepository,
     dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : BaseViewModel<HomeScreenState, HomeScreenEffect>(HomeScreenState(), dispatcher),
     HomeScreenInteractionListener {
@@ -266,9 +269,12 @@ class HomeViewModel(
 
     private fun getCurrentAddressInfo(){
         tryToExecute(
-            onStart = { updateState { it.copy(isPrayerTimeLoading = true) } },
+            onStart = { updateState { it.copy(isPrayerTimeLoading = true, isWeatherLoading = true) } },
             execute = { locationService.getActiveAddress() },
-            onSuccess = ::observeNextPrayer
+            onSuccess = {
+                observeNextPrayer(it)
+                getWeatherDetails(it)
+            }
         )
     }
     private fun observeNextPrayer(address: Address?){
@@ -286,6 +292,28 @@ class HomeViewModel(
     }
     private fun onObserveNextPrayerError() {
         updateState { it.copy(prayerUiState = null, isPrayerTimeLoading = false) }
+    }
+
+    private fun getWeatherDetails(address: Address?) {
+        if (address == null) return
+
+        tryToExecute(
+            execute = {
+                weatherRepository.getWeatherDetails(
+                latitude = address.latitude,
+                longitude = address.longitude)
+            },
+            onSuccess = ::onGetWeatherDetailsSuccess,
+            onError = { onGetWeatherDetailsError() }
+        )
+    }
+
+    private fun onGetWeatherDetailsSuccess(weatherDetails: WeatherDetails) {
+        updateState { it.copy(weatherUiState = weatherDetails.toUi(), isWeatherLoading = false) }
+    }
+
+    private fun onGetWeatherDetailsError() {
+        updateState { it.copy(weatherUiState = null, isWeatherLoading = false) }
     }
 
     override fun onNewChatClicked() {

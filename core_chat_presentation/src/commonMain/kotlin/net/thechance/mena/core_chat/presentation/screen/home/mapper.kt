@@ -10,6 +10,7 @@ import mena.core_chat_presentation.generated.resources.isha
 import mena.core_chat_presentation.generated.resources.maghrib
 import mena.core_chat_presentation.generated.resources.sunrise
 import net.thechance.mena.core_chat.domain.entity.ChatSummary
+import net.thechance.mena.core_chat.domain.entity.WeatherDetails
 import net.thechance.mena.core_chat.presentation.screen.home.HomeScreenState.ChatUiState
 import net.thechance.mena.core_chat.presentation.screen.home.HomeScreenState.ChatUiState.Status
 import net.thechance.mena.core_chat.presentation.screen.home.HomeScreenState.ChatUiState.Status.Read
@@ -78,3 +79,10 @@ fun getPrayerDisplayNameResource(prayerName: PrayerName): StringResource = when 
     PrayerName.ISHA -> Res.string.isha
     PrayerName.SUNRISE -> Res.string.sunrise
 }
+
+fun WeatherDetails.toUi(): HomeScreenState.WeatherUiState = HomeScreenState.WeatherUiState(
+    currentTemperature = currentTemperature.toString(),
+    weatherCondition = weatherCode.toString(), //todo fix this
+    maxTemperature = maxTemperature.toString(),
+    minTemperature = minTemperature.toString()
+)
