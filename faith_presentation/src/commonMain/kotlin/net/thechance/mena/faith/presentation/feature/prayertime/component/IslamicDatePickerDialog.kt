@@ -33,7 +33,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun ScaffoldScope.IslamicDatePickerDialog(
     isVisible: Boolean,
     islamicDatePickerUiState: PrayerTimeUiState.IslamicDatePickerUiState,
-    onDateChange: (Int, Int, Int) -> Unit,
+    onDateChange: (day: Int, month: Int, year: Int) -> Unit,
     onConfirmDateClick: () -> Unit,
     onClearDateClick: () -> Unit,
     onDismiss: () -> Unit,

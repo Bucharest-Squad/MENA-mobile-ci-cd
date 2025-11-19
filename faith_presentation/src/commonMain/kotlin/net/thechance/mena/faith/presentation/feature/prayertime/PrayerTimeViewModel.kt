@@ -137,7 +137,7 @@ class PrayerTimeViewModel(
     override fun onDateDropdownClick() =
         updateState {
             it.copy(
-                showDatePicker = true,
+                isDatePickerShown = true,
                 islamicDatePickerUiState = PrayerTimeUiState.IslamicDatePickerUiState(
                     selectedIslamicDate = uiState.value.currentDate,
                 )
@@ -163,7 +163,7 @@ class PrayerTimeViewModel(
         val selectedIslamicDate = uiState.value.islamicDatePickerUiState.selectedIslamicDate
         updateState {
             it.copy(
-                showDatePicker = false,
+                isDatePickerShown = false,
                 currentDate = selectedIslamicDate,
                 isTodayPrayer = selectedIslamicDate == IslamicDate.now(islamicDateCalculator),
                 islamicDatePickerUiState = PrayerTimeUiState.IslamicDatePickerUiState(),
@@ -186,7 +186,7 @@ class PrayerTimeViewModel(
     override fun onDatePickerDismiss() =
         updateState {
             it.copy(
-                showDatePicker = false,
+                isDatePickerShown = false,
                 islamicDatePickerUiState = PrayerTimeUiState.IslamicDatePickerUiState(),
             )
         }
@@ -196,10 +196,8 @@ class PrayerTimeViewModel(
 
         tryToExecute(
             execute = {
-                val formattedHijriDate =
-                    "${islamicDate.year}-${islamicDate.month}-${islamicDate.day}"
                 prayerTimeRepository.getPrayerTimeWithHijriDate(
-                    date = formattedHijriDate,
+                    date = formatIslamicDate(islamicDate),
                     isHijri = true,
                     address = address
                 )
@@ -213,4 +211,7 @@ class PrayerTimeViewModel(
         val filteredPrayerTimes = prayerTimes.filter { it.name != PrayerName.SUNRISE }
         updateState { it.copy(prayerTimes = filteredPrayerTimes) }
     }
+
+    private fun formatIslamicDate(islamicDate: IslamicDate): String =
+        "${islamicDate.year}-${islamicDate.month}-${islamicDate.day}"
 }

@@ -83,9 +83,9 @@ private fun Content(
                 trailingContent = { PrayerTimeTopBar(uiState, listener::onLocationClick) }
             )
         }, overlays = {
-            dialog(uiState.showDatePicker) {
+            dialog(uiState.isDatePickerShown) {
                 IslamicDatePickerDialog(
-                    isVisible = uiState.showDatePicker,
+                    isVisible = uiState.isDatePickerShown,
                     islamicDatePickerUiState = uiState.islamicDatePickerUiState,
                     onDateChange = listener::onSelectedDateChange,
                     onConfirmDateClick = listener::onDateSelected,

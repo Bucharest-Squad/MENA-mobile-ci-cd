@@ -71,8 +71,8 @@ private fun createIslamicDaysList(month: Int, year: Int): List<String> {
 }
 
 @Composable
-private fun getHijriMonthNames(isShortened: Boolean): List<String> =
-    if (isShortened) stringArrayResource(Res.array.hijri_months_shortened)
+private fun getHijriMonthNames(isShorted: Boolean): List<String> =
+    if (isShorted) stringArrayResource(Res.array.hijri_months_shortened)
     else stringArrayResource(Res.array.hijri_months)
 
 private fun createYearList(minYear: Int, maxYear: Int): List<String> = (minYear..maxYear).map { it.toString() }

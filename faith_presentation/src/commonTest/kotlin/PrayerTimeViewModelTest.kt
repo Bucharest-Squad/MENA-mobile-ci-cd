@@ -162,7 +162,7 @@ class PrayerTimeViewModelTest {
         viewModel.onDatePickerDismiss()
         advanceUntilIdle()
 
-        assertFalse(viewModel.uiState.value.showDatePicker)
+        assertFalse(viewModel.uiState.value.isDatePickerShown)
     }
 
     @Test
@@ -181,7 +181,7 @@ class PrayerTimeViewModelTest {
         viewModel.onDateSelected()
         advanceUntilIdle()
 
-        assertFalse(viewModel.uiState.value.showDatePicker)
+        assertFalse(viewModel.uiState.value.isDatePickerShown)
         assertEquals(
             viewModel.uiState.value.currentDate,
             viewModel.uiState.value.islamicDatePickerUiState.selectedIslamicDate
@@ -231,7 +231,7 @@ class PrayerTimeViewModelTest {
 
         viewModel.onDateDropdownClick()
 
-        assertTrue(viewModel.uiState.value.showDatePicker)
+        assertTrue(viewModel.uiState.value.isDatePickerShown)
         assertEquals(
             PrayerTimeUiState.IslamicDatePickerUiState(
                 selectedIslamicDate = viewModel.uiState.value.currentDate
