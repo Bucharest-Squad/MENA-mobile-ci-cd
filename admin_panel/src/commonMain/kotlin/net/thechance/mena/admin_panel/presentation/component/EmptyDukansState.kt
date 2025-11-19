@@ -12,8 +12,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun EmptyDukanState(
-    description: String,
+fun EmptyDukansState(
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -23,7 +22,7 @@ fun EmptyDukanState(
         StatePlaceholder(
             image = painterResource(Res.drawable.img_empty_dukan),
             title = stringResource(Res.string.no_dukan_results),
-            description = description,
+            description = stringResource(Res.string.no_dukan_results),
             modifier = Modifier.align(Alignment.Center)
         )
     }
