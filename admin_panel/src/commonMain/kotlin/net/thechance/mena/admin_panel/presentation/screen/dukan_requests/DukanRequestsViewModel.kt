@@ -38,6 +38,165 @@ class DukanRequestsViewModel(
         getRequestedDukans()
     }
 
+    override fun onSortClicked(type: DukanRequestsScreenState.SortType) {
+        val newDirection = if (currentState.sort.type == type) {
+            currentState.sort.direction.toggle()
+        } else {
+            DukanRequestsScreenState.SortDirection.ASC
+        }
+        updateState {
+            it.copy(
+                sort = DukanRequestsScreenState.SortState(
+                    type = type,
+                    direction = newDirection
+                ),
+                pageInfo = it.pageInfo.copy(page = 0)
+            )
+        }
+        getRequestedDukans()
+    }
+
+    override fun onViewDetailsClicked(selectedDukan: DukanRequestsScreenState.DukanItem) {
+        updateState { it.copy(isDukanDetailsShown = true, selectedDukan = selectedDukan) }
+    }
+
+    override fun onRetryClicked() {
+        getRequestedDukans()
+    }
+
+    override fun onPageChanged(page: Int) {
+        updateState { it.copy(pageInfo = it.pageInfo.copy(page = page)) }
+        getRequestedDukans()
+    }
+
+    override fun onApproveDukanClicked() {
+        val selectedDukanId = currentState.selectedDukan?.id ?: return
+        tryToExecute(
+            callee = {
+                dukanRepository.updateDukanStatus(
+                    dukanId = selectedDukanId,
+                    status = Dukan.Status.APPROVED,
+                    message = currentState.rejectReason
+                )
+            },
+            onSuccess = { onDukanApprovedSuccess() },
+            onError = ::onError,
+            dispatcher = dispatcher
+        )
+    }
+
+    override fun onRejectDukanClicked() {
+        onDukanDetailsDismissed()
+        viewModelScope.launch {
+            delay(100)
+            updateState { it.copy(isRejectDialogShown = true) }
+        }
+    }
+
+    override fun onRejectDukanDialogDismissed() {
+        updateState {
+            it.copy(
+                isRejectDialogShown = false
+            )
+        }
+    }
+
+    override fun onRejectDukanConfirmed() {
+        val selectedDukanId = currentState.selectedDukan?.id ?: return
+        tryToExecute(
+            callee = {
+                dukanRepository.updateDukanStatus(
+                    dukanId = selectedDukanId,
+                    status = Dukan.Status.REJECTED,
+                    message = currentState.rejectReason
+                )
+            },
+            onStart = { updateState { it.copy(isRejectButtonLoading = true) } },
+            onFinish = { updateState { it.copy(isRejectButtonLoading = false) } },
+            onSuccess = { onSuccessDukanRejected() },
+            onError = ::onError,
+            dispatcher = dispatcher
+        )
+    }
+
+    override fun onRejectionMessageChanged(reason: String) {
+        reason.takeIf { it.length < 200 }?.let { reason ->
+            updateState { it.copy(rejectReason = reason) }
+        }
+    }
+
+    override fun onDukanDetailsDismissed() {
+        updateState { it.copy(isDukanDetailsShown = false) }
+    }
+
+    override fun mapError(throwable: Throwable): ErrorState {
+        return when (throwable) {
+            is NoInternetException -> ErrorState.NoInternet
+            else -> ErrorState.UnknownError
+        }
+    }
+
+    private fun onDukanApprovedSuccess() {
+        onDukanDetailsDismissed()
+        getRequestedDukans()
+        viewModelScope.launch {
+            showSnackBar(
+                title = stringProvider.getString(Res.string.status_updated_title),
+                message = stringProvider.getString(Res.string.dukan_approved_successfully),
+                isSuccess = true
+            )
+        }
+    }
+
+    private fun onSuccessDukanRejected() {
+        onRejectDukanDialogDismissed()
+        getRequestedDukans()
+        viewModelScope.launch {
+            showSnackBar(
+                title = stringProvider.getString(Res.string.status_updated_title),
+                message = stringProvider.getString(Res.string.dukan_rejected_successfully),
+                isSuccess = true
+            )
+        }
+    }
+
+    private suspend fun onError(errorState: ErrorState) {
+        updateState { it.copy(errorState = errorState) }
+        showSnackBar(
+            title = stringProvider.getString(errorState.getErrorSnackBarTitle()),
+            message = stringProvider.getString(errorState.getErrorSnackBarMsg()),
+            isSuccess = false
+        )
+    }
+
+    private suspend fun showSnackBar(
+        title: String,
+        message: String,
+        isSuccess: Boolean,
+        durationMillis: Long = DURATION_MILLIS
+    ) {
+        updateState { oldState ->
+            oldState.copy(
+                snackBar = SnackBarState(
+                    isVisible = true,
+                    title = title,
+                    message = message,
+                    isSuccess = isSuccess
+                )
+            )
+        }
+
+        delay(durationMillis)
+
+        hideSnackBar()
+    }
+
+    private fun hideSnackBar() {
+        updateState { oldState ->
+            oldState.copy(snackBar = oldState.snackBar.copy(isVisible = false))
+        }
+    }
+
     private fun getRequestedDukans() {
         val queryParams = getDukanQueryParams()
         tryToExecute(
@@ -88,165 +247,6 @@ class DukanRequestsViewModel(
             searchInput = null,
             activationStatus = null
         )
-    }
-
-    override fun onSortClicked(type: DukanRequestsScreenState.SortType) {
-        val newDirection = if (currentState.sort.type == type) {
-            currentState.sort.direction.toggle()
-        } else {
-            DukanRequestsScreenState.SortDirection.ASC
-        }
-        updateState {
-            it.copy(
-                sort = DukanRequestsScreenState.SortState(
-                    type = type,
-                    direction = newDirection
-                ),
-                pageInfo = it.pageInfo.copy(page = 0)
-            )
-        }
-        getRequestedDukans()
-    }
-
-    override fun onViewDetailsClicked(selectedDukan: DukanRequestsScreenState.DukanItem) {
-        updateState { it.copy(isDukanDetailsShown = true, selectedDukan = selectedDukan) }
-    }
-
-    override fun onRetryClicked() {
-        getRequestedDukans()
-    }
-
-    override fun onPageChanged(page: Int) {
-        updateState { it.copy(pageInfo = it.pageInfo.copy(page = page)) }
-        getRequestedDukans()
-    }
-
-    override fun onApproveDukanClicked() {
-        val selectedDukanId = currentState.selectedDukan?.id ?: return
-        tryToExecute(
-            callee = {
-                dukanRepository.updateDukanStatus(
-                    dukanId = selectedDukanId,
-                    status = Dukan.Status.APPROVED,
-                    message = currentState.rejectReason
-                )
-            },
-            onSuccess = { onDukanApprovedSuccess() },
-            onError = ::onError,
-            dispatcher = dispatcher
-        )
-    }
-
-    private fun onDukanApprovedSuccess() {
-        onDukanDetailsDismissed()
-        getRequestedDukans()
-        viewModelScope.launch {
-            showSnackBar(
-                title = stringProvider.getString(Res.string.status_updated_title),
-                message = stringProvider.getString(Res.string.dukan_approved_successfully),
-                isSuccess = true
-            )
-        }
-    }
-
-    override fun onRejectDukanClicked() {
-        onDukanDetailsDismissed()
-        viewModelScope.launch {
-            delay(100)
-            updateState { it.copy(isRejectDialogShown = true) }
-        }
-    }
-
-    override fun onRejectDukanDialogDismissed() {
-        updateState {
-            it.copy(
-                isRejectDialogShown = false
-            )
-        }
-    }
-
-    override fun onRejectDukanConfirmed() {
-        val selectedDukanId = currentState.selectedDukan?.id ?: return
-        tryToExecute(
-            callee = {
-                dukanRepository.updateDukanStatus(
-                    dukanId = selectedDukanId,
-                    status = Dukan.Status.REJECTED,
-                    message = currentState.rejectReason
-                )
-            },
-            onStart = { updateState { it.copy(isRejectButtonLoading = true) } },
-            onFinish = { updateState { it.copy(isRejectButtonLoading = false) } },
-            onSuccess = { onSuccessDukanRejected() },
-            onError = ::onError,
-            dispatcher = dispatcher
-        )
-    }
-
-    private fun onSuccessDukanRejected() {
-        onRejectDukanDialogDismissed()
-        getRequestedDukans()
-        viewModelScope.launch {
-            showSnackBar(
-                title = stringProvider.getString(Res.string.status_updated_title),
-                message = stringProvider.getString(Res.string.dukan_rejected_successfully),
-                isSuccess = true
-            )
-        }
-    }
-
-    override fun onRejectionMessageChanged(reason: String) {
-        reason.takeIf { it.length < 200 }?.let { reason ->
-            updateState { it.copy(rejectReason = reason) }
-        }
-    }
-
-    override fun onDukanDetailsDismissed() {
-        updateState { it.copy(isDukanDetailsShown = false) }
-    }
-
-    override fun mapError(throwable: Throwable): ErrorState {
-        return when (throwable) {
-            is NoInternetException -> ErrorState.NoInternet
-            else -> ErrorState.UnknownError
-        }
-    }
-
-    private suspend fun onError(errorState: ErrorState) {
-        updateState { it.copy(errorState = errorState) }
-        showSnackBar(
-            title = stringProvider.getString(errorState.getErrorSnackBarTitle()),
-            message = stringProvider.getString(errorState.getErrorSnackBarMsg()),
-            isSuccess = false
-        )
-    }
-
-    private suspend fun showSnackBar(
-        title: String,
-        message: String,
-        isSuccess: Boolean,
-        durationMillis: Long = DURATION_MILLIS
-    ) {
-        updateState { oldState ->
-            oldState.copy(
-                snackBar = SnackBarState(
-                    isVisible = true,
-                    title = title,
-                    message = message,
-                    isSuccess = isSuccess
-                )
-            )
-        }
-
-        delay(durationMillis)
-
-        hideSnackBar()
-    }
-
-    private fun hideSnackBar() {
-        updateState { oldState ->
-            oldState.copy(snackBar = oldState.snackBar.copy(isVisible = false))
-        }
     }
 
     private companion object {
