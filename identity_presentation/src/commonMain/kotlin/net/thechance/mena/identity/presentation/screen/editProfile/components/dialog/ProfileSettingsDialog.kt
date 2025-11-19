@@ -26,6 +26,8 @@ import mena.identity_presentation.generated.resources.ic_lock
 import mena.identity_presentation.generated.resources.logout
 import mena.identity_presentation.generated.resources.profile_settings
 import mena.identity_presentation.generated.resources.delete_account
+import mena.identity_presentation.generated.resources.ic_delete_user
+import mena.identity_presentation.generated.resources.ic_logout
 import net.thechance.mena.designsystem.presentation.component.button.TextButton
 import net.thechance.mena.designsystem.presentation.component.dialog.BasicDialog
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
@@ -68,7 +70,7 @@ fun ScaffoldScope.ProfileSettingsDialog(
 
             SettingsOption(
                 modifier = Modifier.padding(top = Theme.spacing._24),
-                painter = painterResource(Res.drawable.ic_lock),
+                painter = painterResource(Res.drawable.ic_logout),
                 title = stringResource(Res.string.logout),
                 onClick = {
                     onClickLogout()
@@ -76,7 +78,7 @@ fun ScaffoldScope.ProfileSettingsDialog(
                 }
             )
             SettingsOption(
-                painter = painterResource(Res.drawable.ic_delete_address),
+                painter = painterResource(Res.drawable.ic_delete_user),
                 title = stringResource(Res.string.delete_account),
                 onClick = {
                     onClickDeleteAccount()
