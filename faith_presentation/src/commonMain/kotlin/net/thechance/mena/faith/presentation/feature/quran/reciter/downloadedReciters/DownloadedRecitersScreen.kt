@@ -63,41 +63,50 @@ private fun Content(
         }
     ) {
 
-        if (uiState.query.isNotBlank() && uiState.reciters.isEmpty()) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                SearchEmptyState(
-                    subtitle = Res.string.search_reciter,
-                    isStartState = false,
-                    isResultsState = true,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(Theme.spacing._16)
-                )
-            }
-        } else {
-            LazyColumn(
-                contentPadding = PaddingValues(bottom = Theme.spacing._8),
-            ) {
-                items(uiState.reciters) { reciter ->
-                    ReciterItem(
-                        reciterId = reciter.id,
-                        reciter = reciter.name,
-                        recitingType = reciter.recitingType,
-                        onSelect = {
-                            listener.onSelectReciterClick(reciter.id)
-                        },
-                        isSwipeable = uiState.isSwipeable,
-                        onDelete = { listener.onDeleteReciterAudioClick(it) }
-                    )
-                }
-            }
-        }
+        if (uiState.query.isNotBlank() && uiState.reciters.isEmpty())
+            EmptyRecitersContent()
+        else
+            RecitersListContent(uiState = uiState, listener = listener)
     }
 }
 
+@Composable
+fun EmptyRecitersContent() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        SearchEmptyState(
+            subtitle = Res.string.search_reciter,
+            isStartState = false,
+            isResultsState = true,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(Theme.spacing._16)
+        )
+    }
+}
+
+@Composable
+fun RecitersListContent(
+    uiState: DownloadedRecitersUiState,
+    listener: DownloadedRecitersListener
+) {
+    LazyColumn(
+        contentPadding = PaddingValues(bottom = Theme.spacing._8),
+    ) {
+        items(uiState.reciters) { reciter ->
+            ReciterItem(
+                reciterId = reciter.id,
+                reciter = reciter.name,
+                recitingType = reciter.recitingType,
+                onSelect = { listener.onSelectReciterClick(reciter.id) },
+                isSwipeable = uiState.isSwipeable,
+                onDelete = { listener.onDeleteReciterAudioClick(it) }
+            )
+        }
+    }
+}
 
 @Preview
 @Composable

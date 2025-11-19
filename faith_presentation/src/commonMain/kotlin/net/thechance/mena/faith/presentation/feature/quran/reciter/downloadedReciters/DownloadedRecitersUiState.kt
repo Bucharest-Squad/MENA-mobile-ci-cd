@@ -6,7 +6,7 @@ data class DownloadedRecitersUiState(
     val surahId: Int? = null,
     val reciters: List<DownloadedReciterItemUi> = emptyList(),
     val query: String = "",
-    val queryHint: String = "Search reciter",
+    val queryHint: String = "",
     val selectedReciterId: Int? = null,
     val isSwipeable: Boolean = false,
 )

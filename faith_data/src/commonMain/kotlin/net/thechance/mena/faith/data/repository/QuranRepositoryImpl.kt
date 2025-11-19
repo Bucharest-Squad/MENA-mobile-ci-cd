@@ -88,7 +88,7 @@ class QuranRepositoryImpl(
     }
 
     override suspend fun deleteSurahWithSpecificReciter(surahId: Int) {
-        recitersDao.deleteSurahWithSpecificReciter(surahId)
+        recitersDao.deleteSurahAudioByReciter(surahId)
     }
 
     override suspend fun getRemoteSurahSoundUrl(

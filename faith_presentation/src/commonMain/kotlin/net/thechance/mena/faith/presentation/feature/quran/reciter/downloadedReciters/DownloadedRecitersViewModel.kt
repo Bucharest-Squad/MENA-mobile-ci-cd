@@ -21,7 +21,6 @@ class DownloadedRecitersViewModel(
 ), DownloadedRecitersListener {
     var allReciters: List<DownloadedReciterItemUi> = emptyList()
 
-
     init {
         getAllReciters()
         updateDefaultReciter()
@@ -93,7 +92,6 @@ class DownloadedRecitersViewModel(
 
     private suspend fun onGetAllRecitersSuccess(reciters: List<Reciter>) {
         val surahId = surahArgs.surahId ?: return
-
 
         val downloadedReciters = reciters.filter { reciter ->
             quranRepository.isSurahAudioCached(surahId = surahId, reciterId = reciter.id)

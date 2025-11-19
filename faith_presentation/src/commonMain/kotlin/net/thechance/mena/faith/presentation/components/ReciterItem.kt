@@ -66,7 +66,7 @@ fun ReciterItem(
                 onDownloadClick = onDownloadClick,
                 onSelect = onSelect,
                 isSelectReciter = isSelectReciter,
-                downloadedIcon = isDownloadIconVisible
+                isDownloadIconVisible = isDownloadIconVisible
             )
         },
         modifier = modifier
@@ -83,7 +83,7 @@ private fun CardContent(
     onDownloadClick: () -> Unit,
     onSelect: () -> Unit = {},
     isSelectReciter: Boolean,
-    downloadedIcon: Boolean,
+    isDownloadIconVisible: Boolean,
     modifier: Modifier = Modifier
 ) {
     val borderColor = if (isSelectReciter)
@@ -130,7 +130,7 @@ private fun CardContent(
                 isDownloaded = isDownloaded
             )
         }
-        if (!isDownloaded && downloadedIcon) {
+        if (!isDownloaded && isDownloadIconVisible) {
             Icon(
                 painterResource(Res.drawable.icon_download),
                 contentDescription = stringResource(Res.string.success),
