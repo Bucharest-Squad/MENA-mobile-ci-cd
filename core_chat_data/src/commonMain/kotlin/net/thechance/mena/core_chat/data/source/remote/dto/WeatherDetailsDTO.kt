@@ -8,5 +8,5 @@ data class WeatherDetailsDTO(
     @SerialName("currentTemperature") val currentTemperature: Double,
     @SerialName("minTemperature") val minTemperature: Double,
     @SerialName("maxTemperature") val maxTemperature: Double,
-    @SerialName("weatherCode") val weatherCode: Int
+    @SerialName("weatherType") val weatherType: String
 )
