@@ -15,16 +15,14 @@ import kotlinx.coroutines.test.runTest
 import net.thechance.mena.identity.domain.exception.InvalidMobileNumberException
 import net.thechance.mena.identity.domain.exception.InvalidPasswordException
 import net.thechance.mena.identity.domain.repository.AuthenticationRepository
-import net.thechance.mena.identity.domain.repository.RegistrationDraftRepository
 import net.thechance.mena.identity.domain.useCase.validation.mobileNumber.MobileNumberValidator
 import net.thechance.mena.identity.domain.useCase.validation.mobileNumber.ValidMobileNumbersDummyData
 import org.junit.Test
 
 internal class LoginUseCaseTest {
     private val authenticationRepository = mockk<AuthenticationRepository>()
-    private val registrationDraftRepository = mockk<RegistrationDraftRepository>()
     private val mobileNumberValidator = mockk<MobileNumberValidator>()
-    private val loginUseCase = LoginUseCase(authenticationRepository, registrationDraftRepository, mobileNumberValidator)
+    private val loginUseCase = LoginUseCase(authenticationRepository, mobileNumberValidator)
 
     @Test
     fun `should return true when password length equal to 8`() {
@@ -75,8 +73,6 @@ internal class LoginUseCaseTest {
     fun `should login with valid credentials`() = runTest {
         every { mobileNumberValidator.isValid(any(), any()) } returns true
         coEvery { authenticationRepository.login(any(), any()) } just Runs
-        coEvery { registrationDraftRepository.clearLastPhoneNumber() } just Runs
-        coEvery { registrationDraftRepository.clearDraft(any()) } just Runs
         val password = "12345678"
         val countryCode = ValidMobileNumbersDummyData.MOROCCO.countryCode
         val number = ValidMobileNumbersDummyData.MOROCCO.mobileNumber
