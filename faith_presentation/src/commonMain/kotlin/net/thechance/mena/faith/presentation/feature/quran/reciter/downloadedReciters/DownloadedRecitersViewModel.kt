@@ -19,6 +19,8 @@ class DownloadedRecitersViewModel(
         isSwipeable = surahArgs.isSwipeToDeleteEnabled,
     ),
 ), DownloadedRecitersListener {
+    var allReciters: List<DownloadedRecitersUi> = emptyList()
+
 
     init {
         getAllReciters()
@@ -33,15 +35,14 @@ class DownloadedRecitersViewModel(
     }
 
     override fun onClearQueryClick() {
-        updateState { it.copy(query = "", reciters = uiState.value.reciters) }
+        updateState { it.copy(query = "", reciters = allReciters) }
     }
 
     private fun applyLocalSearch(query: String) {
-        val currentList = uiState.value.reciters
         val filtered = if (query.isBlank()) {
-            currentList
+            allReciters
         } else {
-            currentList.filter { it.name.contains(query, ignoreCase = true) }
+            allReciters.filter { it.name.contains(query, ignoreCase = true) }
         }
         updateState { it.copy(reciters = filtered) }
     }
@@ -57,10 +58,11 @@ class DownloadedRecitersViewModel(
     }
 
     private fun updateReciterAfterDelete(reciterId: Int) {
-        val updated = uiState.value.reciters.map { reciterUi ->
+        val updated = allReciters.map { reciterUi ->
             if (reciterUi.id == reciterId) reciterUi.copy(isDownloaded = false) else reciterUi
         }
-        updateState { it.copy(reciters = updated) }
+        allReciters = updated
+        applyLocalSearch(uiState.value.query)
     }
 
     override fun onSelectReciterClick(reciterId: Int) {
@@ -92,6 +94,7 @@ class DownloadedRecitersViewModel(
     private suspend fun onGetAllRecitersSuccess(reciters: List<Reciter>) {
         val surahId = surahArgs.surahId ?: return
 
+
         val downloadedReciters = reciters.filter { reciter ->
             quranRepository.isSurahAudioCached(surahId = surahId, reciterId = reciter.id)
         }
@@ -99,6 +102,8 @@ class DownloadedRecitersViewModel(
         val mapped = downloadedReciters.map { reciter ->
             reciter.toUi(isDownloaded = true)
         }
+
+        allReciters = mapped
 
         updateState { it.copy(reciters = mapped) }
     }

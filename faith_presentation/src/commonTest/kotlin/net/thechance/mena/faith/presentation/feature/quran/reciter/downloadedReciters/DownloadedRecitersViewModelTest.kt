@@ -37,8 +37,7 @@ class DownloadedRecitersViewModelTest {
     @BeforeTest
     fun setup() {
         startKoin {
-            modules(
-                module {
+            modules(module {
                     single { mock<SnackbarHandler>(MockMode.autofill) }
                 }
             )
@@ -67,7 +66,7 @@ class DownloadedRecitersViewModelTest {
     fun `init should load all reciters successfully`() = runTest {
         verifySuspend(exactly(1)) { quranRepository.getReciters() }
         assertEquals(dummyReciters.size, testViewModel.uiState.value.reciters.size)
-        assertEquals(dummyReciters.size, testViewModel.uiState.value.allReciters.size)
+        assertEquals(dummyReciters.size, testViewModel.uiState.value.reciters.size)
     }
 
     @Test
@@ -142,11 +141,11 @@ class DownloadedRecitersViewModelTest {
 
     @Test
     fun `onQueryChange should not modify allReciters`() = runTest {
-        val allRecitersBefore = testViewModel.uiState.value.allReciters
+        val allRecitersBefore = testViewModel.allReciters
 
         testViewModel.onQueryChange(FILTER_QUERY)
 
-        assertEquals(allRecitersBefore, testViewModel.uiState.value.allReciters)
+        assertEquals(allRecitersBefore, testViewModel.allReciters)
     }
 
     @Test
@@ -176,13 +175,14 @@ class DownloadedRecitersViewModelTest {
 
     @Test
     fun `onClearQueryClick should restore all reciters`() = runTest {
+        val allRecitersBeforeFilter = testViewModel.allReciters
+
         testViewModel.onQueryChange(FILTER_QUERY)
-        val allReciters = testViewModel.uiState.value.allReciters
 
         testViewModel.onClearQueryClick()
 
-        assertEquals(allReciters, testViewModel.uiState.value.reciters)
-        assertEquals(allReciters.size, testViewModel.uiState.value.reciters.size)
+        assertEquals(allRecitersBeforeFilter, testViewModel.uiState.value.reciters)
+        assertEquals(allRecitersBeforeFilter.size, testViewModel.uiState.value.reciters.size)
     }
 
     @Test
@@ -277,7 +277,7 @@ class DownloadedRecitersViewModelTest {
 
     @Test
     fun `allReciters should remain unchanged after multiple operations`() = runTest {
-        val initialAllReciters = testViewModel.uiState.value.allReciters
+        val initialAllReciters = testViewModel.uiState.value.reciters
 
         testViewModel.onQueryChange(FILTER_QUERY)
         testViewModel.onQueryChange(ANOTHER_QUERY)
@@ -285,7 +285,7 @@ class DownloadedRecitersViewModelTest {
         testViewModel.onQueryChange(FILTER_QUERY)
         testViewModel.onClearQueryClick()
 
-        assertEquals(initialAllReciters, testViewModel.uiState.value.allReciters)
+        assertEquals(initialAllReciters, testViewModel.uiState.value.reciters)
     }
 
     @Test
@@ -317,6 +317,13 @@ class DownloadedRecitersViewModelTest {
         const val UPPERCASE_QUERY = "ABDUL"
         const val EMPTY_STRING = ""
         const val BLANK_STRING = "   "
+
+        val reciters = Reciter(
+            id = 1,
+            name = "Abdul Basit Abdul Samad",
+            arabicName = "عبد الباسط عبد الصمد",
+            tilawahType = "Murattal"
+        )
 
         private val dummyReciters = listOf(
             Reciter(
