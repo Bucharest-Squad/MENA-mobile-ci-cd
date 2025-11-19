@@ -2,6 +2,7 @@ package net.thechance.mena.admin_panel.presentation.screen.dukan_details.compone
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import net.thechance.mena.admin_panel.domain.entity.dukan.Product
 import net.thechance.mena.admin_panel.presentation.component.AdminPanelContentLoading
-import net.thechance.mena.admin_panel.presentation.component.EmptyState
+import net.thechance.mena.admin_panel.presentation.component.StatePlaceholder
 import net.thechance.mena.admin_panel.presentation.utils.PaginationTrigger
 import net.thechance.mena.admin_panel.presentation.utils.formatAmount
 import net.thechance.mena.admin_panel.resources.Res
@@ -74,14 +75,7 @@ internal fun ProductsList(
             }
         }
 
-        products.isEmpty() -> {
-            EmptyState(
-                image = painterResource(Res.drawable.empty_shelf_img),
-                title = stringResource(Res.string.empty_shelf_title),
-                description = "",
-                modifier = Modifier.fillMaxSize()
-            )
-        }
+        products.isEmpty() -> { EmptyProductsState() }
 
         else -> {
             LazyColumn(
@@ -185,6 +179,23 @@ private fun ProductPrice(
                 .alignByBaseline(),
             painter = painterResource(Res.drawable.silver_img),
             contentDescription = stringResource(Res.string.silver_img)
+        )
+    }
+}
+
+@Composable
+private fun EmptyProductsState(
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        StatePlaceholder(
+            image = painterResource(Res.drawable.empty_shelf_img),
+            title = stringResource(Res.string.empty_shelf_title),
+            description = "",
+            modifier = Modifier.align(Alignment.Center)
         )
     }
 }

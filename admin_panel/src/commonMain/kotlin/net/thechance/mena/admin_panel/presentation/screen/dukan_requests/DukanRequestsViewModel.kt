@@ -44,11 +44,20 @@ class DukanRequestsViewModel(
             callee = { dukanRepository.getDukans(queryParams) },
             onSuccess = ::onGetRequestedDukansSuccess,
             onError = ::onError,
-            onStart = { updateState { it.copy(isLoading = true) } },
-            onFinish = { updateState { it.copy(isLoading = false) } },
+            onStart = ::onGetRequestedDukansStart,
+            onFinish = ::onGetRequestedDukansFinish,
             dispatcher = dispatcher
         )
     }
+
+    private fun onGetRequestedDukansStart() {
+        updateState { it.copy(isLoading = true) }
+    }
+
+    private fun onGetRequestedDukansFinish() {
+        updateState { it.copy(isLoading = false, isInitialLoading = false) }
+    }
+
 
     private fun onGetRequestedDukansSuccess(result: PagedResult<Dukan>) {
         updateState {
@@ -128,7 +137,7 @@ class DukanRequestsViewModel(
         )
     }
 
-    private fun onDukanApprovedSuccess(){
+    private fun onDukanApprovedSuccess() {
         onDukanDetailsDismissed()
         getRequestedDukans()
         viewModelScope.launch {
@@ -174,7 +183,7 @@ class DukanRequestsViewModel(
         )
     }
 
-    private fun onSuccessDukanRejected(){
+    private fun onSuccessDukanRejected() {
         onRejectDukanDialogDismissed()
         getRequestedDukans()
         viewModelScope.launch {

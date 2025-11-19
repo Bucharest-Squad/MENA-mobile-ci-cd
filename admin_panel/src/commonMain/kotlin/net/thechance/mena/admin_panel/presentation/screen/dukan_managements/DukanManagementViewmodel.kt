@@ -39,13 +39,17 @@ class DukanManagementViewmodel(
     override fun onSearchQueryChanged(query: String) {
         if (query == currentState.query) return
 
+        val trimmedQuery = query.trim().replace(Regex("\\s+"), " ")
+
         updateState { it.copy(query = query) }
         searchJob?.cancel()
 
-        searchJob = viewModelScope.launch {
-            delay(SEARCH_DEBOUNCE_DELAY)
-            updateState { it.copy(pageInfo = it.pageInfo.copy(page = 0)) }
-            getDukans()
+        if (trimmedQuery.isNotBlank()) {
+            searchJob = viewModelScope.launch {
+                delay(SEARCH_DEBOUNCE_DELAY)
+                updateState { it.copy(pageInfo = it.pageInfo.copy(page = 0)) }
+                getDukans()
+            }
         }
     }
 
@@ -115,10 +119,18 @@ class DukanManagementViewmodel(
             callee = { dukanRepository.getDukans(getDukansQueryParams()) },
             onSuccess = ::onGetDukansSuccess,
             onError = ::onGetDukansError,
-            onStart = { updateState { it.copy(isLoading = true) } },
-            onFinish = { updateState { it.copy(isLoading = false) } },
+            onStart = ::onGetDukansStart,
+            onFinish = ::onGetDukansFinish,
             dispatcher = dispatcher
         )
+    }
+
+    private fun onGetDukansStart() {
+        updateState { it.copy(isLoading = true) }
+    }
+
+    private fun onGetDukansFinish() {
+        updateState { it.copy(isLoading = false, isInitialLoading = false) }
     }
 
     private fun onGetDukansSuccess(result: PagedResult<Dukan>) {

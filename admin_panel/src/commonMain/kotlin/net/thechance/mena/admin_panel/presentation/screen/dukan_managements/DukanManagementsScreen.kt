@@ -14,23 +14,17 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import net.thechance.mena.admin_panel.navigation.DukanDetails
 import net.thechance.mena.admin_panel.navigation.LocalNavController
-import net.thechance.mena.admin_panel.presentation.component.AdminPanelContentLoading
+import net.thechance.mena.admin_panel.presentation.component.EmptyDukansState
+import net.thechance.mena.admin_panel.presentation.component.EmptySearchState
 import net.thechance.mena.admin_panel.presentation.component.PanelScaffold
 import net.thechance.mena.admin_panel.presentation.component.SnackBarContainer
 import net.thechance.mena.admin_panel.presentation.screen.dukan_managements.component.DukanManagementHeader
 import net.thechance.mena.admin_panel.presentation.screen.dukan_managements.component.DukanManagementTableContent
-import net.thechance.mena.admin_panel.presentation.component.EmptyState
 import net.thechance.mena.admin_panel.presentation.utils.ObserveAsEffect
 import net.thechance.mena.admin_panel.resources.Res
 import net.thechance.mena.admin_panel.resources.dukan_management
-import net.thechance.mena.admin_panel.resources.img_empty_dukan
-import net.thechance.mena.admin_panel.resources.img_empty_search
-import net.thechance.mena.admin_panel.resources.no_dukan_results
-import net.thechance.mena.admin_panel.resources.no_search_result
-import net.thechance.mena.admin_panel.resources.no_search_result_description
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.uuid.ExperimentalUuidApi
@@ -63,15 +57,10 @@ fun DukanManagementsContent(
     modifier: Modifier = Modifier
 ) {
     PanelScaffold(
-        topBar = {
-            AppBar(
-                title = stringResource(Res.string.dukan_management),
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 18.dp),
-                modifier = Modifier.background(Theme.colorScheme.background.surfaceLow)
-            )
-        },
+        topBar = { DukanManagementScreenTopBar() },
         snackBar = { SnackBarContainer(snackBarState = state.snackBar) },
         errorState = state.errorState,
+        isLoading = state.isInitialLoading,
         onRetry = interactionListener::onRetryClicked
     ) {
         Column(
@@ -85,23 +74,11 @@ fun DukanManagementsContent(
                 query = state.query
             )
             when {
-                state.isLoading && state.query.isEmpty() -> AdminPanelContentLoading()
-
                 state.dukans.isEmpty() -> {
                     if (state.query.isNotEmpty())
-                        EmptyState(
-                            image = painterResource(Res.drawable.img_empty_search),
-                            title = stringResource(Res.string.no_search_result),
-                            description = stringResource(Res.string.no_search_result_description),
-                            modifier = Modifier.fillMaxSize().offset(y = -(76.dp))
-                        )
+                        EmptySearchState(modifier = Modifier.fillMaxSize().offset(y = -(76.dp)))
                     else {
-                        EmptyState(
-                            description = stringResource(Res.string.no_dukan_results),
-                            title = stringResource(Res.string.no_dukan_results),
-                            image = painterResource(Res.drawable.img_empty_dukan),
-                            modifier = Modifier.offset(y = -(76.dp))
-                        )
+                        EmptyDukansState(modifier = Modifier.fillMaxSize().offset(y = -(76.dp)))
                     }
                 }
 
@@ -112,6 +89,16 @@ fun DukanManagementsContent(
         }
     }
 }
+
+@Composable
+private fun DukanManagementScreenTopBar() {
+    AppBar(
+        title = stringResource(Res.string.dukan_management),
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 18.dp),
+        modifier = Modifier.background(Theme.colorScheme.background.surfaceLow)
+    )
+}
+
 
 @OptIn(ExperimentalUuidApi::class)
 private fun onDukanManagementEffect(
