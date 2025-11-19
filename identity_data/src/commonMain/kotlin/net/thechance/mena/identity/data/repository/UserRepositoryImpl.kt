@@ -118,7 +118,7 @@ class UserRepositoryImpl(
         }
         withContext(dispatcher) {
             try {
-                userDao.clear()
+                userDao.deleteUser()
             } catch (_: Exception) {
             }
         }
