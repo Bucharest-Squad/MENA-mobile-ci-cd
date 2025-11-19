@@ -11,7 +11,6 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import java.lang.Exception
 import net.thechance.mena.identity.domain.repository.AuthenticationRepository
-import net.thechance.mena.identity.domain.repository.RegistrationDraftRepository
 import net.thechance.mena.identity.domain.repository.ResetPasswordRepository
 import net.thechance.mena.identity.domain.useCase.LoginUseCase
 import net.thechance.mena.identity.domain.useCase.validation.mobileNumber.MobileNumberValidator
@@ -33,7 +32,6 @@ class ResetPasswordPhoneEntryScreenViewModelTest {
         Dispatchers.setMain(testDispatcher)
         useCase = LoginUseCase(
             authenticationRepository = mockk<AuthenticationRepository>(),
-            registrationDraftRepository = mockk<RegistrationDraftRepository>(),
             mobileNumberValidator = MobileNumberValidator()
         )
         viewModel = ResetPasswordPhoneEntryScreenViewModel(
