@@ -23,8 +23,6 @@ import net.thechance.mena.faith.presentation.navigation.LocalNavController
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
-import kotlin.time.ExperimentalTime
-
 @Composable
 fun SurahRecitersScreen(
     viewModel: SurahRecitersViewModel = koinViewModel()
@@ -34,13 +32,12 @@ fun SurahRecitersScreen(
 
     ObserveAsEffect(viewModel.uiEffect) { effect ->
         when (effect) {
-            SurahRecitersScreenEffect.NavigateBack -> navController.navigateUp() }
+            SurahRecitersScreenEffect.NavigateBack -> navController.navigateUp()
+        }
     }
 
     Content(uiState = uiState, listener = viewModel)
 }
-
-@OptIn(ExperimentalTime::class)
 @Composable
 private fun Content(
     uiState: SurahRecitersUiState,
@@ -55,12 +52,10 @@ private fun Content(
                 onQueryChange = listener::onQueryChange,
                 clearQuery = listener::onClearQueryClick,
                 onBackClick = listener::onBackClick,
-                modifier = Modifier
-                    .fillMaxWidth()
+                modifier = Modifier.fillMaxWidth()
             )
         }
     ) {
-
         LazyColumn(
             contentPadding = PaddingValues(bottom = Theme.spacing._16),
         ) {
@@ -104,19 +99,19 @@ private fun Preview() {
             Content(
                 uiState = SurahRecitersUiState(
                     reciters = listOf(
-                        ReciterUi(
+                        SurahRecitersUiState.ReciterUi(
                             id = 1,
                             name = "Mishary Rashid Alafasy",
                             recitingType = "Murattal",
                             isDownloaded = true
                         ),
-                        ReciterUi(
+                        SurahRecitersUiState.ReciterUi(
                             id = 2,
                             name = "Abdul Basit Abdul Samad",
                             recitingType = "Mujawwad",
                             isDownloaded = false
                         ),
-                        ReciterUi(
+                        SurahRecitersUiState.ReciterUi(
                             id = 3,
                             name = "Saad Al Ghamdi",
                             recitingType = "Murattal",
@@ -130,7 +125,7 @@ private fun Preview() {
                     override fun onBackClick() {}
                     override fun onDownloadClick(reciterId: Int) {}
                     override fun onSelectReciterClick(reciterId: Int) {}
-                    override fun onQueryChange(newQuery: String) {}
+                    override fun onQueryChange(query: String) {}
                     override fun onClearQueryClick() {}
                 }
             )

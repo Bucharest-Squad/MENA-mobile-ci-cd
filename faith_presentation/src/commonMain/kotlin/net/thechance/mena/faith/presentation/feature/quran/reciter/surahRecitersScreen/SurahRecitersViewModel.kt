@@ -15,10 +15,8 @@ class SurahRecitersViewModel(
     private val surahArgs: SurahRecitersArgs,
     private val downloadManager: DownloadSurahManager,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
-    ) : BaseViewModel<SurahRecitersUiState, SurahRecitersScreenEffect>(
-    initialState = SurahRecitersUiState(
-        surahId = surahArgs.surahId,
-    ),
+) : BaseViewModel<SurahRecitersUiState, SurahRecitersScreenEffect>(
+    initialState = SurahRecitersUiState(surahId = surahArgs.surahId),
 ), SurahRecitersListener {
 
     init {
@@ -33,13 +31,13 @@ class SurahRecitersViewModel(
         )
     }
 
-    override fun onQueryChange(newQuery: String) {
+    override fun onQueryChange(query: String) {
         updateState { state ->
-            val filtered = if (newQuery.isBlank()) state.allReciters
-            else state.allReciters.filter { it.name.contains(newQuery, ignoreCase = true) }
+            val filtered = if (query.isBlank()) state.allReciters
+            else state.allReciters.filter { it.name.contains(query, ignoreCase = true) }
 
             state.copy(
-                query = newQuery,
+                query = query,
                 reciters = filtered
             )
         }

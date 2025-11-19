@@ -19,7 +19,7 @@ import net.thechance.mena.faith.presentation.feature.quran.downloadedSur.Downloa
 import net.thechance.mena.faith.presentation.feature.quran.reciter.downloadedReciters.DownloadedRecitersViewModel
 import net.thechance.mena.faith.presentation.feature.quran.reciter.downloadedReciters.args.DownloadedRecitersArgs
 import net.thechance.mena.faith.presentation.feature.quran.reciter.downloadedReciters.args.DownloadedRecitersArgsImpl
-import net.thechance.mena.faith.presentation.feature.quran.reciter.reciterSelection.RecitersSelectionViewModel
+import net.thechance.mena.faith.presentation.feature.quran.reciter.reciterSelection.ReciterSelectionViewModel
 import net.thechance.mena.faith.presentation.feature.quran.reciter.surahRecitersScreen.SurahRecitersViewModel
 import net.thechance.mena.faith.presentation.feature.quran.reciter.surahRecitersScreen.args.SurahRecitersArgs
 import net.thechance.mena.faith.presentation.feature.quran.reciter.surahRecitersScreen.args.SurahRecitersArgsImpl
@@ -56,7 +56,7 @@ internal val faithViewModelModule = module {
     viewModelOf(::SurahRecitersViewModel)
     viewModelOf(::DownloadedRecitersViewModel)
     viewModelOf(::DownloadedSurViewModel)
-    viewModelOf(::RecitersSelectionViewModel)
+    viewModelOf(::ReciterSelectionViewModel)
     viewModelOf(::CreateMosqueViewModel)
     viewModelOf(::MosqueImageCropViewModel)
     viewModelOf(::UploadImageViewModel)

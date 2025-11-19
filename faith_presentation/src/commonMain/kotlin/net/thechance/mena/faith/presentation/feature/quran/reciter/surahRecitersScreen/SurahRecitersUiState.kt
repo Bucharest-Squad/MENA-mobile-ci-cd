@@ -9,17 +9,16 @@ data class SurahRecitersUiState(
     val query: String = "",
     val queryHint: String = "",
     val selectedReciterId: Int? = null,
-)
+) {
+    data class ReciterUi(
+        val id: Int,
+        val name: String,
+        val recitingType: String,
+        val isDownloaded: Boolean,
+    )
+}
 
-
-data class ReciterUi(
-    val id: Int,
-    val name: String,
-    val recitingType: String,
-    val isDownloaded: Boolean,
-)
-
-fun Reciter.toUi(isDownloaded: Boolean) = ReciterUi(
+fun Reciter.toUi(isDownloaded: Boolean) = SurahRecitersUiState.ReciterUi(
     id = id,
     name = name,
     recitingType = tilawahType,

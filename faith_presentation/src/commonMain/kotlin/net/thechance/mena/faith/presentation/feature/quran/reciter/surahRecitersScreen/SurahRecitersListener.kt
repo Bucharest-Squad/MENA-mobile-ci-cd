@@ -4,6 +4,6 @@ interface SurahRecitersListener {
     fun onBackClick()
     fun onDownloadClick(reciterId: Int)
     fun onSelectReciterClick(reciterId: Int)
-    fun onQueryChange(newQuery: String)
+    fun onQueryChange(query: String)
     fun onClearQueryClick()
 }

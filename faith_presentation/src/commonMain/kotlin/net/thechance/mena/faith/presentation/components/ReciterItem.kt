@@ -45,10 +45,10 @@ fun ReciterItem(
     isDownloaded: Boolean,
     isDownloadIconVisible: Boolean,
     isSwipeable: Boolean,
-    onDownloadClick: () -> Unit,
+    onDownloadClick: () -> Unit = {},
     onSelect: () -> Unit = {},
     isSelectReciter: Boolean,
-    onDelete: (Int) -> Unit,
+    onDelete: (Int) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     SwappableCard(

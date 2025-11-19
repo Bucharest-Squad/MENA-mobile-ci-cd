@@ -30,7 +30,7 @@ import kotlin.test.assertTrue
 class ReciterSelectionViewModelTest {
 
     private lateinit var testDispatcher: TestDispatcher
-    private lateinit var testViewModel: RecitersSelectionViewModel
+    private lateinit var testViewModel: ReciterSelectionViewModel
     private val quranRepository: QuranRepository = mock(mode = MockMode.autofill)
     private val downloadedRecitersArgs: DownloadedRecitersArgs = mock(mode = MockMode.autofill)
 
@@ -49,7 +49,7 @@ class ReciterSelectionViewModelTest {
         everySuspend { quranRepository.getReciters() } returns dummyReciters
         everySuspend { quranRepository.isSurahAudioCached(TEST_SURAH_ID, any()) } returns false
 
-        testViewModel = RecitersSelectionViewModel(
+        testViewModel = ReciterSelectionViewModel(
             repository = quranRepository,
             dispatcher = testDispatcher
         )
@@ -77,7 +77,7 @@ class ReciterSelectionViewModelTest {
             testViewModel.onBackClick()
 
             val effect = awaitItem()
-            assertTrue(effect is RecitersSelectionEffect.NavigateBack)
+            assertTrue(effect is ReciterSelectionEffect.NavigateBack)
         }
     }
 

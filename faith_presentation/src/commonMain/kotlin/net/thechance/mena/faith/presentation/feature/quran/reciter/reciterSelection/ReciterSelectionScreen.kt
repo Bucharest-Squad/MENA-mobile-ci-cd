@@ -28,28 +28,27 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun RecitersSelectionScreen(
-    viewModel: RecitersSelectionViewModel = koinViewModel()
+    viewModel: ReciterSelectionViewModel = koinViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val navController = LocalNavController.current
 
     ObserveAsEffect(viewModel.uiEffect) { effect ->
         when (effect) {
-            RecitersSelectionEffect.NavigateBack -> navController.popBackStack()
+            ReciterSelectionEffect.NavigateBack -> navController.popBackStack()
         }
     }
+
     Content(
         state = state,
         listener = viewModel,
-
-
     )
 }
 
 @Composable
 private fun Content(
     state: RecitersSelectionUiState,
-    listener: RecitersSelectionListener,
+    listener: ReciterSelectionListener,
 ) {
     Scaffold(
         topBar = {
@@ -97,14 +96,13 @@ private fun EmptySearchState(modifier: Modifier = Modifier) {
 @Composable
 private fun ResultList(
     uiState: RecitersSelectionUiState,
-    listener: RecitersSelectionListener,
+    listener: ReciterSelectionListener,
     results: List<ReciterSearchItemUi>,
     modifier: Modifier = Modifier
 ) {
 
-
     LazyColumn(
-        modifier = modifier,
+        modifier = modifier
     ) {
         items(results) { result ->
             ReciterItem(
@@ -115,11 +113,9 @@ private fun ResultList(
                 onSelect = {
                     listener.onSelectReciterClick(result.id)
                 },
-                onDownloadClick = {},
                 isSelectReciter = result.id == uiState.selectedReciterId,
                 isSwipeable = false,
-                isDownloadIconVisible = false,
-                onDelete = {}
+                isDownloadIconVisible = false
             )
         }
     }
@@ -156,7 +152,7 @@ private fun SearchScreenPreview() {
                     queryHint = "",
                     selectedReciterId = 1,
                     ),
-                listener = object : RecitersSelectionListener {
+                listener = object : ReciterSelectionListener {
                     override fun onBackClick() {}
                     override fun onClearQueryClick() {}
                     override fun onQueryChange(query: String) {}
