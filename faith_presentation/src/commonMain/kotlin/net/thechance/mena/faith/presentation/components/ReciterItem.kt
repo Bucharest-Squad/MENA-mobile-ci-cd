@@ -42,12 +42,12 @@ fun ReciterItem(
     reciterId: Int,
     reciter: String,
     recitingType: String,
-    isDownloaded: Boolean,
-    isDownloadIconVisible: Boolean,
+    isDownloaded: Boolean = false,
+    isDownloadIconVisible: Boolean = false,
     isSwipeable: Boolean,
     onDownloadClick: () -> Unit = {},
     onSelect: () -> Unit = {},
-    isSelectReciter: Boolean,
+    isSelectReciter: Boolean = false,
     onDelete: (Int) -> Unit = {},
     modifier: Modifier = Modifier
 ) {

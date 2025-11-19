@@ -27,7 +27,6 @@ import net.thechance.mena.faith.presentation.navigation.LocalNavController
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
-import kotlin.time.ExperimentalTime
 
 @Composable
 fun DownloadedRecitersScreen(
@@ -45,7 +44,6 @@ fun DownloadedRecitersScreen(
     Content(uiState = uiState, listener = viewModel)
 }
 
-@OptIn(ExperimentalTime::class)
 @Composable
 private fun Content(
     uiState: DownloadedRecitersUiState,
@@ -67,8 +65,7 @@ private fun Content(
 
         if (uiState.query.isNotBlank() && uiState.reciters.isEmpty()) {
             Box(
-                modifier = Modifier
-                    .fillMaxSize(),
+                modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
                 SearchEmptyState(
@@ -89,14 +86,10 @@ private fun Content(
                         reciterId = reciter.id,
                         reciter = reciter.name,
                         recitingType = reciter.recitingType,
-                        isDownloaded = false,
                         onSelect = {
                             listener.onSelectReciterClick(reciter.id)
                         },
-                        onDownloadClick = {},
-                        isSelectReciter = false,
                         isSwipeable = uiState.isSwipeable,
-                        isDownloadIconVisible = false,
                         onDelete = { listener.onDeleteReciterAudioClick(it) }
                     )
                 }
