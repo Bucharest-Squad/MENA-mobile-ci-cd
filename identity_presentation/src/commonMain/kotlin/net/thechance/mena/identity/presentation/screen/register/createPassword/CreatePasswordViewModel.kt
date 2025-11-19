@@ -118,7 +118,7 @@ class CreatePasswordViewModel(
 
     private fun checkCreateButtonEnabled() {
         updateState {
-            val passwordsMatch = newPassword.isNotBlank() && newPassword == confirmPassword
+            val passwordsMatch = passwordValidator.isPasswordMatch(newPassword, confirmPassword)
             val passwordSecure = passwordValidator.isValid(newPassword)
 
             copy(
