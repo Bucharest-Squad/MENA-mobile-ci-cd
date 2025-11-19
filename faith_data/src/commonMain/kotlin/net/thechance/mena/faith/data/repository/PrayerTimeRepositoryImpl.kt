@@ -82,7 +82,8 @@ class PrayerTimeRepositoryImpl(
                     prayerTimeApiService.getPrayerTimes(
                         date = date,
                         latitude = location.latitude,
-                        longitude = location.longitude
+                        longitude = location.longitude,
+                        isHijri = isHijri
                     )
                 }.toDomain()
             },

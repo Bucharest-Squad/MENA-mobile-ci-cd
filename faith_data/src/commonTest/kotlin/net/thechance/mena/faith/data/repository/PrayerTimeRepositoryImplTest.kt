@@ -7,13 +7,19 @@ import assertk.assertions.isInstanceOf
 import de.jensklingenberg.ktorfit.Response
 import dev.mokkery.MockMode
 import dev.mokkery.answering.returns
+import dev.mokkery.every
 import dev.mokkery.everySuspend
+import dev.mokkery.matcher.any
 import dev.mokkery.mock
+import dev.mokkery.verifySuspend
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import net.thechance.mena.faith.data.database.prayertimes.PrayerTimesDao
+import net.thechance.mena.faith.data.mapper.prayertime.toDomain
+import net.thechance.mena.faith.data.mapper.prayertime.toLocal
 import net.thechance.mena.faith.data.remote.model.prayertime.PrayerTimesDto
 import net.thechance.mena.faith.data.remote.service.PrayerTimeApiService
 import net.thechance.mena.faith.domain.entity.PrayerTime
@@ -30,19 +36,32 @@ class PrayerTimeRepositoryImplTest {
 
     private val prayerTimeApiService: PrayerTimeApiService = mock(MockMode.autofill)
     private val prayerTimesDao: PrayerTimesDao = mock(MockMode.autofill)
-    private val prayerTimeRepository = PrayerTimeRepositoryImpl(
+    private var prayerTimeRepository = PrayerTimeRepositoryImpl(
         prayerTimeApiService,
         prayerTimesDao = prayerTimesDao
     )
 
     @Test
-    fun `getPrayerTimes should return list of PrayerTime when api service return valid data`() =
+    fun `initialization should call cleanupExpiredData`() = runTest {
+
+        prayerTimeRepository = PrayerTimeRepositoryImpl(
+            prayerTimeApiService,
+            prayerTimesDao = prayerTimesDao
+        )
+        verifySuspend {
+            prayerTimesDao.deleteExpiredPrayerTimes(any())
+        }
+    }
+
+    @Test
+    fun `getPrayerTimes should return list of PrayerTime when api service return valid data and cache it`() =
         runTest {
             everySuspend {
                 prayerTimeApiService.getPrayerTimes(
                     date = DATE,
                     latitude = LAT,
-                    longitude = LONG
+                    longitude = LONG,
+                    isHijri = false
                 )
             } returns makeSuccessFakeResponse(
                 body = fakePrayerTimesDto,
@@ -55,8 +74,47 @@ class PrayerTimeRepositoryImplTest {
                 timeZone = timeZone
             )
 
+            verifySuspend {
+                prayerTimesDao.insertPrayerTimes(
+                    fakePrayerTimesDto.toLocal(
+                        date = dateInstant.toLocalDateTime(timeZone).date,
+                        latitude = LAT,
+                        longitude = LONG
+                    )
+                )
+            }
             assertThat(result).isEqualTo(fakePrayerTimes)
         }
+
+    @Test
+    fun `getPrayerTimes should return list of PrayerTime from cache when available`() = runTest {
+
+        everySuspend {
+            prayerTimesDao.getPrayerTimesByDate(
+                dateInstant.toLocalDateTime(timeZone).date
+            )
+        } returns listOf(fakePrayerTimesLocal)
+
+        everySuspend {
+            prayerTimeApiService.getPrayerTimes(
+                date = DATE,
+                latitude = LAT,
+                longitude = LONG,
+                isHijri = false
+            )
+        } returns makeSuccessFakeResponse(
+            body = fakePrayerTimesDto,
+            successStatus = HttpStatusCode.OK
+        )
+
+        val result = prayerTimeRepository.getPrayerTimes(
+            date = dateInstant,
+            address = address,
+            timeZone = timeZone
+        )
+
+        assertThat(result).isEqualTo(fakePrayerTimesLocal.toDomain())
+    }
 
     @Test
     fun `getPrayerTimes should throw NetworkException when error occur in parsing response body is null`() =
@@ -145,33 +203,6 @@ class PrayerTimeRepositoryImplTest {
             }.isInstanceOf<FaithException.UnknownException>()
         }
 
-    private fun makeSuccessFakeResponse(
-        body: PrayerTimesDto? = fakePrayerTimesDto,
-        successStatus: HttpStatusCode = HttpStatusCode.OK
-    ): Response<PrayerTimesDto> {
-        val mockHttpResponse: HttpResponse = mock(MockMode.autofill) {
-            everySuspend { status } returns successStatus
-        }
-
-        return Response.success(
-            body = body,
-            rawResponse = mockHttpResponse
-        ) as Response<PrayerTimesDto>
-    }
-
-    private fun makeFailFakeResponse(
-        errorStatus: HttpStatusCode = HttpStatusCode.InternalServerError
-    ): Response<PrayerTimesDto> {
-        val mockHttpResponse: HttpResponse = mock(MockMode.autofill) {
-            everySuspend { status } returns errorStatus
-        }
-
-        return Response.error<PrayerTimesDto>(
-            rawResponse = mockHttpResponse,
-            body = ""
-        ) as Response<PrayerTimesDto>
-    }
-
     @Test
     fun `getPrayerTimeWithHijriDate should return list of PrayerTime when api service return valid data with Hijri date`() =
         runTest {
@@ -195,6 +226,36 @@ class PrayerTimeRepositoryImplTest {
             )
 
             assertThat(result).isEqualTo(fakePrayerTimes)
+        }
+
+    @Test
+    fun `getPrayerTimeWithHijriDate should return list of PrayerTime from cache when available`() =
+        runTest {
+
+            everySuspend {
+                prayerTimesDao.getPrayerTimesByHijri(hijriDate = HIJRI_DATE)
+            } returns listOf(fakePrayerTimesLocal)
+
+            everySuspend {
+                prayerTimeApiService.getPrayerTimes(
+                    date = DATE,
+                    latitude = LAT,
+                    longitude = LONG,
+                    isHijri = false
+                )
+            } returns makeSuccessFakeResponse(
+                body = fakePrayerTimesDto,
+                successStatus = HttpStatusCode.OK
+            )
+
+            val result = prayerTimeRepository.getPrayerTimeWithHijriDate(
+                date = HIJRI_DATE,
+                location = address,
+                timeZone = timeZone,
+                isHijri = true
+            )
+
+            assertThat(result).isEqualTo(fakePrayerTimesLocal.toDomain())
         }
 
     @Test
@@ -313,6 +374,33 @@ class PrayerTimeRepositoryImplTest {
             }.isInstanceOf<FaithException.UnknownException>()
         }
 
+    private fun makeSuccessFakeResponse(
+        body: PrayerTimesDto? = fakePrayerTimesDto,
+        successStatus: HttpStatusCode = HttpStatusCode.OK
+    ): Response<PrayerTimesDto> {
+        val mockHttpResponse: HttpResponse = mock(MockMode.autofill) {
+            every { status } returns successStatus
+        }
+
+        return Response.success(
+            body = body,
+            rawResponse = mockHttpResponse
+        ) as Response<PrayerTimesDto>
+    }
+
+    private fun makeFailFakeResponse(
+        errorStatus: HttpStatusCode = HttpStatusCode.InternalServerError
+    ): Response<PrayerTimesDto> {
+        val mockHttpResponse: HttpResponse = mock(MockMode.autofill) {
+            every { status } returns errorStatus
+        }
+
+        return Response.error<PrayerTimesDto>(
+            rawResponse = mockHttpResponse,
+            body = ""
+        ) as Response<PrayerTimesDto>
+    }
+
     @OptIn(ExperimentalUuidApi::class)
     private companion object {
         val timeZone = TimeZone.of("Africa/Cairo")
@@ -323,6 +411,13 @@ class PrayerTimeRepositoryImplTest {
         val dateInstant = Instant.parse("2025-10-10T00:00:00Z") //10-10-2025 00:00
         val fakePrayerTimesDto = getFakePrayerTimesDto()
         val fakePrayerTimes: List<PrayerTime> = getPrayerTimesFakeData(timeZone = timeZone)
+
+        val fakePrayerTimesLocal = fakePrayerTimesDto.toLocal(
+            date = dateInstant.toLocalDateTime(timeZone).date,
+            latitude = LAT,
+            longitude = LONG
+        )
+
         val address: Address = Address(
             id = null,
             addressLine = "",
