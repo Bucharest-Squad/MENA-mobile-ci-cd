@@ -94,6 +94,7 @@ class AuthenticationRepositoryImpl(
     override suspend fun clearAuthTokens() {
         saveTokensToSettings(createEmptyTokens())
         isTemporaryTokenMode = false
+        emitToken("")
     }
 
     override fun observeTokenChange(): StateFlow<String> = observableToken
