@@ -50,6 +50,8 @@ class DukanManagementViewmodel(
                 updateState { it.copy(pageInfo = it.pageInfo.copy(page = 0)) }
                 getDukans()
             }
+        } else {
+            getDukans()
         }
     }
 

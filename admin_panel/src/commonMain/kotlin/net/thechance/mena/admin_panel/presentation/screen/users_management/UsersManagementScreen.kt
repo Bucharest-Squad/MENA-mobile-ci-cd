@@ -51,7 +51,7 @@ private fun UsersManagementScreenContent(
     listener: UsersManagementInteractionListener
 ) {
     PanelScaffold(
-        topBar = {UsersManagementScreenTopBar()},
+        topBar = { UsersManagementScreenTopBar() },
         overlays = {
             dialog(state.isBlockDialogShown) {
                 AdminConfirmationDialog(
@@ -85,7 +85,7 @@ private fun UsersManagementScreenContent(
             )
 
             when {
-                state.users.isEmpty() -> {
+                state.users.isEmpty() && !state.isLoading -> {
                     if (state.query.isNotEmpty()) {
                         EmptySearchState(modifier = Modifier.fillMaxSize().offset(y = -(76.dp)))
 

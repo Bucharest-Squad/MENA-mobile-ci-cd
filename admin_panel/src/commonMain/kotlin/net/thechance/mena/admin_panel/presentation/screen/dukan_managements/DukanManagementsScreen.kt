@@ -74,7 +74,7 @@ fun DukanManagementsContent(
                 query = state.query
             )
             when {
-                state.dukans.isEmpty() -> {
+                state.dukans.isEmpty() && !state.isLoading -> {
                     if (state.query.isNotEmpty())
                         EmptySearchState(modifier = Modifier.fillMaxSize().offset(y = -(76.dp)))
                     else {

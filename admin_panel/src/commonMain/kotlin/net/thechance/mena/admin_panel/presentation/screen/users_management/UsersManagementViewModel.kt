@@ -73,6 +73,8 @@ class UsersManagementViewModel(
                 delay(SEARCH_DEBOUNCE_DELAY)
                 getUsers()
             }
+        } else {
+            getUsers()
         }
     }
 
