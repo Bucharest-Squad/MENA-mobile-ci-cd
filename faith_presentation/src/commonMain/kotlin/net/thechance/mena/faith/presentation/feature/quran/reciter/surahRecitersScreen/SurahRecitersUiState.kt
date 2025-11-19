@@ -4,22 +4,22 @@ import net.thechance.mena.faith.domain.model.Reciter
 
 data class SurahRecitersUiState(
     val surahId: Int? = null,
-    val allReciters: List<SurahRecitersUi> = emptyList(),
-    val reciters: List<SurahRecitersUi> = emptyList(),
+    val allReciters: List<ReciterUi> = emptyList(),
+    val reciters: List<ReciterUi> = emptyList(),
     val query: String = "",
-    val queryHint: String = "Search reciter",
+    val queryHint: String = "",
     val selectedReciterId: Int? = null,
 )
 
 
-data class SurahRecitersUi(
+data class ReciterUi(
     val id: Int,
     val name: String,
     val recitingType: String,
     val isDownloaded: Boolean,
 )
 
-fun Reciter.toUi(isDownloaded: Boolean) = SurahRecitersUi(
+fun Reciter.toUi(isDownloaded: Boolean) = ReciterUi(
     id = id,
     name = name,
     recitingType = tilawahType,

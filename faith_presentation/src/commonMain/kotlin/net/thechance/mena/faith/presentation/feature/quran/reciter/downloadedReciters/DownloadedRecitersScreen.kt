@@ -114,19 +114,19 @@ private fun Preview() {
             Content(
                 uiState = DownloadedRecitersUiState(
                     reciters = listOf(
-                        DownloadedRecitersUi(
+                        DownloadedReciterItemUi(
                             id = 1,
                             name = "Mishary Rashid Alafasy",
                             recitingType = "Murattal",
                             isDownloaded = true
                         ),
-                        DownloadedRecitersUi(
+                        DownloadedReciterItemUi(
                             id = 2,
                             name = "Abdul Basit Abdul Samad",
                             recitingType = "Mujawwad",
                             isDownloaded = false
                         ),
-                        DownloadedRecitersUi(
+                        DownloadedReciterItemUi(
                             id = 3,
                             name = "Saad Al Ghamdi",
                             recitingType = "Murattal",

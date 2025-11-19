@@ -12,12 +12,12 @@ import net.thechance.mena.faith.domain.repository.QuranRepository
 import net.thechance.mena.faith.presentation.base.BaseViewModel
 import org.jetbrains.compose.resources.getString
 
-class ReciterSelectionViewModel(
+class RecitersSelectionViewModel(
     private val repository: QuranRepository,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
-) : BaseViewModel<ReciterSelectionUiState, ReciterSelectionEffect>(
-    ReciterSelectionUiState()
-), ReciterSelectionListener {
+) : BaseViewModel<RecitersSelectionUiState, RecitersSelectionEffect>(
+    RecitersSelectionUiState()
+), RecitersSelectionListener {
 
     private var searchJob: Job? = null
 
@@ -27,7 +27,7 @@ class ReciterSelectionViewModel(
         updateDefaultReciter()
     }
 
-    override fun onBackClick() = sendEffect(ReciterSelectionEffect.NavigateBack)
+    override fun onBackClick() = sendEffect(RecitersSelectionEffect.NavigateBack)
 
 
     override fun onClearQueryClick() {

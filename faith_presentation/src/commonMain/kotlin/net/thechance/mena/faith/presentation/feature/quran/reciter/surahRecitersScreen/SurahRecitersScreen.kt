@@ -104,19 +104,19 @@ private fun Preview() {
             Content(
                 uiState = SurahRecitersUiState(
                     reciters = listOf(
-                        SurahRecitersUi(
+                        ReciterUi(
                             id = 1,
                             name = "Mishary Rashid Alafasy",
                             recitingType = "Murattal",
                             isDownloaded = true
                         ),
-                        SurahRecitersUi(
+                        ReciterUi(
                             id = 2,
                             name = "Abdul Basit Abdul Samad",
                             recitingType = "Mujawwad",
                             isDownloaded = false
                         ),
-                        SurahRecitersUi(
+                        ReciterUi(
                             id = 3,
                             name = "Saad Al Ghamdi",
                             recitingType = "Murattal",

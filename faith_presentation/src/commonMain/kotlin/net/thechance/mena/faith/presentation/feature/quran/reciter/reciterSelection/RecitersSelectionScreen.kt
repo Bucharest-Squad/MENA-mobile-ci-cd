@@ -27,15 +27,15 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun ReciterSelectionScreen(
-    viewModel: ReciterSelectionViewModel = koinViewModel()
+fun RecitersSelectionScreen(
+    viewModel: RecitersSelectionViewModel = koinViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val navController = LocalNavController.current
 
     ObserveAsEffect(viewModel.uiEffect) { effect ->
         when (effect) {
-            ReciterSelectionEffect.NavigateBack -> navController.popBackStack()
+            RecitersSelectionEffect.NavigateBack -> navController.popBackStack()
         }
     }
     Content(
@@ -48,8 +48,8 @@ fun ReciterSelectionScreen(
 
 @Composable
 private fun Content(
-    state: ReciterSelectionUiState,
-    listener: ReciterSelectionListener,
+    state: RecitersSelectionUiState,
+    listener: RecitersSelectionListener,
 ) {
     Scaffold(
         topBar = {
@@ -96,9 +96,9 @@ private fun EmptySearchState(modifier: Modifier = Modifier) {
 
 @Composable
 private fun ResultList(
-    uiState : ReciterSelectionUiState,
-    listener : ReciterSelectionListener,
-    results: List<ReciterSelectionUi>,
+    uiState: RecitersSelectionUiState,
+    listener: RecitersSelectionListener,
+    results: List<ReciterSearchItemUi>,
     modifier: Modifier = Modifier
 ) {
 
@@ -132,21 +132,21 @@ private fun SearchScreenPreview() {
     MenaTheme {
         QuranTheme {
             Content(
-                state = ReciterSelectionUiState(
+                state = RecitersSelectionUiState(
                     query = "s",
                     searchResults = listOf(
-                        ReciterSelectionUi(
+                        ReciterSearchItemUi(
                             id = 1,
                             name = "Mishary Rashid Alafasy",
                             recitingType = "Murattal",
 
                         ),
-                        ReciterSelectionUi(
+                        ReciterSearchItemUi(
                             id = 2,
                             name = "Abdul Basit Abdul Samad",
                             recitingType = "Mujawwad",
                         ),
-                        ReciterSelectionUi(
+                        ReciterSearchItemUi(
                             id = 3,
                             name = "Saad Al Ghamdi",
                             recitingType = "Murattal",
@@ -156,7 +156,7 @@ private fun SearchScreenPreview() {
                     queryHint = "",
                     selectedReciterId = 1,
                     ),
-                listener = object : ReciterSelectionListener {
+                listener = object : RecitersSelectionListener {
                     override fun onBackClick() {}
                     override fun onClearQueryClick() {}
                     override fun onQueryChange(query: String) {}

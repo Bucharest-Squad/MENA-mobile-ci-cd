@@ -19,7 +19,7 @@ class DownloadedRecitersViewModel(
         isSwipeable = surahArgs.isSwipeToDeleteEnabled,
     ),
 ), DownloadedRecitersListener {
-    var allReciters: List<DownloadedRecitersUi> = emptyList()
+    var allReciters: List<DownloadedReciterItemUi> = emptyList()
 
 
     init {
