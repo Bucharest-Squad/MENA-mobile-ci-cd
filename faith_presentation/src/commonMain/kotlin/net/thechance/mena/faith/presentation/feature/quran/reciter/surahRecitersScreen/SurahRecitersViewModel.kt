@@ -1,4 +1,4 @@
-package net.thechance.mena.faith.presentation.feature.quran.tilwah
+package net.thechance.mena.faith.presentation.feature.quran.reciter.surahRecitersScreen
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -8,19 +8,16 @@ import net.thechance.mena.faith.domain.model.Reciter
 import net.thechance.mena.faith.domain.repository.QuranRepository
 import net.thechance.mena.faith.domain.service.DownloadSurahManager
 import net.thechance.mena.faith.presentation.base.BaseViewModel
-import net.thechance.mena.faith.presentation.feature.quran.tilwah.component.args.TilawahSurahArgs
+import net.thechance.mena.faith.presentation.feature.quran.reciter.surahRecitersScreen.args.SurahRecitersArgs
 
-class TilawahViewModel(
+class SurahRecitersViewModel(
     private val quranRepository: QuranRepository,
-    private val surahArgs: TilawahSurahArgs,
+    private val surahArgs: SurahRecitersArgs,
     private val downloadManager: DownloadSurahManager,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
-) : BaseViewModel<TilawahUiState, TilawahEffect>(
-    initialState = TilawahUiState(
-        surahId = surahArgs.surahId,
-        isSwipeable = surahArgs.isSwipeToDeleteEnabled,
-    ),
-), TilawahInteractionListener {
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
+) : BaseViewModel<SurahRecitersUiState, SurahRecitersScreenEffect>(
+    initialState = SurahRecitersUiState(surahId = surahArgs.surahId),
+), SurahRecitersListener {
 
     init {
         getAllReciters()
@@ -34,17 +31,35 @@ class TilawahViewModel(
         )
     }
 
-    override fun onBackClick() = sendEffect(TilawahEffect.NavigateBack)
+    override fun onQueryChange(query: String) {
+        updateState { state ->
+            val filtered = if (query.isBlank()) state.allReciters
+            else state.allReciters.filter { it.name.contains(query, ignoreCase = true) }
 
-    override fun onSearchClick() = sendEffect(TilawahEffect.NavigateToSearch)
+            state.copy(
+                query = query,
+                reciters = filtered
+            )
+        }
+    }
+
+    override fun onClearQueryClick() {
+        updateState { state ->
+            state.copy(
+                query = "",
+                reciters = state.allReciters
+            )
+        }
+    }
+
+    override fun onBackClick() =
+        sendEffect(SurahRecitersScreenEffect.NavigateBack)
 
     override fun onDownloadClick(reciterId: Int) {
         tryToExecute(
             execute = {
-                surahArgs.surahId?.let {
-                    downloadAndCacheSurah(it, reciterId)
-
-                }
+                val surahId = surahArgs.surahId ?: return@tryToExecute
+                downloadAndCacheSurah(surahId=surahId,reciterId= reciterId)
             },
             onSuccess = { onDownloadComplete(reciterId) },
             dispatcher = dispatcher
@@ -96,26 +111,36 @@ class TilawahViewModel(
 
         val recitersUi = reciters.map { reciter ->
             reciter.toUi(
-                isDownloaded = quranRepository.isSurahAudioCached(surahId, reciter.id)
+                isDownloaded = quranRepository.isSurahAudioCached(
+                    surahId= surahId,
+                    reciterId =reciter.id
+                )
             )
         }
 
-        updateState { it.copy(reciters = recitersUi) }
+        updateState { state ->
+            state.copy(
+                allReciters = recitersUi,
+                reciters = recitersUi
+            )
+        }
     }
+
 
     private suspend fun onDownloadComplete(reciterId: Int) {
         val surahId = surahArgs.surahId ?: return
 
         val isDownloaded = quranRepository.isSurahAudioCached(surahId, reciterId)
 
-        updateState { currentState ->
-            currentState.copy(
-                reciters = currentState.reciters.map { reciter ->
-                    if (reciter.id == reciterId) {
-                        reciter.copy(isDownloaded = isDownloaded)
-                    } else {
-                        reciter
-                    }
+        updateState { state ->
+            state.copy(
+                reciters = state.reciters.map {
+                    if (it.id == reciterId) it.copy(isDownloaded = isDownloaded)
+                    else it
+                },
+                allReciters = state.allReciters.map {
+                    if (it.id == reciterId) it.copy(isDownloaded = isDownloaded)
+                    else it
                 }
             )
         }

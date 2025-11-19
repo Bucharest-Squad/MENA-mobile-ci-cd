@@ -1,4 +1,4 @@
-package net.thechance.mena.faith.presentation.feature.quran.tilwah.component
+package net.thechance.mena.faith.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

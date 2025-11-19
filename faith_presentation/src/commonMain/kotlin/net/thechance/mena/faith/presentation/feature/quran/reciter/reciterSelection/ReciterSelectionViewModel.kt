@@ -1,35 +1,39 @@
-package net.thechance.mena.faith.presentation.feature.quran.reciter
+package net.thechance.mena.faith.presentation.feature.quran.reciter.reciterSelection
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.first
 import mena.faith_presentation.generated.resources.Res
 import mena.faith_presentation.generated.resources.search_reciter
 import net.thechance.mena.faith.domain.model.Reciter
 import net.thechance.mena.faith.domain.repository.QuranRepository
 import net.thechance.mena.faith.presentation.base.BaseViewModel
-import net.thechance.mena.faith.presentation.feature.quran.reciter.args.ReciterArgs
-import net.thechance.mena.faith.presentation.feature.quran.tilwah.toUi
 import org.jetbrains.compose.resources.getString
 
-class ReciterSearchViewModel(
+class ReciterSelectionViewModel(
     private val repository: QuranRepository,
-    private val reciterArgs: ReciterArgs,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
-) : BaseViewModel<ReciterSearchUiState, ReciterSearchEffect>(
-    ReciterSearchUiState()
-), ReciterSearchInteractionListener {
+) : BaseViewModel<RecitersSelectionUiState, ReciterSelectionEffect>(
+    RecitersSelectionUiState()
+), ReciterSelectionListener {
 
     private var searchJob: Job? = null
 
     init {
         initializeSearchHint()
+        fetchAllReciters()
+        updateDefaultReciter()
     }
 
-    override fun onBackClick() = sendEffect(ReciterSearchEffect.NavigateBack)
+    override fun onBackClick() = sendEffect(ReciterSelectionEffect.NavigateBack)
 
-    override fun onClearQueryClick() = updateState { it.copy(query = "") }
+
+    override fun onClearQueryClick() {
+        updateState { it.copy(query = "") }
+        fetchAllReciters()
+    }
 
     override fun onQueryChange(query: String) {
         val lastSearchedQuery = uiState.value.query
@@ -40,6 +44,22 @@ class ReciterSearchViewModel(
         if (query == lastSearchedQuery) return
 
         performSearchWithDelay(query)
+    }
+    override fun onSelectReciterClick(reciterId: Int) {
+        tryToExecute(
+            execute = { repository.saveDefaultReciter(reciterId) },
+            onSuccess = { updateSelectedReciter(reciterId) },
+        )
+    }
+
+    private fun updateDefaultReciter() {
+        tryToExecute(
+            execute = { repository.getDefaultReciter() },
+            onSuccess = { id -> updateSelectedReciter(id.first()) },
+        )
+    }
+    private fun updateSelectedReciter(reciterId: Int) {
+        updateState { it.copy(selectedReciterId = reciterId) }
     }
 
     private fun cancelPreviousSearch() = searchJob?.cancel()
@@ -55,28 +75,21 @@ class ReciterSearchViewModel(
     private suspend fun searchForReciter(query: String): List<Reciter> =
         repository.searchForReciter(query)
 
-    private suspend fun onSearchResultSuccess(reciters: List<Reciter>) {
-        val surahId = reciterArgs.surahId ?: return
-
+    private fun onSearchResultSuccess(reciters: List<Reciter>) {
         val searchResults = reciters.map { reciter ->
-            reciter.toUi(
-                repository.isSurahAudioCached(surahId, reciter.id)
-            )
+            reciter.toUi()
         }
 
         updateState { it.copy(searchResults = searchResults) }
     }
 
-
     private fun isQueryTooShort(query: String): Boolean {
         val isTooShort = query.length < MIN_SEARCH_QUERY_LENGTH
         if (isTooShort) {
-            clearSearchResults()
+            fetchAllReciters()
         }
         return isTooShort
     }
-
-    private fun clearSearchResults() = updateState { it.copy(searchResults = emptyList()) }
 
     private fun initializeSearchHint() {
         tryToExecute(
@@ -84,6 +97,19 @@ class ReciterSearchViewModel(
                 val hint = getString(Res.string.search_reciter)
                 updateState { it.copy(queryHint = hint) }
             }
+        )
+    }
+
+    private fun fetchAllReciters() {
+        tryToExecute(
+            execute = { repository.getReciters() },
+            onSuccess = { allReciters ->
+                val uiReciters = allReciters.map { reciter ->
+                    reciter.toUi()
+                }
+                updateState { it.copy(searchResults = uiReciters) }
+            },
+            dispatcher = dispatcher
         )
     }
 

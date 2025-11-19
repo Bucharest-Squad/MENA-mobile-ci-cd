@@ -1,4 +1,4 @@
-package net.thechance.mena.faith.presentation.feature.quran.tilwah.component
+package net.thechance.mena.faith.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -32,8 +32,6 @@ import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.faith.presentation.components.PlayButton
-import net.thechance.mena.faith.presentation.components.SwappableCard
 import net.thechance.mena.faith.presentation.designSystem.theme.QuranTheme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -44,17 +42,19 @@ fun ReciterItem(
     reciterId: Int,
     reciter: String,
     recitingType: String,
-    isDownloaded: Boolean,
+    isDownloaded: Boolean = false,
+    isDownloadIconVisible: Boolean = false,
     isSwipeable: Boolean,
-    onDownloadClick: () -> Unit,
+    onDownloadClick: () -> Unit = {},
     onSelect: () -> Unit = {},
-    isSelectReciter: Boolean,
+    isSelectReciter: Boolean = false,
+    onDelete: (Int) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     SwappableCard(
         isSwipeable = isSwipeable,
         id = reciterId,
-        onClick = {},
+        onClick = { onDelete(reciterId) },
         backgroundIcon = painterResource(Res.drawable.ic_delete),
         contentDescription = stringResource(Res.string.delete),
         cardContent = { contentModifier ->
@@ -66,6 +66,7 @@ fun ReciterItem(
                 onDownloadClick = onDownloadClick,
                 onSelect = onSelect,
                 isSelectReciter = isSelectReciter,
+                isDownloadIconVisible = isDownloadIconVisible
             )
         },
         modifier = modifier
@@ -82,6 +83,7 @@ private fun CardContent(
     onDownloadClick: () -> Unit,
     onSelect: () -> Unit = {},
     isSelectReciter: Boolean,
+    isDownloadIconVisible: Boolean,
     modifier: Modifier = Modifier
 ) {
     val borderColor = if (isSelectReciter)
@@ -128,12 +130,14 @@ private fun CardContent(
                 isDownloaded = isDownloaded
             )
         }
-        Icon(
-            painterResource(Res.drawable.icon_download),
-            contentDescription = stringResource(Res.string.success),
-            modifier = Modifier.size(size = 20.dp)
-                .clickable(onClick = onDownloadClick)
-        )
+        if (!isDownloaded && isDownloadIconVisible) {
+            Icon(
+                painterResource(Res.drawable.icon_download),
+                contentDescription = stringResource(Res.string.success),
+                modifier = Modifier.size(size = 20.dp)
+                    .clickable(onClick = onDownloadClick)
+            )
+        }
     }
 }
 
@@ -173,17 +177,19 @@ private fun RecitersDetails(
 @Composable
 private fun Preview() {
     MenaTheme {
-        QuranTheme {
-            ReciterItem(
-                reciterId = 1,
-                reciter = "Muhammad Siddiq Al-Minshawi",
-                recitingType = "Teacher - Tajweed",
-                isDownloaded = true,
-                onSelect = {},
-                onDownloadClick = {},
-                isSelectReciter = false,
-                isSwipeable = true,
-            )
-        }
+    QuranTheme {
+        ReciterItem(
+            reciterId = 1,
+            reciter = "Muhammad Siddiq Al-Minshawi",
+            recitingType = "Teacher - Tajweed",
+            isDownloaded = true,
+            onSelect = {},
+            onDownloadClick = {},
+            isSelectReciter = false,
+            isSwipeable = true,
+            isDownloadIconVisible =  true,
+            onDelete = {}
+        )
+    }
     }
 }
