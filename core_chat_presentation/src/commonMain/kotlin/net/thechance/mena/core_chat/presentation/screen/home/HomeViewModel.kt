@@ -267,16 +267,26 @@ class HomeViewModel(
         }
     }
 
-    private fun getCurrentAddressInfo(){
+    private fun getCurrentAddressInfo() {
         tryToExecute(
-            onStart = { updateState { it.copy(isPrayerTimeLoading = true, isWeatherLoading = true) } },
+            onStart = {
+                updateState { it.copy(isPrayerTimeLoading = true, isWeatherLoading = true) }
+            },
             execute = { locationService.getActiveAddress() },
-            onSuccess = {
-                observeNextPrayer(it)
-                getWeatherDetails(it)
-            }
+            onSuccess = ::onGetCurrentAddressSuccess,
+            onError = { onGetCurrentAddressError() }
         )
     }
+
+    private fun onGetCurrentAddressSuccess(address: Address?) {
+        observeNextPrayer(address)
+        getWeatherDetails(address)
+    }
+
+    private fun onGetCurrentAddressError() {
+        updateState { it.copy(isPrayerTimeLoading = false, isWeatherLoading = false) }
+    }
+
     private fun observeNextPrayer(address: Address?){
         if (address == null) return
 
