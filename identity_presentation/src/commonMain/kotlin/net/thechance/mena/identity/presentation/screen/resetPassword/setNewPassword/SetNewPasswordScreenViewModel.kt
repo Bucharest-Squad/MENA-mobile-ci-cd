@@ -95,7 +95,6 @@ class SetNewPasswordScreenViewModel(
 
     private fun checkResetButtonEnabled() {
         updateState {
-            val isPasswordNotEmpty = newPassword.isNotBlank()
             val isPasswordsMatch = passwordValidator.isPasswordMatch(newPassword, confirmPassword)
             val isPasswordSecure = passwordValidator.isValid(newPassword)
 
@@ -103,7 +102,7 @@ class SetNewPasswordScreenViewModel(
                 newPasswordErrorMessage = if (!isPasswordSecure)
                     Res.string.error_password_validation
                 else null,
-                isResetEnabled = isPasswordNotEmpty && isPasswordsMatch && isPasswordSecure
+                isResetEnabled = isPasswordsMatch && isPasswordSecure
             )
         }
     }
