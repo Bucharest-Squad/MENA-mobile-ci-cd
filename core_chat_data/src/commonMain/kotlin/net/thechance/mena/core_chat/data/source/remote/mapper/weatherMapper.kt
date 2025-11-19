@@ -1,10 +1,10 @@
 package net.thechance.mena.core_chat.data.source.remote.mapper
 
-import net.thechance.mena.core_chat.data.source.remote.dto.WeatherDetailsDTO
+import net.thechance.mena.core_chat.data.source.remote.dto.WeatherDetailsDto
 import net.thechance.mena.core_chat.domain.entity.WeatherDetails
 import net.thechance.mena.core_chat.domain.entity.WeatherType
 
-fun WeatherDetailsDTO.toEntity(): WeatherDetails = WeatherDetails(
+fun WeatherDetailsDto.toEntity(): WeatherDetails = WeatherDetails(
     currentTemperature = currentTemperature,
     minTemperature = minTemperature,
     maxTemperature = maxTemperature,

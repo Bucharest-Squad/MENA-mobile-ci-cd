@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class WeatherDetailsDTO(
+data class WeatherDetailsDto(
     @SerialName("currentTemperature") val currentTemperature: Double,
     @SerialName("minTemperature") val minTemperature: Double,
     @SerialName("maxTemperature") val maxTemperature: Double,
