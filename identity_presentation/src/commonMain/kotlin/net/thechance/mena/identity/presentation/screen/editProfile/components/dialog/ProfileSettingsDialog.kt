@@ -57,8 +57,7 @@ fun ScaffoldScope.ProfileSettingsDialog(
         Column(
             modifier = Modifier
                 .align(Alignment.Center)
-                .padding(vertical = Theme.spacing._12),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+                .padding(vertical = Theme.spacing._12)
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
@@ -78,6 +77,7 @@ fun ScaffoldScope.ProfileSettingsDialog(
                 }
             )
             SettingsOption(
+                modifier = Modifier.padding(top = Theme.spacing._8),
                 painter = painterResource(Res.drawable.ic_delete_user),
                 title = stringResource(Res.string.delete_account),
                 onClick = {
