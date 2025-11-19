@@ -83,6 +83,7 @@ private fun ProductItem(
         productDescription = product.description,
         productPrice = product.price,
         isOutOfStock = product.isOutOfStock,
+        isDukanStyleNoImage = true,
         modifier = modifier,
         onProductClick = { listener.onProductClicked(product.id) },
         productAction = {

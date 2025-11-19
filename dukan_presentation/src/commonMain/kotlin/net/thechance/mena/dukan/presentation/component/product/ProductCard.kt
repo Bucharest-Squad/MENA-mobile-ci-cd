@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
@@ -20,16 +21,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import coil3.compose.AsyncImagePainter
 import mena.dukan_presentation.generated.resources.Res
 import mena.dukan_presentation.generated.resources.ic_no_image_loaded
 import mena.dukan_presentation.generated.resources.koin_icon
 import mena.dukan_presentation.generated.resources.out_of_stock
-import mena.dukan_presentation.generated.resources.product_image
 import mena.dukan_presentation.generated.resources.silver_tc
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
@@ -50,6 +53,7 @@ fun ProductCard(
     isOutOfStock: Boolean,
     modifier: Modifier = Modifier,
     productCardBackground: Color? = null,
+    isDukanStyleNoImage: Boolean = false,
     productImageBackground: Color = Theme.colorScheme.background.surfaceLow,
     productAction: @Composable () -> Unit = {},
     onProductClick: () -> Unit = {}
@@ -75,19 +79,24 @@ fun ProductCard(
                 shape = SquircleShape(Theme.radius.md)
             )
         ) {
-            AsyncImage(
-                model = productImageUrl,
-                contentDescription = stringResource(Res.string.product_image),
-                onState = { state ->
-                    isError = state is AsyncImagePainter.State.Error
-                    isLoading = state is AsyncImagePainter.State.Loading
-                },
+            Box(
                 modifier = Modifier
                     .size(96.dp)
-                    .clip(SquircleShape(Theme.radius.sm)),
-                contentScale = ContentScale.Crop
-            )
-            if (isOutOfStock) {
+                    .clip(SquircleShape(Theme.radius.sm))
+                    .background(productImageBackground)
+            ) {
+                AsyncImage(
+                    model = productImageUrl,
+                    contentDescription = null,
+                    modifier = Modifier.matchParentSize(),
+                    contentScale = ContentScale.Crop
+                )
+
+                if (isOutOfStock && isDukanStyleNoImage) {
+                    OutOfStockLabelNoImageDukan()
+                }
+            }
+            if (isOutOfStock && !isDukanStyleNoImage) {
                 OutOfStockLabel()
             }
 
@@ -136,7 +145,33 @@ fun ProductCard(
 }
 
 @Composable
-private fun BoxScope.OutOfStockLabel(){
+private fun BoxScope.OutOfStockLabelNoImageDukan() {
+    val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
+    Box(
+        modifier = Modifier
+            .align(Alignment.Center)
+            .rotate(
+                if (isRtl) -45f else 45f
+            )
+            .offset(y = (-33).dp)
+            .background(
+                color = Theme.colorScheme.brand.brand,
+                shape = RectangleShape
+            ).padding(
+                horizontal = Theme.spacing._16,
+                vertical = Theme.spacing._2
+            )
+    ) {
+        Text(
+            text = stringResource(Res.string.out_of_stock),
+            style = Theme.typography.label.extraSmall,
+            color = Theme.colorScheme.primary.onPrimary,
+        )
+    }
+}
+
+@Composable
+private fun BoxScope.OutOfStockLabel() {
     Box(
         modifier = Modifier
             .clip(SquircleShape(topEnd = Theme.radius.sm, topStart = Theme.radius.sm))
@@ -152,6 +187,7 @@ private fun BoxScope.OutOfStockLabel(){
         )
     }
 }
+
 @Preview
 @Composable
 private fun ProductCardPreview() {
@@ -168,6 +204,6 @@ private fun ProductCardPreview() {
             modifier = Modifier.padding(Theme.spacing._12),
             isOutOfStock = true,
 
-        )
+            )
     }
 }
