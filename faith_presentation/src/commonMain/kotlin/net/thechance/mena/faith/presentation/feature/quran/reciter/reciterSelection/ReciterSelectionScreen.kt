@@ -1,8 +1,6 @@
 package net.thechance.mena.faith.presentation.feature.quran.reciter.reciterSelection
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -42,14 +40,16 @@ fun ReciterSelectionScreen(
     }
     Content(
         state = state,
-        listener = viewModel
+        listener = viewModel,
+
+
     )
 }
 
 @Composable
 private fun Content(
     state: ReciterSelectionUiState,
-    listener: ReciterSelectionListener
+    listener: ReciterSelectionListener,
 ) {
     Scaffold(
         topBar = {
@@ -63,39 +63,37 @@ private fun Content(
                 modifier = Modifier
                     .fillMaxWidth()
             )
-        })
-
-    {
+        }) {
         if (state.query.isNotBlank() && state.searchResults.isEmpty()) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                SearchEmptyState(
-                    subtitle = Res.string.search_reciter,
-                    isStartState = false,
-                    isResultsState = true,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(Theme.spacing._16)
-                )
-            }
+            EmptySearchState(modifier = Modifier.fillMaxWidth())
         } else {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                ResultList(
-                    listener = listener,
-                    uiState = state,
-                    results = state.searchResults,
-                    modifier = Modifier.fillMaxWidth().weight(1f).padding(top = Theme.spacing._16)
-                )
-            }
+            ResultList(
+                listener = listener,
+                uiState = state,
+                results = state.searchResults,
+                modifier = Modifier.fillMaxWidth().padding(top = Theme.spacing._16)
+            )
         }
     }
 }
+
+@Composable
+private fun EmptySearchState(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.Center
+    ) {
+        SearchEmptyState(
+            subtitle = Res.string.search_reciter,
+            isStartState = false,
+            isResultsState = true,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(Theme.spacing._16)
+        )
+    }
+}
+
 @Composable
 private fun ResultList(
     uiState : ReciterSelectionUiState,
@@ -120,7 +118,7 @@ private fun ResultList(
                 onDownloadClick = {},
                 isSelectReciter = result.id == uiState.selectedReciterId,
                 isSwipeable = false,
-                downloadedIcon = false,
+                isDownloadIconVisible = false,
                 onDelete = {}
             )
         }

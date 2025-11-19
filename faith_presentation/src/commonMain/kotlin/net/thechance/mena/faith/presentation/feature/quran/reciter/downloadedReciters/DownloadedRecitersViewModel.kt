@@ -27,53 +27,41 @@ class DownloadedRecitersViewModel(
 
     override fun onBackClick() = sendEffect(DownloadedRecitersEffect.NavigateBack)
 
-
     override fun onQueryChange(query: String) {
         updateState { it.copy(query = query) }
         applyLocalSearch(query)
     }
 
     override fun onClearQueryClick() {
-        updateState { it.copy(query = "", reciters = uiState.value.allReciters) }
+        updateState { it.copy(query = "", reciters = uiState.value.reciters) }
     }
 
     private fun applyLocalSearch(query: String) {
-        if (query.isBlank()) {
-            updateState { it.copy(reciters = it.allReciters) }
-            return
+        val currentList = uiState.value.reciters
+        val filtered = if (query.isBlank()) {
+            currentList
+        } else {
+            currentList.filter { it.name.contains(query, ignoreCase = true) }
         }
-
-        val filtered = uiState.value.allReciters.filter {
-            it.name.contains(query, ignoreCase = true)
-        }
-
         updateState { it.copy(reciters = filtered) }
     }
+
     override fun onDeleteReciterAudioClick(reciterId: Int) {
         val surahId = uiState.value.surahId ?: return
 
         tryToExecute(
-            execute = { quranRepository.deleteSurahAudioByReciter(surahId, reciterId) },
+            execute = { quranRepository.deleteSurahAudioByReciter(surahId = surahId, reciterId = reciterId) },
             onSuccess = { updateReciterAfterDelete(reciterId) },
             dispatcher = dispatcher
         )
     }
 
     private fun updateReciterAfterDelete(reciterId: Int) {
-        val updated = uiState.value.allReciters.map { reciterUi ->
-            if (reciterUi.id == reciterId)
-                reciterUi.copy(isDownloaded = false)
-            else reciterUi
+        val updated = uiState.value.reciters.map { reciterUi ->
+            if (reciterUi.id == reciterId) reciterUi.copy(isDownloaded = false) else reciterUi
         }
-
-        updateState {
-            it.copy(
-                allReciters = updated,
-                reciters = updated
-            )
-        }
+        updateState { it.copy(reciters = updated) }
     }
-
 
     override fun onSelectReciterClick(reciterId: Int) {
         tryToExecute(
@@ -105,22 +93,14 @@ class DownloadedRecitersViewModel(
         val surahId = surahArgs.surahId ?: return
 
         val downloadedReciters = reciters.filter { reciter ->
-            quranRepository.isSurahAudioCached(surahId, reciter.id)
+            quranRepository.isSurahAudioCached(surahId = surahId, reciterId = reciter.id)
         }
 
         val mapped = downloadedReciters.map { reciter ->
-            reciter.toUi(
-                isDownloaded = true
-            )
+            reciter.toUi(isDownloaded = true)
         }
 
-        updateState {
-            it.copy(
-                allReciters = mapped,
-                reciters = mapped
-            )
-        }
+        updateState { it.copy(reciters = mapped) }
     }
-
 
 }

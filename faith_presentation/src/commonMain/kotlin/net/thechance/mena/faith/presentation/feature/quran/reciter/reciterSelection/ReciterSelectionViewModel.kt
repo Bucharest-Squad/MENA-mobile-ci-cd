@@ -102,8 +102,8 @@ class ReciterSelectionViewModel(
 
     private fun fetchAllReciters() {
         tryToExecute(
-            execute = {
-                val allReciters = repository.getReciters()
+            execute = { repository.getReciters() },
+            onSuccess = { allReciters ->
                 val uiReciters = allReciters.map { reciter ->
                     reciter.toUi()
                 }

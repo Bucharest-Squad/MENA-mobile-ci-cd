@@ -43,7 +43,7 @@ fun ReciterItem(
     reciter: String,
     recitingType: String,
     isDownloaded: Boolean,
-    downloadedIcon: Boolean,
+    isDownloadIconVisible: Boolean,
     isSwipeable: Boolean,
     onDownloadClick: () -> Unit,
     onSelect: () -> Unit = {},
@@ -66,7 +66,7 @@ fun ReciterItem(
                 onDownloadClick = onDownloadClick,
                 onSelect = onSelect,
                 isSelectReciter = isSelectReciter,
-                downloadedIcon = downloadedIcon
+                downloadedIcon = isDownloadIconVisible
             )
         },
         modifier = modifier
@@ -187,7 +187,7 @@ private fun Preview() {
             onDownloadClick = {},
             isSelectReciter = false,
             isSwipeable = true,
-            downloadedIcon =  true,
+            isDownloadIconVisible =  true,
             onDelete = {}
         )
     }

@@ -5,7 +5,7 @@ import net.thechance.mena.faith.domain.model.Reciter
 
 data class ReciterSelectionUiState(
     val query: String = "",
-    val queryHint: String = "",
+    val queryHint: String = "Search reciter",
     val lastSearchedQuery: String = "",
     val searchResults: List<ReciterSelectionUi> = emptyList(),
     val selectedReciterId: Int? = null,

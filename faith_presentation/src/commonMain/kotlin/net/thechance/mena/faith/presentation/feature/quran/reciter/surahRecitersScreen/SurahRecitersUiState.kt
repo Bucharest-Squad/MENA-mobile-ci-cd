@@ -7,7 +7,7 @@ data class SurahRecitersUiState(
     val allReciters: List<SurahRecitersUi> = emptyList(),
     val reciters: List<SurahRecitersUi> = emptyList(),
     val query: String = "",
-    val queryHint: String = "Search...",
+    val queryHint: String = "Search reciter",
     val selectedReciterId: Int? = null,
 )
 

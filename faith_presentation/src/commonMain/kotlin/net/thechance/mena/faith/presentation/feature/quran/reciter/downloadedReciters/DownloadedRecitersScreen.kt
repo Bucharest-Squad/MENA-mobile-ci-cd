@@ -60,8 +60,7 @@ private fun Content(
                 onQueryChange = listener::onQueryChange,
                 clearQuery = listener::onClearQueryClick,
                 onBackClick = listener::onBackClick,
-                modifier = Modifier
-                    .fillMaxWidth()
+                modifier = Modifier.fillMaxWidth()
             )
         }
     ) {
@@ -83,7 +82,7 @@ private fun Content(
             }
         } else {
             LazyColumn(
-                contentPadding = PaddingValues(bottom = Theme.spacing._16),
+                contentPadding = PaddingValues(bottom = Theme.spacing._8),
             ) {
                 items(uiState.reciters) { reciter ->
                     ReciterItem(
@@ -97,7 +96,7 @@ private fun Content(
                         onDownloadClick = {},
                         isSelectReciter = false,
                         isSwipeable = uiState.isSwipeable,
-                        downloadedIcon = false,
+                        isDownloadIconVisible = false,
                         onDelete = { listener.onDeleteReciterAudioClick(it) }
                     )
                 }

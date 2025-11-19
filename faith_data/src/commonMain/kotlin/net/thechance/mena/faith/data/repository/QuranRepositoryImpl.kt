@@ -175,7 +175,7 @@ class QuranRepositoryImpl(
 
     override suspend fun deleteSurahAudioByReciter(surahId: Int, reciterId: Int) {
         executeLocalSafely {
-            recitersDao.deleteSpecificDownloadedAudio(surahId, reciterId)
+            recitersDao.deleteSpecificDownloadedAudio(surahId = surahId,reciterId = reciterId)
         }
     }
 

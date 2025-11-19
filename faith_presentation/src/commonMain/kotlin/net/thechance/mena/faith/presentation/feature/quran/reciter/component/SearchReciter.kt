@@ -38,68 +38,101 @@ fun SearchReciter(
     var isSearchMode by remember { mutableStateOf(false) }
 
     if (isSearchMode) {
-        Row(
+        SearchModeBar(
+            query = query,
+            hint = hint,
+            onQueryChange = onQueryChange,
+            clearQuery = clearQuery,
+            onExitSearch = { isSearchMode = false },
             modifier = modifier
-                .padding(horizontal = Theme.spacing._16, vertical = Theme.spacing._4),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(Theme.spacing._8)
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(RoundedCornerShape(Theme.radius.md))
-                    .background(Theme.colorScheme.background.surfaceLow)
-                    .clickable {
-                        isSearchMode = false
-                        clearQuery()
-                    },
-                contentAlignment = Alignment.Center
-            ) {
-                Image(
-                    modifier = Modifier.size(20.dp),
-                    painter = painterResource(Res.drawable.ic_arrow_left),
-                    contentDescription = stringResource(Res.string.back)
-                )
-            }
-
-            TextField(
-                modifier = Modifier
-                    .weight(1f),
-                value = query,
-                hint = hint,
-                onValueChanged = onQueryChange,
-                leadingIcon = painterResource(Res.drawable.ic_outline_search),
-                leadingIconTint = Theme.colorScheme.shadeSecondary,
-                trailingIcon = if (query.isNotBlank()) painterResource(Res.drawable.ic_clear) else null,
-                onTrailingIconClick = clearQuery
-            )
-        }
+        )
     } else {
-        AppBar(
-            modifier = modifier,
+        NormalAppBar(
             title = title,
-            leadingContent = {
-                Image(
-                    modifier = Modifier.size(20.dp),
-                    painter = painterResource(Res.drawable.ic_arrow_left),
-                    contentDescription = stringResource(Res.string.back)
-                )
-            },
-            onLeadingClick = onBackClick,
-            trailingContent = {
-                AppBarOptionContainer(
-                    onClick = { isSearchMode = true }
-                ) {
-                    Image(
-                        modifier = Modifier.size(20.dp),
-                        painter = painterResource(Res.drawable.ic_outline_search),
-                        contentDescription = "Search"
-                    )
-                }
-            }
+            onBackClick = onBackClick,
+            onSearchClick = { isSearchMode = true },
+            modifier = modifier
         )
     }
 }
+
+
+@Composable
+private fun SearchModeBar(
+    query: String,
+    hint: String,
+    onQueryChange: (String) -> Unit,
+    clearQuery: () -> Unit,
+    onExitSearch: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier.padding(horizontal = Theme.spacing._16, vertical = Theme.spacing._4),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(Theme.spacing._8)
+    ) {
+        Box(
+            modifier = Modifier.size(40.dp)
+                .clip(RoundedCornerShape(Theme.radius.md))
+                .background(Theme.colorScheme.background.surfaceLow)
+                .clickable {
+                    onExitSearch()
+                    clearQuery()
+                },
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                modifier = Modifier.size(20.dp),
+                painter = painterResource(Res.drawable.ic_arrow_left),
+                contentDescription = stringResource(Res.string.back)
+            )
+        }
+
+        TextField(
+            modifier = Modifier.weight(1f),
+            value = query,
+            hint = hint,
+            onValueChanged = onQueryChange,
+            leadingIcon = painterResource(Res.drawable.ic_outline_search),
+            leadingIconTint = Theme.colorScheme.shadeSecondary,
+            trailingIcon = if (query.isNotBlank()) painterResource(Res.drawable.ic_clear) else null,
+            onTrailingIconClick = clearQuery
+        )
+    }
+}
+
+@Composable
+private fun NormalAppBar(
+    title: String,
+    onBackClick: () -> Unit,
+    onSearchClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    AppBar(
+        modifier = modifier,
+        title = title,
+        leadingContent = {
+            Image(
+                modifier = Modifier.size(20.dp),
+                painter = painterResource(Res.drawable.ic_arrow_left),
+                contentDescription = stringResource(Res.string.back)
+            )
+        },
+        onLeadingClick = onBackClick,
+        trailingContent = {
+            AppBarOptionContainer(
+                onClick = onSearchClick
+            ) {
+                Image(
+                    modifier = Modifier.size(20.dp),
+                    painter = painterResource(Res.drawable.ic_outline_search),
+                    contentDescription = "Search"
+                )
+            }
+        }
+    )
+}
+
 
 @Preview
 @Composable
@@ -118,19 +151,3 @@ private fun SearchHeaderPreview() {
     }
 }
 
-@Preview
-@Composable
-private fun SearchHeaderSearchModePreview() {
-    MenaTheme {
-        QuranTheme {
-            SearchReciter(
-                query = "Abdul",
-                hint = "Search in Reciter...",
-                onQueryChange = {},
-                clearQuery = {},
-                onBackClick = {},
-                title = "Reciter"
-            )
-        }
-    }
-}

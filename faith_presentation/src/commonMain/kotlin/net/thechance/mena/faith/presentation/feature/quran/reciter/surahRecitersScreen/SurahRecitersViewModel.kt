@@ -35,13 +35,8 @@ class SurahRecitersViewModel(
 
     override fun onQueryChange(newQuery: String) {
         updateState { state ->
-            val filtered = if (newQuery.isBlank()) {
-                state.allReciters
-            } else {
-                state.allReciters.filter {
-                    it.name.contains(newQuery, ignoreCase = true)
-                }
-            }
+            val filtered = if (newQuery.isBlank()) state.allReciters
+            else state.allReciters.filter { it.name.contains(newQuery, ignoreCase = true) }
 
             state.copy(
                 query = newQuery,
@@ -66,7 +61,7 @@ class SurahRecitersViewModel(
         tryToExecute(
             execute = {
                 val surahId = surahArgs.surahId ?: return@tryToExecute
-                downloadAndCacheSurah(surahId, reciterId)
+                downloadAndCacheSurah(surahId=surahId,reciterId= reciterId)
             },
             onSuccess = { onDownloadComplete(reciterId) },
             dispatcher = dispatcher
@@ -119,8 +114,8 @@ class SurahRecitersViewModel(
         val recitersUi = reciters.map { reciter ->
             reciter.toUi(
                 isDownloaded = quranRepository.isSurahAudioCached(
-                    surahId,
-                    reciter.id
+                    surahId= surahId,
+                    reciterId =reciter.id
                 )
             )
         }

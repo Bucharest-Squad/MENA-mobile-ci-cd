@@ -4,10 +4,9 @@ import net.thechance.mena.faith.domain.model.Reciter
 
 data class DownloadedRecitersUiState(
     val surahId: Int? = null,
-    val allReciters: List<DownloadedRecitersUi> = emptyList(),
     val reciters: List<DownloadedRecitersUi> = emptyList(),
     val query: String = "",
-    val queryHint: String = "Search...",
+    val queryHint: String = "Search reciter",
     val selectedReciterId: Int? = null,
     val isSwipeable: Boolean = false,
 )
