@@ -36,6 +36,7 @@ import net.thechance.mena.core_chat.domain.model.SyncState
 import net.thechance.mena.core_chat.domain.repository.ChatRepository
 import net.thechance.mena.core_chat.domain.repository.ContactsRepository
 import net.thechance.mena.core_chat.domain.repository.MessageRepository
+import net.thechance.mena.core_chat.domain.repository.WeatherRepository
 import net.thechance.mena.core_chat.presentation.screen.home.HomeScreenState.ChatUiState
 import net.thechance.mena.faith.domain.repository.PrayerTimeRepository
 import net.thechance.mena.faith.domain.service.PrayerTimeService
@@ -55,6 +56,7 @@ class HomeViewModelTest {
     private val chatRepository = mock<ChatRepository>(MockMode.autofill)
     private val messageRepository = mock<MessageRepository>(MockMode.autofill)
     private val balanceRepository = mock<BalanceRepository>(MockMode.autofill)
+    private val weatherRepository = mock<WeatherRepository>(MockMode.autofill)
 
     private lateinit var addressesRepository: AddressesRepository
     private lateinit var locationService: LocationService
@@ -618,6 +620,7 @@ class HomeViewModelTest {
             balanceRepository = balanceRepository,
             prayerTimeService = prayerTimeService,
             locationService = locationService,
+            weatherRepository = weatherRepository,
             dispatcher = testDispatcher
         )
     }
