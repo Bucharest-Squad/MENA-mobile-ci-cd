@@ -55,6 +55,7 @@ import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.identity.presentation.base.BaseScreen
 import net.thechance.mena.identity.presentation.components.GregorianDatePicker
 import net.thechance.mena.identity.presentation.screen.editProfile.components.AtPrefixTransformation
+import net.thechance.mena.identity.presentation.screen.editProfile.components.DialogActionButton
 import net.thechance.mena.identity.presentation.screen.editProfile.components.EditProfileImage
 import net.thechance.mena.identity.presentation.screen.editProfile.components.GenderToggle
 import net.thechance.mena.identity.presentation.screen.editProfile.components.MoreActionsButton
@@ -150,14 +151,12 @@ class EditUserProfileScreen : BaseScreen<
                         title = stringResource(Res.string.logout_title),
                         message = stringResource(Res.string.logout_description),
                         onDismiss = listener::onDismissConfirmLogoutDialog,
+                        onCancelClick = listener::onDismissConfirmLogoutDialog,
                         actionButtons = {
-                            TextButton(
-                                modifier = Modifier
-                                    .padding(vertical = Theme.spacing._24, horizontal = Theme.spacing._8)
-                                    .align(Alignment.End),
+                            DialogActionButton(
                                 text = stringResource(Res.string.logout),
                                 onClick = listener::onConfirmLogout,
-                                contentColor = Theme.colorScheme.error
+                                modifier = Modifier.align(Alignment.End)
                             )
                         }
                     )
@@ -169,14 +168,12 @@ class EditUserProfileScreen : BaseScreen<
                         title = stringResource(Res.string.delete_account_title),
                         message = stringResource(Res.string.delete_account_description),
                         onDismiss = listener::onDismissConfirmDeleteAccountDialog,
+                        onCancelClick = listener::onDismissConfirmDeleteAccountDialog,
                         actionButtons = {
-                            TextButton(
-                                modifier = Modifier
-                                    .padding(vertical = Theme.spacing._24, horizontal = Theme.spacing._8)
-                                    .align(Alignment.End),
+                            DialogActionButton(
                                 text = stringResource(Res.string.delete_account),
                                 onClick = listener::onConfirmDeleteAccount,
-                                contentColor = Theme.colorScheme.error
+                                modifier = Modifier.align(Alignment.End)
                             )
                         }
                     )
