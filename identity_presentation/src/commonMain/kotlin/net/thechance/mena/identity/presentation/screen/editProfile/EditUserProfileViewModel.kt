@@ -150,27 +150,47 @@ class EditUserProfileViewModel(
 
     override fun onConfirmLogout() {
         tryToExecute(
-            function = {
-                authenticationRepository.logout()
-                registrationDraftRepository.clearLastPhoneNumber()
-            },
-            onSuccess = { updateState { copy(showConfirmLogoutDialog = false) } },
-            onError = { throwable -> updateState { copy(showConfirmLogoutDialog = false, errorMessage = mapErrorMessage(throwable)) } },
+            function = ::performLogout,
+            onSuccess = { onLogoutSuccess() },
+            onError = ::onLogoutError,
             dispatcher = dispatcher
         )
     }
 
+    private suspend fun performLogout() {
+        authenticationRepository.logout()
+        registrationDraftRepository.clearLastPhoneNumber()
+    }
+
+    private fun onLogoutSuccess() {
+        updateState { copy(showConfirmLogoutDialog = false) }
+    }
+
+    private fun onLogoutError(throwable: Throwable) {
+        updateState { copy(showConfirmLogoutDialog = false, errorMessage = mapErrorMessage(throwable)) }
+    }
+
     override fun onConfirmDeleteAccount() {
         tryToExecute(
-            function = {
-                userRepository.deleteAccount()
-                authenticationRepository.clearAuthTokens()
-                registrationDraftRepository.clearLastPhoneNumber()
-            },
-            onSuccess = { updateState { copy(showConfirmDeleteAccountDialog = false) } },
-            onError = { throwable -> updateState { copy(showConfirmDeleteAccountDialog = false, errorMessage = mapErrorMessage(throwable)) } },
+            function = ::performDeleteAccount,
+            onSuccess = { onDeleteAccountSuccess() },
+            onError = ::onDeleteAccountError,
             dispatcher = dispatcher
         )
+    }
+
+    private suspend fun performDeleteAccount() {
+        userRepository.deleteAccount()
+        authenticationRepository.clearAuthTokens()
+        registrationDraftRepository.clearLastPhoneNumber()
+    }
+
+    private fun onDeleteAccountSuccess() {
+        updateState { copy(showConfirmDeleteAccountDialog = false) }
+    }
+
+    private fun onDeleteAccountError(throwable: Throwable) {
+        updateState { copy(showConfirmDeleteAccountDialog = false, errorMessage = mapErrorMessage(throwable)) }
     }
 
     override fun onRemoveProfileImage() {
