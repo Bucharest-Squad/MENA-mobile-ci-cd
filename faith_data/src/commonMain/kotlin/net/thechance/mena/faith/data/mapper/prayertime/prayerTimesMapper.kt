@@ -9,7 +9,7 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
-fun PrayerTimesDto.toDomain(): List<PrayerTime> = getPrayerTimesList(
+fun PrayerTimesDto.toDomain(): List<PrayerTime> = generatePrayerTimesList(
     hijriDate = hijriDate.orEmpty(),
     fajrTime = fajr.toInstant(),
     sunriseTime = sunrise.toInstant(),
@@ -20,7 +20,7 @@ fun PrayerTimesDto.toDomain(): List<PrayerTime> = getPrayerTimesList(
 )
 
 @OptIn(ExperimentalTime::class)
-fun PrayerTimesLocal.toDomain(): List<PrayerTime> = getPrayerTimesList(
+fun PrayerTimesLocal.toDomain(): List<PrayerTime> = generatePrayerTimesList(
     hijriDate = hijriDate,
     fajrTime = fajr.toInstant(),
     sunriseTime = sunrise.toInstant(),
@@ -48,7 +48,7 @@ fun PrayerTimesDto.toLocal(
 )
 
 @OptIn(ExperimentalTime::class)
-private fun getPrayerTimesList(
+private fun generatePrayerTimesList(
     hijriDate: String,
     fajrTime: Instant,
     sunriseTime: Instant,
