@@ -60,6 +60,7 @@ import net.thechance.mena.core_chat.presentation.components.snackBarHost.SnackBa
 import net.thechance.mena.core_chat.presentation.utils.AudioPlayer
 import net.thechance.mena.core_chat.presentation.utils.UiText
 import net.thechance.mena.core_chat.presentation.utils.now
+import net.thechance.mena.wallet.domain.repository.TransactionRepository
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -76,6 +77,7 @@ class ChatViewModelTest {
     private val chatArgs = mock<ChatArgs>()
     private val imageDownloaderService = mock<ImageDownloaderService>()
     private val permissionsController = mock<PermissionsController>()
+    private val transactionRepository = mock<TransactionRepository>()
     private val audioPlayer = mock<AudioPlayer>()
     private lateinit var viewModel: ChatViewModel
 
@@ -1236,7 +1238,8 @@ class ChatViewModelTest {
             permissionsController = permissionsController,
             audioPlayer = audioPlayer,
             chatArgs = chatArgs,
-            dispatcher = testDispatcher
+            dispatcher = testDispatcher,
+            transactionRepository = transactionRepository,
         )
     }
 
@@ -1259,6 +1262,7 @@ class ChatViewModelTest {
         )
         val chatId = Uuid.parse("11111111-1111-1111-1111-111111111111")
         val chatRequesterId = Uuid.parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa")
+        val receiverId = Uuid.parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa")
         val chatName = "Noor"
         val chatImage = "https://image.com/noor.jpg"
 
@@ -1266,7 +1270,8 @@ class ChatViewModelTest {
             id = chatId,
             name = chatName,
             imageUrl = chatImage,
-            requesterId = chatRequesterId
+            requesterId = chatRequesterId,
+            receiverId = receiverId
         )
 
         val message1Id = Uuid.parse("22222222-2222-2222-2222-222222222222")
