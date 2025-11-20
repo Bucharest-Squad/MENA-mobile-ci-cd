@@ -28,6 +28,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun EmptyDownloadState(
     modifier: Modifier = Modifier
 ) {
+
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
