@@ -164,7 +164,7 @@ fun Message.toUi(): MessageUiState {
             surahId = content.surahId,
             ayahContent = content.ayahContent,
             ayahNumber = content.ayahNumber,
-            surahName = "",
+            surahName = content.surahName,
             messageDetails = messageDetails
         )
 
@@ -220,6 +220,7 @@ fun MessageUiState.toEntity(): Message {
                 senderId = messageDetails.senderId,
                 content = Ayah(
                     surahId = surahId,
+                    surahName = surahName,
                     ayahContent = ayahContent,
                     ayahNumber = ayahNumber
                 ),

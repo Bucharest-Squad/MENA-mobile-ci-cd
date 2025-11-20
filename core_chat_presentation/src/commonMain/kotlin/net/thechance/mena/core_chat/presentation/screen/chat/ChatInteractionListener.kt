@@ -28,6 +28,8 @@ interface ChatInteractionListener : MessageListInteractionListener,
     fun onSendRecordClicked()
 
     fun onStopAudioPlayback()
+
+    fun onLinkClicked(url: String)
 }
 
 interface MessageListInteractionListener {

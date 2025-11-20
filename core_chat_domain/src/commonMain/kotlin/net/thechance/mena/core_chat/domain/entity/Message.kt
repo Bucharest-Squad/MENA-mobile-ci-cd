@@ -28,7 +28,12 @@ sealed interface MessageContent {
     data class Image(val data: ImageData) : MessageContent
     data class Audio(val data: AudioData, val audioDurationMs: Long? = null) : MessageContent
     data class Money(val amount: Double): MessageContent
-    data class Ayah(val surahId: Int,val ayahContent:String, val ayahNumber: Int) : MessageContent
+    data class Ayah(
+        val surahId: Int,
+        val surahName: String,
+        val ayahContent: String,
+        val ayahNumber: Int
+    ) : MessageContent
 }
 
 sealed interface ImageData {
