@@ -74,23 +74,23 @@ private fun CardContent(
 ) {
     val surahNameImage = getSurahNameDrawableResource(surahDetailsUiState.arabicNameImg)
     Row(
-        verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
-            .padding(
-                horizontal = Theme.spacing._12,
-                vertical = Theme.spacing._8,
-            ),
+            .padding(horizontal = Theme.spacing._12, vertical = Theme.spacing._8),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
+
         PlayButton(
             painterIcon = painterResource(Res.drawable.ic_play_circle),
             contentDescription = stringResource(Res.string.play),
             modifier = Modifier.padding(end = Theme.spacing._12),
         )
+
         SurahDetails(
             surahDetailsUiState,
             modifier = Modifier.weight(1f),
         )
+
         Icon(
             painter = painterResource(surahNameImage),
             contentDescription = stringResource(Res.string.surah_arabic_name_icon),
