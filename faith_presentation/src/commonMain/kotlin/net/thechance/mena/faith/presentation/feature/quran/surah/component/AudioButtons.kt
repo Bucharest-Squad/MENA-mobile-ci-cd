@@ -2,6 +2,7 @@ package net.thechance.mena.faith.presentation.feature.quran.surah.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -85,7 +87,11 @@ fun AudioButtons(
                 contentDescription = stringResource(Res.string.reciters),
                 tint = Theme.colorScheme.primary.primary,
                 modifier = Modifier.size(24.dp)
-                    .clickable(onClick = onReciterClick)
+                    .clickable(
+                        onClick = onReciterClick,
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    )
             )
 
             Row(
@@ -103,7 +109,11 @@ fun AudioButtons(
                     contentDescription = stringResource(Res.string.previous_ayah),
                     tint = Theme.colorScheme.primary.primary,
                     modifier = Modifier.size(24.dp)
-                        .clickable(onClick = onPreviousClick)
+                        .clickable(
+                            onClick = onPreviousClick,
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null
+                        )
                 )
 
                 Icon(
@@ -115,7 +125,11 @@ fun AudioButtons(
                     ),
                     tint = Theme.colorScheme.primary.primary,
                     modifier = Modifier.size(24.dp)
-                        .clickable(onClick = onPlayPauseClick)
+                        .clickable(
+                            onClick = onPlayPauseClick,
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null
+                        )
                 )
 
                 Icon(
@@ -123,7 +137,11 @@ fun AudioButtons(
                     contentDescription = stringResource(Res.string.next_ayah),
                     tint = Theme.colorScheme.primary.primary,
                     modifier = Modifier.size(24.dp)
-                        .clickable(onClick = onNextClick)
+                        .clickable(
+                            onClick = onNextClick,
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null
+                        )
                 )
             }
 
@@ -137,7 +155,11 @@ fun AudioButtons(
                     tint = Theme.colorScheme.primary.primary,
                     modifier = Modifier.padding(end = Theme.spacing._12)
                         .size(24.dp)
-                        .clickable(onClick = onRepeatClick)
+                        .clickable(
+                            onClick = onRepeatClick,
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null
+                        )
 
                 )
 
@@ -146,8 +168,11 @@ fun AudioButtons(
                     contentDescription = stringResource(Res.string.read_all_surah),
                     tint = Theme.colorScheme.primary.primary,
                     modifier = Modifier.size(24.dp)
-                        .clickable(onClick = onTilawahClick)
-
+                        .clickable(
+                            onClick = onTilawahClick,
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null
+                        )
                 )
             }
         }
