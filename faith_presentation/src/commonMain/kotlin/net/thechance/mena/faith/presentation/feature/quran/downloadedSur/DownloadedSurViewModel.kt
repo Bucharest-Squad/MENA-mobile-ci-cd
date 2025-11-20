@@ -18,10 +18,10 @@ class DownloadedSurViewModel(
     private fun loadDownloadedSur() {
         tryToExecute(
             execute = { quranRepository.getDownloadedSur() },
-            onSuccess = { downloadedList ->
-                updateState { downlodedSurah ->
-                    downlodedSurah.copy(
-                        surDetails = downloadedList.map { it.toUiState() }
+            onSuccess = { downloadedSurah ->
+                updateState {
+                    it.copy(
+                        surDetails = downloadedSurah.map { surah -> surah.toUiState() }
                     )
                 }
             }
