@@ -671,6 +671,18 @@ class HomeViewModelTest {
         assertThat(viewModel.state.value.isWeatherLoading).isFalse()
     }
 
+    @Test
+    fun `when get current address fails then should update state`() = runTest {
+        everySuspend { addressesRepository.getActiveAddress() } throws RuntimeException()
+        everySuspend { chatRepository.getChatsSummary(any(), any()) } returns createEmptyPagedData()
+
+        val viewModel = createViewModel()
+        advanceUntilIdle()
+
+        assertThat(viewModel.state.value.isWeatherLoading).isFalse()
+        assertThat(viewModel.state.value.isPrayerTimeLoading).isFalse()
+    }
+
     private fun createViewModel(): HomeViewModel {
         return HomeViewModel(
             contactsRepository = contactsRepository,
