@@ -23,6 +23,7 @@ internal fun BasmalaHeader(
     selectedAyahIndex: Int?,
     onDismissActionButtons: () -> Unit
 ) {
+
     Image(
         painter = painterResource(Res.drawable.ic_bismillah),
         colorFilter = ColorFilter.tint(Theme.colorScheme.primary.primary),
