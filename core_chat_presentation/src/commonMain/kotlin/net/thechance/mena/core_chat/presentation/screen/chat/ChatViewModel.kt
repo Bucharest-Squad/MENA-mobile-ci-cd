@@ -337,8 +337,7 @@ class ChatViewModel(
         )
     }
 
-    private suspend fun onCollectNewMessage(message: Message?) {
-        if (message == null) return
+    private suspend fun onCollectNewMessage(message: Message) {
         safeUpdateMessages { current ->
             current.toMutableList().apply { add(0, message) }
                 .distinctBy { it.id }
@@ -362,8 +361,8 @@ class ChatViewModel(
         )
     }
 
-    private suspend fun onCollectPendingMessages(messages: List<Message>?) {
-        val pendingMessages = messages ?: emptyList()
+    private suspend fun onCollectPendingMessages(messages: List<Message>) {
+        val pendingMessages = messages
         safeUpdateMessages { current ->
             current
                 .filter { it.status != MessageStatus.LOADING }
@@ -411,8 +410,7 @@ class ChatViewModel(
         )
     }
 
-    private fun onCollectDeleteChatEvent(deleteChatEvent: DeleteChatEvent?) {
-        if (deleteChatEvent == null) return
+    private fun onCollectDeleteChatEvent(deleteChatEvent: DeleteChatEvent) {
         onDeleteChatSuccess()
         emitEffect(ChatScreenEffect.NavigateBack)
     }
@@ -424,8 +422,7 @@ class ChatViewModel(
         )
     }
 
-    private suspend fun onCollectReadMessagesEvent(markMessageAsReadEvent: MarkMessageAsReadEvent?) {
-        if (markMessageAsReadEvent == null) return
+    private suspend fun onCollectReadMessagesEvent(markMessageAsReadEvent: MarkMessageAsReadEvent) {
         safeUpdateMessages { messages ->
             messages.map { message ->
                 if (message.senderId != markMessageAsReadEvent.readByUserId && message.status == MessageStatus.SENT)
@@ -557,8 +554,7 @@ class ChatViewModel(
     }
 
 
-    private suspend fun onCollectAddReaction(reaction: MessageReaction?) {
-        if (reaction == null) return
+    private suspend fun onCollectAddReaction(reaction: MessageReaction) {
         safeUpdateMessages { messages ->
             messages.map { message ->
                 if (message.id == reaction.messageId) {
@@ -593,8 +589,7 @@ class ChatViewModel(
         }
     }
 
-    private suspend fun onCollectRemoveReaction(reaction: MessageReaction?) {
-        if (reaction == null) return
+    private suspend fun onCollectRemoveReaction(reaction: MessageReaction) {
         safeUpdateMessages { messages ->
             messages.map { message ->
                 if (message.id == reaction.messageId) {

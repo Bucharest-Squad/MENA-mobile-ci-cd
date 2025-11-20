@@ -77,7 +77,7 @@ open class BaseViewModel<S, E>(
     protected fun <T> tryToCollect(
         onStart: () -> Unit = {},
         collect: () -> Flow<T>,
-        onCollect: suspend (T?) -> Unit,
+        onCollect: suspend (T) -> Unit,
         onError: (Throwable) -> Unit = {},
         coroutineScope: CoroutineScope = viewModelScope,
         dispatcher: CoroutineDispatcher = defaultDispatcher,
