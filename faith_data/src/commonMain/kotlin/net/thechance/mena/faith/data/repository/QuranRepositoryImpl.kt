@@ -8,7 +8,6 @@ import net.thechance.mena.faith.data.database.SurahAudioDao
 import net.thechance.mena.faith.data.database.SurahAudioDto
 import net.thechance.mena.faith.data.datastore.TilawahDataStore
 import net.thechance.mena.faith.data.mapper.toAyah
-import net.thechance.mena.faith.data.mapper.toDownlodedSurUi
 import net.thechance.mena.faith.data.mapper.toReciter
 import net.thechance.mena.faith.data.mapper.toReciterDto
 import net.thechance.mena.faith.data.mapper.toSurah
@@ -55,13 +54,29 @@ class QuranRepositoryImpl(
         tilawahDataStore.saveLastAyah(savedAyah)
 
     override suspend fun getDownloadedSur(): List<DownlodedSur> = executeLocalSafely {
-        surahSoundDao.getDownloadedSurahWithReciter().map {
-            it.toDownlodedSurUi(
-                surahName = getSurahById(it.surahId).name,
-                reciterName = recitersDao.getReciterById(it.reciterId).name
-            )
-        }
+        surahSoundDao.getDownloadedSurahWithReciter()
+            .groupBy { it.surahId }
+            .map { (surahId, items) -> mapToDownloadedSur(surahId, items) }
     }
+
+    private suspend fun mapToDownloadedSur(
+        surahId: Int,
+        items: List<SurahAudioDto>
+    ): DownlodedSur {
+        return DownlodedSur(
+            id = surahId,
+            arabicNameImg = getSurahArabicName(surahId),
+            surahName = getSurahById(surahId).name,
+            recitersName = getRecitersNames(items)
+        )
+    }
+
+    private fun getSurahArabicName(surahId: Int) =
+        Surah.SurahOrder.entries.first { it.order == surahId }
+
+    private suspend fun getRecitersNames(items: List<SurahAudioDto>): List<String> =
+        items.map { recitersDao.getReciterById(it.reciterId).name }
+
 
 
     override suspend fun searchForAyahInSurah(
