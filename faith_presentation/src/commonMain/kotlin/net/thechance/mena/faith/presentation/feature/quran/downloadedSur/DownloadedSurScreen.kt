@@ -12,13 +12,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import mena.faith_presentation.generated.resources.Res
 import mena.faith_presentation.generated.resources.delete_surah
 import mena.faith_presentation.generated.resources.delete_surah_dialog_message
-import mena.faith_presentation.generated.resources.ic_ad_duha
-import mena.faith_presentation.generated.resources.ic_al_kahf
-import mena.faith_presentation.generated.resources.ic_an_nas
-import mena.faith_presentation.generated.resources.ic_ash_shams
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import net.thechance.mena.faith.domain.entity.Surah
 import net.thechance.mena.faith.presentation.base.ObserveAsEffect
 import net.thechance.mena.faith.presentation.base.snackbar.SnackBarState
 import net.thechance.mena.faith.presentation.components.FaithSnackBar
@@ -124,7 +121,7 @@ private fun Content(
 
 @Preview
 @Composable
-private fun Preview() {
+private fun PreviewDownloadedSurScreen() {
     MenaTheme {
         QuranTheme {
             Content(
@@ -133,27 +130,27 @@ private fun Preview() {
                     surDetails = listOf(
                         DownloadedSurUiState.SurahDetailsUiState(
                             1,
-                            Res.drawable.ic_ad_duha,
+                            Surah.SurahOrder.AdDukhan,
                             "Al-Duha",
-                            listOf("Al Minshawi", "Sudais"),
+                            "Sudais",
                         ),
                         DownloadedSurUiState.SurahDetailsUiState(
                             1,
-                            Res.drawable.ic_an_nas,
+                            Surah.SurahOrder.AnNas,
                             "An-Nas",
-                            listOf("Sudais"),
+                            "Sudais",
                         ),
                         DownloadedSurUiState.SurahDetailsUiState(
                             1,
-                            Res.drawable.ic_al_kahf,
+                            Surah.SurahOrder.AlKahf,
                             "Al-Kahf",
-                            listOf("Al Minshawi", "Sudais"),
+                            "Sudais",
                         ),
                         DownloadedSurUiState.SurahDetailsUiState(
                             1,
-                            Res.drawable.ic_ash_shams,
+                            Surah.SurahOrder.AshShams,
                             "Ash-Shams",
-                            listOf("Al Minshawi", "Sudais"),
+                            "Sudais",
                         ),
                     ),
                 ),
