@@ -94,6 +94,7 @@ private fun CardContent(
         Icon(
             painter = painterResource(surahNameImage),
             contentDescription = stringResource(Res.string.surah_arabic_name_icon),
+            tint = Theme.colorScheme.primary.primary,
             modifier = Modifier.size(48.dp),
         )
     }
