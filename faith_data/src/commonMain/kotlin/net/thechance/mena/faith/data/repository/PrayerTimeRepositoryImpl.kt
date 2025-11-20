@@ -45,8 +45,8 @@ class PrayerTimeRepositoryImpl(
             cacheBlock = {
                 executeLocalSafely {
                     prayerTimesDao.getPrayerTimes(
-                        longitude = address.latitude,
-                        latitude = address.longitude,
+                        longitude = address.longitude,
+                        latitude = address.latitude,
                         date = date.toLocalDateTime(timeZone).date,
                     )
                 }
