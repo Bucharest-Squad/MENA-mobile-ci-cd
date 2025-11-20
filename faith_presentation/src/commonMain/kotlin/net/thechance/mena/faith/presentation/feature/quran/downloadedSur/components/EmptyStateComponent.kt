@@ -54,7 +54,7 @@ fun EmptyDownloadState(
 
 @Preview
 @Composable
-fun Preview() {
+fun EmptyDownloadStatePreview() {
     MenaTheme {
         QuranTheme {
             EmptyDownloadState()
