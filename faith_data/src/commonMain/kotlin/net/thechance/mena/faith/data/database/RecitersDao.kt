@@ -39,8 +39,5 @@ interface RecitersDao {
         reciterId: Int
     )
 
-    @Query("SELECT name FROM reciters WHERE id IN (SELECT reciter_id FROM surah_audio WHERE surahId = :surahId)")
-    suspend fun getRecitersNamesBySurahId(surahId: Int): List<String>
-
 
 }
