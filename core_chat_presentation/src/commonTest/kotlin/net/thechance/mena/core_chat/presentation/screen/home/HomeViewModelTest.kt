@@ -9,6 +9,7 @@ import assertk.assertions.doesNotContain
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
+import assertk.assertions.isNull
 import assertk.assertions.isTrue
 import dev.mokkery.MockMode
 import dev.mokkery.answering.returns
@@ -29,7 +30,11 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import kotlinx.datetime.LocalDateTime
+import mena.core_chat_presentation.generated.resources.Res
+import mena.core_chat_presentation.generated.resources.weather_clear_sky
 import net.thechance.mena.core_chat.domain.entity.ChatSummary
+import net.thechance.mena.core_chat.domain.entity.WeatherDetails
+import net.thechance.mena.core_chat.domain.entity.WeatherType
 import net.thechance.mena.core_chat.domain.event.DeleteChatEvent
 import net.thechance.mena.core_chat.domain.model.PagedData
 import net.thechance.mena.core_chat.domain.model.SyncState
@@ -40,6 +45,8 @@ import net.thechance.mena.core_chat.domain.repository.WeatherRepository
 import net.thechance.mena.core_chat.presentation.screen.home.HomeScreenState.ChatUiState
 import net.thechance.mena.faith.domain.repository.PrayerTimeRepository
 import net.thechance.mena.faith.domain.service.PrayerTimeService
+import net.thechance.mena.identity.domain.entity.Address
+import net.thechance.mena.identity.domain.entity.AddressType
 import net.thechance.mena.identity.domain.repository.AddressesRepository
 import net.thechance.mena.identity.domain.service.LocationService
 import net.thechance.mena.wallet.domain.repository.BalanceRepository
@@ -612,6 +619,58 @@ class HomeViewModelTest {
             assertThat(state.chats.map { it.id }).containsExactly(chat1.id, chat3.id)
         }
     }
+
+    @Test
+    fun `init should get weather details`() = runTest {
+        everySuspend { addressesRepository.getActiveAddress() } returns Address(
+            latitude = 30.0444,
+            longitude = 31.2357,
+            addressLine = "Main Street, Cairo, Egypt",
+            addressType = AddressType.Home
+        )
+        everySuspend { chatRepository.getChatsSummary(any(), any()) } returns createEmptyPagedData()
+        everySuspend {
+            weatherRepository.getWeatherDetails(30.0444, 31.2357)
+        } returns WeatherDetails(
+            currentTemperature = 25.0,
+            maxTemperature = 30.0,
+            minTemperature = 15.0,
+            weatherType = WeatherType.CLEAR_SKY,
+        )
+
+        val viewModel = createViewModel()
+        advanceUntilIdle()
+
+        assertThat(viewModel.state.value.weatherUiState).isEqualTo(
+            HomeScreenState.WeatherUiState(
+                currentTemperature = "25.0",
+                maxTemperature = "30.0",
+                minTemperature = "15.0",
+                weatherCondition = Res.string.weather_clear_sky
+            )
+        )
+    }
+
+    @Test
+    fun `when get weather details fails then should update state`() = runTest {
+        everySuspend { addressesRepository.getActiveAddress() } returns Address(
+            latitude = 30.0444,
+            longitude = 31.2357,
+            addressLine = "Main Street, Cairo, Egypt",
+            addressType = AddressType.Home
+        )
+        everySuspend { chatRepository.getChatsSummary(any(), any()) } returns createEmptyPagedData()
+        everySuspend {
+            weatherRepository.getWeatherDetails(30.0444, 31.2357)
+        } throws RuntimeException()
+
+        val viewModel = createViewModel()
+        advanceUntilIdle()
+
+        assertThat(viewModel.state.value.weatherUiState).isNull()
+        assertThat(viewModel.state.value.isWeatherLoading).isFalse()
+    }
+
     private fun createViewModel(): HomeViewModel {
         return HomeViewModel(
             contactsRepository = contactsRepository,

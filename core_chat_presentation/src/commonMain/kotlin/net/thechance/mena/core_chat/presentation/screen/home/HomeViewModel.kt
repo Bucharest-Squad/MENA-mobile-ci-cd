@@ -311,7 +311,8 @@ class HomeViewModel(
             execute = {
                 weatherRepository.getWeatherDetails(
                 latitude = address.latitude,
-                longitude = address.longitude)
+                longitude = address.longitude
+                )
             },
             onSuccess = ::onGetWeatherDetailsSuccess,
             onError = { onGetWeatherDetailsError() }
