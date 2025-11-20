@@ -10,13 +10,13 @@ import kotlin.time.Instant
 interface PrayerTimeRepository {
     suspend fun getPrayerTimes(
         date: Instant,
-        address: Address?,
+        address: Address,
         timeZone: TimeZone = TimeZone.currentSystemDefault(),
     ): List<PrayerTime>
 
-    suspend fun getPrayerTimeWithHijriDate(
+    suspend fun getPrayerTimesByHijriDate(
         date: String,
-        location: Address,
+        address: Address,
         timeZone: TimeZone = TimeZone.currentSystemDefault(),
         isHijri: Boolean
     ): List<PrayerTime>

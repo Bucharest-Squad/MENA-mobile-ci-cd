@@ -13,11 +13,19 @@ interface PrayerTimesDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertPrayerTimes(prayerTimes: PrayerTimesLocal)
 
-    @Query("SELECT * FROM prayer_times WHERE date = :date")
-    suspend fun getPrayerTimesByDate(date: LocalDate): List<PrayerTimesLocal>
+    @Query("SELECT * FROM prayer_times WHERE latitude = :latitude AND longitude = :longitude AND date = :date LIMIT 1")
+    suspend fun getPrayerTimes(
+        latitude: Double,
+        longitude: Double,
+        date: LocalDate
+    ): PrayerTimesLocal
 
-    @Query("SELECT * FROM prayer_times WHERE hijri_date = :hijriDate")
-    suspend fun getPrayerTimesByHijri(hijriDate: String): List<PrayerTimesLocal>
+    @Query("SELECT * FROM prayer_times WHERE latitude = :latitude AND longitude = :longitude AND hijri_date = :hijriDate")
+    suspend fun getPrayerTimesByHijriDate(
+        latitude: Double,
+        longitude: Double,
+        hijriDate: String
+    ): PrayerTimesLocal
 
     @OptIn(ExperimentalTime::class)
     @Query("DELETE FROM prayer_times WHERE saved_in < :expiredDate")

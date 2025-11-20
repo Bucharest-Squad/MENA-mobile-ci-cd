@@ -90,10 +90,12 @@ class PrayerTimeRepositoryImplTest {
     fun `getPrayerTimes should return list of PrayerTime from cache when available`() = runTest {
 
         everySuspend {
-            prayerTimesDao.getPrayerTimesByDate(
-                dateInstant.toLocalDateTime(timeZone).date
+            prayerTimesDao.getPrayerTimes(
+                latitude = LAT,
+                longitude = LONG,
+                date = dateInstant.toLocalDateTime(timeZone).date
             )
-        } returns listOf(fakePrayerTimesLocal)
+        } returns fakePrayerTimesLocal
 
         everySuspend {
             prayerTimeApiService.getPrayerTimes(
@@ -204,7 +206,7 @@ class PrayerTimeRepositoryImplTest {
         }
 
     @Test
-    fun `getPrayerTimeWithHijriDate should return list of PrayerTime when api service return valid data with Hijri date`() =
+    fun `getPrayerTimesByHijriDate should return list of PrayerTime when api service return valid data with Hijri date`() =
         runTest {
             everySuspend {
                 prayerTimeApiService.getPrayerTimes(
@@ -218,9 +220,9 @@ class PrayerTimeRepositoryImplTest {
                 successStatus = HttpStatusCode.OK
             )
 
-            val result = prayerTimeRepository.getPrayerTimeWithHijriDate(
+            val result = prayerTimeRepository.getPrayerTimesByHijriDate(
                 date = HIJRI_DATE,
-                location = address,
+                address = address,
                 timeZone = timeZone,
                 isHijri = true
             )
@@ -229,12 +231,15 @@ class PrayerTimeRepositoryImplTest {
         }
 
     @Test
-    fun `getPrayerTimeWithHijriDate should return list of PrayerTime from cache when available`() =
+    fun `getPrayerTimesByHijriDate should return list of PrayerTime from cache when available`() =
         runTest {
-
             everySuspend {
-                prayerTimesDao.getPrayerTimesByHijri(hijriDate = HIJRI_DATE)
-            } returns listOf(fakePrayerTimesLocal)
+                prayerTimesDao.getPrayerTimesByHijriDate(
+                    latitude = LAT,
+                    longitude = LONG,
+                    hijriDate = HIJRI_DATE
+                )
+            } returns fakePrayerTimesLocal
 
             everySuspend {
                 prayerTimeApiService.getPrayerTimes(
@@ -248,9 +253,9 @@ class PrayerTimeRepositoryImplTest {
                 successStatus = HttpStatusCode.OK
             )
 
-            val result = prayerTimeRepository.getPrayerTimeWithHijriDate(
+            val result = prayerTimeRepository.getPrayerTimesByHijriDate(
                 date = HIJRI_DATE,
-                location = address,
+                address = address,
                 timeZone = timeZone,
                 isHijri = true
             )
@@ -259,7 +264,7 @@ class PrayerTimeRepositoryImplTest {
         }
 
     @Test
-    fun `getPrayerTimeWithHijriDate should return list of PrayerTime when api service return valid data with Gregorian date`() =
+    fun `getPrayerTimesByHijriDate should return list of PrayerTime when api service return valid data with Gregorian date`() =
         runTest {
             everySuspend {
                 prayerTimeApiService.getPrayerTimes(
@@ -273,9 +278,9 @@ class PrayerTimeRepositoryImplTest {
                 successStatus = HttpStatusCode.OK
             )
 
-            val result = prayerTimeRepository.getPrayerTimeWithHijriDate(
+            val result = prayerTimeRepository.getPrayerTimesByHijriDate(
                 date = DATE,
-                location = address,
+                address = address,
                 timeZone = timeZone,
                 isHijri = false
             )
@@ -284,7 +289,7 @@ class PrayerTimeRepositoryImplTest {
         }
 
     @Test
-    fun `getPrayerTimeWithHijriDate should throw NetworkException when response body is null`() =
+    fun `getPrayerTimesByHijriDate should throw NetworkException when response body is null`() =
         runTest {
             everySuspend {
                 prayerTimeApiService.getPrayerTimes(
@@ -299,9 +304,9 @@ class PrayerTimeRepositoryImplTest {
             )
 
             assertFailure {
-                prayerTimeRepository.getPrayerTimeWithHijriDate(
+                prayerTimeRepository.getPrayerTimesByHijriDate(
                     date = HIJRI_DATE,
-                    location = address,
+                    address = address,
                     timeZone = timeZone,
                     isHijri = true
                 )
@@ -309,7 +314,7 @@ class PrayerTimeRepositoryImplTest {
         }
 
     @Test
-    fun `getPrayerTimeWithHijriDate should throw UnauthorizedException when status code is Unauthorized`() =
+    fun `getPrayerTimesByHijriDate should throw UnauthorizedException when status code is Unauthorized`() =
         runTest {
             everySuspend {
                 prayerTimeApiService.getPrayerTimes(
@@ -321,9 +326,9 @@ class PrayerTimeRepositoryImplTest {
             } returns makeFailFakeResponse(errorStatus = HttpStatusCode.Unauthorized)
 
             assertFailure {
-                prayerTimeRepository.getPrayerTimeWithHijriDate(
+                prayerTimeRepository.getPrayerTimesByHijriDate(
                     date = HIJRI_DATE,
-                    location = address,
+                    address = address,
                     timeZone = timeZone,
                     isHijri = true
                 )
@@ -331,7 +336,7 @@ class PrayerTimeRepositoryImplTest {
         }
 
     @Test
-    fun `getPrayerTimeWithHijriDate should throw NetworkException when status code is InternalServerError`() =
+    fun `getPrayerTimesByHijriDate should throw NetworkException when status code is InternalServerError`() =
         runTest {
             everySuspend {
                 prayerTimeApiService.getPrayerTimes(
@@ -343,9 +348,9 @@ class PrayerTimeRepositoryImplTest {
             } returns makeFailFakeResponse(errorStatus = HttpStatusCode.InternalServerError)
 
             assertFailure {
-                prayerTimeRepository.getPrayerTimeWithHijriDate(
+                prayerTimeRepository.getPrayerTimesByHijriDate(
                     date = HIJRI_DATE,
-                    location = address,
+                    address = address,
                     timeZone = timeZone,
                     isHijri = true
                 )
@@ -353,7 +358,7 @@ class PrayerTimeRepositoryImplTest {
         }
 
     @Test
-    fun `getPrayerTimeWithHijriDate should throw UnknownException when status code is not valuable`() =
+    fun `getPrayerTimesByHijriDate should throw UnknownException when status code is not valuable`() =
         runTest {
             everySuspend {
                 prayerTimeApiService.getPrayerTimes(
@@ -365,9 +370,9 @@ class PrayerTimeRepositoryImplTest {
             } returns makeFailFakeResponse(errorStatus = HttpStatusCode.Forbidden)
 
             assertFailure {
-                prayerTimeRepository.getPrayerTimeWithHijriDate(
+                prayerTimeRepository.getPrayerTimesByHijriDate(
                     date = HIJRI_DATE,
-                    location = address,
+                    address = address,
                     timeZone = timeZone,
                     isHijri = true
                 )
