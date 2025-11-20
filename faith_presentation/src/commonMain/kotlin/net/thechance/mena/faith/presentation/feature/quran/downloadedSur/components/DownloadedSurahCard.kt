@@ -109,15 +109,18 @@ private fun SurahDetails(
         verticalArrangement = Arrangement.spacedBy(Theme.spacing._2),
         modifier = modifier,
     ) {
+
         Text(
             text = surahDetailsUiState.surahName,
             color = Theme.colorScheme.shadePrimary,
             style = Theme.typography.label.medium,
         )
+
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(Theme.spacing._4),
         ) {
+
             Icon(
                 painter = painterResource(Res.drawable.ic_reciter_list),
                 contentDescription = stringResource(Res.string.reciter_list),
@@ -125,7 +128,7 @@ private fun SurahDetails(
             )
 
             Text(
-                text = surahDetailsUiState.reciterName,
+                text = surahDetailsUiState.recitersName.joinToString(", "),
                 style = Theme.typography.label.medium,
                 color = Theme.colorScheme.shadeSecondary,
                 maxLines = 1,
@@ -146,7 +149,7 @@ private fun PreviewDownloadedSuraItem() {
                     1,
                     Surah.SurahOrder.AlFajr,
                     "Al-Duha",
-                    "Sudais",
+                    listOf("Al Minshawi", "Sudais"),
                 ),
                 {},
                 {},
