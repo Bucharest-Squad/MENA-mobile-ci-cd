@@ -19,12 +19,14 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import net.thechance.mena.designsystem.presentation.util.applyIf
 
 @Composable
 fun Scaffold(
     modifier: Modifier = Modifier,
     backgroundColor: Color = Theme.colorScheme.background.surface,
     statusBarColor: Color = backgroundColor,
+    fullScreen: Boolean = false,
     topBar: @Composable () -> Unit = {},
     bottomBar: @Composable () -> Unit = {},
     snakeBar: @Composable () -> Unit = {},
@@ -41,13 +43,13 @@ fun Scaffold(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .then(
-                if (hasBlur) Modifier.blur(4.dp) else Modifier
-            )
+            .applyIf(hasBlur) { blur(4.dp) }
             .background(statusBarColor)
-            .windowInsetsPadding(WindowInsets.statusBars)
-            .navigationBarsPadding()
-            .systemBarsPadding(),
+            .applyIf(!fullScreen) {
+                windowInsetsPadding(WindowInsets.statusBars)
+                    .navigationBarsPadding()
+                    .systemBarsPadding()
+            },
         contentAlignment = Alignment.Center
     ) {
         Column(
