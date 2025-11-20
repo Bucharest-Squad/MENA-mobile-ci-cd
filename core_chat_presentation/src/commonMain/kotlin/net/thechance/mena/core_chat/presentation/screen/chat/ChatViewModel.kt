@@ -132,7 +132,9 @@ class ChatViewModel(
         viewModelScope.launch(dispatcher) {
             messages
                 .collectLatest { messageList ->
-                    updateState { it.copy(chatListItems = messageList.toChatItems()) }
+                    updateState {
+                        it.copy(chatListItems = messageList.toChatItems())
+                    }
                 }
         }
     }
