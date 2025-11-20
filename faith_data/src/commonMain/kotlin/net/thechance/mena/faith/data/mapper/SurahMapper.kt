@@ -19,13 +19,9 @@ fun SurahDto.toSurah(language: AppLanguage): Surah {
 fun SurahAudioDto.toDownlodedSurUi(
     surahName: String,
     reciterName: String
-): DownlodedSur {
-    return DownlodedSur(
+): DownlodedSur = DownlodedSur(
         id = surahId,
         arabicNameImg = Surah.SurahOrder.entries.first { it.order == surahId },
         surahName = surahName,
         reciterName = reciterName
     )
-
-
-}
