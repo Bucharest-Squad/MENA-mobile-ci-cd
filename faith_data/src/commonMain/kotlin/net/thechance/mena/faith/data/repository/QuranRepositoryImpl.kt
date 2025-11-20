@@ -77,8 +77,6 @@ class QuranRepositoryImpl(
     private suspend fun getRecitersNames(items: List<SurahAudioDto>): List<String> =
         items.map { recitersDao.getReciterById(it.reciterId).name }
 
-
-
     override suspend fun searchForAyahInSurah(
         surahId: Int,
         query: String,
