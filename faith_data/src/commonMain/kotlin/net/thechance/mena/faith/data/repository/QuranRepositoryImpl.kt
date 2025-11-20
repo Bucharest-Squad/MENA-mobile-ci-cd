@@ -8,6 +8,7 @@ import net.thechance.mena.faith.data.database.SurahAudioDao
 import net.thechance.mena.faith.data.database.SurahAudioDto
 import net.thechance.mena.faith.data.datastore.TilawahDataStore
 import net.thechance.mena.faith.data.mapper.toAyah
+import net.thechance.mena.faith.data.mapper.toDownlodedSurUi
 import net.thechance.mena.faith.data.mapper.toReciter
 import net.thechance.mena.faith.data.mapper.toReciterDto
 import net.thechance.mena.faith.data.mapper.toSurah
@@ -17,6 +18,7 @@ import net.thechance.mena.faith.data.utils.executeLocalSafely
 import net.thechance.mena.faith.data.utils.loadFromCacheOrFetch
 import net.thechance.mena.faith.domain.entity.Ayah
 import net.thechance.mena.faith.domain.entity.Surah
+import net.thechance.mena.faith.domain.model.DownlodedSur
 import net.thechance.mena.faith.domain.model.LastAyahForTilawah
 import net.thechance.mena.faith.domain.model.Reciter
 import net.thechance.mena.faith.domain.repository.QuranRepository
@@ -51,6 +53,16 @@ class QuranRepositoryImpl(
 
     override suspend fun saveLastAyahForTilawah(savedAyah: LastAyahForTilawah) =
         tilawahDataStore.saveLastAyah(savedAyah)
+
+    override suspend fun getDownloadedSur(): List<DownlodedSur> = executeLocalSafely {
+        surahSoundDao.getDownloadedSurahWithReciter().map {
+            it.toDownlodedSurUi(
+                surahName = getSurahById(it.surahId).name,
+                reciterName = recitersDao.getReciterById(it.reciterId).name
+            )
+        }
+    }
+
 
     override suspend fun searchForAyahInSurah(
         surahId: Int,
