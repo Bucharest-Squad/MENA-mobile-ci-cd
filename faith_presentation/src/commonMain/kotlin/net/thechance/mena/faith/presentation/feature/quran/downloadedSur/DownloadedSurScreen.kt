@@ -23,6 +23,7 @@ import net.thechance.mena.faith.presentation.designSystem.theme.QuranTheme
 import net.thechance.mena.faith.presentation.feature.quran.downloadedSur.components.DeleteConfirmationDialog
 import net.thechance.mena.faith.presentation.feature.quran.downloadedSur.components.DownloadedSurAppBar
 import net.thechance.mena.faith.presentation.feature.quran.downloadedSur.components.DownloadedSurahCard
+import net.thechance.mena.faith.presentation.feature.quran.downloadedSur.components.EmptyDownloadState
 import net.thechance.mena.faith.presentation.navigation.LocalNavController
 import net.thechance.mena.faith.presentation.navigation.Route
 import org.jetbrains.compose.resources.stringResource
@@ -92,29 +93,40 @@ private fun Content(
             }
         }
     ) {
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(Theme.spacing._8),
-            contentPadding = PaddingValues(
-                horizontal = Theme.spacing._16,
-                vertical = Theme.spacing._12,
-            ),
-        ) {
-            items(uiState.surDetails) { downloadedSurah ->
-                DownloadedSurahCard(
-                    suraDetails = downloadedSurah,
-                    onDownloadedSurahClick = {
-                        listener.onDownloadedSurahClick(downloadedSurah.id)
-                    },
-                    onDeleteDownloadedSurahClick = {
-                        listener.onDeleteSurahClick(downloadedSurah.id)
-                    },
-                    modifier = Modifier
-                        .animateItem(
-                            fadeInSpec = tween(500),
-                            fadeOutSpec = tween(500),
-                        ),
+        if (uiState.surDetails.isEmpty())
+            EmptyDownloadState()
+        else
+            DownloadedSurahList(
+                surahItems = uiState.surDetails,
+                listener = listener,
+            )
+    }
+}
+
+@Composable
+fun DownloadedSurahList(
+    surahItems: List<DownloadedSurUiState.SurahDetailsUiState>,
+    listener: DownloadedSurInteractionListener,
+    modifier: Modifier = Modifier
+) {
+    LazyColumn(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(Theme.spacing._8),
+        contentPadding = PaddingValues(
+            horizontal = Theme.spacing._16,
+            vertical = Theme.spacing._12,
+        )
+    ) {
+        items(surahItems) { surah ->
+            DownloadedSurahCard(
+                suraDetails = surah,
+                onDownloadedSurahClick = { listener.onDownloadedSurahClick(surah.id) },
+                onDeleteDownloadedSurahClick = { listener.onDeleteSurahClick(surah.id) },
+                modifier = Modifier.animateItem(
+                    fadeInSpec = tween(500),
+                    fadeOutSpec = tween(500),
                 )
-            }
+            )
         }
     }
 }
