@@ -15,7 +15,6 @@ import mena.core_chat_presentation.generated.resources.no_internet_message
 import mena.core_chat_presentation.generated.resources.something_went_wrong
 import net.thechance.mena.core_chat.domain.entity.ChatSummary
 import net.thechance.mena.core_chat.domain.entity.Message
-import net.thechance.mena.core_chat.domain.entity.MessageContent
 import net.thechance.mena.core_chat.domain.event.DeleteChatEvent
 import net.thechance.mena.core_chat.domain.event.MarkMessageAsReadEvent
 import net.thechance.mena.core_chat.domain.model.PagedData
@@ -128,9 +127,9 @@ class HomeViewModel(
 
     private suspend fun onCollectMarkAsReadEvent(markMessageAsReadEvent: MarkMessageAsReadEvent?) {
         if (markMessageAsReadEvent == null) return
-        if (markMessageAsReadEvent.readByMe.not()) return
 
         val newChatSummary = chatRepository.getChatSummaryById(markMessageAsReadEvent.chatId).toUi()
+
         updateState {
             it.copy(
                 chats = it.chats.map { chatSummary ->
@@ -144,43 +143,18 @@ class HomeViewModel(
     private fun listenToIncomingMessages() {
         tryToCollect(
             collect = { messageRepository.observeMessagesForChatOrAll() },
-            onCollect = ::onCollectMessage,
-            onError = { },
+            onCollect = ::onCollectMessage
         )
     }
 
     private suspend fun onCollectMessage(message: Message?) {
         if (message == null) return
-        val chatSummary = state.value.chats.firstOrNull { chat ->
-            chat.id == message.chatId
-        }
 
-        if (chatSummary == null) {
-            val newChatSummary = chatRepository.getChatSummaryById(message.chatId).toUi()
-            updateState {
-                it.copy(
-                    chats = listOf(newChatSummary) + it.chats
-                )
-            }
-            return
-        }
+        val updatedChatSummary = chatRepository.getChatSummaryById(message.chatId).toUi()
 
-        val updatedChatSummary = chatSummary.copy(
-            lastMessage = ChatUiState.MessageUiState(
-                text = (message.content as MessageContent.Text).text,
-                isMine = message.isMine,
-                time = message.sendAt,
-            ),
-            status =
-                if (message.isMine) ChatUiState.Status.Sent
-                else ChatUiState.Status.UnRead(
-                    if (chatSummary.status is ChatUiState.Status.UnRead) chatSummary.status.count + 1
-                    else 1
-                )
-        )
-
-        val updatedChats =
-            listOf(updatedChatSummary) + state.value.chats.filterNot { it.id == message.chatId }
+        val updatedChats = listOf(updatedChatSummary) +
+                state.value.chats
+                    .filterNot { it.id == message.chatId }
 
         updateState { it.copy(chats = updatedChats.distinctBy { it.id }) }
     }

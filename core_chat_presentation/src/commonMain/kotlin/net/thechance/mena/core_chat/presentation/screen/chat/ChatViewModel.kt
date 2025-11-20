@@ -55,7 +55,6 @@ import net.thechance.mena.core_chat.presentation.utils.Paginator
 import net.thechance.mena.core_chat.presentation.utils.UiText
 import net.thechance.mena.core_chat.presentation.utils.convertAudioFileToByteArray
 import net.thechance.mena.core_chat.presentation.utils.encodeToByteArrayWithCompressionToMaxSize
-import net.thechance.mena.core_chat.presentation.utils.getUuidOrNull
 import net.thechance.mena.core_chat.presentation.utils.now
 import org.jetbrains.compose.resources.StringResource
 import kotlin.uuid.ExperimentalUuidApi
@@ -95,24 +94,17 @@ class ChatViewModel(
     private var firstUnReadByMeMessageTime: LocalDateTime? = null
 
     init {
-        val chatId = getUuidOrNull(chatArgs.chatId)
+        val chatId = Uuid.parse(chatArgs.chatId)
         getUserInfo()
-        updateState { state ->
-            state.copy(
-                chatId = chatId,
-                chatName = chatArgs.chatName
-            )
-        }
-
-        if (chatId == null) {
-            onGetChatError()
-        } else {
-            tryToExecute(
-                execute = { chatRepository.getChatById(chatId) },
-                onSuccess = ::onGetChatSuccess,
-                onError = { onGetChatError() }
-            )
-        }
+        updateState { state -> state.copy(chatId = chatId, chatName = chatArgs.chatName) }
+        getChat(chatId)
+        onMessagesScrolled()
+        subscribeToNewMessages(chatId)
+        subscribeToPendingMessages(chatId)
+        observeReadMessages()
+        observeDeleteChat()
+        observeConnectionStatus(chatId)
+        observeMessageReactions()
         startUiDerivation()
     }
 
@@ -179,23 +171,22 @@ class ChatViewModel(
         )
     }
 
-    private fun onGetChatSuccess(chat: Chat) {
-        updateState { state ->
-            state.copy(
-                chatId = chat.id,
-                chatName = chat.name,
-                chatAvatarUrl = chat.imageUrl.orEmpty(),
-                chatRequesterId = chat.requesterId,
-            )
-        }
+    private fun getChat(chatId: Uuid) {
 
-        onMessagesScrolled()
-        subscribeToNewMessages(chat.id)
-        subscribeToPendingMessages(chat.id)
-        observeReadMessages()
-        observeDeleteChat()
-        observeConnectionStatus(chat.id)
-        observeMessageReactions()
+        tryToExecute(
+            execute = { chatRepository.getChatById(chatId) },
+            onSuccess = { chat ->
+                updateState { state ->
+                    state.copy(
+                        chatId = chat.id,
+                        chatName = chat.name,
+                        chatAvatarUrl = chat.imageUrl.orEmpty(),
+                        chatRequesterId = chat.requesterId,
+                    )
+                }
+            },
+            onError = { onGetChatError() }
+        )
     }
 
     private fun observeConnectionStatus(chatId: Uuid) {

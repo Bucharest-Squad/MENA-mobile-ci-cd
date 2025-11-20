@@ -33,7 +33,7 @@ import kotlin.time.ExperimentalTime
 open class BaseViewModel<S, E>(
     initialState: S,
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO
-) : ViewModel(), KoinComponent {
+) : ViewModel() {
 
     private val _state = MutableStateFlow(initialState)
     val state = _state.asStateFlow()
@@ -87,8 +87,7 @@ open class BaseViewModel<S, E>(
             collect()
                 .onStart { onStart() }
                 .catch { onError(it) }
-                .onEmpty { onCollect(null) }
-                .collectLatest { onCollect(it) }
+                .collect { onCollect(it) }
         }
     }
 
