@@ -32,9 +32,7 @@ internal fun BasmalaHeader(
             .padding(horizontal = 74.dp)
             .aspectRatio(4f)
             .noRippleClickable {
-                if (selectedAyahIndex != null) {
-                    onDismissActionButtons()
-                }
+                if (selectedAyahIndex != null) onDismissActionButtons()
             }
     )
 }

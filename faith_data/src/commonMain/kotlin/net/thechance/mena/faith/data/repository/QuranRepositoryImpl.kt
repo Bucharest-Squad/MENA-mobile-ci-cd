@@ -55,7 +55,7 @@ class QuranRepositoryImpl(
         tilawahDataStore.saveLastAyah(savedAyah)
 
     override suspend fun getDownloadedSur(): List<DownlodedSur> = executeLocalSafely {
-        surahSoundDao.getDownloadedSurahWithReciter()
+        surahSoundDao.getDownloadedSurahInfo()
             .groupBy { it.surahId }
             .map { (surahId, items) -> mapToDownloadedSur(surahId, items) }
     }

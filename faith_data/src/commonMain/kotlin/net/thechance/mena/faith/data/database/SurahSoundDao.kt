@@ -15,7 +15,6 @@ interface SurahAudioDao {
     suspend fun getCachedAudioPath(surahId: Int?, reciterId: Int): String?
 
     @Query("SELECT * FROM surah_audio")
-    suspend fun getDownloadedSurahWithReciter(): List<SurahAudioDto>
-
+    suspend fun getDownloadedSurahInfo(): List<SurahAudioDto>
 
 }

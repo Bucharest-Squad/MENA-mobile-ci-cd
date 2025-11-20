@@ -39,5 +39,4 @@ interface RecitersDao {
         reciterId: Int
     )
 
-
 }

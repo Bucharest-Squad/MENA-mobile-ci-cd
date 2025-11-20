@@ -41,7 +41,6 @@ fun EmptyDownloadState(
             modifier = Modifier.fillMaxWidth()
                 .size(128.dp)
                 .padding(bottom = Theme.spacing._12)
-
         )
 
         Text(
@@ -49,14 +48,13 @@ fun EmptyDownloadState(
             style = Theme.typography.title.small,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()
-
         )
     }
 }
 
 @Preview
 @Composable
-fun EmptyDownloadStatePreview() {
+fun Preview() {
     MenaTheme {
         QuranTheme {
             EmptyDownloadState()

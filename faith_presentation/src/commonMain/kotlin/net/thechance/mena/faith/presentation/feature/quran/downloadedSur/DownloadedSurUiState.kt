@@ -16,11 +16,11 @@ data class DownloadedSurUiState(
     )
 }
 
-fun DownlodedSur.toUiState(): DownloadedSurUiState.SurahDetailsUiState {
-    return DownloadedSurUiState.SurahDetailsUiState(
+fun DownlodedSur.toUiState(): DownloadedSurUiState.SurahDetailsUiState =
+    DownloadedSurUiState.SurahDetailsUiState(
         id = id,
         arabicNameImg = arabicNameImg,
         surahName = surahName,
         recitersName = recitersName,
     )
-}
+

@@ -133,7 +133,7 @@ fun DownloadedSurahList(
 
 @Preview
 @Composable
-private fun PreviewDownloadedSurScreen() {
+private fun Preview() {
     MenaTheme {
         QuranTheme {
             Content(
