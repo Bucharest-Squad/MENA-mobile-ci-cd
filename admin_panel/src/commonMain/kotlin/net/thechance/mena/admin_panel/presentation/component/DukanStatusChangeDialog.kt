@@ -18,9 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
@@ -48,14 +46,8 @@ internal fun ScaffoldScope.DukanStatusChangeDialog(
     description: String,
     reasonLabel: String,
     confirmButtonText: String,
-    cancelButtonText: String = stringResource(Res.string.cancel),
-    icon: Painter = painterResource(Res.drawable.ic_store_remove),
-    iconBackgroundColor: Color = Theme.colorScheme.background.bgError,
-    iconTint: Color = Theme.colorScheme.error,
     isConfirmButtonEnabled: Boolean,
     isConfirmButtonLoading: Boolean,
-    reasonPlaceholder: String? = null,
-    maxReasonLines: Int = 6,
     modifier: Modifier = Modifier
 ) {
     if (isVisible) {
@@ -98,14 +90,8 @@ internal fun ScaffoldScope.DukanStatusChangeDialog(
                     description = description,
                     reasonLabel = reasonLabel,
                     confirmButtonText = confirmButtonText,
-                    cancelButtonText = cancelButtonText,
-                    icon = icon,
-                    iconBackgroundColor = iconBackgroundColor,
-                    iconTint = iconTint,
                     isConfirmButtonEnabled = isConfirmButtonEnabled,
-                    isConfirmButtonLoading = isConfirmButtonLoading,
-                    reasonPlaceholder = reasonPlaceholder,
-                    maxReasonLines = maxReasonLines
+                    isConfirmButtonLoading = isConfirmButtonLoading
                 )
             }
         }
@@ -122,14 +108,8 @@ private fun DialogContent(
     description: String,
     reasonLabel: String,
     confirmButtonText: String,
-    cancelButtonText: String,
-    icon: Painter,
-    iconBackgroundColor: Color,
-    iconTint: Color,
     isConfirmButtonEnabled: Boolean,
-    isConfirmButtonLoading: Boolean,
-    reasonPlaceholder: String?,
-    maxReasonLines: Int
+    isConfirmButtonLoading: Boolean
 ) {
     Column(
         modifier = Modifier
@@ -138,16 +118,16 @@ private fun DialogContent(
         horizontalAlignment = Alignment.Start
     ) {
         Icon(
-            painter = icon,
+            painter = painterResource(Res.drawable.ic_store_remove),
             contentDescription = title,
             modifier = Modifier
                 .size(88.dp)
                 .background(
-                    color = iconBackgroundColor,
+                    color = Theme.colorScheme.background.bgError,
                     shape = CircleShape
                 )
                 .padding(20.dp),
-            tint = iconTint
+            tint = Theme.colorScheme.error
         )
 
         Text(
@@ -183,25 +163,14 @@ private fun DialogContent(
             textStyle = Theme.typography.body.small.copy(
                 color = Theme.colorScheme.shadePrimary
             ),
-            maxLines = maxReasonLines,
-            cursorBrush = SolidColor(Theme.colorScheme.primary.primary),
-            decorationBox = { innerTextField ->
-                if (reason.isEmpty() && reasonPlaceholder != null) {
-                    Text(
-                        text = reasonPlaceholder,
-                        style = Theme.typography.body.small,
-                        color = Theme.colorScheme.shadeSecondary.copy(alpha = 0.5f)
-                    )
-                }
-                innerTextField()
-            }
+            maxLines = 6,
+            cursorBrush = SolidColor(Theme.colorScheme.primary.primary)
         )
 
         DialogButtons(
             onDismiss = onDismiss,
             onConfirm = onConfirmed,
             confirmButtonText = confirmButtonText,
-            cancelButtonText = cancelButtonText,
             isConfirmBtnEnabled = isConfirmButtonEnabled,
             isConfirmBtnLoading = isConfirmButtonLoading
         )
@@ -213,7 +182,6 @@ private fun DialogButtons(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
     confirmButtonText: String,
-    cancelButtonText: String,
     isConfirmBtnEnabled: Boolean,
     isConfirmBtnLoading: Boolean,
 ) {
@@ -226,7 +194,7 @@ private fun DialogButtons(
                 .padding(end = 8.dp)
                 .heightIn(min = 48.dp)
                 .widthIn(min = 83.dp),
-            text = cancelButtonText,
+            text = stringResource(Res.string.cancel),
             onClick = onDismiss,
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
         )
