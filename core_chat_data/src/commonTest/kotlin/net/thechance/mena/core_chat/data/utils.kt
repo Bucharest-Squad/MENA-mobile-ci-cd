@@ -43,6 +43,7 @@ import net.thechance.mena.core_chat.data.source.remote.dto.MessageDto
 import net.thechance.mena.core_chat.data.source.remote.dto.PagedDataDto
 import net.thechance.mena.core_chat.data.source.remote.dto.UserDto
 import net.thechance.mena.core_chat.data.source.remote.network.WebSocketManager
+import net.thechance.mena.faith.domain.service.QuranService
 import kotlin.uuid.ExperimentalUuidApi
 
 val jsonSerialization = Json { ignoreUnknownKeys = true }
@@ -233,6 +234,7 @@ fun createMessageRepository(
     messageSenderFactory: MessageSenderFactory,
     pendingMessageDao: PendingMessageDao,
     cachedMessageDao: CachedMessageDao,
+    quranService: QuranService,
     chatSyncTimeDao: ChatSyncTimeDao
 ): MessageRepositoryImpl {
     return MessageRepositoryImpl(
@@ -242,6 +244,7 @@ fun createMessageRepository(
         client = httpClient,
         messageSenderFactory = messageSenderFactory,
         cachedMessageDao = cachedMessageDao,
+        quranService = quranService,
         json = jsonSerialization
     )
 }

@@ -80,7 +80,7 @@ class HomeViewModel(
         )
     }
 
-    private suspend fun onCollectSyncString(syncState: SyncState?) {
+    private suspend fun onCollectSyncString(syncState: SyncState) {
         delay(100)
         when (syncState) {
             is SyncState.Error -> showErrorLoadingChatsSnackBar()
@@ -89,8 +89,6 @@ class HomeViewModel(
             is SyncState.DeletedChatsSynced -> {
                 updateState { it.copy(chats = it.chats.filterNot { syncState.chatIds.contains(it.id) }) }
             }
-
-            else -> Unit
         }
     }
 
@@ -120,8 +118,7 @@ class HomeViewModel(
         )
     }
 
-    private fun onCollectDeleteChatEvent(deleteChatEvent: DeleteChatEvent?) {
-        if (deleteChatEvent == null) return
+    private fun onCollectDeleteChatEvent(deleteChatEvent: DeleteChatEvent) {
         updateState {
             it.copy(
                 chats = it.chats.filterNot { chat -> chat.id == deleteChatEvent.chatId }
@@ -129,11 +126,9 @@ class HomeViewModel(
         }
     }
 
-    private suspend fun onCollectMarkAsReadEvent(markMessageAsReadEvent: MarkMessageAsReadEvent?) {
-        if (markMessageAsReadEvent == null) return
-        if (markMessageAsReadEvent.readByMe.not()) return
-
+    private suspend fun onCollectMarkAsReadEvent(markMessageAsReadEvent: MarkMessageAsReadEvent) {
         val newChatSummary = chatRepository.getChatSummaryById(markMessageAsReadEvent.chatId).toUi()
+
         updateState {
             it.copy(
                 chats = it.chats.map { chatSummary ->
@@ -147,43 +142,16 @@ class HomeViewModel(
     private fun listenToIncomingMessages() {
         tryToCollect(
             collect = { messageRepository.observeMessagesForChatOrAll() },
-            onCollect = ::onCollectMessage,
-            onError = { },
+            onCollect = ::onCollectMessage
         )
     }
 
-    private suspend fun onCollectMessage(message: Message?) {
-        if (message == null) return
-        val chatSummary = state.value.chats.firstOrNull { chat ->
-            chat.id == message.chatId
-        }
+    private suspend fun onCollectMessage(message: Message) {
+        val updatedChatSummary = chatRepository.getChatSummaryById(message.chatId).toUi()
 
-        if (chatSummary == null) {
-            val newChatSummary = chatRepository.getChatSummaryById(message.chatId).toUi()
-            updateState {
-                it.copy(
-                    chats = listOf(newChatSummary) + it.chats
-                )
-            }
-            return
-        }
-
-        val updatedChatSummary = chatSummary.copy(
-            lastMessage = ChatUiState.MessageUiState(
-                text = (message.content as MessageContent.Text).text,
-                isMine = message.isMine,
-                time = message.sendAt,
-            ),
-            status =
-                if (message.isMine) ChatUiState.Status.Sent
-                else ChatUiState.Status.UnRead(
-                    if (chatSummary.status is ChatUiState.Status.UnRead) chatSummary.status.count + 1
-                    else 1
-                )
-        )
-
-        val updatedChats =
-            listOf(updatedChatSummary) + state.value.chats.filterNot { it.id == message.chatId }
+        val updatedChats = listOf(updatedChatSummary) +
+                state.value.chats
+                    .filterNot { it.id == message.chatId }
 
         updateState { it.copy(chats = updatedChats.distinctBy { it.id }) }
     }
