@@ -1,9 +1,7 @@
 package net.thechance.mena.faith.data.mapper
 
-import net.thechance.mena.faith.data.database.SurahAudioDto
 import net.thechance.mena.faith.data.database.SurahDto
 import net.thechance.mena.faith.domain.entity.Surah
-import net.thechance.mena.faith.domain.model.DownlodedSur
 import net.thechance.mena.identity.domain.util.AppLanguage
 
 fun SurahDto.toSurah(language: AppLanguage): Surah {
@@ -15,13 +13,3 @@ fun SurahDto.toSurah(language: AppLanguage): Surah {
         ayahCount = ayahCount ?: 0
     )
 }
-
-fun SurahAudioDto.toDownlodedSurUi(
-    surahName: String,
-    reciterName: List<String>
-): DownlodedSur = DownlodedSur(
-        id = surahId,
-        arabicNameImg = Surah.SurahOrder.entries.first { it.order == surahId },
-        surahName = surahName,
-    recitersName = reciterName
-    )
