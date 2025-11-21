@@ -36,10 +36,8 @@ import mena.core_chat_presentation.generated.resources.permission_denied_title
 import mena.core_chat_presentation.generated.resources.something_went_wrong
 import mena.core_chat_presentation.generated.resources.success
 import net.thechance.mena.core_chat.domain.entity.AudioData
-import net.thechance.mena.core_chat.domain.entity.Chat
 import net.thechance.mena.core_chat.domain.entity.ImageData
 import net.thechance.mena.core_chat.domain.entity.Message
-import net.thechance.mena.core_chat.domain.entity.MessageContent
 import net.thechance.mena.core_chat.domain.entity.MessageReaction
 import net.thechance.mena.core_chat.domain.entity.MessageStatus
 import net.thechance.mena.core_chat.domain.entity.User
@@ -58,7 +56,6 @@ import net.thechance.mena.core_chat.presentation.utils.Paginator
 import net.thechance.mena.core_chat.presentation.utils.UiText
 import net.thechance.mena.core_chat.presentation.utils.convertAudioFileToByteArray
 import net.thechance.mena.core_chat.presentation.utils.encodeToByteArrayWithCompressionToMaxSize
-import net.thechance.mena.core_chat.presentation.utils.getUuidOrNull
 import net.thechance.mena.core_chat.presentation.utils.now
 import net.thechance.mena.wallet.domain.exceptions.NoInternetException
 import net.thechance.mena.wallet.domain.repository.TransactionRepository
@@ -101,24 +98,17 @@ class ChatViewModel(
     private var firstUnReadByMeMessageTime: LocalDateTime? = null
 
     init {
-        val chatId = getUuidOrNull(chatArgs.chatId)
+        val chatId = Uuid.parse(chatArgs.chatId)
         getUserInfo()
-        updateState { state ->
-            state.copy(
-                chatId = chatId,
-                chatName = chatArgs.chatName
-            )
-        }
-
-        if (chatId == null) {
-            onGetChatError()
-        } else {
-            tryToExecute(
-                execute = { chatRepository.getChatById(chatId) },
-                onSuccess = ::onGetChatSuccess,
-                onError = { onGetChatError() }
-            )
-        }
+        updateState { state -> state.copy(chatId = chatId, chatName = chatArgs.chatName) }
+        getChat(chatId)
+        onMessagesScrolled()
+        subscribeToNewMessages(chatId)
+        subscribeToPendingMessages(chatId)
+        observeReadMessages()
+        observeDeleteChat()
+        observeConnectionStatus(chatId)
+        observeMessageReactions()
         startUiDerivation()
     }
 
@@ -187,7 +177,11 @@ class ChatViewModel(
         )
     }
 
-    private fun onGetChatSuccess(chat: Chat) {
+    private fun getChat(chatId: Uuid) {
+
+        tryToExecute(
+            execute = { chatRepository.getChatById(chatId) },
+            onSuccess = { chat ->
         updateState { state ->
             state.copy(
                 chatId = chat.id,
@@ -197,14 +191,9 @@ class ChatViewModel(
                 receiverId = chat.receiverId
             )
         }
-
-        onMessagesScrolled()
-        subscribeToNewMessages(chat.id)
-        subscribeToPendingMessages(chat.id)
-        observeReadMessages()
-        observeDeleteChat()
-        observeConnectionStatus(chat.id)
-        observeMessageReactions()
+},
+            onError = { onGetChatError() }
+        )
     }
 
     private fun observeConnectionStatus(chatId: Uuid) {
@@ -355,8 +344,7 @@ class ChatViewModel(
         )
     }
 
-    private suspend fun onCollectNewMessage(message: Message?) {
-        if (message == null) return
+    private suspend fun onCollectNewMessage(message: Message) {
         safeUpdateMessages { current ->
             current.toMutableList().apply { add(0, message) }
                 .distinctBy { it.id }
@@ -380,8 +368,8 @@ class ChatViewModel(
         )
     }
 
-    private suspend fun onCollectPendingMessages(messages: List<Message>?) {
-        val pendingMessages = messages ?: emptyList()
+    private suspend fun onCollectPendingMessages(messages: List<Message>) {
+        val pendingMessages = messages
         safeUpdateMessages { current ->
             current
                 .filter { it.status != MessageStatus.LOADING }
@@ -429,8 +417,7 @@ class ChatViewModel(
         )
     }
 
-    private fun onCollectDeleteChatEvent(deleteChatEvent: DeleteChatEvent?) {
-        if (deleteChatEvent == null) return
+    private fun onCollectDeleteChatEvent(deleteChatEvent: DeleteChatEvent) {
         onDeleteChatSuccess()
         emitEffect(ChatScreenEffect.NavigateBack)
     }
@@ -442,8 +429,7 @@ class ChatViewModel(
         )
     }
 
-    private suspend fun onCollectReadMessagesEvent(markMessageAsReadEvent: MarkMessageAsReadEvent?) {
-        if (markMessageAsReadEvent == null) return
+    private suspend fun onCollectReadMessagesEvent(markMessageAsReadEvent: MarkMessageAsReadEvent) {
         safeUpdateMessages { messages ->
             messages.map { message ->
                 if (message.senderId != markMessageAsReadEvent.readByUserId && message.status == MessageStatus.SENT)
@@ -575,8 +561,7 @@ class ChatViewModel(
     }
 
 
-    private suspend fun onCollectAddReaction(reaction: MessageReaction?) {
-        if (reaction == null) return
+    private suspend fun onCollectAddReaction(reaction: MessageReaction) {
         safeUpdateMessages { messages ->
             messages.map { message ->
                 if (message.id == reaction.messageId) {
@@ -611,8 +596,7 @@ class ChatViewModel(
         }
     }
 
-    private suspend fun onCollectRemoveReaction(reaction: MessageReaction?) {
-        if (reaction == null) return
+    private suspend fun onCollectRemoveReaction(reaction: MessageReaction) {
         safeUpdateMessages { messages ->
             messages.map { message ->
                 if (message.id == reaction.messageId) {
@@ -870,31 +854,6 @@ class ChatViewModel(
                 waveformData = generateWaveformData()
             )
         )
-    }
-
-    private fun toEntityAudioMessage(
-        audioByteArray: ByteArray,
-        audioDurationMs: Long,
-        chatId: Uuid,
-        senderId: Uuid
-    ): Message {
-        val message = Message(
-            chatId = chatId,
-            senderId = senderId,
-            content = MessageContent.Audio(
-                data = AudioData.AudioByteArray(byteArray = audioByteArray),
-                audioDurationMs = audioDurationMs
-            ),
-            id = Uuid.random(),
-            sendAt = LocalDateTime.now(),
-            status = MessageStatus.LOADING,
-            isMine = true,
-            reactions = emptyList()
-        )
-
-        waveformCache[message.id] = generateWaveformData()
-
-        return message
     }
 
     override fun onDownloadImageClicked(url: String) {
