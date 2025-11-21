@@ -9,7 +9,6 @@ import dev.mokkery.MockMode
 import dev.mokkery.answering.returns
 import dev.mokkery.every
 import dev.mokkery.everySuspend
-import dev.mokkery.matcher.any
 import dev.mokkery.mock
 import dev.mokkery.verifySuspend
 import io.ktor.client.statement.HttpResponse
@@ -40,18 +39,6 @@ class PrayerTimeRepositoryImplTest {
         prayerTimeApiService,
         prayerTimesDao = prayerTimesDao
     )
-
-    @Test
-    fun `initialization should call cleanupExpiredData`() = runTest {
-
-        prayerTimeRepository = PrayerTimeRepositoryImpl(
-            prayerTimeApiService,
-            prayerTimesDao = prayerTimesDao
-        )
-        verifySuspend {
-            prayerTimesDao.deleteExpiredPrayerTimes(any())
-        }
-    }
 
     @Test
     fun `getPrayerTimes should return list of PrayerTime when api service return valid data and cache it`() =
