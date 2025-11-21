@@ -803,38 +803,39 @@ class ChatViewModelTest {
             assertThat(vm2?.isPlaying != false).isFalse()
         }
 
-//    @Test
-//    fun `onReactionSelected should add reaction if user has not reacted`() = runTest {
-//        val reaction = "👍"
-//        val message = messages.first().copy(id = message1Id, reactions = emptyList())
-//        everySuspend { messageRepository.loadMessages(chatId, any(), any()) } returns PagedData(listOf(message), 0, true)
-//        everySuspend { messageRepository.addMessageReaction(message.id, reaction) } returns Unit
-//        viewModel.onMessageLongClicked(message.toUi())
-//        advanceUntilIdle()
-//
-//        viewModel.onReactionSelected(message.id, reaction)
-//        advanceUntilIdle()
-//
-//        verifySuspend { messageRepository.addMessageReaction(message.id, reaction) }
-//    }
+    @Test
+    fun `onReactionSelected should add reaction if user has not reacted`() = runTest {
+        val reaction = "👍"
+        val message = messages.first().copy(id = message1Id, reactions = emptyList())
+        everySuspend { messageRepository.loadMessages(chatId, any(), any()) } returns PagedData(listOf(message), 1, true)
+        everySuspend { messageRepository.addMessageReaction(message.id, reaction) } returns Unit
+        viewModel = createViewModel()
+        advanceUntilIdle()
 
-//    @Test
-//    fun `onReactionSelected should remove reaction if user already reacted`() = runTest {
-//        val reaction = "👍"
-//        val message = messages.first()
-//            .copy(reactions = listOf(MessageReaction(reaction, chatRequesterId, message1Id)))
-//        everySuspend {
-//            messageRepository.loadMessages(chatId, any(), any())
-//        } returns PagedData(listOf(message), 0, true)
-//        everySuspend { messageRepository.removeMessageReaction(message.id, reaction) } returns Unit
-//        viewModel.onMessageLongClicked(message.toUi())
-//        advanceUntilIdle()
-//
-//        viewModel.onReactionSelected(message.id, reaction)
-//        advanceUntilIdle()
-//
-//        verifySuspend { messageRepository.removeMessageReaction(message.id, reaction) }
-//    }
+        viewModel.onReactionSelected(message.id, reaction)
+        advanceUntilIdle()
+
+        verifySuspend { messageRepository.addMessageReaction(message.id, reaction) }
+    }
+
+    @Test
+    fun `onReactionSelected should remove reaction if user already reacted`() = runTest {
+        val reaction = "👍"
+        val message = messages.first()
+            .copy(reactions = listOf(MessageReaction(reaction, chatRequesterId, message1Id)))
+        everySuspend { messageRepository.loadMessages(chatId, any(), any()) } returns PagedData(listOf(message), 0, true)
+        everySuspend { messageRepository.removeMessageReaction(message.id, reaction) } returns Unit
+        viewModel = createViewModel()
+        advanceUntilIdle()
+
+        viewModel.onMessageLongClicked(message.toUi())
+        advanceUntilIdle()
+
+        viewModel.onReactionSelected(message.id, reaction)
+        advanceUntilIdle()
+
+        verifySuspend { messageRepository.removeMessageReaction(message.id, reaction) }
+    }
 
     @Test
     fun `onCollectAddReaction should add reaction to message when reaction is received`() =
