@@ -44,9 +44,9 @@ fun Scaffold(
         modifier = modifier
             .fillMaxSize()
             .applyIf(hasBlur) { blur(4.dp) }
-            .background(statusBarColor)
             .applyIf(!fullScreen) {
-                windowInsetsPadding(WindowInsets.statusBars)
+                background(statusBarColor)
+                    .windowInsetsPadding(WindowInsets.statusBars)
                     .navigationBarsPadding()
                     .systemBarsPadding()
             },
