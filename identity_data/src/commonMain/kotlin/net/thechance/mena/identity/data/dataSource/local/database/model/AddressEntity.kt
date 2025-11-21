@@ -8,16 +8,10 @@ import androidx.room.PrimaryKey
 data class AddressEntity(
 
     @PrimaryKey
-    @ColumnInfo(name = "id")
     val id: String,
-    @ColumnInfo(name = "latitude")
     val latitude: Double,
-    @ColumnInfo(name = "longitude")
     val longitude: Double,
-    @ColumnInfo(name = "address_line")
     val addressLine: String,
-    @ColumnInfo(name = "address_type")
     val addressType: String,
-    @ColumnInfo(name = "is_active")
     val isActive: Boolean
 )
