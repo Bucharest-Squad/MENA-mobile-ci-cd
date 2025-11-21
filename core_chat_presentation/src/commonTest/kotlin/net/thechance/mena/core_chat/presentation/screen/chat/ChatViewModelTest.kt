@@ -125,6 +125,18 @@ class ChatViewModelTest {
     }
 
     @Test
+    fun `init should update user data when receive user data with null imageUrl from repository`() = runTest {
+        everySuspend { userRepository.getUserInfo() } returns user.copy(imageUrl = null)
+
+        val viewModel = createViewModel()
+        advanceUntilIdle()
+
+        assertThat(viewModel.state.value.userData.firstName).isEqualTo(user.firstName)
+        assertThat(viewModel.state.value.userData.lastName).isEqualTo(user.lastName)
+        assertThat(viewModel.state.value.userData.imageUrl).isEmpty()
+    }
+
+    @Test
     fun `onBackClicked should emit NavigateBack effect`() = runTest {
         advanceUntilIdle()
 
@@ -1252,7 +1264,7 @@ class ChatViewModelTest {
         val user: User = User(
             firstName = "ali",
             lastName = "nawar",
-            imageUrl = ""
+            imageUrl = "https://image.com",
         )
         val chatId = Uuid.parse("11111111-1111-1111-1111-111111111111")
         val chatRequesterId = Uuid.parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa")
