@@ -36,8 +36,8 @@ class AddressesRepositoryImpl(
     private val client: HttpClient,
     private val geocoder: GeocoderWrapper,
     private val addressDao: AddressDao,
-    private val scope: CoroutineScope,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
+    private val scope: CoroutineScope = CoroutineScope(dispatcher)
 ) : AddressesRepository {
 
     override suspend fun createAddress(addressInput: AddressInput) {
