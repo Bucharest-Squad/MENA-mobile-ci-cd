@@ -47,6 +47,7 @@ kotlin {
             implementation(projects.identityDomain)
 
             implementation(projects.designSystem)
+            implementation(projects.dukanApi)
 
             // Compose
             implementation(compose.runtime)

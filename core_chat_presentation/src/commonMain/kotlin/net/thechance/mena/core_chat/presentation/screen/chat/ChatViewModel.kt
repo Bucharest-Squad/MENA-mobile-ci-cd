@@ -1073,6 +1073,10 @@ class ChatViewModel(
         }
     }
 
+    override fun onViewOrderDetailsClicked(orderId: Uuid) {
+        emitEffect(ChatScreenEffect.NavigateToOrderDetails(orderId = orderId.toString()))
+    }
+
     private suspend fun safeUpdateMessages(block: (List<Message>) -> List<Message>) {
         messagesMutex.withLock {
             _messages.update(block)

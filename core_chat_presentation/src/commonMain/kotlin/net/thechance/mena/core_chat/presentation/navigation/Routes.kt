@@ -30,3 +30,6 @@ data class  SurahRoute(val surahId: Int) : ChatRoute
 
 @Serializable
 data class AyahRoute(val surahId: Int, val ayahId: Int) : ChatRoute
+
+@Serializable
+data class OrderDetailsRoute(val orderId: String): ChatRoute

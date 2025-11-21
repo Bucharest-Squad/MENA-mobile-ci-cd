@@ -29,6 +29,7 @@ import net.thechance.mena.core_chat.presentation.screen.syncContacts.SyncContact
 import net.thechance.mena.core_chat.presentation.utils.rememberImageLoader
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.faith.api.FaithApi
+import net.thechance.mena.dukan.api.DukanApi
 import net.thechance.mena.wallet.api.WalletApi
 import org.koin.compose.koinInject
 import kotlin.uuid.ExperimentalUuidApi
@@ -42,6 +43,7 @@ val LocalNavController = staticCompositionLocalOf<NavController> {
 @Composable
 fun ChatNavHost(
     walletApi: WalletApi = koinInject(),
+    dukanApi: DukanApi = koinInject(),
     faithApi : FaithApi = koinInject(),
     updateBottomNavigationVisibility: (Boolean) -> Unit = {},
     onNavigateBackFromChat: () -> Unit = {},
@@ -91,10 +93,17 @@ fun ChatNavHost(
                     walletApi.ConfirmPaymentEntry(
                         transactionId = Uuid.parse(backStack.savedStateHandle.toRoute<ConfirmPaymentRoute>().transactionId),
                         navigateBack = {
-
                             navController.popBackStack()
                         },
                         updateBottomNavigationVisibility = updateBottomNavigationVisibility
+                    )
+                }
+                composable<OrderDetailsRoute> {
+                    dukanApi.OrderDetailsEntry(
+                        orderId = Uuid.parse(it.toRoute<OrderDetailsRoute>().orderId),
+                        onNavigateBack = {
+                            navController.popBackStack()
+                        }
                     )
                 }
                 composable<ShareMessageRoute> { ShareMessageScreen(onClickBack = onNavigateBackFromShareMessage) }

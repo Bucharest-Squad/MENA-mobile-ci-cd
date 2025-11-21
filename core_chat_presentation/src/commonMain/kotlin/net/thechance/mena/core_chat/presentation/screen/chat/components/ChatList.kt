@@ -23,6 +23,7 @@ import net.thechance.mena.core_chat.presentation.screen.chat.DateSeparator
 import net.thechance.mena.core_chat.presentation.screen.chat.ImageMessageUiState
 import net.thechance.mena.core_chat.presentation.screen.chat.ImagesGroupChatItem
 import net.thechance.mena.core_chat.presentation.screen.chat.MessageUiState
+import net.thechance.mena.core_chat.presentation.screen.chat.OrderMessageUiState
 import net.thechance.mena.core_chat.presentation.screen.chat.MoneyMessageUiState
 import net.thechance.mena.core_chat.presentation.screen.chat.TextMessageUiState
 import net.thechance.mena.core_chat.presentation.utils.rememberNetworkStatus
@@ -40,6 +41,7 @@ fun ChatList(
     onSurahClick :(Int) ->Unit,
     onAyahClick : (Int,Int) -> Unit,
     onMessageImageClick: (List<ImageMessageUiState>, Int) -> Unit,
+    onViewOrderDetailsClick: (Uuid) -> Unit,
     onFailedMessageClick: (MessageUiState) -> Unit,
     onMessageLongClick: (MessageUiState) -> Unit,
     onMessageVoiceClick: (Uuid) -> Unit,
@@ -66,11 +68,12 @@ fun ChatList(
                     is ImageMessageUiState -> item.messageDetails.id.toString()
                     is AudioMessageUiState -> item.messageDetails.id.toString()
                     is AyahMessageUiState -> item.messageDetails.id.toString()
+                    is OrderMessageUiState -> item.messageDetails.id.toString()
                     is DateSeparator -> item.label.toString()
                     is MoneyMessageUiState -> item.messageDetails.id.toString()
                 }
             }
-        ) { _ , item ->
+        ) { _, item ->
             val isLastItem = items.indexOf(item) == 0
             val paddingBottom = if (isLastItem)
                 0.dp
@@ -79,6 +82,10 @@ fun ChatList(
             else if (item is ImagesGroupChatItem && item.imagesUiState.last().messageDetails.isLastInSeries)
                 Theme.spacing._16
             else if (item is AudioMessageUiState && item.messageDetails.isLastInSeries)
+                Theme.spacing._16
+            else if (item is AyahMessageUiState && item.messageDetails.isLastInSeries)
+                Theme.spacing._16
+            else if (item is OrderMessageUiState && item.messageDetails.isLastInSeries)
                 Theme.spacing._16
             else
                 Theme.spacing._2
@@ -90,6 +97,7 @@ fun ChatList(
                 onMessageClick = onMessageClick,
                 onMessageImageClick = onMessageImageClick,
                 onMessageVoiceClick = onMessageVoiceClick,
+                onViewOrderDetailsClick = onViewOrderDetailsClick,
                 onFailedMessageClick = onFailedMessageClick,
                 onMessageLongClick = onMessageLongClick,
                 onLinkClick = onLinkClick,
