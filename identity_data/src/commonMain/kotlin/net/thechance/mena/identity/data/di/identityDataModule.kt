@@ -7,6 +7,7 @@ import io.ktor.client.engine.cio.CIO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import net.thechance.mena.identity.data.dataSource.local.database.IdentityDatabase
+import net.thechance.mena.identity.data.dataSource.local.database.dao.AddressDao
 import net.thechance.mena.identity.data.dataSource.local.database.dao.UserDao
 import net.thechance.mena.identity.data.repository.AuthenticationRepositoryImpl
 import net.thechance.mena.identity.data.repository.ImagesRepositoryImpl
@@ -73,7 +74,13 @@ val identityDataModule = module {
     }
 
     singleOf(::MobileGeocoderWrapper) bind GeocoderWrapper::class
-    single<AddressesRepository> { AddressesRepositoryImpl(client = get(named(IDENTITY_CLIENT)), get()) }
+    single<AddressesRepository> { 
+        AddressesRepositoryImpl(
+            client = get(named(IDENTITY_CLIENT)), 
+            geocoder = get(), 
+            addressDao = get()
+        ) 
+    }
 
     singleOf(::ImagesRepositoryImpl) bind ImagesRepository::class
     singleOf(::AuthorizationService)
@@ -93,6 +100,7 @@ val identityDataModule = module {
     single { provideDatabaseBuilder() }
     single<IdentityDatabase> { getRoomDatabase(builder = get()) }
     single<UserDao> { get<IdentityDatabase>().getUserDao() }
+    single<AddressDao> { get<IdentityDatabase>().getAddressDao() }
 
 }
 
