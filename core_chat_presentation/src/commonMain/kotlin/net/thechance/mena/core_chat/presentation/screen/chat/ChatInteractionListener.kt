@@ -54,7 +54,7 @@ interface AttachmentsInteractionListener {
 interface AttachmentsSendMoneyInteractionListener {
     fun onValueChanged(value: String)
     fun onSendClicked()
-    fun onDismissSendMonyDialog()
+    fun onDismissSendMoneyDialog()
 }
 
 interface FullImageViewInteractionListener {

@@ -1007,7 +1007,7 @@ class ChatViewModel(
         )
     }
 
-    override fun onDismissSendMonyDialog() {
+    override fun onDismissSendMoneyDialog() {
         updateState {
             it.copy(
                 isSendMoneyDialogVisible = false
