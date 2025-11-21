@@ -41,6 +41,7 @@ import mena.core_chat_presentation.generated.resources.error_invalid_recording
 import mena.core_chat_presentation.generated.resources.error_recording_failed
 import mena.core_chat_presentation.generated.resources.image_saved_successfully
 import mena.core_chat_presentation.generated.resources.permission_denied_title
+import mena.core_chat_presentation.generated.resources.something_went_wrong
 import mena.core_chat_presentation.generated.resources.success
 import net.thechance.mena.core_chat.domain.entity.AudioData
 import net.thechance.mena.core_chat.domain.entity.Chat
@@ -57,9 +58,12 @@ import net.thechance.mena.core_chat.domain.repository.MessageRepository
 import net.thechance.mena.core_chat.domain.repository.UserRepository
 import net.thechance.mena.core_chat.domain.service.ImageDownloaderService
 import net.thechance.mena.core_chat.presentation.components.snackBarHost.SnackBarData
+import net.thechance.mena.core_chat.presentation.screen.chat.components.NoInternetConnection
 import net.thechance.mena.core_chat.presentation.utils.AudioPlayer
 import net.thechance.mena.core_chat.presentation.utils.UiText
 import net.thechance.mena.core_chat.presentation.utils.now
+import net.thechance.mena.faith.domain.exception.FaithException
+import net.thechance.mena.wallet.domain.exceptions.NoInternetException
 import net.thechance.mena.wallet.domain.repository.TransactionRepository
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
@@ -104,7 +108,7 @@ class ChatViewModelTest {
         every { messageRepository.observeMessageReactions() } returns flowOf()
         every { messageRepository.observeRemovedMessageReactions() } returns flowOf()
         everySuspend { messageRepository.markMessagesOfChatAsRead(any()) } returns Unit
-
+        everySuspend { transactionRepository.addPendingTransaction(receiverId, amount) }
         viewModel = createViewModel()
     }
 
@@ -465,6 +469,72 @@ class ChatViewModelTest {
         advanceUntilIdle()
 
         assertThat(viewModel.state.value.isAttachmentsOverlayVisible).isTrue()
+    }
+
+    @Test
+    fun `onDismissSendMoneyDialog should close attachments bottom sheet when called`() = runTest {
+        advanceUntilIdle()
+
+        viewModel.onDismissSendMoneyDialog()
+        advanceUntilIdle()
+
+        assertThat(viewModel.state.value.isSendMoneyDialogVisible).isFalse()
+    }
+
+    @Test
+    fun `onValueChanged should update amountToTransfer when called`() = runTest {
+        advanceUntilIdle()
+
+        viewModel.onValueChanged(amountToTransfer)
+        advanceUntilIdle()
+
+        assertThat(viewModel.state.value.amountToTransfer).isEqualTo(amountToTransfer)
+    }
+
+    @Test
+    fun `onSendMoneyClicked should openSendMoneyDialog bottom sheet when called`() = runTest {
+        advanceUntilIdle()
+
+        viewModel.onSendMoneyClicked()
+        advanceUntilIdle()
+        assertThat(viewModel.state.value.amountToTransfer).isEmpty()
+        assertThat(viewModel.state.value.isAttachmentsOverlayVisible).isFalse()
+        assertThat(viewModel.state.value.isSendMoneyDialogVisible).isTrue()
+    }
+//
+//    @Test
+//    fun `onSendClicked should send money when transaction success`() = runTest {
+//        advanceUntilIdle()
+//
+//        viewModel.effect.test {
+//            viewModel.onSendClicked()
+//            advanceUntilIdle()
+//            assertThat(viewModel.state.value.isLoadingSendMoneyButton).isTrue()
+//            assertEquals(
+//                ChatScreenEffect.NavigateToConfirmPayment(amountToTransfer, receiverId), awaitItem()
+//            )
+//            cancelAndIgnoreRemainingEvents()
+//        }
+//    }
+
+    @Test
+    fun `onSendClicked should show snackbar when transaction fails`() = runTest {
+        advanceUntilIdle()
+
+        viewModel.effect.test {
+            viewModel.onSendClicked()
+            advanceUntilIdle()
+            assertEquals(
+                ChatScreenEffect.ShowSnackBar(
+                    SnackBarData(
+                        title = UiText.StringRes(Res.string.error),
+                        message = UiText.StringRes(Res.string.something_went_wrong),
+                        isError = true
+                    )
+                ), awaitItem()
+            )
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
@@ -1277,7 +1347,8 @@ class ChatViewModelTest {
         val message1Id = Uuid.parse("22222222-2222-2222-2222-222222222222")
         val message2Id = Uuid.parse("33333333-3333-3333-3333-333333333333")
         val voiceMessageId = Uuid.parse("44444444-4444-4444-4444-444444444444")
-
+        const val amountToTransfer = "22.2"
+        const val amount = 22.22
 
         const val imageUrl = "https://test.com/image.jpg"
         const val audioUrl = "https://test.com/audio.mp3"
