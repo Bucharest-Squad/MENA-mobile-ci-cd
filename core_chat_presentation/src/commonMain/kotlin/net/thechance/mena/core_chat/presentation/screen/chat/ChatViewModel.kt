@@ -929,11 +929,7 @@ class ChatViewModel(
     }
 
     override fun onValueChanged(value: String) {
-        updateState {
-            it.copy(
-                amountToTransfer = value
-            )
-        }
+        updateState { it.copy(amountToTransfer = value) }
     }
 
     override fun onSendClicked() {
