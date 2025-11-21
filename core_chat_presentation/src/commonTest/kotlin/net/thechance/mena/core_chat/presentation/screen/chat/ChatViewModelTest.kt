@@ -514,21 +514,6 @@ class ChatViewModelTest {
         assertThat(viewModel.state.value.isAttachmentsOverlayVisible).isFalse()
         assertThat(viewModel.state.value.isSendMoneyDialogVisible).isTrue()
     }
-//
-//    @Test
-//    fun `onSendClicked should send money when transaction success`() = runTest {
-//        advanceUntilIdle()
-//
-//        viewModel.effect.test {
-//            viewModel.onSendClicked()
-//            advanceUntilIdle()
-//            assertThat(viewModel.state.value.isLoadingSendMoneyButton).isTrue()
-//            assertEquals(
-//                ChatScreenEffect.NavigateToConfirmPayment(amountToTransfer, receiverId), awaitItem()
-//            )
-//            cancelAndIgnoreRemainingEvents()
-//        }
-//    }
 
     @Test
     fun `onSendClicked should show snackbar when transaction fails`() = runTest {

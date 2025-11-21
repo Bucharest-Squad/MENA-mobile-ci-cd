@@ -46,7 +46,6 @@ kotlin {
             implementation(projects.identityDomain)
 
             implementation(projects.designSystem)
-            implementation(projects.walletDomain)
 
             // Compose
             implementation(compose.runtime)
