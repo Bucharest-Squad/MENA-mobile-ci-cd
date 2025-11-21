@@ -909,6 +909,13 @@ class ChatViewModel(
     override fun onGalleryClicked() {
         updateState { it.copy(isAttachmentsOverlayVisible = false) }
     }
+    override fun onSurahClicked(surahId: Int) {
+        emitEffect(ChatScreenEffect.NavigateToSurah(surahId))
+    }
+
+    override fun onAyahClicked(surahId: Int, ayahNumber: Int) {
+        emitEffect(ChatScreenEffect.NavigateToAyah(surahId, ayahNumber))
+    }
 
     override fun onCameraClicked() {
         tryToExecute(
