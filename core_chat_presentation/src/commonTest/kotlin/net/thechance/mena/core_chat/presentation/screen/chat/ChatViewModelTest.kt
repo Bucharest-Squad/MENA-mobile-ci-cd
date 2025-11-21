@@ -73,7 +73,7 @@ class ChatViewModelTest {
     private val messageRepository = mock<MessageRepository>()
     private val userRepository = mock<UserRepository>()
     private val audioRecordRepository = mock<AudioRecordRepository>()
-    private val chatArgs = mock<ChatArgs>()
+    private lateinit var chatArgs: ChatArgs
     private val imageDownloaderService = mock<ImageDownloaderService>()
     private val permissionsController = mock<PermissionsController>()
     private val audioPlayer = mock<AudioPlayer>()
@@ -85,10 +85,11 @@ class ChatViewModelTest {
     @BeforeTest
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-        every { chatArgs.chatId } returns chatId.toString()
-        every { chatArgs.chatName } returns chatName
         every { audioPlayer.getDurationOfCurrentAudio() } returns 1000L
-
+        chatArgs = object : ChatArgs {
+            override val chatId: String = Companion.chatId.toString()
+            override val chatName: String = Companion.chatName
+        }
         everySuspend { chatRepository.getChatById(chatId) } returns chat
         everySuspend {
             messageRepository.loadMessages(chatId, any(), any())
@@ -695,9 +696,32 @@ class ChatViewModelTest {
     }
 
     @Test
+    fun `onSendVoiceRecordClicked should show error when chatId is null`() = runTest {
+        every { audioRecordRepository.stopRecording() } returns "/test/path/audio.mp4"
+
+        val viewModel = createViewModel()
+        advanceUntilIdle()
+
+        viewModel.effect.test {
+            viewModel.onSendRecordClicked()
+            advanceUntilIdle()
+
+            assertEquals(
+                ChatScreenEffect.ShowSnackBar(
+                    SnackBarData(
+                        title = UiText.StringRes(Res.string.error),
+                        message = UiText.StringRes(Res.string.error_failed_to_process_audio),
+                        isError = true
+                    )
+                ), awaitItem()
+            )
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
     fun `onSendVoiceRecordClicked should show error when filePath is empty`() = runTest {
         every { audioRecordRepository.stopRecording() } returns ""
-        every { chatArgs.chatId } returns chatId.toString()
 
         val viewModel = createViewModel()
         advanceUntilIdle()
@@ -723,7 +747,6 @@ class ChatViewModelTest {
     fun `onSendVoiceRecordClicked should show error when audio processing fails`() = runTest {
         val testFilePath = "/test/path/audio.mp4"
         every { audioRecordRepository.stopRecording() } returns testFilePath
-        every { chatArgs.chatId } returns chatId.toString()
 
         val viewModel = createViewModel()
         advanceUntilIdle()
