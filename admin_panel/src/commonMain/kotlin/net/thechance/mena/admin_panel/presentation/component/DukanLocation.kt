@@ -24,21 +24,22 @@ fun DukanLocation(
 ) {
     Row(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             painter = painterResource(Res.drawable.ic_dukan_location),
             contentDescription = stringResource(Res.string.location),
-            modifier = Modifier.size(20.dp)
+            tint = Theme.colorScheme.shadeSecondary,
+            modifier = Modifier.size(16.dp)
         )
         Text(
             text = location,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             softWrap = false,
-            style = Theme.typography.label.large,
-            color = Theme.colorScheme.shadePrimary
+            style = Theme.typography.label.small,
+            color = Theme.colorScheme.shadeSecondary
         )
     }
 }
