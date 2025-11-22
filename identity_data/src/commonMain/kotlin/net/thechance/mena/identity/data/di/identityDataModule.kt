@@ -8,9 +8,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import net.thechance.mena.identity.data.dataSource.local.database.IdentityDatabase
 import net.thechance.mena.identity.data.dataSource.local.database.dao.UserDao
+import net.thechance.mena.identity.data.repository.ApplicationInfoRepositoryImpl
 import net.thechance.mena.identity.data.repository.AuthenticationRepositoryImpl
 import net.thechance.mena.identity.data.repository.ImagesRepositoryImpl
-import net.thechance.mena.identity.data.repository.ApplicationInfoRepositoryImpl
 import net.thechance.mena.identity.data.repository.RegisterRepositoryImpl
 import net.thechance.mena.identity.data.repository.RegistrationDraftRepositoryImpl
 import net.thechance.mena.identity.data.repository.ResetPasswordRepositoryImpl
@@ -20,9 +20,9 @@ import net.thechance.mena.identity.data.repository.location.AddressesRepositoryI
 import net.thechance.mena.identity.data.repository.location.GeocoderWrapper
 import net.thechance.mena.identity.data.repository.location.MobileGeocoderWrapper
 import net.thechance.mena.identity.domain.repository.AddressesRepository
+import net.thechance.mena.identity.domain.repository.ApplicationInfoRepository
 import net.thechance.mena.identity.domain.repository.AuthenticationRepository
 import net.thechance.mena.identity.domain.repository.ImagesRepository
-import net.thechance.mena.identity.domain.repository.ApplicationInfoRepository
 import net.thechance.mena.identity.domain.repository.RegisterRepository
 import net.thechance.mena.identity.domain.repository.RegistrationDraftRepository
 import net.thechance.mena.identity.domain.repository.ResetPasswordRepository
@@ -52,7 +52,11 @@ val identityDataModule = module {
     }
 
     single<AuthenticationRepository> {
-        AuthenticationRepositoryImpl(client = get(named(IDENTITY_CLIENT)), settings = get())
+        AuthenticationRepositoryImpl(
+            client = get(named(IDENTITY_CLIENT)),
+            settings = get(),
+            userDao = get()
+        )
     }
 
     single<ResetPasswordRepository> {
