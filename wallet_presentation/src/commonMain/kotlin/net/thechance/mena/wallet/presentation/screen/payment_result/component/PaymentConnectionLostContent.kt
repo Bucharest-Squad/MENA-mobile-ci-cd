@@ -43,8 +43,7 @@ internal fun PaymentConnectionLostContent(
             image = failedTransactionIcon,
             title = stringResource(Res.string.transaction_failed),
             description = stringResource(Res.string.connection_lost_try_again),
-            paymentStatus = state.paymentStatus,
-
+            paymentStatus = state.paymentStatus
             )
 
         Spacer(modifier = Modifier.weight(1f))
