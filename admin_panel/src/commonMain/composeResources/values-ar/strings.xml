@@ -38,6 +38,7 @@
     <!-- Dukan Requests -->
     <string name="requests">طلبات</string>
     <string name="view_details">عرض التفاصيل</string>
+    <string name="no_dukan_requests">لا يوجد طلبات إضافة دكاكين حاليا!</string>
     <!-- User Status -->
     <string name="active">نشط</string>
     <string name="blocked">محظور</string>

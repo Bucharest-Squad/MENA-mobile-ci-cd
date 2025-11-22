@@ -38,7 +38,7 @@
     <!-- Dukan Requests -->
     <string name="requests">Requests</string>
     <string name="view_details">View details</string>
-
+    <string name="no_dukan_requests">There is no dukan Requests right now!</string>
 
     <!-- User Status -->
     <string name="active">Active</string>

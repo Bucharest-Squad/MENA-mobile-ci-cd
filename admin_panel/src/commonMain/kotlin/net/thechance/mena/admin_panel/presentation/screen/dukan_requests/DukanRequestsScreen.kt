@@ -12,12 +12,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import net.thechance.mena.admin_panel.presentation.component.DukansCounter
-import net.thechance.mena.admin_panel.presentation.component.EmptyDukansState
 import net.thechance.mena.admin_panel.presentation.component.PanelScaffold
 import net.thechance.mena.admin_panel.presentation.component.SnackBarContainer
 import net.thechance.mena.admin_panel.presentation.screen.dukan_requests.component.DukanDetailsDrawerView
 import net.thechance.mena.admin_panel.presentation.screen.dukan_requests.component.DukanRequestsTableContent
 import net.thechance.mena.admin_panel.presentation.component.DukanStatusChangeDialog
+import net.thechance.mena.admin_panel.presentation.screen.dukan_requests.component.EmptyDukanRequests
 import net.thechance.mena.admin_panel.resources.Res
 import net.thechance.mena.admin_panel.resources.dukan_requests
 import net.thechance.mena.admin_panel.resources.reject
@@ -75,7 +75,7 @@ private fun DukanRequestsScreenContent(
                 modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 16.dp)
             )
             when {
-                state.dukans.isEmpty() -> EmptyDukansState(
+                state.dukans.isEmpty() -> EmptyDukanRequests(
                     modifier = Modifier.fillMaxSize().offset(y = -(76.dp))
                 )
 
