@@ -11,14 +11,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import app.cash.paging.compose.collectAsLazyPagingItems
 import mena.dukan_presentation.generated.resources.Res
-import mena.dukan_presentation.generated.resources.checkout_dialog_description
-import mena.dukan_presentation.generated.resources.checkout_dialog_title
 import mena.dukan_presentation.generated.resources.summary_details
-import net.thechance.mena.designsystem.presentation.component.dialog.Dialog
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import net.thechance.mena.dukan.presentation.component.shared.SnackBar
 import net.thechance.mena.dukan.presentation.navigation.DukanRoute
 import net.thechance.mena.dukan.presentation.navigation.LocalNavController
 import net.thechance.mena.dukan.presentation.screen.checkout.component.CheckoutAppBar
@@ -33,7 +31,9 @@ import net.thechance.mena.dukan.presentation.viewModel.checkout.CheckoutViewMode
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
+import kotlin.uuid.ExperimentalUuidApi
 
+@OptIn(ExperimentalUuidApi::class)
 @Composable
 fun CheckoutScreen(
     viewModel: CheckoutViewModel = koinViewModel()
@@ -52,6 +52,10 @@ fun CheckoutScreen(
 
             CheckoutEffect.NavigateToChangeLocation -> {
                 navController.navigate(DukanRoute.AddressesRoute)
+            }
+
+            is CheckoutEffect.NavigateToConfirmPayment -> {
+                navController.navigate(DukanRoute.ConfirmPaymentScreenRoute(effect.transactionId, state.dukanId))
             }
         }
     }
@@ -73,22 +77,21 @@ private fun CheckoutContent(
         topBar = {
             CheckoutAppBar(listener)
         },
-        bottomBar = {
-            ConfirmOrderButton(listener::onConfirmOrderClicked)
-        },
-        overlays = {
-            dialog(state.isCheckoutImplementedDialogVisible) {
-                Dialog(
-                    title = stringResource(Res.string.checkout_dialog_title),
-                    message = stringResource(Res.string.checkout_dialog_description),
-                    isVisible = state.isCheckoutImplementedDialogVisible,
-                    onDismiss = listener::onDismissCheckoutDialog,
-                    onCancelClick = listener::onDismissCheckoutDialog,
-                    hasDismissButton = true,
-                    actionButtons = {},
+        snakeBar = {
+            state.snackBarState?.let {
+                SnackBar(
+                    snackBarUiState = it,
+                    onDismiss = listener::onDismissSnackBar
                 )
             }
-        }
+        },
+        bottomBar = {
+            ConfirmOrderButton(
+                onConfirmOrderClicked = listener::onConfirmOrderClicked,
+                isEnabled = state.isConfirmOrderButtonEnabled,
+                isLoading = state.isTransactionLoading
+            )
+        },
     ) {
         Column(
             modifier = Modifier
