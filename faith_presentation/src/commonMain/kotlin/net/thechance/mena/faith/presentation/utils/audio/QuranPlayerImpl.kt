@@ -1,4 +1,4 @@
-package net.thechance.mena.faith.data.audio
+package net.thechance.mena.faith.presentation.utils.audio
 
 import net.thechance.mena.faith.domain.mediaPlayer.QuranPlayer
 
