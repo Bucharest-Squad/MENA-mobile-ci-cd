@@ -116,9 +116,9 @@ private fun MosqueDetailsContent(
     }
 }
 
-@OptIn(ExperimentalUuidApi::class)
 @Preview
 @Composable
+@OptIn(ExperimentalUuidApi::class)
 private fun Preview() {
     MenaTheme {
         QuranTheme {
