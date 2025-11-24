@@ -1,10 +1,9 @@
-package net.thechance.mena.faith.data.audio
+package net.thechance.mena.faith.presentation.utils.audio
 
 import kotlinx.cinterop.ExperimentalForeignApi
 import net.thechance.mena.faith.domain.mediaPlayer.QuranPlayer
 import platform.AVFoundation.AVPlayer
 import platform.AVFoundation.AVPlayerItem
-import platform.AVFoundation.AVPlayerItemDidPlayToEndTimeNotification
 import platform.AVFoundation.pause
 import platform.AVFoundation.play
 import platform.AVFoundation.seekToTime

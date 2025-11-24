@@ -1,5 +1,4 @@
-package net.thechance.mena.faith.presentation.feature.prayertime
-
+package net.thechance.mena.faith.presentation.feature.prayerTime
 
 import app.cash.turbine.test
 import dev.mokkery.MockMode
@@ -8,7 +7,7 @@ import dev.mokkery.answering.throws
 import dev.mokkery.everySuspend
 import dev.mokkery.matcher.any
 import dev.mokkery.mock
-import dev.mokkery.verify.VerifyMode.Companion.exactly
+import dev.mokkery.verify.VerifyMode
 import dev.mokkery.verifySuspend
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -19,6 +18,9 @@ import net.thechance.mena.faith.domain.entity.PrayerTime
 import net.thechance.mena.faith.domain.repository.PrayerTimeRepository
 import net.thechance.mena.faith.domain.service.PrayerTimeService
 import net.thechance.mena.faith.presentation.base.snackbar.SnackbarHandler
+import net.thechance.mena.faith.presentation.feature.prayertime.PrayerTimeEffect
+import net.thechance.mena.faith.presentation.feature.prayertime.PrayerTimeUiState
+import net.thechance.mena.faith.presentation.feature.prayertime.PrayerTimeViewModel
 import net.thechance.mena.faith.presentation.utils.IslamicDate
 import net.thechance.mena.faith.presentation.utils.IslamicDateCalculator
 import net.thechance.mena.identity.domain.entity.Address
@@ -99,7 +101,12 @@ class PrayerTimeViewModelTest {
             testDispatcher
         )
 
-        verifySuspend(mode = exactly(1)) { prayerTimeRepository.getPrayerTimes(any(), any()) }
+        verifySuspend(mode = VerifyMode.Companion.exactly(1)) {
+            prayerTimeRepository.getPrayerTimes(
+                any(),
+                any()
+            )
+        }
     }
 
     @Test
@@ -308,7 +315,7 @@ class PrayerTimeViewModelTest {
         )
 
         val fakeAddress = Address(
-            id = Uuid.random(),
+            id = Uuid.Companion.random(),
             latitude = 33.3152,
             longitude = 44.3661,
             addressLine = "Baghdad, Iraq",

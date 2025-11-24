@@ -1,4 +1,4 @@
-package net.thechance.mena.faith.data.audio
+package net.thechance.mena.faith.presentation.utils.audio
 
 import android.content.Context
 import androidx.media3.common.MediaItem
