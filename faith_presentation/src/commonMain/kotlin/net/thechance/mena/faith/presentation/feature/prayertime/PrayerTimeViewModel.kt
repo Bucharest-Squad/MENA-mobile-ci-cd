@@ -64,7 +64,9 @@ class PrayerTimeViewModel(
         tryToExecute(
             execute = {
                 val filteredPrayerTimes = prayerTimes.filter { it.name != PrayerName.SUNRISE }
+
                 val currentIslamicDate = IslamicDate.now(islamicDateCalculator)
+
                 updateState {
                     it.copy(
                         prayerTimes = filteredPrayerTimes,
