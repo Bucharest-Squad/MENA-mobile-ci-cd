@@ -47,12 +47,7 @@ class PrayerTimeViewModel(
 
     private fun onGetUserLocationSuccess(address: Address) {
         currentAddress = address
-        updateState {
-            it.copy(
-                address = address.addressLine,
-                currentDate = IslamicDate.now(islamicDateCalculator)
-            )
-        }
+        updateState { it.copy(address = address.addressLine) }
         getPrayerTimes(address, Clock.System.now())
     }
 
@@ -69,9 +64,11 @@ class PrayerTimeViewModel(
         tryToExecute(
             execute = {
                 val filteredPrayerTimes = prayerTimes.filter { it.name != PrayerName.SUNRISE }
+                val currentIslamicDate = IslamicDate.now(islamicDateCalculator)
                 updateState {
                     it.copy(
                         prayerTimes = filteredPrayerTimes,
+                        currentDate = currentIslamicDate,
                     )
                 }
             },
