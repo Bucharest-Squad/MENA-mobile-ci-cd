@@ -87,7 +87,7 @@ class PrayerTimeViewModel(
                 { nextPrayer ->
                     nextPrayer?.let {
                         if (nextPrayer.name == PrayerName.FAJR && uiState.value.isTodayPrayer) {
-                            getNextDayPrayerTimesIfNoMoreInCurrent(nextPrayer)
+                            updateToNextDayIfNeeded(nextPrayer)
                         }
 
                         startCountdownTimer(nextPrayer = it, address = address)
@@ -105,13 +105,21 @@ class PrayerTimeViewModel(
         )
     }
 
-    private fun getNextDayPrayerTimesIfNoMoreInCurrent(prayerTime: PrayerTime) {
+    private fun updateToNextDayIfNeeded(nextPrayerTime: PrayerTime) {
+        if (shouldLoadNextDay(nextPrayerTime).not()) return
+        updateToNextDay()
+    }
+
+    private fun updateToNextDay() {
         val currentDate = uiState.value.currentDate
-        val prayerTimeDay = getHijriDay(prayerTime)
-        if (currentDate.day >= prayerTimeDay) return
         val nextIslamicDate = currentDate.copy(day = currentDate.day.inc())
         updateState { it.copy(currentDate = nextIslamicDate) }
         getPrayerTimesForIslamicDate(nextIslamicDate)
+    }
+
+    private fun shouldLoadNextDay(nextPrayerTime: PrayerTime): Boolean {
+        val prayerTimeDay = getHijriDay(nextPrayerTime)
+        return uiState.value.currentDate.day < prayerTimeDay
     }
 
     private fun startCountdownTimer(nextPrayer: PrayerTime, address: Address) {
