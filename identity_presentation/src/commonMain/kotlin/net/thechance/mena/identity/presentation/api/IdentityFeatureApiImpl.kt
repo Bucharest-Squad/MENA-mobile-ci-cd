@@ -34,7 +34,7 @@ class IdentityFeatureApiImpl : IdentityFeatureApi {
             Navigator(initialScreen) { navigator ->
                 val current = navigator.lastItem
                 LaunchedEffect(current.key) {
-                    updateBottomNavigationVisibility(current == initialScreen)
+                    updateBottomNavigationVisibility(current is ProfileScreen)
                 }
 
                 FadeTransition(navigator = navigator, animationSpec = tween(easing = LinearEasing))
