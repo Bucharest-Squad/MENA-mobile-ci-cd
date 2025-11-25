@@ -91,6 +91,7 @@ private fun Content(
                 leadingContent = {
                     Icon(
                         painter = painterResource(Res.drawable.ic_arrow_left),
+                        tint = Theme.colorScheme.primary.primary,
                         contentDescription = stringResource(Res.string.arrow_left)
                     )
                 },
@@ -156,8 +157,9 @@ private fun CompassView(
             contentAlignment = Alignment.Center
         ) {
             DirectionPlaceHolder(modifier = rotateModifier)
-            Image(
+            Icon(
                 painter = painterResource(Res.drawable.ic_directions),
+                tint = Theme.colorScheme.primary.primary,
                 contentDescription = "direction_arrow",
                 modifier = rotateModifier
                     .size(128.dp)
@@ -272,8 +274,9 @@ private fun QiblahTopBar(uiState: CompassUiState, onChangeLocation: () -> Unit) 
         horizontalArrangement = Arrangement.spacedBy(Theme.spacing._4),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Image(
+        Icon(
             painter = painterResource(Res.drawable.ic_location),
+            tint = Theme.colorScheme.shadePrimary,
             contentDescription = "icon_location",
             modifier = Modifier
                 .padding(start = Theme.spacing._4)
