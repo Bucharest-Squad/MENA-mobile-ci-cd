@@ -30,7 +30,8 @@ import org.maplibre.compose.camera.CameraPosition
 import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalUuidApi::class)
-class AddEditLocationScreenViewModel(
+class LocationManagementViewModel(
+    private val saveAddressStrategyFactory: SaveAddressStrategyFactory,
     private val addressesRepository: AddressesRepository,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
     addressModel: AddressUIState? = null,
@@ -111,11 +112,14 @@ class AddEditLocationScreenViewModel(
         val addressInput = state.value.addressUIState.toAddressInput()
         val addressId = state.value.addressUIState.addressID
         val isMainAddress = state.value.addressUIState.isMainAddress
-        if (addressId != null) {
-            addressesRepository.updateAddress(addressId, addressInput, isMainAddress)
-        } else {
-            addressesRepository.createAddress(addressInput)
-        }
+
+        val strategy = saveAddressStrategyFactory.createStrategy(addressId)
+        strategy.saveAddress(
+            addressesRepository,
+            addressInput,
+            isMainAddress,
+            addressId
+        )
     }
 
     private fun onSaveAddressSuccess() {
