@@ -27,3 +27,27 @@ fun <T> PaginationTrigger(
             }
     }
 }
+
+@Composable
+fun PaginationTrigger(
+    listState: LazyListState,
+    buffer: Int,
+    loadNextItems: () -> Unit
+) {
+    LaunchedEffect(listState) {
+        snapshotFlow {
+            val lastVisible = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
+            val totalCount = listState.layoutInfo.totalItemsCount
+            lastVisible to totalCount
+        }
+            .distinctUntilChanged()
+            .collect { (lastVisibleIndex, totalCount) ->
+                lastVisibleIndex?.let {
+                    val lastIndex = if (totalCount > 0) totalCount - 1 else -1
+                    if (it >= lastIndex - buffer) {
+                        loadNextItems()
+                    }
+                }
+            }
+    }
+}
