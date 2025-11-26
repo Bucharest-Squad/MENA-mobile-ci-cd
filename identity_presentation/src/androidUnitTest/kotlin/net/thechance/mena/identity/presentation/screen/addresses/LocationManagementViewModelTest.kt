@@ -54,7 +54,6 @@ class LocationManagementViewModelTest {
         viewModel =
             LocationManagementViewModel(
                 saveAddressStrategyFactory,
-                addressesRepository,
                 testDispatcher,
                 null
             )
@@ -162,7 +161,6 @@ class LocationManagementViewModelTest {
             viewModel =
                 LocationManagementViewModel(
                     saveAddressStrategyFactory,
-                    addressesRepository,
                     testDispatcher,
                     testAddress
                 )
@@ -190,9 +188,8 @@ class LocationManagementViewModelTest {
             viewModel =
                 LocationManagementViewModel(
                     saveAddressStrategyFactory,
-                    addressesRepository,
                     testDispatcher,
-                    addressUIState
+                    addressUIState,
                 )
             viewModel.onClickAddressType(addressType)
 
@@ -213,7 +210,6 @@ class LocationManagementViewModelTest {
             viewModel =
                 LocationManagementViewModel(
                     saveAddressStrategyFactory,
-                    addressesRepository,
                     testDispatcher,
                     addressUIState
                 )
@@ -296,7 +292,6 @@ class LocationManagementViewModelTest {
             viewModel =
                 LocationManagementViewModel(
                     saveAddressStrategyFactory,
-                    addressesRepository,
                     testDispatcher,
                     addressUIState
                 )
@@ -313,7 +308,6 @@ class LocationManagementViewModelTest {
             viewModel =
                 LocationManagementViewModel(
                     saveAddressStrategyFactory,
-                    addressesRepository,
                     testDispatcher,
                     addressUIState
                 )
