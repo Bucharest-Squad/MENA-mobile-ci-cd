@@ -15,8 +15,8 @@ import net.thechance.mena.identity.domain.entity.AddressType
 import net.thechance.mena.identity.domain.model.AddressInput
 import net.thechance.mena.identity.domain.repository.AddressesRepository
 import net.thechance.mena.identity.presentation.screen.addresses.addEditLocation.AddEditLocationScreenUIEffect
+import net.thechance.mena.identity.presentation.screen.addresses.addEditLocation.AddressOperationStrategyFactory
 import net.thechance.mena.identity.presentation.screen.addresses.addEditLocation.LocationManagementViewModel
-import net.thechance.mena.identity.presentation.screen.addresses.addEditLocation.SaveAddressStrategyFactory
 import net.thechance.mena.identity.presentation.screen.addresses.shared.AddressUIState
 import net.thechance.mena.identity.presentation.screen.addresses.shared.CoordinatesUiState
 import kotlin.test.AfterTest
@@ -44,7 +44,7 @@ class LocationManagementViewModelTest {
     )
     private lateinit var viewModel: LocationManagementViewModel
     private val addressesRepository: AddressesRepository = mockk()
-    private val saveAddressStrategyFactory: SaveAddressStrategyFactory = mockk()
+    private val saveAddressStrategyFactory: AddressOperationStrategyFactory = mockk()
     private val testDispatcher = StandardTestDispatcher()
 
 

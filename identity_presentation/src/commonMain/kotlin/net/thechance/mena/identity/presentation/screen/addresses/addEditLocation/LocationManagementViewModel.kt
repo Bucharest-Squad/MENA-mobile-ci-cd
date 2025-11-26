@@ -11,7 +11,6 @@ import net.thechance.mena.identity.domain.entity.AddressType
 import net.thechance.mena.identity.domain.entity.AddressType.AddressTypeMapper.getAddressType
 import net.thechance.mena.identity.domain.exception.AuthenticationException
 import net.thechance.mena.identity.domain.exception.LocationException
-import net.thechance.mena.identity.domain.repository.AddressesRepository
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
 import net.thechance.mena.identity.presentation.base.errorState.ErrorState
 import net.thechance.mena.identity.presentation.mapper.createNavigateToMapEffect
@@ -31,8 +30,7 @@ import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalUuidApi::class)
 class LocationManagementViewModel(
-    private val saveAddressStrategyFactory: SaveAddressStrategyFactory,
-    private val addressesRepository: AddressesRepository,
+    private val addressOperationStrategyFactory: AddressOperationStrategyFactory,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
     addressModel: AddressUIState? = null,
 ) : BaseScreenModel<AddEditLocationScreenUIState, AddEditLocationScreenUIEffect>(
@@ -115,14 +113,18 @@ class LocationManagementViewModel(
     private suspend fun saveAddress() {
         val addressUIState = state.value.addressUIState
 
-        val strategy = saveAddressStrategyFactory.createStrategy(
+        val strategy = addressOperationStrategyFactory.getStrategy(
             addressUIState.addressID
         )
-        strategy.saveAddress(
-            repository = addressesRepository,
-            input = addressUIState.toAddressInput(),
-            isMain = addressUIState.isMainAddress,
-            addressId = addressUIState.addressID
+        strategy.execute(
+            addressData = if (addressUIState.addressID == null)
+                AddressData.New(input = addressUIState.toAddressInput())
+            else
+                AddressData.Existing(
+                    id = addressUIState.addressID,
+                    input = addressUIState.toAddressInput(),
+                    isMain = addressUIState.isMainAddress
+                )
         )
     }
 
