@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 import mena.dukan_presentation.generated.resources.Res
 import mena.dukan_presentation.generated.resources.error_updating_favorites
-import mena.dukan_presentation.generated.resources.no_internet_message
 import mena.dukan_presentation.generated.resources.search_general_error
 import net.thechance.mena.dukan.domain.entity.ProductSearch
 import net.thechance.mena.dukan.domain.exceptions.NoInternetException
@@ -32,7 +31,7 @@ class SearchViewModel(
     defaultDispatcher = defaultDispatcher
 ), SearchInteractionListener {
 
-    private var dukanSearchResultsFlow: MutableStateFlow<PagingData<SearchUiState.DukanUiState>> =
+    private val dukanSearchResultsFlow: MutableStateFlow<PagingData<SearchUiState.DukanUiState>> =
         MutableStateFlow(PagingData.empty())
 
     override fun onSearchChanged(query: String) {
@@ -234,10 +233,7 @@ class SearchViewModel(
     private fun handleNoInternetException() {
         updateState {
             copy(
-                snackBarUiState = SnackBarUiState(
-                    message = Res.string.no_internet_message,
-                    snackBarType = SnackBarType.ERROR
-                )
+                searchContentState = SearchUiState.SearchContentState.NoInternet
             )
         }
     }
