@@ -18,6 +18,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.respondError
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -54,6 +55,7 @@ import net.thechance.mena.core_chat.domain.exception.NotFoundException
 import net.thechance.mena.core_chat.domain.exception.SendMessageFailedException
 import net.thechance.mena.faith.domain.repository.QuranRepository
 import net.thechance.mena.faith.domain.service.QuranService
+import net.thechance.mena.identity.domain.repository.AuthenticationRepository
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
@@ -76,6 +78,7 @@ class MessageRepositoryImplTest {
     private lateinit var quranRepository: QuranRepository
     private lateinit var quranService: QuranService
     private lateinit var ayahMessageSender: AyahMessageSender
+    private lateinit var authRepository: AuthenticationRepository
 
     @BeforeTest
     fun setUp() {
@@ -85,6 +88,7 @@ class MessageRepositoryImplTest {
         chatSyncTimeDao = mock<ChatSyncTimeDao>()
         cachedMessageDao = mock<CachedMessageDao>()
         quranRepository =mock<QuranRepository>()
+        authRepository = mock<AuthenticationRepository>()
         quranService = QuranService(repository = quranRepository)
         textMessageSender = TextMessageSender(
             webSocketManager = webSocketManager,
@@ -101,7 +105,7 @@ class MessageRepositoryImplTest {
                 audioMessageSender,
                 ayahMessageSender
             )
-
+        every { authRepository.observeTokenChange() } returns MutableStateFlow("fake_token")
         repository = createMessageRepository(
             webSocketManager = webSocketManager,
             pendingMessageDao = pendingMessageDao,
@@ -109,6 +113,7 @@ class MessageRepositoryImplTest {
             cachedMessageDao = cachedMessageDao,
             chatSyncTimeDao = chatSyncTimeDao,
             httpClient = httpClient,
+            authRepository = authRepository,
             quranService = quranService
         )
     }
@@ -136,6 +141,7 @@ class MessageRepositoryImplTest {
             pendingMessageDao = pendingMessageDao,
             cachedMessageDao = cachedMessageDao,
             chatSyncTimeDao = chatSyncTimeDao,
+            authRepository = authRepository,
             quranService = quranService
         )
 
@@ -179,6 +185,7 @@ class MessageRepositoryImplTest {
             pendingMessageDao = pendingMessageDao,
             cachedMessageDao = cachedMessageDao,
             chatSyncTimeDao = chatSyncTimeDao,
+            authRepository = authRepository,
             quranService = quranService
         )
 
@@ -342,6 +349,7 @@ class MessageRepositoryImplTest {
                 pendingMessageDao = pendingMessageDao,
                 cachedMessageDao = cachedMessageDao,
                 chatSyncTimeDao = chatSyncTimeDao,
+                authRepository = authRepository,
                 quranService = quranService
             )
 
@@ -375,6 +383,7 @@ class MessageRepositoryImplTest {
             pendingMessageDao = pendingMessageDao,
             cachedMessageDao = cachedMessageDao,
             chatSyncTimeDao = chatSyncTimeDao,
+            authRepository = authRepository,
             quranService = quranService
         )
 
@@ -415,6 +424,7 @@ class MessageRepositoryImplTest {
                 pendingMessageDao = pendingMessageDao,
                 cachedMessageDao = cachedMessageDao,
                 chatSyncTimeDao = chatSyncTimeDao,
+                authRepository = authRepository,
                 quranService = quranService
             )
 
@@ -448,6 +458,7 @@ class MessageRepositoryImplTest {
             pendingMessageDao = pendingMessageDao,
             cachedMessageDao = cachedMessageDao,
             chatSyncTimeDao = chatSyncTimeDao,
+            authRepository = authRepository,
             quranService = quranService
         )
 
@@ -484,6 +495,7 @@ class MessageRepositoryImplTest {
             pendingMessageDao = pendingMessageDao,
             cachedMessageDao = cachedMessageDao,
             chatSyncTimeDao = chatSyncTimeDao,
+            authRepository = authRepository,
             quranService = quranService
         )
 
@@ -528,6 +540,7 @@ class MessageRepositoryImplTest {
             pendingMessageDao = pendingMessageDao,
             cachedMessageDao = cachedMessageDao,
             chatSyncTimeDao = chatSyncTimeDao,
+            authRepository = authRepository,
             quranService = quranService
         )
         repository.loadMessages(chatId, 0, 10)
@@ -551,6 +564,7 @@ class MessageRepositoryImplTest {
             pendingMessageDao = pendingMessageDao,
             cachedMessageDao = cachedMessageDao,
             chatSyncTimeDao = chatSyncTimeDao,
+            authRepository = authRepository,
             quranService = quranService
         )
         repository.syncAfterLastUpdate(chatId)
@@ -582,6 +596,7 @@ class MessageRepositoryImplTest {
             pendingMessageDao = pendingMessageDao,
             cachedMessageDao = cachedMessageDao,
             chatSyncTimeDao = chatSyncTimeDao,
+            authRepository = authRepository,
             quranService = quranService
         )
         val result = repository.loadMessages(chatId, 0, 20)
@@ -631,6 +646,7 @@ class MessageRepositoryImplTest {
             pendingMessageDao = pendingMessageDao,
             cachedMessageDao = cachedMessageDao,
             chatSyncTimeDao = chatSyncTimeDao,
+            authRepository = authRepository,
             quranService = quranService
         )
 
