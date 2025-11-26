@@ -80,8 +80,7 @@ internal fun ProductsList(
         else -> {
             LazyColumn(
                 modifier = modifier
-                    .fillMaxWidth()
-                    .height(600.dp),
+                    .fillMaxWidth(),
                 state = listState,
             ) {
                 items(products) { product ->

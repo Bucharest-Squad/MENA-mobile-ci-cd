@@ -73,7 +73,7 @@ internal fun ShelvesDetailsCard(
                 )
 
                 ProductsList(
-                    modifier = Modifier.padding(top = 12.dp),
+                    modifier = Modifier.padding(vertical = 12.dp),
                     products = products,
                     onNextPageRequested = onNextProductsPageRequested,
                     isProductLoading = isProductLoading
