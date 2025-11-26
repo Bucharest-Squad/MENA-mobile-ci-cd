@@ -9,6 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import mena.dukan_presentation.generated.resources.Res
 import mena.dukan_presentation.generated.resources.error_updating_favorites
 import mena.dukan_presentation.generated.resources.no_internet_connection
@@ -221,6 +222,26 @@ class DukanDetailsViewModel(
             val quantity = state.value.productQuantity[product.id] ?: product.inCartQuantity
             product.copy(inCartQuantity = quantity)
         }
+    }
+
+    fun updateQuantityProductPaging(
+        productsFlow: Flow<PagingData<ProductUiState>>,
+        productQuantity: Map<String, Int>
+    ): Flow<PagingData<ProductUiState>> {
+
+        return productsFlow.map { pagingData ->
+            pagingData.map { product ->
+                val newQty = productQuantity[product.id]
+                if (newQty != null) {
+                    updateProductQuantityInCart(product.id, newQty)
+                    product.copy(inCartQuantity = newQty)
+                } else product
+            }
+        }
+    }
+
+    fun setUpdatedProductsFlow(newFlow: Flow<PagingData<ProductUiState>>) {
+        updateState { copy(productsShelf = newFlow) }
     }
 
     private fun updateQuantityProductPagingSuccess(products: PagingData<ProductUiState>) {
