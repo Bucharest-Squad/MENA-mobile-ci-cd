@@ -6,13 +6,11 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
-class CreateAddressStrategy : ISaveAddressStrategy {
-    override suspend fun saveAddress(
+interface ISaveAddress {
+    suspend fun saveAddress(
         repository: AddressesRepository,
         input: AddressInput,
         isMain: Boolean,
         addressId: Uuid?
-    ) {
-        repository.createAddress(input)
-    }
+    )
 }

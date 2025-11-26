@@ -5,11 +5,11 @@ import kotlin.uuid.Uuid
 
 class SaveAddressStrategyFactory {
     @OptIn(ExperimentalUuidApi::class)
-    fun createStrategy(addressId: Uuid?): ISaveAddressStrategy {
+    fun createStrategy(addressId: Uuid?): ISaveAddress {
         return if (addressId == null) {
-            CreateAddressStrategy()
+            CreateAddress()
         } else {
-            UpdateAddressStrategy()
+            UpdateAddress()
         }
     }
 }
