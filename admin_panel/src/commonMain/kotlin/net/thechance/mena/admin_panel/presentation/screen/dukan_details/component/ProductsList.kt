@@ -58,7 +58,6 @@ internal fun ProductsList(
     }
 
     PaginationTrigger(
-        list = products,
         listState = listState,
         buffer = 5,
         loadNextItems = onNextPageRequested

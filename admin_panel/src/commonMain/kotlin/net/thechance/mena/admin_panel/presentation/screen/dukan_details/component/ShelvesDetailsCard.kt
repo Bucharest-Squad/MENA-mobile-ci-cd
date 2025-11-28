@@ -187,7 +187,6 @@ private fun Shelves(
     val listState = rememberLazyListState()
 
     PaginationTrigger(
-        list = shelves,
         listState = listState,
         buffer = 5,
         loadNextItems = onNextPageRequested
