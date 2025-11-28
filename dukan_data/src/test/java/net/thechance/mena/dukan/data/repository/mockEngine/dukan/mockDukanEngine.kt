@@ -441,6 +441,8 @@ private class FakeAddressesRepository : AddressesRepository {
     }
 
     override suspend fun deleteAddress(addressId: Uuid) {}
+    override suspend fun clearAddresses() {}
+
     override suspend fun getActiveAddress(): Address? {
         return null
     }
