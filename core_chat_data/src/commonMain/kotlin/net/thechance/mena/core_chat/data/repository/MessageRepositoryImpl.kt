@@ -38,6 +38,7 @@ import net.thechance.mena.core_chat.data.source.remote.mapper.toListOfMessages
 import net.thechance.mena.core_chat.data.source.remote.mapper.toLocalDto
 import net.thechance.mena.core_chat.data.source.remote.mapper.toPagedListOfMessages
 import net.thechance.mena.core_chat.data.source.remote.mapper.toPendingMessageLocalDto
+import net.thechance.mena.core_chat.data.source.remote.network.HttpClientHolder
 import net.thechance.mena.core_chat.data.source.remote.network.WebSocketManager
 import net.thechance.mena.core_chat.data.source.remote.network.tryNetworkCall
 import net.thechance.mena.core_chat.domain.entity.Message
@@ -60,7 +61,7 @@ import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
 class MessageRepositoryImpl(
-    private val client: HttpClient,
+    private val clientHolder: HttpClientHolder,
     private val webSocketManager: WebSocketManager,
     private val pendingMessageDao: PendingMessageDao,
     private val cachedMessageDao: CachedMessageDao,
@@ -70,6 +71,8 @@ class MessageRepositoryImpl(
     private val messageSenderFactory: MessageSenderFactory,
     private val json: Json,
 ) : MessageRepository {
+    private val client: HttpClient
+        get() = clientHolder.getClient()
     private val messagesFlow = MutableSharedFlow<Message>()
     private val markMessagesAsRead = MutableSharedFlow<MarkMessageAsReadEvent>()
     private val markChatAsDeleted = MutableSharedFlow<DeleteChatEvent>()
