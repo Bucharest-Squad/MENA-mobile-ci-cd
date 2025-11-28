@@ -80,18 +80,23 @@ class AuthenticationRepositoryImpl(
     }
 
     override suspend fun refreshAccessToken(): String {
-        val response: AuthenticationResponse = safeWrapper {
-            client.postJson(
-                RefreshRequestDto(settings.refreshToken),
-                REFRESH_ENDPOINT
-            )
+        return try {
+            val response: AuthenticationResponse = safeWrapper {
+                client.postJson(
+                    RefreshRequestDto(settings.refreshToken),
+                    REFRESH_ENDPOINT
+                )
+            }
+            saveTokens(response.toDomain(), shouldEmit = !isTemporaryTokenMode)
+            try {
+                client.invalidateAuthTokens()
+            } catch (_: Exception) {
+            }
+            settings.accessToken
+        } catch (e: Exception) {
+            clearAuthTokens()
+            throw e
         }
-        saveTokens(response.toDomain(), shouldEmit = !isTemporaryTokenMode)
-        try {
-            client.invalidateAuthTokens()
-        } catch (_: Exception) {
-        }
-        return settings.accessToken
     }
 
     override suspend fun getAccessToken(): String = settings.accessToken
