@@ -20,6 +20,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
@@ -127,7 +128,7 @@ fun DukanLocationPicker(
                 onClick = {
                     listener.onMapClicked(
                         tempLocation,
-                        androidx.compose.ui.unit.DpOffset(0.dp, 0.dp)
+                        DpOffset(0.dp, 0.dp)
                     )
                     listener.onConfirmLocationPicked()
                 },
