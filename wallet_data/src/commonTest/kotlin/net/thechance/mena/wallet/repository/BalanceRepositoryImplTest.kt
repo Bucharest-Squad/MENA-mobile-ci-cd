@@ -1,9 +1,13 @@
+@file:OptIn(ExperimentalCoroutinesApi::class)
+
 package net.thechance.mena.wallet.repository
 
 import dev.mokkery.MockMode
 import dev.mokkery.answering.returns
 import dev.mokkery.every
+import dev.mokkery.matcher.capture.Capture.Companion.slot
 import dev.mokkery.mock
+import dev.mokkery.verify
 import io.ktor.client.engine.mock.MockRequestHandleScope
 import io.ktor.client.engine.mock.respond
 import io.ktor.client.request.HttpRequestData
@@ -12,8 +16,11 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import net.thechance.mena.identity.domain.repository.AuthenticationRepository
 import net.thechance.mena.identity.domain.service.AuthorizationService
@@ -70,6 +77,18 @@ class BalanceRepositoryImplTest {
 
         assertEquals(BALANCE, emitted)
     }
+
+    @Test
+    fun `getBalance updates balanceFlow`() = runTest {
+        networkClient = createNetworkClient(getRespond = balanceResonance)
+        balanceRepository = BalanceRepositoryImpl(networkClient, authorizationService)
+
+        balanceRepository.getBalance()
+
+        val emitted = balanceRepository.observeBalance().first()
+        assertEquals(BALANCE, emitted)
+    }
+
 
     @Test
     fun `observeBalance returns current value immediately when already set`() = runTest {
