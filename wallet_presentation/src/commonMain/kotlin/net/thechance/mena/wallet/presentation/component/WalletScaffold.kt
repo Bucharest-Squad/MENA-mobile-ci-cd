@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import mena.wallet_presentation.generated.resources.Res
+import mena.wallet_presentation.generated.resources.failed_dark
 import mena.wallet_presentation.generated.resources.ic_error_dark
 import mena.wallet_presentation.generated.resources.img_filter_error
 import mena.wallet_presentation.generated.resources.img_no_internet
@@ -45,6 +46,11 @@ fun WalletScaffold(
         else
             painterResource(Res.drawable.img_no_internet)
 
+    val unknownErrorImage =
+        if (LocalDarkTheme.current) painterResource(Res.drawable.failed_dark)
+        else
+            painterResource(Res.drawable.transaction_failed)
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -66,7 +72,7 @@ fun WalletScaffold(
                     }
                     errorState is ErrorState.UnknownError->{
                         ErrorView(
-                            image = painterResource(Res.drawable.transaction_failed),
+                            image = unknownErrorImage,
                             title = stringResource(Res.string.unknown_error_title),
                             description = stringResource(Res.string.unknown_error_description),
                             onRetry = onRetry ?: {}
