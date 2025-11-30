@@ -218,6 +218,7 @@ Application structure built to allow team scaling with a public UI-API to allow 
 
 ### Modularaztion Structure with dependencies !
 
+<img width="3144" height="5140" alt="Mena_app_structure drawio" src="https://github.com/user-attachments/assets/876e9d97-36f4-481f-8471-d79682ba1b13" />
 
 
 ---
