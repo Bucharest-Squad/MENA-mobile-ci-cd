@@ -4,86 +4,110 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.compositionLocalOf
+import net.thechance.mena.identity.domain.service.AppThemeService
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import net.thechance.mena.wallet.presentation.screen.export_transactions.ExportTransactionsScreen
+import net.thechance.mena.identity.domain.util.AppTheme
+import net.thechance.mena.wallet.domain.exceptions.UnknownNetworkException
+import net.thechance.mena.wallet.presentation.navigation.navType.StorageLocationNavType
+import net.thechance.mena.wallet.presentation.screen.confirm_payment.ConfirmPaymentScreen
+import net.thechance.mena.wallet.presentation.screen.export.ExportTransactionScreen
+import net.thechance.mena.wallet.presentation.screen.payment_result.PaymentResultScreen
+import net.thechance.mena.wallet.presentation.screen.statement_details.StatementDetailsScreen
+import net.thechance.mena.wallet.presentation.screen.statementsHistory.StatementHistoryScreen
 import net.thechance.mena.wallet.presentation.screen.transaction_details.TransactionDetailsScreen
-import net.thechance.mena.wallet.presentation.screen.transactions_history.TransactionHistoryScreen
-import net.thechance.mena.wallet.presentation.screen.view_transactions_statement.ViewTransactionStatementScreen
+import net.thechance.mena.wallet.presentation.screen.transaction_history.TransactionHistoryScreen
 import net.thechance.mena.wallet.presentation.screen.wallet.WalletMainScreen
+import net.thechance.mena.wallet.presentation.utils.StorageLocation
+import org.koin.compose.koinInject
+import kotlin.reflect.typeOf
 import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 
 const val TransitionDuration = 300
 
 @OptIn(ExperimentalUuidApi::class)
 @Composable
 fun NavigationHost(
-    startDestination: WalletRoute = WalletMainScreenRoute
+    startDestination: WalletRoute = WalletMainScreenRoute,
+    navigateBack: () -> Unit = {},
+    updateBottomNavigationVisibility: (Boolean) -> Unit,
+    appThemeService: AppThemeService = koinInject()
 ) {
     val navController = rememberNavController()
+    val currentRoute by navController.currentBackStackEntryAsState()
+    val currentTheme by appThemeService.observeAppTheme().collectAsStateWithLifecycle()
+    val isDarkTheme = currentTheme == AppTheme.DARK
+    LaunchedEffect(currentRoute) {
+        currentRoute?.destination?.route.let { route ->
+            updateBottomNavigationVisibility(RoutesWithBottomNavigation.contains(route))
+        }
+    }
 
-    NavHost(
-        navController = navController,
-        startDestination = startDestination,
-        enterTransition = { fadeIn(animationSpec = tween(durationMillis = TransitionDuration)) },
-        exitTransition = {
-            fadeOut(
-                animationSpec = tween(
-                    durationMillis = TransitionDuration,
-                    delayMillis = TransitionDuration
-                )
-            )
-        },
-        popEnterTransition = { fadeIn(animationSpec = tween(durationMillis = TransitionDuration)) },
-        popExitTransition = {
-            fadeOut(
-                animationSpec = tween(
-                    durationMillis = TransitionDuration,
-                    delayMillis = TransitionDuration
-                )
-            )
-        },
+    CompositionLocalProvider(
+        LocalNavController provides navController,
+        LocalDarkTheme provides isDarkTheme
     ) {
-        composable<WalletMainScreenRoute> {
-            WalletMainScreen(
-                onNavigateBackClicked = { navController.popBackStack() },
-                navigateToTransactionHistory = {
-                    navController.navigate(TransactionsHistoryScreenRoute)
-                }
-            )
-        }
-        composable<TransactionsHistoryScreenRoute> {
-            TransactionHistoryScreen(
-                onNavigateBackClicked = { navController.popBackStack() },
-                navigateToTransactionDetails = {
-                    navController.navigate(TransactionDetailsScreenRoute(it.toString()))
-                },
-                navigateToExportTransaction = {
-                    navController.navigate(ExportTransactionsScreenRoute)
-                }
-            )
-        }
-        composable<TransactionDetailsScreenRoute> { backStackEntry ->
-            TransactionDetailsScreen(
-                onNavigateBackClicked = { navController.popBackStack() },
-                id = backStackEntry.toRoute<TransactionDetailsScreenRoute>().id.let(Uuid::parse)
-            )
-        }
-        composable<ExportTransactionsScreenRoute> {
-            ExportTransactionsScreen(
-                onNavigateBackClicked = { navController.popBackStack() },
-                navigateToVewTransactionStatement = {
-                    navController.navigate(ViewTransactionsStatementScreenRoute)
-                }
-            )
-        }
-        composable<ViewTransactionsStatementScreenRoute> {
-            ViewTransactionStatementScreen(
-                onNavigateBackClicked = { navController.popBackStack() }
-            )
+        NavHost(
+            navController = navController,
+            startDestination = startDestination,
+            enterTransition = { fadeIn(animationSpec = tween(durationMillis = TransitionDuration)) },
+            exitTransition = {
+                fadeOut(
+                    animationSpec = tween(
+                        durationMillis = TransitionDuration,
+                        delayMillis = TransitionDuration
+                    )
+                )
+            },
+            popEnterTransition = { fadeIn(animationSpec = tween(durationMillis = TransitionDuration)) },
+            popExitTransition = {
+                fadeOut(
+                    animationSpec = tween(
+                        durationMillis = TransitionDuration,
+                        delayMillis = TransitionDuration
+                    )
+                )
+            },
+            typeMap = mapOf(typeOf<StorageLocation>() to StorageLocationNavType)
+        ) {
+            composable<WalletMainScreenRoute> { WalletMainScreen(navigateBack = navigateBack) }
+            composable<TransactionsHistoryScreenRoute> { TransactionHistoryScreen() }
+            composable<TransactionDetailsScreenRoute> { TransactionDetailsScreen() }
+            composable<ExportTransactionsScreenRoute> { ExportTransactionScreen() }
+            composable<StatementsHistoryScreenRoute> { StatementHistoryScreen() }
+            composable<ConfirmPaymentScreenRoute> {
+                ConfirmPaymentScreen(navigateBack = navigateBack)
+            }
+            composable<PaymentResultScreenRoute> {
+                PaymentResultScreen(navigateBack = navigateBack)
+            }
+            composable<StatementDetailsScreenRoute>(
+                typeMap = mapOf(typeOf<StorageLocation>() to StorageLocationNavType)
+            ) { backStackEntry ->
+                StatementDetailsScreen(
+                    statementLocation = backStackEntry.toRoute<StatementDetailsScreenRoute>().statementLocation
+                )
+            }
         }
     }
 }
+
+val LocalDarkTheme = compositionLocalOf { false }
+val LocalNavController = compositionLocalOf<NavController> {
+    throw UnknownNetworkException("nav controller not provided")
+}
+
+private val RoutesWithBottomNavigation = listOf(
+    WalletMainScreenRoute::class.qualifiedName,
+    TransactionsHistoryScreenRoute::class.qualifiedName,
+    StatementsHistoryScreenRoute::class.qualifiedName
+)

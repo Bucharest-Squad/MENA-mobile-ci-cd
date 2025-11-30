@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import app.cash.paging.compose.LazyPagingItems
-import app.cash.paging.compose.itemKey
 import mena.core_chat_presentation.generated.resources.Res
 import mena.core_chat_presentation.generated.resources.ic_warning
 import mena.core_chat_presentation.generated.resources.no_contacts_message
@@ -32,11 +31,14 @@ import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
+@OptIn(ExperimentalUuidApi::class)
 @Composable
 fun ContactsList(
     contacts: LazyPagingItems<ContactUiState>,
-    onContactClick: (String) -> Unit,
+    onContactClick: (Uuid?) -> Unit,
 ) {
     AnimatedContent(
         targetState = Pair((contacts.itemCount == 0), contacts.loadState.refresh),
@@ -53,12 +55,11 @@ fun ContactsList(
             ) {
                 items(
                     count = contacts.itemCount,
-                    key = contacts.itemKey { it.phoneNumber + it.displayName }
+                    key = { index -> index }
                 ) { index ->
                     val contact = contacts[index]
-
                     contact?.let {
-                        ContactItem(contact = it, onContactClick = { onContactClick("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb") }) // temp userId
+                        ContactItem(contact = it, onContactClick = { onContactClick(contact.menaUserId) })
                     }
                 }
             }

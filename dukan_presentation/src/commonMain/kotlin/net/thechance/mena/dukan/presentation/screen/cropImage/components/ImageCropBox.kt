@@ -3,7 +3,6 @@ package net.thechance.mena.dukan.presentation.screen.cropImage.components
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -40,20 +39,22 @@ import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.dukan.presentation.util.imageCrop.computeImageBounds
 import net.thechance.mena.dukan.presentation.util.imageCrop.createCropperStyle
 import net.thechance.mena.dukan.presentation.util.imageCrop.toAspectRatio
+import sv.lib.squircleshape.SquircleShape
 
 
 @Composable
 fun ImageCropBox(
     cropState: CropState,
+    aspectRatio: Float ,
     modifier: Modifier = Modifier,
     backgroundColor: Color = Color.Black,
     overlayColor: Color = Color.Black.copy(.44f),
-    aspectRatio: Float = 16f / 9f,
     cornerRadius: Dp = Theme.radius.lg,
     strokeWidth: Dp = 4.dp,
     cornerSize: Float = 0.1f,
     handleColor: Color = Theme.colorScheme.primary.onPrimary,
     enableZoomGestures: Boolean = true,
+    imageKey: Any = cropState.src,
 ) {
     val strokeWidthPx = LocalDensity.current.run { strokeWidth.toPx() }
     val style = remember(backgroundColor, overlayColor, strokeWidthPx) {
@@ -71,7 +72,7 @@ fun ImageCropBox(
     val imgMat = remember(imgTransform, cropState.src.size) {
         imgTransform.asMatrix(cropState.src.size)
     }
-    val viewMat = remember { viewMat() }
+    val viewMat = remember(imageKey) { viewMat() }
     var view by remember { mutableStateOf(IntSize.Zero) }
     var pendingDrag by remember { mutableStateOf<DragHandle?>(null) }
     val zooming = remember { mutableStateOf(false) }
@@ -117,7 +118,7 @@ fun ImageCropBox(
         ZoomLimits(cropState.src.size, view)
     }
 
-    LaunchedEffect(view, aspectRatio) {
+    LaunchedEffect(view, aspectRatio, cropState.src.size) {
         if (view.width > 0 && view.height > 0) {
             val outer = view.toSize().toRect()
             viewMat.fit(cropState.src.size.toSize().toRect(), outer)
@@ -129,7 +130,7 @@ fun ImageCropBox(
     }
     Canvas(
         modifier = modifier.fillMaxWidth()
-            .clip(RoundedCornerShape(cornerRadius))
+            .clip(SquircleShape(cornerRadius))
             .onGloballyPositioned { view = it.size }
             .background(backgroundColor)
             .disabledSystemGestureArea { touchRect }

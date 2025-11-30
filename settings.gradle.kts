@@ -25,6 +25,7 @@ dependencyResolutionManagement {
             }
         }
         mavenCentral()
+        gradlePluginPortal()
     }
 }
 
@@ -54,3 +55,4 @@ include(":wallet_data")
 include(":dukan_data")
 include(":faith_data")
 include(":trends_data")
+include(":admin_panel")

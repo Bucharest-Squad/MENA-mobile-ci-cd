@@ -1,6 +1,5 @@
 package net.thechance.mena.dukan.presentation.screen.cropImage
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.defaultMinSize
@@ -17,11 +16,11 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.attafitamim.krop.core.images.ImageSrc
+import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import net.thechance.mena.dukan.presentation.screen.cropImage.components.CropImageBottomContainer
 import net.thechance.mena.dukan.presentation.screen.cropImage.components.ImageCropBox
-import net.thechance.mena.dukan.presentation.screen.cropImage.components.SaveButton
-import net.thechance.mena.dukan.presentation.screen.cropImage.components.UploadAnotherImageButton
 import net.thechance.mena.dukan.presentation.screen.cropImage.components.ZoomControls
 import net.thechance.mena.dukan.presentation.util.ObserveAsEffect
 import net.thechance.mena.dukan.presentation.viewModel.cropImage.ImageCropEffects
@@ -36,6 +35,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun ImageCropScreen(
     selectedImage: ImageSrc?,
+    aspectRatio: Float,
     onImageCrop: (ImageBitmap) -> Unit,
     viewModel: ImageCropViewModel = koinViewModel()
 ) {
@@ -56,52 +56,53 @@ fun ImageCropScreen(
     DukanImageCropContent(
         state = state.value,
         interactionListener = viewModel,
+        aspectRatio = aspectRatio,
     )
 }
 
 @Composable
 private fun DukanImageCropContent(
+    aspectRatio: Float,
     state: ImageCropUiState,
     interactionListener: ImageCropInteractionListener,
 ) {
-    Column(
-        modifier = Modifier.fillMaxSize()
-            .background(Theme.colorScheme.background.surface)
-            .padding(
+    val currentScale = state.cropper.cropState?.transform?.scale?.x ?: 1f
+    Scaffold(
+        bottomBar = {
+            CropImageBottomContainer(
+                onUploadAnotherImageClicked = interactionListener::onUploadAnotherImageClicked,
+                onSaveClicked = interactionListener::onSaveClicked
+            )
+        }
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize().padding(
                 top = Theme.spacing._16,
                 start = Theme.spacing._16,
                 end = Theme.spacing._16
-            ).verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        state.cropper.cropState?.let { cropState ->
-            ImageCropBox(
-                cropState = cropState,
-                modifier = Modifier.defaultMinSize(minHeight = 400.dp)
-                    .weight(1f)
-                    .fillMaxWidth()
+            )
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            state.cropper.cropState?.let { cropState ->
+                ImageCropBox(
+                    cropState = cropState,
+                    aspectRatio = aspectRatio,
+                    modifier = Modifier.defaultMinSize(minHeight = 400.dp)
+                        .weight(1f)
+                        .fillMaxWidth()
+                )
+            }
+            ZoomControls(
+                onZoomInClicked = interactionListener::onZoomInClicked,
+                onZoomOutClicked = interactionListener::onZoomOutClicked,
+                onResetClicked = interactionListener::onResetClicked,
+                modifier = Modifier.padding(vertical = Theme.spacing._12),
+                isZoomOutEnabled = currentScale > MIN_ZOOM,
+                isZoomInEnabled = currentScale < MAX_ZOOM
             )
         }
-
-        val currentScale = state.cropper.cropState?.transform?.scale?.x ?: 1f
-        ZoomControls(
-            onZoomInClicked = interactionListener::onZoomInClicked,
-            onZoomOutClicked = interactionListener::onZoomOutClicked,
-            onResetClicked = interactionListener::onResetClicked,
-            modifier = Modifier.padding(top = Theme.spacing._12),
-            isZoomOutEnabled = currentScale > MIN_ZOOM,
-            isZoomInEnabled = currentScale < MAX_ZOOM
-        )
-
-        SaveButton(
-            onClick = interactionListener::onSaveClicked,
-            modifier = Modifier.padding(top = Theme.spacing._12)
-        )
-        UploadAnotherImageButton(
-            onClick = interactionListener::onUploadAnotherImageClicked,
-            modifier = Modifier.padding(top = Theme.spacing._12)
-        )
     }
 }
 
@@ -110,6 +111,7 @@ private fun DukanImageCropContent(
 private fun DukanImageCropContentPreview() {
     MenaTheme {
         DukanImageCropContent(
+            aspectRatio = 1f,
             state = ImageCropUiState(),
             interactionListener = object : ImageCropInteractionListener {
                 override fun onUploadAnotherImageClicked(imageSrc: ImageSrc?) {}

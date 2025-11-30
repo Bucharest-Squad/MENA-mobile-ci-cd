@@ -5,6 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import mena.dukan_presentation.generated.resources.Res
@@ -33,6 +35,7 @@ fun UploadDukanImageContent(
         OnSystemBackPressed(interactionListener::onCancelCrop)
         AnimatedVisibility(state.isImageBeingCropped) {
             ImageCropScreen(
+                aspectRatio = 16f / 9f,
                 selectedImage = state.selectedImage,
                 onImageCrop = { image ->
                     interactionListener.onImageCrop(image)
@@ -56,6 +59,7 @@ private fun UploadDukanImageSection(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .background(Theme.colorScheme.background.surface)
             .padding(horizontal = Theme.spacing._16)
     ) {
@@ -64,11 +68,13 @@ private fun UploadDukanImageSection(
             style = Theme.typography.title.medium,
             color = Theme.colorScheme.shadePrimary,
         )
+
         Text(
             text = stringResource(Res.string.image_size_description),
             style = Theme.typography.body.small,
             color = Theme.colorScheme.shadeSecondary,
         )
+
         Text(
             text = stringResource(Res.string.image_size),
             style = Theme.typography.title.small,
@@ -78,6 +84,7 @@ private fun UploadDukanImageSection(
                 bottom = Theme.spacing._4
             )
         )
+
         UploadImageContainer(
             onClick = interactionListener::onClickUploadImage,
             image = state.croppedImage,

@@ -48,7 +48,17 @@ project.tasks.withType(KotlinCompilationTask::class.java).configureEach {
 kover.reports {
     verify {
         rule {
-            minBound(0)
+            minBound(80)
+        }
+    }
+
+    filters {
+        includes {
+            classes("**.validation.**")
+        }
+
+        excludes {
+            classes("**org.koin.ksp.generated**")
         }
     }
 }

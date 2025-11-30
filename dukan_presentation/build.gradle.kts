@@ -26,6 +26,7 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "DukanPresentation"
             isStatic = true
+            freeCompilerArgs += listOf("-Xbinary=bundleId=net.thechance.mena.dukan.presentation")
         }
     }
 
@@ -50,12 +51,17 @@ kotlin {
             implementation(projects.dukanDomain)
             implementation(projects.designSystem)
             implementation(projects.dukanApi)
+            implementation(projects.identityApi)
+            implementation(projects.identityDomain)
+            implementation(projects.walletApi)
+
+            implementation(libs.squircle.shape)
+
             implementation(compose.runtime)
             implementation(libs.koin.core)
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.koin.compose)
             implementation(compose.foundation)
-            implementation(compose.material3)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
@@ -63,12 +69,15 @@ kotlin {
             implementation(libs.krop.extensions.filekit)
             implementation(libs.krop.core)
             implementation(libs.navigation.compose)
+            implementation(libs.androidx.paging.compose)
 
             // maps
             implementation(libs.maplibre.compose)
+            implementation(libs.bundles.coil)
         }
         iosMain.dependencies {
-
+            implementation(libs.bundles.coil)
+            implementation(libs.ktor.client.darwin)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -76,6 +85,7 @@ kotlin {
             implementation(kotlin("test-annotations-common"))
             implementation(libs.kotlinx.coroutines.test)
             implementation(libs.mokkery.core)
+            implementation(libs.androidx.paging.testing)
         }
     }
 }
@@ -86,6 +96,9 @@ android {
 
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
+    }
+    testOptions {
+        unitTests.isReturnDefaultValues = true
     }
 }
 

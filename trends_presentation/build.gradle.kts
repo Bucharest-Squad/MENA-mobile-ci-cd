@@ -1,5 +1,11 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
+import java.util.Properties
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
+}
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -34,8 +40,12 @@ kotlin {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.coil.network.ktor3)
+            implementation(libs.androidx.media3.exoplayer)
+            implementation(libs.androidx.media3.ui)
+            implementation(libs.androidx.media3.exoplayer.dash)
         }
         commonMain.dependencies {
+            implementation(projects.identityDomain)
             implementation(projects.trendsDomain)
             implementation(projects.trendsApi)
             implementation(projects.designSystem)
@@ -55,18 +65,24 @@ kotlin {
             implementation(libs.androidx.paging.compose)
             implementation(libs.resources)
             implementation(libs.kermit)
-            implementation(libs.filekit.core)
-            implementation(libs.filekit.dialogs.compose)
-        }
-        iosMain.dependencies {
+            implementation(libs.bundles.filekit)
 
+            implementation(libs.kotlinx.datetime)
         }
+
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
+            implementation(libs.bundles.coil)
+        }
+
         commonTest.dependencies {
             implementation(libs.kotlin.test)
             implementation(libs.kotlinx.coroutines.test)
             implementation(libs.assertk)
             implementation(libs.turbine)
             implementation(libs.koin.test)
+            implementation(libs.kotlinx.datetime)
+            implementation(libs.androidx.paging.testing)
         }
     }
     sourceSets.named("commonMain").configure {
@@ -75,18 +91,20 @@ kotlin {
 }
 
 ksp {
-    arg("KOIN_USE_COMPOSE_VIEWMODEL","true")
-    arg("KOIN_CONFIG_CHECK","true")
+    arg("KOIN_USE_COMPOSE_VIEWMODEL", "true")
+    arg("KOIN_CONFIG_CHECK", "true")
 }
 
 dependencies {
     add("kspCommonMainMetadata", libs.koin.ksp.compiler)
 }
 
-project.tasks.withType(KotlinCompilationTask::class.java).configureEach {
-    if(name != "kspCommonMainKotlinMetadata") {
-        dependsOn("kspCommonMainKotlinMetadata")
-    }
+tasks.matching {
+    it.name.contains("compile") &&
+            it.name.contains("Kotlin") &&
+            !it.name.contains("ksp")
+}.configureEach {
+    dependsOn("kspCommonMainKotlinMetadata")
 }
 
 android {
@@ -95,19 +113,38 @@ android {
 
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
+
+        val trendsStorageAccessSecret = localProperties.getProperty("TRENDS_STORAGE_ACCESS_SECRET", "")
+        buildConfigField("String", "TRENDS_ACCESS_SECRET", "\"$trendsStorageAccessSecret\"")
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    buildFeatures{
+        buildConfig = true
     }
 }
 
 kover.reports {
     verify {
         rule {
-            minBound(0)
+            minBound(80)
         }
     }
 
     filters {
+        includes {
+            classes("*ViewModel")
+        }
+
         excludes {
-            packages("mena.trends_presentation.generated.resources*")
+            classes(
+                "**org.koin.ksp.generated**",
+                "**.shared.**"
+            )
         }
     }
 }

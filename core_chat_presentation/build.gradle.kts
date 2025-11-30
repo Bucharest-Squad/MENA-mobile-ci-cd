@@ -37,7 +37,17 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.coreChatApi)
             implementation(projects.coreChatDomain)
+
+            implementation(projects.walletApi)
+            implementation(projects.walletDomain)
+
+            implementation(projects.faithApi)
+            implementation(projects.faithDomain)
+
+            implementation(projects.identityDomain)
+
             implementation(projects.designSystem)
+            implementation(projects.dukanApi)
 
             // Compose
             implementation(compose.runtime)
@@ -47,8 +57,7 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
 
             //coil
-            implementation(libs.coil.compose)
-            implementation(libs.coil.network.ktor3)
+            implementation(libs.bundles.coil)
 
             //data time
             implementation(libs.kotlinx.datetime)
@@ -72,8 +81,15 @@ kotlin {
 
             // back handler
             implementation(libs.compose.ui.backhandler)
+
+            //peekaboo
+            implementation(libs.peekaboo.ui)
+            implementation(libs.peekaboo.image.picker)
+
+            implementation(libs.bundles.filekit)
         }
         iosMain.dependencies {
+            implementation(libs.bundles.coil)
             implementation(libs.ktor.client.darwin)
         }
         commonTest.dependencies {
@@ -111,7 +127,8 @@ kover.reports {
             classes(
                 "*SyncContactsViewModel*",
                 "*ContactsViewModel*",
-                "*ChatViewModel*"
+                "*ChatViewModel*",
+                "*HomeViewModel*"
             )
         }
     }

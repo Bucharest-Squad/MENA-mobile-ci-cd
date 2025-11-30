@@ -1,5 +1,6 @@
 package net.thechance.mena.designsystem.presentation.component.textField
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
@@ -10,6 +11,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
@@ -18,13 +20,13 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.dp
 import mena.design_system.generated.resources.Res
 import mena.design_system.generated.resources.ic_arrow_down
 import mena.design_system.generated.resources.ic_iraq
 import mena.design_system.generated.resources.ic_profile
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
-import net.thechance.mena.designsystem.presentation.component.image.Image
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
@@ -39,6 +41,7 @@ fun MobileNumberTextField(
     onValueChanged: (String) -> Unit,
     modifier: Modifier = Modifier,
     leadingContent: (@Composable () -> Unit)? = null,
+    maxCharacters: Int = 16,
     title: String? = null,
     enabled: Boolean = true,
     readOnly: Boolean = false,
@@ -71,7 +74,8 @@ fun MobileNumberTextField(
         focusRequester = focusRequester,
         onFocusChanged = onFocusChanged,
         visualTransformation = visualTransformation,
-        modifier = modifier
+        modifier = modifier,
+        maxCharacters = maxCharacters,
     )
 }
 
@@ -90,7 +94,8 @@ fun MobileNumberLeadingContent(
             .padding(
                 vertical = 13.dp,
                 horizontal = 8.dp
-            )
+            ),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Image(
             painter = countryPainter,
@@ -103,20 +108,23 @@ fun MobileNumberLeadingContent(
 
         Text(
             text = countryCode,
-            style = Theme.typography.label.medium,
+            style = Theme.typography.label.medium.copy(
+                textDirection = TextDirection.Ltr
+            ),
             modifier = Modifier.padding(start = 4.dp, end = 2.dp),
-            color = Theme.colorScheme.shadePrimary
+            color = Theme.colorScheme.shadePrimary,
         )
 
         Icon(
             painter = painterResource(Res.drawable.ic_arrow_down),
             contentDescription = "arrow down",
+            tint = Theme.colorScheme.shadePrimary,
             modifier = Modifier.size(16.dp)
         )
     }
 }
 
-@Preview
+@Preview(showBackground = true,backgroundColor = 0xFFF2F4F7)
 @Composable
 fun PreviewMobileNumberTextField() {
     MenaTheme {

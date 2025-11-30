@@ -3,60 +3,87 @@ package net.thechance.mena.wallet.repository.utils
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.MockRequestHandleScope
-import io.ktor.client.engine.mock.respond
-import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.defaultRequest
+import io.ktor.client.request.HttpRequestBuilder
+import io.ktor.client.request.HttpRequestData
 import io.ktor.client.request.HttpResponseData
+import io.ktor.client.request.delete
+import io.ktor.client.request.get
+import io.ktor.client.request.post
+import io.ktor.client.request.put
+import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
-import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
-import io.ktor.http.headersOf
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
-import net.thechance.mena.wallet.data.dto.BalanceDto
-import net.thechance.mena.wallet.data.exceptions.ErrorDto
-import net.thechance.mena.wallet.data.extension.NetworkClientImpl
-import net.thechance.mena.wallet.data.repository.balance.BalanceRepositoryImpl
+import net.thechance.mena.wallet.data.network_client.NetworkClient
 
+fun createNetworkClient(
+    getRespond: suspend MockRequestHandleScope.(HttpRequestData) -> HttpResponseData = defaultResponse,
+    postRespond: suspend MockRequestHandleScope.(HttpRequestData) -> HttpResponseData = defaultResponse,
+    putRespond: suspend MockRequestHandleScope.(HttpRequestData) -> HttpResponseData = defaultResponse,
+    deleteRespond: suspend MockRequestHandleScope.(HttpRequestData) -> HttpResponseData = defaultResponse
+): NetworkClient {
+    val getClient = getClient(getRespond)
+    val postClient = getClient(postRespond)
+    val putClient = getClient(putRespond)
+    val deleteClient = getClient(deleteRespond)
 
-val jsonSerialization = Json { ignoreUnknownKeys = true }
-val jsonHeaders = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString())
-
-fun MockRequestHandleScope.defaultBalanceResponse(balance: Double = 150.75) = respond(
-    content = jsonSerialization.encodeToString(
-        BalanceDto.serializer(),
-        BalanceDto(balance)
-    ),
-    status = HttpStatusCode.OK,
-    headers = jsonHeaders
-)
-
-fun MockRequestHandleScope.errorResponse(
-    code: HttpStatusCode,
-    message: String
-) = respond(
-    content = jsonSerialization.encodeToString(
-        ErrorDto.serializer(),
-        ErrorDto(message)
-    ),
-    status = code
-)
-
-
-fun createBalanceRepository(
-    balanceResponse: (suspend MockRequestHandleScope.() -> HttpResponseData)? = null
-): BalanceRepositoryImpl {
-    val client = HttpClient(MockEngine { request ->
-        when (request.url.encodedPath) {
-            "/wallet/balance" -> balanceResponse?.invoke(this) ?: defaultBalanceResponse()
-            else -> respond("", HttpStatusCode.BadRequest, jsonHeaders)
+    return object : NetworkClient {
+        override suspend fun get(
+            urlString: String,
+            requestBuilder: HttpRequestBuilder.() -> Unit
+        ): HttpResponse {
+            return getClient.get(urlString, requestBuilder)
         }
-    }) {
-        install(ContentNegotiation) { json(jsonSerialization) }
-        install(DefaultRequest) { contentType(ContentType.Application.Json) }
-    }
 
-    return BalanceRepositoryImpl(NetworkClientImpl(client))
+        override suspend fun post(
+            urlString: String,
+            requestBuilder: HttpRequestBuilder.() -> Unit
+        ): HttpResponse {
+            return postClient.post(urlString, requestBuilder)
+        }
+
+        override suspend fun put(
+            urlString: String,
+            requestBuilder: HttpRequestBuilder.() -> Unit
+        ): HttpResponse {
+            return putClient.put(urlString, requestBuilder)
+        }
+
+        override suspend fun delete(
+            urlString: String,
+            requestBuilder: HttpRequestBuilder.() -> Unit
+        ): HttpResponse {
+            return deleteClient.delete(urlString, requestBuilder)
+        }
+
+        override fun clearCachedToken() {
+            // No-op for tests
+        }
+    }
 }
 
+private fun getClient(
+    respond: suspend MockRequestHandleScope.(HttpRequestData) -> HttpResponseData
+): HttpClient {
+    return HttpClient(MockEngine { request -> respond(request) }) {
+        install(ContentNegotiation) {
+            json(
+                Json {
+                    isLenient = true
+                    ignoreUnknownKeys = true
+                }
+            )
+        }
+        defaultRequest {
+            contentType(ContentType.Application.Json)
+        }
+    }
+}
+
+private val defaultResponse: suspend MockRequestHandleScope.(HttpRequestData) -> HttpResponseData =
+    {
+        error("no response specified")
+    }

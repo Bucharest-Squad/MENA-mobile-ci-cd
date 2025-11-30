@@ -9,6 +9,7 @@ plugins {
 }
 
 kotlin {
+    jvm()
     androidTarget {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
@@ -36,6 +37,7 @@ kotlin {
                 implementation(compose.ui)
                 implementation(compose.components.resources)
                 implementation(compose.components.uiToolingPreview)
+                implementation(libs.squircle.shape)
             }
         }
 

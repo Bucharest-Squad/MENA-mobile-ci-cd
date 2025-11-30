@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -23,10 +21,12 @@ import net.thechance.mena.designsystem.presentation.component.button.radioButton
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.identity.presentation.bottomSheet.countryPicker.menaCountries.MenaCountry
+import net.thechance.mena.designsystem.presentation.util.rippleIndication
+import net.thechance.mena.identity.presentation.screen.countryPicker.menaCountries.MenaCountry
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import sv.lib.squircleshape.SquircleShape
 
 @Composable
 internal fun CountrySelectableRowItem(
@@ -50,18 +50,18 @@ internal fun CountrySelectableRowItem(
             .fillMaxWidth()
             .background(
                 color = animatedCountryItemColor,
-                shape = RoundedCornerShape(Theme.radius.lg)
+                shape = SquircleShape(Theme.radius.lg)
             )
-            .clip(RoundedCornerShape(Theme.radius.lg))
+            .clip(SquircleShape(Theme.radius.lg))
             .clickable(
                 enabled = !isSelected,
                 onClick = {
                     onClick(selectedCountry)
                 },
-                indication = ripple(),
+                indication = rippleIndication(),
                 interactionSource = remember { MutableInteractionSource() }
             )
-            .padding(horizontal = 16.dp, vertical = 12.dp)
+            .padding(horizontal = Theme.spacing._16, vertical = Theme.spacing._12)
     ) {
 
         FlagImage(painterResource(selectedCountry.flagImage))
@@ -70,7 +70,7 @@ internal fun CountrySelectableRowItem(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .weight(1f)
-                .padding(end = 8.dp)
+                .padding(end = Theme.spacing._8)
         ) {
             Text(
                 text = stringResource(selectedCountry.countryNameRes),

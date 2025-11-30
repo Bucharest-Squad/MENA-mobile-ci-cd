@@ -1,117 +1,142 @@
 package net.thechance.mena.dukan.presentation.screen.main.components
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ContentTransform
-import androidx.compose.animation.core.EaseIn
-import androidx.compose.animation.core.EaseOut
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import mena.dukan_presentation.generated.resources.Dukan
 import mena.dukan_presentation.generated.resources.Res
 import mena.dukan_presentation.generated.resources.add_dukan_icon
+import mena.dukan_presentation.generated.resources.dukan
 import mena.dukan_presentation.generated.resources.dukan_button
 import mena.dukan_presentation.generated.resources.dukan_icon
 import mena.dukan_presentation.generated.resources.ic_add_dukan
 import mena.dukan_presentation.generated.resources.ic_dukan
-import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
+import mena.dukan_presentation.generated.resources.ic_search
+import mena.dukan_presentation.generated.resources.search_icon
+import net.thechance.mena.designsystem.presentation.component.appBar.AppBarOptionContainer
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
+import net.thechance.mena.designsystem.presentation.component.indicator.DotsProgressIndicator
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
+import net.thechance.mena.dukan.presentation.component.shared.DukanAppBar
+import net.thechance.mena.dukan.presentation.util.animation.fadeTransitionSpec
 import net.thechance.mena.dukan.presentation.viewModel.mainScreen.MainScreenUiState
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import sv.lib.squircleshape.SquircleShape
 
 @Composable
 fun TopAppBar(
-    modifier: Modifier = Modifier,
-    onAddDukanIconClicked: () -> Unit,
     dukanButtonStatus: MainScreenUiState.DukanStatusUi,
+    onDukanIconClicked: () -> Unit,
+    onSearchIconClicked: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    AppBar(
-        title = stringResource(resource = Res.string.Dukan),
+    DukanAppBar(
+        title = stringResource(resource = Res.string.dukan),
         modifier = modifier,
         titleColor = Theme.colorScheme.shadePrimary,
-        contentPadding = PaddingValues(horizontal = Theme.spacing._16),
+        contentPadding = PaddingValues(
+            horizontal = Theme.spacing._12,
+            vertical = Theme.spacing._8
+        ),
         trailingContent = {
-            DukanIconButton(
-                dukanButtonStatus = dukanButtonStatus,
-                onAddDukanIconClicked = onAddDukanIconClicked
-            )
+            AppBarOptionContainer(
+                onClick = onSearchIconClicked,
+            ) {
+                SearchIconButton()
+            }
+            AppBarOptionContainer (
+                onClick = onDukanIconClicked,
+            ){
+                DukanIconButton(
+                    dukanButtonStatus = dukanButtonStatus,
+                )
+            }
         }
+    )
+}
+
+@Composable
+private fun SearchIconButton() {
+    Icon(
+        painter = painterResource(resource = Res.drawable.ic_search),
+        contentDescription = stringResource(resource = Res.string.search_icon),
+        modifier = Modifier.size(size = 20.dp),
+        tint = Theme.colorScheme.shadePrimary
     )
 }
 
 @Composable
 private fun DukanIconButton(
     dukanButtonStatus: MainScreenUiState.DukanStatusUi,
-    onAddDukanIconClicked: () -> Unit,
 ) {
+    Box(
+        modifier = Modifier
+            .size(40.dp)
+            .clip(shape = SquircleShape(Theme.radius.md))
+            .background(Theme.colorScheme.background.surfaceLow),
+        contentAlignment = Alignment.Center
+    ) {
+        DukanIcon(dukanStatus = dukanButtonStatus)
+    }
+}
+
+@Composable
+private fun DukanIcon(dukanStatus: MainScreenUiState.DukanStatusUi) {
     AnimatedContent(
-        targetState = dukanButtonStatus,
+        targetState = dukanStatus,
         transitionSpec = { fadeTransitionSpec() },
         label = stringResource(resource = Res.string.dukan_button)
-    )
-    { dukanStatus ->
-        Box(
-            modifier = Modifier
-                .size(40.dp)
-                .background(
-                    color = Theme.colorScheme.background.surfaceLow,
-                    shape = RoundedCornerShape(Theme.radius.md)
+    ) { dukanStatus ->
+        when (dukanStatus) {
+            MainScreenUiState.DukanStatusUi.None -> {
+                Icon(
+                    painter = painterResource(resource = Res.drawable.ic_add_dukan),
+                    contentDescription = stringResource(resource = Res.string.add_dukan_icon),
+                    tint = Theme.colorScheme.primary.primary
                 )
-                .clip(shape = RoundedCornerShape(Theme.radius.md))
-                .clickable(onClick = onAddDukanIconClicked),
-            contentAlignment = Alignment.Center
-        ) {
-            when (dukanStatus) {
-                MainScreenUiState.DukanStatusUi.None -> {
-                    Icon(
-                        painter = painterResource(resource = Res.drawable.ic_add_dukan),
-                        contentDescription = stringResource(resource = Res.string.add_dukan_icon)
-                    )
-                }
+            }
 
-                MainScreenUiState.DukanStatusUi.Pending -> {
-                    Icon(
-                        painter = painterResource(resource = Res.drawable.ic_dukan),
-                        contentDescription = stringResource(resource = Res.string.dukan_icon)
-                    )
-                }
+            MainScreenUiState.DukanStatusUi.Pending -> {
+                Icon(
+                    painter = painterResource(resource = Res.drawable.ic_dukan),
+                    contentDescription = stringResource(resource = Res.string.dukan_icon),
+                    tint = Theme.colorScheme.primary.primary
+                )
+            }
+
+            MainScreenUiState.DukanStatusUi.Approved -> {
+                Icon(
+                    painter = painterResource(resource = Res.drawable.ic_dukan),
+                    contentDescription = stringResource(resource = Res.string.dukan_icon),
+                    tint = Theme.colorScheme.primary.primary
+                )
+            }
+
+            MainScreenUiState.DukanStatusUi.Default -> {
+                Icon(
+                    painter = painterResource(resource = Res.drawable.ic_dukan),
+                    contentDescription = stringResource(resource = Res.string.dukan_icon),
+                    tint = Theme.colorScheme.primary.primary
+                )
+            }
+
+            MainScreenUiState.DukanStatusUi.Loading -> {
+                DotsProgressIndicator()
             }
         }
     }
 }
 
-private fun fadeTransitionSpec(): ContentTransform {
-    return fadeIn(
-        animationSpec = tween(
-            durationMillis = 500,
-            delayMillis = 100,
-            easing = EaseIn
-        )
-    ) togetherWith fadeOut(
-        animationSpec = tween(
-            durationMillis = 500,
-            delayMillis = 100,
-            easing = EaseOut
-        )
-    )
-}
 
 @Preview
 @Composable
@@ -125,7 +150,9 @@ private fun TopAppBarPreview() {
         ) {
             TopAppBar(
                 dukanButtonStatus = MainScreenUiState.DukanStatusUi.None,
-                onAddDukanIconClicked = {})
+                onDukanIconClicked = {},
+                onSearchIconClicked = {}
+            )
         }
     }
 }

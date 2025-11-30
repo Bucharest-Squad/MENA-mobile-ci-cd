@@ -7,10 +7,24 @@
     <string name="password">Password</string>
     <string name="forget_password">Forget Password?</string>
     <string name="login">Login</string>
-    <string name="register_prompt">You are new?</string>
-    <string name="register_now">Register Now</string>
+    <string name="register_now">register now</string>
+    <string name="you_are_new">You are new?</string>
+    <string name="register_prompt_title">Create account</string>
+    <string name="register_prompt_description">please enter your phone number to send you OTP code</string>
+    <string name="register_otp_prompt">please enter the OTP code that send to your phone number end with **%1$s</string>
+    <string name="create_password">Set your password</string>
+    <string name="create_password_title">Complete your profile</string>
+    <string name="create_password_description">Set your password</string>
+    <string name="next">Next</string>
+    <string name="register">Register</string>
+    <string name="you_already_have_account">You already have an account?</string>
+    <string name="validation_code">Validation code</string>
     <string name="error">Error</string>
-
+    <string name="unexpected_error">Something went wrong</string>
+    <string name="is_main_address_error">Can't Delete Active Address</string>
+    <string name="success">Success</string>
+    <string name="add_location_successfully">Add Location Successfully</string>
+    <string name="edit_location_successfully">Edit Location Successfully</string>
 
     <string name="pick_your_country">Pick Your Country</string>
     <string name="country_flag_image">Country Flag Image</string>
@@ -35,4 +49,239 @@
     <string name="tunisia">Tunisia</string>
     <string name="uae">United Arab Emirates</string>
     <string name="yemen">Yemen</string>
+
+
+    <string name="forget_password_prompt">please enter the phone number associated with your account, We'll send a OTP to help you regain access</string>
+    <string name="forget_password_prompt_title">Reset your password</string>
+    <string name="reset_password">Reset password</string>
+    <string name="otp_code">OTP code</string>
+    <string name="verify">Verify</string>
+    <string name="resend">Resend</string>
+    <string name="resend_timer">Resend in %1$d:%2$s</string>
+    <string name="continue">Continue</string>
+    <string name="did_not_receive_code">Didn't receive the code?</string>
+    <string name="otp_prompt_title">Enter the verification code</string>
+    <string name="otp_prompt">Please enter the OTP code that was sent to your phone number end with **%1$s to reset your password.</string>
+
+
+    <string name="reset">Reset</string>
+    <string name="new_password_title">New password</string>
+    <string name="reset_password_description">Please enter your new password and make sure you remember it in the next time</string>
+    <string name="new_password_label">New password</string>
+    <string name="confirm_password_label">Confirm password</string>
+    <string name="reset_password_dialog_title">Success!</string>
+    <string name="reset_password_dialog_message">Your password has been successfully reset.</string>
+
+    <!-- Add Edit Location Screen -->
+    <string name="add_location">Add Location</string>
+    <string name="edit_location">Edit Location</string>
+    <string name="save">Save</string>
+    <string name="location">Location </string>
+    <string name="pick_on_map">( pick on map )</string>
+    <string name="address">Address</string>
+    <string name="type">Type</string>
+    <string name="home">Home</string>
+    <string name="office">Office</string>
+    <string name="other">Other</string>
+    <string name="address_type">Address type</string>
+
+    <!-- Profile Screen Strings -->
+    <string name="profile_title">Profile</string>
+    <string name="profile_account_settings_header">Account settings</string>
+    <string name="profile_edit_profile_info">Edit profile information</string>
+    <string name="profile_change_password">Change password</string>
+    <string name="profile_addresses">Addresses</string>
+    <string name="profile_privacy_settings">Privacy settings</string>
+    <string name="profile_app_settings_header">App settings</string>
+    <string name="profile_language">Language</string>
+    <string name="profile_language_english">English</string>
+    <string name="profile_language_arabic">Arabic</string>
+    <string name="profile_theme">Theme</string>
+    <string name="profile_theme_light">Light</string>
+    <string name="profile_theme_dark">Dark</string>
+    <string name="profile_theme_system">System</string>
+    <string name="profile_theme_system_hint">We Will adjust your appearance based on your device's system settings.</string>
+    <string name="profile_other_header">Other</string>
+    <string name="profile_privacy_and_policy">Privacy and policy</string>
+    <string name="profile_contact_us">Contact us</string>
+    <string name="profile_invite_friends_title">Make MENA full of friends</string>
+    <string name="profile_invite_friends_subtitle">invite your friends</string>
+    <string name="profile_edit_profile_icon_content_description">Edit profile Information Icon</string>
+    <string name="profile_profile_picture_content_description">Profile Picture</string>
+    <string name="profile_share_icon_content_description">Share Icon</string>
+    <string name="profile_invite_friends_icon_content_description">Invite Friends Icon</string>
+    <string name="profile_image">Profile image</string>
+    <string name="upload_image">Upload image</string>
+    <string name="take_new_image">Take new image</string>
+    <string name="remove_profile_image">Remove profile image</string>
+    <string name="share_profile_title">Share your profile</string>
+    <string name="share_profile_description">Use your QR code to share your profile with other</string>
+    <string name="share_profile_qr_code">Profile QR Code</string>
+    <string name="share_icon_content_description">Share Icon</string>
+    <string name="link_icon_content_description">Link Icon</string>
+    <string name="download_icon_content_description">Download Icon</string>
+    <string name="download_app_title">MENA app-download app</string>
+    <string name="copy_to_clipboard_success">Copied Successfully</string>
+    <string name="copy_to_clipboard_success_message">Your link is copied successfully</string>
+    <string name="download_success">Downloaded Successfully</string>
+    <string name="download_success_message">Your image is downloaded successfully</string>
+    <string name="cant_save_qr_code">Can't save QR code"</string>
+
+    <string name="enable_location_title">Enable location</string>
+    <string name="enable_location_message">Please enable location in settings so we can get accurate prices in your exact location.</string>
+    <string name="profile_settings">Profile settings</string>
+    <string name="logout">Logout</string>
+    <string name="delete_account">Delete account</string>
+    <string name="logout_title">Logout</string>
+    <string name="logout_description">Ara you sure to continue logout?</string>
+    <string name="delete_account_title">Delete account?</string>
+    <string name="delete_account_description">Ara you sure to continue deleting your account?</string>
+    <string name="enable_location_permission_button">Enable location permission</string>
+    <string name="location_icon_desc">Location service icon</string>
+
+    <string name="no_saved_locations_title">No saved locations yet!</string>
+    <string name="no_saved_locations_message">Click on button below to start add and have your favorite locations status ups.</string>
+    <string name="location_saved_empty_desc">No saved locations icon</string>
+
+
+    <string name="address_type_home">Home</string>
+    <string name="address_type_office">Office</string>
+    <string name="address_type_other">Other</string>
+
+    <string name="address_priority_main">Main</string>
+    <string name="address_edit">Edit</string>
+
+    <string name="add_location_button">Add location</string>
+    <string name="delete_address_description">Are you sure you want to delete this location?</string>
+    <string name="delete_address_title">Delete Location</string>
+    <string name="confirmation_dialog_delete">Delete</string>
+
+    <string name="my_location_app_bar_title">My locations</string>
+
+    <string name="address_deleted_successfully">Address deleted successfully</string>
+    <string name="address_activated_successfully">Address Activated successfully</string>
+
+    <!--    crop image-->
+
+    <string name="upload_another_image">Upload another image</string>
+    <string name="image_preview">Image preview</string>
+    <string name="image_crop_failed">Image crop failed</string>
+
+    <string name="edit_profile_information">Edit profile information</string>
+    <string name="options">Options</string>
+    <string name="back">Back</string>
+
+    <string name="pick_start_date">Pick the start date</string>
+    <string name="pick_end_date">Pick the end date</string>
+    <string name="month_january">January</string>
+    <string name="month_february">February</string>
+    <string name="month_march">March</string>
+    <string name="month_april">April</string>
+    <string name="month_may">May</string>
+    <string name="month_june">June</string>
+    <string name="month_july">July</string>
+    <string name="month_august">August</string>
+    <string name="month_september">September</string>
+    <string name="month_october">October</string>
+    <string name="month_november">November</string>
+    <string name="month_december">December</string>
+
+    <string name="first_name">First name</string>
+    <string name="last_name">Last name</string>
+    <string name="username">Username</string>
+    <string name="date_of_birth">Date of birth</string>
+    <string name="save_changes">Save changes</string>
+    <string name="cancel">Cancel</string>
+    <string name="gender">Gender</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="version">version</string>
+    <string name="ok">Ok</string>
+
+    <string name="pick_location_title">Pick Location</string>
+
+    <!-- Change Password Screen -->
+    <string name="verify_current_password">Verify current password</string>
+    <string name="please_enter_your_password_to_change_it">Please enter your password to change it</string>
+    <string name="enter_your_new_password">Enter your new password</string>
+    <string name="changed_password_successfully"> Changed password successfully</string>
+
+    <!-- //Error Messages -->
+    <string name="error_invalid_country_code">Invalid country code</string>
+    <string name="error_invalid_mobile_number">Invalid mobile number</string>
+    <string name="error_invalid_password">Invalid password</string>
+    <string name="error_user_blocked">Too many failed attempts. Please try again later.</string>
+    <string name="error_wrong_password">%1$s</string>
+    <string name="error_location_permission_denied">Location permission denied</string>
+    <string name="error_invalid_credentials">Invalid credentials. Please check your phone number and password.</string>
+    <string name="error_unknown">Something went wrong. Please try again later.</string>
+    <string name="error_unauthorized">You don’t have permission to access the app.</string>
+    <string name="error_something_went_wrong">Something went wrong</string>
+    <string name="error_bad_request">Some information you entered is invalid. Please check your input and try again.</string>
+    <string name="error_incorrect_password">Old password is incorrect</string>
+
+    <!-- Profile Error Messages -->
+    <string name="error_username_required">Username is required</string>
+    <string name="error_first_name_required">First name is required</string>
+    <string name="error_last_name_required">Last name is required</string>
+    <string name="error_age_restriction">You must be 14 years or older to register</string>
+    <string name="error_password_mismatch">Passwords do not match</string>
+    <string name="error_password_validation">Password must be at least 8 characters long and contain at least one uppercase letter and one digit.</string>
+    <string name="error_camera_permission_required">Camera permission is required</string>
+    <string name="error_invalid_otp">Incorrect OTP.</string>
+    <string name="error_too_many_requests">Too many requests. Please try again later.</string>
+    <string name="error_otp_expired">OTP expired</string>
+    <string name="error_phone_number_already_exists">Phone number is already registered.</string>
+    <string name="error_username_already_exists">Username is already taken. Please choose another one.</string>
+    <string name="error_no_network">No Internet Connection</string>
+    <string name="error_no_internet_connection">No Internet Connection</string>
+    <string name="error_failed_to_open_settings">Failed to open settings</string>
+    <string name="error_permission_not_granted">Permission not granted</string>
+    <string name="error_address_not_found">Address not found</string>
+    <string name="error_cannot_delete_active_address">Can't Delete Active Address</string>
+    <string name="error_location_is_turned_off">Location is turned off</string>
+    <string name="error_confirm_password_not_match">Confirm password doesn't match the new password</string>
+    <string name="success_profile_info_updated">Your profile has been updated</string>
+
+    <!-- Account Created Successfully -->
+    <string name="success_account_created_title">You have successfully created your account!</string>
+    <string name="success_account_created_description">Welcome to MENA! You're now part of our community and can start exploring the app.</string>
+    <string name="go_to_home">Go to home</string>
+    <string name="ic_account_shield">Account Shield Icon</string>
+
+    <string name="title_pick_profile_picture">Pick Profile Picture</string>
+    <string name="title_complete_your_profile">Complete your profile</string>
+    <string name="desc_upload_profile_image">Upload a profile image so people can recognize you</string>
+    <string name="click_to_upload">Click to Upload</string>
+    <string name="button_upload">Upload</string>
+    <string name="button_skip_for_now">Skip for now</string>
+    <string name="close_dialog_icon">Close Language Dialog Icon</string>
+
+    <!-- date picker -->
+    <string name="date_picker_screen_prompt_title">Complete your profile</string>
+    <string name="date_picker_screen_prompt">Select your date of birth, only allowed for 14+ years</string>
+
+    <!-- select gender   -->
+    <string name="select_gender_screen_prompt_title">Complete your profile</string>
+    <string name="select_gender_screen_prompt">Select your gender</string>
+    <string name="session_expired">Your session has expired. Please try again.</string>
+
+    <!-- EnterName -->
+    <string name="complete_profile_title">Complete your profile</string>
+    <string name="complete_profile_description">Please fill your informations</string>
+    <string name="first_name_label">First name</string>
+    <string name="last_name_label">Last name</string>
+    <string name="username_label">Username</string>
+    <string name="share_message">I would like you to join me on the *MENA* app! Install the app, or just reach out to me in the chat here:</string>
+    <!-- Privacy and policy-->
+    <string name="last_update">Last update: %1$s</string>
+    <string name="privacy_and_policy">Privacy and policy</string>
+
+    <!-- Contact Us Screen -->
+    <string name="contact_us">Contact us</string>
+    <string name="contact_info">Contact Info</string>
+    <string name="contact_email_address">Email address</string>
+    <string name="contact_phone_number">Phone number</string>
+    <string name="contact_facebook_account">Facebook account</string>
+    <string name="error_cant_open_link">Could not open the link. Please check if you have a supported app installed.</string>
+
 </resources>

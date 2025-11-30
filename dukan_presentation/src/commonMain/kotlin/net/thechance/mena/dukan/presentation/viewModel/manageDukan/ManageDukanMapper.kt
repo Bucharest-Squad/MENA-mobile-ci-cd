@@ -1,0 +1,42 @@
+package net.thechance.mena.dukan.presentation.viewModel.manageDukan
+
+import net.thechance.mena.dukan.domain.entity.Dukan
+import net.thechance.mena.dukan.domain.entity.Product
+import net.thechance.mena.dukan.domain.entity.Shelf
+import kotlin.uuid.ExperimentalUuidApi
+
+@OptIn(ExperimentalUuidApi::class)
+fun Shelf.toUiState(): ManageDukanUiState.ShelfUiState {
+    return ManageDukanUiState.ShelfUiState(
+        id = id.toString(),
+        name = name
+    )
+}
+
+@OptIn(ExperimentalUuidApi::class)
+fun Product.toUiState(): ManageDukanUiState.ProductUiState {
+    return ManageDukanUiState.ProductUiState(
+        id = id.toString(),
+        name = name,
+        description = description,
+        basePrice = price.base,
+        finalPrice = price.final ?: price.base,
+        imageUrl = imageUrls.firstOrNull().orEmpty(),
+        isOutOfStock = isOutOfStock
+    )
+}
+
+fun Dukan.Activation.toUiState(): ManageDukanUiState.Activation {
+    return ManageDukanUiState.Activation(
+        activationStatus = activationStatus.toUiState(),
+        reason = reason
+    )
+}
+
+fun Dukan.ActivationStatus.toUiState(): ManageDukanUiState.ActivationStatus {
+    return when (this) {
+        Dukan.ActivationStatus.ACTIVATED -> ManageDukanUiState.ActivationStatus.ACTIVATED
+        Dukan.ActivationStatus.DEACTIVATED -> ManageDukanUiState.ActivationStatus.DEACTIVATED
+        Dukan.ActivationStatus.ONHOLD -> ManageDukanUiState.ActivationStatus.ONHOLD
+    }
+}

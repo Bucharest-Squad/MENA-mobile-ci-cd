@@ -6,6 +6,9 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
+    alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.mockkery)
+    alias(libs.plugins.ktorfit)
 }
 
 kotlin {
@@ -17,18 +20,34 @@ kotlin {
     sourceSets {
         androidMain.dependencies {
             implementation(libs.androidx.room.sqlite.wrapper)
+            implementation(libs.ktor.client.cio)
         }
         commonMain.dependencies {
+            implementation(compose.runtime)
+            implementation(libs.koin.core)
             implementation(projects.faithDomain)
             implementation(compose.components.resources)
             implementation(libs.androidx.room.runtime)
             implementation(libs.androidx.sqlite.bundled)
             implementation(libs.kotlinx.serialization.json)
+            implementation(projects.identityDomain)
+            implementation(libs.bundles.ktor)
+            implementation(libs.androidx.datastore.preferences)
             api(libs.koin.core)
-            implementation(compose.runtime)
+            implementation(libs.kotlinx.datetime)
+            implementation(libs.napier)
+            implementation(libs.bundles.ktorfit)
+            implementation(libs.okio)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.mokkery.core)
+            implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.bundles.test)
+        }
+
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
         }
     }
 }
@@ -36,7 +55,22 @@ kotlin {
 kover.reports {
     verify {
         rule {
-            minBound(0)
+            minBound(80)
+        }
+    }
+
+
+
+    filters {
+        includes {
+            classes(
+                "*RepositoryImpl",
+                "*MapperKt",
+            )
+        }
+
+        excludes {
+            annotatedBy("net.thechance.mena.faith.domain.annotation.KoverIgnore")
         }
     }
 }
@@ -54,9 +88,8 @@ room {
 }
 
 dependencies {
-    add("kspAndroid", libs.androidx.room.compiler)
-    add("kspIosSimulatorArm64", libs.androidx.room.compiler)
-    add("kspIosArm64", libs.androidx.room.compiler)
+    addKsp(libs.androidx.room.compiler)
+    addKsp(libs.ktorfit.ksp)
 }
 
 compose.resources {
@@ -110,6 +143,29 @@ listOf(
             "kspKotlinIosArm64" -> dependsOn(
                 "generateResourceAccessorsForIosArm64Main",
                 "generateActualResourceCollectorsForIosArm64Main"
+            )
+        }
+    }
+}
+
+fun DependencyHandlerScope.addKsp(dependencyNotation: Any) {
+    val targets = listOf(
+        //"CommonMainMetadata",
+        "Android",
+        "AndroidTest",
+        "IosX64",
+        "IosX64Test",
+        "IosArm64",
+        "IosSimulatorArm64",
+        "IosArm64Test",
+        "IosSimulatorArm64Test"
+    )
+
+    targets.forEach { target ->
+        runCatching {
+            add(
+                configurationName = "ksp$target",
+                dependencyNotation = dependencyNotation
             )
         }
     }

@@ -26,6 +26,7 @@ kotlin {
         commonMain.dependencies {
             implementation(libs.koin.core)
             implementation(projects.dukanDomain)
+            implementation(projects.identityDomain)
             implementation(libs.junit)
             implementation(libs.kotlin.test)
             implementation(libs.kotlinx.coroutines.test)
@@ -65,7 +66,7 @@ kover.reports {
                 "**.di.**",
                 "**.util.**",
                 "**.dto.**",
-                "net.thechance.mena.dukan.data.repository.location.MobileGeocoderWrapper"
+                "net.thechance.mena.dukan.data.util.wrapper.MobileGeocoderWrapper"
             )
         }
     }

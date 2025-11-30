@@ -3,29 +3,34 @@ package net.thechance.mena.dukan.presentation.viewModel.createDukan
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.DpOffset
 import com.attafitamim.krop.core.images.ImageSrc
-import net.thechance.mena.dukan.domain.entity.Dukan
+import net.thechance.mena.dukan.presentation.util.file.ImageFile
 import org.maplibre.compose.camera.CameraPosition
 
 interface CreateDukanInteractionListener {
-    fun onButtonClicked()
+    fun onNextOrCreateClicked()
     fun onBackClicked()
-    fun onColorClicked(color: ColorUiState)
-    fun onStyleClicked(style: Dukan.Style)
-    fun onClickUploadImage(image: ImageSrc)
+    fun onColorClicked(color: CreateDukanUiState.ColorUiState)
+    fun onStyleClicked(style: CreateDukanUiState.Style)
+    fun onClickUploadImage(image: ImageFile)
     fun onNameChanged(name: String)
-    fun isCategorySelected(): (DukanCategoryUiState) -> Boolean
-    fun onCategorySelected(category: DukanCategoryUiState): Boolean
-    fun onCategoryDeselected(category: DukanCategoryUiState): Boolean
-    fun onCategoryEnabled(category: DukanCategoryUiState): Boolean
-    fun onCLickNext()
+
+    fun isCategorySelected(): (CreateDukanUiState.DukanCategoryUiState) -> Boolean
+    fun onCategoryClicked(category: CreateDukanUiState.DukanCategoryUiState): Boolean
+    fun onCategoryEnabled(category: CreateDukanUiState.DukanCategoryUiState): Boolean
+
+    fun onNextClicked()
     fun onImageCrop(image: ImageBitmap)
     fun onCancelCrop()
     fun onMapClicked(
         coordinates: CreateDukanUiState.CoordinatesUiState,
         pointerLocation: DpOffset,
     )
+
     fun onAddressChanged(address: String)
     fun onCameraMoved(camera: CameraPosition)
     fun onEditMapLocationClicked()
+    fun onExpandLocationPicker()
+    fun onConfirmLocationPicked()
+    fun onCancelLocationPicker()
     fun onDismissSnackBar()
 }

@@ -1,12 +1,18 @@
 package net.thechance.mena.core_chat.presentation.navigation
 
 import kotlinx.serialization.Serializable
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 interface ChatRoute
 
 @Serializable
-data object ChatsRoute : ChatRoute
+data object HomeRoute : ChatRoute
 
+@Serializable
+data object WalletRoute : ChatRoute
+@Serializable
+data class ConfirmPaymentRoute(val amount: String, val transactionId: String) : ChatRoute
 @Serializable
 data object ContactsRoute : ChatRoute
 
@@ -14,4 +20,16 @@ data object ContactsRoute : ChatRoute
 data class SyncContactsRoute(val forceSync: Boolean) : ChatRoute
 
 @Serializable
-data class ChatDetailsRoute(val chatId: String) : ChatRoute
+data class ChatDetailsRoute(val chatId: String, val chatName: String) : ChatRoute
+
+@Serializable
+data class ShareMessageRoute(val messageArgsJson: String) : ChatRoute
+
+@Serializable
+data class  SurahRoute(val surahId: Int) : ChatRoute
+
+@Serializable
+data class AyahRoute(val surahId: Int, val ayahId: Int) : ChatRoute
+
+@Serializable
+data class OrderDetailsRoute(val orderId: String): ChatRoute

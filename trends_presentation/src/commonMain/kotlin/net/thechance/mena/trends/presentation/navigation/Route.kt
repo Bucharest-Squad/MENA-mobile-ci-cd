@@ -7,17 +7,32 @@ internal sealed interface Route {
     data object Categories : Route
 
     @Serializable
-    data object Trends : Route
+    data object UpdateCategories : Route
 
     @Serializable
-    data class ReelDetails(val reelId: String) : Route
+    data class TrendDetails(
+        val trendId: String,
+        val source: String
+    ) : Route
 
     @Serializable
-    data object ManageReels : Route
+    enum class TrendSource { Home, MyTrends, Favorites }
 
     @Serializable
-    data object MainContainer: Route
+    data object ManageTrends : Route
 
     @Serializable
-    data class VideoDescription(val trendId : String) : Route
+    data object MainContainer : Route
+
+    @Serializable
+    data object UploadTrend : Route
+
+    @Serializable
+    data class VideoDescription(val trendId: String) : Route
+
+    @Serializable
+    data class CategoriesPublish(val trendId: String, val description: String) : Route
+
+    @Serializable
+    data object Home : Route
 }

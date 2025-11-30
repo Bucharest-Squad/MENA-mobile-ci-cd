@@ -4,5 +4,8 @@ import androidx.compose.runtime.Composable
 
 interface FaithApi {
     @Composable
-    fun TabEntry()
+    fun TabEntry(updateBottomNavigationVisibility: (Boolean) -> Unit)
+
+    @Composable
+    fun NavigateToSurahScreen(surahId: Int, ayahNumber: Int,onNavigateBack: () -> Unit)
 }

@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalUuidApi::class)
+
 package net.thechance.mena.wallet.presentation.screen.wallet
 
 import androidx.compose.foundation.background
@@ -6,58 +8,62 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import mena.wallet_presentation.generated.resources.Res
-import mena.wallet_presentation.generated.resources.back_button
-import mena.wallet_presentation.generated.resources.ic_arrow_left
+import mena.wallet_presentation.generated.resources.download
+import mena.wallet_presentation.generated.resources.downloaded_statements
 import mena.wallet_presentation.generated.resources.ic_clock
 import mena.wallet_presentation.generated.resources.my_wallet
-import mena.wallet_presentation.generated.resources.transaction_history
+import mena.wallet_presentation.generated.resources.transactions_history
 import net.thechance.mena.designsystem.presentation.component.appBar.AppBar
-import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.wallet.presentation.base.UiState
+import net.thechance.mena.wallet.presentation.component.BackIcon
 import net.thechance.mena.wallet.presentation.component.SnackBarContainer
 import net.thechance.mena.wallet.presentation.component.WalletScaffold
+import net.thechance.mena.wallet.presentation.navigation.LocalNavController
+import net.thechance.mena.wallet.presentation.navigation.StatementsHistoryScreenRoute
+import net.thechance.mena.wallet.presentation.navigation.TransactionsHistoryScreenRoute
 import net.thechance.mena.wallet.presentation.screen.wallet.component.BalanceCard
 import net.thechance.mena.wallet.presentation.screen.wallet.component.LabeledButtonWithCircularIcon
+import net.thechance.mena.wallet.presentation.screen.wallet.component.RefreshIcon
 import net.thechance.mena.wallet.presentation.utils.ObserveAsEffect
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
+import kotlin.uuid.ExperimentalUuidApi
 
 @Composable
 fun WalletMainScreen(
-    onNavigateBackClicked: () -> Unit,
-    navigateToTransactionHistory: () -> Unit,
-    viewModel: WalletViewModel = koinViewModel(),
+    navigateBack: () -> Unit,
+    viewModel: WalletViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val navController = LocalNavController.current
 
     ObserveAsEffect(
         effect = viewModel.uiEffect,
         onEffect = { effect ->
             onWalletEffect(
-                effect,
-                onNavigateBackClicked,
-                navigateToTransactionHistory
+                effect = effect,
+                onNavigateBackClicked = navigateBack,
+                navController = navController
             )
         }
     )
 
-    WalletContent(
-        state = state,
-        interactionListener = viewModel
-    )
+    WalletContent(state = state, interactionListener = viewModel)
 }
 
+@OptIn(ExperimentalUuidApi::class)
 @Composable
 private fun WalletContent(
     state: WalletScreenState,
@@ -65,18 +71,13 @@ private fun WalletContent(
 ) {
     WalletScaffold(
         modifier = Modifier
-            .background(Theme.colorScheme.background.surface)
-            .statusBarsPadding(),
+            .background(Theme.colorScheme.background.surface),
         topBar = {
             AppBar(
                 title = stringResource(Res.string.my_wallet),
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                leadingContent = {
-                    Icon(
-                        painter = painterResource(Res.drawable.ic_arrow_left),
-                        contentDescription = stringResource(Res.string.back_button)
-                    )
-                },
+                leadingContent = { BackIcon() },
+                trailingContent = { RefreshIcon(interactionListener) },
                 onLeadingClick = interactionListener::onBackClicked,
             )
         },
@@ -87,21 +88,32 @@ private fun WalletContent(
                 .fillMaxHeight()
                 .padding(horizontal = 16.dp)
                 .padding(top = 16.dp)
+                .verticalScroll(rememberScrollState())
         ) {
             BalanceCard(
-                balance = state.balance,
+                state = state.balanceState,
                 onRetry = interactionListener::onRetryLoadBalanceClicked,
-                modifier = Modifier
-                    .padding(top = 16.dp)
+                modifier = Modifier.padding(top = 16.dp)
             )
+
             LabeledButtonWithCircularIcon(
                 icon = painterResource(Res.drawable.ic_clock),
-                contentDescription = stringResource(Res.string.transaction_history),
-                label = stringResource(Res.string.transaction_history),
+                contentDescription = stringResource(Res.string.transactions_history),
+                label = stringResource(Res.string.transactions_history),
                 onClick = interactionListener::onTransactionHistoryClicked,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 24.dp)
+            )
+
+            LabeledButtonWithCircularIcon(
+                icon = painterResource(Res.drawable.download),
+                contentDescription = stringResource(Res.string.downloaded_statements),
+                label = stringResource(Res.string.downloaded_statements),
+                onClick = interactionListener::onStatementHistoryClicked,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp)
             )
         }
     }
@@ -110,11 +122,17 @@ private fun WalletContent(
 private fun onWalletEffect(
     effect: WalletEffect,
     onNavigateBackClicked: () -> Unit,
-    navigateToTransactionHistory: () -> Unit
+    navController: NavController
 ) {
     when (effect) {
         WalletEffect.NavigateBack -> onNavigateBackClicked()
-        WalletEffect.NavigateToTransactionHistory -> navigateToTransactionHistory()
+        WalletEffect.NavigateToTransactionHistory -> {
+            navController.navigate(TransactionsHistoryScreenRoute)
+        }
+
+        WalletEffect.NavigateToStatementHistory -> {
+            navController.navigate(StatementsHistoryScreenRoute)
+        }
     }
 }
 
@@ -124,12 +142,13 @@ private fun WalletScreenPreview() {
     MenaTheme {
         WalletContent(
             state = WalletScreenState(
-                balance = UiState.Success(530320.55)
+                balanceState = WalletScreenState.BalanceUiState(balance = 530320.55)
             ),
             interactionListener = object : WalletInteractionListener {
                 override fun onBackClicked() {}
                 override fun onRetryLoadBalanceClicked() {}
                 override fun onTransactionHistoryClicked() {}
+                override fun onStatementHistoryClicked() {}
             }
         )
     }

@@ -17,6 +17,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import mena.design_system.generated.resources.Res
+import mena.design_system.generated.resources.ic_iraq
 import mena.design_system.generated.resources.ic_profile
 import mena.design_system.generated.resources.silver_tc
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
@@ -45,12 +46,14 @@ fun TextField(
     focusRequester: FocusRequester = FocusRequester(),
     onFocusChanged: (Boolean) -> Unit = {},
     onTrailingIconClick: (() -> Unit)? = null,
-    visualTransformation: VisualTransformation = VisualTransformation.None
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    maxCharacters: Int = Int.MAX_VALUE,
 ) {
     BasicTextField(
         value = value,
-        onValueChanged = onValueChanged,
         hint = hint,
+        onValueChanged = onValueChanged,
+        modifier = modifier,
         leadingIcon = leadingIcon,
         trailingIcon = trailingIcon,
         title = title,
@@ -63,23 +66,26 @@ fun TextField(
         shape = shape,
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
-        visualTransformation = visualTransformation,
         focusRequester = focusRequester,
         onFocusChanged = onFocusChanged,
-        modifier = modifier,
-        onTrailingIconClick = onTrailingIconClick
+        onTrailingIconClick = onTrailingIconClick,
+        visualTransformation = visualTransformation,
+        maxCharacters = maxCharacters
     )
 }
-
-
-@Preview
+@Preview(showBackground = true, backgroundColor = 0xFFF2F4F7)
 @Composable
-private fun PreviewTextField() {
+private fun PreviewTextFieldComponent() {
     MenaTheme {
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
+            net.thechance.mena.designsystem.presentation.component.text.Text(
+                text = "Text field",
+                style = Theme.typography.headline.small,
+                color = Theme.colorScheme.shadeTertiary
+            )
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -111,6 +117,29 @@ private fun PreviewTextField() {
                     isError = true,
                     errorMessage = "error message",
                     modifier = Modifier.fillMaxWidth(),
+                )
+
+                MultiLineTextField(
+                    value = "",
+                    onValueChanged = {},
+                    hint = "Placeholder",
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                MobileNumberTextField(
+                    value = "",
+                    onValueChanged = { },
+                    title = "title",
+                    hint = "value",
+                    leadingIcon = painterResource(Res.drawable.ic_profile),
+                    leadingContent = {
+                        MobileNumberLeadingContent(
+                            countryCode = "+964",
+                            countryPainter = painterResource(Res.drawable.ic_iraq),
+                            onClick = {}
+                        )
+                    },
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
         }

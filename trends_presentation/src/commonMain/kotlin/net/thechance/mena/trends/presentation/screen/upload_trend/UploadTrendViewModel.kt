@@ -1,143 +1,243 @@
 package net.thechance.mena.trends.presentation.screen.upload_trend
 
+import co.touchlab.kermit.Logger
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.Job
-import net.thechance.mena.trends.domain.entity.UploadReelProgress
-import net.thechance.mena.trends.domain.repository.ReelsRepository
-import net.thechance.mena.trends.domain.validation.VideoMetaDataValidator
+import net.thechance.mena.trends.domain.exception.MaxFileDurationExceededException
+import net.thechance.mena.trends.domain.exception.MaxFileSizeExceededException
+import net.thechance.mena.trends.domain.model.UploadTrendProgress
+import net.thechance.mena.trends.domain.repository.TrendsRepository
+import net.thechance.mena.trends.domain.validation.VideoValidator
 import net.thechance.mena.trends.presentation.shared.base.BaseViewModel
 import net.thechance.mena.trends.presentation.shared.base.ErrorState
+import net.thechance.mena.trends.presentation.shared.base.UploadTrendErrorState
 import net.thechance.mena.trends.presentation.shared.model.FileUiState
-import net.thechance.mena.trends.presentation.shared.util.video_util.VideoDurationExtractor
-import net.thechance.mena.trends.presentation.shared.util.video_util.formatBytes
+import net.thechance.mena.trends.presentation.shared.util.formatBytes
 import org.koin.android.annotation.KoinViewModel
 import org.koin.core.annotation.Provided
 
 @KoinViewModel
 internal class UploadTrendViewModel(
-    @Provided private val reelsRepository: ReelsRepository,
-    @Provided private val videoValidator: VideoMetaDataValidator,
-    @Provided private val videoDurationExtractor: VideoDurationExtractor,
+    @Provided private val trendsRepository: TrendsRepository,
+    @Provided private val videoValidator: VideoValidator,
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO
-) : BaseViewModel<UploadTrendsScreenState, UploadTrendsScreenEffect>(
-    UploadTrendsScreenState()
+) : BaseViewModel<UploadTrendScreenState, UploadTrendScreenEffect>(
+    UploadTrendScreenState()
 ), UploadTrendInteractionListener {
 
     private var uploadingTrendJob: Job? = null
 
-    override fun onRetrieveVideo(
-        file: FileUiState,
-        readBytes: suspend () -> ByteArray
-    ) {
-        tryToExecute(
-            block = { validateFile(file, readBytes) },
-            onError = ::onValidationError,
-            onSuccess = ::onValidationSuccess,
+    init {
+        observeUploadTrendProgress()
+    }
+
+    private fun observeUploadTrendProgress() {
+        tryToCollectFlow(
+            block = { trendsRepository.observeUploadTrendProgress() },
+            onNewValue = ::onCollectUploadProgress,
+            onError = ::onUploadError,
             dispatcher = defaultDispatcher
         )
     }
 
-    private suspend fun validateFile(
-        file: FileUiState,
-        readBytes: suspend () -> ByteArray
-    ): FileUiState {
-        videoValidator.validateSize(file.sizeInBytes)
-        val bytes = readBytes()
-        videoDurationExtractor.getDuration(bytes)?.let { duration ->
+    private fun onCollectUploadProgress(progress: UploadTrendProgress) {
+        val uploadingProgress = progress.numberOfUploadedBytes / progress.totalBytes.toFloat()
+        updateState {
+            copy(
+                uploadingProgress = uploadingProgress,
+                sizeUploaded = formatBytes(
+                    bytes = progress.numberOfUploadedBytes,
+                    withUnit = false
+                )
+            )
+        }
+    }
+
+    override fun onRetrieveVideo(file: FileUiState) {
+        updateState {
+            UploadTrendScreenState(
+                selectedFile = file.copy(sizeText = formatBytes(file.size)),
+                errorState = null
+            )
+        }
+        tryToExecute(
+            block = { validateFile() },
+            onError = ::onValidationError,
+            onSuccess = { uploadTrend() },
+            dispatcher = defaultDispatcher
+        )
+    }
+
+    override fun onClickUploadCard() {
+        sendEffect(UploadTrendScreenEffect.LaunchFilePicker)
+    }
+
+    private suspend fun validateFile() {
+        val selectedFile = state.value.selectedFile
+
+        videoValidator.validateSize(selectedFile.size)
+        trendsRepository.getTrendDuration(selectedFile.filePath)?.let { duration ->
             videoValidator.validateDuration(duration)
         }
-        return file.copy(bytes = bytes)
     }
 
     private fun onValidationError(errorState: ErrorState) {
         updateState { copy(errorState = errorState) }
+        sendEffect(UploadTrendScreenEffect.ShowErrorSnackbar(errorState = errorState))
     }
 
-    private fun onValidationSuccess(file: FileUiState) {
-        updateState {
-            copy(
-                selectedFile = file.copy(sizeInMegaBytes = formatBytes(file.sizeInBytes)),
-                errorState = null
-            )
-        }
-        uploadTrend(file)
-    }
-
-    private fun uploadTrend(trendFile: FileUiState) {
-        uploadingTrendJob = tryToCollectFlow(
+    private fun uploadTrend() {
+        uploadingTrendJob = tryToExecute(
             block = {
-                reelsRepository.uploadReel(
-                    name = trendFile.name,
-                    mimeType = trendFile.extension,
-                    size = trendFile.sizeInBytes,
-                    bytes = trendFile.bytes
+                trendsRepository.uploadTrend(
+                    filePath = state.value.selectedFile.filePath,
+                    size = state.value.selectedFile.size
                 )
             },
             onStart = ::onUploadStarted,
-            onEach = ::onCollectEachFlow,
+            onSuccess = ::onUploadTrendSuccess,
             onError = ::onUploadError,
-            onEnd = ::onUploadCompleted,
             dispatcher = defaultDispatcher
         )
     }
 
     private fun onUploadStarted() {
-        updateState { copy(uploadingTrendState = UploadTrendsScreenState.UploadingTrendState.UPLOADING) }
+        updateState { copy(uploadingState = UploadTrendScreenState.UploadingTrendState.UPLOADING) }
     }
 
-    private fun onCollectEachFlow(progress: UploadReelProgress) {
+    private fun onUploadTrendSuccess(trendId: String) {
         updateState {
             copy(
-                uploadedMegaBytes = formatBytes(progress.numberOfUploadedBytes),
-                selectedFile = state.value.selectedFile.copy(id = progress.reelId)
+                trendId = trendId,
+                uploadingState = UploadTrendScreenState.UploadingTrendState.SUCCESS
             )
         }
+        extractFrame()
     }
 
     private fun onUploadError(errorState: ErrorState) {
         updateState {
             copy(
-                uploadingTrendState = UploadTrendsScreenState.UploadingTrendState.FAILED,
+                uploadingState = UploadTrendScreenState.UploadingTrendState.FAILED,
                 errorState = errorState
             )
         }
+        sendEffect(UploadTrendScreenEffect.ShowErrorSnackbar(errorState = errorState))
     }
 
-    private fun onUploadCompleted() {
+    private fun extractFrame() {
+        tryToExecute(
+            block = {
+                trendsRepository.extractTrendThumbnail(state.value.selectedFile.filePath)
+            },
+            onSuccess = ::onExtractFrameSuccess,
+            onError = ::onExtractFrameError,
+            onStart = { updateState { copy(isThumbnailLoading = true) } },
+            onEnd = { updateState { copy(isThumbnailLoading = false) } },
+            dispatcher = defaultDispatcher
+        )
+    }
+
+    private fun onExtractFrameSuccess(thumbnail: ByteArray?) {
         updateState {
             copy(
-                uploadingTrendState = UploadTrendsScreenState.UploadingTrendState.SUCCESS,
-                isNextButtonEnabled = true
+                thumbnail = thumbnail,
+                isNextButtonEnabled = true,
             )
         }
     }
 
-    override fun onBackClick() {
-        sendEffect(UploadTrendsScreenEffect.NavigateBack)
+    private fun onExtractFrameError(errorState: ErrorState) {
+        updateState { copy(errorState = errorState) }
+        sendEffect(UploadTrendScreenEffect.ShowErrorSnackbar(errorState = errorState))
     }
 
-    override fun onEditVideoClick() {
+    override fun onClickNext() {
+        uploadThumbnail()
+    }
+
+    private fun uploadThumbnail() {
+        tryToExecute(
+            block = {
+                state.value.trendId?.let { trendId ->
+                    trendsRepository.uploadTrendThumbnail(
+                        trendId = trendId,
+                        thumbnail = state.value.thumbnail ?: ByteArray(0),
+                    )
+                }
+            },
+            onStart = ::onUploadThumbnailStarted,
+            onEnd = ::onUploadThumbnailFinished,
+            onSuccess = { onUploadThumbnailSuccess() },
+            onError = ::onUploadThumbnailError,
+            dispatcher = defaultDispatcher
+        )
+    }
+
+    private fun onUploadThumbnailStarted() {
+        updateState { copy(isNextButtonLoading = true) }
+    }
+
+    private fun onUploadThumbnailFinished() {
+        updateState { copy(isNextButtonLoading = false) }
+    }
+
+    private fun onUploadThumbnailSuccess() {
+        state.value.trendId?.let {
+            sendEffect(UploadTrendScreenEffect.NavigateToAddDescription(it))
+        }
+    }
+
+    private fun onUploadThumbnailError(errorState: ErrorState) {
+        updateState { copy(errorState = errorState) }
+        sendEffect(UploadTrendScreenEffect.ShowErrorSnackbar(errorState = errorState))
+    }
+
+    override fun onClickBack() {
+        sendEffect(UploadTrendScreenEffect.NavigateBack)
+    }
+
+    override fun onClickCancelUpload() {
         uploadingTrendJob?.cancel()
+        updateState { UploadTrendScreenState() }
     }
 
-    override fun onCancelUploadClick() {
-        uploadingTrendJob?.cancel()
-        updateState { UploadTrendsScreenState() }
+    override fun onClickDeleteVideo() {
+        tryToExecute(
+            block = { state.value.trendId?.let { trendsRepository.deleteTrendById(id = it) } },
+            onSuccess = { updateState { UploadTrendScreenState() } },
+            onError = { errorState ->
+                updateState { copy(errorState = errorState) }
+                sendEffect(UploadTrendScreenEffect.ShowErrorSnackbar(errorState = errorState))
+            },
+            dispatcher = defaultDispatcher
+        )
     }
 
-    override fun onDeleteVideoClick() {
-        uploadingTrendJob?.cancel()
-        updateState { UploadTrendsScreenState() }
+    override fun onClickRetryUpload() {
+        uploadTrend()
     }
 
-    override fun onRetryUploadClick() {
-        uploadingTrendJob?.cancel()
-        uploadTrend(state.value.selectedFile)
+    override suspend fun mapExceptionToErrorState(
+        throwable: Throwable,
+        onError: suspend (ErrorState) -> Unit
+    ) {
+        when (throwable) {
+            is MaxFileSizeExceededException -> UploadTrendErrorState.FileTooLarge
+            is MaxFileDurationExceededException -> UploadTrendErrorState.DurationTooLarge
+            else -> {
+                super.mapExceptionToErrorState(throwable, onError)
+                return
+            }
+        }.let { errorState ->
+            Logger.e(TAG) { errorState.toString() }
+            onError(errorState)
+        }
     }
 
-    override fun onNextClick() {
-        sendEffect(UploadTrendsScreenEffect.NavigateToAddDescription(state.value.selectedFile.id))
+    private companion object {
+        const val TAG = "UploadTrendErrorState"
     }
 }

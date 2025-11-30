@@ -11,6 +11,7 @@
     <string name="type">Type</string>
     <string name="status">Status</string>
     <string name="from">From</string>
+    <string name="payment_to">to</string>
     <string name="to">To</string>
     <string name="select_date">Select Date</string>
     <string name="sent">Sent</string>
@@ -19,8 +20,27 @@
     <string name="all">All</string>
     <string name="success">Success</string>
     <string name="failed">Failed</string>
-
-
+    <string name="transaction_details_header">Transaction Details</string>
+    <string name="share_receipt">Share Receipt</string>
+    <string name="share_button">share button</string>
+    <string name="send">Send</string>
+    <string name="receive">Receive</string>
+    <string name="pay">Pay</string>
+    <string name="send_button">Send button</string>
+    <string name="receive_button">Receive button</string>
+    <string name="pay_button">Pay button</string>
+    <string name="receiver">Receiver</string>
+    <string name="date">Date</string>
+    <string name="transaction_id">Transaction ID</string>
+    <string name="purchase">Purchase</string>
+    <string name="transfer">Transfer</string>
+    <string name="failed_icon">failed icon</string>
+    <string name="success_icon">Success icon</string>
+    <string name="share_transaction_details_error_msg">Failed to share receipt</string>
+    <string name="share_transaction_details_bottom_sheet_header">Sharing transaction details</string>
+    <string name="send_to_your_device">Send to your device</string>
+    <string name="transaction_details_screenshot">transaction details screenshot</string>
+    <string name="computer_phone_sync_icon">computer phone sync icon</string>
     <string name="month_january">January</string>
     <string name="month_february">February</string>
     <string name="month_march">March</string>
@@ -38,5 +58,88 @@
     <string name="pick">Pick</string>
 
     <string name="transaction_history">Transaction History</string>
+    <string name="transactions_history">Transactions History</string>
+    <string name="filter">Filters</string>
+    <string name="transaction_pay">Online shopping</string>
+    <string name="transaction_send">Send to</string>
+    <string name="transaction_receive">Receive from</string>
+    <string name="money_icon">money icon</string>
+    <string name="transaction_type_icon">Transactions Type Icon</string>
+    <string name="online_shopping">Online Shopping</string>
+    <string name="share">share</string>
+    <string name="no_internet_title">Oops! It looks like you’re offline.</string>
+    <string name="no_internet_content">Check your connection and try again</string>
+    <string name="img_no_internet">image no internet</string>
+    <string name="retry">Re-try</string>
+    <string name="filter_transaction_error_title">Filters give no matches</string>
+    <string name="filter_transaction_error_description">Change your filters or reset them to explore all transactions</string>
+    <string name="apply_filters">Apply Filters</string>
+    <string name="filter_transactions">Filter transactions</string>
+    <string name="reset">Reset</string>
 
+    <string name="error_no_transactions">No transactions found</string>
+    <string name="error_failed_view">Failed to view transactions</string>
+    <string name="download">Download</string>
+    <string name="view_and_share">View &amp; Share</string>
+    <string name="custom_filtering">Custom Filtering</string>
+    <string name="all_transactions">All Transactions</string>
+    <string name="export_transactions">Export Transactions</string>
+    <string name="downloading_started">Downloading Started...</string>
+    <string name="download_success">Your transactions have been saved to %1$s</string>
+    <string name="download_complete">Download complete</string>
+    <string name="download_failed">Download failed</string>
+    <string name="something_went_wrong">Something went wrong. Please try again.</string>
+
+    <string name="filter_crossfade">FilterCrossfade</string>
+    <string name="background_color_animation">Background Color Animation</string>
+    <string name="empty_transaction_history_desc">Once you start using your wallet, your transactions will appear here.</string>
+    <string name="no_transactions_yet">No transactions yet</string>
+    <string name="no_transactions_yet_description">Once you start using your wallet, your transactions will appear here.</string>
+    <string name="failed_to_apply_filters">Failed to apply filters</string>
+    <string name="start_date_must_be_before_end_date">Start date must be earlier than end date</string>
+    <string name="failed_to_load_date_picker">Failed to load date picker</string>
+
+    <string name="share_button_title">Share</string>
+    <string name="statement">Statement</string>
+
+    <string name="view_transactions_statement_error_message">an error happened while loading the statement file</string>
+    <string name="loading_pdf_message">Loading PDF...</string>
+    <string name="rendering_pdf_message">Rendering PDF...</string>
+    <string name="unknown_error_title">Unknown error</string>
+    <string name="unknown_error_description">An unknown error occurred. Please try again.</string>
+    <string name="remove_statements">Remove Statements</string>
+    <string name="inflows">Inflows</string>
+    <string name="outflows">Outflows</string>
+    <string name="silvers">silvers</string>
+    <string name="date_range">%1$s - %2$s</string>
+    <string name="amount_with_currency">%1$s %2$s</string>
+    <string name="statements">Statements</string>
+    <string name="edit">edit</string>
+    <string name="no_statements_title">No statements yet</string>
+    <string name="no_statements_description">Export a transaction history to see your downloaded statements here.</string>
+    <string name="downloaded_statements">Downloaded Statements</string>
+    <string name="confirm_payment_header">Confirm Payment</string>
+    <string name="confirm_payment_content_success">You have %1$s silvers in wallet</string>
+    <string name="confirm_payment_content_failed">You only have %1$s silvers in your wallet, which isn’t enough.</string>
+    <string name="You_are_about_to_pay">You’re about to pay</string>
+    <string name="pay_amount">Pay %1$s</string>
+    <string name="user_img">user image</string>
+
+    <string name="transaction_successful">Transaction Successful!</string>
+    <string name="show_transaction_details">Show Transaction Details</string>
+    <string name="close">Close</string>
+    <string name="transaction_failed">Transaction Failed</string>
+    <string name="connection_lost_try_again">The connection was lost. Please try again.</string>
+    <string name="try_again">Try Again</string>
+    <string name="payment_failed_description">We couldn’t complete your payment. Please try again.</string>
+    <string name="payment_status_crossfade">Payment status transition</string>
+    <string name="you_paid">You paid</string>
+
+    <string name="file_missing">Statement not found</string>
+    <string name="file_missing_description">This statement is no longer available because it was deleted or moved from your device.</string>
+    <string name="share_image">Share Image</string>
+    <string name="share_pdf">Share Pdf</string>
+    <string name="this_account_cant_receive_transactions">This account cannot receive payments.</string>
+    <string name="refresh_icon">Refresh Icon</string>
+    <string name="deposit_icon">Deposit Icon</string>
 </resources>

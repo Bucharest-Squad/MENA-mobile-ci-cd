@@ -13,10 +13,13 @@ kotlin {
         commonMain.dependencies {
             implementation(libs.koin.core)
             implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.datetime)
         }
 
         jvmTest.dependencies {
             implementation(libs.bundles.jvm.test)
+            implementation(libs.turbine)
+
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -32,6 +35,6 @@ kover.reports {
     }
 
     filters.excludes {
-        packages("*.di", "*.entity", "*.exception")
+        packages("*.di", "*.entity", "*.exception", "*.model")
     }
 }

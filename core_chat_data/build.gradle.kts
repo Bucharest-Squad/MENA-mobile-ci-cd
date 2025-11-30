@@ -21,6 +21,7 @@ kotlin {
             implementation(libs.androidx.room.sqlite.wrapper)
         }
         commonMain.dependencies {
+            implementation(projects.faithDomain)
             implementation(projects.coreChatDomain)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.contacts.provider)
@@ -33,6 +34,8 @@ kotlin {
             implementation(libs.androidx.room.runtime)
             implementation(libs.androidx.sqlite.bundled)
             implementation(projects.identityDomain)
+
+            implementation(libs.record.core)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -64,6 +67,7 @@ dependencies {
     add("kspAndroid", libs.androidx.room.compiler)
     add("kspIosSimulatorArm64", libs.androidx.room.compiler)
     add("kspIosArm64", libs.androidx.room.compiler)
+    add("kspIosX64", libs.androidx.room.compiler)
 }
 
 kover.reports {
@@ -74,6 +78,15 @@ kover.reports {
     }
 
     filters.excludes {
-        packages("*.di", "*.dto" , "*.database","*.chat")
+        packages(
+            "*.di",
+            "*.dto" ,
+            "*.database",
+            "*.dataStore",
+            "*.mapper",
+            "*.utils",
+            "*.network",
+            "*.audio"
+        )
     }
 }

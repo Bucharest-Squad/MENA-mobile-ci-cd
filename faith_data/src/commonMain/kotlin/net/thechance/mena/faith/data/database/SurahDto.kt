@@ -1,8 +1,14 @@
 package net.thechance.mena.faith.data.database
 
+import androidx.room.ColumnInfo
+
 data class SurahDto(
-    val id: Int,
-    val name: String,
-    val ayatCount: Int,
-    val isMakki: Boolean
+    @ColumnInfo(name = "sura_no")
+    val number: Int,
+    @ColumnInfo(name = "sura_name_en")
+    val nameEn: String,
+    @ColumnInfo(name = "sura_name_ar")
+    val nameAr: String,
+    @ColumnInfo(name = "ayahCount")
+    val ayahCount: Int?
 )
