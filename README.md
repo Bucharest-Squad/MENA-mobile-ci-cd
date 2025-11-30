@@ -304,6 +304,9 @@ Before you begin, ensure you have met the following requirements:
 
 ## Contributors
 
+Built by The Chance Mentees
+https://www.linkedin.com/company/thechance101
+
 <p align="center">
   <a href="https://github.com/TheChance101/MENA-mobile/graphs/contributors">
     <img src="https://contrib.rocks/image?repo=TheChance101/MENA-mobile" alt="picture"/>
