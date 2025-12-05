@@ -1,4 +1,4 @@
-package net.thechance.mena.identity.presentation.screen.imageCropper.components
+package net.thechance.mena.identity.presentation.screen.imageCropper.components.imageCropperComponent
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -20,10 +20,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import kotlinx.coroutines.flow.collectLatest
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.identity.presentation.screen.imageCropper.ImageCropperComponentEffect
-import net.thechance.mena.identity.presentation.screen.imageCropper.ImageCropperComponentInteractionListener
-import net.thechance.mena.identity.presentation.screen.imageCropper.ImageCropperComponentViewModel
 import net.thechance.mena.identity.presentation.screen.imageCropper.ImageCropperUiState
+import net.thechance.mena.identity.presentation.screen.imageCropper.components.ImageCropperSection
+import net.thechance.mena.identity.presentation.screen.imageCropper.components.SaveButton
+import net.thechance.mena.identity.presentation.screen.imageCropper.components.UploadAnotherImageButton
+import net.thechance.mena.identity.presentation.screen.imageCropper.components.ZoomOptionsSection
 import net.thechance.mena.identity.presentation.screen.imageCropper.utils.cropImageToByteArray
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf

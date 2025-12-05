@@ -10,7 +10,7 @@ import net.thechance.mena.identity.presentation.screen.addresses.pickLocation.Pi
 import net.thechance.mena.identity.presentation.screen.changePassword.ChangePasswordScreenViewModel
 import net.thechance.mena.identity.presentation.screen.contactUs.ContactUsViewModel
 import net.thechance.mena.identity.presentation.screen.editProfile.EditUserProfileViewModel
-import net.thechance.mena.identity.presentation.screen.imageCropper.ImageCropperComponentViewModel
+import net.thechance.mena.identity.presentation.screen.imageCropper.components.imageCropperComponent.ImageCropperComponentViewModel
 import net.thechance.mena.identity.presentation.screen.imageCropper.ImageCropperUiState
 import net.thechance.mena.identity.presentation.screen.imageCropper.ImageCropperViewModel
 import net.thechance.mena.identity.presentation.screen.login.LoginScreenViewModel
