@@ -39,8 +39,8 @@ import net.thechance.mena.identity.presentation.base.BaseScreen
 import net.thechance.mena.identity.presentation.base.util.collectAsEffectWithLifeCycle
 import net.thechance.mena.identity.presentation.components.snackBar.IdentitySnackBarController
 import net.thechance.mena.identity.presentation.components.snackBar.LocalSnackBarController
-import net.thechance.mena.identity.presentation.screen.contactUs.components.ContactCard
-import net.thechance.mena.identity.presentation.screen.contactUs.components.ContactUsScreenShimmer
+import net.thechance.mena.identity.presentation.feature.profile.contactUs.components.ContactCard
+import net.thechance.mena.identity.presentation.feature.profile.contactUs.components.ContactUsScreenShimmer
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 

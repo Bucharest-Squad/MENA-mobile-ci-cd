@@ -33,21 +33,21 @@ import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.identity.presentation.base.BaseScreen
 import net.thechance.mena.identity.presentation.components.ProfileImage
 import net.thechance.mena.identity.presentation.components.snackBar.IdentitySnackBarController
-import net.thechance.mena.identity.presentation.screen.addresses.myAddresses.MyAddressesScreen
-import net.thechance.mena.identity.presentation.screen.changePassword.ChangePasswordScreen
-import net.thechance.mena.identity.presentation.screen.contactUs.ContactUsScreen
-import net.thechance.mena.identity.presentation.screen.editProfile.EditUserProfileScreen
-import net.thechance.mena.identity.presentation.screen.privacyAndPolicy.PrivacyAndPolicyScreen
-import net.thechance.mena.identity.presentation.screen.profile.components.AccountSettingsSection
-import net.thechance.mena.identity.presentation.screen.profile.components.AppSettingsSection
-import net.thechance.mena.identity.presentation.screen.profile.components.InviteFriendsCard
-import net.thechance.mena.identity.presentation.screen.profile.components.LanguageDialog
-import net.thechance.mena.identity.presentation.screen.profile.components.OtherSettingsSection
-import net.thechance.mena.identity.presentation.screen.profile.components.ProfileInfoContainer
-import net.thechance.mena.identity.presentation.screen.profile.components.ShareIcon
-import net.thechance.mena.identity.presentation.screen.profile.components.ThemeDialog
-import net.thechance.mena.identity.presentation.screen.profile.components.share.ShareQrCode
-import net.thechance.mena.identity.presentation.screen.profile.components.share.utils.ShareSheet
+import net.thechance.mena.identity.presentation.feature.location.myAddresses.MyAddressesScreen
+import net.thechance.mena.identity.presentation.feature.profile.changePassword.ChangePasswordScreen
+import net.thechance.mena.identity.presentation.feature.profile.contactUs.ContactUsScreen
+import net.thechance.mena.identity.presentation.feature.profile.editProfile.EditUserProfileScreen
+import net.thechance.mena.identity.presentation.feature.profile.privacyAndPolicy.PrivacyAndPolicyScreen
+import net.thechance.mena.identity.presentation.feature.profile.profile.components.AccountSettingsSection
+import net.thechance.mena.identity.presentation.feature.profile.profile.components.AppSettingsSection
+import net.thechance.mena.identity.presentation.feature.profile.profile.components.InviteFriendsCard
+import net.thechance.mena.identity.presentation.feature.profile.profile.components.LanguageDialog
+import net.thechance.mena.identity.presentation.feature.profile.profile.components.OtherSettingsSection
+import net.thechance.mena.identity.presentation.feature.profile.profile.components.ProfileInfoContainer
+import net.thechance.mena.identity.presentation.feature.profile.profile.components.ShareIcon
+import net.thechance.mena.identity.presentation.feature.profile.profile.components.ThemeDialog
+import net.thechance.mena.identity.presentation.feature.profile.profile.components.share.ShareQrCode
+import net.thechance.mena.identity.presentation.feature.profile.profile.components.share.utils.ShareSheet
 import org.jetbrains.compose.resources.stringResource
 
 class ProfileScreen : BaseScreen<

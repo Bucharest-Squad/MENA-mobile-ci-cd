@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -22,13 +21,13 @@ import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.identity.presentation.components.LabeledInputPassword
-import net.thechance.mena.identity.presentation.screen.changePassword.ChangePasswordScreenUIState.CurrentPasswordContentUIState
+import net.thechance.mena.identity.presentation.feature.profile.changePassword.ChangePasswordScreenUIState
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun CurrentPasswordContent(
-    state: CurrentPasswordContentUIState,
+    state: ChangePasswordScreenUIState.CurrentPasswordContentUIState,
     isLoading: Boolean,
     onClickContinue: () -> Unit,
     onChangeCurrentPassword: (String) -> Unit,
@@ -85,7 +84,7 @@ fun CurrentPasswordContent(
 private fun CurrentPasswordContentPreview() {
     MenaTheme {
         CurrentPasswordContent(
-            state = CurrentPasswordContentUIState(),
+            state = ChangePasswordScreenUIState.CurrentPasswordContentUIState(),
             isLoading = false,
             onClickContinue = {},
             onChangeCurrentPassword = {},

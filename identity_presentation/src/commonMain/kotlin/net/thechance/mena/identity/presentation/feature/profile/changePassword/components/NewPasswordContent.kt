@@ -21,14 +21,14 @@ import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.identity.presentation.components.LabeledInputPassword
-import net.thechance.mena.identity.presentation.screen.changePassword.ChangePasswordScreenInteractionListener
-import net.thechance.mena.identity.presentation.screen.changePassword.ChangePasswordScreenUIState.NewPasswordContentUIState
+import net.thechance.mena.identity.presentation.feature.profile.changePassword.ChangePasswordScreenInteractionListener
+import net.thechance.mena.identity.presentation.feature.profile.changePassword.ChangePasswordScreenUIState
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun NewPasswordContent(
-    state: NewPasswordContentUIState,
+    state: ChangePasswordScreenUIState.NewPasswordContentUIState,
     isLoading: Boolean,
     listener: ChangePasswordScreenInteractionListener,
     modifier: Modifier = Modifier
@@ -109,7 +109,7 @@ private fun NewPasswordContentPreview() {
     }
     MenaTheme {
         NewPasswordContent(
-            state = NewPasswordContentUIState(),
+            state = ChangePasswordScreenUIState.NewPasswordContentUIState(),
             isLoading = false,
             listener = listener,
             modifier = Modifier.padding(horizontal = Theme.spacing._16)

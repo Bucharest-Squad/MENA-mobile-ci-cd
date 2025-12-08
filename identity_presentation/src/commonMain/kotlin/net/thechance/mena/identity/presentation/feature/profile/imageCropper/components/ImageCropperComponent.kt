@@ -20,11 +20,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import kotlinx.coroutines.flow.collectLatest
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.identity.presentation.screen.imageCropper.ImageCropperComponentEffect
-import net.thechance.mena.identity.presentation.screen.imageCropper.ImageCropperComponentInteractionListener
-import net.thechance.mena.identity.presentation.screen.imageCropper.ImageCropperComponentViewModel
-import net.thechance.mena.identity.presentation.screen.imageCropper.ImageCropperUiState
-import net.thechance.mena.identity.presentation.screen.imageCropper.utils.cropImageToByteArray
+import net.thechance.mena.identity.presentation.feature.profile.imageCropper.ImageCropperComponentEffect
+import net.thechance.mena.identity.presentation.feature.profile.imageCropper.ImageCropperComponentInteractionListener
+import net.thechance.mena.identity.presentation.feature.profile.imageCropper.ImageCropperComponentViewModel
+import net.thechance.mena.identity.presentation.feature.profile.imageCropper.ImageCropperUiState
+import net.thechance.mena.identity.presentation.feature.profile.imageCropper.utils.cropImageToByteArray
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import sv.lib.squircleshape.SquircleShape

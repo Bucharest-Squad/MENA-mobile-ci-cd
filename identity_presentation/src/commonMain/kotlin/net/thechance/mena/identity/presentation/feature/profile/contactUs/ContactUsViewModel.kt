@@ -6,9 +6,9 @@ import net.thechance.mena.identity.domain.model.ContactInfo
 import net.thechance.mena.identity.domain.repository.ApplicationInfoRepository
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
 import net.thechance.mena.identity.presentation.base.errorState.ErrorState
+import net.thechance.mena.identity.presentation.feature.profile.privacyAndPolicy.handlePrivacyAndPolicyException
 import net.thechance.mena.identity.presentation.mapper.mapAuthenticationErrorToMessage
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
-import net.thechance.mena.identity.presentation.screen.privacyAndPolicy.handlePrivacyAndPolicyException
 import org.jetbrains.compose.resources.StringResource
 
 class ContactUsViewModel(

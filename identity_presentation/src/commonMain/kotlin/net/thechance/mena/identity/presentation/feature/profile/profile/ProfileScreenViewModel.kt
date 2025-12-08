@@ -11,10 +11,10 @@ import net.thechance.mena.identity.domain.util.AppLanguage
 import net.thechance.mena.identity.domain.util.AppTheme
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
 import net.thechance.mena.identity.presentation.base.errorState.ErrorState
+import net.thechance.mena.identity.presentation.feature.profile.profile.components.share.ShareDialogViewModel.Companion.SHARE_URL
 import net.thechance.mena.identity.presentation.mapper.createNavigateToEditProfileEffect
 import net.thechance.mena.identity.presentation.mapper.mapAuthenticationErrorToMessage
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
-import net.thechance.mena.identity.presentation.screen.profile.components.share.ShareDialogViewModel.Companion.SHARE_URL
 import org.jetbrains.compose.resources.StringResource
 import kotlin.uuid.ExperimentalUuidApi
 
