@@ -9,7 +9,7 @@ import net.thechance.mena.designsystem.presentation.component.button.TextButton
 import net.thechance.mena.designsystem.presentation.component.dialog.Dialog
 import net.thechance.mena.designsystem.presentation.component.scaffold.ScaffoldScope
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.identity.presentation.screen.addresses.myAddresses.DeleteDialogUIState
+import net.thechance.mena.identity.presentation.feature.location.myAddresses.DeleteDialogUIState
 import org.jetbrains.compose.resources.stringResource
 
 internal fun ScaffoldScope.deleteAddressDialog(

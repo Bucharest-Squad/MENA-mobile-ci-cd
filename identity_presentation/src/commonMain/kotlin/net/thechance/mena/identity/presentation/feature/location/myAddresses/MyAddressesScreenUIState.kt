@@ -3,7 +3,7 @@ package net.thechance.mena.identity.presentation.feature.location.myAddresses
 import mena.identity_presentation.generated.resources.Res
 import mena.identity_presentation.generated.resources.delete_address_description
 import mena.identity_presentation.generated.resources.delete_address_title
-import net.thechance.mena.identity.presentation.screen.addresses.shared.AddressUIState
+import net.thechance.mena.identity.presentation.feature.location.shared.AddressUIState
 import org.jetbrains.compose.resources.StringResource
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid

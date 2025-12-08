@@ -22,9 +22,9 @@ import kotlinx.coroutines.flow.filter
 import mena.identity_presentation.generated.resources.Res
 import mena.identity_presentation.generated.resources.ic_anchor
 import net.thechance.mena.identity.presentation.components.util.MapStyle
-import net.thechance.mena.identity.presentation.screen.addresses.shared.CoordinatesUiState
-import net.thechance.mena.identity.presentation.screen.addresses.shared.toCoordinatesUiState
-import net.thechance.mena.identity.presentation.screen.addresses.shared.toPosition
+import net.thechance.mena.identity.presentation.feature.location.shared.CoordinatesUiState
+import net.thechance.mena.identity.presentation.feature.location.shared.toCoordinatesUiState
+import net.thechance.mena.identity.presentation.feature.location.shared.toPosition
 import org.jetbrains.compose.resources.painterResource
 import org.maplibre.compose.camera.CameraPosition
 import org.maplibre.compose.camera.rememberCameraState

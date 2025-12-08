@@ -13,16 +13,15 @@ import net.thechance.mena.identity.domain.exception.AuthenticationException
 import net.thechance.mena.identity.domain.exception.LocationException
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
 import net.thechance.mena.identity.presentation.base.errorState.ErrorState
+import net.thechance.mena.identity.presentation.feature.location.shared.AddressUIState
+import net.thechance.mena.identity.presentation.feature.location.shared.CoordinatesUiState
+import net.thechance.mena.identity.presentation.feature.location.shared.handleLocationAuthenticationException
+import net.thechance.mena.identity.presentation.feature.location.shared.handleLocationException
 import net.thechance.mena.identity.presentation.mapper.createNavigateToMapEffect
 import net.thechance.mena.identity.presentation.mapper.mapAuthenticationErrorToMessage
 import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
 import net.thechance.mena.identity.presentation.mapper.mapLocationErrorToMessage
 import net.thechance.mena.identity.presentation.mapper.toAddressInput
-import net.thechance.mena.identity.presentation.screen.addresses.addEditLocation.AddEditLocationScreenUIState.AddEditAddressUIState
-import net.thechance.mena.identity.presentation.screen.addresses.shared.AddressUIState
-import net.thechance.mena.identity.presentation.screen.addresses.shared.CoordinatesUiState
-import net.thechance.mena.identity.presentation.screen.addresses.shared.handleLocationAuthenticationException
-import net.thechance.mena.identity.presentation.screen.addresses.shared.handleLocationException
 import net.thechance.mena.identity.presentation.util.isSaveEnabled
 import org.jetbrains.compose.resources.StringResource
 import org.maplibre.compose.camera.CameraPosition
@@ -157,7 +156,7 @@ class LocationManagementViewModel(
         )
     }
 
-    private fun createAddressModelFromCurrentState(addressUIState: AddEditAddressUIState): AddressUIState {
+    private fun createAddressModelFromCurrentState(addressUIState: AddEditLocationScreenUIState.AddEditAddressUIState): AddressUIState {
         return AddressUIState(
             id = addressUIState.addressID,
             coordinates = CoordinatesUiState(

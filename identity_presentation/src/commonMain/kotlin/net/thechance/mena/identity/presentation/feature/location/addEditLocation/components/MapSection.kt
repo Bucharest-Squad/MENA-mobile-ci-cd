@@ -14,7 +14,7 @@ import mena.identity_presentation.generated.resources.location
 import mena.identity_presentation.generated.resources.pick_on_map
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.identity.presentation.screen.addresses.myAddresses.components.AddLocationMap
+import net.thechance.mena.identity.presentation.feature.location.myAddresses.components.AddLocationMap
 import org.jetbrains.compose.resources.stringResource
 import org.maplibre.compose.camera.CameraPosition
 import sv.lib.squircleshape.SquircleShape

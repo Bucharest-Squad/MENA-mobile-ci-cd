@@ -2,7 +2,7 @@ package net.thechance.mena.identity.presentation.feature.location.addEditLocatio
 
 import io.github.dellisd.spatialk.geojson.Position
 import net.thechance.mena.identity.domain.entity.AddressType
-import net.thechance.mena.identity.presentation.screen.addresses.shared.CoordinatesUiState
+import net.thechance.mena.identity.presentation.feature.location.shared.CoordinatesUiState
 import org.maplibre.compose.camera.CameraPosition
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
