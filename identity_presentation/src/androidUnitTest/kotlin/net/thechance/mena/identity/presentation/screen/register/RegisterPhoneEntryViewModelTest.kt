@@ -9,7 +9,7 @@ import net.thechance.mena.identity.domain.repository.RegisterRepository
 import net.thechance.mena.identity.domain.repository.RegistrationDraftRepository
 import net.thechance.mena.identity.domain.useCase.LoginUseCase
 import net.thechance.mena.identity.helper.BaseCoroutineTest
-import net.thechance.mena.identity.presentation.screen.countryPicker.menaCountries.MenaCountry
+import net.thechance.mena.identity.presentation.components.countryPicker.menaCountries.MenaCountry
 import net.thechance.mena.identity.presentation.screen.register.phoneEntry.RegisterPhoneEntryUIEffect
 import net.thechance.mena.identity.presentation.screen.register.phoneEntry.RegisterPhoneEntryViewModel
 import org.junit.Before

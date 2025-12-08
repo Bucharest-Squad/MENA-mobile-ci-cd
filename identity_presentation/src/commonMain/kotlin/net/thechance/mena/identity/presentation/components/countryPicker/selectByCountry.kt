@@ -1,6 +1,6 @@
-package net.thechance.mena.identity.presentation.screen.countryPicker
+package net.thechance.mena.identity.presentation.components.countryPicker
 
-import net.thechance.mena.identity.presentation.screen.countryPicker.menaCountries.MenaCountry
+import net.thechance.mena.identity.presentation.components.countryPicker.menaCountries.MenaCountry
 
 fun List<SelectableCountryItemUiState>.selectByCountry(country: MenaCountry): List<SelectableCountryItemUiState> {
     return this.map { selectableCountry ->

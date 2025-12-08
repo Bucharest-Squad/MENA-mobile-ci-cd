@@ -26,7 +26,7 @@ import net.thechance.mena.identity.presentation.components.AuthScreenContainer
 import net.thechance.mena.identity.presentation.components.LabeledInputPhoneNumber
 import net.thechance.mena.identity.presentation.components.PageDescription
 import net.thechance.mena.identity.presentation.components.snackBar.IdentitySnackBarController
-import net.thechance.mena.identity.presentation.screen.countryPicker.CountryPicker
+import net.thechance.mena.identity.presentation.components.countryPicker.CountryPicker
 import net.thechance.mena.identity.presentation.screen.resetPassword.otp.ResetPasswordOtpScreen
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
