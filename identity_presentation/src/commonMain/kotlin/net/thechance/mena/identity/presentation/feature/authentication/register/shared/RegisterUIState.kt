@@ -1,4 +1,4 @@
-package net.thechance.mena.identity.presentation.feature.authentication.register.shared.uiState
+package net.thechance.mena.identity.presentation.feature.authentication.register.shared
 
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone

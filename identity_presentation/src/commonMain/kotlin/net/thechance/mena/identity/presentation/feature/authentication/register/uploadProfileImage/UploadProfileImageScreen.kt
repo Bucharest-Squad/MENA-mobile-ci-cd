@@ -32,9 +32,9 @@ import net.thechance.mena.identity.presentation.base.BaseScreen
 import net.thechance.mena.identity.presentation.components.AuthScreenContainer
 import net.thechance.mena.identity.presentation.components.PageDescription
 import net.thechance.mena.identity.presentation.components.snackBar.IdentitySnackBarController
-import net.thechance.mena.identity.presentation.screen.imageCropper.ImageCropperScreen
-import net.thechance.mena.identity.presentation.screen.register.accountCreated.AccountCreatedScreen
-import net.thechance.mena.identity.presentation.screen.register.uploadProfileImage.components.UploadImageContainer
+import net.thechance.mena.identity.presentation.feature.authentication.register.accountCreated.AccountCreatedScreen
+import net.thechance.mena.identity.presentation.feature.authentication.register.uploadProfileImage.components.UploadImageContainer
+import net.thechance.mena.identity.presentation.feature.profile.imageCropper.ImageCropperScreen
 import org.jetbrains.compose.resources.stringResource
 import org.koin.core.parameter.parametersOf
 
@@ -110,7 +110,12 @@ class UploadProfileImageScreen(
     ) {
         when (effect) {
             is UploadProfileImageUIEffect.NavigateToAccountCreated -> {
-                navigator.push(AccountCreatedScreen(authTokens = effect.authTokens, phoneNumber = phoneNumber))
+                navigator.push(
+                    AccountCreatedScreen(
+                        authTokens = effect.authTokens,
+                        phoneNumber = phoneNumber
+                    )
+                )
             }
 
             is UploadProfileImageUIEffect.NavigateToCropScreen -> {

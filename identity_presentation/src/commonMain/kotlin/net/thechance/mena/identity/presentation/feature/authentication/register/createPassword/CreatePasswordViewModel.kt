@@ -11,7 +11,7 @@ import net.thechance.mena.identity.domain.model.RegistrationDraft
 import net.thechance.mena.identity.domain.repository.RegistrationDraftRepository
 import net.thechance.mena.identity.domain.useCase.validation.mobileNumber.PasswordValidator
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
-import net.thechance.mena.identity.presentation.screen.register.shared.uiState.RegisterUIState
+import net.thechance.mena.identity.presentation.feature.authentication.register.shared.RegisterUIState
 
 class CreatePasswordViewModel(
     private val passwordValidator: PasswordValidator,

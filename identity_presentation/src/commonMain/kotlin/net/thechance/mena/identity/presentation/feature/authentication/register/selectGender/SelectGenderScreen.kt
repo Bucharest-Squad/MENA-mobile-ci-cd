@@ -21,10 +21,10 @@ import net.thechance.mena.identity.presentation.components.AuthScreenContainer
 import net.thechance.mena.identity.presentation.components.GenderToggle
 import net.thechance.mena.identity.presentation.components.PageDescription
 import net.thechance.mena.identity.presentation.components.snackBar.IdentitySnackBarController
-import net.thechance.mena.identity.presentation.screen.register.phoneEntry.RegisterPhoneEntryScreen
-import net.thechance.mena.identity.presentation.screen.register.selectGender.components.SessionExpiredDialog
-import net.thechance.mena.identity.presentation.screen.register.shared.uiState.RegisterUIState
-import net.thechance.mena.identity.presentation.screen.register.uploadProfileImage.UploadProfileImageScreen
+import net.thechance.mena.identity.presentation.feature.authentication.register.phoneEntry.RegisterPhoneEntryScreen
+import net.thechance.mena.identity.presentation.feature.authentication.register.selectGender.components.SessionExpiredDialog
+import net.thechance.mena.identity.presentation.feature.authentication.register.shared.RegisterUIState
+import net.thechance.mena.identity.presentation.feature.authentication.register.uploadProfileImage.UploadProfileImageScreen
 import org.jetbrains.compose.resources.stringResource
 import org.koin.core.parameter.parametersOf
 

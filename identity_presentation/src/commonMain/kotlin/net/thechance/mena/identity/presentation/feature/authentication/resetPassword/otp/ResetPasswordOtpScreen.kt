@@ -29,7 +29,7 @@ import net.thechance.mena.identity.presentation.components.AuthScreenContainer
 import net.thechance.mena.identity.presentation.components.OtpInput
 import net.thechance.mena.identity.presentation.components.PageDescription
 import net.thechance.mena.identity.presentation.components.snackBar.IdentitySnackBarController
-import net.thechance.mena.identity.presentation.screen.resetPassword.setNewPassword.SetNewPasswordScreen
+import net.thechance.mena.identity.presentation.feature.authentication.resetPassword.setNewPassword.SetNewPasswordScreen
 import org.jetbrains.compose.resources.stringResource
 import org.koin.core.parameter.parametersOf
 

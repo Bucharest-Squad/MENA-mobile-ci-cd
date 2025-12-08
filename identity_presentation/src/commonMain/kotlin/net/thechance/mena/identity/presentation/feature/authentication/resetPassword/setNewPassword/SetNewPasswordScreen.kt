@@ -34,7 +34,7 @@ import net.thechance.mena.identity.presentation.components.AuthScreenContainer
 import net.thechance.mena.identity.presentation.components.LabeledInputPassword
 import net.thechance.mena.identity.presentation.components.PageDescription
 import net.thechance.mena.identity.presentation.components.snackBar.IdentitySnackBarController
-import net.thechance.mena.identity.presentation.screen.login.LoginScreen
+import net.thechance.mena.identity.presentation.feature.authentication.login.LoginScreen
 import org.jetbrains.compose.resources.stringResource
 
 class SetNewPasswordScreen() : BaseScreen<

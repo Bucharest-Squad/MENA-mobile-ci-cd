@@ -36,8 +36,8 @@ import net.thechance.mena.identity.presentation.components.LabeledInputPhoneNumb
 import net.thechance.mena.identity.presentation.components.PageDescription
 import net.thechance.mena.identity.presentation.components.snackBar.IdentitySnackBarController
 import net.thechance.mena.identity.presentation.components.countryPicker.CountryPicker
-import net.thechance.mena.identity.presentation.screen.register.phoneEntry.RegisterPhoneEntryScreen
-import net.thechance.mena.identity.presentation.screen.resetPassword.phoneEntry.ResetPasswordPhoneEntryScreen
+import net.thechance.mena.identity.presentation.feature.authentication.register.phoneEntry.RegisterPhoneEntryScreen
+import net.thechance.mena.identity.presentation.feature.authentication.resetPassword.phoneEntry.ResetPasswordPhoneEntryScreen
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
