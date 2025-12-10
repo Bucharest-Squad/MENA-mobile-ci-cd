@@ -12,6 +12,8 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import net.thechance.mena.identity.domain.repository.ResetPasswordRepository
+import net.thechance.mena.identity.presentation.feature.authentication.resetPassword.otp.ResetPasswordOtpScreenUIEffect
+import net.thechance.mena.identity.presentation.feature.authentication.resetPassword.otp.ResetPasswordOtpScreenViewModel
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test

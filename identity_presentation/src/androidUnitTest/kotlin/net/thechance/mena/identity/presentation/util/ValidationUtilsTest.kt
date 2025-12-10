@@ -1,8 +1,8 @@
 package net.thechance.mena.identity.presentation.util
 
 import net.thechance.mena.identity.domain.entity.AddressType
-import net.thechance.mena.identity.presentation.feature.addresses.addEditLocation.AddEditLocationScreenUIState
-import net.thechance.mena.identity.presentation.feature.addresses.shared.CoordinatesUiState
+import net.thechance.mena.identity.presentation.feature.location.addEditLocation.AddEditLocationScreenUIState
+import net.thechance.mena.identity.presentation.feature.location.shared.CoordinatesUiState
 import org.junit.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
