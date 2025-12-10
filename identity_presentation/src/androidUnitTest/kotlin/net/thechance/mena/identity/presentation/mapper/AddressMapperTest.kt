@@ -2,9 +2,9 @@ package net.thechance.mena.identity.presentation.mapper
 
 import net.thechance.mena.identity.domain.entity.Address
 import net.thechance.mena.identity.domain.entity.AddressType
-import net.thechance.mena.identity.presentation.screen.addresses.addEditLocation.AddEditLocationScreenUIState
-import net.thechance.mena.identity.presentation.screen.addresses.shared.AddressUIState
-import net.thechance.mena.identity.presentation.screen.addresses.shared.CoordinatesUiState
+import net.thechance.mena.identity.presentation.feature.addresses.addEditLocation.AddEditLocationScreenUIState
+import net.thechance.mena.identity.presentation.feature.addresses.shared.AddressUIState
+import net.thechance.mena.identity.presentation.feature.addresses.shared.CoordinatesUiState
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs

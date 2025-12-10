@@ -1,11 +1,11 @@
 package net.thechance.mena.identity.presentation.mapper
 
 import net.thechance.mena.identity.domain.entity.AddressType
-import net.thechance.mena.identity.presentation.screen.addresses.addEditLocation.AddEditLocationScreenUIEffect
-import net.thechance.mena.identity.presentation.screen.addresses.shared.AddressUIState
-import net.thechance.mena.identity.presentation.screen.addresses.shared.CoordinatesUiState
-import net.thechance.mena.identity.presentation.screen.login.LoginScreenUIEffect
-import net.thechance.mena.identity.presentation.screen.profile.ProfileScreenUIEffect
+import net.thechance.mena.identity.presentation.feature.addresses.addEditLocation.AddEditLocationScreenUIEffect
+import net.thechance.mena.identity.presentation.feature.addresses.shared.AddressUIState
+import net.thechance.mena.identity.presentation.feature.addresses.shared.CoordinatesUiState
+import net.thechance.mena.identity.presentation.feature.login.LoginScreenUIEffect
+import net.thechance.mena.identity.presentation.feature.profile.ProfileScreenUIEffect
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.uuid.ExperimentalUuidApi
