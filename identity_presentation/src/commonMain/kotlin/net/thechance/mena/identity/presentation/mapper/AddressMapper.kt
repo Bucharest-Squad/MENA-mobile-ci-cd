@@ -3,10 +3,9 @@ package net.thechance.mena.identity.presentation.mapper
 import net.thechance.mena.identity.domain.entity.Address
 import net.thechance.mena.identity.domain.entity.AddressType
 import net.thechance.mena.identity.domain.model.AddressInput
+import net.thechance.mena.identity.presentation.feature.location.addEditLocation.AddEditLocationScreenUIState
 import net.thechance.mena.identity.presentation.feature.location.shared.AddressUIState
-import net.thechance.mena.identity.presentation.screen.addresses.addEditLocation.AddEditLocationScreenUIState.AddEditAddressUIState
-import net.thechance.mena.identity.presentation.screen.addresses.shared.AddressUIState
-import net.thechance.mena.identity.presentation.screen.addresses.shared.CoordinatesUiState
+import net.thechance.mena.identity.presentation.feature.location.shared.CoordinatesUiState
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -35,7 +34,7 @@ fun AddressUIState.toAddressInput(): AddressInput = AddressInput(
     addressType = addressType
 )
 
-fun AddEditAddressUIState.toAddressInput(): AddressInput = AddressInput(
+fun AddEditLocationScreenUIState.AddEditAddressUIState.toAddressInput(): AddressInput = AddressInput(
     latitude = coordinates.latitude,
     longitude = coordinates.longitude,
     addressLine = addressDetails,

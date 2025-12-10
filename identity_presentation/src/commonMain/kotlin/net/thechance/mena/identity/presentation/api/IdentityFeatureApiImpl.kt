@@ -18,11 +18,11 @@ import net.thechance.mena.identity.domain.repository.AuthenticationRepository
 import net.thechance.mena.identity.domain.repository.RegistrationDraftRepository
 import net.thechance.mena.identity.presentation.components.snackBar.IdentitySnackBarController
 import net.thechance.mena.identity.presentation.components.snackBar.LocalSnackBarController
-import net.thechance.mena.identity.presentation.screen.addresses.myAddresses.MyAddressesScreen
-import net.thechance.mena.identity.presentation.screen.login.LoginScreen
-import net.thechance.mena.identity.presentation.screen.profile.ProfileScreen
-import net.thechance.mena.identity.presentation.screen.register.accountCreated.AccountCreatedScreen
-import net.thechance.mena.identity.presentation.screen.register.uploadProfileImage.UploadProfileImageScreen
+import net.thechance.mena.identity.presentation.feature.authentication.login.LoginScreen
+import net.thechance.mena.identity.presentation.feature.authentication.register.accountCreated.AccountCreatedScreen
+import net.thechance.mena.identity.presentation.feature.authentication.register.uploadProfileImage.UploadProfileImageScreen
+import net.thechance.mena.identity.presentation.feature.location.myAddresses.MyAddressesScreen
+import net.thechance.mena.identity.presentation.feature.profile.mainScreen.ProfileScreen
 import org.koin.compose.koinInject
 
 class IdentityFeatureApiImpl : IdentityFeatureApi {

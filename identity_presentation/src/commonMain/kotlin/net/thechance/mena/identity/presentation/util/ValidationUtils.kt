@@ -1,7 +1,7 @@
 package net.thechance.mena.identity.presentation.util
 
 import net.thechance.mena.identity.domain.entity.AddressType
-import net.thechance.mena.identity.presentation.screen.addresses.addEditLocation.AddEditLocationScreenUIState
+import net.thechance.mena.identity.presentation.feature.location.addEditLocation.AddEditLocationScreenUIState
 import kotlin.uuid.ExperimentalUuidApi
 
 fun isAddressInputValid(addressType: AddressType?, otherAddressType: String?): Boolean {
