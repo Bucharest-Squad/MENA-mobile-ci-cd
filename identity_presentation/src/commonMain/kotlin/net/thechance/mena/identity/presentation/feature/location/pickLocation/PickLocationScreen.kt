@@ -16,7 +16,7 @@ import mena.identity_presentation.generated.resources.pick_location_title
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.identity.presentation.base.BaseScreen
+import net.thechance.mena.identity.presentation.core.base.BaseScreen
 import net.thechance.mena.identity.presentation.components.AuthAppBar
 import net.thechance.mena.identity.presentation.components.snackBar.IdentitySnackBarController
 import net.thechance.mena.identity.presentation.feature.location.enableLocationScreen.EnableLocationScreen

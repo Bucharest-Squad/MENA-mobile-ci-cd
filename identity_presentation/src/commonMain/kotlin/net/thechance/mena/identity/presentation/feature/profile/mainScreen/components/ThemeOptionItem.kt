@@ -24,8 +24,8 @@ import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.designsystem.presentation.util.rippleIndication
 import net.thechance.mena.identity.domain.util.AppTheme
-import net.thechance.mena.identity.presentation.util.mapThemeDrawableResource
-import net.thechance.mena.identity.presentation.util.mapThemeStringResource
+import net.thechance.mena.identity.presentation.core.util.mapThemeDrawableResource
+import net.thechance.mena.identity.presentation.core.util.mapThemeStringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import sv.lib.squircleshape.SquircleShape

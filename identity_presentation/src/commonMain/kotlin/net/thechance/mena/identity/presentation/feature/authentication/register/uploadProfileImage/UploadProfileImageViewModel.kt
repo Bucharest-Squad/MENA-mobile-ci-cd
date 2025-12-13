@@ -15,9 +15,9 @@ import net.thechance.mena.identity.domain.repository.RegistrationDraftRepository
 import net.thechance.mena.identity.domain.repository.UserRepository
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
 import net.thechance.mena.identity.presentation.base.errorState.ErrorState
-import net.thechance.mena.identity.presentation.mapper.mapAuthenticationErrorToMessage
-import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
-import net.thechance.mena.identity.presentation.utils.ImageDecoder
+import net.thechance.mena.identity.presentation.core.mapper.mapAuthenticationErrorToMessage
+import net.thechance.mena.identity.presentation.core.mapper.mapErrorToMessage
+import net.thechance.mena.identity.presentation.core.util.ImageDecoder
 import org.jetbrains.compose.resources.StringResource
 
 class UploadProfileImageViewModel(

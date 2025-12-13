@@ -13,7 +13,7 @@ import mena.identity_presentation.generated.resources.date_picker_screen_prompt_
 import mena.identity_presentation.generated.resources.next
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
-import net.thechance.mena.identity.presentation.base.BaseScreen
+import net.thechance.mena.identity.presentation.core.base.BaseScreen
 import net.thechance.mena.identity.presentation.components.AuthScreenContainer
 import net.thechance.mena.identity.presentation.components.GregorianDatePicker
 import net.thechance.mena.identity.presentation.components.PageDescription

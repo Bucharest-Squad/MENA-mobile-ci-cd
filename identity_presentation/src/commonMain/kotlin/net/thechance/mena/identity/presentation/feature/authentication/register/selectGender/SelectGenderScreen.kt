@@ -16,7 +16,7 @@ import mena.identity_presentation.generated.resources.select_gender_screen_promp
 import mena.identity_presentation.generated.resources.select_gender_screen_prompt_title
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
-import net.thechance.mena.identity.presentation.base.BaseScreen
+import net.thechance.mena.identity.presentation.core.base.BaseScreen
 import net.thechance.mena.identity.presentation.components.AuthScreenContainer
 import net.thechance.mena.identity.presentation.components.GenderToggle
 import net.thechance.mena.identity.presentation.components.PageDescription

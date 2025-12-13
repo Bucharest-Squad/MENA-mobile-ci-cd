@@ -15,13 +15,13 @@ import net.thechance.mena.identity.domain.exception.LocationException
 import net.thechance.mena.identity.domain.repository.AddressesRepository
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
 import net.thechance.mena.identity.presentation.base.errorState.ErrorState
+import net.thechance.mena.identity.presentation.core.mapper.mapAuthenticationErrorToMessage
+import net.thechance.mena.identity.presentation.core.mapper.mapErrorToMessage
+import net.thechance.mena.identity.presentation.core.mapper.mapLocationErrorToMessage
+import net.thechance.mena.identity.presentation.core.mapper.toUiState
 import net.thechance.mena.identity.presentation.feature.location.shared.AddressUIState
 import net.thechance.mena.identity.presentation.feature.location.shared.handleLocationAuthenticationException
 import net.thechance.mena.identity.presentation.feature.location.shared.handleLocationException
-import net.thechance.mena.identity.presentation.mapper.mapAuthenticationErrorToMessage
-import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
-import net.thechance.mena.identity.presentation.mapper.mapLocationErrorToMessage
-import net.thechance.mena.identity.presentation.mapper.toUiState
 import org.jetbrains.compose.resources.StringResource
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid

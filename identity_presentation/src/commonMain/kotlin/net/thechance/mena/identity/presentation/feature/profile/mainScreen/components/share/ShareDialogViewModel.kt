@@ -22,10 +22,10 @@ import mena.identity_presentation.generated.resources.cant_save_qr_code
 import mena.identity_presentation.generated.resources.gallery_permission_required
 import net.thechance.mena.identity.domain.repository.ImagesRepository
 import net.thechance.mena.identity.domain.repository.UserRepository
+import net.thechance.mena.identity.presentation.core.util.permissionHandler.PermissionHandler
+import net.thechance.mena.identity.presentation.core.util.permissionHandler.PermissionState
+import net.thechance.mena.identity.presentation.core.util.permissionHandler.Permissions
 import net.thechance.mena.identity.presentation.feature.profile.mainScreen.components.share.utils.clipEntryOf
-import net.thechance.mena.identity.presentation.util.permissionHandler.PermissionHandler
-import net.thechance.mena.identity.presentation.util.permissionHandler.PermissionState
-import net.thechance.mena.identity.presentation.util.permissionHandler.Permissions
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlin.uuid.ExperimentalUuidApi

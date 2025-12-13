@@ -12,6 +12,11 @@ import net.thechance.mena.identity.domain.model.Coordinates
 import net.thechance.mena.identity.domain.repository.AddressesRepository
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
 import net.thechance.mena.identity.presentation.base.errorState.ErrorState
+import net.thechance.mena.identity.presentation.core.mapper.mapErrorToMessage
+import net.thechance.mena.identity.presentation.core.mapper.mapLocationErrorToMessage
+import net.thechance.mena.identity.presentation.core.util.permissionHandler.PermissionHandler
+import net.thechance.mena.identity.presentation.core.util.permissionHandler.PermissionState
+import net.thechance.mena.identity.presentation.core.util.permissionHandler.Permissions
 import net.thechance.mena.identity.presentation.feature.location.pickLocation.PickLocationScreenInteractionListener
 import net.thechance.mena.identity.presentation.feature.location.pickLocation.PickLocationScreenUIEffect
 import net.thechance.mena.identity.presentation.feature.location.pickLocation.PickLocationScreenUIState
@@ -20,11 +25,6 @@ import net.thechance.mena.identity.presentation.feature.location.shared.Coordina
 import net.thechance.mena.identity.presentation.feature.location.shared.handleLocationException
 import net.thechance.mena.identity.presentation.feature.location.shared.toEntity
 import net.thechance.mena.identity.presentation.feature.location.shared.toUiState
-import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
-import net.thechance.mena.identity.presentation.mapper.mapLocationErrorToMessage
-import net.thechance.mena.identity.presentation.util.permissionHandler.PermissionHandler
-import net.thechance.mena.identity.presentation.util.permissionHandler.PermissionState
-import net.thechance.mena.identity.presentation.util.permissionHandler.Permissions
 import org.jetbrains.compose.resources.StringResource
 import kotlin.uuid.ExperimentalUuidApi
 

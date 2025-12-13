@@ -45,9 +45,10 @@ import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.identity.domain.entity.Gender
-import net.thechance.mena.identity.presentation.base.BaseScreen
+import net.thechance.mena.identity.presentation.core.base.BaseScreen
 import net.thechance.mena.identity.presentation.components.GregorianDatePicker
 import net.thechance.mena.identity.presentation.components.snackBar.IdentitySnackBarController
+import net.thechance.mena.identity.presentation.core.util.rememberCameraPicker
 import net.thechance.mena.identity.presentation.feature.profile.editProfile.components.AtPrefixTransformation
 import net.thechance.mena.identity.presentation.feature.profile.editProfile.components.DialogActionButton
 import net.thechance.mena.identity.presentation.feature.profile.editProfile.components.EditProfileImage
@@ -57,7 +58,6 @@ import net.thechance.mena.identity.presentation.feature.profile.editProfile.comp
 import net.thechance.mena.identity.presentation.feature.profile.editProfile.components.dialog.GetImageDialog
 import net.thechance.mena.identity.presentation.feature.profile.editProfile.components.dialog.ProfileSettingsDialog
 import net.thechance.mena.identity.presentation.feature.profile.imageCropper.ImageCropperScreen
-import net.thechance.mena.identity.presentation.util.rememberCameraPicker
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.core.parameter.parametersOf

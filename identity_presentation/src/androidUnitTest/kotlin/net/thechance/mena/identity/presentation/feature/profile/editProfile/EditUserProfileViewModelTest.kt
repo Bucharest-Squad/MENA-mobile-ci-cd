@@ -26,9 +26,9 @@ import net.thechance.mena.identity.domain.repository.UserRepository
 import net.thechance.mena.identity.domain.useCase.validation.age.AgeValidator
 import net.thechance.mena.identity.helper.BaseCoroutineTest
 import net.thechance.mena.identity.helper.createUser
-import net.thechance.mena.identity.presentation.util.permissionHandler.PermissionHandler
-import net.thechance.mena.identity.presentation.util.permissionHandler.PermissionState
-import net.thechance.mena.identity.presentation.utils.ImageDecoder
+import net.thechance.mena.identity.presentation.core.util.ImageDecoder
+import net.thechance.mena.identity.presentation.core.util.permissionHandler.PermissionHandler
+import net.thechance.mena.identity.presentation.core.util.permissionHandler.PermissionState
 import kotlin.test.Test
 import kotlin.uuid.ExperimentalUuidApi
 

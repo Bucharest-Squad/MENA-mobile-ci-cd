@@ -17,7 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.identity.presentation.util.animation.shimmerLoading
+import net.thechance.mena.identity.presentation.core.util.animation.shimmerLoading
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable

@@ -10,9 +10,9 @@ import net.thechance.mena.identity.domain.exception.AuthenticationException
 import net.thechance.mena.identity.domain.repository.RegisterRepository
 import net.thechance.mena.identity.presentation.base.BaseScreenModel
 import net.thechance.mena.identity.presentation.base.errorState.ErrorState
+import net.thechance.mena.identity.presentation.core.mapper.mapAuthenticationErrorToMessage
+import net.thechance.mena.identity.presentation.core.mapper.mapErrorToMessage
 import net.thechance.mena.identity.presentation.feature.authentication.register.shared.RegisterUIState
-import net.thechance.mena.identity.presentation.mapper.mapAuthenticationErrorToMessage
-import net.thechance.mena.identity.presentation.mapper.mapErrorToMessage
 import org.jetbrains.compose.resources.StringResource
 
 class RegisterOtpViewModel(

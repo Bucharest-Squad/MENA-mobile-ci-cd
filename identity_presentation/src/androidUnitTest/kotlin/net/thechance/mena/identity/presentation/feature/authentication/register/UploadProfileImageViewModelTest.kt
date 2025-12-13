@@ -19,7 +19,7 @@ import net.thechance.mena.identity.domain.repository.UserRepository
 import net.thechance.mena.identity.helper.BaseCoroutineTest
 import net.thechance.mena.identity.presentation.feature.authentication.register.uploadProfileImage.UploadProfileImageUIEffect
 import net.thechance.mena.identity.presentation.feature.authentication.register.uploadProfileImage.UploadProfileImageViewModel
-import net.thechance.mena.identity.presentation.utils.ImageDecoder
+import net.thechance.mena.identity.presentation.core.util.ImageDecoder
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals

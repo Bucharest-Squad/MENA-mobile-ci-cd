@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.identity.presentation.util.animation.shimmerLoading
+import net.thechance.mena.identity.presentation.core.util.animation.shimmerLoading
 import sv.lib.squircleshape.SquircleShape
 
 @Composable
