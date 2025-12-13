@@ -28,8 +28,8 @@ import net.thechance.mena.identity.presentation.feature.profile.editProfile.Edit
 import net.thechance.mena.identity.presentation.feature.profile.imageCropper.ImageCropperUiState
 import net.thechance.mena.identity.presentation.feature.profile.imageCropper.ImageCropperViewModel
 import net.thechance.mena.identity.presentation.feature.profile.imageCropper.components.imageCropperComponent.ImageCropperComponentViewModel
-import net.thechance.mena.identity.presentation.feature.profile.mainScreen.ProfileScreenViewModel
-import net.thechance.mena.identity.presentation.feature.profile.mainScreen.components.share.ShareDialogViewModel
+import net.thechance.mena.identity.presentation.feature.profile.profileMainScreen.ProfileScreenViewModel
+import net.thechance.mena.identity.presentation.feature.profile.profileMainScreen.components.share.ShareDialogViewModel
 import net.thechance.mena.identity.presentation.feature.profile.privacyAndPolicy.PrivacyAndPolicyScreenViewModel
 import net.thechance.mena.identity.presentation.screen.addresses.pickLocation.PickLocationScreenViewModel
 import org.koin.core.module.dsl.factoryOf

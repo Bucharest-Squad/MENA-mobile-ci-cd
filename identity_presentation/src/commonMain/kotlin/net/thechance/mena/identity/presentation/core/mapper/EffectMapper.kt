@@ -4,7 +4,7 @@ import net.thechance.mena.identity.domain.entity.User
 import net.thechance.mena.identity.presentation.feature.authentication.login.LoginScreenUIEffect
 import net.thechance.mena.identity.presentation.feature.location.locationManagement.LocationManagementScreenUIEffect
 import net.thechance.mena.identity.presentation.feature.location.shared.AddressUIState
-import net.thechance.mena.identity.presentation.feature.profile.mainScreen.ProfileScreenUIEffect
+import net.thechance.mena.identity.presentation.feature.profile.profileMainScreen.ProfileScreenUIEffect
 
 fun createNavigateToMapEffect(
     addressModel: AddressUIState? = null, onSuccess: (AddressUIState) -> Unit

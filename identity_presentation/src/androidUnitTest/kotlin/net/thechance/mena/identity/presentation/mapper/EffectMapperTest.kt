@@ -8,7 +8,7 @@ import net.thechance.mena.identity.presentation.feature.authentication.login.Log
 import net.thechance.mena.identity.presentation.feature.location.locationManagement.LocationManagementScreenUIEffect
 import net.thechance.mena.identity.presentation.feature.location.shared.AddressUIState
 import net.thechance.mena.identity.presentation.feature.location.shared.CoordinatesUiState
-import net.thechance.mena.identity.presentation.feature.profile.mainScreen.ProfileScreenUIEffect
+import net.thechance.mena.identity.presentation.feature.profile.profileMainScreen.ProfileScreenUIEffect
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.uuid.ExperimentalUuidApi

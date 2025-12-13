@@ -22,7 +22,7 @@ import net.thechance.mena.identity.presentation.feature.authentication.login.Log
 import net.thechance.mena.identity.presentation.feature.authentication.register.accountCreated.AccountCreatedScreen
 import net.thechance.mena.identity.presentation.feature.authentication.register.uploadProfileImage.UploadProfileImageScreen
 import net.thechance.mena.identity.presentation.feature.location.myAddresses.MyAddressesScreen
-import net.thechance.mena.identity.presentation.feature.profile.mainScreen.ProfileScreen
+import net.thechance.mena.identity.presentation.feature.profile.profileMainScreen.ProfileScreen
 import org.koin.compose.koinInject
 
 class IdentityFeatureApiImpl : IdentityFeatureApi {
