@@ -14,9 +14,9 @@ import kotlinx.coroutines.test.setMain
 import net.thechance.mena.identity.domain.entity.AddressType
 import net.thechance.mena.identity.domain.model.AddressInput
 import net.thechance.mena.identity.domain.repository.AddressesRepository
-import net.thechance.mena.identity.presentation.feature.location.addEditLocation.AddEditLocationScreenUIEffect
-import net.thechance.mena.identity.presentation.feature.location.addEditLocation.AddressOperationStrategyFactory
-import net.thechance.mena.identity.presentation.feature.location.addEditLocation.LocationManagementViewModel
+import net.thechance.mena.identity.presentation.feature.location.locationManagement.LocationManagementScreenUIEffect
+import net.thechance.mena.identity.presentation.feature.location.locationManagement.AddressOperationStrategyFactory
+import net.thechance.mena.identity.presentation.feature.location.locationManagement.LocationManagementViewModel
 import net.thechance.mena.identity.presentation.feature.location.shared.AddressUIState
 import net.thechance.mena.identity.presentation.feature.location.shared.CoordinatesUiState
 import kotlin.test.AfterTest
@@ -93,7 +93,7 @@ class LocationManagementViewModelTest {
 
             val effect = awaitItem()
 
-            assertTrue(effect is AddEditLocationScreenUIEffect.NavigateBack)
+            assertTrue(effect is LocationManagementScreenUIEffect.NavigateBack)
 
             cancelAndConsumeRemainingEvents()
 
@@ -109,7 +109,7 @@ class LocationManagementViewModelTest {
 
             val effect = awaitItem()
 
-            assertTrue(effect is AddEditLocationScreenUIEffect.NavigateToMap)
+            assertTrue(effect is LocationManagementScreenUIEffect.NavigateToMap)
 
             cancelAndConsumeRemainingEvents()
 
@@ -125,7 +125,7 @@ class LocationManagementViewModelTest {
 
             val effect = awaitItem()
 
-            assertTrue(effect is AddEditLocationScreenUIEffect.NavigateToMap)
+            assertTrue(effect is LocationManagementScreenUIEffect.NavigateToMap)
 
             cancelAndConsumeRemainingEvents()
 
@@ -144,7 +144,7 @@ class LocationManagementViewModelTest {
                 viewModel.onClickSave()
                 testDispatcher.scheduler.advanceUntilIdle()
 
-                assertThat(awaitItem()).isInstanceOf(AddEditLocationScreenUIEffect.NavigateBack::class)
+                assertThat(awaitItem()).isInstanceOf(LocationManagementScreenUIEffect.NavigateBack::class)
             }
         }
 
@@ -176,7 +176,7 @@ class LocationManagementViewModelTest {
                 viewModel.onClickSave()
                 testDispatcher.scheduler.advanceUntilIdle()
 
-                assertThat(awaitItem()).isInstanceOf(AddEditLocationScreenUIEffect.NavigateBack::class)
+                assertThat(awaitItem()).isInstanceOf(LocationManagementScreenUIEffect.NavigateBack::class)
             }
 
         }
@@ -199,7 +199,7 @@ class LocationManagementViewModelTest {
 
             viewModel.effect.test {
                 testDispatcher.scheduler.advanceUntilIdle()
-                assertThat(awaitItem()).isInstanceOf(AddEditLocationScreenUIEffect.NavigateBack::class)
+                assertThat(awaitItem()).isInstanceOf(LocationManagementScreenUIEffect.NavigateBack::class)
             }
         }
 
@@ -228,7 +228,7 @@ class LocationManagementViewModelTest {
             viewModel.effect.test(timeout = 1000.milliseconds) {
                 viewModel.onClickSave()
                 testDispatcher.scheduler.advanceUntilIdle()
-                assertThat(awaitItem()).isInstanceOf(AddEditLocationScreenUIEffect.NavigateBack::class)
+                assertThat(awaitItem()).isInstanceOf(LocationManagementScreenUIEffect.NavigateBack::class)
             }
         }
 

@@ -1,4 +1,4 @@
-package net.thechance.mena.identity.presentation.feature.location.addEditLocation.components
+package net.thechance.mena.identity.presentation.feature.location.locationManagement.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState

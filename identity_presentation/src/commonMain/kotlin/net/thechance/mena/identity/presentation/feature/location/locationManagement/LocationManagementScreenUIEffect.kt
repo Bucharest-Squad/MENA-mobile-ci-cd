@@ -1,16 +1,16 @@
-package net.thechance.mena.identity.presentation.feature.location.addEditLocation
+package net.thechance.mena.identity.presentation.feature.location.locationManagement
 
 import net.thechance.mena.identity.presentation.feature.location.shared.AddressUIState
 import org.jetbrains.compose.resources.StringResource
 
-sealed interface AddEditLocationScreenUIEffect {
+sealed interface LocationManagementScreenUIEffect {
     data class NavigateBack(
         val errorStringResource: StringResource? = null,
         val successStringResource: StringResource? = null
-    ) : AddEditLocationScreenUIEffect
+    ) : LocationManagementScreenUIEffect
 
     data class NavigateToMap(
         val addressModel: AddressUIState? = null,
         val onUpdateLocation: (AddressUIState) -> Unit
-    ) : AddEditLocationScreenUIEffect
+    ) : LocationManagementScreenUIEffect
 }

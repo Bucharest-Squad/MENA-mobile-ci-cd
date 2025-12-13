@@ -1,4 +1,4 @@
-package net.thechance.mena.identity.presentation.feature.location.addEditLocation
+package net.thechance.mena.identity.presentation.feature.location.locationManagement
 
 import net.thechance.mena.identity.domain.repository.AddressesRepository
 import kotlin.uuid.ExperimentalUuidApi

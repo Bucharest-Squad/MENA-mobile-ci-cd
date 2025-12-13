@@ -1,7 +1,7 @@
 package net.thechance.mena.identity.presentation.util
 
 import net.thechance.mena.identity.domain.entity.AddressType
-import net.thechance.mena.identity.presentation.feature.location.addEditLocation.AddEditLocationScreenUIState
+import net.thechance.mena.identity.presentation.feature.location.locationManagement.LocationManagementScreenUIState
 import net.thechance.mena.identity.presentation.feature.location.shared.CoordinatesUiState
 import org.junit.Test
 import kotlin.test.assertFalse
@@ -56,8 +56,8 @@ class ValidationUtilsTest {
 
     @Test
     fun `AddEditLocationScreenUIState isAddressInputValid should return true for Home addressType`() {
-        val state = AddEditLocationScreenUIState(
-            addressUIState = AddEditLocationScreenUIState.AddEditAddressUIState(
+        val state = LocationManagementScreenUIState(
+            addressUIState = LocationManagementScreenUIState.AddEditAddressUIState(
                 addressID = null,
                 addressType = AddressType.Home,
                 otherAddressType = null,
@@ -73,8 +73,8 @@ class ValidationUtilsTest {
 
     @Test
     fun `AddEditLocationScreenUIState isAddressInputValid should return true for Office addressType`() {
-        val state = AddEditLocationScreenUIState(
-            addressUIState = AddEditLocationScreenUIState.AddEditAddressUIState(
+        val state = LocationManagementScreenUIState(
+            addressUIState = LocationManagementScreenUIState.AddEditAddressUIState(
                 addressID = null,
                 addressType = AddressType.Office,
                 otherAddressType = null,
@@ -90,8 +90,8 @@ class ValidationUtilsTest {
 
     @Test
     fun `AddEditLocationScreenUIState isAddressInputValid should return true for Other addressType with non-blank otherAddressType`() {
-        val state = AddEditLocationScreenUIState(
-            addressUIState = AddEditLocationScreenUIState.AddEditAddressUIState(
+        val state = LocationManagementScreenUIState(
+            addressUIState = LocationManagementScreenUIState.AddEditAddressUIState(
                 addressID = null,
                 addressType = AddressType.Other("Custom"),
                 otherAddressType = "Custom",
@@ -107,8 +107,8 @@ class ValidationUtilsTest {
 
     @Test
     fun `AddEditLocationScreenUIState isAddressInputValid should return false for Other addressType with blank otherAddressType`() {
-        val state = AddEditLocationScreenUIState(
-            addressUIState = AddEditLocationScreenUIState.AddEditAddressUIState(
+        val state = LocationManagementScreenUIState(
+            addressUIState = LocationManagementScreenUIState.AddEditAddressUIState(
                 addressID = null,
                 addressType = AddressType.Other("Custom"),
                 otherAddressType = "",
@@ -124,15 +124,15 @@ class ValidationUtilsTest {
 
     @Test
     fun `AddEditLocationScreenUIState hasAddressChanged should return true when addressDetails changed`() {
-        val state = AddEditLocationScreenUIState(
-            addressUIState = AddEditLocationScreenUIState.AddEditAddressUIState(
+        val state = LocationManagementScreenUIState(
+            addressUIState = LocationManagementScreenUIState.AddEditAddressUIState(
                 addressID = null,
                 addressType = AddressType.Home,
                 otherAddressType = null,
                 addressDetails = "New Street",
                 coordinates = CoordinatesUiState(33.3152, 44.3661)
             ),
-            originalAddressUIState = AddEditLocationScreenUIState.AddEditAddressUIState(
+            originalAddressUIState = LocationManagementScreenUIState.AddEditAddressUIState(
                 addressID = null,
                 addressType = AddressType.Home,
                 otherAddressType = null,
@@ -148,15 +148,15 @@ class ValidationUtilsTest {
 
     @Test
     fun `AddEditLocationScreenUIState hasAddressChanged should return true when addressType changed`() {
-        val state = AddEditLocationScreenUIState(
-            addressUIState = AddEditLocationScreenUIState.AddEditAddressUIState(
+        val state = LocationManagementScreenUIState(
+            addressUIState = LocationManagementScreenUIState.AddEditAddressUIState(
                 addressID = null,
                 addressType = AddressType.Office,
                 otherAddressType = null,
                 addressDetails = "Test Street",
                 coordinates = CoordinatesUiState(33.3152, 44.3661)
             ),
-            originalAddressUIState = AddEditLocationScreenUIState.AddEditAddressUIState(
+            originalAddressUIState = LocationManagementScreenUIState.AddEditAddressUIState(
                 addressID = null,
                 addressType = AddressType.Home,
                 otherAddressType = null,
@@ -172,15 +172,15 @@ class ValidationUtilsTest {
 
     @Test
     fun `AddEditLocationScreenUIState hasAddressChanged should return true when otherAddressType changed`() {
-        val state = AddEditLocationScreenUIState(
-            addressUIState = AddEditLocationScreenUIState.AddEditAddressUIState(
+        val state = LocationManagementScreenUIState(
+            addressUIState = LocationManagementScreenUIState.AddEditAddressUIState(
                 addressID = null,
                 addressType = AddressType.Other("Custom"),
                 otherAddressType = "Custom",
                 addressDetails = "Test Street",
                 coordinates = CoordinatesUiState(33.3152, 44.3661)
             ),
-            originalAddressUIState = AddEditLocationScreenUIState.AddEditAddressUIState(
+            originalAddressUIState = LocationManagementScreenUIState.AddEditAddressUIState(
                 addressID = null,
                 addressType = AddressType.Other("Custom"),
                 otherAddressType = "Old",
@@ -196,15 +196,15 @@ class ValidationUtilsTest {
 
     @Test
     fun `AddEditLocationScreenUIState hasAddressChanged should return true when coordinates changed`() {
-        val state = AddEditLocationScreenUIState(
-            addressUIState = AddEditLocationScreenUIState.AddEditAddressUIState(
+        val state = LocationManagementScreenUIState(
+            addressUIState = LocationManagementScreenUIState.AddEditAddressUIState(
                 addressID = null,
                 addressType = AddressType.Home,
                 otherAddressType = null,
                 addressDetails = "Test Street",
                 coordinates = CoordinatesUiState(33.3152, 44.3661)
             ),
-            originalAddressUIState = AddEditLocationScreenUIState.AddEditAddressUIState(
+            originalAddressUIState = LocationManagementScreenUIState.AddEditAddressUIState(
                 addressID = null,
                 addressType = AddressType.Home,
                 otherAddressType = null,
@@ -220,14 +220,14 @@ class ValidationUtilsTest {
 
     @Test
     fun `AddEditLocationScreenUIState hasAddressChanged should return false when nothing changed`() {
-        val addressUIState = AddEditLocationScreenUIState.AddEditAddressUIState(
+        val addressUIState = LocationManagementScreenUIState.AddEditAddressUIState(
             addressID = null,
             addressType = AddressType.Home,
             otherAddressType = null,
             addressDetails = "Test Street",
             coordinates = CoordinatesUiState(33.3152, 44.3661)
         )
-        val state = AddEditLocationScreenUIState(
+        val state = LocationManagementScreenUIState(
             addressUIState = addressUIState,
             originalAddressUIState = addressUIState
         )
@@ -239,15 +239,15 @@ class ValidationUtilsTest {
 
     @Test
     fun `AddEditLocationScreenUIState isSaveEnabled should return true in edit mode when address changed and valid`() {
-        val state = AddEditLocationScreenUIState(
-            addressUIState = AddEditLocationScreenUIState.AddEditAddressUIState(
+        val state = LocationManagementScreenUIState(
+            addressUIState = LocationManagementScreenUIState.AddEditAddressUIState(
                 addressID = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
                 addressType = AddressType.Office,
                 otherAddressType = null,
                 addressDetails = "New Street",
                 coordinates = CoordinatesUiState(33.3152, 44.3661)
             ),
-            originalAddressUIState = AddEditLocationScreenUIState.AddEditAddressUIState(
+            originalAddressUIState = LocationManagementScreenUIState.AddEditAddressUIState(
                 addressID = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
                 addressType = AddressType.Home,
                 otherAddressType = null,
@@ -263,14 +263,14 @@ class ValidationUtilsTest {
 
     @Test
     fun `AddEditLocationScreenUIState isSaveEnabled should return false in edit mode when address not changed`() {
-        val addressUIState = AddEditLocationScreenUIState.AddEditAddressUIState(
+        val addressUIState = LocationManagementScreenUIState.AddEditAddressUIState(
             addressID = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
             addressType = AddressType.Home,
             otherAddressType = null,
             addressDetails = "Test Street",
             coordinates = CoordinatesUiState(33.3152, 44.3661)
         )
-        val state = AddEditLocationScreenUIState(
+        val state = LocationManagementScreenUIState(
             addressUIState = addressUIState,
             originalAddressUIState = addressUIState
         )
@@ -282,8 +282,8 @@ class ValidationUtilsTest {
 
     @Test
     fun `AddEditLocationScreenUIState isSaveEnabled should return true in create mode when addressDetails not blank and valid`() {
-        val state = AddEditLocationScreenUIState(
-            addressUIState = AddEditLocationScreenUIState.AddEditAddressUIState(
+        val state = LocationManagementScreenUIState(
+            addressUIState = LocationManagementScreenUIState.AddEditAddressUIState(
                 addressID = null,
                 addressType = AddressType.Home,
                 otherAddressType = null,
@@ -299,8 +299,8 @@ class ValidationUtilsTest {
 
     @Test
     fun `AddEditLocationScreenUIState isSaveEnabled should return false in create mode when addressDetails is blank`() {
-        val state = AddEditLocationScreenUIState(
-            addressUIState = AddEditLocationScreenUIState.AddEditAddressUIState(
+        val state = LocationManagementScreenUIState(
+            addressUIState = LocationManagementScreenUIState.AddEditAddressUIState(
                 addressID = null,
                 addressType = AddressType.Home,
                 otherAddressType = null,

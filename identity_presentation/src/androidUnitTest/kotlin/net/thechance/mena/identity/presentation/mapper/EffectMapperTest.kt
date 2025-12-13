@@ -2,7 +2,7 @@ package net.thechance.mena.identity.presentation.mapper
 
 import net.thechance.mena.identity.domain.entity.AddressType
 import net.thechance.mena.identity.presentation.feature.authentication.login.LoginScreenUIEffect
-import net.thechance.mena.identity.presentation.feature.location.addEditLocation.AddEditLocationScreenUIEffect
+import net.thechance.mena.identity.presentation.feature.location.locationManagement.LocationManagementScreenUIEffect
 import net.thechance.mena.identity.presentation.feature.location.shared.AddressUIState
 import net.thechance.mena.identity.presentation.feature.location.shared.CoordinatesUiState
 import net.thechance.mena.identity.presentation.feature.profile.mainScreen.ProfileScreenUIEffect
@@ -27,7 +27,7 @@ class EffectMapperTest {
 
         val result = createNavigateToMapEffect(addressUIState, onSuccess)
 
-        assertEquals(AddEditLocationScreenUIEffect.NavigateToMap(addressUIState, onSuccess), result)
+        assertEquals(LocationManagementScreenUIEffect.NavigateToMap(addressUIState, onSuccess), result)
     }
 
     @Test
@@ -36,7 +36,7 @@ class EffectMapperTest {
 
         val result = createNavigateToMapEffect(null, onSuccess)
 
-        assertEquals(AddEditLocationScreenUIEffect.NavigateToMap(null, onSuccess), result)
+        assertEquals(LocationManagementScreenUIEffect.NavigateToMap(null, onSuccess), result)
     }
 
     @Test

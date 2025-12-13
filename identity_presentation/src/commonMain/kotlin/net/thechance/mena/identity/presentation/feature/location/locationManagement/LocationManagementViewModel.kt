@@ -1,4 +1,4 @@
-package net.thechance.mena.identity.presentation.feature.location.addEditLocation
+package net.thechance.mena.identity.presentation.feature.location.locationManagement
 
 import io.github.dellisd.spatialk.geojson.Position
 import kotlinx.coroutines.CoroutineDispatcher
@@ -32,9 +32,9 @@ class LocationManagementViewModel(
     private val addressOperationStrategyFactory: AddressOperationStrategyFactory,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
     addressModel: AddressUIState? = null,
-) : BaseScreenModel<AddEditLocationScreenUIState, AddEditLocationScreenUIEffect>(
-    AddEditLocationScreenUIState()
-), AddEditLocationScreenInteractionListener {
+) : BaseScreenModel<LocationManagementScreenUIState, LocationManagementScreenUIEffect>(
+    LocationManagementScreenUIState()
+), LocationManagementScreenInteractionListener {
 
     init {
         addressModel?.let {
@@ -46,7 +46,7 @@ class LocationManagementViewModel(
     }
 
     override fun onClickBack() {
-        sendNewEffect(newEffect = AddEditLocationScreenUIEffect.NavigateBack())
+        sendNewEffect(newEffect = LocationManagementScreenUIEffect.NavigateBack())
     }
 
     override fun onClickAddressType(addressType: AddressType) {
@@ -138,7 +138,7 @@ class LocationManagementViewModel(
                 Res.string.add_location_successfully
 
         sendNewEffect(
-            AddEditLocationScreenUIEffect.NavigateBack(
+            LocationManagementScreenUIEffect.NavigateBack(
                 successStringResource = successMessage
             )
         )
@@ -150,13 +150,13 @@ class LocationManagementViewModel(
 
     private fun onSaveAddressError(throwable: Throwable) {
         sendNewEffect(
-            AddEditLocationScreenUIEffect.NavigateBack(
+            LocationManagementScreenUIEffect.NavigateBack(
                 errorStringResource = mapErrorMessage(throwable)
             )
         )
     }
 
-    private fun createAddressModelFromCurrentState(addressUIState: AddEditLocationScreenUIState.AddEditAddressUIState): AddressUIState {
+    private fun createAddressModelFromCurrentState(addressUIState: LocationManagementScreenUIState.AddEditAddressUIState): AddressUIState {
         return AddressUIState(
             id = addressUIState.addressID,
             coordinates = CoordinatesUiState(

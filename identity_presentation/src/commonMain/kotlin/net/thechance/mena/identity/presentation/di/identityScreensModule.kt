@@ -12,10 +12,10 @@ import net.thechance.mena.identity.presentation.feature.authentication.register.
 import net.thechance.mena.identity.presentation.feature.authentication.resetPassword.otp.ResetPasswordOtpScreenViewModel
 import net.thechance.mena.identity.presentation.feature.authentication.resetPassword.phoneEntry.ResetPasswordPhoneEntryScreenViewModel
 import net.thechance.mena.identity.presentation.feature.authentication.resetPassword.setNewPassword.SetNewPasswordScreenViewModel
-import net.thechance.mena.identity.presentation.feature.location.addEditLocation.AddressOperationStrategyFactory
-import net.thechance.mena.identity.presentation.feature.location.addEditLocation.CreateAddressStrategy
-import net.thechance.mena.identity.presentation.feature.location.addEditLocation.LocationManagementViewModel
-import net.thechance.mena.identity.presentation.feature.location.addEditLocation.UpdateAddressStrategy
+import net.thechance.mena.identity.presentation.feature.location.locationManagement.AddressOperationStrategyFactory
+import net.thechance.mena.identity.presentation.feature.location.locationManagement.CreateAddressStrategy
+import net.thechance.mena.identity.presentation.feature.location.locationManagement.LocationManagementViewModel
+import net.thechance.mena.identity.presentation.feature.location.locationManagement.UpdateAddressStrategy
 import net.thechance.mena.identity.presentation.feature.location.enableLocationScreen.EnableLocationScreenViewModel
 import net.thechance.mena.identity.presentation.feature.location.myAddresses.MyAddressesScreenViewModel
 import net.thechance.mena.identity.presentation.feature.profile.changePassword.ChangePasswordScreenViewModel

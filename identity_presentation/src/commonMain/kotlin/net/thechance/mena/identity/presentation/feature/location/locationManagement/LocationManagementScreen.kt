@@ -1,4 +1,4 @@
-package net.thechance.mena.identity.presentation.feature.location.addEditLocation
+package net.thechance.mena.identity.presentation.feature.location.locationManagement
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
@@ -25,9 +25,9 @@ import net.thechance.mena.identity.domain.entity.AddressType
 import net.thechance.mena.identity.presentation.base.BaseScreen
 import net.thechance.mena.identity.presentation.components.AuthAppBar
 import net.thechance.mena.identity.presentation.components.snackBar.IdentitySnackBarController
-import net.thechance.mena.identity.presentation.feature.location.addEditLocation.components.AddressTypeSection
-import net.thechance.mena.identity.presentation.feature.location.addEditLocation.components.MapSection
-import net.thechance.mena.identity.presentation.feature.location.addEditLocation.components.OtherAddressType
+import net.thechance.mena.identity.presentation.feature.location.locationManagement.components.AddressTypeSection
+import net.thechance.mena.identity.presentation.feature.location.locationManagement.components.MapSection
+import net.thechance.mena.identity.presentation.feature.location.locationManagement.components.OtherAddressType
 import net.thechance.mena.identity.presentation.feature.location.pickLocation.PickLocationScreen
 import net.thechance.mena.identity.presentation.feature.location.shared.AddressUIState
 import org.jetbrains.compose.resources.painterResource
@@ -35,14 +35,14 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.core.parameter.parametersOf
 import kotlin.uuid.ExperimentalUuidApi
 
-class AddEditLocationScreen(
+class LocationManagementScreen(
     private val addressModel: AddressUIState?,
     private val onAddLocationSuccess: () -> Unit
 ) : BaseScreen<
         LocationManagementViewModel,
-    AddEditLocationScreenUIState,
-    AddEditLocationScreenUIEffect,
-    AddEditLocationScreenInteractionListener>() {
+        LocationManagementScreenUIState,
+        LocationManagementScreenUIEffect,
+        LocationManagementScreenInteractionListener>() {
 
     @Composable
     override fun Content() {
@@ -52,8 +52,8 @@ class AddEditLocationScreen(
     @OptIn(ExperimentalUuidApi::class)
     @Composable
     override fun OnRender(
-        state: AddEditLocationScreenUIState,
-        listener: AddEditLocationScreenInteractionListener
+        state: LocationManagementScreenUIState,
+        listener: LocationManagementScreenInteractionListener
     ) {
         val listState = rememberLazyListState()
         LaunchedEffect(state.addressUIState.addressType) {
@@ -138,12 +138,12 @@ class AddEditLocationScreen(
     }
 
     override fun onEffect(
-        effect: AddEditLocationScreenUIEffect,
+        effect: LocationManagementScreenUIEffect,
         navigator: Navigator,
         snackBarController: IdentitySnackBarController
     ) {
         when (effect) {
-            is AddEditLocationScreenUIEffect.NavigateBack -> {
+            is LocationManagementScreenUIEffect.NavigateBack -> {
                 effect.successStringResource?.let { successMessage ->
                     snackBarController.showSnackBarSuccess(
                         message = successMessage
@@ -161,7 +161,7 @@ class AddEditLocationScreen(
                 navigator.pop()
             }
 
-            is AddEditLocationScreenUIEffect.NavigateToMap -> navigator.push(
+            is LocationManagementScreenUIEffect.NavigateToMap -> navigator.push(
                 PickLocationScreen(
                     addressModel = effect.addressModel,
                     onUpdateLocation = effect.onUpdateLocation

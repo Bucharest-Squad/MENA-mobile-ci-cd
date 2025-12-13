@@ -1,4 +1,4 @@
-package net.thechance.mena.identity.presentation.feature.location.addEditLocation
+package net.thechance.mena.identity.presentation.feature.location.locationManagement
 
 import io.github.dellisd.spatialk.geojson.Position
 import net.thechance.mena.identity.domain.entity.AddressType
@@ -8,7 +8,7 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
-data class AddEditLocationScreenUIState(
+data class LocationManagementScreenUIState(
     val addressUIState: AddEditAddressUIState = AddEditAddressUIState(),
     val originalAddressUIState: AddEditAddressUIState = AddEditAddressUIState(),
     val isSaveEnabled: Boolean = false,

@@ -2,7 +2,7 @@ package net.thechance.mena.identity.presentation.mapper
 
 import net.thechance.mena.identity.domain.entity.Address
 import net.thechance.mena.identity.domain.entity.AddressType
-import net.thechance.mena.identity.presentation.feature.location.addEditLocation.AddEditLocationScreenUIState
+import net.thechance.mena.identity.presentation.feature.location.locationManagement.LocationManagementScreenUIState
 import net.thechance.mena.identity.presentation.feature.location.shared.AddressUIState
 import net.thechance.mena.identity.presentation.feature.location.shared.CoordinatesUiState
 import org.junit.Test
@@ -241,7 +241,7 @@ class AddressMapperTest {
 
     @Test
     fun `AddEditAddressUIState toAddressInput should map latitude correctly`() {
-        val addEditAddressUIState = AddEditLocationScreenUIState.AddEditAddressUIState(
+        val addEditAddressUIState = LocationManagementScreenUIState.AddEditAddressUIState(
             addressID = null,
             addressType = AddressType.Home,
             otherAddressType = null,
@@ -256,7 +256,7 @@ class AddressMapperTest {
 
     @Test
     fun `AddEditAddressUIState toAddressInput should map longitude correctly`() {
-        val addEditAddressUIState = AddEditLocationScreenUIState.AddEditAddressUIState(
+        val addEditAddressUIState = LocationManagementScreenUIState.AddEditAddressUIState(
             addressID = null,
             addressType = AddressType.Home,
             otherAddressType = null,
@@ -271,7 +271,7 @@ class AddressMapperTest {
 
     @Test
     fun `AddEditAddressUIState toAddressInput should map addressLine correctly`() {
-        val addEditAddressUIState = AddEditLocationScreenUIState.AddEditAddressUIState(
+        val addEditAddressUIState = LocationManagementScreenUIState.AddEditAddressUIState(
             addressID = null,
             addressType = AddressType.Home,
             otherAddressType = null,
@@ -286,7 +286,7 @@ class AddressMapperTest {
 
     @Test
     fun `AddEditAddressUIState toAddressInput should use Home when addressType is null`() {
-        val addEditAddressUIState = AddEditLocationScreenUIState.AddEditAddressUIState(
+        val addEditAddressUIState = LocationManagementScreenUIState.AddEditAddressUIState(
             addressID = null,
             addressType = null,
             otherAddressType = null,
@@ -301,7 +301,7 @@ class AddressMapperTest {
 
     @Test
     fun `AddEditAddressUIState toAddressInput should use Other when otherAddressType is not blank`() {
-        val addEditAddressUIState = AddEditLocationScreenUIState.AddEditAddressUIState(
+        val addEditAddressUIState = LocationManagementScreenUIState.AddEditAddressUIState(
             addressID = null,
             addressType = AddressType.Other(""),
             otherAddressType = "Custom",
@@ -316,7 +316,7 @@ class AddressMapperTest {
 
     @Test
     fun `AddEditAddressUIState toAddressInput should use addressType when otherAddressType is blank`() {
-        val addEditAddressUIState = AddEditLocationScreenUIState.AddEditAddressUIState(
+        val addEditAddressUIState = LocationManagementScreenUIState.AddEditAddressUIState(
             addressID = null,
             addressType = AddressType.Office,
             otherAddressType = "",
