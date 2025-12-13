@@ -15,11 +15,11 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import net.thechance.mena.identity.domain.entity.AddressType
 import net.thechance.mena.identity.domain.repository.AddressesRepository
+import net.thechance.mena.identity.presentation.core.mapper.toEntity
 import net.thechance.mena.identity.presentation.feature.location.myAddresses.MyAddressesScreenUIEffect
 import net.thechance.mena.identity.presentation.feature.location.myAddresses.MyAddressesScreenViewModel
 import net.thechance.mena.identity.presentation.feature.location.shared.AddressUIState
 import net.thechance.mena.identity.presentation.feature.location.shared.CoordinatesUiState
-import net.thechance.mena.identity.presentation.mapper.toEntity
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test

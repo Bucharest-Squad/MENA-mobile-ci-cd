@@ -12,10 +12,10 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import net.thechance.mena.identity.presentation.core.util.permissionHandler.PermissionHandler
+import net.thechance.mena.identity.presentation.core.util.permissionHandler.Permissions
 import net.thechance.mena.identity.presentation.feature.location.enableLocationScreen.EnableLocationScreenUIEffect
 import net.thechance.mena.identity.presentation.feature.location.enableLocationScreen.EnableLocationScreenViewModel
-import net.thechance.mena.identity.presentation.util.permissionHandler.PermissionHandler
-import net.thechance.mena.identity.presentation.util.permissionHandler.Permissions
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test

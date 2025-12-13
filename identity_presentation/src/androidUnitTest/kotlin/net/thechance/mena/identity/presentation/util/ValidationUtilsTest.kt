@@ -1,6 +1,9 @@
 package net.thechance.mena.identity.presentation.util
 
 import net.thechance.mena.identity.domain.entity.AddressType
+import net.thechance.mena.identity.presentation.core.util.hasAddressChanged
+import net.thechance.mena.identity.presentation.core.util.isAddressInputValid
+import net.thechance.mena.identity.presentation.core.util.isSaveEnabled
 import net.thechance.mena.identity.presentation.feature.location.locationManagement.LocationManagementScreenUIState
 import net.thechance.mena.identity.presentation.feature.location.shared.CoordinatesUiState
 import org.junit.Test

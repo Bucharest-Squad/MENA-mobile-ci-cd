@@ -12,14 +12,14 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import net.thechance.mena.identity.domain.repository.AddressesRepository
+import net.thechance.mena.identity.presentation.core.util.permissionHandler.PermissionHandler
+import net.thechance.mena.identity.presentation.core.util.permissionHandler.PermissionState
+import net.thechance.mena.identity.presentation.core.util.permissionHandler.Permissions
 import net.thechance.mena.identity.presentation.feature.location.pickLocation.PickLocationScreenUIEffect
 import net.thechance.mena.identity.presentation.feature.location.shared.CoordinatesUiState
 import net.thechance.mena.identity.presentation.feature.location.shared.toCoordinatesUiState
 import net.thechance.mena.identity.presentation.feature.location.shared.toEntity
 import net.thechance.mena.identity.presentation.screen.addresses.pickLocation.PickLocationScreenViewModel
-import net.thechance.mena.identity.presentation.util.permissionHandler.PermissionHandler
-import net.thechance.mena.identity.presentation.util.permissionHandler.PermissionState
-import net.thechance.mena.identity.presentation.util.permissionHandler.Permissions
 import org.maplibre.compose.camera.CameraPosition
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest

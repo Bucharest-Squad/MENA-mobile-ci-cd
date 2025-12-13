@@ -24,3 +24,13 @@ fun LocationManagementScreenUIState.AddEditAddressUIState.toAddressInput(): Addr
     addressLine = addressDetails,
     addressType = addressType ?: AddressType.Home,
 )
+
+
+@OptIn(ExperimentalUuidApi::class)
+fun AddressUIState.toEntity() : Address = Address(
+    id = id,
+    latitude = coordinates.latitude,
+    longitude = coordinates.longitude,
+    addressLine = addressDetails,
+    addressType = addressType
+)

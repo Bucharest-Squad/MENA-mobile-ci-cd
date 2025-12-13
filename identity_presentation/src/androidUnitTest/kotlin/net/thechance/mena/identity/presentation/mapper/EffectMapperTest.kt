@@ -1,6 +1,9 @@
 package net.thechance.mena.identity.presentation.mapper
 
 import net.thechance.mena.identity.domain.entity.AddressType
+import net.thechance.mena.identity.presentation.core.mapper.createNavigateToEditProfileEffect
+import net.thechance.mena.identity.presentation.core.mapper.createNavigateToHomeEffect
+import net.thechance.mena.identity.presentation.core.mapper.createNavigateToMapEffect
 import net.thechance.mena.identity.presentation.feature.authentication.login.LoginScreenUIEffect
 import net.thechance.mena.identity.presentation.feature.location.locationManagement.LocationManagementScreenUIEffect
 import net.thechance.mena.identity.presentation.feature.location.shared.AddressUIState

@@ -2,6 +2,9 @@ package net.thechance.mena.identity.presentation.mapper
 
 import net.thechance.mena.identity.domain.entity.Address
 import net.thechance.mena.identity.domain.entity.AddressType
+import net.thechance.mena.identity.presentation.core.mapper.toAddressInput
+import net.thechance.mena.identity.presentation.core.mapper.toEntity
+import net.thechance.mena.identity.presentation.core.mapper.toUiState
 import net.thechance.mena.identity.presentation.feature.location.locationManagement.LocationManagementScreenUIState
 import net.thechance.mena.identity.presentation.feature.location.shared.AddressUIState
 import net.thechance.mena.identity.presentation.feature.location.shared.CoordinatesUiState
@@ -175,66 +178,6 @@ class AddressMapperTest {
         )
 
         val result = addressUIState.toEntity()
-
-        assertEquals(AddressType.Home, result.addressType)
-    }
-
-    @Test
-    fun `AddressUIState toAddressInput should map latitude correctly`() {
-        val addressUIState = AddressUIState(
-            id = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
-            addressType = AddressType.Home,
-            isMainAddress = false,
-            addressDetails = "Test Street",
-            coordinates = CoordinatesUiState(33.3152, 44.3661)
-        )
-
-        val result = addressUIState.toAddressInput()
-
-        assertEquals(33.3152, result.latitude)
-    }
-
-    @Test
-    fun `AddressUIState toAddressInput should map longitude correctly`() {
-        val addressUIState = AddressUIState(
-            id = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
-            addressType = AddressType.Home,
-            isMainAddress = false,
-            addressDetails = "Test Street",
-            coordinates = CoordinatesUiState(33.3152, 44.3661)
-        )
-
-        val result = addressUIState.toAddressInput()
-
-        assertEquals(44.3661, result.longitude)
-    }
-
-    @Test
-    fun `AddressUIState toAddressInput should map addressLine correctly`() {
-        val addressUIState = AddressUIState(
-            id = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
-            addressType = AddressType.Home,
-            isMainAddress = false,
-            addressDetails = "Test Street",
-            coordinates = CoordinatesUiState(33.3152, 44.3661)
-        )
-
-        val result = addressUIState.toAddressInput()
-
-        assertEquals("Test Street", result.addressLine)
-    }
-
-    @Test
-    fun `AddressUIState toAddressInput should map addressType correctly`() {
-        val addressUIState = AddressUIState(
-            id = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
-            addressType = AddressType.Home,
-            isMainAddress = false,
-            addressDetails = "Test Street",
-            coordinates = CoordinatesUiState(33.3152, 44.3661)
-        )
-
-        val result = addressUIState.toAddressInput()
 
         assertEquals(AddressType.Home, result.addressType)
     }
