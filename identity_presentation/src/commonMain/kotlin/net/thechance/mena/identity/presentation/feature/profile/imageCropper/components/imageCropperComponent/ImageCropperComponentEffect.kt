@@ -1,4 +1,4 @@
-package net.thechance.mena.identity.presentation.feature.profile.imageCropper
+package net.thechance.mena.identity.presentation.feature.profile.imageCropper.components.imageCropperComponent
 
 sealed interface ImageCropperComponentEffect {
     data class SaveImage(val imageByteArray: ByteArray) : ImageCropperComponentEffect

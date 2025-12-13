@@ -1,4 +1,4 @@
-package net.thechance.mena.identity.presentation.feature.profile.imageCropper
+package net.thechance.mena.identity.presentation.feature.profile.imageCropper.components.imageCropperComponent
 
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.derivedStateOf
@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
+import net.thechance.mena.identity.presentation.feature.profile.imageCropper.ImageCropperUiState
 import kotlin.math.abs
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime

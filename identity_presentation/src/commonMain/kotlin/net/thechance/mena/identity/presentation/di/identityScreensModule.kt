@@ -18,16 +18,16 @@ import net.thechance.mena.identity.presentation.feature.location.addEditLocation
 import net.thechance.mena.identity.presentation.feature.location.addEditLocation.UpdateAddressStrategy
 import net.thechance.mena.identity.presentation.feature.location.enableLocationScreen.EnableLocationScreenViewModel
 import net.thechance.mena.identity.presentation.feature.location.myAddresses.MyAddressesScreenViewModel
-import net.thechance.mena.identity.presentation.feature.location.pickLocation.PickLocationScreenViewModel
 import net.thechance.mena.identity.presentation.feature.profile.changePassword.ChangePasswordScreenViewModel
 import net.thechance.mena.identity.presentation.feature.profile.contactUs.ContactUsViewModel
 import net.thechance.mena.identity.presentation.feature.profile.editProfile.EditUserProfileViewModel
-import net.thechance.mena.identity.presentation.feature.profile.imageCropper.ImageCropperComponentViewModel
+import net.thechance.mena.identity.presentation.feature.profile.imageCropper.components.imageCropperComponent.ImageCropperComponentViewModel
 import net.thechance.mena.identity.presentation.feature.profile.imageCropper.ImageCropperUiState
 import net.thechance.mena.identity.presentation.feature.profile.imageCropper.ImageCropperViewModel
 import net.thechance.mena.identity.presentation.feature.profile.mainScreen.ProfileScreenViewModel
 import net.thechance.mena.identity.presentation.feature.profile.mainScreen.components.share.ShareDialogViewModel
 import net.thechance.mena.identity.presentation.feature.profile.privacyAndPolicy.PrivacyAndPolicyScreenViewModel
+import net.thechance.mena.identity.presentation.screen.addresses.pickLocation.PickLocationScreenViewModel
 import net.thechance.mena.identity.presentation.util.factoryOfOrNull
 import net.thechance.mena.identity.presentation.util.permissionHandler.PermissionHandler
 import net.thechance.mena.identity.presentation.utils.ImageDecoder
@@ -39,14 +39,11 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 const val APP_VERSION = "appVersion"
-const val LOCATION_FOREGROUND = "LOCATION_FOREGROUND"
-const val GALLERY_IMAGES = "GALLERY_IMAGES"
 
 val identityScreensModule = module {
 
     includes(platformModule())
-    factory(named(LOCATION_FOREGROUND)) { PermissionHandler(get(named(LOCATION_FOREGROUND))) }
-    factory(named(GALLERY_IMAGES)) { PermissionHandler(get(named(GALLERY_IMAGES))) }
+    factoryOf(::PermissionHandler)
     factory { ProfileScreenViewModel(get(), get(), get(named(APP_VERSION)), get()) }
     factoryOf(::ImageCropperViewModel)
     factoryOf(::LoginScreenViewModel)
@@ -76,26 +73,7 @@ val identityScreensModule = module {
         ImageCropperComponentViewModel(minScale, maxScale, initialState)
     }
     factoryOfOrNull(::LocationManagementViewModel)
-
-    factory {
-        PickLocationScreenViewModel(
-            addressesRepository = get(),
-            locationForegroundHandler = get(named(LOCATION_FOREGROUND)),
-            addressModel = getOrNull()
-        )
-    }
-
-    factory {
-        EnableLocationScreenViewModel(
-            locationForegroundHandler = get(named(LOCATION_FOREGROUND))
-        )
-    }
-
-    factory {
-        ShareDialogViewModel(
-            userRepository = get(),
-            imagesRepository = get(),
-            galleryPermissionHandler = get(named(GALLERY_IMAGES)),
-        )
-    }
+    factoryOfOrNull(::PickLocationScreenViewModel)
+    factoryOf(::EnableLocationScreenViewModel)
+    factoryOf(::ShareDialogViewModel)
 }

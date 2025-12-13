@@ -23,6 +23,7 @@ import net.thechance.mena.identity.presentation.feature.location.enableLocationS
 import net.thechance.mena.identity.presentation.feature.location.pickLocation.components.GpsFabButton
 import net.thechance.mena.identity.presentation.feature.location.pickLocation.components.PickLocationMap
 import net.thechance.mena.identity.presentation.feature.location.shared.AddressUIState
+import net.thechance.mena.identity.presentation.screen.addresses.pickLocation.PickLocationScreenViewModel
 import org.jetbrains.compose.resources.stringResource
 import org.koin.core.parameter.parametersOf
 
@@ -30,10 +31,10 @@ data class PickLocationScreen(
     private val addressModel: AddressUIState?,
     private val onUpdateLocation: (AddressUIState) -> Unit,
 ) : BaseScreen<
-    PickLocationScreenViewModel,
-    PickLocationScreenUIState,
-    PickLocationScreenUIEffect,
-    PickLocationScreenInteractionListener>() {
+        PickLocationScreenViewModel,
+        PickLocationScreenUIState,
+        PickLocationScreenUIEffect,
+        PickLocationScreenInteractionListener>() {
 
     @Composable
     override fun Content() {
@@ -53,7 +54,7 @@ data class PickLocationScreen(
                     onClickBack = listener::onClickBack,
                     backgroundColor = Theme.colorScheme.background.surfaceLow
                 )
-            },
+            }
         ) {
             PickLocationMap(
                 currentLocation = state.currentLocation,
@@ -80,7 +81,6 @@ data class PickLocationScreen(
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
-
             }
         }
     }

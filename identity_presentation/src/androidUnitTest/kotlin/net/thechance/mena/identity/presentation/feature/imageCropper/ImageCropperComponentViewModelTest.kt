@@ -6,9 +6,11 @@ import app.cash.turbine.test
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import net.thechance.mena.identity.presentation.feature.profile.imageCropper.ImageCropperComponentEffect
-import net.thechance.mena.identity.presentation.feature.profile.imageCropper.ImageCropperComponentViewModel
+<<<<<<< HEAD:identity_presentation/src/androidUnitTest/kotlin/net/thechance/mena/identity/presentation/feature/imageCropper/ImageCropperComponentViewModelTest.kt
+import net.thechance.mena.identity.presentation.feature.profile.imageCropper.components.imageCropperComponent.ImageCropperComponentViewModel
 import net.thechance.mena.identity.presentation.feature.profile.imageCropper.ImageCropperUiState
+=======
+>>>>>>> origin/develop:identity_presentation/src/androidUnitTest/kotlin/net/thechance/mena/identity/presentation/screen/imageCropper/ImageCropperComponentViewModelTest.kt
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals

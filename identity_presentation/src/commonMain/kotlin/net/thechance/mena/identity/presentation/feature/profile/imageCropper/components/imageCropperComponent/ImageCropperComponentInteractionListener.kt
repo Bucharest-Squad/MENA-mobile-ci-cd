@@ -1,4 +1,4 @@
-package net.thechance.mena.identity.presentation.feature.profile.imageCropper
+package net.thechance.mena.identity.presentation.feature.profile.imageCropper.components.imageCropperComponent
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.IntSize
