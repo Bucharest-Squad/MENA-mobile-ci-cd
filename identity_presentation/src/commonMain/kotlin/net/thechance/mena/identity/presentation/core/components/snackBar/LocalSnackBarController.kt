@@ -1,4 +1,4 @@
-package net.thechance.mena.identity.presentation.components.snackBar
+package net.thechance.mena.identity.presentation.core.components.snackBar
 
 import androidx.compose.runtime.staticCompositionLocalOf
 

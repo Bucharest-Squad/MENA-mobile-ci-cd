@@ -3,7 +3,7 @@ package net.thechance.mena.identity.presentation.feature.profile.imageCropper
 import mena.identity_presentation.generated.resources.Res
 import mena.identity_presentation.generated.resources.image_crop_failed
 import net.thechance.mena.identity.domain.repository.ImagesRepository
-import net.thechance.mena.identity.presentation.base.BaseScreenModel
+import net.thechance.mena.identity.presentation.core.base.BaseScreenModel
 
 class ImageCropperViewModel(
     private val imageKey: String,

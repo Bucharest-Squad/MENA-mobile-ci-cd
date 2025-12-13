@@ -19,11 +19,9 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import net.thechance.mena.designsystem.presentation.component.snackbar.SnackBar
-import net.thechance.mena.identity.presentation.base.BaseInteractionListener
-import net.thechance.mena.identity.presentation.base.BaseScreenModel
-import net.thechance.mena.identity.presentation.base.util.collectAsEffectWithLifeCycle
-import net.thechance.mena.identity.presentation.components.snackBar.IdentitySnackBarController
-import net.thechance.mena.identity.presentation.components.snackBar.LocalSnackBarController
+import net.thechance.mena.identity.presentation.core.base.util.collectAsEffectWithLifeCycle
+import net.thechance.mena.identity.presentation.core.components.snackBar.IdentitySnackBarController
+import net.thechance.mena.identity.presentation.core.components.snackBar.LocalSnackBarController
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.core.parameter.ParametersDefinition

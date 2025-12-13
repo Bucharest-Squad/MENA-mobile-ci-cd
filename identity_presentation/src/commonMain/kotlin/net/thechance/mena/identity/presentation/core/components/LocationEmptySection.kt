@@ -1,4 +1,4 @@
-package net.thechance.mena.identity.presentation.components
+package net.thechance.mena.identity.presentation.core.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

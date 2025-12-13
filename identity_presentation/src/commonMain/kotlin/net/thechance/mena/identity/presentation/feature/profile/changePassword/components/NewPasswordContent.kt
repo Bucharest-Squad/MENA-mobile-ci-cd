@@ -20,7 +20,7 @@ import net.thechance.mena.designsystem.presentation.component.button.PrimaryButt
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.identity.presentation.components.LabeledInputPassword
+import net.thechance.mena.identity.presentation.core.components.LabeledInputPassword
 import net.thechance.mena.identity.presentation.feature.profile.changePassword.ChangePasswordScreenInteractionListener
 import net.thechance.mena.identity.presentation.feature.profile.changePassword.ChangePasswordScreenUIState
 import org.jetbrains.compose.resources.stringResource

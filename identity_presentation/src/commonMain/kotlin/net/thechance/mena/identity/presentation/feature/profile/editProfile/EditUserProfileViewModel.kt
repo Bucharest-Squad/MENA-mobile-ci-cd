@@ -25,8 +25,8 @@ import net.thechance.mena.identity.domain.repository.RegistrationDraftRepository
 import net.thechance.mena.identity.domain.repository.UserRepository
 import net.thechance.mena.identity.domain.useCase.validation.age.AgeValidator
 import net.thechance.mena.identity.domain.util.orCurrentDate
-import net.thechance.mena.identity.presentation.base.BaseScreenModel
-import net.thechance.mena.identity.presentation.base.errorState.ErrorState
+import net.thechance.mena.identity.presentation.core.base.BaseScreenModel
+import net.thechance.mena.identity.presentation.core.base.errorState.ErrorState
 import net.thechance.mena.identity.presentation.core.mapper.mapAuthenticationErrorToMessage
 import net.thechance.mena.identity.presentation.core.mapper.mapErrorToMessage
 import net.thechance.mena.identity.presentation.core.util.ImageDecoder

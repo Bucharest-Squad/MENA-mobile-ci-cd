@@ -2,7 +2,7 @@ package net.thechance.mena.identity.presentation.feature.profile.editProfile
 
 import androidx.compose.ui.graphics.ImageBitmap
 import net.thechance.mena.identity.domain.entity.Gender
-import net.thechance.mena.identity.presentation.base.BaseInteractionListener
+import net.thechance.mena.identity.presentation.core.base.BaseInteractionListener
 
 interface EditUserProfileInteractionListener : BaseInteractionListener {
     fun onChangeFirstName(firstName: String)

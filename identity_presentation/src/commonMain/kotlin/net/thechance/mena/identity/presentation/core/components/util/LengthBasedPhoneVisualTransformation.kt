@@ -1,9 +1,10 @@
-package net.thechance.mena.identity.presentation.components.util
+package net.thechance.mena.identity.presentation.core.components.util
 
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
+import kotlin.text.iterator
 
 class LengthBasedPhoneVisualTransformation(
     private val masks: Map<Int, String>

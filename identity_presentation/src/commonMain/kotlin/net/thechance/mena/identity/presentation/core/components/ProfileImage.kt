@@ -1,4 +1,4 @@
-package net.thechance.mena.identity.presentation.components
+package net.thechance.mena.identity.presentation.core.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -25,7 +25,7 @@ import mena.identity_presentation.generated.resources.not_user_image
 import mena.identity_presentation.generated.resources.profile_profile_picture_content_description
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.identity.presentation.components.util.menaDropShadow
+import net.thechance.mena.identity.presentation.core.components.util.menaDropShadow
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject

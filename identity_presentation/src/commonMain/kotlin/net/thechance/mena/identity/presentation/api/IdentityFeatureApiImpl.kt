@@ -16,8 +16,8 @@ import net.thechance.mena.identity.domain.entity.PhoneNumber
 import net.thechance.mena.identity.domain.model.AuthenticationTokens
 import net.thechance.mena.identity.domain.repository.AuthenticationRepository
 import net.thechance.mena.identity.domain.repository.RegistrationDraftRepository
-import net.thechance.mena.identity.presentation.components.snackBar.IdentitySnackBarController
-import net.thechance.mena.identity.presentation.components.snackBar.LocalSnackBarController
+import net.thechance.mena.identity.presentation.core.components.snackBar.IdentitySnackBarController
+import net.thechance.mena.identity.presentation.core.components.snackBar.LocalSnackBarController
 import net.thechance.mena.identity.presentation.feature.authentication.login.LoginScreen
 import net.thechance.mena.identity.presentation.feature.authentication.register.accountCreated.AccountCreatedScreen
 import net.thechance.mena.identity.presentation.feature.authentication.register.uploadProfileImage.UploadProfileImageScreen

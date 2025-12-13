@@ -15,7 +15,7 @@ import net.thechance.mena.identity.domain.repository.AuthenticationRepository
 import net.thechance.mena.identity.domain.repository.ResetPasswordRepository
 import net.thechance.mena.identity.domain.useCase.LoginUseCase
 import net.thechance.mena.identity.domain.useCase.validation.mobileNumber.MobileNumberValidator
-import net.thechance.mena.identity.presentation.components.countryPicker.menaCountries.MenaCountry
+import net.thechance.mena.identity.presentation.core.components.countryPicker.menaCountries.MenaCountry
 import net.thechance.mena.identity.presentation.feature.authentication.resetPassword.phoneEntry.ResetPasswordPhoneEntryScreenUIEffect
 import net.thechance.mena.identity.presentation.feature.authentication.resetPassword.phoneEntry.ResetPasswordPhoneEntryScreenViewModel
 import kotlin.test.AfterTest

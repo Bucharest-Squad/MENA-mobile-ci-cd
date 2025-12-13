@@ -10,9 +10,9 @@ import mena.identity_presentation.generated.resources.Res
 import mena.identity_presentation.generated.resources.enable_location_title
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.identity.presentation.core.base.BaseScreen
-import net.thechance.mena.identity.presentation.components.AuthAppBar
-import net.thechance.mena.identity.presentation.components.EnableLocationLayout
-import net.thechance.mena.identity.presentation.components.snackBar.IdentitySnackBarController
+import net.thechance.mena.identity.presentation.core.components.AuthAppBar
+import net.thechance.mena.identity.presentation.core.components.EnableLocationLayout
+import net.thechance.mena.identity.presentation.core.components.snackBar.IdentitySnackBarController
 import org.jetbrains.compose.resources.stringResource
 
 

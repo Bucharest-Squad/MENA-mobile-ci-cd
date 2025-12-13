@@ -1,4 +1,4 @@
-package net.thechance.mena.identity.presentation.base.util
+package net.thechance.mena.identity.presentation.core.base.util
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect

@@ -46,8 +46,8 @@ import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.identity.domain.entity.Gender
 import net.thechance.mena.identity.presentation.core.base.BaseScreen
-import net.thechance.mena.identity.presentation.components.GregorianDatePicker
-import net.thechance.mena.identity.presentation.components.snackBar.IdentitySnackBarController
+import net.thechance.mena.identity.presentation.core.components.GregorianDatePicker
+import net.thechance.mena.identity.presentation.core.components.snackBar.IdentitySnackBarController
 import net.thechance.mena.identity.presentation.core.util.rememberCameraPicker
 import net.thechance.mena.identity.presentation.feature.profile.editProfile.components.AtPrefixTransformation
 import net.thechance.mena.identity.presentation.feature.profile.editProfile.components.DialogActionButton

@@ -1,3 +1,3 @@
-package net.thechance.mena.identity.presentation.base
+package net.thechance.mena.identity.presentation.core.base
 
 interface BaseInteractionListener

@@ -4,8 +4,8 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import net.thechance.mena.identity.domain.exception.LocationException
-import net.thechance.mena.identity.presentation.base.BaseScreenModel
-import net.thechance.mena.identity.presentation.base.errorState.ErrorState
+import net.thechance.mena.identity.presentation.core.base.BaseScreenModel
+import net.thechance.mena.identity.presentation.core.base.errorState.ErrorState
 import net.thechance.mena.identity.presentation.core.mapper.mapErrorToMessage
 import net.thechance.mena.identity.presentation.core.mapper.mapLocationErrorToMessage
 import net.thechance.mena.identity.presentation.core.util.permissionHandler.PermissionHandler

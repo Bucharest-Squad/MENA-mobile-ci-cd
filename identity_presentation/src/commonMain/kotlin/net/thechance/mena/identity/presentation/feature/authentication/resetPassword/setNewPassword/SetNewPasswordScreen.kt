@@ -29,11 +29,11 @@ import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.component.scaffold.ScaffoldScope
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.identity.presentation.core.base.BaseScreen
-import net.thechance.mena.identity.presentation.components.AuthAppBar
-import net.thechance.mena.identity.presentation.components.AuthScreenContainer
-import net.thechance.mena.identity.presentation.components.LabeledInputPassword
-import net.thechance.mena.identity.presentation.components.PageDescription
-import net.thechance.mena.identity.presentation.components.snackBar.IdentitySnackBarController
+import net.thechance.mena.identity.presentation.core.components.AuthAppBar
+import net.thechance.mena.identity.presentation.core.components.AuthScreenContainer
+import net.thechance.mena.identity.presentation.core.components.LabeledInputPassword
+import net.thechance.mena.identity.presentation.core.components.PageDescription
+import net.thechance.mena.identity.presentation.core.components.snackBar.IdentitySnackBarController
 import net.thechance.mena.identity.presentation.feature.authentication.login.LoginScreen
 import org.jetbrains.compose.resources.stringResource
 

@@ -13,8 +13,8 @@ import net.thechance.mena.identity.domain.exception.AuthenticationException
 import net.thechance.mena.identity.domain.exception.InvalidCredentialsException
 import net.thechance.mena.identity.domain.exception.LocationException
 import net.thechance.mena.identity.domain.repository.AddressesRepository
-import net.thechance.mena.identity.presentation.base.BaseScreenModel
-import net.thechance.mena.identity.presentation.base.errorState.ErrorState
+import net.thechance.mena.identity.presentation.core.base.BaseScreenModel
+import net.thechance.mena.identity.presentation.core.base.errorState.ErrorState
 import net.thechance.mena.identity.presentation.core.mapper.mapAuthenticationErrorToMessage
 import net.thechance.mena.identity.presentation.core.mapper.mapErrorToMessage
 import net.thechance.mena.identity.presentation.core.mapper.mapLocationErrorToMessage

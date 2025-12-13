@@ -11,8 +11,8 @@ import mena.identity_presentation.generated.resources.privacy_and_policy
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.identity.presentation.core.base.BaseScreen
-import net.thechance.mena.identity.presentation.components.AuthAppBar
-import net.thechance.mena.identity.presentation.components.snackBar.IdentitySnackBarController
+import net.thechance.mena.identity.presentation.core.components.AuthAppBar
+import net.thechance.mena.identity.presentation.core.components.snackBar.IdentitySnackBarController
 import net.thechance.mena.identity.presentation.feature.profile.privacyAndPolicy.components.PrivacyScreenContent
 import net.thechance.mena.identity.presentation.feature.profile.privacyAndPolicy.components.PrivacyScreenContentShimmer
 import org.jetbrains.compose.resources.stringResource

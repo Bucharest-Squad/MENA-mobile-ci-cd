@@ -9,7 +9,7 @@ import mena.identity_presentation.generated.resources.gender
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.identity.domain.entity.Gender
-import net.thechance.mena.identity.presentation.components.GenderToggle
+import net.thechance.mena.identity.presentation.core.components.GenderToggle
 import org.jetbrains.compose.resources.stringResource
 
 @Composable

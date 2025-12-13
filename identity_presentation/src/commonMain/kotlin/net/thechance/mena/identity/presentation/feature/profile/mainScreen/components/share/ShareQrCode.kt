@@ -47,8 +47,8 @@ import net.thechance.mena.designsystem.presentation.component.scaffold.ScaffoldS
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.identity.presentation.base.util.collectAsEffectWithLifeCycle
-import net.thechance.mena.identity.presentation.components.snackBar.LocalSnackBarController
+import net.thechance.mena.identity.presentation.core.base.util.collectAsEffectWithLifeCycle
+import net.thechance.mena.identity.presentation.core.components.snackBar.LocalSnackBarController
 import net.thechance.mena.identity.presentation.feature.profile.mainScreen.components.share.utils.createQrCodeByteArray
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource

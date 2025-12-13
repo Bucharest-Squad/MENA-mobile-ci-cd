@@ -10,7 +10,7 @@ import mena.identity_presentation.generated.resources.error_password_validation
 import net.thechance.mena.identity.domain.model.RegistrationDraft
 import net.thechance.mena.identity.domain.repository.RegistrationDraftRepository
 import net.thechance.mena.identity.domain.useCase.validation.mobileNumber.PasswordValidator
-import net.thechance.mena.identity.presentation.base.BaseScreenModel
+import net.thechance.mena.identity.presentation.core.base.BaseScreenModel
 import net.thechance.mena.identity.presentation.feature.authentication.register.shared.RegisterUIState
 
 class CreatePasswordViewModel(

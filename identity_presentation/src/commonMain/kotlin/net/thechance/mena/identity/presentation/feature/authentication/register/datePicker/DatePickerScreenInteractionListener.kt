@@ -1,6 +1,6 @@
 package net.thechance.mena.identity.presentation.feature.authentication.register.datePicker
 
-import net.thechance.mena.identity.presentation.base.BaseInteractionListener
+import net.thechance.mena.identity.presentation.core.base.BaseInteractionListener
 
 interface DatePickerScreenInteractionListener : BaseInteractionListener {
     fun onClickNext()

@@ -1,6 +1,6 @@
 package net.thechance.mena.identity.presentation.feature.location.myAddresses
 
-import net.thechance.mena.identity.presentation.base.BaseInteractionListener
+import net.thechance.mena.identity.presentation.core.base.BaseInteractionListener
 import net.thechance.mena.identity.presentation.feature.location.shared.AddressUIState
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid

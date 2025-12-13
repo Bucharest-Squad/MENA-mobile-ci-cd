@@ -18,8 +18,8 @@ import mena.identity_presentation.generated.resources.Res
 import mena.identity_presentation.generated.resources.pencil_edit
 import net.thechance.mena.designsystem.presentation.component.icon.Icon
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.identity.presentation.components.ProfileImage
-import net.thechance.mena.identity.presentation.components.util.menaDropShadow
+import net.thechance.mena.identity.presentation.core.components.ProfileImage
+import net.thechance.mena.identity.presentation.core.components.util.menaDropShadow
 import org.jetbrains.compose.resources.painterResource
 
 

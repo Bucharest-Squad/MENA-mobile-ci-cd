@@ -14,10 +14,10 @@ import mena.identity_presentation.generated.resources.next
 import net.thechance.mena.designsystem.presentation.component.button.PrimaryButton
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.identity.presentation.core.base.BaseScreen
-import net.thechance.mena.identity.presentation.components.AuthScreenContainer
-import net.thechance.mena.identity.presentation.components.GregorianDatePicker
-import net.thechance.mena.identity.presentation.components.PageDescription
-import net.thechance.mena.identity.presentation.components.snackBar.IdentitySnackBarController
+import net.thechance.mena.identity.presentation.core.components.AuthScreenContainer
+import net.thechance.mena.identity.presentation.core.components.GregorianDatePicker
+import net.thechance.mena.identity.presentation.core.components.PageDescription
+import net.thechance.mena.identity.presentation.core.components.snackBar.IdentitySnackBarController
 import net.thechance.mena.identity.presentation.feature.authentication.register.selectGender.SelectGenderScreen
 import net.thechance.mena.identity.presentation.feature.authentication.register.shared.RegisterUIState
 import org.jetbrains.compose.resources.stringResource

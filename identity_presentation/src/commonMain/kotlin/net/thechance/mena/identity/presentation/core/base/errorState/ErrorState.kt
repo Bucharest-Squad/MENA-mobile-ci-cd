@@ -1,4 +1,4 @@
-package net.thechance.mena.identity.presentation.base.errorState
+package net.thechance.mena.identity.presentation.core.base.errorState
 
 sealed interface ErrorState {
     data class AuthenticationError(val errorState: AuthenticationErrorState) : ErrorState

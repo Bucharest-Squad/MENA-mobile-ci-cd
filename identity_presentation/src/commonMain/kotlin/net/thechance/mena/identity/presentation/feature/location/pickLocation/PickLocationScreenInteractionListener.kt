@@ -1,6 +1,6 @@
 package net.thechance.mena.identity.presentation.feature.location.pickLocation
 
-import net.thechance.mena.identity.presentation.base.BaseInteractionListener
+import net.thechance.mena.identity.presentation.core.base.BaseInteractionListener
 import net.thechance.mena.identity.presentation.feature.location.shared.CoordinatesUiState
 
 interface PickLocationScreenInteractionListener : BaseInteractionListener {

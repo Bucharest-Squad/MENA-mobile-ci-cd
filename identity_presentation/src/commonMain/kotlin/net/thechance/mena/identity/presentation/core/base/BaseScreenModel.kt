@@ -1,4 +1,4 @@
-package net.thechance.mena.identity.presentation.base
+package net.thechance.mena.identity.presentation.core.base
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope

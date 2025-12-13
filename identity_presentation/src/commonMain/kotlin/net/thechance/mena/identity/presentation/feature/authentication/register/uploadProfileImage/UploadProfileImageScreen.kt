@@ -29,9 +29,9 @@ import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.identity.domain.entity.PhoneNumber
 import net.thechance.mena.identity.domain.model.AuthenticationTokens
 import net.thechance.mena.identity.presentation.core.base.BaseScreen
-import net.thechance.mena.identity.presentation.components.AuthScreenContainer
-import net.thechance.mena.identity.presentation.components.PageDescription
-import net.thechance.mena.identity.presentation.components.snackBar.IdentitySnackBarController
+import net.thechance.mena.identity.presentation.core.components.AuthScreenContainer
+import net.thechance.mena.identity.presentation.core.components.PageDescription
+import net.thechance.mena.identity.presentation.core.components.snackBar.IdentitySnackBarController
 import net.thechance.mena.identity.presentation.feature.authentication.register.accountCreated.AccountCreatedScreen
 import net.thechance.mena.identity.presentation.feature.authentication.register.uploadProfileImage.components.UploadImageContainer
 import net.thechance.mena.identity.presentation.feature.profile.imageCropper.ImageCropperScreen

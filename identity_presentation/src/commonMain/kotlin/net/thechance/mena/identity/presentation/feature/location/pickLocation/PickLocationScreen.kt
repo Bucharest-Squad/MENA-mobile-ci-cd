@@ -17,8 +17,8 @@ import net.thechance.mena.designsystem.presentation.component.button.PrimaryButt
 import net.thechance.mena.designsystem.presentation.component.scaffold.Scaffold
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.identity.presentation.core.base.BaseScreen
-import net.thechance.mena.identity.presentation.components.AuthAppBar
-import net.thechance.mena.identity.presentation.components.snackBar.IdentitySnackBarController
+import net.thechance.mena.identity.presentation.core.components.AuthAppBar
+import net.thechance.mena.identity.presentation.core.components.snackBar.IdentitySnackBarController
 import net.thechance.mena.identity.presentation.feature.location.enableLocationScreen.EnableLocationScreen
 import net.thechance.mena.identity.presentation.feature.location.pickLocation.components.GpsFabButton
 import net.thechance.mena.identity.presentation.feature.location.pickLocation.components.PickLocationMap

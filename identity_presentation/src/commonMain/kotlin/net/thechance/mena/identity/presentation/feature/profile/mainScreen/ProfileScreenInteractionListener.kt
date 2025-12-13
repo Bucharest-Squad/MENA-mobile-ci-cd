@@ -2,7 +2,7 @@ package net.thechance.mena.identity.presentation.feature.profile.mainScreen
 
 import net.thechance.mena.identity.domain.util.AppLanguage
 import net.thechance.mena.identity.domain.util.AppTheme
-import net.thechance.mena.identity.presentation.base.BaseInteractionListener
+import net.thechance.mena.identity.presentation.core.base.BaseInteractionListener
 
 interface ProfileScreenInteractionListener : BaseInteractionListener {
 

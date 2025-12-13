@@ -1,6 +1,6 @@
 package net.thechance.mena.identity.presentation.core.mapper
 
-import net.thechance.mena.identity.presentation.base.errorState.LocationErrorState
+import net.thechance.mena.identity.presentation.core.base.errorState.LocationErrorState
 import mena.identity_presentation.generated.resources.Res
 import mena.identity_presentation.generated.resources.error_address_not_found
 import mena.identity_presentation.generated.resources.error_failed_to_open_settings

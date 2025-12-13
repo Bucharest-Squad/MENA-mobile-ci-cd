@@ -11,8 +11,8 @@ import net.thechance.mena.identity.domain.exception.AuthenticationException
 import net.thechance.mena.identity.domain.exception.UnAuthorizedException
 import net.thechance.mena.identity.domain.repository.UserRepository
 import net.thechance.mena.identity.domain.useCase.validation.mobileNumber.PasswordValidator
-import net.thechance.mena.identity.presentation.base.BaseScreenModel
-import net.thechance.mena.identity.presentation.base.errorState.ErrorState
+import net.thechance.mena.identity.presentation.core.base.BaseScreenModel
+import net.thechance.mena.identity.presentation.core.base.errorState.ErrorState
 import net.thechance.mena.identity.presentation.core.mapper.mapAuthenticationErrorToMessage
 import net.thechance.mena.identity.presentation.core.mapper.mapErrorToMessage
 import org.jetbrains.compose.resources.StringResource

@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.filter
 import mena.identity_presentation.generated.resources.Res
 import mena.identity_presentation.generated.resources.ic_anchor
-import net.thechance.mena.identity.presentation.components.util.MapStyle
+import net.thechance.mena.identity.presentation.core.components.util.MapStyle
 import net.thechance.mena.identity.presentation.feature.location.shared.CoordinatesUiState
 import net.thechance.mena.identity.presentation.feature.location.shared.toCoordinatesUiState
 import net.thechance.mena.identity.presentation.feature.location.shared.toPosition

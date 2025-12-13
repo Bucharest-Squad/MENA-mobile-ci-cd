@@ -1,7 +1,7 @@
 package net.thechance.mena.identity.presentation.feature.location.locationManagement
 
 import net.thechance.mena.identity.domain.entity.AddressType
-import net.thechance.mena.identity.presentation.base.BaseInteractionListener
+import net.thechance.mena.identity.presentation.core.base.BaseInteractionListener
 
 interface LocationManagementScreenInteractionListener : BaseInteractionListener {
     fun onClickMap()

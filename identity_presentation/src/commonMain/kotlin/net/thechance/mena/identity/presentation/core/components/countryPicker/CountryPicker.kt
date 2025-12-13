@@ -1,4 +1,4 @@
-package net.thechance.mena.identity.presentation.components.countryPicker
+package net.thechance.mena.identity.presentation.core.components.countryPicker
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -31,8 +31,8 @@ import net.thechance.mena.designsystem.presentation.component.scaffold.ScaffoldS
 import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
-import net.thechance.mena.identity.presentation.components.countryPicker.menaCountries.MenaCountry
-import net.thechance.mena.identity.presentation.components.CountrySelectableRowItem
+import net.thechance.mena.identity.presentation.core.components.countryPicker.menaCountries.MenaCountry
+import net.thechance.mena.identity.presentation.core.components.CountrySelectableRowItem
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 

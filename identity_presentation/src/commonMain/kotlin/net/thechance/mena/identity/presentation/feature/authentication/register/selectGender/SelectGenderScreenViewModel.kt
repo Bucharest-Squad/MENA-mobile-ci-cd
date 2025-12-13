@@ -11,8 +11,8 @@ import net.thechance.mena.identity.domain.model.RegistrationDraft
 import net.thechance.mena.identity.domain.repository.AuthenticationRepository
 import net.thechance.mena.identity.domain.repository.RegisterRepository
 import net.thechance.mena.identity.domain.repository.RegistrationDraftRepository
-import net.thechance.mena.identity.presentation.base.BaseScreenModel
-import net.thechance.mena.identity.presentation.base.errorState.ErrorState
+import net.thechance.mena.identity.presentation.core.base.BaseScreenModel
+import net.thechance.mena.identity.presentation.core.base.errorState.ErrorState
 import net.thechance.mena.identity.presentation.core.mapper.mapAuthenticationErrorToMessage
 import net.thechance.mena.identity.presentation.core.mapper.mapErrorToMessage
 import net.thechance.mena.identity.presentation.feature.authentication.register.shared.RegisterUIState

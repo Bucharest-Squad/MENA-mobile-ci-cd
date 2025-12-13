@@ -1,4 +1,4 @@
-package net.thechance.mena.identity.presentation.components
+package net.thechance.mena.identity.presentation.core.components
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
@@ -22,7 +22,7 @@ import net.thechance.mena.designsystem.presentation.component.text.Text
 import net.thechance.mena.designsystem.presentation.theme.theme.MenaTheme
 import net.thechance.mena.designsystem.presentation.theme.theme.Theme
 import net.thechance.mena.designsystem.presentation.util.rippleIndication
-import net.thechance.mena.identity.presentation.components.countryPicker.menaCountries.MenaCountry
+import net.thechance.mena.identity.presentation.core.components.countryPicker.menaCountries.MenaCountry
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview

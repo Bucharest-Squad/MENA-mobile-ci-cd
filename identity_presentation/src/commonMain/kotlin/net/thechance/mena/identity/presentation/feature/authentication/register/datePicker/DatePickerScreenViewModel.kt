@@ -12,7 +12,7 @@ import kotlinx.datetime.toLocalDateTime
 import net.thechance.mena.identity.domain.model.RegistrationDraft
 import net.thechance.mena.identity.domain.repository.RegistrationDraftRepository
 import net.thechance.mena.identity.domain.useCase.validation.age.AgeValidator
-import net.thechance.mena.identity.presentation.base.BaseScreenModel
+import net.thechance.mena.identity.presentation.core.base.BaseScreenModel
 import net.thechance.mena.identity.presentation.feature.authentication.register.shared.RegisterUIState
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime

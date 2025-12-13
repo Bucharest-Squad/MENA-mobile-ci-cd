@@ -1,4 +1,4 @@
-package net.thechance.mena.identity.presentation.components.util
+package net.thechance.mena.identity.presentation.core.components.util
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.dropShadow
