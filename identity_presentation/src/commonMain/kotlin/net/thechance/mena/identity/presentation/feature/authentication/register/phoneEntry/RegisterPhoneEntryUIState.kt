@@ -1,0 +1,11 @@
+package net.thechance.mena.identity.presentation.feature.authentication.register.phoneEntry
+
+import net.thechance.mena.identity.presentation.core.components.countryPicker.menaCountries.MenaCountry
+
+data class RegisterPhoneEntryUIState(
+    val phoneNumber: String = "",
+    val showCountryBottomSheet: Boolean = false,
+    val currentCountry: MenaCountry = MenaCountry.IRAQ,
+    val isRegisterEnabled: Boolean = false,
+    val isLoading: Boolean = false,
+)

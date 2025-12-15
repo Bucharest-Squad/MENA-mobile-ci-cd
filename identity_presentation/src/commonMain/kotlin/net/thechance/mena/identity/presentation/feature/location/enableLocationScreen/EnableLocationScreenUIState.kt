@@ -1,0 +1,3 @@
+package net.thechance.mena.identity.presentation.feature.location.enableLocationScreen
+
+data object EnableLocationScreenUIState

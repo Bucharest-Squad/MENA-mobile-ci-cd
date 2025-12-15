@@ -2,9 +2,12 @@ package net.thechance.mena.identity.presentation.mapper
 
 import net.thechance.mena.identity.domain.entity.Address
 import net.thechance.mena.identity.domain.entity.AddressType
-import net.thechance.mena.identity.presentation.screen.addresses.addEditLocation.AddEditLocationScreenUIState
-import net.thechance.mena.identity.presentation.screen.addresses.shared.AddressUIState
-import net.thechance.mena.identity.presentation.screen.addresses.shared.CoordinatesUiState
+import net.thechance.mena.identity.presentation.core.mapper.toAddressInput
+import net.thechance.mena.identity.presentation.core.mapper.toEntity
+import net.thechance.mena.identity.presentation.core.mapper.toUiState
+import net.thechance.mena.identity.presentation.feature.location.locationManagement.LocationManagementScreenUIState
+import net.thechance.mena.identity.presentation.feature.location.shared.AddressUIState
+import net.thechance.mena.identity.presentation.feature.location.shared.CoordinatesUiState
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -180,68 +183,8 @@ class AddressMapperTest {
     }
 
     @Test
-    fun `AddressUIState toAddressInput should map latitude correctly`() {
-        val addressUIState = AddressUIState(
-            id = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
-            addressType = AddressType.Home,
-            isMainAddress = false,
-            addressDetails = "Test Street",
-            coordinates = CoordinatesUiState(33.3152, 44.3661)
-        )
-
-        val result = addressUIState.toAddressInput()
-
-        assertEquals(33.3152, result.latitude)
-    }
-
-    @Test
-    fun `AddressUIState toAddressInput should map longitude correctly`() {
-        val addressUIState = AddressUIState(
-            id = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
-            addressType = AddressType.Home,
-            isMainAddress = false,
-            addressDetails = "Test Street",
-            coordinates = CoordinatesUiState(33.3152, 44.3661)
-        )
-
-        val result = addressUIState.toAddressInput()
-
-        assertEquals(44.3661, result.longitude)
-    }
-
-    @Test
-    fun `AddressUIState toAddressInput should map addressLine correctly`() {
-        val addressUIState = AddressUIState(
-            id = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
-            addressType = AddressType.Home,
-            isMainAddress = false,
-            addressDetails = "Test Street",
-            coordinates = CoordinatesUiState(33.3152, 44.3661)
-        )
-
-        val result = addressUIState.toAddressInput()
-
-        assertEquals("Test Street", result.addressLine)
-    }
-
-    @Test
-    fun `AddressUIState toAddressInput should map addressType correctly`() {
-        val addressUIState = AddressUIState(
-            id = Uuid.parse("550e8400-e29b-41d4-a716-446655440000"),
-            addressType = AddressType.Home,
-            isMainAddress = false,
-            addressDetails = "Test Street",
-            coordinates = CoordinatesUiState(33.3152, 44.3661)
-        )
-
-        val result = addressUIState.toAddressInput()
-
-        assertEquals(AddressType.Home, result.addressType)
-    }
-
-    @Test
     fun `AddEditAddressUIState toAddressInput should map latitude correctly`() {
-        val addEditAddressUIState = AddEditLocationScreenUIState.AddEditAddressUIState(
+        val addEditAddressUIState = LocationManagementScreenUIState.AddEditAddressUIState(
             addressID = null,
             addressType = AddressType.Home,
             otherAddressType = null,
@@ -256,7 +199,7 @@ class AddressMapperTest {
 
     @Test
     fun `AddEditAddressUIState toAddressInput should map longitude correctly`() {
-        val addEditAddressUIState = AddEditLocationScreenUIState.AddEditAddressUIState(
+        val addEditAddressUIState = LocationManagementScreenUIState.AddEditAddressUIState(
             addressID = null,
             addressType = AddressType.Home,
             otherAddressType = null,
@@ -271,7 +214,7 @@ class AddressMapperTest {
 
     @Test
     fun `AddEditAddressUIState toAddressInput should map addressLine correctly`() {
-        val addEditAddressUIState = AddEditLocationScreenUIState.AddEditAddressUIState(
+        val addEditAddressUIState = LocationManagementScreenUIState.AddEditAddressUIState(
             addressID = null,
             addressType = AddressType.Home,
             otherAddressType = null,
@@ -286,7 +229,7 @@ class AddressMapperTest {
 
     @Test
     fun `AddEditAddressUIState toAddressInput should use Home when addressType is null`() {
-        val addEditAddressUIState = AddEditLocationScreenUIState.AddEditAddressUIState(
+        val addEditAddressUIState = LocationManagementScreenUIState.AddEditAddressUIState(
             addressID = null,
             addressType = null,
             otherAddressType = null,
@@ -301,7 +244,7 @@ class AddressMapperTest {
 
     @Test
     fun `AddEditAddressUIState toAddressInput should use Other when otherAddressType is not blank`() {
-        val addEditAddressUIState = AddEditLocationScreenUIState.AddEditAddressUIState(
+        val addEditAddressUIState = LocationManagementScreenUIState.AddEditAddressUIState(
             addressID = null,
             addressType = AddressType.Other(""),
             otherAddressType = "Custom",
@@ -316,7 +259,7 @@ class AddressMapperTest {
 
     @Test
     fun `AddEditAddressUIState toAddressInput should use addressType when otherAddressType is blank`() {
-        val addEditAddressUIState = AddEditLocationScreenUIState.AddEditAddressUIState(
+        val addEditAddressUIState = LocationManagementScreenUIState.AddEditAddressUIState(
             addressID = null,
             addressType = AddressType.Office,
             otherAddressType = "",

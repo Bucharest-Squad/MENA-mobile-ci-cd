@@ -1,0 +1,10 @@
+package net.thechance.mena.identity.presentation.feature.authentication.register.enterName
+
+import net.thechance.mena.identity.presentation.feature.authentication.register.shared.RegisterUIState
+import org.jetbrains.compose.resources.StringResource
+
+sealed interface EnterNameUIEffect {
+    data class NavigateToPassword(val registerUIState: RegisterUIState) : EnterNameUIEffect
+
+    data class ShowSnackBarError(val errorStringResource: StringResource) : EnterNameUIEffect
+}

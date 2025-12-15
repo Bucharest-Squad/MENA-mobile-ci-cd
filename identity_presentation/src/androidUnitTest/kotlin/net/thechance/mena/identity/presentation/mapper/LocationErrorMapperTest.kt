@@ -4,9 +4,9 @@ import mena.identity_presentation.generated.resources.Res
 import mena.identity_presentation.generated.resources.error_address_not_found
 import mena.identity_presentation.generated.resources.error_failed_to_open_settings
 import mena.identity_presentation.generated.resources.error_location_permission_denied
-import mena.identity_presentation.generated.resources.error_permission_not_granted
 import mena.identity_presentation.generated.resources.error_something_went_wrong
-import net.thechance.mena.identity.presentation.base.errorState.LocationErrorState
+import net.thechance.mena.identity.presentation.core.base.errorState.LocationErrorState
+import net.thechance.mena.identity.presentation.core.mapper.mapLocationErrorToMessage
 import org.junit.Test
 import kotlin.test.assertEquals
 

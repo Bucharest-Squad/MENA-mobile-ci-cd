@@ -1,11 +1,11 @@
 package net.thechance.mena.identity.presentation.di
 
-import net.thechance.mena.identity.presentation.util.AppLocalizer
-import net.thechance.mena.identity.presentation.util.permissions.CameraPermission
-import net.thechance.mena.identity.presentation.util.permissions.GalleryPermission
-import net.thechance.mena.identity.presentation.util.permissions.LocationForegroundPermission
-import net.thechance.mena.identity.presentation.util.permissionHandler.PermissionController
-import net.thechance.mena.identity.presentation.util.permissionHandler.Permissions
+import net.thechance.mena.identity.presentation.core.util.AppLocalizer
+import net.thechance.mena.identity.presentation.core.util.permissionHandler.PermissionController
+import net.thechance.mena.identity.presentation.core.util.permissionHandler.Permissions
+import net.thechance.mena.identity.presentation.core.util.permissions.CameraPermission
+import net.thechance.mena.identity.presentation.core.util.permissions.GalleryPermission
+import net.thechance.mena.identity.presentation.core.util.permissions.LocationForegroundPermission
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
 import org.koin.dsl.module

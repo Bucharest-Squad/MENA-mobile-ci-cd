@@ -13,7 +13,8 @@ import mena.identity_presentation.generated.resources.error_something_went_wrong
 import mena.identity_presentation.generated.resources.error_too_many_requests
 import mena.identity_presentation.generated.resources.error_user_blocked
 import mena.identity_presentation.generated.resources.error_username_already_exists
-import net.thechance.mena.identity.presentation.base.errorState.AuthenticationErrorState
+import net.thechance.mena.identity.presentation.core.base.errorState.AuthenticationErrorState
+import net.thechance.mena.identity.presentation.core.mapper.mapAuthenticationErrorToMessage
 import org.junit.Test
 import kotlin.test.assertEquals
 

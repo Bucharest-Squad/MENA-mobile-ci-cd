@@ -1,11 +1,14 @@
 package net.thechance.mena.identity.presentation.mapper
 
 import net.thechance.mena.identity.domain.entity.AddressType
-import net.thechance.mena.identity.presentation.screen.addresses.addEditLocation.AddEditLocationScreenUIEffect
-import net.thechance.mena.identity.presentation.screen.addresses.shared.AddressUIState
-import net.thechance.mena.identity.presentation.screen.addresses.shared.CoordinatesUiState
-import net.thechance.mena.identity.presentation.screen.login.LoginScreenUIEffect
-import net.thechance.mena.identity.presentation.screen.profile.ProfileScreenUIEffect
+import net.thechance.mena.identity.presentation.core.mapper.createNavigateToEditProfileEffect
+import net.thechance.mena.identity.presentation.core.mapper.createNavigateToHomeEffect
+import net.thechance.mena.identity.presentation.core.mapper.createNavigateToMapEffect
+import net.thechance.mena.identity.presentation.feature.authentication.login.LoginScreenUIEffect
+import net.thechance.mena.identity.presentation.feature.location.locationManagement.LocationManagementScreenUIEffect
+import net.thechance.mena.identity.presentation.feature.location.shared.AddressUIState
+import net.thechance.mena.identity.presentation.feature.location.shared.CoordinatesUiState
+import net.thechance.mena.identity.presentation.feature.profile.profileMainScreen.ProfileScreenUIEffect
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.uuid.ExperimentalUuidApi
@@ -27,7 +30,7 @@ class EffectMapperTest {
 
         val result = createNavigateToMapEffect(addressUIState, onSuccess)
 
-        assertEquals(AddEditLocationScreenUIEffect.NavigateToMap(addressUIState, onSuccess), result)
+        assertEquals(LocationManagementScreenUIEffect.NavigateToMap(addressUIState, onSuccess), result)
     }
 
     @Test
@@ -36,7 +39,7 @@ class EffectMapperTest {
 
         val result = createNavigateToMapEffect(null, onSuccess)
 
-        assertEquals(AddEditLocationScreenUIEffect.NavigateToMap(null, onSuccess), result)
+        assertEquals(LocationManagementScreenUIEffect.NavigateToMap(null, onSuccess), result)
     }
 
     @Test
