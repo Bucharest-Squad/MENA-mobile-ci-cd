@@ -11,5 +11,6 @@ sealed class FaithException : Throwable() {
     data object UrlCreationException : FaithException()
     data object FileCreationException : FaithException()
     data object InvalidCoordinates: FaithException()
+    data object AddressNotFoundException : FaithException()
 }
 

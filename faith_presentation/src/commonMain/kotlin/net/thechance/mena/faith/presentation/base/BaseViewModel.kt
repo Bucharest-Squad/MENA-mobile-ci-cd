@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import mena.faith_presentation.generated.resources.Res
+import mena.faith_presentation.generated.resources.error_address_not_found
 import mena.faith_presentation.generated.resources.error_coordinates
 import mena.faith_presentation.generated.resources.error_latitude
 import mena.faith_presentation.generated.resources.error_longitude
@@ -126,6 +127,7 @@ abstract class BaseViewModel<UI_STATE, UI_EFFECT>(
         FaithException.FileCreationException -> Res.string.surah_download_failed
         FaithException.UrlCreationException -> Res.string.surah_download_failed
         FaithException.InvalidCoordinates -> Res.string.error_coordinates
+        FaithException.AddressNotFoundException -> Res.string.error_address_not_found
     }
 
     protected fun handleSuccessSnackBar(message: StringResource) {

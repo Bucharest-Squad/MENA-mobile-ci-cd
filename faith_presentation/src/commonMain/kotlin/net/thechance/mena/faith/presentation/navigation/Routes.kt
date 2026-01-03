@@ -71,4 +71,10 @@ internal sealed interface Route {
         val ayahNumber: Int,
         val ayahContent: String,
     ) : Route
+
+    @Serializable
+    data class PickLocationRoute(
+        val latitude: Double? = null,
+        val longitude: Double? = null
+    ) : Route
 }
